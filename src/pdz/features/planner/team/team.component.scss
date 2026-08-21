@@ -47,7 +47,9 @@
       )
     );
     margin-left: auto;
-    @include pdz.apply-typography(label-xs);
+    @include pdz.text(label);
+    @include pdz.caps;
+    font-size: pdz.font-size(2xs);
 
     &:focus-visible {
       outline: 2px solid pdz.color(primary);
@@ -61,8 +63,9 @@
 
   &__control-label {
     color: pdz.color(on-surface-variant);
-    font-weight: var(--pdz-font-weight-bold);
-    @include pdz.apply-typography(label-2xs);
+    @include pdz.text(label-strong);
+    @include pdz.caps;
+    font-size: pdz.font-size(2xs);
   }
 
   &__control-input {
@@ -75,7 +78,7 @@
     font: inherit;
     text-align: center;
     appearance: textfield;
-    @include pdz.apply-typography(body-sm);
+    @include pdz.text(body-sm);
 
     &::-webkit-inner-spin-button,
     &::-webkit-outer-spin-button {
@@ -124,7 +127,9 @@
         box-shadow-hover: none,
       )
     );
-    @include pdz.apply-typography(label-xs);
+    @include pdz.text(label);
+    @include pdz.caps;
+    font-size: pdz.font-size(2xs);
 
     &--active {
       border-color: pdz.color(primary-border);
@@ -183,7 +188,7 @@
       inset: 0 auto 0 0;
       width: 3px;
       background: var(--planner-row-accent);
-      transition: background 0.15s ease-in-out;
+      transition: background pdz.duration(fast) pdz.easing(standard);
     }
 
     &:hover {
@@ -215,12 +220,12 @@
     }
 
     &.cdk-drag-animating {
-      transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+      transition: transform pdz.duration(slow) pdz.easing(standard);
     }
   }
 
   &__list.cdk-drop-list-dragging &__row:not(.cdk-drag-placeholder) {
-    transition: transform 250ms cubic-bezier(0, 0, 0.2, 1);
+    transition: transform pdz.duration(slow) pdz.easing(standard);
   }
 
   &__handle {
@@ -247,8 +252,10 @@
   &__slot {
     color: pdz.color(on-surface-variant);
     font-variant-numeric: tabular-nums;
-    transition: opacity 0.15s ease-in-out;
-    @include pdz.apply-typography(label-xs);
+    transition: opacity pdz.duration(fast) pdz.easing(standard);
+    @include pdz.text(label);
+    @include pdz.caps;
+    font-size: pdz.font-size(2xs);
   }
 
   &__grip {
@@ -258,7 +265,7 @@
     align-items: center;
     justify-content: center;
     opacity: 0;
-    transition: opacity 0.15s ease-in-out;
+    transition: opacity pdz.duration(fast) pdz.easing(standard);
   }
 
   &__row--reserve &__slot {
@@ -345,10 +352,12 @@
   &__value-unit {
     flex-shrink: 0;
     color: pdz.color(on-surface-variant);
-    line-height: 1;
     text-align: center;
+    @include pdz.text(label);
+    @include pdz.caps;
+    font-size: pdz.font-size(2xs);
+    line-height: 1;
     letter-spacing: 0.04em;
-    @include pdz.apply-typography(label-2xs);
   }
 
   &__lock {
@@ -403,13 +412,13 @@
 
     dt {
       color: pdz.color(on-surface-variant);
-      font-weight: var(--pdz-font-weight-bold);
-      @include pdz.apply-typography(label-sm);
+      @include pdz.text(label-strong);
+      @include pdz.caps;
     }
 
     dd {
       margin: 0;
-      @include pdz.apply-typography(body-sm);
+      @include pdz.text(body-sm);
     }
   }
 
@@ -420,48 +429,3 @@
     box-shadow: var(--pdz-level-3);
   }
 }
-<<<<<<< HEAD
-
-.pokemon-input {
-  width: 12rem;
-}
-
-.drag-icon {
-  cursor: move;
-  color: pdz.color(on-surface-variant);
-}
-
-.value-input,
-.pokemon-input {
-  margin-bottom: -1.5rem;
-}
-
-.cdk-drag-preview {
-  box-sizing: border-box;
-  max-width: 6rem;
-  object-fit: contain;
-  border-radius: pdz.shape(corner-xs);
-  box-shadow:
-    0 5px 5px -3px rgba(0, 0, 0, 0.2),
-    0 8px 10px 1px rgba(0, 0, 0, 0.14),
-    0 3px 14px 2px rgba(0, 0, 0, 0.12);
-}
-
-.cdk-drag-animating {
-  transition: transform pdz.duration(slow) pdz.easing(standard);
-}
-
-.team-list.cdk-drop-list-dragging .team-item:not(.cdk-drag-placeholder) {
-  transition: transform pdz.duration(slow) pdz.easing(standard);
-}
-
-.cdk-drag-placeholder {
-  opacity: 0;
-}
-
-.sprite-wrapper {
-  width: 4rem;
-  height: 4rem;
-}
-=======
->>>>>>> planner-update

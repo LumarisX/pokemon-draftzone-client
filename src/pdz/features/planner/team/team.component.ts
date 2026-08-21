@@ -9,6 +9,7 @@ import {
 import { DecimalPipe } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 import { PokemonSearchComponent } from '@pdz/shared/dropdowns/pokemon-search/pokemon-search.component';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
@@ -29,26 +30,10 @@ import { DraftFormGroup } from '../planner.component';
     IconComponent,
     PokemonSearchComponent,
     SpriteComponent,
-  readonly draftFormGroup = input<DraftFormGroup>();
-
-  get min() {
-    return this.draftFormGroup()?.controls.min.value ?? 0;
-  }
-
-  get remainingPokemon() {
-    const tiered =
-      this.draftFormGroup()?.controls.team?.value.filter(
-        (form) => form.pokemon?.id && form.pokemon.id != '',
-      ).length || 0;
-    const mons = this.min - tiered;
-    return mons > 1 ? mons : 1;
-  }
-
-  get isPoints() {
-    const draftFormGroup = this.draftFormGroup();
-    return (
-      !draftFormGroup || draftFormGroup?.controls.system.value === 'points'
-=======
+    ButtonComponent,
+  ],
+})
+export class PlannerTeamComponent {
   @Input() draftFormGroup?: DraftFormGroup;
 
   readonly systemOptions = [
@@ -68,7 +53,6 @@ import { DraftFormGroup } from '../planner.component';
     return (
       !this.draftFormGroup ||
       this.draftFormGroup.controls.system.value === 'points'
->>>>>>> planner-update
     );
   }
 

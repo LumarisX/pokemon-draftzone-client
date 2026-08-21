@@ -1,3 +1,5 @@
+import { TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
 import {
   BracketTeamFlex,
   FlexBracketMatch,
@@ -9,23 +11,30 @@ const teams: BracketTeamFlex[] = [
   { teamName: 'Katana Paper Kutters', coachName: 'Aceman', seed: 2 },
 ];
 
-/** The card is a pure getter over its inputs, so it needs no TestBed. */
+/** The card is a pure getter over its inputs, so nothing needs rendering. */
 function cardFor(
   match: FlexBracketMatch,
   allMatches: FlexBracketMatch[] = [match],
 ) {
-  const component = new MatchCardComponent();
-  component.match = match;
-  component.allMatches = allMatches;
-  component.teams = teams;
-  component.labels = new Map([['m13', 'Match 13']]);
-  return component.card;
+  const fixture = TestBed.createComponent(MatchCardComponent);
+  fixture.componentRef.setInput('match', match);
+  fixture.componentRef.setInput('allMatches', allMatches);
+  fixture.componentRef.setInput('teams', teams);
+  fixture.componentRef.setInput('labels', new Map([['m13', 'Match 13']]));
+  return fixture.componentInstance.card;
 }
 
 const seed = (n: number) => ({ type: 'seed' as const, seed: n });
 const winnerOf = (from: string) => ({ type: 'winner' as const, from });
 
 describe('MatchCardComponent', () => {
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [MatchCardComponent],
+      providers: [provideRouter([])],
+    });
+  });
+
   it('shows a played winner with its score', () => {
     const card = cardFor({
       id: 'm',

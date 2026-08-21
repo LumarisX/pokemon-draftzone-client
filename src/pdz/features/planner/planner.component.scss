@@ -53,8 +53,8 @@
     background-color: pdz.color(surface-container-low);
     color: pdz.color(on-surface-variant);
     cursor: pointer;
-    font-family: var(--pdz-font-fancy);
-    font-size: 0.85rem;
+    font-family: pdz.font(display);
+    font-size: pdz.font-size(sm);
     line-height: 1.1rem;
     transition:
       color 0.15s ease,
@@ -134,7 +134,7 @@
     margin-left: pdz.space(3xs);
     opacity: 0;
     pointer-events: none;
-    transition: opacity 0.15s ease;
+    transition: opacity pdz.duration(fast) pdz.easing(standard);
   }
 
   &__draft:hover &__draft-actions,
@@ -209,8 +209,9 @@
     grid-column: 1;
     justify-self: start;
     flex-shrink: 0;
-    font-family: var(--pdz-font-fancy);
-    @include pdz.apply-typography(label-sm);
+    font-family: pdz.font(display);
+    @include pdz.text(label, $family: false);
+    @include pdz.caps;
 
     @media (max-width: 480px) {
       padding: pdz.space(2xs);
@@ -234,8 +235,9 @@
     }
     border: 1px solid pdz.color(outline-variant);
     border-radius: pdz.shape(corner-full);
-    font-family: var(--pdz-font-fancy);
-    @include pdz.apply-typography(label-sm);
+    font-family: pdz.font(display);
+    @include pdz.text(label, $family: false);
+    @include pdz.caps;
   }
 
   &__save-state {
@@ -250,7 +252,9 @@
     color: pdz.color(on-surface-variant);
     background-color: pdz.color(surface-container-high);
     white-space: nowrap;
-    @include pdz.apply-typography(label-2xs);
+    @include pdz.text(label);
+    @include pdz.caps;
+    font-size: pdz.font-size(2xs);
     transition:
       color 0.2s ease,
       background-color 0.2s ease;
@@ -344,7 +348,7 @@
   &__scrim {
     position: absolute;
     inset: 0;
-    z-index: 20;
+    z-index: pdz.z(drawer-backdrop);
     background: rgba(0, 0, 0, 0.5);
     opacity: 0;
     visibility: hidden;
@@ -362,7 +366,7 @@
     position: absolute;
     inset-block: 0;
     inset-inline-start: 0;
-    z-index: 21;
+    z-index: pdz.z(drawer);
     display: flex;
     flex-direction: column;
     width: min(24rem, 88%);
@@ -398,8 +402,9 @@
 
   &__drawer-title {
     color: pdz.color(on-surface);
-    font-family: var(--pdz-font-fancy);
-    @include pdz.apply-typography(label-md);
+    font-family: pdz.font(display);
+    @include pdz.text(field-label, $family: false);
+    @include pdz.caps;
   }
 
   &__drawer-close {
@@ -433,7 +438,7 @@
       text-align: center;
       background: none;
       box-shadow: none;
-      @include pdz.apply-typography(body-sm);
+      @include pdz.text(body-sm);
     }
   }
 
@@ -457,8 +462,10 @@
     color: pdz.color(on-positive-container);
     background-color: pdz.color(positive-container);
     opacity: 0;
-    @include pdz.apply-typography(label-2xs);
-    transition: opacity 0.2s ease;
+    @include pdz.text(label);
+    @include pdz.caps;
+    font-size: pdz.font-size(2xs);
+    transition: opacity pdz.duration(base) pdz.easing(standard);
 
     &--shown {
       opacity: 1;
@@ -475,7 +482,7 @@
     border-radius: pdz.shape(corner-full);
     cursor: col-resize;
     touch-action: none;
-    transition: background-color 0.15s ease;
+    transition: background-color pdz.duration(fast) pdz.easing(standard);
 
     &::before {
       content: "";
@@ -503,7 +510,7 @@
     border-radius: pdz.shape(corner-full);
     background-color: pdz.color(outline);
     opacity: 0.7;
-    transition: background-color 0.15s ease;
+    transition: background-color pdz.duration(fast) pdz.easing(standard);
 
     .planner__splitter:hover &,
     .planner__splitter--resizing & {

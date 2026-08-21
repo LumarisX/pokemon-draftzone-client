@@ -61,9 +61,7 @@ export class MatchCardComponent {
       id: this.match().id,
       label: this.label,
       decided: this.decided,
-      forfeit: !!this.match.forfeit,
-      // Says why the side is highlighted when no result explains it, so an
-      // advanced team never looks like it won a match it never played.
+      forfeit: !!this.match().forfeit,
       advanced: this.decided && !this.played,
       slots,
       viewLink,
@@ -78,23 +76,16 @@ export class MatchCardComponent {
     return match.label ?? this.labels().get(match.id) ?? 'Match';
   }
 
-  /** The side leaving this match, whether played for or ruled by an organizer. */
   private get advancing(): 0 | 1 | null {
-    return advancingSideIndex(this.match, 'winner');
-  }
-
-  /** The side leaving this match, whether played for or ruled by an organizer. */
-  private get advancing(): 0 | 1 | null {
-    return advancingSideIndex(this.match, 'winner');
+    return advancingSideIndex(this.match(), 'winner');
   }
 
   private get decided(): boolean {
     return this.advancing !== null;
   }
 
-  /** A result was recorded, as opposed to an organizer ruling who advances. */
   private get played(): boolean {
-    return this.match.winner !== undefined;
+    return this.match().winner !== undefined;
   }
 
   private get replays(): string[] {
@@ -104,8 +95,10 @@ export class MatchCardComponent {
   }
 
   private viewLink(slots: [MatchupCardSlot, MatchupCardSlot]): string[] | null {
-    if (this.editable) return null;
-    if (!this.matchupLinkBase?.length || !this.match.slug) return null;
+    if (this.editable()) return null;
+    const matchupLinkBase = this.matchupLinkBase();
+    const match = this.match();
+    if (!matchupLinkBase?.length || !match.slug) return null;
     if (slots.some((slot) => slot.pending)) return null;
     return [...matchupLinkBase, 'matchups', match.slug];
   }
@@ -132,9 +125,7 @@ export class MatchCardComponent {
           : this.advancing === index
             ? 'winner'
             : 'loser',
-      // Only a played match has a score. An organizer's ruling advances a side
-      // without one, and printing the 0-0 it defaults to would read as a result.
-      score: this.played ? (this.match.score?.[index] ?? null) : null,
+      score: this.played ? (match.score?.[index] ?? null) : null,
       link:
         team?.teamSlug && matchupLinkBase?.length
           ? [...matchupLinkBase, 'teams', team.teamSlug]

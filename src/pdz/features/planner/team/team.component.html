@@ -63,8 +63,10 @@
       }
 
       <button
-        type="button"
-        class="planner-team__clear"
+        pdz-button
+        variant="ghost"
+        color="danger"
+        size="sm"
         [disabled]="!clearableCount"
         (click)="clearTeam()"
       >

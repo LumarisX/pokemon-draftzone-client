@@ -13,8 +13,9 @@
   row-gap: pdz.space(lg);
 
   .section-title {
-    font-size: large;
-    font-weight: 600;
+    font-family: pdz.font(display);
+    font-size: pdz.font-size(lg);
+    font-weight: pdz.font-weight(semibold);
   }
 
   .slider-container {
@@ -22,7 +23,7 @@
     align-items: center;
     justify-content: center;
     gap: pdz.space(sm);
-    font-size: small;
+    font-size: pdz.font-size(sm);
 
     pdz-slider {
       display: block;
@@ -32,7 +33,6 @@
 
   .pokemon-charts-container {
     max-width: 100%;
-    // Separates the two coverage sections now that they are one card.
     padding-bottom: pdz.space(lg);
     border-bottom: 1px solid pdz.color(outline-variant);
 
@@ -59,22 +59,13 @@
           max-height: 25rem;
           flex-wrap: wrap;
         }
-
-        .pokemon-charts-title {
-          font-family: var(--pdz-font-display);
-          font-size: large;
-          font-weight: 600;
-          padding: 0 1rem 0 0;
-        }
-        .coverage-charts-wrapper {
-          display: flex;
-          padding: pdz.space(sm);
-          max-height: fit-content;
-          overflow-x: auto;
-          @media (min-width: 768px) {
-            max-width: 50rem;
-            max-height: 25rem;
-            flex-wrap: wrap;
+        .chart-wrapper {
+          width: 8rem;
+          height: 8rem;
+          flex-shrink: 0;
+          &:hover {
+            opacity: 0.8;
+            cursor: pointer;
           }
         }
       }
@@ -84,11 +75,9 @@
       display: flex;
       justify-content: center;
 
-      .team-chart-title {
-        font-family: var(--pdz-font-display);
-        font-size: large;
-        width: 100%;
-        text-align: center;
+      .selected-wrapper {
+        height: 28rem;
+        width: 28rem;
       }
     }
   }
@@ -111,27 +100,15 @@
         justify-content: center;
         display: flex;
         align-items: center;
-        padding: 0.5rem 1rem;
+        padding: pdz.space(xs) pdz.space(sm);
         position: relative;
-        border-radius: 0.5rem 0.5rem 0 0;
-        margin: 0 0.25rem;
+        border-radius: pdz.shape(corner-sm) pdz.shape(corner-sm) 0 0;
+        margin: 0 pdz.space(3xs);
         cursor: pointer;
 
-          img {
-            width: 2rem;
-            height: 2rem;
-          }
-        }
-
-        &::after {
-          content: "";
-          position: absolute;
-          bottom: -2px;
-          left: 0;
-          width: calc(100% / 3);
-          height: 2px;
-          background-color: pdz.color(primary-border);
-          transition: transform pdz.duration(slow) pdz.easing(standard);
+        img {
+          width: 2rem;
+          height: 2rem;
         }
       }
 
@@ -143,11 +120,10 @@
         width: calc(100% / 3);
         height: 2px;
         background-color: pdz.color(primary-border);
-        transition: transform 0.3s ease-in-out;
+        transition: transform pdz.duration(slow) pdz.easing(standard);
       }
     }
 
-    // Adjust border position dynamically based on the selected category
     .team-options-container[data-selected="physical"]::after {
       transform: translateX(0%);
     }
@@ -166,8 +142,8 @@
   position: fixed;
   background-color: pdz.color(secondary);
   color: pdz.color(on-secondary);
-  padding: 5px 10px;
-  border-radius: 5px;
+  padding: pdz.space(3xs) pdz.space(xs);
+  border-radius: pdz.shape(corner-xs);
   font-size: pdz.font-size(xs);
   pointer-events: none;
   opacity: 0;

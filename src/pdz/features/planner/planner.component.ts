@@ -240,7 +240,8 @@ export class PlannerComponent implements OnInit, OnDestroy {
     this.updateDetails();
   }
 
-  setMainView(view: PlannerView): void {
+  setMainView(view: PlannerView | null): void {
+    if (!view) return;
     this.mainView.set(view);
   }
 

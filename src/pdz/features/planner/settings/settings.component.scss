@@ -1,5 +1,4 @@
 @use "pdz-theming" as pdz;
-@use "mixins/buttons" as *;
 
 :host {
   display: block;
@@ -22,25 +21,6 @@
     pdz-format-select,
     pdz-ruleset-select {
       flex: 1 1 0;
-    }
-  }
-
-  &__save {
-    @include icon-button-primary(
-      (
-        width: 2.375rem,
-        height: 2.375rem,
-        padding: pdz.space(xs),
-        border-width: 1px,
-        border-color: pdz.color(primary-border),
-        background: pdz.color(primary-container),
-        color: pdz.color(on-primary-container),
-      )
-    );
-
-    &.is-hidden {
-      visibility: hidden;
-      pointer-events: none;
     }
   }
 

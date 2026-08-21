@@ -1,8 +1,10 @@
 import {
   Component,
+  computed,
   EventEmitter,
   forwardRef,
   Output,
+  signal,
   input,
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
@@ -23,9 +25,12 @@ export class SliderComponent implements ControlValueAccessor {
   readonly min = input(0);
   readonly max = input(100);
   readonly step = input(1);
-  disabled = input(false);
+  readonly disabled = input(false);
   readonly color = input<string>();
   readonly showValue = input(false);
+
+  private readonly formDisabled = signal(false);
+  readonly isDisabled = computed(() => this.disabled() || this.formDisabled());
 
   @Output() valueChange = new EventEmitter<number>();
 
@@ -54,7 +59,7 @@ export class SliderComponent implements ControlValueAccessor {
   }
 
   setDisabledState(isDisabled: boolean): void {
-    this.disabled.apply(isDisabled);
+    this.formDisabled.set(isDisabled);
   }
 
   onInput(event: Event): void {

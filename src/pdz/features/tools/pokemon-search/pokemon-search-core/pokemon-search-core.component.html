@@ -191,7 +191,7 @@
 
   <div class="pokemon-results__header">
     @if (isLoading) {
-      <pdz-loading class="pokemon-results__loading"></pdz-loading>
+      <p class="pokemon-results__meta">Searching...</p>
     } @else {
       <p class="pokemon-results__meta">{{ results.length }} results</p>
     }
@@ -285,10 +285,10 @@
               type="button"
               class="pokemon-results__card"
               [class.pokemon-results__card--taken]="
-                selectable && isTaken(pokemon)
+                selectable() && isTaken(pokemon)
               "
               [attr.title]="
-                selectable && isTaken(pokemon) ? 'Already on your team' : null
+                selectable() && isTaken(pokemon) ? 'Already on your team' : null
               "
               (click)="openSummary(pokemon)"
             >
@@ -300,7 +300,7 @@
               ></pdz-sprite>
               <span class="pokemon-results__card-name">{{ pokemon.name }}</span>
             </button>
-            @if (selectable && !isTaken(pokemon)) {
+            @if (selectable() && !isTaken(pokemon)) {
               <button
                 type="button"
                 class="pokemon-results__select"
@@ -318,7 +318,7 @@
       <div class="pokemon-results__list">
         @for (pokemon of results; track pokemon.id + "-" + $index) {
           <div class="pokemon-results__cell pokemon-results__cell--list">
-            @if (selectable && !isTaken(pokemon)) {
+            @if (selectable() && !isTaken(pokemon)) {
               <button
                 type="button"
                 class="pokemon-results__select pokemon-results__select--list"
@@ -333,10 +333,10 @@
               type="button"
               class="pokemon-results__list-row"
               [class.pokemon-results__list-row--taken]="
-                selectable && isTaken(pokemon)
+                selectable() && isTaken(pokemon)
               "
               [attr.title]="
-                selectable && isTaken(pokemon) ? 'Already on your team' : null
+                selectable() && isTaken(pokemon) ? 'Already on your team' : null
               "
               (click)="openSummary(pokemon)"
             >

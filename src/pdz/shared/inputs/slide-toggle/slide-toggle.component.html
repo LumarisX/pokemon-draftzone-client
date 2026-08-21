@@ -1,12 +1,24 @@
 <div
   class="pdz-slide-toggle"
   [class.checked]="checkedState"
-  [class.disabled]="disabled()"
+  [class.disabled]="isDisabled()"
   (click)="toggle()"
 >
   <span class="toggle-track">
     <span class="toggle-thumb">
-      <pdz-icon class="toggle-icon" [name]="iconName" [size]="18"></pdz-icon>
+      @if (checkedState) {
+        @if (onSVG()) {
+          <pdz-icon class="toggle-icon" [name]="onSVG()!"></pdz-icon>
+        } @else {
+          <pdz-icon class="toggle-icon" [name]="onIcon()"></pdz-icon>
+        }
+      } @else {
+        @if (offSVG()) {
+          <pdz-icon class="toggle-icon" [name]="offSVG()!"></pdz-icon>
+        } @else {
+          <pdz-icon class="toggle-icon" [name]="offIcon()"></pdz-icon>
+        }
+      }
     </span>
   </span>
   <ng-content></ng-content>

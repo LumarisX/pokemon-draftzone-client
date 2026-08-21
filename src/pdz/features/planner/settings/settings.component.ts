@@ -6,6 +6,7 @@ import { FormatSelectComponent } from '@pdz/shared/dropdowns/format-select/forma
 import { RulesetSelectComponent } from '@pdz/shared/dropdowns/ruleset-select/ruleset.component';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { DraftFormGroup } from '../planner.component';
+import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 
 @Component({
   selector: 'pdz-planner-settings',
@@ -17,6 +18,7 @@ import { DraftFormGroup } from '../planner.component';
     RulesetSelectComponent,
     FormatSelectComponent,
     IconComponent,
+    ButtonComponent,
   ],
 })
 export class PlannerSettingsComponent {

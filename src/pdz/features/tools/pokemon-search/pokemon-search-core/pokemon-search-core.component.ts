@@ -1,17 +1,26 @@
 import { Location } from '@angular/common';
-import { Component, inject, OnDestroy, OnInit, input } from '@angular/core';
+import {
+  booleanAttribute,
+  Component,
+  computed,
+  effect,
+  EventEmitter,
+  inject,
+  input,
+  OnDestroy,
+  OnInit,
+  Output,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { ActivatedRoute, Router } from '@angular/router';
-import { Subject } from 'rxjs';
-import { finalize, takeUntil } from 'rxjs/operators';
-import { StatsTable } from '@pdz/shared/data';
+import { ActivatedRoute } from '@angular/router';
 import {
   DataService,
   PokemonFullData,
   PokemonSearchMoveData,
 } from '@pdz/core/services/data.service';
-import { SaveSearchesServices } from '../save-searches.service';
+import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
+import { StatsTable } from '@pdz/shared/data';
 import {
   PokemonDialogComponent,
   PokemonDialogData,
@@ -19,10 +28,10 @@ import {
 import { PokemonTypeComponent } from '@pdz/shared/dialogs/pokemon-type/pokemon-type.component';
 import { RulesetSelectComponent } from '@pdz/shared/dropdowns/ruleset-select/ruleset.component';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
-import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
+import { Subject } from 'rxjs';
+import { finalize, takeUntil } from 'rxjs/operators';
 import { FilterDrawerComponent } from '../filter-drawer/filter-drawer.component';
-import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 import {
   DraftFilter,
   FIELD_CATEGORIES,
@@ -37,6 +46,7 @@ import {
   SearchOperator,
   SearchPokemonRequest,
 } from '../pokemon-search.types';
+import { SaveSearchesServices } from '../save-searches.service';
 
 @Component({
   selector: 'pdz-pokemon-search-core',
@@ -45,7 +55,6 @@ import {
     MatDialogModule,
     SpriteComponent,
     IconComponent,
-    LoadingComponent,
     PokemonTypeComponent,
     FilterDrawerComponent,
     RulesetSelectComponent,
@@ -58,7 +67,6 @@ export class PokemonSearchCoreComponent implements OnInit, OnDestroy {
   private dialog = inject(MatDialog);
   private location = inject(Location);
   private route = inject(ActivatedRoute);
-  private router = inject(Router);
   private dataService = inject(DataService);
   private bookmarkService = inject(SaveSearchesServices);
 
@@ -69,34 +77,14 @@ export class PokemonSearchCoreComponent implements OnInit, OnDestroy {
   readonly fields = FIELD_DEFINITIONS;
   readonly operatorMap = OPERATOR_MAP;
 
-<<<<<<< HEAD
   readonly rulesetId = input<string>();
-=======
-  @Input()
-  set rulesetId(value: string | undefined) {
-    this.hostRulesetId = value;
-    if (!value || value === this.selectedRuleset) return;
-    this.selectedRuleset = value;
-    if (this.activeFilterCriteria.length) this.search();
-  }
-  get rulesetId(): string | undefined {
-    return this.hostRulesetId;
-  }
-
-  @Input({ transform: booleanAttribute }) embedded = false;
-
-  @Input({ transform: booleanAttribute }) selectable = false;
-
-  @Input()
-  set takenIds(value: readonly string[] | undefined) {
-    this.takenIdSet = new Set(value ?? []);
-  }
+  readonly embedded = input(false, { transform: booleanAttribute });
+  readonly selectable = input(false, { transform: booleanAttribute });
+  readonly takenIds = input<readonly string[]>([]);
 
   @Output() pokemonSelected = new EventEmitter<{ id: string; name: string }>();
 
-  private hostRulesetId?: string;
-  private takenIdSet = new Set<string>();
->>>>>>> planner-update
+  private readonly takenIdSet = computed(() => new Set(this.takenIds()));
 
   copyLinkSuccess = false;
   isBookmarked = false;
@@ -160,13 +148,20 @@ export class PokemonSearchCoreComponent implements OnInit, OnDestroy {
     return this.results.length > 0;
   }
 
+  constructor() {
+    effect(() => {
+      const rulesetId = this.rulesetId();
+      if (!rulesetId || rulesetId === this.selectedRuleset) return;
+      this.selectedRuleset = rulesetId;
+      if (this.activeFilterCriteria.length) this.search();
+    });
+  }
+
   ngOnInit(): void {
-<<<<<<< HEAD
     const rulesetId = this.rulesetId();
     if (rulesetId) this.selectedRuleset = rulesetId;
-=======
-    if (this.embedded) return;
->>>>>>> planner-update
+
+    if (this.embedded()) return;
 
     this.checkIfBookmarked();
     this.unlistenUrl = this.location.onUrlChange(() =>
@@ -176,48 +171,39 @@ export class PokemonSearchCoreComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe(() => this.checkIfBookmarked());
 
-<<<<<<< HEAD
     this.route.queryParams.subscribe((params) => {
       if (params['format']) this.selectedFormat = params['format'];
       if (!this.rulesetId() && params['ruleset'])
         this.selectedRuleset = params['ruleset'];
-=======
-    this.route.queryParams
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((params) => {
-        if (params['format']) this.selectedFormat = params['format'];
-        if (!this.rulesetId && params['ruleset'])
-          this.selectedRuleset = params['ruleset'];
->>>>>>> planner-update
 
-        const urlSearchMode = params['searchMode'];
+      const urlSearchMode = params['searchMode'];
 
-        if (urlSearchMode === 'quick') {
-          const q = (params['q'] ?? '').trim();
-          if (!q) return;
-          const sig = `quick:${q}`;
-          if (sig === this.lastAppliedQuerySignature) return;
-          this.lastAppliedQuerySignature = sig;
-          this.searchMode = 'quick';
-          this.quickName = q;
-          this.quickSearch();
-          return;
-        }
+      if (urlSearchMode === 'quick') {
+        const q = (params['q'] ?? '').trim();
+        if (!q) return;
+        const sig = `quick:${q}`;
+        if (sig === this.lastAppliedQuerySignature) return;
+        this.lastAppliedQuerySignature = sig;
+        this.searchMode = 'quick';
+        this.quickName = q;
+        this.quickSearch();
+        return;
+      }
 
-        const incomingQuery = params['query'];
-        if (!incomingQuery) return;
+      const incomingQuery = params['query'];
+      if (!incomingQuery) return;
 
-        const parsed = this.parseIncomingQuery(incomingQuery);
-        if (!parsed) return;
+      const parsed = this.parseIncomingQuery(incomingQuery);
+      if (!parsed) return;
 
-        const parsedSignature = JSON.stringify(parsed);
-        if (parsedSignature === this.lastAppliedQuerySignature) return;
+      const parsedSignature = JSON.stringify(parsed);
+      if (parsedSignature === this.lastAppliedQuerySignature) return;
 
-        this.lastAppliedQuerySignature = parsedSignature;
-        this.searchMode = 'advanced';
-        this.applyRequest(parsed);
-        this.search();
-      });
+      this.lastAppliedQuerySignature = parsedSignature;
+      this.searchMode = 'advanced';
+      this.applyRequest(parsed);
+      this.search();
+    });
   }
 
   ngOnDestroy(): void {
@@ -437,11 +423,11 @@ export class PokemonSearchCoreComponent implements OnInit, OnDestroy {
   }
 
   isTaken(pokemon: PokemonFullData): boolean {
-    return this.takenIdSet.has(pokemon.id);
+    return this.takenIdSet().has(pokemon.id);
   }
 
   selectPokemon(pokemon: PokemonFullData): void {
-    if (!this.selectable || this.isTaken(pokemon)) return;
+    if (!this.selectable() || this.isTaken(pokemon)) return;
     this.pokemonSelected.emit({ id: pokemon.id, name: pokemon.name });
   }
 
@@ -532,7 +518,7 @@ export class PokemonSearchCoreComponent implements OnInit, OnDestroy {
   }
 
   private updateURLQuery(queryValue: SearchPokemonRequest): void {
-    if (this.embedded) return;
+    if (this.embedded()) return;
     const currentPath = this.location.path().split('?')[0];
     const queryParts = [
       `format=${encodeURIComponent(this.selectedFormat)}`,

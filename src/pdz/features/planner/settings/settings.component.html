@@ -1,6 +1,6 @@
 @if (draftFormGroup(); as draftFormGroup) {
-  <div class="settings">
-    <div class="settings__row">
+  <div class="planner-settings">
+    <div class="planner-settings__row">
       <pdz-format-select
         [formControl]="draftFormGroup.controls.format"
       ></pdz-format-select>
@@ -9,7 +9,9 @@
       ></pdz-ruleset-select>
     </div>
     <a
-      class="planner-settings__save"
+      pdz-button
+      iconOnly
+      variant="tonal"
       [routerLink]="['/', draftPath, 'new']"
       [queryParams]="{
         team: teamIds,

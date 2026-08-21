@@ -8,12 +8,15 @@ import {
   Component,
   ElementRef,
   EventEmitter,
+  forwardRef,
+  inject,
+  input,
   OnDestroy,
   OnInit,
   Output,
   ViewChild,
-  input,
 } from '@angular/core';
+import { toObservable } from '@angular/core/rxjs-interop';
 import {
   ControlValueAccessor,
   FormControl,
@@ -24,7 +27,7 @@ import { DataService } from '@pdz/core/services/data.service';
 import { DraftPokemon } from '@pdz/features/drafts/draft.model';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
-import { BehaviorSubject, Observable, Subject, combineLatest, of } from 'rxjs';
+import { BehaviorSubject, combineLatest, Observable, of, Subject } from 'rxjs';
 import {
   debounceTime,
   distinctUntilChanged,
@@ -37,7 +40,6 @@ import {
 const ITEM_SIZE = 44;
 const MAX_LIST_HEIGHT = 308;
 
-/** Options may carry draft pricing; the row shows it when they do. */
 export type PokemonSearchOption = DraftPokemon & {
   cost?: number;
   tier?: string;
@@ -67,13 +69,18 @@ export class PokemonSearchComponent
 {
   private readonly dataService = inject(DataService);
   private readonly destroy$ = new Subject<void>();
-  private readonly ruleset$ = new BehaviorSubject<string | null>(null);
   private blurTimeout?: ReturnType<typeof setTimeout>;
-
-  readonly options$ = input.required<BehaviorSubject<DraftPokemon[]>>();
+  readonly options$ = input<BehaviorSubject<DraftPokemon[]>>();
   readonly placeholder = input('Search Pokémon...');
   readonly takenIds = input<(string | null | undefined)[]>([]);
 
+  readonly mode = input<'search' | 'select'>('search');
+  readonly density = input<'comfortable' | 'compact'>('comfortable');
+  readonly locked = input(false, { transform: booleanAttribute });
+
+  readonly ruleset = input<string | null>(null);
+
+  private readonly ruleset$ = toObservable(this.ruleset);
   @Output() pokemonSelected = new EventEmitter<DraftPokemon>();
   @Output() selectionCleared = new EventEmitter<void>();
 
@@ -85,12 +92,6 @@ export class PokemonSearchComponent
   disabled = false;
   value: DraftPokemon | null = null;
 
-  /**
-   * Field width captured when the panel opens. Measured on open rather than
-   * bound to `offsetWidth` directly, so a field rendered into a layout that is
-   * still settling doesn't report two different widths across change-detection
-   * passes (NG0100).
-   */
   panelWidth = 0;
 
   readonly itemSize = ITEM_SIZE;
@@ -109,7 +110,7 @@ export class PokemonSearchComponent
 
   ngOnInit(): void {
     combineLatest([
-      this.options$(),
+      this.optionSource(),
       this.query.valueChanges.pipe(
         startWith(''),
         debounceTime(100),
@@ -153,7 +154,7 @@ export class PokemonSearchComponent
   }
 
   get showsSelection(): boolean {
-    return this.mode === 'select' && !!this.value && !this.isEditing;
+    return this.mode() === 'select' && !!this.value && !this.isEditing;
   }
 
   get listHeight(): string {
@@ -174,7 +175,7 @@ export class PokemonSearchComponent
   }
 
   setOpen(value: boolean): void {
-    if (value && this.locked) return;
+    if (value && this.locked()) return;
     if (value && this.fieldEl)
       this.panelWidth = this.fieldEl.nativeElement.offsetWidth;
     this.isOpen = value;
@@ -189,7 +190,7 @@ export class PokemonSearchComponent
   }
 
   beginEdit(): void {
-    if (this.disabled || this.locked) return;
+    if (this.disabled || this.locked()) return;
     this.isEditing = true;
     this.query.setValue('');
     setTimeout(() => {
@@ -268,7 +269,7 @@ export class PokemonSearchComponent
 
   private optionSource(): Observable<DraftPokemon[]> {
     return (
-      this.options$ ??
+      this.options$() ??
       this.ruleset$.pipe(
         switchMap((ruleset) =>
           ruleset ? this.dataService.getPokemonList(ruleset) : of([]),

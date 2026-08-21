@@ -7,8 +7,10 @@ import {
   HostListener,
   Output,
   Renderer2,
+  computed,
   inject,
   input,
+  signal,
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
@@ -30,13 +32,17 @@ export class SlideToggleComponent implements ControlValueAccessor {
   private renderer = inject(Renderer2);
   private elRef = inject(ElementRef);
 
-  disabled = input(false);
+  readonly disabled = input(false);
   readonly label = input<string>();
   readonly onIcon = input('check');
   readonly offIcon = input('remove');
   readonly onSVG = input<string>();
   readonly offSVG = input<string>();
   readonly labelPosition = input<'before' | 'after'>('after');
+
+  private readonly formDisabled = signal(false);
+  readonly isDisabled = computed(() => this.disabled() || this.formDisabled());
+
   @HostBinding('class.checked') checkedState = false;
 
   @Output() checkedChange = new EventEmitter<boolean>();
@@ -45,12 +51,6 @@ export class SlideToggleComponent implements ControlValueAccessor {
 
   private onChange = (value: boolean) => {};
   private onTouched = () => {};
-
-  get iconName(): string {
-    return this.checkedState
-      ? (this.onSVG ?? this.onIcon)
-      : (this.offSVG ?? this.offIcon);
-  }
 
   writeValue(value: boolean): void {
     this.checkedState = value;
@@ -70,11 +70,11 @@ export class SlideToggleComponent implements ControlValueAccessor {
   }
 
   setDisabledState(isDisabled: boolean): void {
-    this.disabled.apply(isDisabled);
+    this.formDisabled.set(isDisabled);
   }
 
   toggle(): void {
-    if (this.disabled()) return;
+    if (this.isDisabled()) return;
     this.checkedState = !this.checkedState;
     this.onChange(this.checkedState);
     this.onTouched();

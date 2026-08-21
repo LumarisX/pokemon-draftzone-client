@@ -4,26 +4,6 @@
   display: block;
   max-width: 100%;
 
-.table-wrapper {
-  padding: pdz.space(md);
-  min-width: fit-content;
-  width: fit-content;
-  height: fit-content;
-  border-radius: pdz.shape(corner-lg);
-  background-color: pdz.color(surface);
-  box-shadow: var(--pdz-level-3);
-}
-
-.title-container {
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
-  padding: 0 1rem 0.5rem;
-  color: pdz.color(primary-accent);
-  font-weight: var(--pdz-font-weight-bold);
-
-  .table-label {
-    font-size: pdz.font-size(lg);
-    font-family: var(--pdz-font-display);
-  }
+  --pdz-cmp-typechart-stat-hover: #{pdz.color(primary-container)};
+  --pdz-cmp-typechart-border-hover: #{pdz.color(primary-border)};
 }

@@ -9,7 +9,8 @@
 }
 
 .animated-selector__label {
-  @include apply-typography(label-sm);
+  @include pdz.text(label);
+  @include pdz.caps;
   display: block;
 }
 
@@ -85,7 +86,7 @@
   font: inherit;
   letter-spacing: inherit;
   text-transform: inherit;
-  transition: color 200ms ease;
+  transition: color pdz.duration(base) pdz.easing(standard);
 
   &:hover:not(.selected) {
     color: pdz.color(on-surface);

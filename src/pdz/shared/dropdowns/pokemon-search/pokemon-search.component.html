@@ -1,7 +1,7 @@
 <div
   class="pokemon-search__field"
   [class.pokemon-search__field--disabled]="disabled"
-  [class.pokemon-search__field--compact]="density === 'compact'"
+  [class.pokemon-search__field--compact]="density() === 'compact'"
   cdkOverlayOrigin
   #trigger="cdkOverlayOrigin"
   #fieldEl
@@ -20,7 +20,7 @@
       ></pdz-sprite>
       <span class="pokemon-search__selection-name">{{ value!.name }}</span>
     </button>
-    @if (!locked) {
+    @if (!locked()) {
       <button
         type="button"
         class="pokemon-search__clear"
@@ -39,9 +39,9 @@
       type="text"
       spellcheck="false"
       autocomplete="off"
-      [readonly]="locked"
+      [readonly]="locked()"
       [formControl]="query"
-      [placeholder]="placeholder"
+      [placeholder]="placeholder()"
       (focus)="setOpen(true)"
       (input)="setOpen(true)"
       (blur)="onBlur()"
