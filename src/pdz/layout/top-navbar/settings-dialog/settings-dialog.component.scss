@@ -1,226 +1,43 @@
 @use "pdz-theming" as pdz;
 
-.settings-dialog {
-  padding: pdz.space(lg);
-  width: 100%;
-  max-width: 32rem;
-  border: none;
-  border-radius: pdz.shape(corner-lg);
-  box-shadow: var(--pdz-level-3);
-  background-color: pdz.color(surface);
-  color: pdz.color(on-surface);
-  overflow: visible;
-
-  &::backdrop {
-    background: rgba(0, 0, 0, 0.5);
-  }
-
-  &__title {
-    font-family: var(--pdz-font-display);
-    font-size: pdz.font-size(xl);
-    color: pdz.color(on-surface);
-  }
-
-  &__content {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
+:host {
+  display: block;
 }
 
-.options-container {
-  padding: pdz.space(lg);
+.settings-dialog__body {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
-
-  .option {
-    display: flex;
-    column-gap: 1rem;
-    flex-wrap: wrap;
-
-    .sprite-wrapper {
-      width: 4rem;
-      height: 4rem;
-    }
-  }
-
-  .credit-link {
-    z-index: 1;
-  }
+  gap: pdz.space(lg);
 }
 
-.label {
-  display: block;
-  margin-bottom: 0.25rem;
-  font-size: pdz.font-size(sm);
-  color: pdz.color(on-surface-variant, pdz.color(on-surface));
+.theme-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+  gap: pdz.space(md);
 }
 
-.sprite-option {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-
-.sprite-form {
-  flex: 1 1 auto;
-}
-
-.credit {
-  margin-top: 0.25rem;
-}
-
-.credit-link {
-  color: pdz.color(primary-accent);
-  text-decoration: underline;
-}
-
-.btn {
-  padding: 0.5rem 1rem;
-  border-radius: 0.5rem;
-}
-
-.btn-primary {
-  background: linear-gradient(
-    180deg,
-    pdz.color(primary),
-    pdz.color(primary-container)
-  );
-  color: pdz.color(on-primary);
-}
-
-.btn-outline {
-  background: transparent;
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  color: pdz.color(on-surface);
-}
-
-.save-feedback {
-  margin-top: 0.5rem;
-  width: 100%;
-  text-align: left;
-}
-
-.error {
-  color: pdz.color(danger, #b00020);
-}
-
-.theme-option {
-  font-weight: 600;
-  color: pdz.color(primary-accent);
+.theme-tile {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 0.5rem;
-}
-
-.unlock-icon {
-  display: flex;
-  align-items: center;
-  margin-left: auto;
-  margin-right: 0.25rem;
-  opacity: 0.85;
-}
-
-.theme-dropdown {
-  position: relative;
-  display: inline-block;
-  width: 100%;
-}
-
-.theme-toggle {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 0.5rem;
-  padding: 0.45rem 0.6rem;
-  border-radius: 0.5rem;
-  border: 1px solid rgba(0, 0, 0, 0.08);
-  background: pdz.color(surface-container);
-}
-
-.theme-preview {
-  width: 2rem;
-  height: 1.25rem;
-  border-radius: 0.375rem;
-  display: inline-block;
-  margin-right: 0.5rem;
-}
-
-.classic {
-  background: linear-gradient(
-    135deg,
-    var(--pdz-color-cyan-400),
-    var(--pdz-color-orange-400)
-  );
-}
-
-.classic-reverse {
-  background: linear-gradient(
-    135deg,
-    var(--pdz-color-orange-400),
-    var(--pdz-color-cyan-400)
-  );
-}
-
-.fern {
-  background: linear-gradient(
-    135deg,
-    var(--pdz-color-green-400),
-    var(--pdz-color-blue-400)
-  );
-}
-
-.sunset {
-  background: linear-gradient(
-    135deg,
-    var(--pdz-color-purple-400),
-    var(--pdz-color-orange-400),
-    var(--pdz-color-pink-400)
-  );
-}
-
-.shiny {
-  background: linear-gradient(
-    135deg,
-    var(--pdz-color-mint-400),
-    var(--pdz-color-yellow-400)
-  );
-}
-
-.theme-label {
-  flex: 1 1 auto;
-  text-align: left;
-}
-
-.caret {
-  opacity: 0.8;
-}
-
-.theme-options {
-  position: absolute;
-  z-index: pdz.z(popover);
-  left: 0;
-  right: 0;
-  margin-top: 0.5rem;
-  padding: 0.25rem;
-  background: pdz.color(surface);
-  border-radius: 0.5rem;
-  box-shadow: var(--pdz-level-3);
-  list-style: none;
-}
-
-.theme-option {
-  padding: 0.6rem 0.8rem;
-  margin: 0.25rem 0;
-  border-radius: 0.5rem;
+  gap: pdz.space(xs);
+  padding: pdz.space(sm) pdz.space(md);
+  border: none;
+  border-radius: pdz.shape(corner-md);
+  box-shadow: inset 0 0 0 1px pdz.color-rgba(shadow, 0.3);
+  outline: 2px solid transparent;
+  outline-offset: 2px;
   color: pdz.color(on-primary, #fff);
+  font-weight: 600;
   cursor: pointer;
+  transition: outline-color pdz.duration(base) pdz.easing(standard);
 
-  &:hover {
-    transform: translateY(-1px);
+  &--selected {
+    outline-color: pdz.color(primary-accent);
+  }
+
+  &:focus-visible {
+    outline-color: pdz.color(on-surface);
   }
 
   &.classic {
@@ -228,6 +45,22 @@
       135deg,
       var(--pdz-color-cyan-400),
       var(--pdz-color-orange-400)
+    );
+  }
+
+  &.classic-reverse {
+    background: linear-gradient(
+      135deg,
+      var(--pdz-color-orange-400),
+      var(--pdz-color-cyan-400)
+    );
+  }
+
+  &.fern {
+    background: linear-gradient(
+      135deg,
+      var(--pdz-color-green-400),
+      var(--pdz-color-blue-400)
     );
   }
 
@@ -249,50 +82,35 @@
   }
 }
 
-.custom-dropdown {
-  position: relative;
-  display: inline-block;
-  width: 100%;
+.theme-tile__label {
+  flex: 1 1 auto;
+  text-align: left;
 }
 
-.custom-toggle {
-  width: 100%;
+.sprite-option {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  padding: 0.45rem 0.6rem;
-  border-radius: 0.5rem;
-  border: 1px solid rgba(0, 0, 0, 0.06);
-  background: pdz.color(surface-container);
+  gap: pdz.space(md);
 }
 
-.custom-options {
-  position: absolute;
-  z-index: pdz.z(popover);
-  left: 0;
-  min-width: 100%;
-  margin-top: 0.5rem;
-  padding: 0.25rem;
-  background: pdz.color(surface);
-  border-radius: 0.5rem;
-  box-shadow: var(--pdz-level-3);
-  list-style: none;
+.sprite-form {
+  flex: 1 1 auto;
 }
 
-.custom-option {
-  padding: 0.5rem 0.75rem;
-  margin: 0.2rem 0;
-  border-radius: 0.375rem;
-  cursor: pointer;
-  white-space: nowrap;
-
-  &:hover {
-    background: rgba(0, 0, 0, 0.03);
-  }
+.sprite-wrapper {
+  width: 4rem;
+  height: 4rem;
+  flex: none;
 }
 
-.button-container {
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
+.credit-link {
+  display: inline-block;
+  margin-top: pdz.space(2xs);
+  color: pdz.color(primary-accent);
+  text-decoration: underline;
+}
+
+.save-error {
+  margin: 0;
+  color: pdz.color(danger, #b00020);
 }

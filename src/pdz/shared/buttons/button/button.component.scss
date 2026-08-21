@@ -11,7 +11,7 @@ $colors: (
     container-hover: primary-container-hover,
     accent: primary-accent,
     border: primary-border,
-    subtle: primary-container-low,
+    state: primary-accent,
   ),
   secondary: (
     solid: secondary,
@@ -22,7 +22,7 @@ $colors: (
     container-hover: secondary-container-hover,
     accent: secondary-accent,
     border: secondary-border,
-    subtle: secondary-container-low,
+    state: secondary-accent,
   ),
   neutral: (
     solid: surface-container-highest,
@@ -33,7 +33,7 @@ $colors: (
     container-hover: surface-container-high,
     accent: on-surface,
     border: outline-variant,
-    subtle: surface-container-low,
+    state: on-surface,
   ),
   danger: (
     solid: danger,
@@ -44,7 +44,7 @@ $colors: (
     container-hover: danger-container,
     accent: danger,
     border: danger-border,
-    subtle: danger-container,
+    state: danger,
   ),
 );
 
@@ -96,7 +96,8 @@ $sizes: (
     --pdz-btn-container-hover: #{pdz.color(map.get($c, container-hover))};
     --pdz-btn-accent: #{pdz.color(map.get($c, accent))};
     --pdz-btn-border: #{pdz.color(map.get($c, border))};
-    --pdz-btn-subtle: #{pdz.color(map.get($c, subtle))};
+    --pdz-btn-state: #{pdz.color-rgba(map.get($c, state), 0.12)};
+    --pdz-btn-state-strong: #{pdz.color-rgba(map.get($c, state), 0.2)};
   }
 }
 
@@ -123,7 +124,11 @@ $sizes: (
   color: var(--pdz-btn-accent);
 
   &:hover:not(:disabled) {
-    background-color: var(--pdz-btn-subtle);
+    background-color: var(--pdz-btn-state);
+  }
+
+  &:active:not(:disabled) {
+    background-color: var(--pdz-btn-state-strong);
   }
 }
 
@@ -131,7 +136,11 @@ $sizes: (
   color: var(--pdz-btn-accent);
 
   &:hover:not(:disabled) {
-    background-color: var(--pdz-btn-subtle);
+    background-color: var(--pdz-btn-state);
+  }
+
+  &:active:not(:disabled) {
+    background-color: var(--pdz-btn-state-strong);
   }
 }
 

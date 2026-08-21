@@ -32,7 +32,7 @@
         type="button"
         class="menu-item"
         role="menuitem"
-        (click)="menuOpen = false; settingsDialog.openDialog()"
+        (click)="openSettings()"
       >
         <pdz-icon name="settings" [height]="20"></pdz-icon>
         <span class="menu-item__label">Settings</span>
@@ -54,5 +54,3 @@
     <pdz-icon name="login" [height]="20"></pdz-icon>
   </button>
 }
-
-<pdz-settings-dialog #settingsDialog></pdz-settings-dialog>

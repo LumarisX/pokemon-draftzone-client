@@ -56,7 +56,7 @@ let nextDialogId = 0;
               aria-label="Close dialog"
               (click)="close()"
             >
-              <pdz-icon aria-hidden="true" name="xmark" [size]="14" />
+              <pdz-icon aria-hidden="true" name="xmark" [size]="16" />
             </button>
           }
         </header>

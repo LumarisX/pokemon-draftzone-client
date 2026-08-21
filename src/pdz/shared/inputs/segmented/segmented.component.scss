@@ -32,13 +32,11 @@ $inner-radius: calc(#{$track-radius} - #{$track-pad});
 
   --pdz-segmented-indicator: #{pdz.color(primary)};
   --pdz-segmented-on-indicator: #{pdz.color(on-primary)};
-  --pdz-segmented-indicator-shadow: var(--pdz-level-1);
 }
 
 :host([data-variant="tonal"]) {
   --pdz-segmented-indicator: #{pdz.color(primary-container)};
   --pdz-segmented-on-indicator: #{pdz.color(on-primary-container)};
-  --pdz-segmented-indicator-shadow: none;
 }
 
 :host([data-align="stretch"]) {
@@ -69,7 +67,6 @@ $inner-radius: calc(#{$track-radius} - #{$track-pad});
   opacity: 0;
   border-radius: $inner-radius;
   background: var(--pdz-segmented-indicator);
-  box-shadow: var(--pdz-segmented-indicator-shadow);
   pointer-events: none;
 
   &[data-ready] {

@@ -1,14 +1,9 @@
 import { AsyncPipe } from '@angular/common';
 import { ConnectedPosition, OverlayModule } from '@angular/cdk/overlay';
-import {
-  Component,
-  DestroyRef,
-  inject,
-  OnInit,
-  ViewChild,
-} from '@angular/core';
+import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AuthService } from '@pdz/core/services/auth0.service';
+import { DialogService } from '@pdz/shared/dialogs/dialog/dialog.service';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { of } from 'rxjs';
 import { switchMap, take } from 'rxjs/operators';
@@ -17,12 +12,7 @@ import { SettingsService } from '../settings.service';
 
 @Component({
   selector: 'pdz-login-button',
-  imports: [
-    AsyncPipe,
-    OverlayModule,
-    IconComponent,
-    SettingsDialogComponent,
-  ],
+  imports: [AsyncPipe, OverlayModule, IconComponent],
   templateUrl: './login-button.component.html',
   styleUrl: './login-button.component.scss',
 })
@@ -30,13 +20,11 @@ export class LoginButtonComponent implements OnInit {
   readonly auth = inject(AuthService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly settingsService = inject(SettingsService);
-
-  @ViewChild('settingsDialog') settingsDialog!: SettingsDialogComponent;
+  private readonly dialogs = inject(DialogService);
 
   authenticated: boolean = false;
   menuOpen = false;
 
-  /** Right-aligned so the user menu stays within the viewport edge. */
   readonly menuPositions: ConnectedPosition[] = [
     {
       originX: 'end',
@@ -81,7 +69,6 @@ export class LoginButtonComponent implements OnInit {
             });
             return of(null);
           }
-          // Fallback to user settings if no server settings
           return this.auth.user$.pipe(take(1));
         }),
       )
@@ -92,6 +79,14 @@ export class LoginButtonComponent implements OnInit {
           });
         }
       });
+  }
+
+  openSettings(): void {
+    this.menuOpen = false;
+    this.dialogs.open(SettingsDialogComponent, {
+      heading: 'Settings',
+      size: 'md',
+    });
   }
 
   login(): void {

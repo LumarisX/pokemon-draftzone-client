@@ -1,126 +1,66 @@
-import { CommonModule } from '@angular/common';
+import { NgClass } from '@angular/common';
 import {
+  ChangeDetectionStrategy,
   Component,
-  ElementRef,
-  EventEmitter,
   OnDestroy,
-  OnInit,
-  Output,
-  ViewChild,
   inject,
+  signal,
 } from '@angular/core';
-import {
-  FormBuilder,
-  FormControl,
-  FormGroup,
-  ReactiveFormsModule,
-} from '@angular/forms';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { DraftPokemon } from '@pdz/features/drafts/draft.model';
-import { Settings, SettingsService } from '../settings.service';
-import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
+import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
+import { DialogRef } from '@pdz/shared/dialogs/dialog/dialog.service';
+import { SelectOptionComponent } from '@pdz/shared/dropdowns/select/select-option.component';
+import { SelectComponent } from '@pdz/shared/dropdowns/select/select.component';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
+import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
+import { FieldComponent } from '@pdz/shared/inputs/field/field.component';
+import { SegmentedOptionComponent } from '@pdz/shared/inputs/segmented/segmented-option.component';
+import { SegmentedComponent } from '@pdz/shared/inputs/segmented/segmented.component';
+import { Settings, SettingsService } from '../settings.service';
 
 @Component({
   selector: 'pdz-settings-dialog',
-  imports: [CommonModule, ReactiveFormsModule, SpriteComponent, IconComponent],
+  imports: [
+    NgClass,
+    ReactiveFormsModule,
+    ButtonComponent,
+    FieldComponent,
+    IconComponent,
+    SegmentedComponent,
+    SegmentedOptionComponent,
+    SelectComponent,
+    SelectOptionComponent,
+    SpriteComponent,
+  ],
   templateUrl: './settings-dialog.component.html',
   styleUrl: './settings-dialog.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SettingsDialogComponent implements OnInit, OnDestroy {
-  private settingsService = inject(SettingsService);
-  private fb = inject(FormBuilder);
+export class SettingsDialogComponent implements OnDestroy {
+  private readonly settingsService = inject(SettingsService);
+  private readonly fb = inject(FormBuilder);
+  protected readonly ref = inject(DialogRef) as DialogRef<void>;
 
-  @ViewChild('dialogEl') dialogEl!: ElementRef<HTMLDialogElement>;
+  protected readonly example: DraftPokemon = {
+    id: 'deoxysattack',
+    name: 'Deoxys-Attack',
+  };
 
-  example: DraftPokemon = { id: 'deoxysattack', name: 'Deoxys-Attack' };
-
-  @Output()
-  closeSettings = new EventEmitter();
-
-  themes: { id: string; name: string }[] = [
+  protected readonly themes: { id: string; name: string }[] = [
     { id: 'classic', name: 'Classic' },
     { id: 'sunset', name: 'Sunset' },
     { id: 'fern', name: 'Fern' },
     { id: 'classic-reverse', name: 'Classic Reversed' },
+    ...(this.isShinyUnlocked() ? [{ id: 'shiny', name: 'Shiny' }] : []),
   ];
 
-  dropdownOpen: null | 'theme' | 'ld' | 'sprite' = null;
-
-  getThemeClass(themeId?: string | null) {
-    switch (themeId) {
-      case 'sunset':
-        return 'sunset';
-      case 'shiny':
-        return 'shiny';
-      case 'fern':
-        return 'fern';
-      case 'classic-reverse':
-        return 'classic-reverse';
-      case 'classic':
-      default:
-        return 'classic';
-    }
-  }
-
-  getThemeName(themeId?: string | null) {
-    if (!themeId) return 'Classic';
-    if (themeId === 'shiny') return 'Shiny';
-    const found = this.themes.find((t) => t.id === themeId);
-    return found?.name ?? 'Theme';
-  }
-
-  toggleDropdown(dropdown: null | 'ld' | 'theme' | 'sprite') {
-    this.dropdownOpen = this.dropdownOpen === dropdown ? null : dropdown;
-  }
-
-  selectLdMode(mode: 'device' | 'light' | 'dark') {
-    this.settingsForm.get('ldMode')?.setValue(mode);
-    this.dropdownOpen = null;
-    this.settingsService.updateLDMode(mode);
-  }
-
-  getLdModeLabel(mode?: string | null) {
-    switch (mode) {
-      case 'light':
-        return 'Light';
-      case 'dark':
-        return 'Dark';
-      default:
-        return 'Device';
-    }
-  }
-
-  onLdModeKeydown(event: KeyboardEvent) {
-    if (event.key === 'Escape') this.dropdownOpen = null;
-  }
-
-  selectTheme(themeId: string) {
-    this.settingsForm.get('theme')?.setValue(themeId);
-    this.dropdownOpen = null;
-  }
-
-  onThemeKeydown(event: KeyboardEvent) {
-    if (event.key === 'Escape') {
-      this.dropdownOpen = null;
-    }
-  }
-
-  selectSprite(id: string) {
-    this.settingsForm.get('spriteSet')?.setValue(id);
-    this.dropdownOpen = null;
-  }
-
-  getSpriteSetName(id?: string | null) {
-    if (!id) return 'Default';
-    const found = this.spriteSets.find((s) => s.id === id);
-    return found?.name ?? 'Sprite';
-  }
-
-  onSpriteKeydown(event: KeyboardEvent) {
-    if (event.key === 'Escape') this.dropdownOpen = null;
-  }
-
-  spriteSets: { name: string; id: string; creditLink: string }[] = [
+  protected readonly spriteSets: {
+    name: string;
+    id: string;
+    creditLink: string;
+  }[] = [
     {
       name: 'Pokemon Showdown - Home',
       id: 'home',
@@ -163,58 +103,56 @@ export class SettingsDialogComponent implements OnInit, OnDestroy {
     },
   ];
 
-  settingsForm!: FormGroup<{
-    theme: FormControl<string | null>;
-    ldMode: FormControl<string | null>;
-    spriteSet: FormControl<string | null>;
-  }>;
+  private orgSettings: Settings = JSON.parse(
+    JSON.stringify(this.settingsService.settingsData || {}),
+  );
 
-  orgSettings!: Settings;
-  saving = false;
-  saveError: string | null = null;
+  protected readonly settingsForm = this.fb.group({
+    theme: this.orgSettings.theme || 'classic',
+    ldMode: this.orgSettings.ldMode || 'device',
+    spriteSet: this.orgSettings.spriteSet || 'home',
+  });
 
-  ngOnInit(): void {
-    this.orgSettings = JSON.parse(
-      JSON.stringify(this.settingsService.settingsData || {}),
-    );
-    const form: FormGroup<{
-      theme: FormControl<string | null>;
-      ldMode: FormControl<string | null>;
-      spriteSet: FormControl<string | null>;
-    }> = this.fb.group({
-      theme: this.orgSettings.theme || 'classic',
-      ldMode: this.orgSettings.ldMode || 'device',
-      spriteSet: this.orgSettings.spriteSet || 'home',
-    });
-    form.valueChanges.subscribe((value: Settings) => {
-      this.settingsService.setSettings(value, { source: 'local' });
-    });
-    form.get('ldMode')?.valueChanges.subscribe((value: string | null) => {
-      if (value) this.settingsService.updateLDMode(value);
-    });
-    this.settingsForm = form;
-  }
+  protected readonly saving = signal(false);
+  protected readonly saveError = signal<string | null>(null);
 
-  isShinyUnlocked() {
-    return (
-      localStorage.getItem('shinyunlocked') ||
-      this.settingsService.settingsData.shinyUnlock
-    );
+  constructor() {
+    this.settingsForm.valueChanges
+      .pipe(takeUntilDestroyed())
+      .subscribe((value: Settings) => {
+        this.settingsService.setSettings(value, { source: 'local' });
+      });
+
+    this.settingsForm.controls.ldMode.valueChanges
+      .pipe(takeUntilDestroyed())
+      .subscribe((value) => {
+        if (value) this.settingsService.updateLDMode(value);
+      });
   }
 
   ngOnDestroy(): void {
     this.settingsService.setSettings(this.orgSettings, { source: 'local' });
   }
 
-  getCreditLink() {
-    const value: string | null | undefined =
-      this.settingsForm.get('spriteSet')?.value;
+  protected isShinyUnlocked() {
+    return (
+      localStorage.getItem('shinyunlocked') ||
+      this.settingsService.settingsData.shinyUnlock
+    );
+  }
+
+  protected selectTheme(themeId: string) {
+    this.settingsForm.controls.theme.setValue(themeId);
+  }
+
+  protected getCreditLink() {
+    const value = this.settingsForm.controls.spriteSet.value;
     return this.spriteSets.find((set) => set.id === value)?.creditLink ?? '';
   }
 
-  save() {
-    this.saveError = null;
-    this.saving = true;
+  protected save() {
+    this.saveError.set(null);
+    this.saving.set(true);
     const newSettings = this.settingsForm.value as Settings;
     this.orgSettings = JSON.parse(JSON.stringify(newSettings));
 
@@ -222,63 +160,22 @@ export class SettingsDialogComponent implements OnInit, OnDestroy {
 
     this.settingsService.saveToServer().subscribe({
       next: (resp) => {
-        this.saving = false;
+        this.saving.set(false);
         if (resp) {
           try {
             this.settingsService.setSettings(resp as Settings, {
               source: 'server',
             });
+            this.orgSettings = JSON.parse(JSON.stringify(resp));
           } catch (e) {}
         }
+        this.ref.close();
       },
       error: (err) => {
-        this.saving = false;
-        this.saveError = 'Failed to save settings. Please try again.';
+        this.saving.set(false);
+        this.saveError.set('Failed to save settings. Please try again.');
         console.error('Settings save failed', err);
       },
     });
-  }
-
-  openDialog() {
-    this.syncFormFromSettings();
-    this.dialogEl.nativeElement.showModal();
-  }
-
-  private syncFormFromSettings() {
-    this.orgSettings = JSON.parse(
-      JSON.stringify(this.settingsService.settingsData || {}),
-    );
-    this.settingsForm.setValue(
-      {
-        theme: this.orgSettings.theme || 'classic',
-        ldMode: this.orgSettings.ldMode || 'device',
-        spriteSet: this.orgSettings.spriteSet || 'home',
-      },
-      { emitEvent: false },
-    );
-  }
-
-  onBackdropClick(event: MouseEvent) {
-    const rect = this.dialogEl.nativeElement.getBoundingClientRect();
-    const clickedOutside =
-      event.clientX < rect.left ||
-      event.clientX > rect.right ||
-      event.clientY < rect.top ||
-      event.clientY > rect.bottom;
-    if (clickedOutside) {
-      this.close();
-    }
-  }
-
-  onDialogCancel(event: Event) {
-    // Native dialog closes on Escape — restore settings and notify parent
-    event.preventDefault();
-    this.close();
-  }
-
-  close() {
-    this.settingsService.setSettings(this.orgSettings, { source: 'local' });
-    this.dialogEl.nativeElement.close();
-    this.closeSettings.emit();
   }
 }
