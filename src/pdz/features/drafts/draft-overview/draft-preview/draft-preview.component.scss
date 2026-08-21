@@ -29,9 +29,6 @@
   .actions {
     display: flex;
     gap: pdz.space(sm);
-    button {
-      @include icon-button-primary();
-    }
   }
 }
 

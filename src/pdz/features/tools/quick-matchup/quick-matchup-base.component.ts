@@ -1,7 +1,8 @@
 import { Component, OnInit, inject } from '@angular/core';
-import { MatchupService } from '../../drafts/matchup-overview/matchup.service';
+import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
 import { MatchupData } from '../../drafts/matchup-overview/matchup-interface';
+import { MatchupService } from '../../drafts/matchup-overview/matchup.service';
 import { MatchupComponent } from '../../drafts/matchup-overview/matchup/matchup.component';
 import {
   QuickForm,
@@ -10,7 +11,12 @@ import {
 
 @Component({
   selector: 'pdz-quick-matchup-base',
-  imports: [QuickMatchupFormComponent, MatchupComponent, LoadingComponent],
+  imports: [
+    QuickMatchupFormComponent,
+    MatchupComponent,
+    ButtonComponent,
+    LoadingComponent,
+  ],
   templateUrl: './quick-matchup-base.component.html',
   styleUrl: './quick-matchup-base.component.scss',
 })

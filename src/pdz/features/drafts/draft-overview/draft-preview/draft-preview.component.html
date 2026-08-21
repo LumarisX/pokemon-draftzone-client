@@ -2,10 +2,22 @@
   <div class="header">
     <h1 class="title">My Drafts</h1>
     <div class="actions">
-      <button [routerLink]="['/', draftPath, 'new']">
+      <button
+        pdz-button
+        iconOnly
+        color="primary"
+        variant="tonal"
+        [routerLink]="['/', draftPath, 'new']"
+      >
         <pdz-icon name="add"></pdz-icon>
       </button>
-      <button [routerLink]="['/', draftPath, 'archives']">
+      <button
+        pdz-button
+        iconOnly
+        color="primary"
+        variant="tonal"
+        [routerLink]="['/', draftPath, 'archives']"
+      >
         <pdz-icon name="inventory_2"></pdz-icon>
       </button>
     </div>

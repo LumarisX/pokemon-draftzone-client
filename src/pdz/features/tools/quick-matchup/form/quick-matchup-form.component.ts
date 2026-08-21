@@ -23,6 +23,7 @@ import {
   TeamEditorComponent,
 } from '@pdz/features/drafts/draft-overview/draft-form/components/team-editor/team-editor.component';
 import { DraftPokemon } from '@pdz/features/drafts/draft.model';
+import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 import { getNameByPid } from '@pdz/shared/data/namedex';
 import { FormatSelectComponent } from '@pdz/shared/dropdowns/format-select/format.component';
 import { RulesetSelectComponent } from '@pdz/shared/dropdowns/ruleset-select/ruleset.component';
@@ -35,6 +36,7 @@ import { BehaviorSubject, filter, Subject, take, takeUntil } from 'rxjs';
     ReactiveFormsModule,
     FormatSelectComponent,
     RulesetSelectComponent,
+    ButtonComponent,
     TeamEditorComponent,
   ],
 

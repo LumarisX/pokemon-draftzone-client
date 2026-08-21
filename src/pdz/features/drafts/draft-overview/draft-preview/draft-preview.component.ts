@@ -11,6 +11,7 @@ import { SkeletonComponent } from '@pdz/shared/data/skeleton/skeleton.component'
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
 import { LSDraftData } from '../../../planner/plannner.component';
 import { LeagueZoneService } from '@pdz/features/league-zone/league-zone.service';
+import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 
 @Component({
   selector: 'pdz-draft-preview',
@@ -22,6 +23,7 @@ import { LeagueZoneService } from '@pdz/features/league-zone/league-zone.service
     TooltipDirective,
     SpriteComponent,
     IconComponent,
+    ButtonComponent,
     SkeletonComponent,
   ],
 })
