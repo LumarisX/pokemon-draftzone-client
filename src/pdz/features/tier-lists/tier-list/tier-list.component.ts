@@ -17,7 +17,7 @@ import {
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { MatTooltipModule } from '@angular/material/tooltip';
+import { TooltipDirective } from '@pdz/shared/tooltip/tooltip.directive';
 import { RouterModule } from '@angular/router';
 import { WebSocketService } from '@pdz/core/services/ws.service';
 import { Pokemon } from '@pdz/core/utils/pokemon';
@@ -54,7 +54,7 @@ import {
     RouterModule,
     FormsModule,
     MatCheckboxModule,
-    MatTooltipModule,
+    TooltipDirective,
     ReactiveFormsModule,
     LoadingComponent,
     SpriteComponent,

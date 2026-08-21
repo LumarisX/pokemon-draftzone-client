@@ -246,3 +246,21 @@
   @include pdz.text(label);
   color: pdz.color(on-surface-variant);
 }
+
+.tooltips__edges {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-inline: calc(50% - 50vw);
+  padding-inline: pdz.space(2xs);
+}
+
+.tooltips__clip {
+  display: flex;
+  gap: pdz.space(2xs);
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: pdz.space(2xs);
+  border: 1px solid pdz.color(outline-variant);
+  border-radius: pdz.shape(corner-sm);
+}

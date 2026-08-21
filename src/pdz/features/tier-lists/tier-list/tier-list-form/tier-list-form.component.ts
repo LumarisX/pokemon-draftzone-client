@@ -11,7 +11,7 @@ import {
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
-import { MatTooltipModule } from '@angular/material/tooltip';
+import { TooltipDirective } from '@pdz/shared/tooltip/tooltip.directive';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
@@ -63,7 +63,7 @@ interface EditableTier {
   imports: [
     CommonModule,
     FormsModule,
-    MatTooltipModule,
+    TooltipDirective,
     MatSnackBarModule,
     ReactiveFormsModule,
     SpriteComponent,

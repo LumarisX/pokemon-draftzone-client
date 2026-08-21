@@ -561,7 +561,11 @@
   </div>
 
   <div class="row">
-    <pdz-segmented align="stretch" [(value)]="reportMode" aria-label="Stretched">
+    <pdz-segmented
+      align="stretch"
+      [(value)]="reportMode"
+      aria-label="Stretched"
+    >
       <pdz-segmented-option value="standard" label="Standard" />
       <pdz-segmented-option value="forfeit" label="Forfeit" />
       <pdz-segmented-option value="dispute" label="Dispute" />
@@ -602,4 +606,196 @@
     </a>
     <a pdz-tab-link routerLink="/debug/sprites" routerLinkActive>Sprites</a>
   </pdz-tab-nav>
+</section>
+
+<section class="section">
+  <h2 class="section__title">Tooltip</h2>
+  <p class="section__note">
+    Opens after a short delay, swaps instantly while moving between neighbours,
+    and closes on Escape, scroll, resize, or click. Rendered in the top layer,
+    so it clears modals and any <code>overflow: hidden</code> ancestor.
+  </p>
+
+  <h3 class="section__sub">Positions</h3>
+  <div class="row">
+    @for (p of tooltipPositions; track p) {
+      <button
+        pdz-button
+        variant="outlined"
+        color="neutral"
+        [pdzTooltip]="'Anchored ' + p"
+        [pdzTooltipPosition]="p"
+      >
+        {{ p }}
+      </button>
+    }
+  </div>
+  <p class="section__hint">
+    <code>before</code> and <code>after</code> resolve to left and right.
+  </p>
+
+  <h3 class="section__sub">Content</h3>
+  <div class="row">
+    <button pdz-button variant="outlined" color="neutral" pdzTooltip="Undo">
+      Short
+    </button>
+    <button
+      pdz-button
+      variant="outlined"
+      color="neutral"
+      [pdzTooltip]="tooltipLong"
+    >
+      Long — wraps
+    </button>
+    <button
+      pdz-button
+      variant="outlined"
+      color="neutral"
+      [pdzTooltip]="tooltipMultiline"
+    >
+      Multiline
+    </button>
+    <button pdz-button variant="outlined" color="neutral" [pdzTooltip]="''">
+      Empty — never opens
+    </button>
+    <button
+      pdz-button
+      variant="outlined"
+      color="neutral"
+      pdzTooltip="You should not see this"
+      pdzTooltipDisabled
+    >
+      Disabled
+    </button>
+  </div>
+
+  <h3 class="section__sub">Viewport edges</h3>
+  <p class="section__hint">
+    Flips to the opposite side when the requested one will not fit, then clamps
+    on the cross axis. The middle trigger asks for <code>below</code> — scroll
+    it near the bottom of the window and it flips above instead.
+  </p>
+  <div class="tooltips__edges">
+    <button
+      pdz-button
+      variant="outlined"
+      color="neutral"
+      size="sm"
+      pdzTooltip="Clamped against the left edge instead of overflowing"
+    >
+      left edge
+    </button>
+    <button
+      pdz-button
+      variant="outlined"
+      color="neutral"
+      size="sm"
+      pdzTooltipPosition="below"
+      pdzTooltip="Asked for below, flipped above once the bottom edge was in the way"
+    >
+      bottom flip
+    </button>
+    <button
+      pdz-button
+      variant="outlined"
+      color="neutral"
+      size="sm"
+      pdzTooltip="Clamped against the right edge instead of overflowing"
+    >
+      right edge
+    </button>
+  </div>
+
+  <h3 class="section__sub">Inside a clipped container</h3>
+  <p class="section__hint">
+    The scroller has <code>overflow: hidden</code> on the cross axis — a
+    positioned <code>div</code> would be cut off here.
+  </p>
+  <div class="tooltips__clip">
+    @for (mon of manyOptions; track mon) {
+      <button
+        pdz-button
+        variant="ghost"
+        color="neutral"
+        size="sm"
+        [pdzTooltip]="mon"
+        pdzTooltipPosition="below"
+      >
+        {{ mon.slice(0, 2) }}
+      </button>
+    }
+  </div>
+
+  <h3 class="section__sub">Icon-only and keyboard</h3>
+  <p class="section__hint">
+    Tab through these — <code>:focus-visible</code> opens the tooltip, a mouse
+    click does not. Each control keeps its own <code>aria-label</code>; the
+    tooltip is wired up as <code>aria-describedby</code> only while shown.
+  </p>
+  <div class="row">
+    @for (action of tooltipActions; track action.icon) {
+      <button
+        pdz-button
+        variant="outlined"
+        color="neutral"
+        iconOnly
+        [attr.aria-label]="action.label"
+        [pdzTooltip]="action.tip"
+      >
+        <pdz-icon aria-hidden="true" [name]="action.icon" [size]="18" />
+      </button>
+    }
+  </div>
+
+  <h3 class="section__sub">Above a modal</h3>
+  <p class="section__hint">
+    The regression that killed the old tooltip: a modal
+    <code>&lt;dialog&gt;</code> renders in the top layer, where no
+    <code>z-index</code> can reach it.
+  </p>
+  <div class="row">
+    <button pdz-button (click)="tooltipDialogOpen.set(true)">
+      Open a dialog
+    </button>
+  </div>
+
+  <pdz-dialog
+    [(open)]="tooltipDialogOpen"
+    heading="Tooltips over a modal"
+    subheading="Every trigger below must paint above this dialog."
+  >
+    <div class="row">
+      <button
+        pdz-button
+        variant="outlined"
+        color="neutral"
+        pdzTooltip="Above the backdrop, above the panel"
+        pdzTooltipPosition="above"
+      >
+        above
+      </button>
+      <button
+        pdz-button
+        variant="outlined"
+        color="neutral"
+        pdzTooltip="Still clears the modal going the other way"
+        pdzTooltipPosition="below"
+      >
+        below
+      </button>
+      <button
+        pdz-button
+        variant="outlined"
+        color="neutral"
+        iconOnly
+        aria-label="Delete tier"
+        pdzTooltip="Delete tier"
+      >
+        <pdz-icon aria-hidden="true" name="delete" [size]="18" />
+      </button>
+    </div>
+    <button pdz-dialog-footer pdz-button (click)="tooltipDialogOpen.set(false)">
+      Done
+    </button>
+  </pdz-dialog>
 </section>

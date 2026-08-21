@@ -6,7 +6,6 @@ import { svgIconPaths } from '@pdz/shared/images/icon/icon.component';
 import { ErrorComponent } from './layout/error/error.component';
 import { TopNavbarComponent } from './layout/top-navbar/top-navbar.component';
 import { RouteEnterDirective } from './shared/layout/route-enter.directive';
-import { TooltipComponent } from './shared/tooltip/tooltip.component';
 
 @Component({
   selector: 'pdz-root',
@@ -17,7 +16,6 @@ import { TooltipComponent } from './shared/tooltip/tooltip.component';
     RouteEnterDirective,
     TopNavbarComponent,
     ErrorComponent,
-    TooltipComponent,
   ],
 })
 export class PDZComponent {

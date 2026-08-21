@@ -34,11 +34,6 @@ export const routes: Routes = [
     path: `:leagueSlug`,
     component: LeagueLandingComponent,
   },
-  // {
-  //   path: 'new',
-  //   component: LeagueNewComponent,
-  // },
-
   {
     path: ':leagueSlug/tournaments/:tournamentSlug',
     component: TournamentLayoutComponent,
@@ -67,8 +62,6 @@ export const routes: Routes = [
         component: TierListFormComponent,
         canDeactivate: [unsavedChangesGuard],
       },
-      // Teams are tournament-wide and public: one page lists every pool's
-      // teams, so there is no draft-scoped variant to log in for.
       {
         path: 'teams',
         component: LeagueTeamsComponent,
@@ -107,9 +100,6 @@ export const routes: Routes = [
         path: 'drafts/:draftSlug',
         component: DivisionDashboardComponent,
       },
-      // A matchup is addressed at tournament level. The stage segment these
-      // used to carry never disambiguated anything: the slug is unique, and
-      // the stage is something the server reads off the matchup.
       {
         path: 'matchups/:matchupSlug',
         component: LeagueMatchupComponent,
@@ -130,8 +120,6 @@ export const routes: Routes = [
         path: 'drafts/:draftSlug/power-rankings',
         component: PowerRankingsComponent,
       },
-      // The draft-scoped team pages moved up to the tournament; keep the old
-      // links working.
       {
         path: 'drafts/:draftSlug/teams',
         redirectTo: 'teams',

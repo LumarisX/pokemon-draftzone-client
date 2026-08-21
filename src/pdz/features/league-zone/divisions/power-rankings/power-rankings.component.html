@@ -68,24 +68,24 @@
                   <div class="capt-row">
                     @if (pokemon.capt?.tera) {
                       <pdz-icon
-                        [matTooltip]="
+                        [pdzTooltip]="
                           pokemon.capt!.tera!.length
                             ? pokemon.capt!.tera!.join(', ')
                             : 'All Types'
                         "
-                        matTooltipPosition="below"
+                        pdzTooltipPosition="below"
                         name="tera"
                       ></pdz-icon>
                     }
                     @if (pokemon.capt?.z) {
                       <pdz-icon
-                        [matTooltip]="
+                        [pdzTooltip]="
                           pokemon.capt!.z!.length &&
                           pokemon.capt!.z!.length < 18
                             ? pokemon.capt!.z!.join(', ')
                             : 'All Types'
                         "
-                        matTooltipPosition="below"
+                        pdzTooltipPosition="below"
                         name="z"
                       ></pdz-icon>
                     }

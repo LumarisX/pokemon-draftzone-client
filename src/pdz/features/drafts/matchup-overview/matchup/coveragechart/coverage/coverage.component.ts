@@ -1,5 +1,5 @@
 import { Component, Input, OnDestroy, OnInit, input } from '@angular/core';
-import { MatTooltipModule } from '@angular/material/tooltip';
+import { TooltipDirective } from '@pdz/shared/tooltip/tooltip.directive';
 import { ExtendedType } from '@pdz/shared/data';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
 import { PokemonTypeComponent } from '@pdz/shared/dialogs/pokemon-type/pokemon-type.component';
@@ -14,7 +14,7 @@ import { EffectivenessChartComponent } from './effectiveness-chart/effectiveness
   imports: [
     SpriteComponent,
     EffectivenessChartComponent,
-    MatTooltipModule,
+    TooltipDirective,
     PokemonTypeComponent,
   ],
 })

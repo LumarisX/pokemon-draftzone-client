@@ -3,9 +3,13 @@
   Shiny
   <div class="sprite-grid">
     @for (pokemon of names; track pokemon) {
-      <div class="sprite-grid__cell" [matTooltip]="pokemon.id + ' ' + sprite">
+      <div class="sprite-grid__cell" [pdzTooltip]="pokemon.id + ' ' + sprite">
         <pdz-sprite
-          [pokemon]="{ id: pokemon.id, name: pokemon.name, shiny: shiny.checked }"
+          [pokemon]="{
+            id: pokemon.id,
+            name: pokemon.name,
+            shiny: shiny.checked,
+          }"
           #sprite
         ></pdz-sprite>
       </div>

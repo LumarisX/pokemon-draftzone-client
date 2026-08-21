@@ -2,7 +2,7 @@ import { CdkTableModule } from '@angular/cdk/table';
 import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatSortModule, Sort } from '@angular/material/sort';
-import { MatTooltipModule } from '@angular/material/tooltip';
+import { TooltipDirective } from '@pdz/shared/tooltip/tooltip.directive';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
@@ -26,7 +26,7 @@ import { League } from '../../league.interface';
     CdkTableModule,
     ReactiveFormsModule,
     FormsModule,
-    MatTooltipModule,
+    TooltipDirective,
     MatSortModule,
     SpriteComponent,
   ],

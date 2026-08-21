@@ -102,7 +102,7 @@
       class="action-button"
       [class.action-button--active]="showDrafted"
       (click)="showDrafted = !showDrafted"
-      matTooltip="{{ showDrafted ? 'Hide drafted' : 'Show drafted' }}"
+      pdzTooltip="{{ showDrafted ? 'Hide drafted' : 'Show drafted' }}"
     >
       <pdz-icon
         [name]="showDrafted ? 'visibility' : 'visibility_off'"
@@ -210,7 +210,7 @@
                   @if (pokemon.banned || pokemon.notes) {
                     <pdz-icon
                       class="pokemon-entry__ban-icon"
-                      [matTooltip]="makeWarningString(pokemon)"
+                      [pdzTooltip]="makeWarningString(pokemon)"
                       name="warning"
                     ></pdz-icon>
                   }

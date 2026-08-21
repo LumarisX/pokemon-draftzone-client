@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, HostListener, inject } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { MatTooltipModule } from '@angular/material/tooltip';
+import { TooltipDirective } from '@pdz/shared/tooltip/tooltip.directive';
 import { DRAFT_OVERVIEW_PATH } from '@pdz/core/route-paths';
 import { Draft } from '../../draft.model';
 import { TournamentDetails } from '../../../league-zone/league.model';
@@ -19,7 +19,7 @@ import { LeagueZoneService } from '@pdz/features/league-zone/league-zone.service
   imports: [
     CommonModule,
     RouterModule,
-    MatTooltipModule,
+    TooltipDirective,
     SpriteComponent,
     IconComponent,
     SkeletonComponent,
@@ -94,17 +94,13 @@ export class DraftPreviewComponent {
     });
   }
 
-  setMenuState(
-    slug: string,
-    state: '' | 'confirm-archive' | 'confirm-delete',
-  ) {
+  setMenuState(slug: string, state: '' | 'confirm-archive' | 'confirm-delete') {
     this.menuState[slug] = state;
   }
 
   toggleMenu(slug: string, event: MouseEvent) {
     event.stopPropagation();
-    this.openDropdown =
-      this.openDropdown === slug ? null : slug;
+    this.openDropdown = this.openDropdown === slug ? null : slug;
   }
 
   toPlanner(draft: Draft): string {

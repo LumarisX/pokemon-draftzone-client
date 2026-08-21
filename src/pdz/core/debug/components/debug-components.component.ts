@@ -22,8 +22,13 @@ import { DisclosureComponent } from '@pdz/shared/layout/disclosure/disclosure.co
 import { TabNavComponent } from '@pdz/shared/layout/tab-nav/tab-nav.component';
 import { TabNavLinkDirective } from '@pdz/shared/layout/tab-nav/tab-nav-link.directive';
 import { RouterLink, RouterLinkActive } from '@angular/router';
-import { DialogSize } from '@pdz/shared/dialogs/dialog/dialog.component';
+import {
+  DialogComponent,
+  DialogSize,
+} from '@pdz/shared/dialogs/dialog/dialog.component';
 import { DialogService } from '@pdz/shared/dialogs/dialog/dialog.service';
+import { TooltipDirective } from '@pdz/shared/tooltip/tooltip.directive';
+import { TooltipPosition } from '@pdz/shared/tooltip/tooltip-placement';
 import {
   ToastService,
   ToastTone,
@@ -56,6 +61,8 @@ const MODE_ATTR = 'pdz-theme-mode';
     TabNavLinkDirective,
     RouterLink,
     RouterLinkActive,
+    TooltipDirective,
+    DialogComponent,
   ],
   templateUrl: './debug-components.component.html',
   styleUrl: './debug-components.component.scss',
@@ -295,6 +302,30 @@ export class DebugComponentsComponent {
     if (ok) this.toast.success('Settings saved.');
     this.dialogResult.set(ok ? 'saved' : 'cancelled');
   }
+
+  readonly tooltipPositions: TooltipPosition[] = [
+    'above',
+    'below',
+    'before',
+    'after',
+    'left',
+    'right',
+  ];
+
+  readonly tooltipLong =
+    'Picks lock once the draft starts. Ask the host to unlock the board if you still need to swap something out.';
+
+  readonly tooltipMultiline =
+    'Fire, Water, Grass\nElectric, Psychic, Dark\nSteel, Fairy';
+
+  readonly tooltipActions = [
+    { icon: 'undo', label: 'Undo', tip: 'Undo (Ctrl+Z)' },
+    { icon: 'redo', label: 'Redo', tip: 'Redo (Ctrl+Y)' },
+    { icon: 'save', label: 'Save', tip: 'Save changes (Ctrl+S)' },
+    { icon: 'delete', label: 'Delete tier', tip: 'Delete tier' },
+  ];
+
+  readonly tooltipDialogOpen = signal(false);
 
   readonly manyTabs = [
     'Overview',

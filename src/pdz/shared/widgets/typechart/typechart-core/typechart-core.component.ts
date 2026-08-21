@@ -8,7 +8,6 @@ import {
   Output,
 } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatTooltipModule } from '@angular/material/tooltip';
 import {
   BehaviorSubject,
   debounceTime,
@@ -29,13 +28,7 @@ import { typeColor } from '@pdz/core/utils/styling';
   selector: 'pdz-typechart-core',
   templateUrl: './typechart-core.component.html',
   styleUrl: './typechart-core.component.scss',
-  imports: [
-    CommonModule,
-    SpriteComponent,
-    FormsModule,
-    MatTooltipModule,
-    ReactiveFormsModule,
-  ],
+  imports: [CommonModule, SpriteComponent, FormsModule, ReactiveFormsModule],
 })
 export class TypechartCoreComponent implements OnInit, OnDestroy {
   sortedTeam = new BehaviorSubject<TypeChartPokemon[]>([]);

@@ -5,7 +5,7 @@ import { MatSortModule, Sort } from '@angular/material/sort';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
 import { compare } from '@pdz/core/utils';
 import { Summary } from '../../matchup-interface';
-import { MatTooltipModule } from '@angular/material/tooltip';
+import { TooltipDirective } from '@pdz/shared/tooltip/tooltip.directive';
 import { BehaviorSubject } from 'rxjs';
 import { DraftPokemon } from '../../../draft.model';
 import { StatsTable } from '@pdz/shared/data';
@@ -18,7 +18,7 @@ import { StatsTable } from '@pdz/shared/data';
     CommonModule,
     SpriteComponent,
     MatSortModule,
-    MatTooltipModule,
+    TooltipDirective,
     IconComponent,
   ],
 })

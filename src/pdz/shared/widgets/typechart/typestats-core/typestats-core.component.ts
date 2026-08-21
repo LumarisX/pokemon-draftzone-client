@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input, OnDestroy, OnInit, input } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatTooltipModule } from '@angular/material/tooltip';
+import { TooltipDirective } from '@pdz/shared/tooltip/tooltip.directive';
 import {
   BehaviorSubject,
   debounceTime,
@@ -26,7 +26,7 @@ type ScoreRange = {
   selector: 'pdz-typestats-core',
   templateUrl: './typestats-core.component.html',
   styleUrl: './typestats-core.component.scss',
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, MatTooltipModule],
+  imports: [CommonModule, FormsModule, ReactiveFormsModule, TooltipDirective],
 })
 export class TypestatsCoreComponent implements OnInit, OnDestroy {
   sortedTeam = new BehaviorSubject<TypeChartPokemon[]>([]);

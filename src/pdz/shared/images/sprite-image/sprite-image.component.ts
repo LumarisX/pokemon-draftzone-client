@@ -14,7 +14,7 @@ import {
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatTooltipModule } from '@angular/material/tooltip';
+import { TooltipDirective } from '@pdz/shared/tooltip/tooltip.directive';
 import { distinctUntilChanged, map } from 'rxjs';
 import { SpriteService } from '../../../core/services/sprite.service';
 import { DraftOptions, Pokemon } from '@pdz/core/utils/pokemon';
@@ -24,7 +24,7 @@ type SpritePokemon = Pokemon<DraftOptions>;
 
 @Component({
   selector: 'pdz-sprite-image',
-  imports: [CommonModule, MatTooltipModule, MatProgressSpinnerModule],
+  imports: [CommonModule, TooltipDirective, MatProgressSpinnerModule],
   styleUrl: './sprite-image.component.scss',
   templateUrl: './sprite-image.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

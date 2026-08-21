@@ -24,7 +24,7 @@
         class="icon-button"
         [disabled]="!canUndo()"
         (click)="undo()"
-        matTooltip="Undo (Ctrl+Z)"
+        pdzTooltip="Undo (Ctrl+Z)"
       >
         <pdz-icon name="undo"></pdz-icon>
       </button>
@@ -32,7 +32,7 @@
         class="icon-button"
         [disabled]="!canRedo()"
         (click)="redo()"
-        matTooltip="Redo (Ctrl+Y)"
+        pdzTooltip="Redo (Ctrl+Y)"
       >
         <pdz-icon name="redo"></pdz-icon>
       </button>
@@ -63,7 +63,7 @@
         class="action-button action-button--primary"
         [disabled]="!hasUnsavedChanges()"
         (click)="saveTierList()"
-        matTooltip="Save changes (Ctrl+S)"
+        pdzTooltip="Save changes (Ctrl+S)"
       >
         <pdz-icon name="save" size="sm"></pdz-icon>
 
@@ -97,7 +97,7 @@
             showImportMenu.set(!showImportMenu()); showExportMenu.set(false)
           "
           aria-label="Import"
-          matTooltip="Import"
+          pdzTooltip="Import"
         >
           <pdz-icon name="upload" size="sm"></pdz-icon>
         </button>
@@ -180,7 +180,7 @@
                       <button
                         class="icon-button icon-button--edit"
                         (click)="onEditPokemon(pokemon, untiered()!, $event)"
-                        matTooltip="Edit Pokemon"
+                        pdzTooltip="Edit Pokemon"
                       >
                         <pdz-icon name="edit"></pdz-icon>
                       </button>
@@ -261,7 +261,7 @@
                       <button
                         class="icon-button icon-button--edit"
                         (click)="onEditPokemon(pokemon, banned()!, $event)"
-                        matTooltip="Edit Pokemon"
+                        pdzTooltip="Edit Pokemon"
                       >
                         <pdz-icon name="edit"></pdz-icon>
                       </button>
@@ -294,14 +294,14 @@
                   <button
                     class="icon-button"
                     (click)="editTier(tier)"
-                    matTooltip="Edit tier"
+                    pdzTooltip="Edit tier"
                   >
                     <pdz-icon name="edit"></pdz-icon>
                   </button>
                   <button
                     class="icon-button icon-button--delete"
                     (click)="deleteTier(tierIndex)"
-                    matTooltip="Delete tier"
+                    pdzTooltip="Delete tier"
                   >
                     <pdz-icon name="delete"></pdz-icon>
                   </button>
@@ -311,7 +311,7 @@
                     class="icon-button"
                     [disabled]="tierIndex === 0"
                     (click)="moveTier(tierIndex, tierIndex - 1)"
-                    matTooltip="Move tier left"
+                    pdzTooltip="Move tier left"
                   >
                     <pdz-icon name="arrow_back"></pdz-icon>
                   </button>
@@ -319,7 +319,7 @@
                     class="icon-button"
                     [disabled]="tierIndex === tiers()!.length - 1"
                     (click)="moveTier(tierIndex, tierIndex + 1)"
-                    matTooltip="Move tier right"
+                    pdzTooltip="Move tier right"
                   >
                     <pdz-icon name="arrow_forward"></pdz-icon>
                   </button>
@@ -375,7 +375,7 @@
                       <button
                         class="icon-button icon-button--edit"
                         (click)="onEditPokemon(pokemon, tier, $event)"
-                        matTooltip="Edit Pokemon"
+                        pdzTooltip="Edit Pokemon"
                       >
                         <pdz-icon name="edit"></pdz-icon>
                       </button>
@@ -391,7 +391,7 @@
         <div
           class="add-tier-button"
           (click)="addNewTier()"
-          matTooltip="Add new tier"
+          pdzTooltip="Add new tier"
         >
           <pdz-icon name="add"></pdz-icon>
         </div>
