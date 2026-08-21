@@ -16,7 +16,6 @@ import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
 import { InputDirective } from '@pdz/shared/inputs/field/input.directive';
 import { SegmentedOptionComponent } from '@pdz/shared/inputs/segmented/segmented-option.component';
 import { SegmentedComponent } from '@pdz/shared/inputs/segmented/segmented.component';
-import { TooltipDirective } from '@pdz/shared/tooltip/tooltip.directive';
 import { DraftFormGroup } from '../planner.component';
 
 @Component({
@@ -38,7 +37,6 @@ import { DraftFormGroup } from '../planner.component';
     InputDirective,
     SegmentedComponent,
     SegmentedOptionComponent,
-    TooltipDirective,
   ],
 })
 export class PlannerTeamComponent {

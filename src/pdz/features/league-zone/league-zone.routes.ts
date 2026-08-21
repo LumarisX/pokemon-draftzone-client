@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { AuthGuard } from '@auth0/auth0-angular';
 import { LEAGUE_ZONE_MANAGE_PATH } from '@pdz/core/route-paths';
+import { DraftPreviewComponent } from '../drafts/draft-overview/draft-preview/draft-preview.component';
 import { MatchupOverviewComponent } from '../drafts/matchup-overview/matchup-overview.component';
 import { TierListFormComponent } from '../tier-lists/tier-list/tier-list-form/tier-list-form.component';
 import { unsavedChangesGuard } from '../tier-lists/tier-list/tier-list-form/unsaved-changes.guard';
@@ -12,7 +13,6 @@ import { LeagueCoachComponent } from './league-coach/league-coach.component';
 import { LeagueDraftComponent } from './league-drafting/league-drafting.component';
 import { LeagueLandingComponent } from './league-landing/league-landing.component';
 import { LeagueMatchupComponent } from './league-matchup/league-matchup.component';
-import { LeagueOverviewComponent } from './league-overview/league-overview.component';
 import { leagueRoleGuard } from './league-role.guard';
 import { LeagueRulesOverviewComponent } from './league-rules-overview/league-rules-overview.component';
 import { LeagueSignUpComponent } from './league-sign-up/league-sign-up.component';
@@ -28,7 +28,7 @@ import { TournamentLayoutComponent } from './tournaments/tournament-layout/tourn
 export const routes: Routes = [
   {
     path: '',
-    component: LeagueOverviewComponent,
+    component: DraftPreviewComponent,
   },
   {
     path: `:leagueSlug`,

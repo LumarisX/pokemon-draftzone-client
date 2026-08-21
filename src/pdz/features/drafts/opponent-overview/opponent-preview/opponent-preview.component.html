@@ -4,15 +4,21 @@
       <h3>Matches</h3>
       <div class="button-container">
         <button
-          class="option-btn direction-btn"
+          pdz-button
+          iconOnly
+          variant="tonal"
+          color="secondary"
           [class.up]="directionUp"
           (click)="toggleDirection()"
         >
           <pdz-icon name="arrow_downward"></pdz-icon>
         </button>
         <button
+          pdz-button
+          iconOnly
+          variant="tonal"
+          color="secondary"
           [routerLink]="['/', draftPath, this.teamId, 'form']"
-          class="option-btn"
           [queryParams]="{ stage: `Week ${(this.matchups?.length ?? 0) + 1}` }"
         >
           <pdz-icon name="add"></pdz-icon>
@@ -142,7 +148,6 @@
           <div class="table-wrapper">
             <table
               class="pdz-table"
-              data-zebra
               data-sticky
               data-density="compact"
               cdk-table

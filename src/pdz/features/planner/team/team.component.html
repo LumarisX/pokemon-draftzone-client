@@ -98,7 +98,6 @@
             type="button"
             class="planner-team__handle"
             [attr.aria-label]="'Reorder slot ' + ($index + 1)"
-            [pdzTooltip]="$index >= min ? 'Reserve slot' : 'Starter slot'"
             cdkDragHandle
           >
             <span class="planner-team__slot">{{ $index + 1 }}</span>
@@ -159,11 +158,6 @@
               [attr.aria-pressed]="teamCtrl.controls.locked.value"
               [attr.aria-label]="
                 teamCtrl.controls.locked.value ? 'Unlock slot' : 'Lock slot'
-              "
-              [pdzTooltip]="
-                teamCtrl.controls.locked.value
-                  ? 'Unlock — allow edits and clearing'
-                  : 'Lock — keep this pick when clearing'
               "
               (click)="toggle(teamCtrl.controls.locked)"
             >

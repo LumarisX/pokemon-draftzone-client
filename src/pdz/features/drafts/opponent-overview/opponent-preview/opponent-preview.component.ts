@@ -9,15 +9,16 @@ import {
   ViewChild,
 } from '@angular/core';
 import { MatDialog, MatDialogModule } from '@angular/material/dialog';
-import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { MatSort, MatSortModule, Sort } from '@angular/material/sort';
 import { ActivatedRoute, RouterModule } from '@angular/router';
-import { BehaviorSubject, catchError, forkJoin, of, take } from 'rxjs';
 import { DRAFT_OVERVIEW_PATH } from '@pdz/core/route-paths';
-import { Opponent } from '../opponent.model';
-import { DraftService, PokemonStat } from '../../draft-overview/draft.service';
+import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
+import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
+import { BehaviorSubject, catchError, forkJoin, of, take } from 'rxjs';
+import { DraftService, PokemonStat } from '../../draft-overview/draft.service';
+import { Opponent } from '../opponent.model';
 import { ConfirmDeleteDialogComponent } from './confirm-delete-dialog.component';
 
 type Matchup = Opponent & {
@@ -40,11 +41,15 @@ type Matchup = Opponent & {
     MatSortModule,
     MatDialogModule,
     CdkTableModule,
+    ButtonComponent,
   ],
 })
 export class OpponentTeamPreviewComponent implements OnInit, AfterViewInit {
   @ViewChild(MatSort) matSort?: MatSort;
   private readonly defaultSort: Sort = { active: 'kpg', direction: 'desc' };
+
+  readonly skeletonCards = [0, 1, 2];
+  readonly skeletonSprites = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
 
   ngAfterViewInit(): void {
     if (this.matSort) {

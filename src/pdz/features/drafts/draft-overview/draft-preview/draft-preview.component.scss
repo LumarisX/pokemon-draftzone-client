@@ -84,12 +84,6 @@
 }
 
 .draft-card {
-  box-shadow: var(--pdz-level-1);
-  transition: box-shadow pdz.duration(slow) pdz.easing(standard);
-
-  &:hover {
-    box-shadow: var(--pdz-level-2);
-  }
   @include pdz-card("primary");
   .card-header {
     .league-name {

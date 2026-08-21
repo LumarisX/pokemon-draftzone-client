@@ -129,12 +129,4 @@ $draft-sprite-size: 4rem;
   display: flex;
   gap: 0.5rem;
   padding: pdz.space(2xs) 0;
-  a,
-  button {
-    @include icon-button-primary();
-  }
-}
-
-.back-btn {
-  @include flat-button-primary();
 }

@@ -14,7 +14,7 @@ import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { Observable, of, shareReplay } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 
-export const svgIconPaths: Readonly<Record<string, string>> = {
+const svgIconPaths: Readonly<Record<string, string>> = {
   logo: 'assets/icons/logo.svg',
   'logo-small': 'assets/icons/logo-small.svg',
   unknown: 'assets/icons/unknown.svg',

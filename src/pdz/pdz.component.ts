@@ -1,8 +1,5 @@
-import { Component, inject } from '@angular/core';
-import { MatIconRegistry } from '@angular/material/icon';
-import { DomSanitizer } from '@angular/platform-browser';
+import { Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { svgIconPaths } from '@pdz/shared/images/icon/icon.component';
 import { ErrorComponent } from './layout/error/error.component';
 import { TopNavbarComponent } from './layout/top-navbar/top-navbar.component';
 import { RouteEnterDirective } from './shared/layout/route-enter.directive';
@@ -18,19 +15,4 @@ import { RouteEnterDirective } from './shared/layout/route-enter.directive';
     ErrorComponent,
   ],
 })
-export class PDZComponent {
-  private matIconRegistry = inject(MatIconRegistry);
-  private domSanitizer = inject(DomSanitizer);
-  constructor() {
-    const matIconRegistry = this.matIconRegistry;
-    const domSanitizer = this.domSanitizer;
-
-    Object.entries(svgIconPaths).forEach(([name, path]) => {
-      matIconRegistry.addSvgIcon(
-        name,
-        domSanitizer.bypassSecurityTrustResourceUrl(path),
-      );
-    });
-    matIconRegistry.setDefaultFontSetClass('material-symbols-outlined');
-  }
-}
+export class PDZComponent {}

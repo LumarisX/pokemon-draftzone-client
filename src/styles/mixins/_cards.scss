@@ -41,7 +41,6 @@
     on-menu: pdz.color(on-#{$style}-container),
     menu-hover: pdz.color(#{$style}-container-hover),
     border-radius: pdz.shape(corner-md),
-    border-width: 1px,
     border-style: solid,
     header-padding: pdz.space(sm) pdz.space(sm),
     body-padding: pdz.space(sm) pdz.space(md),
@@ -119,13 +118,11 @@
       &.pdz-background-neg {
         background-color: pdz.color(negative);
         color: pdz.color(on-negative);
-        box-shadow: var(--pdz-level-1);
       }
 
       &.pdz-background-pos {
         background-color: pdz.color(positive);
         color: pdz.color(on-positive);
-        box-shadow: var(--pdz-level-1);
       }
 
       &.pdz-background-neut {
@@ -214,8 +211,6 @@
 
   .card-footer {
     padding: map.get($config, "footer-padding");
-    border-top: map.get($config, "border-width")
-      map.get($config, "border-style") map.get($config, "border-color");
     display: flex;
     justify-content: flex-end;
     align-items: center;

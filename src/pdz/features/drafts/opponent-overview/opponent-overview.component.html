@@ -1,6 +1,13 @@
 <div class="opponent-main">
   <div class="draft-header">
-    <button class="back-btn" [routerLink]="['/', draftPath]">Back</button>
+    <button
+      class="back-btn"
+      pdz-button
+      variant="tonal"
+      [routerLink]="['/', draftPath]"
+    >
+      Back
+    </button>
     @if (draft | async; as draft) {
       <div class="draft-flex">
         <div class="draft-info-container">
@@ -40,11 +47,20 @@
       <div class="draft-buttons">
         <button
           routerLink="../edit"
+          pdz-button
+          iconOnly
+          variant="tonal"
           [queryParams]="{ draft: draft.slug | json }"
         >
           <pdz-icon name="edit"></pdz-icon>
         </button>
-        <a [href]="draft.doc" target="_blank" [class.disabled]="!draft.doc"
+        <a
+          [href]="draft.doc"
+          target="_blank"
+          pdz-button
+          iconOnly
+          variant="tonal"
+          [class.disabled]="!draft.doc"
           ><pdz-icon name="dataset_linked"></pdz-icon
         ></a>
       </div>

@@ -1,14 +1,15 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
-import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { ActivatedRoute, RouterModule } from '@angular/router';
-import { Observable, switchMap } from 'rxjs';
 import { DRAFT_OVERVIEW_PATH } from '@pdz/core/route-paths';
-import { Draft } from '../draft.model';
-import { DraftService } from '../draft-overview/draft.service';
+import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
+import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
 import { RouteEnterDirective } from '@pdz/shared/layout/route-enter.directive';
+import { Observable, switchMap } from 'rxjs';
+import { DraftService } from '../draft-overview/draft.service';
+import { Draft } from '../draft.model';
 
 @Component({
   selector: 'pdz-opponent-overview',
@@ -19,6 +20,7 @@ import { RouteEnterDirective } from '@pdz/shared/layout/route-enter.directive';
     IconComponent,
     SpriteComponent,
     RouteEnterDirective,
+    ButtonComponent,
   ],
   templateUrl: './opponent-overview.component.html',
   styleUrl: './opponent-overview.component.scss',
