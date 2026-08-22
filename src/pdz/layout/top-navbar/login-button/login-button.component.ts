@@ -35,24 +35,6 @@ export class LoginButtonComponent implements OnInit {
   private readonly dialogs = inject(DialogService);
 
   authenticated: boolean = false;
-  menuOpen = false;
-
-  readonly menuPositions: ConnectedPosition[] = [
-    {
-      originX: 'end',
-      originY: 'bottom',
-      overlayX: 'end',
-      overlayY: 'top',
-      offsetY: 8,
-    },
-    {
-      originX: 'end',
-      originY: 'top',
-      overlayX: 'end',
-      overlayY: 'bottom',
-      offsetY: -8,
-    },
-  ];
 
   ngOnInit(): void {
     this.initAuthSubscription();
@@ -94,7 +76,6 @@ export class LoginButtonComponent implements OnInit {
   }
 
   openSettings(): void {
-    this.menuOpen = false;
     this.dialogs.open(SettingsDialogComponent, {
       heading: 'Settings',
       size: 'md',
@@ -107,11 +88,5 @@ export class LoginButtonComponent implements OnInit {
 
   logout(): void {
     this.auth.logout();
-  }
-
-  onOverlayKeydown(event: KeyboardEvent): void {
-    if (event.key === 'Escape') {
-      this.menuOpen = false;
-    }
   }
 }

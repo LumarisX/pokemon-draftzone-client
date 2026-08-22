@@ -1,13 +1,7 @@
 @let user = auth.user$ | async;
 @if (authenticated && user) {
   <pdz-menu aria-label="Open user menu">
-    <button
-      pdz-button
-      color="neutral"
-      variant="outlined"
-      pdz-menu-trigger
-      [attr.aria-expanded]="menuOpen"
-    >
+    <button pdz-button color="neutral" variant="outlined" pdz-menu-trigger>
       <div class="user-info-container">
         <img class="user-icon" [src]="user.picture" alt="" />
         @if (user.username && user.username !== "") {
@@ -20,9 +14,7 @@
       Settings
     </button>
 
-    <button pdz-menu-item icon="logout" (click)="menuOpen = false; logout()">
-      Log Out
-    </button>
+    <button pdz-menu-item icon="logout" (click)="logout()">Log Out</button>
   </pdz-menu>
 } @else {
   <button pdz-button color="neutral" variant="outlined" (click)="login()">

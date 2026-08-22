@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { DRAFT_OVERVIEW_PATH } from '@pdz/core/route-paths';
+import { LeagueZoneService } from '@pdz/features/league-zone/league-zone.service';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 import {
   BadgeComponent,
@@ -13,18 +14,16 @@ import { DialogService } from '@pdz/shared/dialogs/dialog/dialog.service';
 import { EmptyStateComponent } from '@pdz/shared/feedback/empty-state/empty-state.component';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
-import { MenuComponent } from '@pdz/shared/menu/menu.component';
+import { DisclosureComponent } from '@pdz/shared/layout/disclosure/disclosure.component';
 import { MenuItemComponent } from '@pdz/shared/menu/menu-item.component';
 import { MenuTriggerDirective } from '@pdz/shared/menu/menu-trigger.directive';
+import { MenuComponent } from '@pdz/shared/menu/menu.component';
 import { TooltipDirective } from '@pdz/shared/tooltip/tooltip.directive';
-import { LeagueZoneService } from '@pdz/features/league-zone/league-zone.service';
 import { TournamentDetails } from '../../../league-zone/league.model';
 import { LSDraftData } from '../../../planner/planner.component';
 import { Draft } from '../../draft.model';
+import { Archive } from '../archive.model';
 import { DraftService } from '../draft.service';
-import { DisclosureComponent } from '@pdz/shared/layout/disclosure/disclosure.component';
-import { Archive } from '../archive-stats/archive.model';
-import { ArchiveService } from '../archive.service';
 
 type Score = { wins: number; losses: number };
 
@@ -52,7 +51,6 @@ type Score = { wins: number; losses: number };
 export class DraftPreviewComponent {
   private draftService = inject(DraftService);
   private leagueService = inject(LeagueZoneService);
-  private archiveService = inject(ArchiveService);
   private dialogs = inject(DialogService);
 
   readonly skeletonCards = [0, 1, 2];
@@ -100,7 +98,7 @@ export class DraftPreviewComponent {
   }
 
   loadArchives() {
-    this.archiveService.getDraftsList().subscribe({
+    this.draftService.getArchiveList().subscribe({
       next: (data) => {
         this.archives = data;
       },

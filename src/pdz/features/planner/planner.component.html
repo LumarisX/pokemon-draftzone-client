@@ -191,12 +191,14 @@
             <pdz-planner-moves [movechart]="movechartData"></pdz-planner-moves>
           }
           @if (coverage(); as coverageData) {
-            <pdz-planner-move-coverage
-              [coverage]="coverageData"
-            ></pdz-planner-move-coverage>
-            <pdz-planner-team-coverage
-              [coverage]="coverageData"
-            ></pdz-planner-team-coverage>
+            <div class="planner__board--subboard">
+              <pdz-planner-move-coverage
+                [coverage]="coverageData"
+              ></pdz-planner-move-coverage>
+              <pdz-planner-team-coverage
+                [coverage]="coverageData"
+              ></pdz-planner-team-coverage>
+            </div>
           }
 
           @if (!hasAnalysis()) {

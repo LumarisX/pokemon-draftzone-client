@@ -3,12 +3,12 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
 import { MatSortModule, Sort } from '@angular/material/sort';
 import { ActivatedRoute, RouterModule } from '@angular/router';
-import { BehaviorSubject } from 'rxjs';
 import { DRAFT_OVERVIEW_PATH } from '@pdz/core/route-paths';
-import { DraftService, PokemonStat } from '../draft.service';
+import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
-import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
+import { BehaviorSubject } from 'rxjs';
+import { DraftService, PokemonStat } from '../draft.service';
 
 @Component({
   selector: 'pdz-draft-stats',
@@ -20,7 +20,9 @@ import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
     SpriteComponent,
     LoadingComponent,
     CdkTableModule,
-    MatSortModule, ButtonComponent],
+    MatSortModule,
+    ButtonComponent,
+  ],
 })
 export class DraftStatsComponent implements OnInit {
   private draftService = inject(DraftService);
@@ -41,7 +43,11 @@ export class DraftStatsComponent implements OnInit {
 
   ngOnInit(): void {
     const teamId = this.route.snapshot.paramMap.get('teamId') || '';
-    this.draftService.getStats(teamId).subscribe((data) => {
+    const archived = this.route.snapshot.data['archived'] === true;
+    const stats$ = archived
+      ? this.draftService.getArchiveStats(teamId)
+      : this.draftService.getStats(teamId);
+    stats$.subscribe((data) => {
       this.teamStats.next(data.pokemon);
     });
   }

@@ -381,6 +381,16 @@
     gap: pdz.space(md);
     padding: pdz.space(lg) pdz.space(sm);
 
+    &--subboard {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      height: fit-content;
+      max-height: fit-content;
+      gap: pdz.space(md);
+    }
+
     @media (max-width: 768px) {
       padding: pdz.space(sm);
     }

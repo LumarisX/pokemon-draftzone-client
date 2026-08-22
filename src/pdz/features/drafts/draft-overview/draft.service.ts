@@ -4,6 +4,7 @@ import { DraftFormData } from '@pdz/features/drafts/draft-overview/draft-form/dr
 import { Draft, DraftPokemon } from '../draft.model';
 import { Matchup } from '../matchup-overview/matchup.model';
 import { Opponent } from '../opponent-overview/opponent.model';
+import { Archive } from './archive.model';
 
 export type PokemonStat = {
   pokemon: DraftPokemon;
@@ -119,5 +120,13 @@ export class DraftService {
       `${ROOTPATH}/${teamId}/matchups/${matchupId}/score`,
       scoreData,
     );
+  }
+
+  getArchiveList() {
+    return this.apiService.get<Archive[]>('archive/teams');
+  }
+
+  deleteArchive(teamName: string) {
+    return this.apiService.delete(`archive/${teamName}`);
   }
 }
