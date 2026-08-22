@@ -9,10 +9,22 @@ import { of } from 'rxjs';
 import { switchMap, take } from 'rxjs/operators';
 import { SettingsDialogComponent } from '../settings-dialog/settings-dialog.component';
 import { SettingsService } from '../settings.service';
+import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
+import { MenuComponent } from '@pdz/shared/menu/menu.component';
+import { MenuItemComponent } from '@pdz/shared/menu/menu-item.component';
+import { MenuTriggerDirective } from '@pdz/shared/menu/menu-trigger.directive';
 
 @Component({
   selector: 'pdz-login-button',
-  imports: [AsyncPipe, OverlayModule, IconComponent],
+  imports: [
+    AsyncPipe,
+    OverlayModule,
+    IconComponent,
+    ButtonComponent,
+    MenuComponent,
+    MenuItemComponent,
+    MenuTriggerDirective,
+  ],
   templateUrl: './login-button.component.html',
   styleUrl: './login-button.component.scss',
 })

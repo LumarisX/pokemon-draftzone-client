@@ -1,56 +1,32 @@
 @let user = auth.user$ | async;
 @if (authenticated && user) {
-  <button
-    type="button"
-    class="login-btn"
-    cdkOverlayOrigin
-    #userTrigger="cdkOverlayOrigin"
-    (click)="menuOpen = !menuOpen"
-    [attr.aria-expanded]="menuOpen"
-    aria-label="Open user menu"
-  >
-    <div class="user-info-container">
-      <img class="user-icon" [src]="user.picture" alt="" />
-      @if (user.username && user.username !== "") {
-        <span class="username-text">{{ user.username }}</span>
-      }
-    </div>
-  </button>
+  <pdz-menu aria-label="Open user menu">
+    <button
+      pdz-button
+      color="neutral"
+      variant="outlined"
+      pdz-menu-trigger
+      [attr.aria-expanded]="menuOpen"
+    >
+      <div class="user-info-container">
+        <img class="user-icon" [src]="user.picture" alt="" />
+        @if (user.username && user.username !== "") {
+          <span class="username-text">{{ user.username }}</span>
+        }
+      </div>
+    </button>
 
-  <ng-template
-    cdkConnectedOverlay
-    [cdkConnectedOverlayOrigin]="userTrigger"
-    [cdkConnectedOverlayOpen]="menuOpen"
-    [cdkConnectedOverlayPositions]="menuPositions"
-    [cdkConnectedOverlayPush]="true"
-    (overlayOutsideClick)="menuOpen = false"
-    (overlayKeydown)="onOverlayKeydown($event)"
-    (detach)="menuOpen = false"
-  >
-    <div class="menu-panel" role="menu">
-      <button
-        type="button"
-        class="menu-item"
-        role="menuitem"
-        (click)="openSettings()"
-      >
-        <pdz-icon name="settings" [height]="20"></pdz-icon>
-        <span class="menu-item__label">Settings</span>
-      </button>
-      <button
-        type="button"
-        class="menu-item"
-        role="menuitem"
-        (click)="menuOpen = false; logout()"
-      >
-        <pdz-icon name="logout" [height]="20"></pdz-icon>
-        <span class="menu-item__label">Log Out</span>
-      </button>
-    </div>
-  </ng-template>
+    <button pdz-menu-item icon="settings" (click)="openSettings()">
+      Settings
+    </button>
+
+    <button pdz-menu-item icon="logout" (click)="menuOpen = false; logout()">
+      Log Out
+    </button>
+  </pdz-menu>
 } @else {
-  <button type="button" class="login-btn" (click)="login()">
-    <span>Log in</span>
+  <button pdz-button color="neutral" variant="outlined" (click)="login()">
+    Log in
     <pdz-icon name="login" [height]="20"></pdz-icon>
   </button>
 }
