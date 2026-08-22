@@ -1,10 +1,5 @@
-<h2 mat-dialog-title class="settings-dialog__title">
-  <pdz-icon name="settings"></pdz-icon>
-  Tier List Settings
-</h2>
-
 <form [formGroup]="form" (ngSubmit)="onSave()">
-  <div mat-dialog-content class="settings-dialog__content">
+  <div class="settings-dialog__content">
     <label pdz-field label="Title" required class="field--full">
       <input
         pdz-input
@@ -12,11 +7,11 @@
         placeholder="Enter tier list title"
       />
       @if (
-        form.get("name")?.hasError("required") && form.get("name")?.touched
+        form.controls.name.touched && form.controls.name.hasError("required")
       ) {
         <span pdz-error>Title is required</span>
       }
-      @if (form.get("name")?.hasError("maxlength")) {
+      @if (form.controls.name.hasError("maxlength")) {
         <span pdz-error>Title must be 100 characters or fewer</span>
       }
     </label>
@@ -28,69 +23,34 @@
         placeholder="Optional description for this tier list"
         rows="3"
       ></textarea>
-      @if (form.get("description")?.hasError("maxlength")) {
+      @if (form.controls.description.hasError("maxlength")) {
         <span pdz-error>Description must be 500 characters or fewer</span>
       }
     </label>
 
-    <div class="settings-dialog__group-label">Draft Count</div>
-    <div class="settings-dialog__row" formGroupName="draftCount">
-      <label pdz-field label="Min Picks" class="field--half">
-        <input
-          pdz-input
-          type="number"
-          formControlName="min"
-          placeholder="e.g. 10"
-        />
-        @if (form.get("draftCount")?.get("min")?.hasError("min")) {
-          <span pdz-error>Must be 0 or more</span>
-        }
-      </label>
-
-      <label pdz-field label="Max Picks" class="field--half">
-        <input
-          pdz-input
-          type="number"
-          formControlName="max"
-          placeholder="e.g. 15"
-        />
-        @if (form.get("draftCount")?.get("max")?.hasError("min")) {
-          <span pdz-error>Must be at least 1</span>
-        }
-      </label>
-    </div>
-    @if (
-      form.get("draftCount")?.hasError("draftCountInvalid") &&
-      form.get("draftCount")?.touched
-    ) {
-      <p class="settings-dialog__error">Min picks cannot exceed max picks</p>
-    }
-
     @if (saveError()) {
-      <p class="settings-dialog__error">{{ saveError() }}</p>
+      <p class="settings-dialog__error" role="alert">{{ saveError() }}</p>
     }
   </div>
 
-  <div mat-dialog-actions align="end" class="settings-dialog__actions">
+  <div class="pdz-dialog-actions">
     <button
       pdz-button
-      variant="ghost"
+      variant="outlined"
       color="neutral"
       type="button"
-      (click)="onCancel()"
+      (click)="ref.close()"
       [disabled]="isSaving()"
     >
       Cancel
     </button>
-    <button pdz-button type="submit" [disabled]="form.invalid || isSaving()">
-      @if (isSaving()) {
-        <mat-progress-spinner
-          diameter="16"
-          mode="indeterminate"
-        ></mat-progress-spinner>
-      } @else {
-        Save
-      }
+    <button
+      pdz-button
+      type="submit"
+      [loading]="isSaving()"
+      [disabled]="form.invalid"
+    >
+      Save
     </button>
   </div>
 </form>

@@ -1,19 +1,16 @@
-import { CommonModule } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
-import {
-  FormBuilder,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
-// Only the dialog ref/data tokens are used - the dialog's contents are plain
-// markup, matching the draft team editor.
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { LeagueTier } from '../../../tier-list.model';
-import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
-import { SlideToggleComponent } from '@pdz/shared/inputs/slide-toggle/slide-toggle.component';
+import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { DataService } from '@pdz/core/services/data.service';
 import { DraftOptions, Pokemon } from '@pdz/core/utils/pokemon';
+import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
+import {
+  DIALOG_DATA,
+  DialogRef,
+} from '@pdz/shared/dialogs/dialog/dialog.service';
+import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
+import { FieldComponent } from '@pdz/shared/inputs/field/field.component';
+import { InputDirective } from '@pdz/shared/inputs/field/input.directive';
+import { LeagueTier } from '../../../tier-list.model';
 import { EditTierPokemon } from '../tier-list-form.component';
 
 export interface PokemonEditDialogData {
@@ -38,21 +35,28 @@ export interface PokemonEditDialogResult {
 @Component({
   selector: 'pdz-pokemon-edit-dialog',
   imports: [
-    CommonModule,
     ReactiveFormsModule,
+    ButtonComponent,
+    FieldComponent,
+    InputDirective,
     SpriteComponent,
-    SlideToggleComponent,
   ],
   templateUrl: './pokemon-edit-dialog.component.html',
   styleUrls: ['./pokemon-edit-dialog.component.scss'],
 })
 export class PokemonEditDialogComponent implements OnInit {
-  dialogRef = inject<MatDialogRef<PokemonEditDialogComponent>>(MatDialogRef);
-  data = inject<PokemonEditDialogData>(MAT_DIALOG_DATA);
+  protected readonly ref = inject(
+    DialogRef,
+  ) as DialogRef<PokemonEditDialogResult>;
+  data = inject<PokemonEditDialogData>(DIALOG_DATA);
   private fb = inject(FormBuilder);
   private dataService = inject(DataService);
 
-  editForm!: FormGroup;
+  editForm = this.fb.nonNullable.group({
+    currentTier: [this.data.currentTier?.name ?? (null as string | null)],
+    notes: [this.data.pokemon.notes ?? ''],
+  });
+
   /** Every forme the ruleset knows for this species. */
   availableFormes: Pokemon[] = [];
   formesLoading = false;
@@ -64,11 +68,6 @@ export class PokemonEditDialogComponent implements OnInit {
   private selectedFormes = new Set<string>();
 
   ngOnInit(): void {
-    this.editForm = this.fb.group({
-      currentTier: [this.data.currentTier?.name || null, Validators.required],
-      notes: [this.data.pokemon.notes || ''],
-    });
-
     const abilities = this.data.pokemon.abilities ?? [];
     const bannedAbilities = this.data.pokemon.banned?.abilities ?? [];
     const initiallySelected =
@@ -144,21 +143,16 @@ export class PokemonEditDialogComponent implements OnInit {
       return;
     }
 
-    const formValues = this.editForm.value;
-    const resultData: PokemonEditDialogResult = {
-      updatedTier: formValues.currentTier,
-      updatedBanNotes: formValues.notes,
+    const { currentTier, notes } = this.editForm.getRawValue();
+    this.ref.close({
+      updatedTier: currentTier,
+      updatedBanNotes: notes,
       updatedSelectedAbilities: this.abilityNames.filter((ability) =>
         this.selectedAbilities.has(ability),
       ),
       updatedFormes: this.availableFormes
         .filter((forme) => this.selectedFormes.has(forme.id))
         .map((forme) => ({ id: forme.id, name: forme.name })),
-    };
-    this.dialogRef.close(resultData);
-  }
-
-  closeDialog(): void {
-    this.dialogRef.close();
+    });
   }
 }

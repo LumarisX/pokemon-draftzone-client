@@ -91,23 +91,6 @@ body {
   )
 );
 
-.dialog-warn {
-  @include mat.dialog-overrides(
-    (
-      container-color: pdz.color(danger-container),
-      subhead-color: pdz.color(danger),
-      supporting-text-color: pdz.color(on-danger-container),
-    )
-  );
-
-  @include mat.button-overrides(
-    (
-      text-label-text-color: pdz.color(danger),
-      text-state-layer-color: pdz.color(danger),
-    )
-  );
-}
-
 .chart-tooltip {
   max-width: 16rem;
   box-shadow: var(--pdz-level-4);

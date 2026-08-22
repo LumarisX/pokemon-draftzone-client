@@ -10,7 +10,7 @@ import {
   signal,
 } from '@angular/core';
 import { DialogComponent } from './dialog.component';
-import type { DialogConfig } from './dialog.service';
+import { DialogRef } from './dialog.service';
 
 @Component({
   selector: 'pdz-dialog-host',
@@ -31,12 +31,12 @@ import type { DialogConfig } from './dialog.service';
 })
 export class DialogHostComponent {
   component = input.required<Type<unknown>>();
-  config = input.required<DialogConfig>();
 
   dismissed = output<void>();
 
   protected readonly open = signal(true);
   protected readonly injector = inject(Injector);
+  protected readonly config = inject(DialogRef).config;
 
   dismiss() {
     this.open.set(false);

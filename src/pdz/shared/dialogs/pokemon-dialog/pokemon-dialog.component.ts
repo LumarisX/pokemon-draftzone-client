@@ -1,13 +1,12 @@
-import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import {
-  MAT_DIALOG_DATA,
-  MatDialogModule,
-  MatDialogRef,
-} from '@angular/material/dialog';
 import { finalize } from 'rxjs/operators';
 import { STATS, StatsTable, Type } from '@pdz/shared/data';
+import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
+import {
+  DIALOG_DATA,
+  DialogRef,
+} from '@pdz/shared/dialogs/dialog/dialog.service';
 
 import { TierPokemonAddon } from '@pdz/features/tier-lists/tier-list.model';
 import {
@@ -54,9 +53,8 @@ export type PokemonDialogResult = unknown;
 @Component({
   selector: 'pdz-pokemon-dialog',
   imports: [
-    CommonModule,
     FormsModule,
-    MatDialogModule,
+    ButtonComponent,
     SpriteComponent,
     IconComponent,
     PokemonTypeComponent,
@@ -66,11 +64,8 @@ export type PokemonDialogResult = unknown;
 })
 export class PokemonDialogComponent {
   private dataService = inject(DataService);
-  dialogRef =
-    inject<MatDialogRef<PokemonDialogComponent, PokemonDialogResult>>(
-      MatDialogRef,
-    );
-  data: PokemonDialogData = inject<PokemonDialogData>(MAT_DIALOG_DATA);
+  protected readonly ref = inject(DialogRef) as DialogRef<PokemonDialogResult>;
+  data: PokemonDialogData = inject<PokemonDialogData>(DIALOG_DATA);
 
   activeTab: string = 'overview';
   moveSearch: string = '';
@@ -125,7 +120,7 @@ export class PokemonDialogComponent {
 
   isStab(moveType: string | undefined): boolean {
     if (!moveType) return false;
-    return this.data.pokemon.types.includes(moveType as any);
+    return this.data.pokemon.types.includes(moveType as Type);
   }
 
   readonly STATS = STATS;
@@ -176,41 +171,42 @@ export class PokemonDialogComponent {
     return `${Math.round((value / this.MAX_STAT) * 100)}%`;
   }
 
+  constructor() {
+    this.syncHeading();
+  }
+
   clickButton(result: unknown): void {
-    this.dialogRef.close(result);
+    this.ref.close(result);
   }
 
   selectTab(tab: string): void {
     this.activeTab = tab;
-    if (tab === 'moves' && !this.data.pokemon.moves && this.data.rulesetId) {
-      this.movesLoading = true;
-      this.dataService
-        .getPokemonMoves(this.data.rulesetId, this.data.pokemon.id)
-        .pipe(finalize(() => (this.movesLoading = false)))
-        .subscribe((moves) => {
-          this.data.pokemon.moves = moves;
-        });
-    }
+    if (tab === 'moves') this.loadMoves();
   }
 
   navigate(direction: 'prev' | 'next'): void {
     const target = this.data[direction];
-    if (target) {
-      this.data = target;
-      this.moveSearch = '';
-      if (
-        this.activeTab === 'moves' &&
-        !this.data.pokemon.moves &&
-        this.data.rulesetId
-      ) {
-        this.movesLoading = true;
-        this.dataService
-          .getPokemonMoves(this.data.rulesetId, this.data.pokemon.id)
-          .pipe(finalize(() => (this.movesLoading = false)))
-          .subscribe((moves) => {
-            this.data.pokemon.moves = moves;
-          });
-      }
-    }
+    if (!target) return;
+    this.data = target;
+    this.moveSearch = '';
+    this.syncHeading();
+    if (this.activeTab === 'moves') this.loadMoves();
+  }
+
+  private syncHeading(): void {
+    this.ref.update({ heading: this.data.pokemon.name });
+  }
+
+  private loadMoves(): void {
+    const { pokemon, rulesetId } = this.data;
+    if (pokemon.moves || !rulesetId) return;
+
+    this.movesLoading = true;
+    this.dataService
+      .getPokemonMoves(rulesetId, pokemon.id)
+      .pipe(finalize(() => (this.movesLoading = false)))
+      .subscribe((moves) => {
+        pokemon.moves = moves;
+      });
   }
 }

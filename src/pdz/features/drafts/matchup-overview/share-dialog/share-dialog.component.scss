@@ -4,28 +4,6 @@
   display: contents;
 }
 
-.share-header {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 3rem;
-  margin-bottom: pdz.space(md);
-
-  .share-title {
-    flex: 1;
-    text-align: center;
-    @include pdz.text(title, $family: false);
-    font-family: var(--pdz-font-display);
-  }
-
-  .close-button {
-    flex-shrink: 0;
-    margin-left: auto;
-    position: absolute;
-    right: pdz.space(lg);
-  }
-}
-
 .share-body {
   display: flex;
   flex-direction: column;
@@ -168,23 +146,5 @@
         }
       }
     }
-  }
-}
-
-.icon-button,
-.close-button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  background: none;
-  border: none;
-  cursor: pointer;
-  padding: pdz.space(xs);
-  border-radius: pdz.shape(corner-full);
-  color: inherit;
-  transition: background-color pdz.duration(base) pdz.easing(standard);
-
-  &:hover {
-    background-color: pdz.color(surface-variant);
   }
 }

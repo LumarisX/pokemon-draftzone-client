@@ -1,44 +1,46 @@
-<h1 mat-dialog-title>Import from CSV</h1>
+<p class="import-intro">
+  Choose which tier each CSV column should be imported into, or exclude it.
+</p>
 
-<div mat-dialog-content class="import-content">
-  <p class="import-intro">
-    Choose which tier each CSV column should be imported into, or exclude it.
-  </p>
-
-  <div class="columns-list">
-    @for (col of data.columns; track $index) {
-      <div class="column-row">
-        <div class="column-header">
-          <span class="column-name">{{ col.csvHeader }}</span>
-          <span class="column-count">{{ col.preview.length }}+ Pokémon</span>
-        </div>
-
-        <div class="column-preview">
-          @for (name of col.preview; track name) {
-            <span class="preview-chip">{{ name }}</span>
-          }
-          @if (col.preview.length === 0) {
-            <span class="preview-empty">No Pokémon in this column</span>
-          }
-        </div>
-
-        <label pdz-field label="Map to" class="column-select">
-          <select pdz-input [(ngModel)]="columnMappings[$index]">
-            <option [value]="EXCLUDE">— Exclude —</option>
-            <option [value]="NEW_TIER">+ New tier "{{ col.csvHeader }}"</option>
-            @for (opt of tierOptions; track opt.value) {
-              <option [value]="opt.value">{{ opt.label }}</option>
-            }
-          </select>
-        </label>
+<div class="columns-list">
+  @for (col of data.columns; track $index) {
+    <div class="column-row">
+      <div class="column-header">
+        <span class="column-name">{{ col.csvHeader }}</span>
+        <span class="column-count">{{ col.preview.length }}+ Pokémon</span>
       </div>
-    }
-  </div>
+
+      <div class="column-preview">
+        @for (name of col.preview; track name) {
+          <span class="preview-chip">{{ name }}</span>
+        }
+        @if (col.preview.length === 0) {
+          <span class="preview-empty">No Pokémon in this column</span>
+        }
+      </div>
+
+      <label pdz-field label="Map to" class="column-select">
+        <select pdz-input [(ngModel)]="columnMappings[$index]">
+          <option [value]="EXCLUDE">— Exclude —</option>
+          <option [value]="NEW_TIER">+ New tier "{{ col.csvHeader }}"</option>
+          @for (opt of tierOptions; track opt.value) {
+            <option [value]="opt.value">{{ opt.label }}</option>
+          }
+        </select>
+      </label>
+    </div>
+  }
 </div>
 
-<div mat-dialog-actions align="end">
-  <button pdz-button variant="ghost" color="neutral" type="button" (click)="onCancel()">Cancel</button>
-  <button pdz-button type="button" (click)="onImport()">
-    Import
+<div class="pdz-dialog-actions">
+  <button
+    pdz-button
+    variant="outlined"
+    color="neutral"
+    type="button"
+    (click)="ref.close()"
+  >
+    Cancel
   </button>
+  <button pdz-button type="button" (click)="onImport()">Import</button>
 </div>

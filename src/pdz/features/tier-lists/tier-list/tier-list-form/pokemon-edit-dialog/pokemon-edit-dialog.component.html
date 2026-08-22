@@ -1,12 +1,9 @@
 <form class="edit-dialog" [formGroup]="editForm" (ngSubmit)="onSave()">
-  <h2 class="edit-dialog__title">Edit {{ data.pokemon.name }}</h2>
-
   <div class="edit-dialog__body">
     <div class="edit-dialog__aside">
       <div class="edit-dialog__sprite">
         <pdz-sprite size="100%" [pokemon]="spritePokemon"></pdz-sprite>
       </div>
-      <pdz-slide-toggle onIcon="tera" offIcon="tera">Tera</pdz-slide-toggle>
       @if (
         data.pokemon.originalTierName &&
         data.pokemon.originalTierName !== data.currentTier.name
@@ -18,24 +15,17 @@
     </div>
 
     <div class="edit-dialog__main">
-      <div class="form-field">
-        <label class="form-field__label" for="pokemon-current-tier">
-          Current Tier
-        </label>
-        <select
-          id="pokemon-current-tier"
-          class="form-field__input"
-          formControlName="currentTier"
-        >
+      <label pdz-field label="Current Tier">
+        <select pdz-input formControlName="currentTier">
           <option [ngValue]="null">Untiered</option>
           @for (tier of data.tiers; track tier.name) {
             <option [ngValue]="tier.name">{{ tier.name }}</option>
           }
         </select>
-      </div>
+      </label>
 
       <section class="edit-dialog__section">
-        <span class="form-field__label">Legal Abilities</span>
+        <span class="edit-dialog__section-label">Legal Abilities</span>
         @if (abilityNames.length > 0) {
           <div class="edit-dialog__chips">
             @for (ability of abilityNames; track ability) {
@@ -43,6 +33,7 @@
                 type="button"
                 class="toggle-chip"
                 [class.toggle-chip--selected]="isAbilitySelected(ability)"
+                [attr.aria-pressed]="isAbilitySelected(ability)"
                 (click)="toggleAbility(ability)"
               >
                 <span>{{ ability }}</span>
@@ -60,13 +51,14 @@
         @if (formesLoading) {
           <p class="edit-dialog__empty">Loading formes…</p>
         } @else if (availableFormes.length > 0) {
-          <span class="form-field__label">Usable Formes</span>
+          <span class="edit-dialog__section-label">Usable Formes</span>
           <div class="edit-dialog__chips">
             @for (forme of availableFormes; track forme.id) {
               <button
                 type="button"
                 class="toggle-chip"
                 [class.toggle-chip--selected]="isFormeSelected(forme)"
+                [attr.aria-pressed]="isFormeSelected(forme)"
                 (click)="toggleForme(forme)"
               >
                 <pdz-sprite flipped [pokemon]="forme"></pdz-sprite>
@@ -77,23 +69,27 @@
         }
       </section>
 
-      <div class="form-field">
-        <label class="form-field__label" for="pokemon-notes">Other Notes</label>
+      <label pdz-field label="Other Notes">
         <input
-          id="pokemon-notes"
-          class="form-field__input"
+          pdz-input
           type="text"
           formControlName="notes"
           placeholder="Enter notes..."
         />
-      </div>
+      </label>
     </div>
   </div>
 
-  <div class="edit-dialog__actions">
-    <button type="button" class="button button--text" (click)="closeDialog()">
+  <div class="pdz-dialog-actions">
+    <button
+      pdz-button
+      variant="outlined"
+      color="neutral"
+      type="button"
+      (click)="ref.close()"
+    >
       Cancel
     </button>
-    <button type="submit" class="button button--primary">Save Changes</button>
+    <button pdz-button type="submit">Save Changes</button>
   </div>
 </form>

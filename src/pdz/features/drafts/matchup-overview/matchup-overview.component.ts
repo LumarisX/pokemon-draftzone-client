@@ -1,16 +1,19 @@
 import { Component, HostListener, inject, OnInit } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
 import { Meta } from '@angular/platform-browser';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { DRAFT_OVERVIEW_PATH, LEAGUE_ZONE_PATH } from '@pdz/core/route-paths';
 import { ErrorService } from '@pdz/layout/error/error.service';
 import { SkeletonComponent } from '@pdz/shared/data/skeleton/skeleton.component';
+import { DialogService } from '@pdz/shared/dialogs/dialog/dialog.service';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { DraftPokemon } from '../draft.model';
 import { MatchupData, TypeChartPokemon } from './matchup-interface';
 import { matchupPath, MatchupService } from './matchup.service';
 import { MatchupComponent } from './matchup/matchup.component';
-import { ShareDialogComponent } from './share-dialog/share-dialog.component';
+import {
+  ShareDialogComponent,
+  ShareDialogData,
+} from './share-dialog/share-dialog.component';
 import { PokemonBuilder } from './widgets/teambuilder/pokemon-builder/pokemon-builder.model';
 import { MatchupTeambuilderComponent } from './widgets/teambuilder/teambuilder.component';
 import { TeambuilderService } from './widgets/teambuilder/teambuilder.service';
@@ -33,7 +36,7 @@ export class MatchupOverviewComponent implements OnInit {
   private matchupService = inject(MatchupService);
   private errorService = inject(ErrorService);
   private meta = inject(Meta);
-  private dialog = inject(MatDialog);
+  private dialogs = inject(DialogService);
 
   readonly skeletonDetails = [0, 1, 2, 3];
   readonly skeletonWidgets = ['14rem', '10rem', '18rem', '12rem'];
@@ -148,11 +151,14 @@ export class MatchupOverviewComponent implements OnInit {
 
   openShareDialog(): void {
     if (!this.matchupData || !this.shareUrl) return;
-    this.dialog.open(ShareDialogComponent, {
-      data: { shareUrl: this.shareUrl, matchupData: this.matchupData },
-      maxWidth: '50rem',
-      width: '100%',
-    });
+    this.dialogs.open<ShareDialogComponent, void, ShareDialogData>(
+      ShareDialogComponent,
+      {
+        heading: 'Share your matchup',
+        size: 'lg',
+        data: { shareUrl: this.shareUrl, matchupData: this.matchupData },
+      },
+    );
   }
 
   team: PokemonBuilder[] = [];

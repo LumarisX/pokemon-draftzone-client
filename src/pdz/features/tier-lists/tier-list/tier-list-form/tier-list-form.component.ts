@@ -9,8 +9,8 @@ import {
   signal,
 } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { DialogService } from '@pdz/shared/dialogs/dialog/dialog.service';
 import { TooltipDirective } from '@pdz/shared/tooltip/tooltip.directive';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
@@ -35,6 +35,7 @@ import {
   PokemonEditDialogResult,
 } from './pokemon-edit-dialog/pokemon-edit-dialog.component';
 import {
+  TierDialogData,
   TierDialogResult,
   TierEditDialogComponent,
 } from './tier-edit-dialog/tier-edit-dialog.component';
@@ -68,7 +69,6 @@ interface EditableTier {
     ReactiveFormsModule,
     SpriteComponent,
     LoadingComponent,
-    MatDialogModule,
     IconComponent,
   ],
   templateUrl: './tier-list-form.component.html',
@@ -76,7 +76,7 @@ interface EditableTier {
 })
 export class TierListFormComponent implements OnInit, OnDestroy {
   private tierListService = inject(TierListService);
-  private dialog = inject(MatDialog);
+  private dialogs = inject(DialogService);
   private snackBar = inject(MatSnackBar);
   private destroy$ = new Subject<void>();
 
@@ -704,78 +704,70 @@ export class TierListFormComponent implements OnInit, OnDestroy {
     });
   }
 
-  private openPokemonDialog(
+  private async openPokemonDialog(
     pokemon: EditTierPokemon,
     tier: EditableTier,
-  ): void {
-    const dialogData: PokemonEditDialogData = {
-      pokemon: pokemon,
-      currentTier: tier,
-      tiers: this.tiers() ?? [],
-      ruleset: this.ruleset(),
-    };
+  ): Promise<void> {
+    const result = await this.dialogs.open<
+      PokemonEditDialogComponent,
+      PokemonEditDialogResult,
+      PokemonEditDialogData
+    >(PokemonEditDialogComponent, {
+      heading: `Edit ${pokemon.name}`,
+      size: 'md',
+      data: {
+        pokemon,
+        currentTier: tier,
+        tiers: this.tiers() ?? [],
+        ruleset: this.ruleset(),
+      },
+    }).closed;
 
-    const dialogRef = this.dialog.open(PokemonEditDialogComponent, {
-      width: '500px',
-      maxWidth: '95vw',
-      data: dialogData,
-      autoFocus: 'dialog',
-    });
+    if (!result) return;
 
-    dialogRef
-      .afterClosed()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((result: PokemonEditDialogResult | undefined) => {
-        if (!result) return;
+    const allAbilities = pokemon.abilities ?? [];
+    const selectedAbilities = result.updatedSelectedAbilities ?? [];
+    const bannedAbilities = allAbilities.filter(
+      (ability) => !selectedAbilities.includes(ability),
+    );
 
-        const allAbilities = pokemon.abilities ?? [];
-        const selectedAbilities = result.updatedSelectedAbilities ?? [];
-        const bannedAbilities = allAbilities.filter(
-          (ability) => !selectedAbilities.includes(ability),
-        );
+    pokemon.notes = result.updatedBanNotes?.trim() || undefined;
+    pokemon.formes = result.updatedFormes?.length
+      ? result.updatedFormes
+      : undefined;
 
-        pokemon.notes = result.updatedBanNotes?.trim() || undefined;
-        pokemon.formes = result.updatedFormes?.length
-          ? result.updatedFormes
-          : undefined;
+    if (bannedAbilities.length > 0) {
+      pokemon.banned = {
+        ...(pokemon.banned ?? {}),
+        abilities: bannedAbilities,
+      };
+    } else if (pokemon.banned) {
+      const nextBanned = { ...pokemon.banned };
+      delete nextBanned.abilities;
+      pokemon.banned =
+        nextBanned.moves?.length || nextBanned.tera ? nextBanned : undefined;
+    }
 
-        if (bannedAbilities.length > 0) {
-          pokemon.banned = {
-            ...(pokemon.banned ?? {}),
-            abilities: bannedAbilities,
-          };
-        } else if (pokemon.banned) {
-          const nextBanned = { ...pokemon.banned };
-          delete nextBanned.abilities;
-          pokemon.banned =
-            nextBanned.moves?.length || nextBanned.tera
-              ? nextBanned
-              : undefined;
-        }
+    const targetTierName = result.updatedTier;
+    if (targetTierName !== tier.name) {
+      const targetTier =
+        targetTierName === null
+          ? this.untiered()
+          : this.tiers()?.find((t) => t.name === targetTierName);
 
-        const targetTierName = result.updatedTier;
-        if (targetTierName !== tier.name) {
-          const targetTier =
-            targetTierName === null
-              ? this.untiered()
-              : this.tiers()?.find((t) => t.name === targetTierName);
+      if (targetTier) {
+        tier.pokemon = tier.pokemon.filter((p) => p.id !== pokemon.id);
+        targetTier.pokemon.push(pokemon);
+        targetTier.pokemon.sort(SORT_MAP[this.sortBy()]);
+      }
+    }
 
-          if (targetTier) {
-            tier.pokemon = tier.pokemon.filter((p) => p.id !== pokemon.id);
-            targetTier.pokemon.push(pokemon);
-            targetTier.pokemon.sort(SORT_MAP[this.sortBy()]);
-          }
-        }
-
-        this.tiers.set([...(this.tiers() ?? [])]);
-        this.untiered.set(
-          this.untiered()
-            ? { ...(this.untiered() as EditableTier) }
-            : undefined,
-        );
-        this.hasUnsavedChanges.set(true);
-        this.snackBar.open('Pokemon updated', undefined, { duration: 2000 });
-      });
+    this.tiers.set([...(this.tiers() ?? [])]);
+    this.untiered.set(
+      this.untiered() ? { ...(this.untiered() as EditableTier) } : undefined,
+    );
+    this.hasUnsavedChanges.set(true);
+    this.snackBar.open('Pokemon updated', undefined, { duration: 2000 });
   }
 
   moveTier(fromIndex: number, toIndex: number): void {
@@ -787,55 +779,45 @@ export class TierListFormComponent implements OnInit, OnDestroy {
     this.hasUnsavedChanges.set(true);
   }
 
-  addNewTier(): void {
+  async addNewTier(): Promise<void> {
     const tiers = this.tiers();
     if (!tiers) return;
 
-    const dialogRef = this.dialog.open(TierEditDialogComponent, {
-      width: '400px',
-      maxWidth: '95vw',
-      data: {},
-      autoFocus: 'first-tabbable',
+    const result = await this.openTierDialog('Add New Tier', {});
+    if (!result) return;
+
+    tiers.push({
+      name: result.name,
+      cost: result.cost,
+      pokemon: [],
     });
 
-    dialogRef
-      .afterClosed()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((result: TierDialogResult | null) => {
-        if (!result) return;
-
-        tiers.push({
-          name: result.name,
-          cost: result.cost,
-          pokemon: [],
-        });
-
-        this.tiers.set([...tiers]);
-        this.hasUnsavedChanges.set(true);
-        this.snackBar.open(`Tier "${result.name}" added`, undefined, {
-          duration: 2000,
-        });
-      });
+    this.tiers.set([...tiers]);
+    this.hasUnsavedChanges.set(true);
+    this.snackBar.open(`Tier "${result.name}" added`, undefined, {
+      duration: 2000,
+    });
   }
 
-  editTier(tier: EditableTier): void {
-    const dialogRef = this.dialog.open(TierEditDialogComponent, {
-      width: '400px',
-      maxWidth: '95vw',
-      data: { tier },
-      autoFocus: 'first-tabbable',
-    });
+  async editTier(tier: EditableTier): Promise<void> {
+    const result = await this.openTierDialog('Edit Tier', { tier });
+    if (!result) return;
 
-    dialogRef
-      .afterClosed()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((result: TierDialogResult | null) => {
-        if (!result) return;
-        tier.name = result.name;
-        tier.cost = result.cost;
-        this.hasUnsavedChanges.set(true);
-        this.snackBar.open('Tier updated', undefined, { duration: 2000 });
-      });
+    tier.name = result.name;
+    tier.cost = result.cost;
+    this.hasUnsavedChanges.set(true);
+    this.snackBar.open('Tier updated', undefined, { duration: 2000 });
+  }
+
+  private openTierDialog(
+    heading: string,
+    data: TierDialogData,
+  ): Promise<TierDialogResult | undefined> {
+    return this.dialogs.open<
+      TierEditDialogComponent,
+      TierDialogResult,
+      TierDialogData
+    >(TierEditDialogComponent, { heading, size: 'sm', data }).closed;
   }
 
   deleteTier(tierIndex: number): void {
@@ -935,7 +917,7 @@ export class TierListFormComponent implements OnInit, OnDestroy {
     this.showImportMenu.set(false);
   }
 
-  private openCsvImportDialog(csvText: string): void {
+  private async openCsvImportDialog(csvText: string): Promise<void> {
     const tiers = this.tiers();
     const untiered = this.untiered();
     if (!tiers || !untiered) return;
@@ -965,25 +947,23 @@ export class TierListFormComponent implements OnInit, OnDestroy {
       return { csvHeader: header, preview };
     });
 
-    const dialogRef = this.dialog.open(ImportDialogComponent, {
+    const result = await this.dialogs.open<
+      ImportDialogComponent,
+      ImportDialogResult,
+      ImportDialogData
+    >(ImportDialogComponent, {
+      heading: 'Import from CSV',
+      size: 'lg',
       data: {
         columns,
         availableTiers: tiers.map((t) => t.name),
         untieredName: this.UNTIERED_TIER_NAME,
         bannedName: this.BANNED_TIER_NAME,
-      } satisfies ImportDialogData,
-      width: '44rem',
-      maxWidth: '95vw',
-      maxHeight: '90vh',
-    });
+      },
+    }).closed;
 
-    dialogRef
-      .afterClosed()
-      .pipe(first())
-      .subscribe((result: ImportDialogResult | null) => {
-        if (!result) return;
-        this.applyCsvImport(csvText, headers, result);
-      });
+    if (!result) return;
+    this.applyCsvImport(csvText, headers, result);
   }
 
   private parseCsvRow(row: string): string[] {
@@ -1127,21 +1107,19 @@ export class TierListFormComponent implements OnInit, OnDestroy {
   openSettings(): void {
     this.tierListService
       .getSettings()
-      .pipe(first())
-      .subscribe((settings) => {
-        const dialogRef = this.dialog.open(TierListSettingsDialogComponent, {
-          data: settings satisfies TierListSettingsDialogData,
-          width: '30rem',
-          maxWidth: '95vw',
-        });
+      .pipe(first(), takeUntil(this.destroy$))
+      .subscribe(async (settings) => {
+        const result = await this.dialogs.open<
+          TierListSettingsDialogComponent,
+          TierListSettingsDialogData,
+          TierListSettingsDialogData
+        >(TierListSettingsDialogComponent, {
+          heading: 'Tier List Settings',
+          size: 'md',
+          data: settings,
+        }).closed;
 
-        dialogRef
-          .afterClosed()
-          .pipe(first())
-          .subscribe((result: TierListSettingsDialogData | undefined) => {
-            if (!result) return;
-            if (result.name) this.tierListName.set(result.name);
-          });
+        if (result?.name) this.tierListName.set(result.name);
       });
   }
 

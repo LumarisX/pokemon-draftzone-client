@@ -3,8 +3,8 @@
 
 .dialog__tabs {
   display: flex;
-  padding: 0 pdz.space(md);
   gap: pdz.space(2xs);
+  min-width: 0;
 }
 
 .dialog__tab {
@@ -220,103 +220,43 @@
 
 // ─── Dialog shell ─────────────────────────────────────────────────────────────
 
+:host {
+  display: block;
+}
+
 .dialog {
   display: flex;
   flex-direction: column;
-  width: 100%;
 }
 
-.dialog__header {
+.dialog__toolbar {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: pdz.space(md) pdz.space(md) pdz.space(sm);
-  border-bottom: 1px solid pdz.color(outline-variant);
   gap: pdz.space(sm);
+  margin: calc(#{pdz.space(lg)} * -1) calc(#{pdz.space(lg)} * -1) 0;
+  padding: 0 pdz.space(lg);
+  border-bottom: 1px solid pdz.color(outline-variant);
 }
 
 .dialog__nav {
   display: flex;
   align-items: center;
   gap: pdz.space(2xs);
-  flex: 1;
-  min-width: 0;
-}
-
-.dialog__title {
-  @include text(headline);
-  flex: 1;
-  min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.close-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  width: 2rem;
-  height: 2rem;
-  border: none;
-  border-radius: pdz.shape(corner-full);
-  background: transparent;
-  color: pdz.color(on-surface-variant);
-  cursor: pointer;
-  transition: background-color pdz.duration(base) pdz.easing(standard);
-
-  &:hover {
-    background-color: pdz.color(surface-container-high);
-  }
-}
-
-.nav-btn {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  width: 2rem;
-  height: 2rem;
-  border: none;
-  border-radius: pdz.shape(corner-full);
-  background: transparent;
-  color: pdz.color(on-surface-variant);
-  cursor: pointer;
-  transition: background-color pdz.duration(base) pdz.easing(standard);
-
-  &:hover:not(:disabled) {
-    background-color: pdz.color(surface-container-high);
-  }
-
-  &:disabled {
-    opacity: 0.3;
-    cursor: default;
-  }
+  flex: none;
 }
 
 .dialog__body {
   display: flex;
   flex-direction: column;
   gap: pdz.space(md);
-  padding: pdz.space(md) !important;
-  max-height: 70vh;
-  overflow-y: auto;
+  padding-top: pdz.space(md);
 
   &:has(.learnset) {
-    padding: 0 !important;
     gap: 0;
-    overflow: hidden;
+    padding-top: 0;
+    margin: 0 calc(#{pdz.space(lg)} * -1);
   }
-}
-
-.dialog__actions {
-  display: flex;
-  flex-direction: column;
-  gap: pdz.space(xs);
-  padding: pdz.space(sm) pdz.space(md) pdz.space(md) !important;
-  border-top: 1px solid pdz.color(outline-variant);
-  min-height: unset !important;
 }
 
 // ─── Hero (sprite + meta) ─────────────────────────────────────────────────────
@@ -545,45 +485,5 @@
   &__detail {
     margin-left: pdz.space(2xs);
     font-weight: 700;
-  }
-}
-
-// ─── Action buttons ───────────────────────────────────────────────────────────
-
-.action-btn {
-  width: 100%;
-  padding: pdz.space(sm) pdz.space(md);
-  border: none;
-  border-radius: pdz.shape(corner-sm);
-  @include text(label);
-  font-weight: 600;
-  cursor: pointer;
-  transition:
-    background-color pdz.duration(base) pdz.easing(standard),
-    opacity pdz.duration(base) pdz.easing(standard);
-
-  &--primary {
-    background-color: pdz.color(primary);
-    color: pdz.color(on-primary);
-
-    &:hover:not(:disabled) {
-      background-color: pdz.color(primary-hover);
-    }
-  }
-
-  &--secondary {
-    background-color: pdz.color(secondary-container);
-    color: pdz.color(on-secondary-container);
-
-    &:hover:not(:disabled) {
-      background-color: pdz.color(secondary-container-hover);
-    }
-  }
-
-  &:disabled {
-    background-color: pdz.color(surface-disabled);
-    color: pdz.color(on-surface-disabled);
-    cursor: not-allowed;
-    opacity: 0.6;
   }
 }

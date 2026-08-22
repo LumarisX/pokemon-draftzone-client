@@ -12,7 +12,6 @@ import {
   Output,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import {
   DataService,
@@ -21,6 +20,7 @@ import {
 } from '@pdz/core/services/data.service';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 import { StatsTable } from '@pdz/shared/data';
+import { DialogService } from '@pdz/shared/dialogs/dialog/dialog.service';
 import {
   PokemonDialogComponent,
   PokemonDialogData,
@@ -52,7 +52,6 @@ import { SaveSearchesServices } from '../save-searches.service';
   selector: 'pdz-pokemon-search-core',
   imports: [
     FormsModule,
-    MatDialogModule,
     SpriteComponent,
     IconComponent,
     PokemonTypeComponent,
@@ -64,7 +63,7 @@ import { SaveSearchesServices } from '../save-searches.service';
   styleUrl: './pokemon-search-core.component.scss',
 })
 export class PokemonSearchCoreComponent implements OnInit, OnDestroy {
-  private dialog = inject(MatDialog);
+  private dialogs = inject(DialogService);
   private location = inject(Location);
   private route = inject(ActivatedRoute);
   private dataService = inject(DataService);
@@ -387,12 +386,10 @@ export class PokemonSearchCoreComponent implements OnInit, OnDestroy {
     const idx = this.results.indexOf(pokemon);
     const data = idx >= 0 ? dataList[idx] : this.buildDialogData(pokemon);
 
-    this.dialog.open(PokemonDialogComponent, {
-      data,
-      maxWidth: '30rem',
-      width: '92vw',
-      panelClass: 'pokemon-detail-panel',
-    });
+    this.dialogs.open<PokemonDialogComponent, unknown, PokemonDialogData>(
+      PokemonDialogComponent,
+      { size: 'md', data },
+    );
   }
 
   private buildDialogData(pokemon: PokemonFullData): PokemonDialogData {

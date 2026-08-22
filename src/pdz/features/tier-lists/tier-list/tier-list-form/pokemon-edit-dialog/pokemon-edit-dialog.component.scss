@@ -1,20 +1,14 @@
 @use "pdz-theming" as pdz;
 @use "mixins/_buttons.scss" as *;
 
+:host {
+  display: block;
+}
+
 .edit-dialog {
   display: flex;
   flex-direction: column;
   gap: pdz.space(md);
-  padding: pdz.space(lg);
-
-  &__title {
-    margin: 0;
-    padding-bottom: pdz.space(xs);
-    border-bottom: 1px solid pdz.color(primary-border);
-    font-family: var(--pdz-font-display);
-    @include pdz.text(subtitle, $family: false);
-    color: pdz.color(primary-accent);
-  }
 
   &__body {
     display: flex;
@@ -55,6 +49,11 @@
     gap: pdz.space(2xs);
   }
 
+  &__section-label {
+    @include pdz.text(field-label, $family: false);
+    color: pdz.color(on-surface-variant);
+  }
+
   &__chips {
     display: flex;
     flex-wrap: wrap;
@@ -67,10 +66,8 @@
     color: pdz.color(on-surface-variant);
   }
 
-  &__actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: pdz.space(xs);
+  > .pdz-dialog-actions {
+    margin-top: 0;
   }
 }
 
@@ -100,47 +97,6 @@
   }
 
   &--selected {
-    background: pdz.color(primary-container);
-    border-color: pdz.color(primary-border);
-    color: pdz.color(on-primary-container);
-  }
-}
-
-.form-field {
-  display: grid;
-  gap: pdz.space(2xs);
-
-  &__label {
-    @include pdz.text(field-label, $family: false);
-    color: pdz.color(on-surface-variant);
-  }
-
-  &__input {
-    width: 100%;
-    padding: pdz.space(xs) pdz.space(sm);
-    border: 1px solid pdz.color(outline);
-    border-radius: pdz.shape(corner-sm);
-    background: pdz.color(surface);
-    color: pdz.color(on-surface);
-    font: inherit;
-
-    &:focus {
-      outline: 2px solid pdz.color(primary-accent);
-      outline-offset: 1px;
-      border-color: pdz.color(primary-accent);
-    }
-  }
-}
-
-.button {
-  @include flat-button(
-    (
-      padding: pdz.space(xs) pdz.space(md),
-      border-radius: pdz.shape(corner-sm),
-    )
-  );
-
-  &--primary {
     background: pdz.color(primary-container);
     border-color: pdz.color(primary-border);
     color: pdz.color(on-primary-container);

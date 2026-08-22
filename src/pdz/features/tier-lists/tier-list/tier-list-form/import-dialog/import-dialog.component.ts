@@ -1,12 +1,10 @@
-import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import {
-  MAT_DIALOG_DATA,
-  MatDialogModule,
-  MatDialogRef,
-} from '@angular/material/dialog';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
+import {
+  DIALOG_DATA,
+  DialogRef,
+} from '@pdz/shared/dialogs/dialog/dialog.service';
 import { FieldComponent } from '@pdz/shared/inputs/field/field.component';
 import { InputDirective } from '@pdz/shared/inputs/field/input.directive';
 
@@ -29,54 +27,39 @@ const NEW_TIER = '__NEW_TIER__';
 
 @Component({
   selector: 'pdz-import-dialog',
-  imports: [
-    CommonModule,
-    FormsModule,
-    MatDialogModule, ButtonComponent, FieldComponent, InputDirective],
+  imports: [FormsModule, ButtonComponent, FieldComponent, InputDirective],
   templateUrl: './import-dialog.component.html',
   styleUrls: ['./import-dialog.component.scss'],
 })
-export class ImportDialogComponent implements OnInit {
-  dialogRef = inject<MatDialogRef<ImportDialogComponent>>(MatDialogRef);
-  data = inject<ImportDialogData>(MAT_DIALOG_DATA);
+export class ImportDialogComponent {
+  protected readonly ref = inject(DialogRef) as DialogRef<ImportDialogResult>;
+  data = inject<ImportDialogData>(DIALOG_DATA);
 
   readonly EXCLUDE = EXCLUDE;
   readonly NEW_TIER = NEW_TIER;
 
-  columnMappings: string[] = [];
+  readonly tierOptions: { label: string; value: string }[] = [
+    ...this.data.availableTiers.map((tier) => ({ label: tier, value: tier })),
+    { label: this.data.untieredName, value: this.data.untieredName },
+    { label: this.data.bannedName, value: this.data.bannedName },
+  ];
 
-  get tierOptions(): { label: string; value: string }[] {
-    return [
-      ...this.data.availableTiers.map((t) => ({ label: t, value: t })),
-      { label: this.data.untieredName, value: this.data.untieredName },
-      { label: this.data.bannedName, value: this.data.bannedName },
-    ];
-  }
-
-  ngOnInit(): void {
-    this.columnMappings = this.data.columns.map((col) => {
-      const all = [
-        ...this.data.availableTiers,
-        this.data.untieredName,
-        this.data.bannedName,
-      ];
-      const match = all.find(
-        (t) => t.toLowerCase() === col.csvHeader.toLowerCase(),
-      );
-      return match ?? this.data.untieredName;
-    });
-  }
+  columnMappings: string[] = this.data.columns.map((column) => {
+    const match = this.tierOptions.find(
+      (option) =>
+        option.value.toLowerCase() === column.csvHeader.toLowerCase().trim(),
+    );
+    return match?.value ?? this.data.untieredName;
+  });
 
   onImport(): void {
-    const result: ImportDialogResult = this.columnMappings.map((m, i) => {
-      if (m === EXCLUDE) return null;
-      if (m === NEW_TIER) return NEW_TIER + this.data.columns[i].csvHeader;
-      return m;
-    });
-    this.dialogRef.close(result);
-  }
-
-  onCancel(): void {
-    this.dialogRef.close(null);
+    this.ref.close(
+      this.columnMappings.map((mapping, index) => {
+        if (mapping === EXCLUDE) return null;
+        if (mapping === NEW_TIER)
+          return NEW_TIER + this.data.columns[index].csvHeader;
+        return mapping;
+      }),
+    );
   }
 }

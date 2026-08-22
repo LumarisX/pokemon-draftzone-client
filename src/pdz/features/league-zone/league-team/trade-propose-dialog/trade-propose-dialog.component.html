@@ -1,6 +1,4 @@
-<h1 mat-dialog-title>New Trade</h1>
-
-<div mat-dialog-content class="dialog-body">
+<div class="dialog-body">
   @if (loading) {
     <div class="trade-form__loading"><pdz-loading></pdz-loading></div>
   } @else if (loadError) {
@@ -120,22 +118,17 @@
   }
 </div>
 
-<div mat-dialog-actions align="end">
+<div class="pdz-dialog-actions">
   <button
     pdz-button
     type="button"
-    variant="ghost"
+    variant="outlined"
     color="neutral"
     (click)="closeDialog()"
   >
     Cancel
   </button>
-  <button
-    pdz-button
-    type="button"
-    [disabled]="!canSubmit"
-    (click)="onSubmit()"
-  >
+  <button pdz-button type="button" [disabled]="!canSubmit" (click)="onSubmit()">
     Submit Trade
   </button>
 </div>

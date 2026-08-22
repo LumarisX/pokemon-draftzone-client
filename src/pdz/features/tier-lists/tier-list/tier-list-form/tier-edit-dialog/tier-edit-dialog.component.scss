@@ -1,26 +1,15 @@
-@use "@angular/material" as mat;
 @use "pdz-theming" as pdz;
 
-h2 {
-  margin-top: 0;
-  margin-bottom: 16px;
-  font-weight: 600;
-  font-size: pdz.font-size(lg);
-  border-bottom: 1px solid pdz.color(primary-border);
-  padding-bottom: 8px;
+:host {
+  display: block;
+}
+
+.details-container {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(md);
 }
 
 .form-field-full-width {
   width: 100%;
-}
-
-:host {
-  @include mat.dialog-overrides(
-    (
-      subhead-weight: 700,
-      subhead-font: var(--pdz-font-display),
-      subhead-color: pdz.color(primary-accent),
-      subhead-size: 1.2em,
-    )
-  );
 }

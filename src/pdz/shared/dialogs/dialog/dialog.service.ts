@@ -6,7 +6,9 @@ import {
   Injectable,
   InjectionToken,
   Injector,
+  Signal,
   Type,
+  WritableSignal,
   createComponent,
   inject,
   signal,
@@ -28,15 +30,31 @@ export interface DialogConfig<D = unknown> {
   data?: D;
 }
 
+export type DialogChrome = Omit<DialogConfig, 'data'>;
+
 export class DialogRef<R = unknown> {
   private readonly settled = signal(false);
   private resolve!: (result: R | undefined) => void;
+  private readonly chrome: WritableSignal<DialogChrome>;
+
+  readonly config: Signal<DialogChrome>;
 
   readonly closed = new Promise<R | undefined>((resolve) => {
     this.resolve = resolve;
   });
 
-  constructor(private readonly destroy: () => void) {}
+  constructor(
+    chrome: DialogChrome,
+    private readonly destroy: () => void,
+  ) {
+    this.chrome = signal(chrome);
+    this.config = this.chrome.asReadonly();
+  }
+
+  /** Lets the hosted component retitle or resize its own dialog while open. */
+  update(chrome: DialogChrome) {
+    this.chrome.update((current) => ({ ...current, ...chrome }));
+  }
 
   close(result?: R) {
     if (this.settled()) return;
@@ -59,7 +77,9 @@ export class DialogService {
   ): DialogRef<R> {
     let hostRef: ComponentRef<DialogHostComponent> | undefined;
 
-    const ref = new DialogRef<R>(() => {
+    const { data, ...chrome } = config;
+
+    const ref = new DialogRef<R>(chrome, () => {
       hostRef?.instance.dismiss();
       const pending = hostRef;
       hostRef = undefined;
@@ -72,7 +92,7 @@ export class DialogService {
       environmentInjector: this.environmentInjector,
       elementInjector: Injector.create({
         providers: [
-          { provide: DIALOG_DATA, useValue: config.data },
+          { provide: DIALOG_DATA, useValue: data },
           { provide: DialogRef, useValue: ref },
         ],
         parent: this.injector,
@@ -80,7 +100,6 @@ export class DialogService {
     });
 
     hostRef.setInput('component', component);
-    hostRef.setInput('config', config);
     hostRef.instance.dismissed.subscribe(() => ref.close());
 
     this.appRef.attachView(hostRef.hostView);

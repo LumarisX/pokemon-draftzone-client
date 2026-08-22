@@ -1,19 +1,9 @@
-@use "@angular/material" as mat;
 @use "pdz-theming" as pdz;
 @use "mixins" as *;
 @use "mixins/buttons" as *;
 
 :host {
   display: block;
-
-  @include mat.dialog-overrides(
-    (
-      subhead-weight: 700,
-      subhead-font: var(--pdz-font-display),
-      subhead-color: pdz.color(primary-accent),
-      subhead-size: 1.2em,
-    )
-  );
 }
 
 .dialog-body {
@@ -220,8 +210,3 @@
     margin: 0;
   }
 }
-
-[mat-dialog-actions] {
-  gap: pdz.space(sm);
-}
-

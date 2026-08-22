@@ -1,16 +1,11 @@
-import { Component, OnInit, inject } from '@angular/core';
-import {
-  FormBuilder,
-  FormGroup,
-  ReactiveFormsModule,
-  Validators,
-} from '@angular/forms';
-import {
-  MAT_DIALOG_DATA,
-  MatDialogModule,
-  MatDialogRef,
-} from '@angular/material/dialog';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
+import {
+  DIALOG_DATA,
+  DialogRef,
+} from '@pdz/shared/dialogs/dialog/dialog.service';
 import { FieldComponent } from '@pdz/shared/inputs/field/field.component';
 import { FieldErrorDirective } from '@pdz/shared/inputs/field/field-message.directive';
 import { InputDirective } from '@pdz/shared/inputs/field/input.directive';
@@ -27,7 +22,6 @@ export interface TierDialogResult {
 @Component({
   selector: 'pdz-tier-edit-dialog',
   imports: [
-    MatDialogModule,
     ReactiveFormsModule,
     ButtonComponent,
     FieldComponent,
@@ -36,43 +30,42 @@ export interface TierDialogResult {
   ],
   templateUrl: './tier-edit-dialog.component.html',
   styleUrls: ['./tier-edit-dialog.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TierEditDialogComponent implements OnInit {
-  dialogRef = inject<MatDialogRef<TierEditDialogComponent>>(MatDialogRef);
-  data = inject<TierDialogData>(MAT_DIALOG_DATA);
-  private fb = inject(FormBuilder);
+export class TierEditDialogComponent {
+  protected readonly ref = inject(DialogRef) as DialogRef<TierDialogResult>;
+  protected readonly data = (inject(DIALOG_DATA) ?? {}) as TierDialogData;
+  private readonly fb = inject(FormBuilder);
 
-  form!: FormGroup;
-  isAddMode = !this.data?.tier;
+  protected readonly isAddMode = !this.data.tier;
 
-  ngOnInit(): void {
-    this.form = this.fb.group({
-      name: [
-        this.data?.tier?.name ?? '',
-        [Validators.required, Validators.maxLength(30)],
-      ],
-      cost: [this.data?.tier?.cost ?? 0, Validators.required],
-    });
+  protected readonly form = this.fb.nonNullable.group({
+    name: [
+      this.data.tier?.name ?? '',
+      [Validators.required, Validators.maxLength(30)],
+    ],
+    cost: [this.data.tier?.cost ?? 0, Validators.required],
+  });
 
-    this.form.get('name')!.valueChanges.subscribe((value: string) => {
-      const num = Number(value?.trim());
-      if (value?.trim() !== '' && !isNaN(num) && isFinite(num)) {
-        this.form.get('cost')!.setValue(num, { emitEvent: false });
-      }
-    });
+  constructor() {
+    this.form.controls.name.valueChanges
+      .pipe(takeUntilDestroyed())
+      .subscribe((value) => {
+        const trimmed = value?.trim() ?? '';
+        if (trimmed === '') return;
+        const cost = Number(trimmed);
+        if (Number.isFinite(cost)) {
+          this.form.controls.cost.setValue(cost, { emitEvent: false });
+        }
+      });
   }
 
-  onSave(): void {
-    if (this.form.invalid) return;
-    const { name, cost } = this.form.value;
-    const result: TierDialogResult = {
-      name: name.trim(),
-      cost: Number(cost),
-    };
-    this.dialogRef.close(result);
-  }
-
-  closeDialog(): void {
-    this.dialogRef.close(null);
+  protected onSave(): void {
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      return;
+    }
+    const { name, cost } = this.form.getRawValue();
+    this.ref.close({ name: name.trim(), cost: Number(cost) });
   }
 }

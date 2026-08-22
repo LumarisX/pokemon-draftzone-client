@@ -7,6 +7,7 @@ import {
   inject,
   input,
 } from '@angular/core';
+import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 
 export type ButtonVariant = 'filled' | 'tonal' | 'outlined' | 'ghost' | 'link';
 export type ButtonColor = 'primary' | 'secondary' | 'neutral' | 'danger';
@@ -15,11 +16,17 @@ export type ButtonType = 'button' | 'submit' | 'reset';
 
 @Component({
   selector: 'button[pdz-button], a[pdz-button], label[pdz-button]',
+  imports: [IconComponent],
   template: `
     @if (loading()) {
       <span class="pdz-btn__spinner" aria-hidden="true"></span>
     }
-    <span class="pdz-btn__content"><ng-content /></span>
+    <span class="pdz-btn__content">
+      @if (icon()) {
+        <pdz-icon aria-hidden="true" [name]="icon()!" [size]="iconSize()" />
+      }
+      <ng-content />
+    </span>
   `,
   styleUrl: './button.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -49,6 +56,11 @@ export class ButtonComponent {
   block = input(false, { transform: booleanAttribute });
   pill = input(false, { transform: booleanAttribute });
   type = input<ButtonType>('button');
+  icon = input<string>();
+
+  protected iconSize = computed(
+    () => ({ sm: 16, md: 18, lg: 20 })[this.size()],
+  );
 
   protected readonly isButton =
     inject(ElementRef).nativeElement.tagName === 'BUTTON';

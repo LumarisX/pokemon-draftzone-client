@@ -1,7 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { HttpEventType, HttpResponse } from '@angular/common/http';
 import { Component, inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { UploadService } from '@pdz/core/services/upload.service';
 import { DialogService } from '@pdz/shared/dialogs/dialog/dialog.service';
@@ -64,7 +63,6 @@ const ALLOWED_LOGO_TYPES = [
 export class LeagueTeamComponent implements OnInit, OnDestroy {
   private readonly leagueService = inject(LeagueZoneService);
   private readonly route = inject(ActivatedRoute);
-  private readonly dialog = inject(MatDialog);
   private readonly dialogs = inject(DialogService);
   private readonly uploadService = inject(UploadService);
 
@@ -219,30 +217,29 @@ export class LeagueTeamComponent implements OnInit, OnDestroy {
     if (result) this.saveCoachEdit(result);
   }
 
-  openTradePropose(): void {
+  async openTradePropose(): Promise<void> {
     const team = this.teamData;
     if (!team?.isCoach) return;
 
-    this.dialog
-      .open(TradeProposeDialogComponent, {
-        width: '52rem',
-        maxWidth: '95vw',
-        autoFocus: 'first-tabbable',
-        data: {
-          teamId: team.id,
-          teamName: team.name,
-          roster: team.draft,
-          rosterCost: this.total.cost,
-          pointTotal: team.pointTotal,
-          roundIndex: this.currentRoundIndex,
-          roundName: this.currentRoundName,
-        } satisfies TradeProposeDialogData,
-      })
-      .afterClosed()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((result: TradeProposeDialogResult | null | undefined) => {
-        if (result) this.submitTrade(team.id, result);
-      });
+    const result = await this.dialogs.open<
+      TradeProposeDialogComponent,
+      TradeProposeDialogResult,
+      TradeProposeDialogData
+    >(TradeProposeDialogComponent, {
+      heading: 'New Trade',
+      size: 'lg',
+      data: {
+        teamId: team.id,
+        teamName: team.name,
+        roster: team.draft,
+        rosterCost: this.total.cost,
+        pointTotal: team.pointTotal,
+        roundIndex: this.currentRoundIndex,
+        roundName: this.currentRoundName,
+      },
+    }).closed;
+
+    if (result) this.submitTrade(team.id, result);
   }
 
   private submitTrade(teamId: string, result: TradeProposeDialogResult): void {

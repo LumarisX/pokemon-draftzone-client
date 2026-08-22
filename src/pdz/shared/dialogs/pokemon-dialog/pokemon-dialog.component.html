@@ -1,54 +1,61 @@
 <div class="dialog">
-  <!-- Header -->
-  <div class="dialog__header">
-    <div class="dialog__nav">
-      @if (data.prev || data.next) {
+  <!-- Tabs + prev/next -->
+  <div class="dialog__toolbar">
+    <div class="dialog__tabs" role="tablist">
+      <button
+        class="dialog__tab"
+        role="tab"
+        [attr.aria-selected]="activeTab === 'overview'"
+        [class.dialog__tab--active]="activeTab === 'overview'"
+        (click)="selectTab('overview')"
+      >
+        Overview
+      </button>
+      <button
+        class="dialog__tab"
+        role="tab"
+        [attr.aria-selected]="activeTab === 'moves'"
+        [class.dialog__tab--active]="activeTab === 'moves'"
+        (click)="selectTab('moves')"
+      >
+        Moves
+      </button>
+    </div>
+
+    @if (data.prev || data.next) {
+      <div class="dialog__nav">
         <button
-          class="nav-btn"
+          pdz-button
+          variant="ghost"
+          color="neutral"
+          size="sm"
+          iconOnly
+          pill
           [disabled]="!data.prev"
+          aria-label="Previous Pokémon"
           (click)="navigate('prev')"
-          aria-label="Previous"
         >
           <pdz-icon name="chevron_left" [height]="20"></pdz-icon>
         </button>
-      }
-      <h2 class="dialog__title">{{ data.pokemon.name }}</h2>
-      @if (data.prev || data.next) {
         <button
-          class="nav-btn"
+          pdz-button
+          variant="ghost"
+          color="neutral"
+          size="sm"
+          iconOnly
+          pill
           [disabled]="!data.next"
+          aria-label="Next Pokémon"
           (click)="navigate('next')"
-          aria-label="Next"
         >
           <pdz-icon name="chevron_right" [height]="20"></pdz-icon>
         </button>
-      }
-    </div>
-    <button class="close-btn" mat-dialog-close aria-label="Close">
-      <pdz-icon name="close" [height]="20"></pdz-icon>
-    </button>
-  </div>
-
-  <!-- Tabs -->
-  <div class="dialog__tabs">
-    <button
-      class="dialog__tab"
-      [class.dialog__tab--active]="activeTab === 'overview'"
-      (click)="selectTab('overview')"
-    >
-      Overview
-    </button>
-    <button
-      class="dialog__tab"
-      [class.dialog__tab--active]="activeTab === 'moves'"
-      (click)="selectTab('moves')"
-    >
-      Moves
-    </button>
+      </div>
+    }
   </div>
 
   <!-- Body -->
-  <div class="dialog__body" mat-dialog-content>
+  <div class="dialog__body">
     @if (activeTab === "overview") {
       <!-- Hero: sprite + meta badges -->
       <div class="pokemon-hero">
@@ -305,12 +312,12 @@
 
   <!-- Action Buttons -->
   @if (data.buttons?.length) {
-    <div class="dialog__actions" mat-dialog-actions>
+    <div class="pdz-dialog-actions">
       @for (btn of data.buttons!; track $index) {
         <button
-          class="action-btn"
-          [class.action-btn--primary]="btn.variant !== 'secondary'"
-          [class.action-btn--secondary]="btn.variant === 'secondary'"
+          pdz-button
+          [color]="btn.variant === 'secondary' ? 'secondary' : 'primary'"
+          [variant]="btn.variant === 'secondary' ? 'tonal' : 'filled'"
           [disabled]="btn.disabled ?? false"
           (click)="clickButton(btn.result)"
         >

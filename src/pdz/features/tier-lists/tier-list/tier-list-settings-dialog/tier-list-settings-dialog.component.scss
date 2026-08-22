@@ -1,36 +1,14 @@
 @use "pdz-theming" as pdz;
 @use "mixins" as *;
 
+:host {
+  display: block;
+}
+
 .settings-dialog {
-  &__title {
-    display: flex;
-    align-items: center;
-    gap: pdz.space(sm);
-    @include text(title);
-    font-family: var(--pdz-font-display);
-
-    pdz-icon {
-      color: pdz.color(primary-accent);
-    }
-  }
-
   &__content {
     display: flex;
     flex-direction: column;
-    gap: pdz.space(sm);
-    padding-top: pdz.space(sm);
-    min-width: 22rem;
-  }
-
-  &__group-label {
-    @include text(label);
-    color: pdz.color(on-surface-variant);
-    font-weight: 600;
-    margin-bottom: calc(pdz.space(xs) * -1);
-  }
-
-  &__row {
-    display: flex;
     gap: pdz.space(sm);
   }
 
@@ -39,18 +17,10 @@
     color: pdz.color(danger);
     margin: 0;
   }
-
-  &__actions {
-    gap: pdz.space(xs);
-  }
 }
 
 .field {
   &--full {
     width: 100%;
-  }
-
-  &--half {
-    flex: 1;
   }
 }

@@ -1,11 +1,9 @@
-import { CommonModule } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
-import {
-  MAT_DIALOG_DATA,
-  MatDialogModule,
-  MatDialogRef,
-} from '@angular/material/dialog';
 import { DraftPokemon } from '@pdz/features/drafts/draft.model';
+import {
+  DIALOG_DATA,
+  DialogRef,
+} from '@pdz/shared/dialogs/dialog/dialog.service';
 import {
   PokemonSearchComponent,
   PokemonSearchOption,
@@ -41,8 +39,6 @@ type TradeOption = PokemonSearchOption & { cost: number; tier: string };
 @Component({
   selector: 'pdz-trade-propose-dialog',
   imports: [
-    CommonModule,
-    MatDialogModule,
     ButtonComponent,
     PokemonSearchComponent,
     SpriteComponent,
@@ -55,11 +51,10 @@ type TradeOption = PokemonSearchOption & { cost: number; tier: string };
 export class TradeProposeDialogComponent implements OnInit {
   private readonly tierListService = inject(TierListService);
   private readonly leagueService = inject(LeagueZoneService);
-  dialogRef =
-    inject<
-      MatDialogRef<TradeProposeDialogComponent, TradeProposeDialogResult | null>
-    >(MatDialogRef);
-  data = inject<TradeProposeDialogData>(MAT_DIALOG_DATA);
+  protected readonly ref = inject(
+    DialogRef,
+  ) as DialogRef<TradeProposeDialogResult>;
+  data = inject<TradeProposeDialogData>(DIALOG_DATA);
 
   loading = true;
   loadError = '';
@@ -189,7 +184,7 @@ export class TradeProposeDialogComponent implements OnInit {
 
   onSubmit(): void {
     if (!this.canSubmit) return;
-    this.dialogRef.close({
+    this.ref.close({
       send: this.send.map((p) => ({ id: p.id, tera: false })),
       receive: this.receive.map((p) => ({ id: p.id, tera: false })),
       roundIndex: this.data.roundIndex,
@@ -197,6 +192,6 @@ export class TradeProposeDialogComponent implements OnInit {
   }
 
   closeDialog(): void {
-    this.dialogRef.close(null);
+    this.ref.close();
   }
 }

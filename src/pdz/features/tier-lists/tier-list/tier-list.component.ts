@@ -15,13 +15,13 @@ import {
   viewChild,
 } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatDialog, MatDialogModule } from '@angular/material/dialog';
 import { TooltipDirective } from '@pdz/shared/tooltip/tooltip.directive';
 import { RouterModule } from '@angular/router';
 import { WebSocketService } from '@pdz/core/services/ws.service';
 import { Pokemon } from '@pdz/core/utils/pokemon';
 import { typeColor } from '@pdz/core/utils/styling';
 import { Type, TYPES } from '@pdz/shared/data';
+import { DialogService } from '@pdz/shared/dialogs/dialog/dialog.service';
 import {
   PokemonDialogButton,
   PokemonDialogComponent,
@@ -45,12 +45,18 @@ import {
   SortOption,
 } from './tier-list.utils';
 
+interface DraftPokemonAction {
+  action: 'draft';
+  teraCapt: boolean;
+  pokemon: TierPokemon;
+  tier: LeagueTier;
+}
+
 @Component({
   selector: 'pdz-tier-list',
   templateUrl: './tier-list.component.html',
   imports: [
     CommonModule,
-    MatDialogModule,
     RouterModule,
     FormsModule,
     ChoiceDirective,
@@ -67,7 +73,7 @@ export class TierListComponent implements OnInit, OnDestroy {
   // private leagueService = inject(LeagueZoneService);
   private tierListService = inject(TierListService);
   private wsService = inject(WebSocketService);
-  private dialog = inject(MatDialog);
+  private dialogs = inject(DialogService);
   private destroy$ = new Subject<void>();
 
   readonly header = input<string>();
@@ -309,7 +315,10 @@ export class TierListComponent implements OnInit, OnDestroy {
   showDrafted: boolean = true;
   typeColor = typeColor;
 
-  openPokemonDetails(pokemon: TierPokemon, tier: LeagueTier): void {
+  async openPokemonDetails(
+    pokemon: TierPokemon,
+    tier: LeagueTier,
+  ): Promise<void> {
     const displayedTiers = this.displayedTiers();
     if (!displayedTiers) return;
 
@@ -334,41 +343,32 @@ export class TierListComponent implements OnInit, OnDestroy {
     const dialogData =
       idx >= 0 ? dataList[idx] : this.buildPokemonDialogData(pokemon, tier);
 
-    const dialogRef = this.dialog.open(PokemonDialogComponent, {
-      data: dialogData,
-      maxWidth: '30rem',
-      width: '92vw',
-      panelClass: 'pokemon-detail-panel',
-    });
+    const result = await this.dialogs.open<
+      PokemonDialogComponent,
+      DraftPokemonAction,
+      PokemonDialogData
+    >(PokemonDialogComponent, { size: 'md', data: dialogData }).closed;
 
-    dialogRef
-      .afterClosed()
-      .pipe(first())
-      .subscribe((result) => {
-        const r = result as
-          | {
-              action: string;
-              teraCapt: boolean;
-              pokemon: TierPokemon;
-              tier: LeagueTier;
-            }
-          | undefined;
-        if (!r || r.action !== 'draft') return;
-        const p = r.pokemon;
-        const t = r.tier;
-        const emit: {
-          id: string;
-          name: string;
-          addons?: string[];
-          tier: string;
-          cost?: number;
-        } = { id: p.id, name: p.name, tier: t.name, cost: t.cost };
-        if (r.teraCapt) {
-          emit.cost = p.addons![0].cost;
-          emit.addons = ['Tera Captain'];
-        }
-        this.pokemonSelected.emit(emit);
-      });
+    if (result?.action !== 'draft') return;
+
+    const { pokemon: picked, tier: pickedTier, teraCapt } = result;
+    const emit: {
+      id: string;
+      name: string;
+      addons?: string[];
+      tier: string;
+      cost?: number;
+    } = {
+      id: picked.id,
+      name: picked.name,
+      tier: pickedTier.name,
+      cost: pickedTier.cost,
+    };
+    if (teraCapt) {
+      emit.cost = picked.addons![0].cost;
+      emit.addons = ['Tera Captain'];
+    }
+    this.pokemonSelected.emit(emit);
   }
 
   private buildPokemonDialogData(

@@ -1,51 +1,29 @@
-import { CommonModule } from '@angular/common';
-import { Component, inject, OnInit, signal } from '@angular/core';
 import {
-  AbstractControl,
-  FormBuilder,
-  FormGroup,
-  ReactiveFormsModule,
-  ValidationErrors,
-  Validators,
-} from '@angular/forms';
-import {
-  MAT_DIALOG_DATA,
-  MatDialogModule,
-  MatDialogRef,
-} from '@angular/material/dialog';
-import { IconComponent } from '@pdz/shared/images/icon/icon.component';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { first } from 'rxjs/operators';
-import { TierListService } from '../../tier-list.service';
+  ChangeDetectionStrategy,
+  Component,
+  inject,
+  signal,
+} from '@angular/core';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
+import {
+  DIALOG_DATA,
+  DialogRef,
+} from '@pdz/shared/dialogs/dialog/dialog.service';
 import { FieldComponent } from '@pdz/shared/inputs/field/field.component';
 import { FieldErrorDirective } from '@pdz/shared/inputs/field/field-message.directive';
 import { InputDirective } from '@pdz/shared/inputs/field/input.directive';
+import { first } from 'rxjs/operators';
+import { TierListService } from '../../tier-list.service';
 
 export interface TierListSettingsDialogData {
   name: string;
   description?: string;
 }
 
-function draftCountValidator(
-  control: AbstractControl,
-): ValidationErrors | null {
-  const group = control as FormGroup;
-  const min = group.get('min')?.value;
-  const max = group.get('max')?.value;
-  if (min != null && max != null && min > max) {
-    return { draftCountInvalid: true };
-  }
-  return null;
-}
-
 @Component({
   selector: 'pdz-tier-list-settings-dialog',
   imports: [
-    CommonModule,
-    MatDialogModule,
-    IconComponent,
-    MatProgressSpinnerModule,
     ReactiveFormsModule,
     ButtonComponent,
     FieldComponent,
@@ -54,34 +32,36 @@ function draftCountValidator(
   ],
   templateUrl: './tier-list-settings-dialog.component.html',
   styleUrls: ['./tier-list-settings-dialog.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class TierListSettingsDialogComponent implements OnInit {
-  dialogRef =
-    inject<MatDialogRef<TierListSettingsDialogComponent>>(MatDialogRef);
-  data = inject<TierListSettingsDialogData>(MAT_DIALOG_DATA);
-  private tierListService = inject(TierListService);
-  private fb = inject(FormBuilder);
+export class TierListSettingsDialogComponent {
+  protected readonly ref = inject(
+    DialogRef,
+  ) as DialogRef<TierListSettingsDialogData>;
+  protected readonly data = inject<TierListSettingsDialogData>(DIALOG_DATA);
+  private readonly tierListService = inject(TierListService);
+  private readonly fb = inject(FormBuilder);
 
-  form!: FormGroup;
-  isSaving = signal(false);
-  saveError = signal<string | null>(null);
+  protected readonly isSaving = signal(false);
+  protected readonly saveError = signal<string | null>(null);
 
-  ngOnInit(): void {
-    this.form = this.fb.group({
-      name: [this.data.name, [Validators.required, Validators.maxLength(100)]],
-      description: [this.data.description ?? '', Validators.maxLength(500)],
-    });
-  }
+  protected readonly form = this.fb.nonNullable.group({
+    name: [this.data.name, [Validators.required, Validators.maxLength(100)]],
+    description: [this.data.description ?? '', Validators.maxLength(500)],
+  });
 
-  onSave(): void {
-    if (this.form.invalid) return;
+  protected onSave(): void {
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
+      return;
+    }
     this.isSaving.set(true);
     this.saveError.set(null);
 
     const raw = this.form.getRawValue();
     const payload: TierListSettingsDialogData = {
       name: raw.name.trim(),
-      description: raw.description?.trim() || undefined,
+      description: raw.description.trim() || undefined,
     };
 
     this.tierListService
@@ -90,16 +70,12 @@ export class TierListSettingsDialogComponent implements OnInit {
       .subscribe({
         next: () => {
           this.isSaving.set(false);
-          this.dialogRef.close(payload);
+          this.ref.close(payload);
         },
-        error: (err: unknown) => {
+        error: () => {
           this.isSaving.set(false);
           this.saveError.set('Failed to save settings. Please try again.');
         },
       });
-  }
-
-  onCancel(): void {
-    this.dialogRef.close();
   }
 }
