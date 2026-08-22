@@ -11,11 +11,9 @@ import { MatSort, MatSortModule, Sort } from '@angular/material/sort';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { DRAFT_OVERVIEW_PATH } from '@pdz/core/route-paths';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
-import {
-  BadgeComponent,
-  BadgeTone,
-} from '@pdz/shared/data/badge/badge.component';
+import { BadgeTone } from '@pdz/shared/data/badge/badge.component';
 import { CardComponent } from '@pdz/shared/data/card/card.component';
+import { ScoreComponent } from '@pdz/shared/data/score/score.component';
 import { DialogService } from '@pdz/shared/dialogs/dialog/dialog.service';
 import { EmptyStateComponent } from '@pdz/shared/feedback/empty-state/empty-state.component';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
@@ -48,7 +46,7 @@ type Matchup = Opponent & {
     MatSortModule,
     CdkTableModule,
     ButtonComponent,
-    BadgeComponent,
+    ScoreComponent,
     CardComponent,
     EmptyStateComponent,
     MenuComponent,

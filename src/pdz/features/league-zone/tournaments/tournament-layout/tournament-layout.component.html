@@ -1,32 +1,4 @@
-<div class="layout" [class.layout--nav-open]="navOpen()">
-  <button
-    pdz-button
-    type="button"
-    variant="outlined"
-    color="neutral"
-    class="layout__nav-toggle"
-    aria-label="Open navigation"
-    (click)="toggleNav()"
-  >
-    <pdz-icon name="menu" [size]="22" aria-hidden="true"></pdz-icon>
-    <span>Menu</span>
-  </button>
-
-  <div class="layout__backdrop" (click)="closeNav()"></div>
-
-  <button
-    pdz-button
-    iconOnly
-    type="button"
-    variant="ghost"
-    color="neutral"
-    class="layout__nav-close"
-    aria-label="Close navigation"
-    (click)="closeNav()"
-  >
-    <pdz-icon name="close" [size]="22" aria-hidden="true"></pdz-icon>
-  </button>
-
+<div class="layout">
   <pdz-tournament-nav class="layout__nav"></pdz-tournament-nav>
 
   <div class="layout__divider"></div>

@@ -1,8 +1,15 @@
 @use "pdz-theming" as pdz;
 
 :host {
-  display: block;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
   min-width: 0;
+  transition: gap pdz.duration(base) pdz.easing(standard);
+}
+
+:host(.pdz-disclosure--open) {
+  gap: pdz.space(md);
 }
 
 :host([data-tone="panel"]) {
@@ -17,7 +24,6 @@
   align-items: center;
   gap: pdz.space(xs);
   width: 100%;
-  padding-inline-end: pdz.space(md);
 }
 
 .pdz-disclosure__toggle {
@@ -28,6 +34,7 @@
   min-width: 0;
   padding: pdz.space(sm) pdz.space(md);
   border: none;
+  border-radius: pdz.shape(corner-sm);
   background: transparent;
   color: pdz.color(on-surface);
   text-align: start;
@@ -51,12 +58,22 @@
 
 .pdz-disclosure__chevron {
   flex-shrink: 0;
+  order: -1;
   color: pdz.color(on-surface-variant);
   transition: transform pdz.duration(base) pdz.easing(standard);
 }
 
+:host([data-chevron="end"]) .pdz-disclosure__chevron {
+  order: 1;
+}
+
 :host(.pdz-disclosure--open) .pdz-disclosure__chevron {
   transform: rotate(90deg);
+}
+
+.pdz-disclosure__icon {
+  flex-shrink: 0;
+  color: pdz.color(on-surface-variant);
 }
 
 .pdz-disclosure__heading {
@@ -69,6 +86,10 @@
   display: inline-flex;
   align-items: center;
   gap: pdz.space(xs);
+
+  &:not(:empty) {
+    padding-inline-end: pdz.space(md);
+  }
 }
 
 .pdz-disclosure__panel {

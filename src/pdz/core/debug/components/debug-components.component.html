@@ -718,7 +718,7 @@
 <section class="section">
   <h2 class="section__title">Disclosure</h2>
   <pdz-disclosure heading="Round 1" tone="panel">
-    <div style="padding: 1rem">Panel body — collapses to content height.</div>
+    <div>Panel body — collapses to content height.</div>
   </pdz-disclosure>
 
   <pdz-disclosure tone="panel" [(open)]="secondOpen">
@@ -726,13 +726,35 @@
     <span pdz-disclosure-trailing>
       <button pdz-button size="sm" variant="ghost">Edit</button>
     </span>
-    <div style="padding: 1rem">
-      Open state is two-way bound — currently {{ secondOpen() }}.
-    </div>
+    <div>Open state is two-way bound — currently {{ secondOpen() }}.</div>
   </pdz-disclosure>
 
   <pdz-disclosure heading="Disabled section" tone="panel" disabled>
-    <div style="padding: 1rem">Never reachable.</div>
+    <div>Never reachable.</div>
+  </pdz-disclosure>
+
+  <pdz-disclosure heading="Plain tone (ghost)">
+    <div>No border/background — hover should stay rounded and flush right.</div>
+  </pdz-disclosure>
+
+  <pdz-disclosure heading="Chevron on the end" chevronPosition="end" tone="panel">
+    <div>Chevron sits after the heading.</div>
+  </pdz-disclosure>
+
+  <pdz-disclosure heading="With icon" icon="archive" tone="panel">
+    <div>Optional leading icon next to the heading.</div>
+  </pdz-disclosure>
+
+  <pdz-disclosure
+    heading="Icon + chevron end + trailing"
+    icon="archive"
+    chevronPosition="end"
+    tone="panel"
+  >
+    <span pdz-disclosure-trailing>
+      <button pdz-button size="sm" variant="ghost">Edit</button>
+    </span>
+    <div>All options combined.</div>
   </pdz-disclosure>
 </section>
 

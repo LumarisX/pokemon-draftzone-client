@@ -1,9 +1,5 @@
-import { Component, inject, signal } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
-import { filter } from 'rxjs/operators';
-import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
-import { IconComponent } from '@pdz/shared/images/icon/icon.component';
+import { Component } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
 import { RouteEnterDirective } from '@pdz/shared/layout/route-enter.directive';
 import { TournamentNavComponent } from '../tournament-nav/tournament-nav.component';
 
@@ -11,33 +7,6 @@ import { TournamentNavComponent } from '../tournament-nav/tournament-nav.compone
   selector: 'pdz-tournament-layout',
   templateUrl: './tournament-layout.component.html',
   styleUrl: './tournament-layout.component.scss',
-  imports: [
-    RouterOutlet,
-    RouteEnterDirective,
-    TournamentNavComponent,
-    ButtonComponent,
-    IconComponent,
-  ],
+  imports: [RouterOutlet, RouteEnterDirective, TournamentNavComponent],
 })
-export class TournamentLayoutComponent {
-  private router = inject(Router);
-
-  navOpen = signal(false);
-
-  constructor() {
-    this.router.events
-      .pipe(
-        filter((event) => event instanceof NavigationEnd),
-        takeUntilDestroyed(),
-      )
-      .subscribe(() => this.navOpen.set(false));
-  }
-
-  toggleNav(): void {
-    this.navOpen.update((open) => !open);
-  }
-
-  closeNav(): void {
-    this.navOpen.set(false);
-  }
-}
+export class TournamentLayoutComponent {}

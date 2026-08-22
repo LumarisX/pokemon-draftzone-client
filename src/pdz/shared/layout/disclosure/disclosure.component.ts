@@ -8,6 +8,7 @@ import {
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 
 export type DisclosureTone = 'plain' | 'panel';
+export type DisclosureChevronPosition = 'start' | 'end';
 
 let nextDisclosureId = 0;
 
@@ -31,6 +32,14 @@ let nextDisclosureId = 0;
           name="keyboard_arrow_right"
           [size]="18"
         />
+        @if (icon(); as iconName) {
+          <pdz-icon
+            class="pdz-disclosure__icon"
+            aria-hidden="true"
+            [name]="iconName"
+            [size]="18"
+          />
+        }
         <span class="pdz-disclosure__heading">
           @if (heading(); as text) {
             {{ text }}
@@ -61,13 +70,16 @@ let nextDisclosureId = 0;
   host: {
     class: 'pdz-disclosure',
     '[attr.data-tone]': 'tone()',
+    '[attr.data-chevron]': 'chevronPosition()',
     '[class.pdz-disclosure--open]': 'open()',
   },
 })
 export class DisclosureComponent {
   open = model(false);
   heading = input<string>();
+  icon = input<string>();
   tone = input<DisclosureTone>('plain');
+  chevronPosition = input<DisclosureChevronPosition>('start');
   disabled = input(false, { transform: booleanAttribute });
 
   private readonly id = nextDisclosureId++;

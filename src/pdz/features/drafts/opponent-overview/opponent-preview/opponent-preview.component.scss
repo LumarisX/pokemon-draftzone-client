@@ -56,15 +56,6 @@ section {
   align-items: start;
 }
 
-.matchup-card {
-  box-shadow: var(--pdz-level-1);
-  transition: box-shadow pdz.duration(slow) pdz.easing(standard);
-
-  &:hover {
-    box-shadow: var(--pdz-level-2);
-  }
-}
-
 .card-title {
   display: flex;
   align-items: center;

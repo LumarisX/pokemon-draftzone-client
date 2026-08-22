@@ -3,7 +3,7 @@ import { Router, RouterModule } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { TabNavComponent } from '@pdz/shared/layout/tab-nav/tab-nav.component';
-import { TabNavLinkDirective } from '@pdz/shared/layout/tab-nav/tab-nav-link.directive';
+import { TabNavLinkComponent } from '@pdz/shared/layout/tab-nav/tab-nav-link.component';
 import { LeagueZoneService } from '../../league-zone.service';
 import { LeagueScheduleWidgetComponent } from '../../league-widgets/league-schedule-widget/league-schedule-widget.component';
 import { LeagueTradeWidgetComponent } from '../../league-widgets/league-trade-widget/league-trade-widget.component';
@@ -17,7 +17,7 @@ import { getLeagueLogoUrl } from '../../league.util';
     RouterModule,
     IconComponent,
     TabNavComponent,
-    TabNavLinkDirective,
+    TabNavLinkComponent,
     LeagueTradeWidgetComponent,
     LeagueScheduleWidgetComponent,
     StageSwitcherComponent,

@@ -49,9 +49,9 @@
               </div>
 
               @if (matchup.score) {
-                <pdz-badge variant="soft" [tone]="matchup.scoreTone ?? 'neutral'">{{
+                <pdz-score [tone]="matchup.scoreTone ?? 'neutral'">{{
                   matchup.scoreString
-                }}</pdz-badge>
+                }}</pdz-score>
               }
 
               <pdz-menu aria-label="Match actions">

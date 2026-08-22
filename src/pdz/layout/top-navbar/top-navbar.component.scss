@@ -1,6 +1,5 @@
 @use "tokens/breakpoints" as *;
 @use "mixins" as *;
-@use "mixins/buttons" as *;
 @use "mixins/menu" as *;
 @use "pdz-theming" as pdz;
 
@@ -25,131 +24,12 @@
   flex: 1 1 auto;
 }
 
-.icon-btn {
-  position: relative;
-  @include icon-button-menu(
-    (
-      background: transparent,
-      background-hover: pdz.color(surface-container),
-      box-shadow-hover: var(--pdz-level-0),
-      color: pdz.color(on-surface),
-    )
-  );
-}
-
-.menu-tab {
-  display: inline-flex;
-  align-items: center;
-  gap: pdz.space(2xs);
-  position: relative;
-  padding: pdz.space(sm);
-  border: none;
-  background-color: transparent;
-  border-radius: pdz.shape(corner-sm);
-  font-family: var(--pdz-font-display);
-  font-size: pdz.font-size(md);
-  color: pdz.color(on-surface);
-  text-decoration: none;
-  cursor: pointer;
-  white-space: nowrap;
-  transition: background-color pdz.duration(slow) pdz.easing(standard);
-
-  &:hover {
-    background-color: pdz.color(surface-container);
-    color: pdz.color(on-surface);
-  }
-
-  &.active {
-    color: pdz.color(on-surface);
-
-    &::after {
-      content: "";
-      position: absolute;
-      left: pdz.space(sm);
-      right: pdz.space(sm);
-      bottom: 0.15rem;
-      height: 0.125rem;
-      border-radius: pdz.shape(corner-full);
-      background-color: pdz.color(primary);
-    }
-  }
-
-  &__caret {
-    opacity: 0.7;
-  }
-}
-
-.home-btn {
-  position: relative;
-  @include flat-button(
-    (
-      padding: pdz.space(2xs) pdz.space(sm),
-      box-shadow-hover: var(--pdz-level-0),
-      background-hover: pdz.color(surface-container),
-    )
-  );
-}
-
-.store-button {
-  margin: 0 pdz.space(xs);
-  @include flat-button(
-    (
-      font-family: var(--pdz-font-display),
-      padding: pdz.space(2xs) pdz.space(sm),
-      box-shadow-hover: var(--pdz-level-0),
-      background-hover: pdz.color(surface-container),
-    )
-  );
-
-  &__text {
-    display: none;
-
-    @include respond-above(small) {
-      display: inline;
-    }
-  }
-}
-
-.menu-panel {
-  @include menu-panel;
-}
-
-.menu-item {
-  @include menu-item;
-}
-
 .menu-section-label {
   @include menu-section-label;
 }
 
 .menu-divider {
   @include menu-divider;
-}
-
-.nav-badge {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 1.1rem;
-  height: 1.1rem;
-  padding: 0 0.3rem;
-  border-radius: pdz.shape(corner-full);
-  background-color: pdz.color(danger);
-  color: pdz.color(on-danger);
-  font-family: var(--pdz-font-body);
-  @include pdz.text(label-strong, $family: false);
-  line-height: 1;
-
-  &--dot {
-    position: absolute;
-    top: 0.35rem;
-    right: 0.35rem;
-    min-width: 0.55rem;
-    width: 0.55rem;
-    height: 0.55rem;
-    padding: 0;
-    border: 1.5px solid pdz.color(surface);
-  }
 }
 
 .mobile-menu {
@@ -166,12 +46,6 @@
   }
 
   .desktop-tabs {
-    display: flex;
-    align-items: center;
-    gap: pdz.space(2xs);
-  }
-
-  .store-button {
-    padding: pdz.space(sm);
+    display: block;
   }
 }

@@ -71,11 +71,9 @@
                 <h2 class="league-name">{{ tournament.tournamentName }}</h2>
               </div>
               @if (tournament.score) {
-                <pdz-badge
-                  variant="soft"
-                  [tone]="scoreTone(tournament.score)"
-                  >{{ scoreString(tournament.score) }}</pdz-badge
-                >
+                <pdz-score [tone]="scoreTone(tournament.score)">{{
+                  scoreString(tournament.score)
+                }}</pdz-score>
               }
             </div>
 
@@ -141,9 +139,9 @@
                 }
               </div>
               @if (draft.score) {
-                <pdz-badge variant="soft" [tone]="scoreTone(draft.score)">{{
+                <pdz-score [tone]="scoreTone(draft.score)">{{
                   scoreString(draft.score)
-                }}</pdz-badge>
+                }}</pdz-score>
               }
               <pdz-menu aria-label="Draft actions">
                 <button
@@ -232,7 +230,7 @@
   }
   <pdz-disclosure heading="Archived Drafts">
     <div class="drafts-grid">
-      @for (archive of archives; track archives) {
+      @for (archive of archives; track archive._id) {
         <pdz-card class="draft-card" color="primary" padding="sm">
           <div pdz-card-header>
             <div class="card-title">
@@ -249,9 +247,9 @@
             } -->
             </div>
             @if (archive.score) {
-              <pdz-badge variant="soft" [tone]="scoreTone(archive.score)">{{
+              <pdz-score [tone]="scoreTone(archive.score)">{{
                 scoreString(archive.score)
-              }}</pdz-badge>
+              }}</pdz-score>
             }
             <pdz-menu aria-label="Archive actions">
               <button

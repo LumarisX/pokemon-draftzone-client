@@ -24,7 +24,7 @@ import { SegmentedComponent } from '@pdz/shared/inputs/segmented/segmented.compo
 import { SegmentedOptionComponent } from '@pdz/shared/inputs/segmented/segmented-option.component';
 import { DisclosureComponent } from '@pdz/shared/layout/disclosure/disclosure.component';
 import { TabNavComponent } from '@pdz/shared/layout/tab-nav/tab-nav.component';
-import { TabNavLinkDirective } from '@pdz/shared/layout/tab-nav/tab-nav-link.directive';
+import { TabNavLinkComponent } from '@pdz/shared/layout/tab-nav/tab-nav-link.component';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import {
   DialogComponent,
@@ -67,7 +67,7 @@ const MODE_ATTR = 'pdz-theme-mode';
     SegmentedOptionComponent,
     DisclosureComponent,
     TabNavComponent,
-    TabNavLinkDirective,
+    TabNavLinkComponent,
     RouterLink,
     RouterLinkActive,
     TooltipDirective,

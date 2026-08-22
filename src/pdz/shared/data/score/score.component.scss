@@ -1,0 +1,59 @@
+@use "sass:map";
+@use "pdz-theming" as pdz;
+
+$tones: (
+  neutral: (
+    bg: surface-container-high,
+    on: on-surface-variant,
+  ),
+  primary: (
+    bg: primary-container,
+    on: on-primary-container,
+  ),
+  success: (
+    bg: success-container,
+    on: on-success-container,
+  ),
+  warning: (
+    bg: warning-container,
+    on: on-warning-container,
+  ),
+  danger: (
+    bg: danger-container,
+    on: on-danger-container,
+  ),
+  info: (
+    bg: info-container,
+    on: on-info-container,
+  ),
+);
+
+:host {
+  --pdz-score-bg: #{pdz.color(surface-container-high)};
+  --pdz-score-on: #{pdz.color(on-surface-variant)};
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  align-self: stretch;
+  padding-inline: pdz.space(sm);
+  border-radius: pdz.shape(corner-sm);
+  background-color: var(--pdz-score-bg);
+  color: var(--pdz-score-on);
+  font-family: var(--pdz-font-body);
+  @include pdz.text(label-strong, $family: false);
+  white-space: nowrap;
+}
+
+@each $name, $tokens in $tones {
+  :host([data-tone="#{$name}"]) {
+    --pdz-score-bg: #{pdz.color(map.get($tokens, bg))};
+    --pdz-score-on: #{pdz.color(map.get($tokens, on))};
+  }
+}
+
+@media (forced-colors: active) {
+  :host {
+    border: 1px solid CanvasText;
+  }
+}

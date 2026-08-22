@@ -4,11 +4,9 @@ import { RouterModule } from '@angular/router';
 import { DRAFT_OVERVIEW_PATH } from '@pdz/core/route-paths';
 import { LeagueZoneService } from '@pdz/features/league-zone/league-zone.service';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
-import {
-  BadgeComponent,
-  BadgeTone,
-} from '@pdz/shared/data/badge/badge.component';
+import { BadgeTone } from '@pdz/shared/data/badge/badge.component';
 import { CardComponent } from '@pdz/shared/data/card/card.component';
+import { ScoreComponent } from '@pdz/shared/data/score/score.component';
 import { SkeletonComponent } from '@pdz/shared/data/skeleton/skeleton.component';
 import { DialogService } from '@pdz/shared/dialogs/dialog/dialog.service';
 import { EmptyStateComponent } from '@pdz/shared/feedback/empty-state/empty-state.component';
@@ -38,7 +36,7 @@ type Score = { wins: number; losses: number };
     SpriteComponent,
     IconComponent,
     ButtonComponent,
-    BadgeComponent,
+    ScoreComponent,
     CardComponent,
     EmptyStateComponent,
     MenuComponent,
