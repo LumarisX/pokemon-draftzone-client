@@ -11,7 +11,7 @@ import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 
 export type ButtonVariant = 'filled' | 'tonal' | 'outlined' | 'ghost' | 'link';
 export type ButtonColor = 'primary' | 'secondary' | 'neutral' | 'danger';
-export type ButtonSize = 'sm' | 'md' | 'lg';
+export type ButtonSize = 'xs' | 'sm' | 'md' | 'lg';
 export type ButtonType = 'button' | 'submit' | 'reset';
 
 @Component({
@@ -59,7 +59,7 @@ export class ButtonComponent {
   icon = input<string>();
 
   protected iconSize = computed(
-    () => ({ sm: 16, md: 18, lg: 20 })[this.size()],
+    () => ({ xs: 14, sm: 16, md: 18, lg: 20 })[this.size()],
   );
 
   protected readonly isButton =

@@ -12,6 +12,7 @@ import {
   OnInit,
   Output,
   signal,
+  untracked,
   viewChild,
 } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -32,6 +33,13 @@ import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { ChoiceDirective } from '@pdz/shared/inputs/choice/choice.directive';
 import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
+import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
+import { FieldComponent } from '@pdz/shared/inputs/field/field.component';
+import { InputDirective } from '@pdz/shared/inputs/field/input.directive';
+import { SelectComponent } from '@pdz/shared/dropdowns/select/select.component';
+import { SelectOptionComponent } from '@pdz/shared/dropdowns/select/select-option.component';
+import { MenuComponent } from '@pdz/shared/menu/menu.component';
+import { MenuTriggerDirective } from '@pdz/shared/menu/menu-trigger.directive';
 import { Subject } from 'rxjs';
 import { first, takeUntil } from 'rxjs/operators';
 import { League } from '../../league-zone/league.interface';
@@ -66,18 +74,24 @@ interface DraftPokemonAction {
     SpriteComponent,
     IconComponent,
     PokemonTypeComponent,
+    ButtonComponent,
+    FieldComponent,
+    InputDirective,
+    SelectComponent,
+    SelectOptionComponent,
+    MenuComponent,
+    MenuTriggerDirective,
   ],
   styleUrls: ['./tier-list.component.scss'],
 })
 export class TierListComponent implements OnInit, OnDestroy {
-  // private leagueService = inject(LeagueZoneService);
   private tierListService = inject(TierListService);
   private wsService = inject(WebSocketService);
   private dialogs = inject(DialogService);
   private destroy$ = new Subject<void>();
 
   readonly header = input<string>();
-  /** Extra pokemon IDs to treat as drafted (e.g. local pending picks not yet saved). */
+
   localDraftedIds = input<string[]>([]);
   drafted = signal<{ [division: string]: { pokemonId: string }[] }>({});
   tiers = signal<LeagueTier[] | undefined>(undefined);
@@ -88,7 +102,7 @@ export class TierListComponent implements OnInit, OnDestroy {
   searchText = signal<string>('');
   selectedTypes = signal<Type[]>([]);
   filteredTypes = signal<Type[]>([...TYPES]);
-  /** The tier currently expanded to fill the whole width (hiding the others), if any. */
+
   expandedTierName = signal<string | null>(null);
 
   private tiersContainer = viewChild<ElementRef<HTMLElement>>('tiersContainer');
@@ -109,7 +123,6 @@ export class TierListComponent implements OnInit, OnDestroy {
     }));
   });
 
-  /** sortedTiers, narrowed to just the expanded tier (if any) so the others are hidden. */
   readonly displayedTiers = computed(() => {
     const tiers = this.sortedTiers();
     if (!tiers) return null;
@@ -128,18 +141,11 @@ export class TierListComponent implements OnInit, OnDestroy {
     return new Set([...serverIds, ...this.localDraftedIds()]);
   });
 
-  _menu: 'sort' | 'filter' | 'division' | null = null;
+  private readonly filterMenu = viewChild<MenuComponent>('filterMenu');
 
-  set menu(value: 'sort' | 'filter' | 'division' | null) {
-    if (value === 'filter') {
-      this.selectedTypes.set([...this.filteredTypes()]);
-    }
-    this._menu = value;
-  }
-
-  get menu() {
-    return this._menu;
-  }
+  readonly hiddenTypeCount = computed(
+    () => this.types.length - this.filteredTypes().length,
+  );
 
   get divisionNames() {
     return Object.keys(this.drafted());
@@ -155,10 +161,6 @@ export class TierListComponent implements OnInit, OnDestroy {
     { formes: TierPokemon['formes']; ref: TierPokemon }
   >();
 
-  /** The sprite renders its forme stack from `draftFormes`, but a tier entry
-   * stores its allowed formes in `formes`; expose a derived pokemon so the
-   * stack shows. Cached per entry (invalidated when `formes` changes) to keep
-   * a stable reference for the OnPush sprite. */
   spriteFor(pokemon: TierPokemon): TierPokemon {
     if (!pokemon.formes?.length) return pokemon;
     const cached = this.spriteCache.get(pokemon);
@@ -170,8 +172,8 @@ export class TierListComponent implements OnInit, OnDestroy {
 
   constructor() {
     effect(() => {
-      this.selectedDivision();
-      this.menu = null;
+      if (!this.filterMenu()?.isOpen()) return;
+      this.selectedTypes.set([...untracked(this.filteredTypes)]);
     });
     afterRenderEffect(() => {
       this.searchText();
@@ -180,10 +182,6 @@ export class TierListComponent implements OnInit, OnDestroy {
     });
   }
 
-  /**
-   * If the current search/filter left only empty tiers in the viewport,
-   * scroll the nearest tier that still has results into view.
-   */
   private snapToVisibleResult(): void {
     const container = this.tiersContainer()?.nativeElement;
     if (!container) return;
@@ -297,7 +295,7 @@ export class TierListComponent implements OnInit, OnDestroy {
 
   applyFilter(): void {
     this.filteredTypes.set([...this.selectedTypes()]);
-    this.menu = null;
+    this.filterMenu()?.close();
   }
 
   readonly buttonText = input<string>();
@@ -322,7 +320,6 @@ export class TierListComponent implements OnInit, OnDestroy {
     const displayedTiers = this.displayedTiers();
     if (!displayedTiers) return;
 
-    // Build flat list of all currently visible pokemon in display order
     const flatList: { pokemon: TierPokemon; tier: LeagueTier }[] = [];
     for (const t of displayedTiers) {
       for (const p of this.getVisiblePokemon(t)) {
@@ -330,7 +327,6 @@ export class TierListComponent implements OnInit, OnDestroy {
       }
     }
 
-    // Build dialog data for each entry and link as doubly-linked list
     const dataList = flatList.map(({ pokemon: p, tier: t }) =>
       this.buildPokemonDialogData(p, t),
     );

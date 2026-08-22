@@ -15,32 +15,17 @@
 // ─── Toolbar (list-specific) ──────────────────────────────────────────────
 
 .toolbar {
-  &__search {
-    input {
-      padding-right: pdz.space(xl);
-    }
+  &__search input {
+    padding-right: calc(pdz.space(xs) * 2 + 1.5rem);
   }
 
   &__search-clear {
     position: absolute;
     right: pdz.space(2xs);
-    width: 1.5rem;
-    height: 1.5rem;
-  }
-}
-
-// ─── Action button (list-specific modifiers) ──────────────────────────────
-
-.action-button {
-  &--sm {
-    padding: pdz.space(2xs) pdz.space(sm);
-    @include text(label);
   }
 
-  &--active {
-    background-color: pdz.color(primary-container);
-    color: pdz.color(on-primary-container);
-    border-color: pdz.color(primary-accent);
+  &__select pdz-select {
+    width: 8rem;
   }
 }
 
@@ -54,42 +39,30 @@
   color: pdz.color(on-warning-container);
   border-radius: pdz.shape(corner-full);
   @include text(label);
-  font-weight: 600;
 }
 
-.filter-control {
-  position: relative;
-
-  &--active .action-button {
-    border-color: pdz.color(warning);
-    color: pdz.color(on-warning-container);
-  }
+.filter-trigger--active {
+  --pdz-btn-border: #{pdz.color(warning)};
+  --pdz-btn-accent: #{pdz.color(on-warning-container)};
 }
 
-.filter-dropdown {
-  position: absolute;
-  top: calc(100% + pdz.space(xs));
-  right: 0;
-  background-color: pdz.color(surface-container-high);
-  border: 1px solid pdz.color(outline-variant);
-  border-radius: pdz.shape(corner-md);
-  box-shadow: var(--pdz-level-3);
-  z-index: pdz.z(popover);
-  min-width: 220px;
+.filter-panel {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
 
   &__header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: pdz.space(sm) pdz.space(md);
+    padding: pdz.space(xs) pdz.space(sm) pdz.space(sm);
     border-bottom: 1px solid pdz.color(outline-variant);
     gap: pdz.space(sm);
   }
 
   &__list {
-    max-height: 18rem;
     overflow-y: auto;
-    padding: pdz.space(xs);
+    padding-top: pdz.space(xs);
     display: flex;
     flex-direction: column;
     gap: 2px;
@@ -139,15 +112,12 @@
   }
 
   &__expand-button {
+    --pdz-btn-accent: currentColor;
     flex-shrink: 0;
-    width: 1.5rem;
-    height: 1.5rem;
     opacity: 0.7;
-    color: inherit;
 
     &:hover {
       opacity: 1;
-      background-color: rgba(0, 0, 0, 0.08);
     }
   }
 
@@ -224,14 +194,6 @@
     justify-content: center;
   }
 
-  &__type-circle {
-    width: 1rem;
-    height: 1rem;
-    border-radius: 50%;
-    flex-shrink: 0;
-    box-shadow: var(--pdz-level-1);
-  }
-
   &__info {
     flex: 1;
     min-width: 0;
@@ -266,9 +228,6 @@
   &__ban-icon {
     flex-shrink: 0;
     color: pdz.color(danger);
-    font-size: 16px;
-    width: 16px;
-    height: 16px;
   }
 
   &.is-drafted {

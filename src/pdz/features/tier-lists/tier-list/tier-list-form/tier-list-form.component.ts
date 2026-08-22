@@ -9,12 +9,19 @@ import {
   signal,
 } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { DialogService } from '@pdz/shared/dialogs/dialog/dialog.service';
+import { ToastService } from '@pdz/shared/feedback/toast/toast.service';
 import { TooltipDirective } from '@pdz/shared/tooltip/tooltip.directive';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
+import { FieldComponent } from '@pdz/shared/inputs/field/field.component';
+import { InputDirective } from '@pdz/shared/inputs/field/input.directive';
+import { SelectComponent } from '@pdz/shared/dropdowns/select/select.component';
+import { SelectOptionComponent } from '@pdz/shared/dropdowns/select/select-option.component';
+import { MenuComponent } from '@pdz/shared/menu/menu.component';
+import { MenuItemComponent } from '@pdz/shared/menu/menu-item.component';
+import { MenuTriggerDirective } from '@pdz/shared/menu/menu-trigger.directive';
 import { Subject } from 'rxjs';
 import { first, takeUntil } from 'rxjs/operators';
 import { TierPokemon } from '../../tier-list.model';
@@ -39,6 +46,7 @@ import {
   TierDialogResult,
   TierEditDialogComponent,
 } from './tier-edit-dialog/tier-edit-dialog.component';
+import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 
 export type EditTierPokemon = TierPokemon;
 
@@ -65,11 +73,18 @@ interface EditableTier {
     CommonModule,
     FormsModule,
     TooltipDirective,
-    MatSnackBarModule,
     ReactiveFormsModule,
     SpriteComponent,
     LoadingComponent,
     IconComponent,
+    ButtonComponent,
+    FieldComponent,
+    InputDirective,
+    SelectComponent,
+    SelectOptionComponent,
+    MenuComponent,
+    MenuItemComponent,
+    MenuTriggerDirective,
   ],
   templateUrl: './tier-list-form.component.html',
   styleUrls: ['./tier-list-form.component.scss'],
@@ -77,7 +92,7 @@ interface EditableTier {
 export class TierListFormComponent implements OnInit, OnDestroy {
   private tierListService = inject(TierListService);
   private dialogs = inject(DialogService);
-  private snackBar = inject(MatSnackBar);
+  private toasts = inject(ToastService);
   private destroy$ = new Subject<void>();
 
   // State
@@ -90,8 +105,6 @@ export class TierListFormComponent implements OnInit, OnDestroy {
   tierListName = signal<string>('Tier List');
   /** Needed to look up a species' formes when editing an entry. */
   ruleset = signal<string | undefined>(undefined);
-  showExportMenu = signal<boolean>(false);
-  showImportMenu = signal<boolean>(false);
 
   UNTIERED_TIER_NAME = 'Untiered';
   BANNED_TIER_NAME = 'Banned';
@@ -197,9 +210,7 @@ export class TierListFormComponent implements OnInit, OnDestroy {
         },
         error: (err) => {
           this.isLoading.set(false);
-          this.snackBar.open('Failed to load tier list', 'Close', {
-            duration: 3000,
-          });
+          this.toasts.error('Failed to load tier list');
           console.error('Failed to load tier list:', err);
         },
       });
@@ -440,14 +451,6 @@ export class TierListFormComponent implements OnInit, OnDestroy {
     this.redoStack = [];
     this.canUndo.set(true);
     this.canRedo.set(false);
-  }
-
-  @HostListener('document:click', ['$event'])
-  onDocumentClick(event: MouseEvent): void {
-    const target = event.target as HTMLElement;
-    if (!target.closest('.export-control')) {
-      this.showExportMenu.set(false);
-    }
   }
 
   @HostListener('window:keydown', ['$event'])
@@ -699,9 +702,7 @@ export class TierListFormComponent implements OnInit, OnDestroy {
     this.flashPokemon(moves.map((m) => m.pokemon.id));
     this.clearSelection();
     this.hasUnsavedChanges.set(true);
-    this.snackBar.open(`Moved ${moves.length} Pokemon`, undefined, {
-      duration: 2000,
-    });
+    this.toasts.success(`Moved ${moves.length} Pokémon`, { duration: 2000 });
   }
 
   private async openPokemonDialog(
@@ -767,7 +768,7 @@ export class TierListFormComponent implements OnInit, OnDestroy {
       this.untiered() ? { ...(this.untiered() as EditableTier) } : undefined,
     );
     this.hasUnsavedChanges.set(true);
-    this.snackBar.open('Pokemon updated', undefined, { duration: 2000 });
+    this.toasts.success('Pokémon updated', { duration: 2000 });
   }
 
   moveTier(fromIndex: number, toIndex: number): void {
@@ -794,9 +795,7 @@ export class TierListFormComponent implements OnInit, OnDestroy {
 
     this.tiers.set([...tiers]);
     this.hasUnsavedChanges.set(true);
-    this.snackBar.open(`Tier "${result.name}" added`, undefined, {
-      duration: 2000,
-    });
+    this.toasts.success(`Tier "${result.name}" added`, { duration: 2000 });
   }
 
   async editTier(tier: EditableTier): Promise<void> {
@@ -806,7 +805,7 @@ export class TierListFormComponent implements OnInit, OnDestroy {
     tier.name = result.name;
     tier.cost = result.cost;
     this.hasUnsavedChanges.set(true);
-    this.snackBar.open('Tier updated', undefined, { duration: 2000 });
+    this.toasts.success('Tier updated', { duration: 2000 });
   }
 
   private openTierDialog(
@@ -838,9 +837,7 @@ export class TierListFormComponent implements OnInit, OnDestroy {
 
     this.tiers.set([...tiers]);
     this.hasUnsavedChanges.set(true);
-    this.snackBar.open(`Tier "${tier.name}" deleted`, undefined, {
-      duration: 2000,
-    });
+    this.toasts.success(`Tier "${tier.name}" deleted`, { duration: 2000 });
   }
 
   readonly sortOptions: { value: SortOption; label: string }[] = [
@@ -861,7 +858,6 @@ export class TierListFormComponent implements OnInit, OnDestroy {
     const tiers = this.tiers();
     const banned = this.banned();
     if (!tiers) return;
-    this.showExportMenu.set(false);
 
     // Build ordered column list: Banned first, then regular tiers
     const columns: { name: string; pokemon: EditTierPokemon[] }[] = [];
@@ -914,7 +910,6 @@ export class TierListFormComponent implements OnInit, OnDestroy {
       reader.readAsText(file);
     };
     input.click();
-    this.showImportMenu.set(false);
   }
 
   private async openCsvImportDialog(csvText: string): Promise<void> {
@@ -927,7 +922,7 @@ export class TierListFormComponent implements OnInit, OnDestroy {
       .split('\n')
       .filter((l) => l.trim());
     if (lines.length < 1) {
-      this.snackBar.open('CSV file is empty.', 'Close', { duration: 4000 });
+      this.toasts.error('CSV file is empty.');
       return;
     }
 
@@ -1101,7 +1096,11 @@ export class TierListFormComponent implements OnInit, OnDestroy {
     if (unknownNames.size > 0) {
       parts.push(`${unknownNames.size} unrecognized name(s) skipped.`);
     }
-    this.snackBar.open(parts.join(' '), 'Close', { duration: 5000 });
+    this.toasts.show({
+      title: 'Import complete',
+      message: parts.join(' '),
+      tone: unknownNames.size > 0 ? 'warning' : 'success',
+    });
   }
 
   openSettings(): void {
@@ -1125,13 +1124,12 @@ export class TierListFormComponent implements OnInit, OnDestroy {
 
   saveTierList(): void {
     this.isLoading.set(true);
-    this.snackBar.open('Saving tier list...', undefined);
 
     const tiers = this.tiers();
     const nullTier = this.untiered();
     if (!tiers) {
       this.isLoading.set(false);
-      this.snackBar.open('No tier data to save', 'Close', { duration: 3000 });
+      this.toasts.error('No tier data to save');
       return;
     }
 
@@ -1185,18 +1183,14 @@ export class TierListFormComponent implements OnInit, OnDestroy {
           this.isLoading.set(false);
           this.savedHistoryDepth = this.undoStack.length;
           this.hasUnsavedChanges.set(false);
-          this.snackBar.open(
+          this.toasts.success(
             response.message || 'Tier list saved successfully',
-            undefined,
-            { duration: 3000 },
           );
         },
         error: (err) => {
           this.isLoading.set(false);
-          this.snackBar.open(
+          this.toasts.error(
             'Failed to save tier list: ' + (err.error?.message || err.message),
-            'Close',
-            { duration: 5000 },
           );
           console.error('Failed to save tier list:', err);
         },

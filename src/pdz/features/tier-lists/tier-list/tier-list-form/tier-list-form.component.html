@@ -1,19 +1,23 @@
 <div class="tier-form">
-  <!-- Toolbar -->
   <div class="toolbar">
     <button
-      class="action-button"
-      (click)="openSettings()"
+      pdz-button
+      iconOnly
+      pill
+      variant="outlined"
+      icon="settings"
+      color="neutral"
+      size="sm"
       aria-label="Settings"
-    >
-      <pdz-icon name="settings" size="sm"></pdz-icon>
-    </button>
+      (click)="openSettings()"
+    ></button>
+
     <h2 class="toolbar__title">{{ tierListName() }}</h2>
 
     @if (hasUnsavedChanges()) {
       <div class="unsaved-indicator">
-        <pdz-icon name="edit"></pdz-icon>
-        <span>Unsaved changes</span>
+        <pdz-icon size="xs" name="edit"></pdz-icon>
+        Unsaved changes
       </div>
     }
 
@@ -21,95 +25,99 @@
 
     <div class="toolbar__history">
       <button
-        class="icon-button"
+        pdz-button
+        iconOnly
+        pill
+        variant="ghost"
+        icon="undo"
+        color="neutral"
         [disabled]="!canUndo()"
         (click)="undo()"
         pdzTooltip="Undo (Ctrl+Z)"
-      >
-        <pdz-icon name="undo"></pdz-icon>
-      </button>
+      ></button>
       <button
-        class="icon-button"
+        pdz-button
+        iconOnly
+        pill
+        variant="ghost"
+        icon="redo"
+        color="neutral"
         [disabled]="!canRedo()"
         (click)="redo()"
         pdzTooltip="Redo (Ctrl+Y)"
-      >
-        <pdz-icon name="redo"></pdz-icon>
-      </button>
+      ></button>
     </div>
 
     <div class="toolbar__search">
-      <pdz-icon name="search"></pdz-icon>
+      <pdz-icon class="toolbar__search-icon" name="search" size="xs"></pdz-icon>
       <input
+        pdz-input
+        size="sm"
         type="text"
-        placeholder="Search Pokemon..."
+        aria-label="Search Pokémon"
+        placeholder="Search Pokémon..."
         [(ngModel)]="searchText"
         [ngModelOptions]="{ updateOn: 'change' }"
       />
     </div>
 
     <div class="toolbar__actions">
-      <div class="sort-control">
-        <pdz-icon name="sort"></pdz-icon>
-
-        <select [ngModel]="sortBy()" (ngModelChange)="setSortOption($event)">
+      <div pdz-field inline label="Sort" class="toolbar__sort">
+        <pdz-select
+          size="sm"
+          aria-label="Sort Pokémon by"
+          [ngModel]="sortBy()"
+          (ngModelChange)="setSortOption($event)"
+        >
           @for (option of sortOptions; track option.value) {
-            <option [value]="option.value">{{ option.label }}</option>
+            <pdz-option [value]="option.value" [label]="option.label" />
           }
-        </select>
+        </pdz-select>
       </div>
 
       <button
-        class="action-button action-button--primary"
+        pdz-button
         [disabled]="!hasUnsavedChanges()"
         (click)="saveTierList()"
-        pdzTooltip="Save changes (Ctrl+S)"
+        size="sm"
+        icon="save"
       >
-        <pdz-icon name="save" size="sm"></pdz-icon>
-
         Save
       </button>
 
-      <div class="export-control">
+      <pdz-menu aria-label="Export">
         <button
-          class="action-button"
-          (click)="
-            showExportMenu.set(!showExportMenu()); showImportMenu.set(false)
-          "
+          pdz-button
+          pdz-menu-trigger
+          variant="outlined"
+          iconOnly
+          pill
+          size="sm"
+          color="neutral"
+          icon="download"
           aria-label="Export"
-        >
-          <pdz-icon name="download" size="sm"></pdz-icon>
+        ></button>
+        <button pdz-menu-item icon="table_view" (click)="exportCsv()">
+          CSV
         </button>
-        @if (showExportMenu()) {
-          <div class="export-dropdown">
-            <button class="export-dropdown__item" (click)="exportCsv()">
-              <pdz-icon name="table_view" [size]="16"></pdz-icon>
-              CSV
-            </button>
-          </div>
-        }
-      </div>
+      </pdz-menu>
 
-      <div class="export-control">
+      <pdz-menu aria-label="Import">
         <button
-          class="action-button"
-          (click)="
-            showImportMenu.set(!showImportMenu()); showExportMenu.set(false)
-          "
+          pdz-button
+          pdz-menu-trigger
+          variant="outlined"
+          iconOnly
+          pill
+          size="sm"
+          color="neutral"
+          icon="upload"
           aria-label="Import"
-          pdzTooltip="Import"
-        >
-          <pdz-icon name="upload" size="sm"></pdz-icon>
+        ></button>
+        <button pdz-menu-item icon="table_view" (click)="importCsv()">
+          CSV
         </button>
-        @if (showImportMenu()) {
-          <div class="export-dropdown">
-            <button class="export-dropdown__item" (click)="importCsv()">
-              <pdz-icon name="table_view" [size]="16"></pdz-icon>
-              CSV
-            </button>
-          </div>
-        }
-      </div>
+      </pdz-menu>
     </div>
   </div>
 
@@ -164,7 +172,7 @@
                   >
                     @if (isPokemonSelected(pokemon)) {
                       <div class="pokemon-entry__select-indicator">
-                        <pdz-icon name="check_circle"></pdz-icon>
+                        <pdz-icon name="check_circle" size="xs"></pdz-icon>
                       </div>
                     }
 
@@ -176,15 +184,17 @@
                       {{ pokemon.name }}
                     </span>
 
-                    <div class="pokemon-entry__actions">
-                      <button
-                        class="icon-button icon-button--edit"
-                        (click)="onEditPokemon(pokemon, untiered()!, $event)"
-                        pdzTooltip="Edit Pokemon"
-                      >
-                        <pdz-icon name="edit"></pdz-icon>
-                      </button>
-                    </div>
+                    <button
+                      pdz-button
+                      iconOnly
+                      pill
+                      size="xs"
+                      variant="ghost"
+                      icon="edit"
+                      class="pokemon-entry__edit"
+                      aria-label="Edit Pokémon"
+                      (click)="onEditPokemon(pokemon, untiered()!, $event)"
+                    ></button>
                   </div>
                 }
               }
@@ -206,15 +216,12 @@
           </div>
         }
 
-        <!-- Banned Section -->
         @if (banned()) {
           <div class="tier tier--banned" [style.flex]="bannedPanelFlex()">
-            <!-- Tier Header -->
             <div class="tier__header tier__header--banned">
               <span class="tier__name">{{ banned()!.name }}</span>
             </div>
 
-            <!-- Pokemon List (Drop Zone) -->
             <div
               class="tier__pokemon-list"
               (dragover)="onDragOver($event, banned()!)"
@@ -245,7 +252,7 @@
                   >
                     @if (isPokemonSelected(pokemon)) {
                       <div class="pokemon-entry__select-indicator">
-                        <pdz-icon name="check_circle"></pdz-icon>
+                        <pdz-icon name="check_circle" size="xs"></pdz-icon>
                       </div>
                     }
 
@@ -257,15 +264,17 @@
                       {{ pokemon.name }}
                     </span>
 
-                    <div class="pokemon-entry__actions">
-                      <button
-                        class="icon-button icon-button--edit"
-                        (click)="onEditPokemon(pokemon, banned()!, $event)"
-                        pdzTooltip="Edit Pokemon"
-                      >
-                        <pdz-icon name="edit"></pdz-icon>
-                      </button>
-                    </div>
+                    <button
+                      pdz-button
+                      iconOnly
+                      pill
+                      size="xs"
+                      variant="ghost"
+                      icon="edit"
+                      class="pokemon-entry__edit"
+                      aria-label="Edit Pokémon"
+                      (click)="onEditPokemon(pokemon, banned()!, $event)"
+                    ></button>
                   </div>
                 }
               }
@@ -284,7 +293,8 @@
                   <span class="tier__name">{{ tier.name }}</span>
                   @if (tier.cost != null) {
                     <span class="tier__cost">
-                      <pdz-icon name="currency_ruble"></pdz-icon>{{ tier.cost }}
+                      <pdz-icon name="currency_ruble" [size]="14"></pdz-icon
+                      >{{ tier.cost }}
                     </span>
                   }
                 </div>
@@ -292,37 +302,53 @@
               <div class="tier__actions">
                 <div class="tier__actions-row">
                   <button
-                    class="icon-button"
+                    pdz-button
+                    iconOnly
+                    size="xs"
+                    variant="ghost"
+                    color="neutral"
+                    pill
+                    icon="edit"
+                    aria-label="Edit tier"
                     (click)="editTier(tier)"
-                    pdzTooltip="Edit tier"
-                  >
-                    <pdz-icon name="edit"></pdz-icon>
-                  </button>
+                  ></button>
                   <button
-                    class="icon-button icon-button--delete"
+                    pdz-button
+                    iconOnly
+                    size="xs"
+                    variant="ghost"
+                    color="danger"
+                    pill
+                    icon="delete"
+                    aria-label="Delete tier"
                     (click)="deleteTier(tierIndex)"
-                    pdzTooltip="Delete tier"
-                  >
-                    <pdz-icon name="delete"></pdz-icon>
-                  </button>
+                  ></button>
                 </div>
                 <div class="tier__actions-row">
                   <button
-                    class="icon-button"
+                    pdz-button
+                    iconOnly
+                    size="xs"
+                    variant="ghost"
+                    color="neutral"
+                    pill
+                    icon="arrow_back"
+                    aria-label="Move tier left"
                     [disabled]="tierIndex === 0"
                     (click)="moveTier(tierIndex, tierIndex - 1)"
-                    pdzTooltip="Move tier left"
-                  >
-                    <pdz-icon name="arrow_back"></pdz-icon>
-                  </button>
+                  ></button>
                   <button
-                    class="icon-button"
+                    pdz-button
+                    iconOnly
+                    size="xs"
+                    variant="ghost"
+                    color="neutral"
+                    pill
+                    icon="arrow_forward"
+                    aria-label="Move tier right"
                     [disabled]="tierIndex === tiers()!.length - 1"
                     (click)="moveTier(tierIndex, tierIndex + 1)"
-                    pdzTooltip="Move tier right"
-                  >
-                    <pdz-icon name="arrow_forward"></pdz-icon>
-                  </button>
+                  ></button>
                 </div>
               </div>
             </div>
@@ -342,7 +368,7 @@
                 >
               }
               @if (tier.pokemon.length === 0) {
-                <span>Drag Pokemon here</span>
+                <span>Drag Pokémon here</span>
               }
 
               @for (pokemon of tier.pokemon; track pokemon.id) {
@@ -359,7 +385,7 @@
                   >
                     @if (isPokemonSelected(pokemon)) {
                       <div class="pokemon-entry__select-indicator">
-                        <pdz-icon name="check_circle"></pdz-icon>
+                        <pdz-icon name="check_circle" size="xs"></pdz-icon>
                       </div>
                     }
 
@@ -371,15 +397,17 @@
                       {{ pokemon.name }}
                     </span>
 
-                    <div class="pokemon-entry__actions">
-                      <button
-                        class="icon-button icon-button--edit"
-                        (click)="onEditPokemon(pokemon, tier, $event)"
-                        pdzTooltip="Edit Pokemon"
-                      >
-                        <pdz-icon name="edit"></pdz-icon>
-                      </button>
-                    </div>
+                    <button
+                      pdz-button
+                      iconOnly
+                      pill
+                      size="xs"
+                      variant="ghost"
+                      icon="edit"
+                      class="pokemon-entry__edit"
+                      aria-label="Edit Pokémon"
+                      (click)="onEditPokemon(pokemon, tier, $event)"
+                    ></button>
                   </div>
                 }
               }
@@ -387,14 +415,14 @@
           </div>
         }
 
-        <!-- Add Tier Button -->
-        <div
+        <button
+          type="button"
           class="add-tier-button"
+          aria-label="Add new tier"
           (click)="addNewTier()"
-          pdzTooltip="Add new tier"
         >
-          <pdz-icon name="add"></pdz-icon>
-        </div>
+          <pdz-icon name="add" size="xl"></pdz-icon>
+        </button>
       </div>
     }
   </div>

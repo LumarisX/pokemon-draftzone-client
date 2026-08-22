@@ -40,6 +40,14 @@
   }
 }
 
+:host([data-size="sm"]) .pdz-select__trigger {
+  min-height: 1.75rem;
+  gap: pdz.space(xs);
+  padding: pdz.space(2xs) pdz.space(sm);
+  border-radius: pdz.shape(corner-xs);
+  @include pdz.text(label, $family: false);
+}
+
 :host(.pdz-select--open) .pdz-select__trigger {
   border-color: pdz.color(primary-accent);
 }

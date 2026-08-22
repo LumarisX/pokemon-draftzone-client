@@ -110,6 +110,7 @@ const MIN_LISTBOX_SPACE = 240;
   ],
   host: {
     class: 'pdz-select',
+    '[attr.data-size]': 'size()',
     '[class.pdz-select--open]': 'isOpen()',
     '[class.pdz-select--disabled]': 'disabled()',
     '[class.pdz-select--invalid]': 'invalid()',
@@ -117,6 +118,7 @@ const MIN_LISTBOX_SPACE = 240;
 })
 export class SelectComponent implements ControlValueAccessor {
   value = model<unknown>(undefined);
+  size = input<'sm' | 'md'>('md');
   placeholder = input('Select…');
   disabled = model(false);
   invalid = input(false, { transform: booleanAttribute });

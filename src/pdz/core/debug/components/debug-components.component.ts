@@ -92,7 +92,7 @@ export class DebugComponentsComponent {
     'neutral',
     'danger',
   ];
-  readonly sizes: ButtonSize[] = ['sm', 'md', 'lg'];
+  readonly sizes: ButtonSize[] = ['xs', 'sm', 'md', 'lg'];
   readonly themes = ['classic', 'classic-reverse', 'fern', 'shiny', 'sunset'];
 
   readonly tableRows = [

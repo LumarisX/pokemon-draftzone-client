@@ -54,6 +54,23 @@ const svgIconPaths: Readonly<Record<string, string>> = {
   status: 'assets/icons/moves/status.svg',
 };
 
+export type IconSizeName = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+export type IconSize = number | IconSizeName;
+
+const SIZE_MAP: Readonly<Record<IconSizeName, number>> = {
+  xs: 16,
+  sm: 20,
+  md: 24,
+  lg: 32,
+  xl: 48,
+};
+
+const DEFAULT_SIZE = SIZE_MAP.md;
+
+function toPixels(size: IconSize): number {
+  return typeof size === 'number' ? size : (SIZE_MAP[size] ?? DEFAULT_SIZE);
+}
+
 @Component({
   selector: 'pdz-icon',
   imports: [CommonModule],
@@ -83,26 +100,6 @@ const svgIconPaths: Readonly<Record<string, string>> = {
         align-items: center;
         justify-content: center;
         vertical-align: middle;
-
-        &[size='xs'] {
-          --icon-size: 16px;
-        }
-
-        &[size='sm'] {
-          --icon-size: 20px;
-        }
-
-        &[size='md'] {
-          --icon-size: 24px;
-        }
-
-        &[size='lg'] {
-          --icon-size: 32px;
-        }
-
-        &[size='xl'] {
-          --icon-size: 48px;
-        }
       }
 
       .icon-wrapper {
@@ -131,9 +128,9 @@ export class IconComponent implements OnChanges {
     return this._name;
   }
 
-  readonly size = input<number | 'sm' | 'md' | 'lg' | 'xl'>(24);
-  readonly width = input<number | 'sm' | 'md' | 'lg' | 'xl'>();
-  readonly height = input<number | 'sm' | 'md' | 'lg' | 'xl'>();
+  readonly size = input<IconSize>(24);
+  readonly width = input<IconSize>();
+  readonly height = input<IconSize>();
   readonly square = input(false, { transform: booleanAttribute });
 
   readonly weight = input<number>(400);
@@ -157,83 +154,19 @@ export class IconComponent implements OnChanges {
   ) {}
 
   get computedWidth(): number | undefined {
-    const width = this.width();
-    if (width !== undefined) {
-      if (typeof width === 'number') return width;
-      const sizeMap: Record<string, number> = {
-        xs: 16,
-        sm: 20,
-        md: 24,
-        lg: 32,
-        xl: 48,
-      };
-      return sizeMap[width] || 24;
-    }
-    const height = this.height();
-    if (height !== undefined) {
-      if (this.square()) {
-        if (typeof height === 'number') return height;
-        const sizeMap: Record<string, number> = {
-          xs: 16,
-          sm: 20,
-          md: 24,
-          lg: 32,
-          xl: 48,
-        };
-        return sizeMap[height] || 24;
-      }
-      return undefined;
-    }
-    const size = this.size();
-    if (typeof size === 'number') return size;
-    const sizeMap: Record<string, number> = {
-      xs: 16,
-      sm: 20,
-      md: 24,
-      lg: 32,
-      xl: 48,
-    };
-    return sizeMap[size] || 24;
+    return this.resolveAxis(this.width(), this.height());
   }
 
   get computedHeight(): number | undefined {
-    const height = this.height();
-    if (height !== undefined) {
-      if (typeof height === 'number') return height;
-      const sizeMap: Record<string, number> = {
-        xs: 16,
-        sm: 20,
-        md: 24,
-        lg: 32,
-        xl: 48,
-      };
-      return sizeMap[height] || 24;
+    return this.resolveAxis(this.height(), this.width());
+  }
+
+  private resolveAxis(own?: IconSize, other?: IconSize): number | undefined {
+    if (own !== undefined) return toPixels(own);
+    if (other !== undefined) {
+      return this.square() ? toPixels(other) : undefined;
     }
-    const width = this.width();
-    if (width !== undefined) {
-      if (this.square()) {
-        if (typeof width === 'number') return width;
-        const sizeMap: Record<string, number> = {
-          xs: 16,
-          sm: 20,
-          md: 24,
-          lg: 32,
-          xl: 48,
-        };
-        return sizeMap[width] || 24;
-      }
-      return undefined;
-    }
-    const size = this.size();
-    if (typeof size === 'number') return size;
-    const sizeMap: Record<string, number> = {
-      xs: 16,
-      sm: 20,
-      md: 24,
-      lg: 32,
-      xl: 48,
-    };
-    return sizeMap[size] || 24;
+    return toPixels(this.size());
   }
 
   get fontSettings(): string {

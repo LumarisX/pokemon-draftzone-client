@@ -15,111 +15,19 @@
 // ─── Toolbar (form-specific) ──────────────────────────────────────────────
 
 .toolbar {
-  &__search {
-    input {
-      min-width: 200px;
-    }
-  }
-
   &__actions {
     display: flex;
     align-items: center;
     gap: pdz.space(sm);
   }
-}
 
-.toolbar__history {
-  display: flex;
-  gap: pdz.space(2xs);
-  align-items: center;
-
-  .icon-button {
-    width: 2.25rem;
-    height: 2.25rem;
-
-    &[disabled] {
-      opacity: 0.35;
-      cursor: default;
-      pointer-events: none;
-    }
-  }
-}
-
-// ─── Icon button (form-specific modifiers) ────────────────────────────────
-
-.icon-button {
-  &--delete:hover pdz-icon {
-    color: pdz.color(danger);
-  }
-
-  &--edit pdz-icon {
-    color: pdz.color(primary-accent);
-  }
-}
-
-// ─── Action button (form-specific modifiers) ──────────────────────────────
-
-.action-button {
-  &--secondary {
-    background-color: pdz.color(secondary);
-    color: pdz.color(on-secondary);
-    border-color: pdz.color(secondary-accent);
-
-    &:hover {
-      background-color: pdz.color(secondary-hover);
-    }
-  }
-}
-
-// ─── Export dropdown ──────────────────────────────────────────────────────
-
-.export-control {
-  position: relative;
-
-  &__chevron {
-    font-size: pdz.font-size(md);
-    width: 1rem;
-    height: 1rem;
-    margin-left: calc(pdz.space(2xs) * -1);
-  }
-}
-
-.export-dropdown {
-  position: absolute;
-  top: calc(100% + pdz.space(2xs));
-  right: 0;
-  background-color: pdz.color(surface-container);
-  border: 1px solid pdz.color(outline-variant);
-  border-radius: pdz.shape(corner-sm);
-  box-shadow: var(--pdz-level-3);
-  z-index: pdz.z(popover);
-  min-width: 9rem;
-  padding: pdz.space(2xs);
-
-  &__item {
+  &__history {
     display: flex;
     align-items: center;
-    gap: pdz.space(sm);
-    width: 100%;
-    padding: pdz.space(xs) pdz.space(sm);
-    border: none;
-    border-radius: pdz.shape(corner-xs);
-    background: transparent;
-    color: pdz.color(on-surface);
-    cursor: pointer;
-    @include text(body-sm);
-    text-align: left;
+  }
 
-    pdz-icon {
-      font-size: 1.1rem;
-      width: 1.1rem;
-      height: 1.1rem;
-      color: pdz.color(on-surface-variant);
-    }
-
-    &:hover {
-      background-color: pdz.color(surface-container-high);
-    }
+  &__sort pdz-select {
+    width: 6rem;
   }
 }
 
@@ -182,6 +90,8 @@
   min-width: 280px;
 
   &__header {
+    padding-block: pdz.space(2xs);
+
     &--null {
       background-color: pdz.color(secondary-container);
       color: pdz.color(on-secondary-container);
@@ -195,60 +105,18 @@
     }
   }
 
-  &__trash-icon {
-    margin-right: pdz.space(xs);
-    font-size: 1.25rem;
-    width: 1.25rem;
-    height: 1.25rem;
-  }
-
-  &__meta-chip {
-    &--untiered {
-      border: 1px solid pdz.color(secondary-border);
-    }
-
-    &--banned {
-      border: 1px solid pdz.color(negative);
-    }
-  }
-
-  &__move-buttons {
-    display: none;
-  }
-
   &__actions {
     display: flex;
     flex-direction: column;
-    gap: 0;
     flex-shrink: 0;
   }
 
   &__actions-row {
     display: flex;
     flex-direction: row;
-    gap: 0;
 
-    .icon-button {
-      width: 20px;
-      height: 20px;
-      min-width: 20px;
-      min-height: 20px;
-      opacity: 0.5;
-
-      pdz-icon {
-        font-size: 14px;
-        width: 14px;
-        height: 14px;
-      }
-
-      &:not([disabled]):hover {
-        opacity: 1;
-      }
-
-      &[disabled] {
-        opacity: 0.15;
-        cursor: default;
-      }
+    .pdz-btn:not([data-color="danger"]) {
+      --pdz-btn-accent: currentColor;
     }
   }
 
@@ -372,9 +240,6 @@
     z-index: 1;
 
     pdz-icon {
-      font-size: 1rem;
-      width: 1rem;
-      height: 1rem;
       color: pdz.color(on-primary);
     }
   }
@@ -391,14 +256,14 @@
     color: pdz.color(on-surface);
   }
 
-  &__actions {
-    display: flex;
-    gap: pdz.space(2xs);
+  &__edit {
+    --pdz-btn-accent: #{pdz.color(primary-accent)};
+    flex-shrink: 0;
     opacity: 0.7;
     transition: opacity pdz.duration(base) pdz.easing(standard);
   }
 
-  &:hover &__actions {
+  &:hover &__edit {
     opacity: 1;
   }
 
@@ -411,7 +276,7 @@
       background-color: pdz.color(primary-container-high);
     }
 
-    .pokemon-entry__actions {
+    .pokemon-entry__edit {
       opacity: 1;
     }
   }
@@ -421,7 +286,7 @@
   }
 }
 
-// ─── Status indicators ────────────────────────────────────────────────────
+// ─── Add tier ─────────────────────────────────────────────────────────────
 
 .add-tier-button {
   display: flex;
@@ -433,20 +298,22 @@
   border: 2px dashed pdz.color(outline);
   border-radius: pdz.shape(corner-md);
   cursor: pointer;
-  transition: all pdz.duration(base) pdz.easing(standard);
+  transition:
+    background-color pdz.duration(base) pdz.easing(standard),
+    border-color pdz.duration(base) pdz.easing(standard),
+    color pdz.duration(base) pdz.easing(standard);
   color: pdz.color(on-surface-variant);
   flex-shrink: 0;
-
-  pdz-icon {
-    font-size: 2.5rem;
-    width: 2.5rem;
-    height: 2.5rem;
-  }
 
   &:hover {
     background-color: pdz.color(primary-container);
     border-color: pdz.color(primary-accent);
     color: pdz.color(on-primary-container);
+  }
+
+  &:focus-visible {
+    outline: 2px solid pdz.color(primary-accent);
+    outline-offset: 2px;
   }
 }
 
@@ -454,63 +321,9 @@
   display: inline-flex;
   align-items: center;
   gap: pdz.space(xs);
-  padding: pdz.space(xs) pdz.space(sm);
+  padding: pdz.space(2xs) pdz.space(sm);
   background-color: pdz.color(warning-container);
   color: pdz.color(on-warning-container);
   border-radius: pdz.shape(corner-full);
   @include text(label);
-
-  pdz-icon {
-    font-size: 1rem;
-    width: 1rem;
-    height: 1rem;
-  }
-}
-
-.drag-indicator {
-  display: inline-flex;
-  align-items: center;
-  gap: pdz.space(xs);
-  padding: pdz.space(xs) pdz.space(sm);
-  background-color: pdz.color(secondary-container);
-  color: pdz.color(on-secondary-container);
-  border-radius: pdz.shape(corner-full);
-  @include text(label);
-  font-weight: 600;
-
-  pdz-icon {
-    font-size: 1rem;
-    width: 1rem;
-    height: 1rem;
-  }
-}
-
-.selection-indicator {
-  display: inline-flex;
-  align-items: center;
-  gap: pdz.space(xs);
-  padding: pdz.space(xs) pdz.space(sm);
-  background-color: pdz.color(primary-container);
-  color: pdz.color(on-primary-container);
-  border-radius: pdz.shape(corner-full);
-  @include text(label);
-  font-weight: 600;
-
-  pdz-icon {
-    font-size: 1rem;
-    width: 1rem;
-    height: 1rem;
-  }
-
-  .icon-button {
-    width: 1.5rem;
-    height: 1.5rem;
-    margin-left: pdz.space(xs);
-
-    pdz-icon {
-      font-size: 1rem;
-      width: 1rem;
-      height: 1rem;
-    }
-  }
 }

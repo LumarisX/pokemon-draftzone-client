@@ -23,7 +23,7 @@
     flex-shrink: 0;
 
     &__title {
-      @include text(subtitle);
+      @include text(card-title);
       font-family: var(--pdz-font-display);
       color: pdz.color(on-surface);
       margin: 0;
@@ -39,154 +39,16 @@
       align-items: center;
 
       input {
-        padding: pdz.space(xs) pdz.space(md);
-        padding-left: pdz.space(xl);
-        border: 1px solid pdz.color(outline);
+        min-width: 11rem;
+        padding-left: calc(pdz.space(xs) * 2 + 1rem);
         border-radius: pdz.shape(corner-full);
-        background-color: pdz.color(surface);
-        color: pdz.color(on-surface);
-        @include text(body-sm);
-        min-width: 180px;
-        transition: border-color pdz.duration(base) pdz.easing(standard);
-
-        &:focus {
-          outline: 2px solid pdz.color(primary-accent);
-          outline-offset: 1px;
-          border-color: pdz.color(primary-accent);
-        }
-
-        &::placeholder {
-          color: pdz.color(on-surface-variant);
-        }
       }
 
       pdz-icon {
         position: absolute;
-        left: pdz.space(sm);
+        left: pdz.space(xs);
         color: pdz.color(on-surface-variant);
-        font-size: 1.125rem;
-        width: 1.125rem;
-        height: 1.125rem;
         pointer-events: none;
-      }
-    }
-  }
-
-  // ─── Sort control ─────────────────────────────────────────────────────────
-
-  .sort-control {
-    position: relative;
-    display: flex;
-    align-items: center;
-
-    pdz-icon {
-      position: absolute;
-      left: pdz.space(sm);
-      font-size: 1.125rem;
-      width: 1.125rem;
-      height: 1.125rem;
-      color: pdz.color(on-surface-variant);
-      pointer-events: none;
-    }
-
-    select {
-      padding: pdz.space(xs) pdz.space(xl) pdz.space(xs)
-        calc(pdz.space(sm) + 1.25rem + pdz.space(xs));
-      border: 1px solid pdz.color(outline);
-      border-radius: pdz.shape(corner-full);
-      background-color: pdz.color(surface);
-      color: pdz.color(on-surface);
-      @include text(label);
-      cursor: pointer;
-      appearance: none;
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23888'/%3E%3C/svg%3E");
-      background-repeat: no-repeat;
-      background-position: right pdz.space(sm) center;
-      transition: border-color pdz.duration(base) pdz.easing(standard);
-
-      &:focus {
-        outline: 2px solid pdz.color(primary-accent);
-        outline-offset: 1px;
-      }
-
-      &:hover {
-        border-color: pdz.color(primary-accent);
-      }
-    }
-  }
-
-  // ─── Action button ────────────────────────────────────────────────────────
-
-  .action-button {
-    display: inline-flex;
-    align-items: center;
-    gap: pdz.space(xs);
-    padding: pdz.space(xs) pdz.space(xs);
-    border: 1px solid pdz.color(outline);
-    background-color: pdz.color(surface);
-    color: pdz.color(on-surface);
-    border-radius: pdz.shape(corner-full);
-    cursor: pointer;
-    @include text(label);
-    transition: all pdz.duration(base) pdz.easing(standard);
-    white-space: nowrap;
-
-    pdz-icon {
-      font-size: 1.25rem;
-      width: 1.25rem;
-      height: 1.25rem;
-    }
-
-    &:hover {
-      background-color: pdz.color(primary);
-      color: pdz.color(on-primary);
-      border-color: pdz.color(primary-accent);
-    }
-
-    &--primary {
-      background-color: pdz.color(primary);
-      color: pdz.color(on-primary);
-      border-color: pdz.color(primary-accent);
-
-      &:hover {
-        background-color: pdz.color(primary-hover);
-      }
-    }
-
-    &:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-      pointer-events: none;
-    }
-  }
-
-  // ─── Icon button ──────────────────────────────────────────────────────────
-
-  .icon-button {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 2rem;
-    height: 2rem;
-    padding: 0;
-    border: none;
-    background: transparent;
-    border-radius: pdz.shape(corner-full);
-    cursor: pointer;
-    color: pdz.color(on-surface-variant);
-    transition: all pdz.duration(base) pdz.easing(standard);
-
-    pdz-icon {
-      font-size: 1.25rem;
-      width: 1.25rem;
-      height: 1.25rem;
-    }
-
-    &:hover {
-      background-color: pdz.color(surface-container-highest);
-
-      pdz-icon {
-        color: pdz.color(primary-accent);
       }
     }
   }
@@ -246,6 +108,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
+      gap: pdz.space(sm);
       padding: pdz.space(sm) pdz.space(md);
       background-color: pdz.color(primary-container);
       color: pdz.color(on-primary-container);
@@ -278,43 +141,12 @@
       @include text(label);
       color: pdz.color(on-primary-container);
       opacity: 0.7;
-
-      pdz-icon {
-        font-size: 0.85rem;
-        width: 0.85rem;
-        height: 0.85rem;
-      }
     }
 
     &__name {
-      @include text(title);
+      @include text(subtitle);
       font-family: var(--pdz-font-display);
-      font-weight: 700;
       color: pdz.color(on-primary-container);
-    }
-
-    &__meta {
-      display: flex;
-      flex-wrap: wrap;
-      gap: pdz.space(2xs);
-    }
-
-    &__meta-chip {
-      display: inline-flex;
-      align-items: center;
-      gap: 2px;
-      @include text(label);
-      border: 1px solid pdz.color(primary-border);
-      border-radius: pdz.shape(corner-full);
-      padding: 0 pdz.space(xs);
-      line-height: 1.5;
-      opacity: 0.85;
-
-      pdz-icon {
-        font-size: 0.8rem;
-        width: 0.8rem;
-        height: 0.8rem;
-      }
     }
 
     &__pokemon-list {

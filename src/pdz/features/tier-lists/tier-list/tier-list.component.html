@@ -4,121 +4,129 @@
   <div class="toolbar__spacer"></div>
 
   <div class="toolbar__search">
-    <pdz-icon name="search"></pdz-icon>
+    <pdz-icon name="search" size="xs"></pdz-icon>
     <input
+      pdz-input
+      size="sm"
       type="text"
+      aria-label="Search Pokémon"
       placeholder="Search Pokémon..."
       [ngModel]="searchText()"
       (ngModelChange)="searchText.set($event)"
     />
     @if (searchText()) {
       <button
-        class="icon-button toolbar__search-clear"
-        (click)="searchText.set('')"
+        pdz-button
+        iconOnly
+        pill
+        size="xs"
+        variant="ghost"
+        color="neutral"
+        icon="close"
+        class="toolbar__search-clear"
         aria-label="Clear search"
-      >
-        <pdz-icon name="close"></pdz-icon>
-      </button>
+        (click)="searchText.set('')"
+      ></button>
     }
   </div>
 
-  <div class="sort-control">
-    <pdz-icon name="sort"></pdz-icon>
-    <select [ngModel]="sortBy()" (ngModelChange)="sortBy.set($event)">
+  <div pdz-field inline label="Sort" class="toolbar__select">
+    <pdz-select
+      size="sm"
+      aria-label="Sort Pokémon by"
+      [ngModel]="sortBy()"
+      (ngModelChange)="sortBy.set($event)"
+    >
       @for (option of SortOptions; track option) {
-        <option [value]="option">{{ option }}</option>
+        <pdz-option [value]="option" [label]="option" />
       }
-    </select>
+    </pdz-select>
   </div>
 
-  <div
-    class="filter-control"
-    [class.filter-control--active]="filteredTypes().length < types.length"
-  >
+  <pdz-menu #filterMenu aria-label="Filter by type">
     <button
-      class="action-button"
-      (click)="menu = menu === 'filter' ? null : 'filter'"
+      pdz-button
+      pdz-menu-trigger
+      size="sm"
+      variant="outlined"
+      color="neutral"
+      icon="filter_list"
+      class="filter-trigger"
+      [class.filter-trigger--active]="hiddenTypeCount() > 0"
     >
-      <pdz-icon name="filter_list"></pdz-icon>
       Filter
-      @if (filteredTypes().length < types.length) {
-        <span class="filter-badge"
-          >{{ types.length - filteredTypes().length }} hidden</span
-        >
+      @if (hiddenTypeCount() > 0) {
+        <span class="filter-badge">{{ hiddenTypeCount() }} hidden</span>
       }
     </button>
-    @if (menu === "filter") {
-      <div class="filter-dropdown">
-        <div class="filter-dropdown__header">
+
+    <div class="filter-panel">
+      <div class="filter-panel__header">
+        <div class="filter-type-option">
+          <input
+            pdz-checkbox
+            #allTypes
+            id="filter-all-types"
+            [checked]="selectedTypes().length === types.length"
+            [indeterminate]="
+              selectedTypes().length > 0 &&
+              selectedTypes().length < types.length
+            "
+            (change)="updateFilter(allTypes.checked)"
+          />
+          <label for="filter-all-types">All Types</label>
+        </div>
+        <button pdz-button size="sm" (click)="applyFilter()">Apply</button>
+      </div>
+      <div class="filter-panel__list">
+        @for (type of types; track $index; let i = $index) {
           <div class="filter-type-option">
             <input
               pdz-checkbox
-              #allTypes
-              id="filter-all-types"
-              [checked]="selectedTypes().length === types.length"
-              [indeterminate]="
-                selectedTypes().length > 0 &&
-                selectedTypes().length < types.length
-              "
-              (change)="updateFilter(allTypes.checked)"
+              #typeBox
+              [attr.id]="'filter-type-' + type"
+              [checked]="selectedTypes().includes(type)"
+              (change)="updateFilter(typeBox.checked, i)"
             />
-            <label for="filter-all-types">All Types</label>
+            <label
+              class="pdz-type"
+              [attr.for]="'filter-type-' + type"
+              [style.background-color]="typeColor(type)"
+            >
+              <span class="pdz-type__text">{{ type }}</span>
+            </label>
           </div>
-          <button
-            class="action-button action-button--primary action-button--sm"
-            (click)="applyFilter()"
-          >
-            Apply
-          </button>
-        </div>
-        <div class="filter-dropdown__list">
-          @for (type of types; track $index; let i = $index) {
-            <div class="filter-type-option">
-              <input
-                pdz-checkbox
-                #typeBox
-                [attr.id]="'filter-type-' + type"
-                [checked]="selectedTypes().includes(type)"
-                (change)="updateFilter(typeBox.checked, i)"
-              />
-              <label
-                class="pdz-type"
-                [attr.for]="'filter-type-' + type"
-                [style.background-color]="typeColor(type)"
-              >
-                <span class="pdz-type__text">{{ type }}</span>
-              </label>
-            </div>
-          }
-        </div>
+        }
       </div>
-    }
-  </div>
+    </div>
+  </pdz-menu>
 
   @if (divisionNames.length > 1) {
-    <div class="sort-control">
-      <pdz-icon name="groups"></pdz-icon>
-      <select
+    <div pdz-field inline label="Division" class="toolbar__select">
+      <pdz-select
+        size="sm"
+        aria-label="Division"
         [ngModel]="selectedDivision()"
         (ngModelChange)="selectedDivision.set($event)"
       >
         @for (div of divisionNames; track $index) {
-          <option [value]="div">{{ div }}</option>
+          <pdz-option [value]="div" [label]="div" />
         }
-      </select>
+      </pdz-select>
     </div>
   }
 
   @if (divisionNames.length > 0) {
     <button
-      class="action-button"
-      [class.action-button--active]="showDrafted"
-      (click)="showDrafted = !showDrafted"
+      pdz-button
+      size="sm"
+      [color]="showDrafted ? 'primary' : 'neutral'"
+      [variant]="showDrafted ? 'tonal' : 'outlined'"
+      [icon]="showDrafted ? 'visibility' : 'visibility_off'"
+      [attr.aria-pressed]="showDrafted"
       pdzTooltip="{{ showDrafted ? 'Hide drafted' : 'Show drafted' }}"
+      (click)="showDrafted = !showDrafted"
     >
-      <pdz-icon
-        [name]="showDrafted ? 'visibility' : 'visibility_off'"
-      ></pdz-icon>
       Drafted
     </button>
   }
@@ -157,23 +165,25 @@
                 <span class="tier__name">{{ tier.name }}</span>
                 @if (tier.cost != null && tier.cost !== 0) {
                   <span class="tier__cost">
-                    <pdz-icon name="currency_ruble"></pdz-icon>{{ tier.cost }}
+                    <pdz-icon name="currency_ruble" [size]="14"></pdz-icon
+                    >{{ tier.cost }}
                   </span>
                 }
               </div>
             </div>
             <button
-              class="icon-button tier__expand-button"
-              type="button"
+              pdz-button
+              iconOnly
+              pill
+              size="xs"
+              variant="ghost"
+              class="tier__expand-button"
+              [icon]="isTierExpanded(tier) ? 'close_fullscreen' : 'open_in_full'"
+              [attr.aria-label]="
+                isTierExpanded(tier) ? 'Collapse tier' : 'Expand tier'
+              "
               (click)="toggleTierExpanded(tier)"
-            >
-              <pdz-icon
-                [name]="
-                  isTierExpanded(tier) ? 'close_fullscreen' : 'open_in_full'
-                "
-                [size]="12"
-              ></pdz-icon>
-            </button>
+            ></button>
           </div>
 
           <div
@@ -222,6 +232,7 @@
                   @if (pokemon.banned || pokemon.notes) {
                     <pdz-icon
                       class="pokemon-entry__ban-icon"
+                      size="xs"
                       [pdzTooltip]="makeWarningString(pokemon)"
                       name="warning"
                     ></pdz-icon>
