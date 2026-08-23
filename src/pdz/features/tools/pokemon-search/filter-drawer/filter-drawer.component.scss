@@ -80,45 +80,6 @@
   }
 
   // Chip group (operators, booleans, move mode)
-  &__chips {
-    display: flex;
-    flex-wrap: wrap;
-    gap: pdz.space(2xs);
-  }
-
-  &__chip {
-    padding: pdz.space(2xs) pdz.space(sm);
-    border: 1px solid pdz.color(outline-variant);
-    border-radius: pdz.shape(corner-sm);
-    background: pdz.color(surface-container);
-    color: pdz.color(on-surface-variant);
-    font: inherit;
-    font-size: pdz.font-size(sm);
-    cursor: pointer;
-    white-space: nowrap;
-
-    &:hover {
-      background: pdz.color(surface-container-high);
-      color: pdz.color(on-surface);
-    }
-
-    &.is-active {
-      border-color: pdz.color(primary-border);
-      background: pdz.color(primary-container);
-      color: pdz.color(on-primary-container);
-    }
-
-    &--sm {
-      padding: 0.125rem pdz.space(xs);
-      font-size: pdz.font-size(xs);
-    }
-
-    &--wide {
-      flex: 1;
-      text-align: center;
-    }
-  }
-
   // Type selector: tight auto-fill grid — always full width so it wraps below operators
   &__type-grid {
     display: grid;

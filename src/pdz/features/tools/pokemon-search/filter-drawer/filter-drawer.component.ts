@@ -19,11 +19,15 @@ import {
   SearchOperator,
 } from '../pokemon-search.types';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
+import { SegmentedOptionComponent } from '@pdz/shared/inputs/segmented/segmented-option.component';
+import { SegmentedComponent } from '@pdz/shared/inputs/segmented/segmented.component';
 
 @Component({
   selector: 'pdz-filter-drawer',
   imports: [FormsModule, IconComponent, PokemonTypeComponent,
     ButtonComponent,
+    SegmentedComponent,
+    SegmentedOptionComponent,
   ],
   templateUrl: './filter-drawer.component.html',
   styleUrl: './filter-drawer.component.scss',

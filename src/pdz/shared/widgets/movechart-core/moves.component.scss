@@ -27,44 +27,6 @@
   flex: 1;
 }
 
-.tag-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: pdz.space(2xs) pdz.space(sm);
-  border-radius: pdz.shape(corner-full);
-  border: 1px solid var(--pdz-cmp-movechart-border);
-  color: pdz.color(on-surface-variant);
-  @include text(label);
-  cursor: pointer;
-  transition:
-    background-color pdz.duration(base) pdz.easing(standard),
-    border-color pdz.duration(base) pdz.easing(standard),
-    color pdz.duration(base) pdz.easing(standard),
-    box-shadow pdz.duration(base) pdz.easing(standard);
-
-  &:hover:not(.selected):not(.excluded) {
-    background-color: var(--pdz-cmp-movechart-hover);
-    color: pdz.color(on-primary-container);
-  }
-
-  &.selected {
-    background-color: var(--pdz-cmp-movechart-container);
-    border-color: var(--pdz-cmp-movechart-container);
-    color: pdz.color(on-primary-container);
-    box-shadow: var(--pdz-level-1);
-    translate: 0 -1px;
-  }
-
-  &.excluded {
-    background-color: var(--pdz-cmp-movechart-container);
-    border-color: var(--pdz-cmp-movechart-container);
-    color: pdz.color(on-primary-container);
-    box-shadow: var(--pdz-level-inset-1);
-    translate: 0 1px;
-  }
-}
-
 // ─── Search ───────────────────────────────────────────────────────────────────
 
 .toolbar-search-row {

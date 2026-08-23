@@ -23,9 +23,17 @@
     <div class="tag-filters" (contextmenu)="$event.preventDefault()">
       @for (tag of movechart()?.tags; track tag) {
         <button
-          class="tag-btn"
-          [class.selected]="selectedTags.get(tag) === 'enable'"
-          [class.excluded]="selectedTags.get(tag) === 'disable'"
+          pdz-button
+          size="xs"
+          pill
+          [variant]="selectedTags.get(tag) ? 'tonal' : 'outlined'"
+          [color]="
+            selectedTags.get(tag) === 'enable'
+              ? 'primary'
+              : selectedTags.get(tag) === 'disable'
+                ? 'danger'
+                : 'neutral'
+          "
           (click)="toggleTag(tag, 'enable')"
           (contextmenu)="toggleTag(tag, 'disable')"
         >

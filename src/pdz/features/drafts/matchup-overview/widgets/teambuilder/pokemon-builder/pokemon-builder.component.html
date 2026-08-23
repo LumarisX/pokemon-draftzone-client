@@ -450,15 +450,37 @@
                 } @else {
                   <div class="nature-buttons">
                     <button
-                      class="btn-nature btn-positive"
-                      [class.active]="pokemon().nature.boost === stat.id"
+                      pdz-button
+                      size="xs"
+                      aria-label="Boosting nature"
+                      [variant]="
+                        pokemon().nature.boost === stat.id
+                          ? 'tonal'
+                          : 'outlined'
+                      "
+                      [color]="
+                        pokemon().nature.boost === stat.id
+                          ? 'success'
+                          : 'neutral'
+                      "
                       (click)="setNature(stat.id, 'positive')"
                     >
                       +
                     </button>
                     <button
-                      class="btn-nature btn-negative"
-                      [class.active]="pokemon().nature.drop === stat.id"
+                      pdz-button
+                      size="xs"
+                      aria-label="Hindering nature"
+                      [variant]="
+                        pokemon().nature.drop === stat.id
+                          ? 'tonal'
+                          : 'outlined'
+                      "
+                      [color]="
+                        pokemon().nature.drop === stat.id
+                          ? 'danger'
+                          : 'neutral'
+                      "
                       (click)="setNature(stat.id, 'negative')"
                     >
                       -

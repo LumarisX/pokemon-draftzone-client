@@ -490,30 +490,9 @@ input {
       display: flex;
       gap: $stat-padding;
 
-      .btn-nature {
+      .pdz-btn {
         width: $stat-field-size;
         height: $stat-field-size;
-        border-radius: pdz.shape(corner-xs);
-        cursor: pointer;
-        @include pdz.text(card-title, $family: false);
-        background: pdz.color(neutral);
-        color: pdz.color(on-surface-variant);
-
-        &.active {
-          box-shadow: var(--pdz-level-inset-1);
-
-          &.btn-positive {
-            background: pdz.color(scale-positive);
-          }
-
-          &.btn-negative {
-            background: pdz.color(scale-negative);
-          }
-        }
-
-        &:hover:not(:disabled) {
-          opacity: 0.8;
-        }
       }
     }
   }

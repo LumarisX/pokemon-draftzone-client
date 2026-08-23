@@ -8,6 +8,7 @@ import { Pokemon } from '@pdz/core/utils/pokemon';
 import { PokemonTypeComponent } from '@pdz/shared/dialogs/pokemon-type/pokemon-type.component';
 import { SegmentedOptionComponent } from '@pdz/shared/inputs/segmented/segmented-option.component';
 import { SegmentedComponent } from '@pdz/shared/inputs/segmented/segmented.component';
+import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 
 @Component({
   selector: 'pdz-moves-core',
@@ -21,6 +22,7 @@ import { SegmentedComponent } from '@pdz/shared/inputs/segmented/segmented.compo
     PokemonTypeComponent,
     SegmentedComponent,
     SegmentedOptionComponent,
+    ButtonComponent,
   ],
 })
 export class MoveCoreComponent {

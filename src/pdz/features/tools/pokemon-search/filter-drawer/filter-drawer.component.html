@@ -46,38 +46,30 @@
 
   <div class="filter-drawer__body">
     <div class="filter-drawer__filter-row">
-      <div class="filter-drawer__chips" role="group" aria-label="Operator">
+      <pdz-segmented
+        size="sm"
+        aria-label="Operator"
+        [value]="draft.operator"
+        (valueChange)="setOperator($any($event))"
+      >
         @for (op of currentFieldDef.operators; track op) {
-          <button
-            type="button"
-            class="filter-drawer__chip"
-            [class.is-active]="draft.operator === op"
-            (click)="setOperator(op)"
-          >
-            {{ operatorMap[op].label }}
-          </button>
+          <pdz-segmented-option
+            [value]="op"
+            [label]="operatorMap[op].label"
+          />
         }
-      </div>
+      </pdz-segmented>
 
       @if (currentFieldDef.type === "boolean") {
-        <div class="filter-drawer__chips" role="group" aria-label="Value">
-          <button
-            type="button"
-            class="filter-drawer__chip filter-drawer__chip--wide"
-            [class.is-active]="draft.value === true"
-            (click)="draft.value = true"
-          >
-            Yes
-          </button>
-          <button
-            type="button"
-            class="filter-drawer__chip filter-drawer__chip--wide"
-            [class.is-active]="draft.value === false"
-            (click)="draft.value = false"
-          >
-            No
-          </button>
-        </div>
+        <pdz-segmented
+          size="sm"
+          aria-label="Value"
+          [value]="draft.value"
+          (valueChange)="draft.value = $any($event)"
+        >
+          <pdz-segmented-option [value]="true" label="Yes" />
+          <pdz-segmented-option [value]="false" label="No" />
+        </pdz-segmented>
       } @else if (currentFieldDef.type === "number") {
         <input
           id="drawer-value"
