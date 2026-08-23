@@ -2,14 +2,18 @@
   <form [formGroup]="scoreForm">
     <div class="score-bar">
       <button
-        type="button"
-        class="score-btn"
+        pdz-button
+        size="sm"
+        color="neutral"
+        variant="outlined"
         [routerLink]="['/', draftPath, teamId]"
       >
         Cancel
       </button>
       <h1 class="score-bar__title">Score</h1>
-      <button type="submit" class="score-btn" (click)="submit()">Submit</button>
+      <button pdz-button size="sm" type="submit" (click)="submit()">
+        Submit
+      </button>
     </div>
 
     <div class="paste-row">
@@ -89,8 +93,10 @@
           />
         </div>
         <button
-          type="button"
-          class="replay__analyze"
+          pdz-button
+          size="sm"
+          color="secondary"
+          variant="outlined"
           [disabled]="isAnalyzed()"
           (click)="analyzeReplay()"
         >

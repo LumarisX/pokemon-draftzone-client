@@ -99,8 +99,8 @@
 
       <div class="toast__actions">
         <button
-          class="toast__btn toast__btn--primary"
-          type="button"
+          pdz-button
+          size="sm"
           [class.toast__btn--done]="isReported(error.id)"
           [disabled]="isReporting(error.id) || isReported(error.id)"
           (click)="sendReport(error)"
@@ -119,7 +119,13 @@
           }
         </button>
 
-        <button class="toast__btn" type="button" (click)="copyError(error)">
+        <button
+          pdz-button
+          size="sm"
+          color="neutral"
+          variant="outlined"
+          (click)="copyError(error)"
+        >
           <pdz-icon
             [name]="isCopied(error.id) ? 'check' : 'content_copy'"
             [size]="16"

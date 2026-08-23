@@ -243,7 +243,11 @@
           }
         </pdz-select>
         <button
-          type="button"
+          pdz-button
+          iconOnly
+          size="sm"
+          variant="ghost"
+          color="neutral"
           class="pokemon-results__sort-dir"
           [class.is-desc]="sortDir === 'desc'"
           [attr.aria-label]="sortDir === 'asc' ? 'Ascending' : 'Descending'"

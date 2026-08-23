@@ -83,8 +83,11 @@
                   }}</span>
                 </button>
                 <button
-                  type="button"
-                  class="bookmarks-panel__delete"
+                  pdz-button
+                  iconOnly
+                  size="sm"
+                  variant="ghost"
+                  color="danger"
                   (click)="deleteSavedSearch(search)"
                   aria-label="Delete saved search"
                 >

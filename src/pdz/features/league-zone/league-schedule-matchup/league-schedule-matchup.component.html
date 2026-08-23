@@ -25,8 +25,11 @@
       <div class="versus-container">
         @if (matchup.matches[0].link) {
           <button
+            pdz-button
+            size="xs"
+            color="secondary"
+            variant="outlined"
             (click)="$event.stopPropagation()"
-            class="replay-button enabled"
           >
             Replay
           </button>

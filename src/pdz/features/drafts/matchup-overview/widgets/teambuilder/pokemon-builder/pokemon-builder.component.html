@@ -158,7 +158,12 @@
           <div class="input-field__header">
             <label for="export" class="input-field__label">Export</label>
             <button
-              class="input-field__button"
+              pdz-button
+              iconOnly
+              size="sm"
+              variant="ghost"
+              color="neutral"
+              aria-label="Copy export text"
               (click)="copyToClipboard(pokemon().export())"
             >
               <pdz-icon [size]="16" name="content_copy" />
@@ -202,7 +207,17 @@
               (ngModelChange)="filterMoves()"
               (click)="$event.stopPropagation()"
             />
-            <button (click)="selectMove(selectedMove, null, $event)">✕</button>
+            <button
+              pdz-button
+              iconOnly
+              size="xs"
+              variant="ghost"
+              color="neutral"
+              aria-label="Clear move"
+              (click)="selectMove(selectedMove, null, $event)"
+            >
+              <pdz-icon name="close" [size]="14" />
+            </button>
           </div>
           @if (filteredMoves === null) {
             <pdz-loading></pdz-loading>

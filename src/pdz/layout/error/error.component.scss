@@ -185,57 +185,19 @@
     margin-top: pdz.space(xs);
   }
 
-  &__btn {
-    display: inline-flex;
-    align-items: center;
-    gap: pdz.space(xs);
-    padding: pdz.space(2xs) pdz.space(xs);
-    border: 1px solid pdz.color("outline-variant");
-    border-radius: pdz.shape(corner-sm);
+  // The Report button keeps a done state that pdz-button has no color for.
+  &__btn--done {
+    border-color: pdz.color("outline-variant");
     background: transparent;
     color: pdz.color("on-surface-variant");
-    cursor: pointer;
-    @include text(label);
-    transition:
-      background pdz.duration(base) pdz.easing(standard),
-      color pdz.duration(base) pdz.easing(standard),
-      border-color pdz.duration(base) pdz.easing(standard);
+    font-weight: 600;
 
     &:hover {
-      background: pdz.color("surface-container-highest");
-      color: pdz.color("on-surface");
-    }
-
-    &--primary {
-      border-color: transparent;
-      background: pdz.color("danger");
-      color: pdz.color("on-danger");
-      font-weight: 600;
-
-      &:hover {
-        background: pdz.color("danger");
-        filter: brightness(1.06);
-        color: pdz.color("on-danger");
-      }
-
-      &:disabled {
-        cursor: default;
-        filter: none;
-      }
-    }
-
-    &--done {
-      border-color: pdz.color("outline-variant");
       background: transparent;
-      color: pdz.color("on-surface-variant");
-      font-weight: 600;
-
-      &:hover {
-        background: transparent;
-        filter: none;
-      }
+      filter: none;
     }
   }
+
 }
 
 @keyframes toast-in {

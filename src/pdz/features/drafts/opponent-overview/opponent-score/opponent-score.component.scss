@@ -32,28 +32,6 @@ $xl: 1280px;
   @include pdz.text(title, $family: false);
   text-align: center;
 }
-
-.score-btn {
-  padding: pdz.space(sm);
-  font: inherit;
-  font-weight: 600;
-  background: pdz.color(menu);
-  color: pdz.color(on-menu);
-  border: none;
-  border-radius: 0.375rem;
-  cursor: pointer;
-  transition: background-color pdz.duration(base) pdz.easing(standard);
-
-  &:hover {
-    background: pdz.color(menu-hover);
-  }
-
-  &:focus-visible {
-    outline: 2px solid pdz.color(menu);
-    outline-offset: 1px;
-  }
-}
-
 .paste-row {
   display: flex;
   width: 100%;
@@ -267,34 +245,6 @@ $xl: 1280px;
     outline: none;
   }
 }
-
-.replay__analyze {
-  flex-shrink: 0;
-  padding: 0 pdz.space(lg);
-  margin: pdz.space(sm);
-  font: inherit;
-  background: pdz.color(surface-container);
-  color: pdz.color(on-surface);
-  border: none;
-  border-radius: pdz.shape(corner-full);
-  cursor: pointer;
-  transition: background-color pdz.duration(base) pdz.easing(standard);
-
-  &:hover:not(:disabled) {
-    background: pdz.color(surface-container-high);
-  }
-
-  &:active:not(:disabled) {
-    box-shadow: none;
-  }
-
-  &:disabled {
-    opacity: 0.5;
-    box-shadow: none;
-    cursor: not-allowed;
-  }
-}
-
 .teams {
   display: flex;
 }
