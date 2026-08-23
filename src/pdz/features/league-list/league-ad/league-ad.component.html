@@ -130,7 +130,10 @@
       @if (league().serverLink; as serverLink) {
         <a
           [href]="getExternalLinkUrl(serverLink)"
-          class="footer-link details-button"
+          pdz-button
+          size="sm"
+          color="neutral"
+          variant="outlined"
           target="_blank"
           rel="noopener noreferrer"
         >
@@ -140,7 +143,10 @@
       @if (league().leagueDoc; as leagueDoc) {
         <a
           [href]="getExternalLinkUrl(leagueDoc)"
-          class="footer-link details-button"
+          pdz-button
+          size="sm"
+          color="neutral"
+          variant="outlined"
           target="_blank"
           rel="noopener noreferrer"
         >
@@ -148,13 +154,14 @@
         </a>
       }
       @if (league().hosted) {
-        <a [routerLink]="league().signupLink" class="footer-link signup-button">
+        <a pdz-button size="sm" [routerLink]="league().signupLink">
           Sign Up
         </a>
       } @else {
         <a
           [href]="getExternalLinkUrl(league().signupLink)"
-          class="footer-link signup-button"
+          pdz-button
+          size="sm"
           target="_blank"
           rel="noopener noreferrer"
         >

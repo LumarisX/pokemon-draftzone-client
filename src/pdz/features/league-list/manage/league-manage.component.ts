@@ -6,6 +6,8 @@ import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { LeagueAdComponent } from '../league-ad/league-ad.component';
 import { LeagueAdsService, LeagueAd } from '../league-ads.service';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
+import { SegmentedOptionComponent } from '@pdz/shared/inputs/segmented/segmented-option.component';
+import { SegmentedComponent } from '@pdz/shared/inputs/segmented/segmented.component';
 
 type FilterStatus = 'All' | 'Pending' | 'Approved' | 'Denied';
 
@@ -15,6 +17,8 @@ type FilterStatus = 'All' | 'Pending' | 'Approved' | 'Denied';
   styleUrls: ['./league-manage.component.scss'],
   imports: [FormsModule, RouterModule, IconComponent, LeagueAdComponent,
     ButtonComponent,
+    SegmentedComponent,
+    SegmentedOptionComponent,
   ],
 })
 export class LeagueManageComponent implements OnInit {

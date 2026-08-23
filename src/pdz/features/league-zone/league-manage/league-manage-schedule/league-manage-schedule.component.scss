@@ -599,11 +599,6 @@ input[type="number"] {
     pointer-events: none;
   }
 }
-
-.btn-secondary {
-  @include flat-button-secondary();
-}
-
 .btn-check {
   font-weight: 600;
 }

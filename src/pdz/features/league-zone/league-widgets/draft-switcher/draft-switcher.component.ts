@@ -9,6 +9,8 @@ import {
 } from '@angular/core';
 import { Subject, takeUntil } from 'rxjs';
 import { LeagueZoneService } from '../../league-zone.service';
+import { SegmentedOptionComponent } from '@pdz/shared/inputs/segmented/segmented-option.component';
+import { SegmentedComponent } from '@pdz/shared/inputs/segmented/segmented.component';
 
 /**
  * Picks which draft pool a page is looking at, the way
@@ -20,6 +22,7 @@ import { LeagueZoneService } from '../../league-zone.service';
  */
 @Component({
   selector: 'pdz-draft-switcher',
+  imports: [SegmentedComponent, SegmentedOptionComponent],
   templateUrl: './draft-switcher.component.html',
   styleUrl: './draft-switcher.component.scss',
 })

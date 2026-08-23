@@ -39,15 +39,6 @@
     margin: 0 auto;
   }
 
-  &__back {
-    @include icon-button(
-      (
-        color: pdz.color(on-surface),
-        background-hover: pdz.color(surface-container-high),
-      )
-    );
-  }
-
   &__title {
     margin: 0;
     @include pdz.text(subtitle, $family: false);

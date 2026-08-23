@@ -11,10 +11,15 @@ import {
 import { Subject, takeUntil } from 'rxjs';
 import { LeagueZoneService } from '../../league-zone.service';
 import { League } from '../../league.interface';
+import { SegmentedOptionComponent } from '@pdz/shared/inputs/segmented/segmented-option.component';
+import { SegmentedComponent } from '@pdz/shared/inputs/segmented/segmented.component';
 
 @Component({
   selector: 'pdz-stage-switcher',
-  imports: [CommonModule],
+  imports: [CommonModule,
+    SegmentedComponent,
+    SegmentedOptionComponent,
+  ],
   templateUrl: './stage-switcher.component.html',
   styleUrl: './stage-switcher.component.scss',
 })

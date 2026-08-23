@@ -25,34 +25,17 @@
     }
   </div>
   <div class="toolbar__controls">
-    <button
-      (click)="filterLeagues('All')"
-      class="filter-btn"
-      [class.selected]="currentFilter === 'All'"
+    <pdz-segmented
+      size="sm"
+      aria-label="Filter by status"
+      [value]="currentFilter"
+      (valueChange)="filterLeagues($any($event))"
     >
-      All
-    </button>
-    <button
-      (click)="filterLeagues('Pending')"
-      class="filter-btn filter-pending"
-      [class.selected]="currentFilter === 'Pending'"
-    >
-      Pending
-    </button>
-    <button
-      (click)="filterLeagues('Approved')"
-      class="filter-btn filter-approved"
-      [class.selected]="currentFilter === 'Approved'"
-    >
-      Approved
-    </button>
-    <button
-      (click)="filterLeagues('Denied')"
-      class="filter-btn filter-denied"
-      [class.selected]="currentFilter === 'Denied'"
-    >
-      Denied
-    </button>
+      <pdz-segmented-option value="All" label="All" />
+      <pdz-segmented-option value="Pending" label="Pending" />
+      <pdz-segmented-option value="Approved" label="Approved" />
+      <pdz-segmented-option value="Denied" label="Denied" />
+    </pdz-segmented>
   </div>
 </div>
 

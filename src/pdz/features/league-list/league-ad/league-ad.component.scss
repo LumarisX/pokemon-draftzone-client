@@ -283,14 +283,6 @@
   .card-footer {
     display: flex;
     gap: pdz.space(sm);
-
-    .signup-button {
-      @include flat-button-primary();
-    }
-
-    .details-button {
-      @include flat-button-primary();
-    }
   }
 }
 

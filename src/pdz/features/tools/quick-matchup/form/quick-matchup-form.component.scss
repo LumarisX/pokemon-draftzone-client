@@ -45,16 +45,6 @@
     line-height: 1.2;
     white-space: nowrap;
   }
-
-  &__submit {
-    @include flat-button-primary(
-      (
-        padding: pdz.space(sm) pdz.space(xl),
-        font-weight: 600,
-      )
-    );
-  }
-
   // -------------------------------------------------------------------------
   // Body layout
   // -------------------------------------------------------------------------

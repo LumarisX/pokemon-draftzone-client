@@ -1,24 +1,19 @@
 @if (stages.length || allStagesLabel()) {
-  <nav class="stage-switcher">
-    @if (allStagesLabel()) {
-      <button
-        type="button"
-        class="stage-switcher__tab"
-        [class.stage-switcher__tab--active]="currentStageSlug() === 'all'"
-        (click)="selectStage('all')"
-      >
-        {{ allStagesLabel() }}
-      </button>
+  <pdz-segmented
+    class="stage-switcher"
+    size="sm"
+    aria-label="Stage"
+    [value]="currentStageSlug()"
+    (valueChange)="selectStage($any($event))"
+  >
+    @if (allStagesLabel(); as allLabel) {
+      <pdz-segmented-option value="all" [label]="allLabel" />
     }
     @for (stage of stages; track stage.slug) {
-      <button
-        type="button"
-        class="stage-switcher__tab"
-        [class.stage-switcher__tab--active]="stage.slug === currentStageSlug()"
-        (click)="selectStage(stage.slug)"
-      >
-        {{ getStageLabel(stage) }}
-      </button>
+      <pdz-segmented-option
+        [value]="stage.slug"
+        [label]="getStageLabel(stage)"
+      />
     }
-  </nav>
+  </pdz-segmented>
 }

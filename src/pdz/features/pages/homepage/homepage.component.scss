@@ -97,24 +97,6 @@
     align-items: center;
     gap: 1rem;
   }
-
-  &__cta-button {
-    font-size: pdz.font-size(md);
-    width: 100%;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    @include flat-button(
-      (
-        background-color: transparent,
-        border-radius: pdz.shape(corner-full),
-        padding: pdz.space(md),
-        color: pdz.color(on-primary),
-        border: 2px solid pdz.color(on-primary),
-      )
-    );
-  }
-
   &__secondary-actions {
     display: flex;
     flex-wrap: wrap;

@@ -50,48 +50,6 @@
   }
 }
 
-.filter-btn {
-  @include flat-button-menu(
-    (
-      padding: pdz.space(xs) pdz.space(md),
-    )
-  );
-  font-size: pdz.font-size(sm);
-
-  // &.selected {
-  // }
-
-  &.filter-pending {
-    background-color: pdz.color(warning-container);
-    color: pdz.color(on-warning-container);
-
-    &:hover {
-      background-color: pdz.color(warning);
-      color: pdz.color(on-warning);
-    }
-  }
-
-  &.filter-approved {
-    background-color: pdz.color(success-container);
-    color: pdz.color(on-success-container);
-
-    &:hover {
-      background-color: pdz.color(success);
-      color: pdz.color(on-success);
-    }
-  }
-
-  &.filter-denied {
-    background-color: pdz.color(danger-container);
-    color: pdz.color(on-danger-container);
-
-    &:hover {
-      background-color: pdz.color(danger);
-      color: pdz.color(on-danger);
-    }
-  }
-}
-
 .leagues-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(20rem, 1fr));

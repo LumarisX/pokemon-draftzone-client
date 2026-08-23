@@ -36,30 +36,6 @@
     gap: pdz.space(sm);
   }
 }
-
-.btn {
-  @include flat-button-primary(
-    (
-      padding: pdz.space(xs) pdz.space(lg),
-      border-radius: pdz.shape(corner-sm),
-      font-weight: 600,
-    )
-  );
-
-  &--ghost {
-    @include flat-button(
-      (
-        padding: pdz.space(xs) pdz.space(lg),
-        border-radius: pdz.shape(corner-sm),
-        background: pdz.color(surface-container),
-        background-hover: pdz.color(surface-container-low),
-        color: pdz.color(on-surface),
-        font-weight: 600,
-      )
-    );
-  }
-}
-
 // ── Pool (draft division) ─────────────────────────────────────────────────────
 
 .pool {

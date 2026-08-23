@@ -1,16 +1,13 @@
 @if (drafts.length) {
-  <nav class="draft-switcher">
+  <pdz-segmented
+    class="draft-switcher"
+    size="sm"
+    aria-label="Draft pool"
+    [value]="currentDraftSlug()"
+    (valueChange)="selectDraft($any($event))"
+  >
     @for (draft of drafts; track draft.draftSlug) {
-      <button
-        type="button"
-        class="draft-switcher__tab"
-        [class.draft-switcher__tab--active]="
-          draft.draftSlug === currentDraftSlug()
-        "
-        (click)="selectDraft(draft.draftSlug)"
-      >
-        {{ draft.name }}
-      </button>
+      <pdz-segmented-option [value]="draft.draftSlug" [label]="draft.name" />
     }
-  </nav>
+  </pdz-segmented>
 }

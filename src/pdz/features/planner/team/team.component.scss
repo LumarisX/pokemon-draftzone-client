@@ -154,16 +154,9 @@
   }
 
   &__handle {
-    @include icon-button(
-      (
-        width: 1.5rem,
-        height: var(--planner-row-control),
-        padding: 0,
-        border-radius: pdz.shape(corner-xs),
-        background-hover: pdz.color(surface-container-high),
-        box-shadow-hover: none,
-      )
-    );
+    width: 1.5rem;
+    height: var(--planner-row-control);
+    padding: 0;
     position: relative;
     flex-shrink: 0;
     color: pdz.color(on-surface-variant);

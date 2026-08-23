@@ -151,44 +151,4 @@
     padding: pdz.space(lg);
     padding-top: 0;
   }
-
-  &__btn {
-    @include flat-button-menu();
-    display: inline-flex;
-    align-items: center;
-    gap: pdz.space(sm);
-    padding: pdz.space(sm) pdz.space(lg);
-    font-weight: 600;
-
-    pdz-icon {
-      font-size: 1.25rem;
-      width: 1.25rem;
-      height: 1.25rem;
-    }
-
-    &--back {
-      background-color: pdz.color(menu-container);
-      color: pdz.color(on-menu-container);
-      border: 1px solid pdz.color(menu-border);
-
-      &:hover:not(:disabled) {
-        background-color: pdz.color(menu-container-hover);
-      }
-    }
-
-    &--continue {
-      background-color: pdz.color(primary);
-      color: pdz.color(on-primary);
-      border: 1px solid pdz.color(primary-border);
-
-      &:hover:not(:disabled) {
-        background-color: pdz.color(primary-hover) !important;
-      }
-
-      &:disabled {
-        opacity: 0.5;
-        cursor: not-allowed;
-      }
-    }
-  }
 }

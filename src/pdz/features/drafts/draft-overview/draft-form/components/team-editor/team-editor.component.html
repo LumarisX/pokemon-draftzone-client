@@ -208,8 +208,12 @@
             }
 
             <button
-              type="button"
-              class="pokemon-card__action pokemon-card__action--expand"
+              pdz-button
+              iconOnly
+              size="sm"
+              variant="ghost"
+              color="neutral"
+              class="pokemon-card__action--expand"
               [attr.aria-expanded]="isExpanded(monGroup)"
               [attr.aria-label]="
                 isExpanded(monGroup) ? 'Collapse settings' : 'Expand settings'
@@ -219,8 +223,11 @@
               <pdz-icon name="expand_more" [size]="24"></pdz-icon>
             </button>
             <button
-              type="button"
-              class="pokemon-card__action"
+              pdz-button
+              iconOnly
+              size="sm"
+              variant="ghost"
+              color="danger"
               aria-label="Remove from team"
               (click)="deletePokemon(index); $event.stopPropagation()"
             >
