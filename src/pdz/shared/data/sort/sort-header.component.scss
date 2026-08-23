@@ -1,0 +1,60 @@
+@use "pdz-theming" as pdz;
+
+:host {
+  cursor: pointer;
+}
+
+.pdz-sort-header__button {
+  display: flex;
+  align-items: center;
+  gap: pdz.space(2xs);
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  text-align: inherit;
+  cursor: pointer;
+  user-select: none;
+
+  &:focus-visible {
+    outline: 2px solid pdz.color(primary-accent);
+    outline-offset: 2px;
+    border-radius: pdz.shape(corner-xs);
+  }
+}
+
+:host(.pdz-table__num) .pdz-sort-header__button {
+  flex-direction: row-reverse;
+  justify-content: flex-start;
+}
+
+:host(.pdz-table__center) .pdz-sort-header__button {
+  justify-content: center;
+}
+
+.pdz-sort-header__arrow {
+  display: inline-flex;
+  flex-shrink: 0;
+  opacity: 0;
+  transition: opacity pdz.duration(base) pdz.easing(standard);
+}
+
+:host(:hover) .pdz-sort-header__arrow {
+  opacity: 0.45;
+}
+
+:host(.pdz-sort-header--sorted) .pdz-sort-header__arrow {
+  opacity: 1;
+  color: pdz.color(primary-accent);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pdz-sort-header__arrow {
+    transition: none;
+  }
+}

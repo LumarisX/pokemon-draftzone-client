@@ -1,0 +1,10 @@
+@use "pdz-theming" as pdz;
+
+:root,
+.cdk-overlay-container {
+  color: pdz.color(on-surface);
+}
+
+.cdk-overlay-container {
+  z-index: pdz.z(overlay) !important;
+}

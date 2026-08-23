@@ -1,5 +1,3 @@
-<h2>Upload File to S3</h2>
-
 <div>
   <input
     type="file"
@@ -18,14 +16,17 @@
 @if (isUploading || uploadMessage) {
   <div class="upload-status">
     @if (isUploading) {
-      <mat-progress-bar
-        mode="determinate"
-        [value]="uploadProgress"
-        style="margin-top: 15px"
-      ></mat-progress-bar>
-      <div style="margin-top: 5px; font-size: 0.9em">
-        Progress: {{ uploadProgress }}%
+      <div
+        class="upload-progress"
+        role="progressbar"
+        aria-label="Upload progress"
+        aria-valuemin="0"
+        aria-valuemax="100"
+        [attr.aria-valuenow]="uploadProgress"
+      >
+        <div class="upload-progress__fill" [style.width.%]="uploadProgress"></div>
       </div>
+      <div class="upload-progress__label">Progress: {{ uploadProgress }}%</div>
     }
 
     @if (uploadMessage) {
@@ -45,11 +46,6 @@
 
 @if (confirmed && uploadedFileKey) {
   <div class="uploaded-image-container">
-    <h3>Uploaded Image:</h3>
     <pdz-hosted-image [key]="uploadedFileKey"></pdz-hosted-image>
   </div>
-} @else if (!isUploading && !uploadMessage) {
-  <p style="margin-top: 20px; color: #666">
-    Choose a file to begin the upload process.
-  </p>
 }

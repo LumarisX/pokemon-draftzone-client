@@ -1,30 +1,53 @@
 @use "pdz-theming" as pdz;
 
 .preview-card {
-  max-width: 450px; // Adjust as needed
-  min-width: 300px;
+  max-width: 28rem;
+  min-width: 19rem;
+
+  &__titles {
+    display: flex;
+    flex-direction: column;
+    gap: pdz.space(3xs);
+    min-width: 0;
+  }
+
+  &__title {
+    @include pdz.text(title);
+  }
+
+  &__subtitle {
+    @include pdz.text(body-sm);
+    color: pdz.color(on-surface-variant);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__actions {
+    justify-content: flex-end;
+    gap: pdz.space(xs);
+  }
 }
 
 .preview-container {
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 10rem; // Ensure some minimum height
-  max-height: 300px; // Limit preview height
-  margin-bottom: 1rem;
-  border-radius: 100rem;
+  min-height: 10rem;
+  max-height: 18.75rem;
+  border-radius: pdz.shape(corner-full);
   border: 4px solid pdz.color(primary-border);
-  overflow: hidden; // Contain the image/icon
-  padding: 10px;
+  overflow: hidden;
+  padding: pdz.space(xs);
 }
 
 .file-preview-image {
   max-width: 100%;
   aspect-ratio: 1;
-  max-height: 280px; // Slightly less than container max-height
+  max-height: 17.5rem;
   height: auto;
   display: block;
-  object-fit: contain; // Show the whole image, scaled down
+  object-fit: contain;
 }
 
 .file-preview-placeholder {
@@ -32,24 +55,14 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  color: #666;
-
-  .file-icon {
-    font-size: 48px;
-    width: 48px;
-    height: 48px;
-    margin-bottom: 8px;
-  }
+  gap: pdz.space(2xs);
+  color: pdz.color(on-surface-variant);
 
   span {
-    font-size: pdz.font-size(sm);
-    max-width: 200px;
+    @include pdz.text(body-sm);
+    max-width: 12.5rem;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
   }
-}
-
-mat-card-actions {
-  padding: 8px 16px !important; // Ensure padding for actions
 }

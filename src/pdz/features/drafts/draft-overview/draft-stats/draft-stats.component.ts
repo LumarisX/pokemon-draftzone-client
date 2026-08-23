@@ -1,7 +1,11 @@
 import { CdkTableModule } from '@angular/cdk/table';
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
-import { MatSortModule, Sort } from '@angular/material/sort';
+import {
+  Sort,
+  SortDirective,
+} from '@pdz/shared/data/sort/sort.directive';
+import { SortHeaderComponent } from '@pdz/shared/data/sort/sort-header.component';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { DRAFT_OVERVIEW_PATH } from '@pdz/core/route-paths';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
@@ -20,7 +24,8 @@ import { DraftService, PokemonStat } from '../draft.service';
     SpriteComponent,
     LoadingComponent,
     CdkTableModule,
-    MatSortModule,
+    SortDirective,
+    SortHeaderComponent,
     ButtonComponent,
   ],
 })

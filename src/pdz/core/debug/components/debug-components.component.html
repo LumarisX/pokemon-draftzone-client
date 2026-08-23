@@ -583,6 +583,56 @@
     </table>
   </div>
 
+  <h3 class="section__sub">Sortable headers</h3>
+  <p class="section__hint">
+    <code>pdzSort</code> on the table, <code>pdzSortHeader</code> on the cells
+    that sort. The arrow only ghosts in on hover until a column is active, so an
+    unsorted header row stays quiet. Numeric columns take
+    <code>start="desc"</code> — the first click on a stat should show the
+    leaders.
+  </p>
+  <div class="pdz-table-wrapper tables__demo">
+    <table
+      class="pdz-table"
+      data-zebra
+      pdzSort
+      pdzSortActive="kills"
+      pdzSortDirection="desc"
+      (pdzSortChange)="sortState.set($event)"
+    >
+      <thead>
+        <tr>
+          <th pdzSortHeader="name">Pokémon</th>
+          <th class="pdz-table__num" pdzSortHeader="brought" start="desc">
+            Brought
+          </th>
+          <th class="pdz-table__num" pdzSortHeader="kills" start="desc">
+            Kills
+          </th>
+          <th class="pdz-table__num" pdzSortHeader="deaths" start="desc">
+            Deaths
+          </th>
+          <th class="pdz-table__num">K/D</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (row of sortedTableRows(); track $index) {
+          <tr>
+            <td>{{ row.name }}</td>
+            <td class="pdz-table__num">{{ row.brought }}</td>
+            <td class="pdz-table__num">{{ row.kills }}</td>
+            <td class="pdz-table__num">{{ row.deaths }}</td>
+            <td class="pdz-table__num">{{ row.kdr }}</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+  <p class="section__note">
+    Sorted by {{ sortState().active }} —
+    {{ sortState().direction || "cleared" }}
+  </p>
+
   <h3 class="section__sub">Sticky header</h3>
   <p class="section__hint">
     Identical to the table above apart from <code>data-sticky</code>, plus a

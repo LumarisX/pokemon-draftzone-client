@@ -2,7 +2,6 @@ import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { CardComponent } from '@pdz/shared/data/card/card.component';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
-import { MatSortModule, Sort } from '@angular/material/sort';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
 import { compare } from '@pdz/core/utils';
 import { Summary } from '../../matchup-interface';
@@ -18,7 +17,6 @@ import { StatsTable } from '@pdz/shared/data';
   imports: [
     CommonModule,
     SpriteComponent,
-    MatSortModule,
     TooltipDirective,
     IconComponent,
     CardComponent,

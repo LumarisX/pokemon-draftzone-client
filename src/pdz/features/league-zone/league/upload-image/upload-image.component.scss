@@ -1,50 +1,68 @@
-// Optional: Add some spacing and styling for the status area
+@use "pdz-theming" as pdz;
+
 .upload-status {
-  margin-top: 20px;
-  padding: 15px;
-  border: 1px solid #eee;
-  border-radius: pdz.shape(corner-xs);
-  background-color: #f9f9f9;
+  margin-top: pdz.space(md);
+  padding: pdz.space(sm);
+  border: 1px solid pdz.color(outline-variant);
+  border-radius: pdz.shape(corner-sm);
+  background-color: pdz.color(surface-container-low);
+}
+
+.upload-progress {
+  height: 0.375rem;
+  border-radius: pdz.shape(corner-full);
+  background-color: pdz.color(surface-container-highest);
+  overflow: hidden;
+
+  &__fill {
+    height: 100%;
+    border-radius: inherit;
+    background-color: pdz.color(primary);
+    transition: width pdz.duration(base) pdz.easing(standard);
+  }
+
+  &__label {
+    margin-top: pdz.space(2xs);
+    text-align: center;
+    @include pdz.text(body-sm);
+    color: pdz.color(on-surface-variant);
+  }
 }
 
 .status-message {
-  margin-top: 10px;
-  font-weight: bold;
-  padding: 8px;
-  border-radius: pdz.shape(corner-xs);
+  margin-top: pdz.space(xs);
+  padding: pdz.space(xs);
+  border-radius: pdz.shape(corner-sm);
+  font-weight: pdz.font-weight(semibold);
 
   &.error {
-    color: #b71c1c; // Darker red
-    background-color: #ffcdd2; // Light red background
-    border: 1px solid #e57373; // Reddish border
+    color: pdz.color(on-danger-container);
+    background-color: pdz.color(danger-container);
+    border: 1px solid pdz.color(danger);
   }
 
   &.success {
-    color: #1b5e20; // Darker green
-    background-color: #c8e6c9; // Light green background
-    border: 1px solid #81c784; // Greenish border
+    color: pdz.color(on-success-container);
+    background-color: pdz.color(success-container);
+    border: 1px solid pdz.color(success);
   }
 }
 
 .file-key {
-  font-size: 0.8rem;
-  margin-top: 5px;
-  color: #555;
-  font-weight: normal;
+  margin-top: pdz.space(2xs);
+  @include pdz.text(body-sm);
+  color: pdz.color(on-surface-variant);
+  font-weight: pdz.font-weight(regular);
 }
 
 .uploaded-image-container {
-  margin-top: 25px;
-  padding-top: 15px;
-  border-top: 1px solid #ccc;
+  margin-top: pdz.space(lg);
+  padding-top: pdz.space(sm);
+  border-top: 1px solid pdz.color(outline-variant);
 }
 
-// Ensure the custom button has some margin if needed
-// button[mat-raised-button] {
-// Example: margin-right: 10px;
-// }
-
-// Style for the progress bar text if needed
-mat-progress-bar + div {
-  text-align: center; // Center the "Progress: X%" text
+@media (prefers-reduced-motion: reduce) {
+  .upload-progress__fill {
+    transition: none;
+  }
 }

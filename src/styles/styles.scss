@@ -1,6 +1,6 @@
 @use "core/reset";
 @use "pdz-theming";
-@use "mat-styles";
+@use "core/base";
 @use "pdz-theming" as pdz;
 @use "tokens/breakpoints";
 @use "components/input";
@@ -8,6 +8,7 @@
 @use "components/card";
 @use "components/table";
 @use "components/dialog";
+@use "components/chart-tooltip";
 
 @include pdz-theming.init-tokens();
 

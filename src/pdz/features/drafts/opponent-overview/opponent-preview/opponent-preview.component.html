@@ -170,11 +170,11 @@
               data-density="compact"
               cdk-table
               [dataSource]="teamStats.value!"
-              matSort
-              (matSortChange)="sort($event)"
-              [matSortActive]="'kpg'"
-              [matSortDirection]="'desc'"
-              matSortDisableClear
+              pdzSort
+              (pdzSortChange)="sort($event)"
+              pdzSortActive="kpg"
+              pdzSortDirection="desc"
+              pdzSortDisableClear
             >
               <ng-container cdkColumnDef="sprite">
                 <th
@@ -196,7 +196,7 @@
                 </td>
               </ng-container>
               <ng-container cdkColumnDef="name">
-                <th cdk-header-cell *cdkHeaderCellDef mat-sort-header="name">
+                <th cdk-header-cell *cdkHeaderCellDef pdzSortHeader="name">
                   Name
                 </th>
                 <td cdk-cell *cdkCellDef="let element">
@@ -209,7 +209,7 @@
                   class="pdz-table__num"
                   cdk-header-cell
                   *cdkHeaderCellDef
-                  mat-sort-header="gb"
+                  pdzSortHeader="gb"
                 >
                   Games Brought
                 </th>
@@ -223,7 +223,7 @@
                   class="pdz-table__num"
                   cdk-header-cell
                   *cdkHeaderCellDef
-                  mat-sort-header="dk"
+                  pdzSortHeader="dk"
                 >
                   Direct Kills
                 </th>
@@ -237,7 +237,7 @@
                   class="pdz-table__num"
                   cdk-header-cell
                   *cdkHeaderCellDef
-                  mat-sort-header="ik"
+                  pdzSortHeader="ik"
                 >
                   Indirect Kills
                 </th>
@@ -251,7 +251,7 @@
                   class="pdz-table__num"
                   cdk-header-cell
                   *cdkHeaderCellDef
-                  mat-sort-header="deaths"
+                  pdzSortHeader="deaths"
                 >
                   Deaths
                 </th>
@@ -265,7 +265,7 @@
                   class="pdz-table__num"
                   cdk-header-cell
                   *cdkHeaderCellDef
-                  mat-sort-header="kdr"
+                  pdzSortHeader="kdr"
                 >
                   Kills/Deaths
                 </th>
@@ -279,7 +279,7 @@
                   class="pdz-table__num"
                   cdk-header-cell
                   *cdkHeaderCellDef
-                  mat-sort-header="kpg"
+                  pdzSortHeader="kpg"
                 >
                   Kills/Game
                 </th>

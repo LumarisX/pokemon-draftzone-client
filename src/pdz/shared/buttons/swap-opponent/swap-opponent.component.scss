@@ -1,4 +1,3 @@
-@use "@angular/material" as mat;
 @use "pdz-theming" as pdz;
 
 button {
@@ -9,9 +8,4 @@ button {
   &.opponent pdz-icon {
     transform: rotate(180deg);
   }
-  @include mat.icon-button-overrides(
-    (
-      icon-color: pdz.color(primary-accent),
-    )
-  );
 }

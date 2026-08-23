@@ -1,70 +1,56 @@
 import { Component, OnInit, inject } from '@angular/core';
 import {
-  FormBuilder,
-  FormGroup,
-  Validators,
-  FormArray,
   AbstractControl,
-  ValidationErrors,
+  FormArray,
+  FormBuilder,
   FormControl,
+  FormGroup,
+  ReactiveFormsModule,
+  ValidationErrors,
+  Validators,
 } from '@angular/forms';
-import { CommonModule } from '@angular/common'; // Import CommonModule
-import { ReactiveFormsModule } from '@angular/forms'; // Import ReactiveFormsModule
-
-// Import Angular Material Modules needed for the stepper and form controls
-import { MatStepperModule } from '@angular/material/stepper';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
-import { IconComponent } from '@pdz/shared/images/icon/icon.component';
-import { MatRadioModule } from '@angular/material/radio';
-import { MatDividerModule } from '@angular/material/divider';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
+import { FormatSelectComponent } from '@pdz/shared/dropdowns/format-select/format.component';
+import { RulesetSelectComponent } from '@pdz/shared/dropdowns/ruleset-select/ruleset.component';
+import { SelectOptionComponent } from '@pdz/shared/dropdowns/select/select-option.component';
+import { SelectComponent } from '@pdz/shared/dropdowns/select/select.component';
+import { IconComponent } from '@pdz/shared/images/icon/icon.component';
+import { CheckComponent } from '@pdz/shared/inputs/choice/check.component';
+import { ChoiceDirective } from '@pdz/shared/inputs/choice/choice.directive';
+import { FieldErrorDirective } from '@pdz/shared/inputs/field/field-message.directive';
+import { FieldComponent } from '@pdz/shared/inputs/field/field.component';
+import { InputDirective } from '@pdz/shared/inputs/field/input.directive';
+import { PageComponent } from '@pdz/shared/layout/page/page.component';
 import { TooltipDirective } from '@pdz/shared/tooltip/tooltip.directive';
 import { UploadImageComponent } from '../league/upload-image/upload-image.component';
-import { DataService } from '@pdz/core/services/data.service';
-
-// Assuming your pdz-upload-button component exists and is standalone or declared elsewhere
-// If it's standalone, add it to the imports array below
-// import { PdzUploadButtonComponent } from './path/to/pdz-upload-button.component';
 
 @Component({
   selector: 'pdz-league-new',
   imports: [
-    CommonModule, // Provides *ngIf, *ngFor etc.
-    ReactiveFormsModule, // Provides form directives
-    MatStepperModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatSelectModule,
+    ReactiveFormsModule,
+    PageComponent,
+    FieldComponent,
+    FieldErrorDirective,
+    InputDirective,
+    CheckComponent,
+    ChoiceDirective,
+    SelectComponent,
+    SelectOptionComponent,
+    RulesetSelectComponent,
+    FormatSelectComponent,
     IconComponent,
-    MatRadioModule,
-    MatDividerModule,
     ButtonComponent,
     TooltipDirective,
     UploadImageComponent,
-    // PdzUploadButtonComponent, // <-- Add your upload button component here if it's standalone
   ],
   templateUrl: './league-new.component.html',
   styleUrl: './league-new.component.scss',
 })
 export class LeagueNewComponent implements OnInit {
   private _formBuilder = inject(FormBuilder);
-  private dataService = inject(DataService);
 
-  // --- Form Definitions ---
   leagueForm!: FormGroup;
 
-  // --- Data for Selects ---
-  rulesets: [string, { name: string; id: string; desc?: string }[]][] = [];
-  formats = [
-    'Singles',
-    'Doubles (VGC)',
-    'Little Cup',
-    'Monotype',
-    'Draft',
-    'Custom',
-  ];
   bracketTypes = [
     'Round Robin',
     'Swiss',
@@ -75,53 +61,42 @@ export class LeagueNewComponent implements OnInit {
 
   ngOnInit() {
     this._initForm();
-    this.dataService.getRulesets().subscribe((rulesets) => {
-      this.rulesets = rulesets;
-    });
   }
 
   private _initForm(): void {
     this.leagueForm = this._formBuilder.group({
-      // Step 1: League Info
       leagueInfo: this._formBuilder.group({
         leagueName: ['', Validators.required],
         season: ['', Validators.required],
         ruleset: ['', Validators.required],
         format: ['', Validators.required],
-        logoUrl: [''], // Assuming pdz-upload-button will provide a URL or identifier
+        logoUrl: [''],
       }),
-      // Step 2: Rules (Optional - control is handled by previous step being valid)
       rules: this._formBuilder.group({
-        items: this._formBuilder.array([this.createRuleItem()]), // Start with one empty rule section
+        items: this._formBuilder.array([this.createRuleItem()]),
       }),
-      // Step 3: Divisions
       divisions: this._formBuilder.group(
         {
-          teamCount: [8, [Validators.required, Validators.min(2)]], // Default to 8 teams, min 2
+          teamCount: [8, [Validators.required, Validators.min(2)]],
           groups: this._formBuilder.array(
-            [this.createDivisionGroup()], // Start with one division
-            [Validators.required, Validators.minLength(1)], // Must have at least one division
+            [this.createDivisionGroup()],
+            [Validators.required, Validators.minLength(1)],
           ),
         },
         { validators: this.uniqueDivisionNamesValidator },
-      ), // Add custom validator for unique names
-      // Step 4: Schedule (Optional - control handled by previous step)
+      ),
       schedule: this._formBuilder.group({
         brackets: this._formBuilder.array([
-          // Pre-populate default brackets
           this.createBracketItem('Regular Season', 'Round Robin', 1),
           this.createBracketItem('Playoffs', 'Single Elimination', 1),
         ]),
       }),
-      // Step 5: Confirmation & Settings
       settings: this._formBuilder.group({
-        invitePrivacy: ['private', Validators.required], // Default to private
-        spectatePrivacy: ['private', Validators.required], // Default to private
+        invitePrivacy: ['private', Validators.required],
+        spectatePrivacy: ['private', Validators.required],
       }),
     });
   }
-
-  // --- Form Getters for Easier Template Access ---
 
   get leagueInfoForm(): FormGroup {
     return this.leagueForm.get('leagueInfo') as FormGroup;
@@ -155,13 +130,19 @@ export class LeagueNewComponent implements OnInit {
     return this.leagueForm.get('settings') as FormGroup;
   }
 
-  // --- FormArray Manipulation Methods ---
+  showError(
+    parent: AbstractControl | null,
+    name: string,
+    error = 'required',
+  ): boolean {
+    const control = parent?.get(name);
+    return !!control && control.hasError(error) && control.touched;
+  }
 
-  // Rules
   createRuleItem(): FormGroup {
     return this._formBuilder.group({
-      title: [''], // Title is optional per rule section
-      points: this._formBuilder.array([this._formBuilder.control('')]), // Start with one bullet point
+      title: [''],
+      points: this._formBuilder.array([this._formBuilder.control('')]),
     });
   }
   addRuleItem(): void {
@@ -169,7 +150,6 @@ export class LeagueNewComponent implements OnInit {
   }
   removeRuleItem(index: number): void {
     if (this.rulesItems.length > 0) {
-      // Prevent removing the last one if desired, or allow removing all
       this.rulesItems.removeAt(index);
     }
   }
@@ -182,18 +162,15 @@ export class LeagueNewComponent implements OnInit {
   removeRulePoint(ruleIndex: number, pointIndex: number): void {
     const pointsArray = this.getRulePoints(ruleIndex);
     if (pointsArray.length > 1) {
-      // Keep at least one point input usually
       pointsArray.removeAt(pointIndex);
     } else {
-      // Optional: Clear the last point instead of removing the input field
       pointsArray.at(0).setValue('');
     }
   }
 
-  // Divisions
   createDivisionGroup(): FormGroup {
     return this._formBuilder.group({
-      name: ['', Validators.required], // Division name is required
+      name: ['', Validators.required],
     });
   }
   addDivisionGroup(): void {
@@ -201,12 +178,10 @@ export class LeagueNewComponent implements OnInit {
   }
   removeDivisionGroup(index: number): void {
     if (this.divisionGroups.length > 1) {
-      // Must keep at least one division
       this.divisionGroups.removeAt(index);
     }
   }
 
-  // Schedule Brackets
   createBracketItem(name = '', type = '', stages = 1): FormGroup {
     return this._formBuilder.group({
       name: [name, Validators.required],
@@ -218,11 +193,9 @@ export class LeagueNewComponent implements OnInit {
     this.scheduleBrackets.push(this.createBracketItem());
   }
   removeBracketItem(index: number): void {
-    // Allow removing all brackets since the step is optional, or enforce min 1 if needed
     this.scheduleBrackets.removeAt(index);
   }
 
-  // --- Custom Validators ---
   uniqueDivisionNamesValidator(
     control: AbstractControl,
   ): ValidationErrors | null {
@@ -239,68 +212,23 @@ export class LeagueNewComponent implements OnInit {
       : null;
   }
 
-  // --- Logo Handling ---
-  // Example function to handle logo upload event from pdz-upload-button
-  // You'll need to adapt this based on how pdz-upload-button emits data
   onLogoUploaded(event: { url: string }): void {
     if (event && event.url) {
       this.leagueInfoForm.get('logoUrl')?.setValue(event.url);
-      console.log('Logo URL set:', event.url);
     }
   }
 
-  // --- Submission ---
   createLeague(): void {
     if (this.leagueForm.valid) {
       console.log(
         'League Creation Data:',
         JSON.stringify(this.leagueForm.value, null, 2),
       );
-      // TODO: Send data to your backend service
-      // e.g., this.leagueService.create(this.leagueForm.value).subscribe(...)
       alert('League data prepared! Check console.');
     } else {
       console.error('Form is invalid:', this.leagueForm);
-      // Optionally mark all fields as touched to show errors
       this.leagueForm.markAllAsTouched();
       alert('Please fill out all required fields correctly.');
     }
   }
-}
-
-// Helper type (optional but good practice)
-interface RuleItem {
-  title: string;
-  points: string[];
-}
-interface DivisionGroup {
-  name: string;
-}
-interface ScheduleBracket {
-  name: string;
-  type: string;
-  stages: number;
-}
-interface LeagueData {
-  leagueInfo: {
-    leagueName: string;
-    season: string;
-    ruleset: string;
-    format: string;
-    logoUrl?: string;
-  };
-  rules: {
-    items: RuleItem[];
-  };
-  divisions: {
-    teamCount: number;
-    groups: DivisionGroup[];
-  };
-  schedule: {
-    brackets: ScheduleBracket[];
-  };
-  settings: {
-    invitePrivacy: 'public' | 'private';
-    spectatePrivacy: 'public' | 'private';
-  };
 }

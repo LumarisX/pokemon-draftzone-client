@@ -82,6 +82,11 @@
     cursor: pointer;
   }
 
+  label.pdz-type {
+    flex: 0 0 auto;
+    width: 5rem;
+  }
+
   &:hover {
     background-color: pdz.color(surface-container-highest);
   }

@@ -1,90 +1,98 @@
-// General styling for form fields within the stepper
-mat-form-field {
-  width: 100%;
-  margin-bottom: 10px;
-}
+@use "pdz-theming" as pdz;
 
-// Spacing for actions within each step
-.step-actions {
-  margin-top: 20px;
+.league-new {
   display: flex;
-  gap: 8px; // Adds space between buttons
+  flex-direction: column;
+  gap: pdz.space(xl);
+  padding-block: pdz.space(lg);
+
+  &__header {
+    display: flex;
+    flex-direction: column;
+    gap: pdz.space(2xs);
+  }
+
+  &__title {
+    @include pdz.text(display);
+  }
+
+  &__lede {
+    @include pdz.text(body);
+    color: pdz.color(on-surface-variant);
+  }
+
+  &__actions {
+    display: flex;
+    justify-content: flex-end;
+    padding-top: pdz.space(sm);
+    border-top: 1px solid pdz.color(outline-variant);
+  }
 }
 
-// Styling for dynamically added items
-.rule-item,
-.division-group,
-.bracket-item {
-  border: 1px solid #eee;
-  padding: 15px;
-  margin-bottom: 15px;
-  position: relative; // For positioning remove buttons if needed
-  border-radius: pdz.shape(corner-xs);
-}
-
-.rule-point {
+.section {
   display: flex;
-  align-items: center;
-  gap: 5px;
-  margin-bottom: 5px;
+  flex-direction: column;
+  gap: pdz.space(sm);
+
+  &__title {
+    @include pdz.text(title);
+  }
+
+  &__hint {
+    @include pdz.text(body-sm);
+    color: pdz.color(on-surface-variant);
+  }
+
+  &__body {
+    display: flex;
+    flex-direction: column;
+    gap: pdz.space(md);
+  }
 }
 
-.point-input {
-  flex-grow: 1; // Make the input take available space
-  margin-bottom: 0; // Override default margin if needed
+.repeater {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(sm);
+  padding: pdz.space(md);
+  border: 1px solid pdz.color(outline-variant);
+  border-radius: pdz.shape(corner-md);
+  background-color: pdz.color(surface-container-low);
+
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: pdz.space(sm);
+  }
+
+  &__title {
+    @include pdz.text(label);
+    @include pdz.caps;
+    color: pdz.color(on-surface-variant);
+  }
 }
 
+.section__body > button,
+[pdz-field] > button {
+  align-self: flex-start;
+  justify-self: start;
+}
+
+.rule-point,
 .division-group {
   display: flex;
   align-items: center;
-  gap: 10px;
-}
+  gap: pdz.space(xs);
 
-.division-group mat-form-field {
-  flex-grow: 1;
-  margin-bottom: 0;
-}
-
-.remove-section-button,
-.remove-division-button,
-.remove-bracket-button {
-  position: absolute;
-  top: 5px;
-  right: 5px;
-  margin-top: -10px; // Adjust alignment
-}
-
-.add-section-button,
-.add-division-button,
-.add-bracket-button,
-.add-point-button {
-  margin-top: 10px;
-}
-
-.full-width {
-  width: 100%;
-}
-
-// Settings sections
-.settings-section {
-  margin-bottom: 20px;
-
-  h4 {
-    margin-bottom: 8px;
-  }
-
-  mat-radio-group {
-    display: flex;
-    flex-direction: column; // Stack radio buttons vertically
-    gap: 5px;
-  }
-
-  mat-error {
-    margin-top: 5px;
+  .pdz-input {
+    flex: 1 1 auto;
+    min-width: 0;
   }
 }
 
-// Ensure icons align nicely with buttons
-button pdz-icon {
-  vertical-align: middle;
+.choice-group {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(xs);
 }

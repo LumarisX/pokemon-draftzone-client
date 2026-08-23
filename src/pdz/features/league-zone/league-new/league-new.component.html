@@ -1,433 +1,310 @@
-<mat-vertical-stepper [linear]="true" #stepper [formGroup]="leagueForm">
-  <mat-step [stepControl]="leagueInfoForm" formGroupName="leagueInfo">
-    <ng-template matStepLabel>League Details</ng-template>
-    <p>Basic information about your league.</p>
+<pdz-page width="narrow">
+  <form [formGroup]="leagueForm" (ngSubmit)="createLeague()" class="league-new">
+    <header class="league-new__header">
+      <h1 class="league-new__title">Create a League</h1>
+      <p class="league-new__lede">
+        Everything here can be changed later — divisions and schedule structure
+        included.
+      </p>
+    </header>
 
-    <mat-form-field appearance="fill">
-      <mat-label>League Name</mat-label>
-      <input matInput formControlName="leagueName" required />
-      @if (leagueInfoForm.get("leagueName")?.hasError("required")) {
-        <mat-error>League name is required</mat-error>
-      }
-    </mat-form-field>
+    <section class="section" formGroupName="leagueInfo">
+      <h2 class="section__title">League Details</h2>
 
-    <mat-form-field appearance="fill">
-      <mat-label>Season</mat-label>
-      <input
-        matInput
-        formControlName="season"
-        placeholder="e.g., Season 1, 2025 Spring"
-        required
-      />
-      @if (leagueInfoForm.get("season")?.hasError("required")) {
-        <mat-error>Season is required</mat-error>
-      }
-    </mat-form-field>
+      <div class="section__body">
+        <label pdz-field label="League Name" required>
+          <input pdz-input formControlName="leagueName" />
+          @if (showError(leagueInfoForm, "leagueName")) {
+            <span pdz-error>League name is required</span>
+          }
+        </label>
 
-    <mat-form-field appearance="fill">
-      <mat-label>Ruleset</mat-label>
-      <mat-select formControlName="ruleset" required>
-        @for (group of rulesets; track group) {
-          <mat-optgroup [label]="group[0]">
-            @for (ruleset of group[1]; track ruleset.id) {
-              <mat-option [value]="ruleset.id">
-                {{ ruleset.name }}
-              </mat-option>
-            }
-          </mat-optgroup>
-        }
-      </mat-select>
-      @if (leagueInfoForm.get("ruleset")?.hasError("required")) {
-        <mat-error>Ruleset is required</mat-error>
-      }
-    </mat-form-field>
+        <label pdz-field label="Season" required>
+          <input
+            pdz-input
+            formControlName="season"
+            placeholder="e.g. Season 1, 2026 Spring"
+          />
+          @if (showError(leagueInfoForm, "season")) {
+            <span pdz-error>Season is required</span>
+          }
+        </label>
 
-    <mat-form-field appearance="fill">
-      <mat-label>Format</mat-label>
-      <mat-select formControlName="format" required>
-        @for (format of formats; track format) {
-          <mat-option [value]="format">
-            {{ format }}
-          </mat-option>
-        }
-      </mat-select>
-      @if (leagueInfoForm.get("format")?.hasError("required")) {
-        <mat-error>Format is required</mat-error>
-      }
-    </mat-form-field>
+        <pdz-ruleset-select formControlName="ruleset" />
 
-    <div>
-      <label>League Logo (Optional):</label>
-      <pdz-upload-image></pdz-upload-image>
-      @if (leagueInfoForm.get("logoUrl")?.value) {
-        <span>
-          Logo Set:
-          {{ leagueInfoForm.get("logoUrl")?.value | slice: 0 : 30 }}...
-        </span>
-      }
-      <input type="hidden" formControlName="logoUrl" />
-    </div>
+        <pdz-format-select formControlName="format" />
 
-    <div class="step-actions">
-      <button pdz-button type="submit" matStepperNext>Next</button>
-    </div>
-  </mat-step>
+        <div pdz-field label="League Logo" hint="Optional — you can add one later.">
+          <pdz-upload-image />
+          <input type="hidden" formControlName="logoUrl" />
+        </div>
+      </div>
+    </section>
 
-  <mat-step [stepControl]="leagueInfoForm" formGroupName="rules" optional>
-    <ng-template matStepLabel>League Rules (Optional)</ng-template>
-    <p>
-      Define specific rules for your league. You can add or modify these later.
-    </p>
+    <section class="section" formGroupName="rules">
+      <h2 class="section__title">League Rules</h2>
+      <p class="section__hint">
+        Group related rules into sections. You can add more later.
+      </p>
 
-    <div formArrayName="items">
-      @for (ruleItem of rulesItems.controls; track ruleItem; let i = $index) {
-        <div [formGroupName]="i" class="rule-item">
-          <h4>Rule Section {{ i + 1 }}</h4>
-          <mat-form-field appearance="outline" class="full-width">
-            <mat-label>Section Title (Optional)</mat-label>
-            <input
-              matInput
-              formControlName="title"
-              placeholder="e.g., Drafting Rules, Battle Clauses"
-            />
-          </mat-form-field>
-          <div formArrayName="points">
-            <label>Rule Points:</label>
-            @for (
-              point of getRulePoints(i).controls;
-              track point;
-              let pIndex = $index
-            ) {
-              <div class="rule-point">
-                <mat-form-field appearance="outline" class="point-input">
-                  <mat-label>Point {{ pIndex + 1 }}</mat-label>
+      <div class="section__body" formArrayName="items">
+        @for (ruleItem of rulesItems.controls; track ruleItem; let i = $index) {
+          <article class="repeater" [formGroupName]="i">
+            <div class="repeater__header">
+              <h3 class="repeater__title">Section {{ i + 1 }}</h3>
+              <button
+                pdz-button
+                iconOnly
+                variant="ghost"
+                color="danger"
+                size="sm"
+                type="button"
+                aria-label="Remove rule section"
+                pdzTooltip="Remove Rule Section"
+                (click)="removeRuleItem(i)"
+              >
+                <pdz-icon name="delete_outline" aria-hidden="true" />
+              </button>
+            </div>
+
+            <label pdz-field label="Section Title" hint="Optional.">
+              <input
+                pdz-input
+                formControlName="title"
+                placeholder="e.g. Drafting Rules, Battle Clauses"
+              />
+            </label>
+
+            <div pdz-field label="Rule Points" formArrayName="points">
+              @for (
+                point of getRulePoints(i).controls;
+                track point;
+                let pIndex = $index
+              ) {
+                <div class="rule-point">
                   <input
-                    matInput
+                    pdz-input
                     [formControlName]="pIndex"
+                    [attr.aria-label]="'Rule point ' + (pIndex + 1)"
                     placeholder="Enter rule point"
                   />
-                </mat-form-field>
-                <button
-                  pdz-button
-                  iconOnly
-                  variant="ghost"
-                  color="danger"
-                  type="button"
-                  aria-label="Remove point"
-                  pdzTooltip="Remove Point"
-                  (click)="removeRulePoint(i, pIndex)"
-                  [disabled]="getRulePoints(i).controls.length <= 1"
-                >
-                  <pdz-icon name="remove_circle_outline" aria-hidden="true"></pdz-icon>
-                </button>
-              </div>
-            }
-            <button
-              pdz-button
-              variant="outlined"
-              color="secondary"
-              size="sm"
-              type="button"
-              class="add-point-button"
-              (click)="addRulePoint(i)"
-            >
-              <pdz-icon name="add_circle_outline" aria-hidden="true"></pdz-icon>
-              Add Point
-            </button>
-          </div>
-          <button
-            pdz-button
-            iconOnly
-            variant="ghost"
-            color="danger"
-            type="button"
-            aria-label="Remove rule section"
-            pdzTooltip="Remove Rule Section"
-            class="remove-section-button"
-            (click)="removeRuleItem(i)"
-          >
-            <pdz-icon name="delete_outline" aria-hidden="true"></pdz-icon>
-          </button>
-          @if (i < rulesItems.controls.length - 1) {
-            <mat-divider></mat-divider>
-          }
-        </div>
-      }
-    </div>
-
-    <button
-      pdz-button
-      type="button"
-      class="add-section-button"
-      (click)="addRuleItem()"
-    >
-      <pdz-icon name="add" aria-hidden="true"></pdz-icon>
-      Add Rule Section
-    </button>
-
-    <div class="step-actions">
-      <button
-        pdz-button
-        type="submit"
-        variant="ghost"
-        color="neutral"
-        matStepperPrevious
-      >
-        Back
-      </button>
-      <button pdz-button type="submit" matStepperNext>Next</button>
-    </div>
-  </mat-step>
-
-  <mat-step [stepControl]="divisionsForm" formGroupName="divisions">
-    <ng-template matStepLabel>Divisions / Groups</ng-template>
-    <p>Organize teams into divisions. There must be at least one.</p>
-
-    <mat-form-field appearance="fill">
-      <mat-label>Teams per Division</mat-label>
-      <input
-        matInput
-        type="number"
-        formControlName="teamCount"
-        required
-        min="2"
-      />
-      @if (divisionsForm.get("teamCount")?.hasError("required")) {
-        <mat-error>Team count is required</mat-error>
-      }
-      @if (divisionsForm.get("teamCount")?.hasError("min")) {
-        <mat-error>Must have at least 2 teams per division</mat-error>
-      }
-    </mat-form-field>
-
-    <div formArrayName="groups">
-      <h4>Division Names (must be unique)</h4>
-      @if (
-        divisionsForm.hasError("uniqueDivisionNames") && divisionsForm.touched
-      ) {
-        <mat-error> Division names must be unique. </mat-error>
-      }
-      @for (group of divisionGroups.controls; track group; let i = $index) {
-        <div [formGroupName]="i" class="division-group">
-          <mat-form-field appearance="outline">
-            <mat-label>Division {{ i + 1 }} Name</mat-label>
-            <input matInput formControlName="name" required />
-            @if (group.get("name")?.hasError("required")) {
-              <mat-error>Division name is required</mat-error>
-            }
-          </mat-form-field>
-          <button
-            pdz-button
-            iconOnly
-            variant="ghost"
-            color="danger"
-            type="button"
-            aria-label="Remove division"
-            pdzTooltip="Remove Division"
-            (click)="removeDivisionGroup(i)"
-            [disabled]="divisionGroups.controls.length <= 1"
-          >
-            <pdz-icon name="remove_circle_outline" aria-hidden="true"></pdz-icon>
-          </button>
-        </div>
-      }
-    </div>
-
-    <button
-      pdz-button
-      variant="outlined"
-      type="button"
-      (click)="addDivisionGroup()"
-    >
-      <pdz-icon name="add" aria-hidden="true"></pdz-icon>
-      Add Division
-    </button>
-
-    @if (
-      divisionsForm.get("groups")?.hasError("minlength") &&
-      divisionsForm.get("groups")?.touched
-    ) {
-      <mat-error> You must have at least one division. </mat-error>
-    }
-
-    <div class="step-actions">
-      <button
-        pdz-button
-        type="submit"
-        variant="ghost"
-        color="neutral"
-        matStepperPrevious
-      >
-        Back
-      </button>
-      <button pdz-button type="submit" matStepperNext>Next</button>
-    </div>
-  </mat-step>
-
-  <mat-step [stepControl]="divisionsForm" formGroupName="schedule" optional>
-    <ng-template matStepLabel>Schedule Structure (Optional)</ng-template>
-    <p>
-      Define the schedule brackets (e.g., Regular Season, Playoffs). Defaults
-      are provided. You can modify this later.
-    </p>
-
-    <div formArrayName="brackets">
-      @for (
-        bracket of scheduleBrackets.controls;
-        track bracket;
-        let i = $index
-      ) {
-        <div [formGroupName]="i" class="bracket-item">
-          <h4>Bracket {{ i + 1 }}</h4>
-          <mat-form-field appearance="outline">
-            <mat-label>Bracket Name</mat-label>
-            <input
-              matInput
-              formControlName="name"
-              required
-              placeholder="e.g., Regular Season, Playoffs"
-            />
-            @if (bracket.get("name")?.hasError("required")) {
-              <mat-error>Name is required</mat-error>
-            }
-          </mat-form-field>
-          <mat-form-field appearance="outline">
-            <mat-label>Bracket Type</mat-label>
-            <mat-select formControlName="type" required>
-              @for (type of bracketTypes; track type) {
-                <mat-option [value]="type">{{ type }}</mat-option>
+                  <button
+                    pdz-button
+                    iconOnly
+                    variant="ghost"
+                    color="danger"
+                    type="button"
+                    aria-label="Remove point"
+                    pdzTooltip="Remove Point"
+                    (click)="removeRulePoint(i, pIndex)"
+                    [disabled]="getRulePoints(i).controls.length <= 1"
+                  >
+                    <pdz-icon name="remove_circle_outline" aria-hidden="true" />
+                  </button>
+                </div>
               }
-            </mat-select>
-            @if (bracket.get("type")?.hasError("required")) {
-              <mat-error>Type is required</mat-error>
-            }
-          </mat-form-field>
-          <mat-form-field appearance="outline">
-            <mat-label>Number of Stages</mat-label>
-            <input
-              matInput
-              type="number"
-              formControlName="stages"
-              required
-              min="1"
-            />
-            @if (bracket.get("stages")?.hasError("required")) {
-              <mat-error>Stages required</mat-error>
-            }
-            @if (bracket.get("stages")?.hasError("min")) {
-              <mat-error>Must be at least 1 stage</mat-error>
-            }
-          </mat-form-field>
+              <button
+                pdz-button
+                variant="outlined"
+                color="secondary"
+                size="sm"
+                type="button"
+                (click)="addRulePoint(i)"
+              >
+                <pdz-icon name="add_circle_outline" aria-hidden="true" />
+                Add Point
+              </button>
+            </div>
+          </article>
+        }
+
+        <button
+          pdz-button
+          variant="outlined"
+          type="button"
+          (click)="addRuleItem()"
+        >
+          <pdz-icon name="add" aria-hidden="true" />
+          Add Rule Section
+        </button>
+      </div>
+    </section>
+
+    <section class="section" formGroupName="divisions">
+      <h2 class="section__title">Divisions</h2>
+      <p class="section__hint">
+        Organize teams into divisions. There must be at least one, and names
+        must be unique.
+      </p>
+
+      <div class="section__body">
+        <label pdz-field label="Teams per Division" required>
+          <input pdz-input type="number" formControlName="teamCount" min="2" />
+          @if (showError(divisionsForm, "teamCount", "required")) {
+            <span pdz-error>Team count is required</span>
+          }
+          @if (showError(divisionsForm, "teamCount", "min")) {
+            <span pdz-error>Must have at least 2 teams per division</span>
+          }
+        </label>
+
+        <div pdz-field label="Division Names" formArrayName="groups">
+          @for (group of divisionGroups.controls; track group; let i = $index) {
+            <div class="division-group" [formGroupName]="i">
+              <input
+                pdz-input
+                formControlName="name"
+                [attr.aria-label]="'Division ' + (i + 1) + ' name'"
+                [placeholder]="'Division ' + (i + 1)"
+              />
+              <button
+                pdz-button
+                iconOnly
+                variant="ghost"
+                color="danger"
+                type="button"
+                aria-label="Remove division"
+                pdzTooltip="Remove Division"
+                (click)="removeDivisionGroup(i)"
+                [disabled]="divisionGroups.controls.length <= 1"
+              >
+                <pdz-icon name="remove_circle_outline" aria-hidden="true" />
+              </button>
+            </div>
+          }
+
+          @if (divisionsForm.hasError("uniqueDivisionNames") && divisionsForm.touched) {
+            <span pdz-error>Division names must be unique.</span>
+          }
+
           <button
             pdz-button
-            iconOnly
-            variant="ghost"
-            color="danger"
+            variant="outlined"
             type="button"
-            aria-label="Remove bracket"
-            pdzTooltip="Remove Bracket"
-            (click)="removeBracketItem(i)"
+            (click)="addDivisionGroup()"
           >
-            <pdz-icon name="delete_outline" aria-hidden="true"></pdz-icon>
+            <pdz-icon name="add" aria-hidden="true" />
+            Add Division
           </button>
-          @if (i < scheduleBrackets.controls.length - 1) {
-            <mat-divider></mat-divider>
-          }
         </div>
-      }
-    </div>
-
-    <button
-      pdz-button
-      type="button"
-      (click)="addBracketItem()"
-    >
-      <pdz-icon name="add" aria-hidden="true"></pdz-icon>
-      Add Bracket
-    </button>
-
-    <div class="step-actions">
-      <button
-        pdz-button
-        type="submit"
-        variant="ghost"
-        color="neutral"
-        matStepperPrevious
-      >
-        Back
-      </button>
-      <button pdz-button type="submit" matStepperNext>Next</button>
-    </div>
-  </mat-step>
-
-  <mat-step [stepControl]="settingsForm" formGroupName="settings">
-    <ng-template matStepLabel>Confirmation & Settings</ng-template>
-    <p>Review and configure final settings.</p>
-
-    <section class="settings-section">
-      <h4>Invite Privacy</h4>
-      <mat-radio-group
-        formControlName="invitePrivacy"
-        aria-label="Invite Privacy"
-        required
-      >
-        <mat-radio-button value="private" checked
-          >Private (Invite via link only)</mat-radio-button
-        >
-        <mat-radio-button value="public"
-          >Public (Link + Posted on board)</mat-radio-button
-        >
-      </mat-radio-group>
-      @if (
-        settingsForm.get("invitePrivacy")?.hasError("required") &&
-        settingsForm.get("invitePrivacy")?.touched
-      ) {
-        <mat-error>Invite privacy selection is required</mat-error>
-      }
+      </div>
     </section>
 
-    <section class="settings-section">
-      <h4>Spectator Access</h4>
-      <mat-radio-group
-        formControlName="spectatePrivacy"
-        aria-label="Spectator Access"
-        required
-      >
-        <mat-radio-button value="private" checked
-          >Private (Only league members)</mat-radio-button
+    <section class="section" formGroupName="schedule">
+      <h2 class="section__title">Schedule Structure</h2>
+      <p class="section__hint">
+        Defaults are provided. You can change the bracket layout later.
+      </p>
+
+      <div class="section__body" formArrayName="brackets">
+        @for (
+          bracket of scheduleBrackets.controls;
+          track bracket;
+          let i = $index
+        ) {
+          <article class="repeater" [formGroupName]="i">
+            <div class="repeater__header">
+              <h3 class="repeater__title">Bracket {{ i + 1 }}</h3>
+              <button
+                pdz-button
+                iconOnly
+                variant="ghost"
+                color="danger"
+                type="button"
+                aria-label="Remove bracket"
+                pdzTooltip="Remove Bracket"
+                (click)="removeBracketItem(i)"
+              >
+                <pdz-icon name="delete_outline" aria-hidden="true" />
+              </button>
+            </div>
+
+            <label pdz-field label="Bracket Name" required>
+              <input
+                pdz-input
+                formControlName="name"
+                placeholder="e.g. Regular Season, Playoffs"
+              />
+              @if (showError(bracket, "name")) {
+                <span pdz-error>Name is required</span>
+              }
+            </label>
+
+            <div pdz-field label="Bracket Type" required>
+              <pdz-select formControlName="type" placeholder="Choose a type">
+                @for (type of bracketTypes; track type) {
+                  <pdz-option [value]="type" [label]="type" />
+                }
+              </pdz-select>
+              @if (showError(bracket, "type")) {
+                <span pdz-error>Type is required</span>
+              }
+            </div>
+
+            <label pdz-field label="Number of Stages" required>
+              <input pdz-input type="number" formControlName="stages" min="1" />
+              @if (showError(bracket, "stages", "required")) {
+                <span pdz-error>Stages are required</span>
+              }
+              @if (showError(bracket, "stages", "min")) {
+                <span pdz-error>Must be at least 1 stage</span>
+              }
+            </label>
+          </article>
+        }
+
+        <button
+          pdz-button
+          variant="outlined"
+          type="button"
+          (click)="addBracketItem()"
         >
-        <mat-radio-button value="public"
-          >Public (Anyone can spectate)</mat-radio-button
-        >
-      </mat-radio-group>
-      @if (
-        settingsForm.get("spectatePrivacy")?.hasError("required") &&
-        settingsForm.get("spectatePrivacy")?.touched
-      ) {
-        <mat-error>Spectator access selection is required</mat-error>
-      }
+          <pdz-icon name="add" aria-hidden="true" />
+          Add Bracket
+        </button>
+      </div>
     </section>
 
-    <div class="step-actions">
-      <button
-        pdz-button
-        type="submit"
-        variant="ghost"
-        color="neutral"
-        matStepperPrevious
-      >
-        Back
-      </button>
-      <button
-        pdz-button
-        type="button"
-        color="secondary"
-        size="lg"
-        (click)="createLeague()"
-        [disabled]="leagueForm.invalid"
-      >
+    <section class="section" formGroupName="settings">
+      <h2 class="section__title">Privacy</h2>
+
+      <div class="section__body">
+        <div pdz-field label="Invites" required>
+          <span class="choice-group">
+            <label
+              pdz-check
+              label="Private"
+              description="Invite via link only."
+            >
+              <input pdz-radio type="radio" formControlName="invitePrivacy" value="private" />
+            </label>
+            <label
+              pdz-check
+              label="Public"
+              description="Link, plus posted on the board."
+            >
+              <input pdz-radio type="radio" formControlName="invitePrivacy" value="public" />
+            </label>
+          </span>
+        </div>
+
+        <div pdz-field label="Spectators" required>
+          <span class="choice-group">
+            <label pdz-check label="Private" description="Only league members.">
+              <input pdz-radio type="radio" formControlName="spectatePrivacy" value="private" />
+            </label>
+            <label pdz-check label="Public" description="Anyone can spectate.">
+              <input pdz-radio type="radio" formControlName="spectatePrivacy" value="public" />
+            </label>
+          </span>
+        </div>
+      </div>
+    </section>
+
+    <footer class="league-new__actions">
+      <button pdz-button type="submit" size="lg" color="secondary">
         Create League
       </button>
-    </div>
-  </mat-step>
-</mat-vertical-stepper>
+    </footer>
+  </form>
+</pdz-page>

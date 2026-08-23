@@ -1,7 +1,8 @@
 import { CdkTableModule } from '@angular/cdk/table';
 import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { MatSortModule, Sort } from '@angular/material/sort';
+import { SortHeaderComponent } from '@pdz/shared/data/sort/sort-header.component';
+import { Sort, SortDirective } from '@pdz/shared/data/sort/sort.directive';
 import { TooltipDirective } from '@pdz/shared/tooltip/tooltip.directive';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
@@ -29,7 +30,8 @@ import { League } from '../../league.interface';
     ReactiveFormsModule,
     FormsModule,
     TooltipDirective,
-    MatSortModule,
+    SortDirective,
+    SortHeaderComponent,
     SpriteComponent,
   ],
   templateUrl: './power-rankings.component.html',

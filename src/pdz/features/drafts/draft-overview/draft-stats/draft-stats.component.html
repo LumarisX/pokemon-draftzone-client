@@ -16,9 +16,9 @@
           data-sticky
           cdk-table
           [dataSource]="teamStats"
-          matSort
-          [matSortDisableClear]="true"
-          (matSortChange)="sort($event)"
+          pdzSort
+          pdzSortDisableClear
+          (pdzSortChange)="sort($event)"
         >
           <ng-container cdkColumnDef="sprite">
             <th class="pdz-table__center" cdk-header-cell *cdkHeaderCellDef></th>
@@ -29,7 +29,7 @@
             </td>
           </ng-container>
           <ng-container cdkColumnDef="name">
-            <th mat-sort-header="name" cdk-header-cell *cdkHeaderCellDef>
+            <th pdzSortHeader="name" cdk-header-cell *cdkHeaderCellDef>
               Name
             </th>
             <td cdk-cell *cdkCellDef="let element">
@@ -40,7 +40,7 @@
           <ng-container cdkColumnDef="gb">
             <th
               class="pdz-table__num"
-              mat-sort-header="gb"
+              pdzSortHeader="gb"
               start="desc"
               cdk-header-cell
               *cdkHeaderCellDef
@@ -53,7 +53,7 @@
           <ng-container cdkColumnDef="dk">
             <th
               class="pdz-table__num"
-              mat-sort-header="dk"
+              pdzSortHeader="dk"
               start="desc"
               cdk-header-cell
               *cdkHeaderCellDef
@@ -66,7 +66,7 @@
           <ng-container cdkColumnDef="ik">
             <th
               class="pdz-table__num"
-              mat-sort-header="ik"
+              pdzSortHeader="ik"
               start="desc"
               cdk-header-cell
               *cdkHeaderCellDef
@@ -79,7 +79,7 @@
           <ng-container cdkColumnDef="deaths">
             <th
               class="pdz-table__num"
-              mat-sort-header="deaths"
+              pdzSortHeader="deaths"
               start="desc"
               cdk-header-cell
               *cdkHeaderCellDef
@@ -92,7 +92,7 @@
           <ng-container cdkColumnDef="kdr">
             <th
               class="pdz-table__num"
-              mat-sort-header="kdr"
+              pdzSortHeader="kdr"
               start="desc"
               cdk-header-cell
               *cdkHeaderCellDef
@@ -107,7 +107,7 @@
           <ng-container cdkColumnDef="kpg">
             <th
               class="pdz-table__num"
-              mat-sort-header="kpg"
+              pdzSortHeader="kpg"
               start="desc"
               cdk-header-cell
               *cdkHeaderCellDef

@@ -1,4 +1,11 @@
-import { Component, DestroyRef, effect, inject, signal } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  computed,
+  effect,
+  inject,
+  signal,
+} from '@angular/core';
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import {
   ButtonColor,
@@ -44,6 +51,8 @@ import { CheckComponent } from '@pdz/shared/inputs/choice/check.component';
 import { ChoiceDirective } from '@pdz/shared/inputs/choice/choice.directive';
 import { FieldComponent } from '@pdz/shared/inputs/field/field.component';
 import { InputDirective } from '@pdz/shared/inputs/field/input.directive';
+import { SortHeaderComponent } from '@pdz/shared/data/sort/sort-header.component';
+import { Sort, SortDirective } from '@pdz/shared/data/sort/sort.directive';
 
 const THEME_ATTR = 'pdz-theme';
 const MODE_ATTR = 'pdz-theme-mode';
@@ -74,6 +83,8 @@ const MODE_ATTR = 'pdz-theme-mode';
     DialogComponent,
     WidgetComponent,
     SlideToggleComponent,
+    SortDirective,
+    SortHeaderComponent,
   ],
   templateUrl: './debug-components.component.html',
   styleUrl: './debug-components.component.scss',
@@ -103,6 +114,22 @@ export class DebugComponentsComponent {
   ];
 
   readonly tableDensities = ['compact', 'default', 'relaxed'];
+
+  readonly sortState = signal<Sort>({ active: 'kills', direction: 'desc' });
+
+  readonly sortedTableRows = computed(() => {
+    const { active, direction } = this.sortState();
+    if (!direction) return this.tableRows;
+
+    const factor = direction === 'asc' ? 1 : -1;
+    return [...this.tableRows].sort((a, b) => {
+      if (active === 'name') return a.name.localeCompare(b.name) * factor;
+      if (active === 'kdr')
+        return (Number(a.kdr) - Number(b.kdr)) * factor;
+      const key = active as 'brought' | 'kills' | 'deaths';
+      return (a[key] - b[key]) * factor;
+    });
+  });
 
   readonly tableTotals = {
     brought: 39,

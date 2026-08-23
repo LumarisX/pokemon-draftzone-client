@@ -11,7 +11,6 @@ import {
   inject,
 } from '@angular/core';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
-import { MatProgressBarModule } from '@angular/material/progress-bar';
 import {
   Subject,
   catchError,
@@ -34,7 +33,6 @@ import {
   imports: [
     HostedImageComponent,
     IconComponent,
-    MatProgressBarModule,
     ButtonComponent,
   ],
   templateUrl: './upload-image.component.html',

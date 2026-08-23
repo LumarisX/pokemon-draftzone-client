@@ -128,11 +128,11 @@
         data-zebra
         data-density="relaxed"
         [dataSource]="teams"
-        matSort
-        matSortActive="score"
-        matSortDirection="desc"
-        [matSortDisableClear]="true"
-        (matSortChange)="sort($event)"
+        pdzSort
+        pdzSortActive="score"
+        pdzSortDirection="desc"
+        pdzSortDisableClear
+        (pdzSortChange)="sort($event)"
       >
         <ng-container cdkColumnDef="position">
           <th class="pdz-table__num" cdk-header-cell *cdkHeaderCellDef>
@@ -166,7 +166,7 @@
         <ng-container cdkColumnDef="score">
           <th
             class="pdz-table__num"
-            mat-sort-header="score"
+            pdzSortHeader="score"
             cdk-header-cell
             *cdkHeaderCellDef
           >

@@ -1,19 +1,14 @@
 import { CdkTableModule } from '@angular/cdk/table';
 import { CommonModule } from '@angular/common';
-import {
-  AfterViewInit,
-  Component,
-  inject,
-  OnInit,
-  ViewChild,
-} from '@angular/core';
-import { MatSort, MatSortModule, Sort } from '@angular/material/sort';
+import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { DRAFT_OVERVIEW_PATH } from '@pdz/core/route-paths';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 import { BadgeTone } from '@pdz/shared/data/badge/badge.component';
 import { CardComponent } from '@pdz/shared/data/card/card.component';
 import { ScoreComponent } from '@pdz/shared/data/score/score.component';
+import { SortHeaderComponent } from '@pdz/shared/data/sort/sort-header.component';
+import { Sort, SortDirective } from '@pdz/shared/data/sort/sort.directive';
 import { DialogService } from '@pdz/shared/dialogs/dialog/dialog.service';
 import { EmptyStateComponent } from '@pdz/shared/feedback/empty-state/empty-state.component';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
@@ -43,7 +38,8 @@ type Matchup = Opponent & {
     SpriteComponent,
     LoadingComponent,
     IconComponent,
-    MatSortModule,
+    SortDirective,
+    SortHeaderComponent,
     CdkTableModule,
     ButtonComponent,
     ScoreComponent,
@@ -54,16 +50,9 @@ type Matchup = Opponent & {
     MenuTriggerDirective,
   ],
 })
-export class OpponentTeamPreviewComponent implements OnInit, AfterViewInit {
-  @ViewChild(MatSort) matSort?: MatSort;
+export class OpponentTeamPreviewComponent implements OnInit {
   private readonly defaultSort: Sort = { active: 'kpg', direction: 'desc' };
 
-  ngAfterViewInit(): void {
-    if (this.matSort) {
-      this.matSort.active = this.defaultSort.active;
-      this.matSort.direction = this.defaultSort.direction;
-    }
-  }
   private draftService = inject(DraftService);
   private route = inject(ActivatedRoute);
   private dialogs = inject(DialogService);
