@@ -33,6 +33,8 @@ import {
 } from '../league-matchup.model';
 import { InputDirective } from '@pdz/shared/inputs/field/input.directive';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
+import { SegmentedOptionComponent } from '@pdz/shared/inputs/segmented/segmented-option.component';
+import { SegmentedComponent } from '@pdz/shared/inputs/segmented/segmented.component';
 
 // Mirrors the server's REPLAY_URL_PATTERN (replay-analysis.controller.ts) so
 // the button never enables for a link the server would reject anyway.
@@ -75,6 +77,8 @@ type MatchupPokemonSummary = {
   imports: [CommonModule, ReactiveFormsModule, IconComponent, SpriteComponent,
     InputDirective,
     ButtonComponent,
+    SegmentedComponent,
+    SegmentedOptionComponent,
   ],
   templateUrl: './matchup-report.component.html',
   styleUrl: './matchup-report.component.scss',

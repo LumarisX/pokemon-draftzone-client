@@ -49,6 +49,8 @@ import {
 import { SaveSearchesServices } from '../save-searches.service';
 import { SelectOptionComponent } from '@pdz/shared/dropdowns/select/select-option.component';
 import { SelectComponent } from '@pdz/shared/dropdowns/select/select.component';
+import { SegmentedOptionComponent } from '@pdz/shared/inputs/segmented/segmented-option.component';
+import { SegmentedComponent } from '@pdz/shared/inputs/segmented/segmented.component';
 
 @Component({
   selector: 'pdz-pokemon-search-core',
@@ -62,6 +64,8 @@ import { SelectComponent } from '@pdz/shared/dropdowns/select/select.component';
     ButtonComponent,
     SelectComponent,
     SelectOptionComponent,
+    SegmentedComponent,
+    SegmentedOptionComponent,
   ],
   templateUrl: './pokemon-search-core.component.html',
   styleUrl: './pokemon-search-core.component.scss',

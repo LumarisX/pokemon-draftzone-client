@@ -2,47 +2,29 @@
   <div class="pokemon-search__controls">
     <div class="pokemon-search__field">
       <label>Mode</label>
-      <div class="pokemon-search__mode-toggle">
-        <button
-          type="button"
-          class="pokemon-search__mode-button"
-          [class.is-active]="searchMode === 'quick'"
-          (click)="setSearchMode('quick')"
-        >
-          Quick
-        </button>
-        <button
-          type="button"
-          class="pokemon-search__mode-button"
-          [class.is-active]="searchMode === 'advanced'"
-          (click)="setSearchMode('advanced')"
-        >
-          Advanced
-        </button>
-      </div>
+      <pdz-segmented
+        size="sm"
+        aria-label="Search mode"
+        [value]="searchMode"
+        (valueChange)="setSearchMode($any($event))"
+      >
+        <pdz-segmented-option value="quick" label="Quick" />
+        <pdz-segmented-option value="advanced" label="Advanced" />
+      </pdz-segmented>
     </div>
 
     @if (searchMode === "advanced") {
       <div class="pokemon-search__field">
         <label>Match</label>
-        <div class="pokemon-search__mode-toggle">
-          <button
-            type="button"
-            class="pokemon-search__mode-button"
-            [class.is-active]="mode === 'and'"
-            (click)="setMode('and')"
-          >
-            All
-          </button>
-          <button
-            type="button"
-            class="pokemon-search__mode-button"
-            [class.is-active]="mode === 'or'"
-            (click)="setMode('or')"
-          >
-            Any
-          </button>
-        </div>
+        <pdz-segmented
+          size="sm"
+          aria-label="Match mode"
+          [value]="mode"
+          (valueChange)="setMode($any($event))"
+        >
+          <pdz-segmented-option value="and" label="All" />
+          <pdz-segmented-option value="or" label="Any" />
+        </pdz-segmented>
       </div>
     }
 
@@ -257,30 +239,15 @@
         </button>
       </div>
 
-      <div
-        class="pokemon-results__view-toggle"
-        role="group"
+      <pdz-segmented
+        size="sm"
         aria-label="View mode"
+        [value]="viewMode"
+        (valueChange)="setViewMode($any($event))"
       >
-        <button
-          type="button"
-          class="pokemon-results__view-button"
-          [class.is-active]="viewMode === 'grid'"
-          [attr.aria-pressed]="viewMode === 'grid'"
-          (click)="setViewMode('grid')"
-        >
-          <pdz-icon name="view_cozy"></pdz-icon>
-        </button>
-        <button
-          type="button"
-          class="pokemon-results__view-button"
-          [class.is-active]="viewMode === 'list'"
-          [attr.aria-pressed]="viewMode === 'list'"
-          (click)="setViewMode('list')"
-        >
-          <pdz-icon name="view_list"></pdz-icon>
-        </button>
-      </div>
+        <pdz-segmented-option value="grid" label="Grid" icon="view_cozy" />
+        <pdz-segmented-option value="list" label="List" icon="view_list" />
+      </pdz-segmented>
     </div>
   </div>
 

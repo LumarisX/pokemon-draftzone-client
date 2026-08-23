@@ -24,20 +24,20 @@
               nameOf(control.controls.id.value)
             }}</span>
 
-            <div class="report__status">
+            <pdz-segmented
+              class="report__status"
+              size="sm"
+              aria-label="Pokemon status"
+              [value]="control.controls.status.value"
+              (valueChange)="setStatus(control, $any($event), game, side)"
+            >
               @for (option of statuses; track option.label) {
-                <button
-                  type="button"
-                  class="report__status-option"
-                  [class.report__status-option--selected]="
-                    control.controls.status.value === option.value
-                  "
-                  (click)="setStatus(control, option.value, game, side)"
-                >
-                  {{ option.label }}
-                </button>
+                <pdz-segmented-option
+                  [value]="option.value"
+                  [label]="option.label"
+                />
               }
-            </div>
+            </pdz-segmented>
           </div>
 
           <div class="report__mon-bottom">
@@ -88,61 +88,40 @@
 </ng-template>
 
 <form class="report" [formGroup]="form" (ngSubmit)="submit()">
-  <div class="report__mode">
-    <button
-      type="button"
-      class="report__mode-option"
-      [class.report__mode-option--selected]="mode() === 'games'"
-      (click)="setMode('games')"
-    >
-      <pdz-icon name="stadia_controller" [size]="16"></pdz-icon>
-      <span>Games</span>
-    </button>
-    <button
-      type="button"
-      class="report__mode-option"
-      [class.report__mode-option--selected]="mode() === 'forfeit'"
-      (click)="setMode('forfeit')"
-    >
-      <pdz-icon name="flag" [size]="16"></pdz-icon>
-      <span>Forfeit</span>
-    </button>
-    <button
-      type="button"
-      class="report__mode-option"
-      [class.report__mode-option--selected]="mode() === 'score'"
-      (click)="setMode('score')"
-    >
-      <pdz-icon name="edit" [size]="16"></pdz-icon>
-      <span>Score</span>
-    </button>
-  </div>
+  <pdz-segmented
+    class="report__mode"
+    aria-label="Report mode"
+    [value]="mode()"
+    (valueChange)="setMode($any($event))"
+  >
+    <pdz-segmented-option
+      value="games"
+      label="Games"
+      icon="stadia_controller"
+    />
+    <pdz-segmented-option value="forfeit" label="Forfeit" icon="flag" />
+    <pdz-segmented-option value="score" label="Score" icon="edit" />
+  </pdz-segmented>
 
   @if (mode() === "forfeit") {
     <div class="report__panel">
       <p class="report__intro">Pick which team wins by forfeit.</p>
-      <div class="report__forfeit">
-        <button
-          type="button"
-          class="report__winner-option report__winner-option--block"
-          [class.report__winner-option--selected]="
-            form.controls.forfeitWinner.value === 'side1'
-          "
-          (click)="setForfeitWinner('side1')"
-        >
-          Forfeit win: {{ teamName("side1") }}
-        </button>
-        <button
-          type="button"
-          class="report__winner-option report__winner-option--block"
-          [class.report__winner-option--selected]="
-            form.controls.forfeitWinner.value === 'side2'
-          "
-          (click)="setForfeitWinner('side2')"
-        >
-          Forfeit win: {{ teamName("side2") }}
-        </button>
-      </div>
+      <pdz-segmented
+        class="report__forfeit"
+        align="stretch"
+        aria-label="Forfeit winner"
+        [value]="form.controls.forfeitWinner.value"
+        (valueChange)="setForfeitWinner($any($event))"
+      >
+        <pdz-segmented-option
+          value="side1"
+          [label]="'Forfeit win: ' + teamName('side1')"
+        />
+        <pdz-segmented-option
+          value="side2"
+          [label]="'Forfeit win: ' + teamName('side2')"
+        />
+      </pdz-segmented>
     </div>
   }
 
@@ -229,28 +208,22 @@
           <div class="report__result">
             <div class="report__result-group">
               <span class="report__result-label">Winner</span>
-              <div class="report__result-controls">
-                <button
-                  type="button"
-                  class="report__winner-option"
-                  [class.report__winner-option--selected]="
-                    game.controls.winner.value === 'side1'
-                  "
-                  (click)="setWinner(game, 'side1')"
-                >
-                  {{ teamName("side1") }}
-                </button>
-                <button
-                  type="button"
-                  class="report__winner-option"
-                  [class.report__winner-option--selected]="
-                    game.controls.winner.value === 'side2'
-                  "
-                  (click)="setWinner(game, 'side2')"
-                >
-                  {{ teamName("side2") }}
-                </button>
-              </div>
+              <pdz-segmented
+                class="report__result-controls"
+                size="sm"
+                aria-label="Game winner"
+                [value]="game.controls.winner.value"
+                (valueChange)="setWinner(game, $any($event))"
+              >
+                <pdz-segmented-option
+                  value="side1"
+                  [label]="teamName('side1')"
+                />
+                <pdz-segmented-option
+                  value="side2"
+                  [label]="teamName('side2')"
+                />
+              </pdz-segmented>
             </div>
 
             <div class="report__result-group">

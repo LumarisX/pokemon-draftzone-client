@@ -69,57 +69,6 @@ button:disabled {
       }
     }
   }
-
-  &__mode-toggle {
-    --_toggle-pad: #{pdz.space(2xs)};
-    display: inline-grid;
-    grid-template-columns: 1fr 1fr;
-    width: fit-content;
-    padding: var(--_toggle-pad);
-    border: 1px solid pdz.color(outline);
-    border-radius: pdz.shape(corner-sm);
-    background: pdz.color(surface);
-    position: relative;
-
-    &::before {
-      content: "";
-      position: absolute;
-      top: var(--_toggle-pad);
-      bottom: var(--_toggle-pad);
-      left: var(--_toggle-pad);
-      width: calc(50% - var(--_toggle-pad));
-      background: pdz.color(primary-container);
-      border: 1px solid pdz.color(primary-border);
-      border-radius: calc(pdz.shape(corner-sm) - 2px);
-      transition: transform pdz.duration(base) pdz.easing(standard);
-      pointer-events: none;
-      z-index: 0;
-    }
-
-    &:has(.pokemon-search__mode-button:last-child.is-active)::before {
-      transform: translateX(100%);
-    }
-  }
-
-  &__mode-button {
-    width: 100%;
-    position: relative;
-    z-index: 1;
-    text-align: center;
-    border: 1px solid transparent;
-    border-radius: calc(pdz.shape(corner-sm) - 2px);
-    background: transparent;
-    color: pdz.color(on-surface-variant);
-    white-space: nowrap;
-    transition: color pdz.duration(base) pdz.easing(standard);
-
-    &.is-active {
-      border-color: transparent;
-      background: transparent;
-      color: pdz.color(on-primary-container);
-    }
-  }
-
   &__pill-bar {
     display: flex;
     flex-wrap: wrap;
@@ -429,50 +378,6 @@ button:disabled {
     border-radius: pdz.shape(corner-sm);
     padding: pdz.space(xs) pdz.space(sm);
   }
-
-  &__view-toggle {
-    --_toggle-pad: #{pdz.space(2xs)};
-    display: inline-grid;
-    grid-template-columns: 1fr 1fr;
-    width: fit-content;
-    padding: var(--_toggle-pad);
-    border: 1px solid pdz.color(outline-variant);
-    border-radius: pdz.shape(corner-sm);
-    background: pdz.color(surface);
-    position: relative;
-
-    &::before {
-      content: "";
-      position: absolute;
-      top: var(--_toggle-pad);
-      bottom: var(--_toggle-pad);
-      left: var(--_toggle-pad);
-      width: calc(50% - var(--_toggle-pad));
-      background: pdz.color(primary-container);
-      border: 1px solid pdz.color(primary-border);
-      border-radius: calc(pdz.shape(corner-sm) - 2px);
-      transition: transform pdz.duration(base) pdz.easing(standard);
-      pointer-events: none;
-      z-index: 0;
-    }
-
-    &:has(.pokemon-results__view-button:last-child.is-active)::before {
-      transform: translateX(100%);
-    }
-  }
-
-  &__view-button {
-    position: relative;
-    z-index: 1;
-    padding: pdz.space(2xs) pdz.space(sm);
-    border: 1px solid transparent;
-    border-radius: calc(pdz.shape(corner-sm) - 2px);
-    background: transparent;
-    color: pdz.color(on-surface-variant);
-    cursor: pointer;
-    transition: color pdz.duration(base) pdz.easing(standard);
-  }
-
   &__view-button.is-active {
     border-color: transparent;
     background: transparent;
