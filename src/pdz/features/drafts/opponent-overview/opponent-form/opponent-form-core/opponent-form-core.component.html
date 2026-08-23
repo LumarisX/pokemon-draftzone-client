@@ -12,8 +12,7 @@
         <h1 class="draft-builder__title">{{ title() }}</h1>
         <span class="draft-builder__spacer"></span>
         <button
-          type="button"
-          class="draft-builder__submit"
+          pdz-button
           [disabled]="isImporting"
           (click)="onSubmit()"
         >

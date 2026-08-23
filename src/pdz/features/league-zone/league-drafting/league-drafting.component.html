@@ -98,6 +98,11 @@
                     !draftDetails.sequentialTurns)
                 ) {
                   <button
+                    pdz-button
+                    iconOnly
+                    size="xs"
+                    variant="ghost"
+                    color="danger"
                     class="remove-button"
                     [title]="
                       pendingPokemonIds.has(pokemon.id)
@@ -168,7 +173,12 @@
                             {{ choice.cost }}
                           </div>
                           <button
-                            class="remove-button"
+                            pdz-button
+                    iconOnly
+                    size="xs"
+                    variant="ghost"
+                    color="danger"
+                    class="remove-button"
                             (click)="deleteChoice(picks, $index)"
                           >
                             <pdz-icon name="close" size="sm"></pdz-icon>
@@ -208,7 +218,7 @@
         <div class="draft-footer">
           @if (draftDetails.status === "IN_PROGRESS") {
             <button
-              class="save-button"
+              pdz-button
               [disabled]="!canSave()"
               (click)="saveDraft()"
             >

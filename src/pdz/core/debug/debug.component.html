@@ -64,10 +64,10 @@
         <div class="debug-field__blob">{{ debugData.localstorage.planner }}</div>
       </div>
       <div class="debug-actions">
-        <button class="debug-actions__copy" (click)="copyToClipboard()">
+        <button pdz-button (click)="copyToClipboard()">
           Export to Clipboard
         </button>
-        <button class="debug-actions__download" (click)="downloadAsTxt()">
+        <button pdz-button color="neutral" variant="outlined" (click)="downloadAsTxt()">
           Download as .txt
         </button>
       </div>

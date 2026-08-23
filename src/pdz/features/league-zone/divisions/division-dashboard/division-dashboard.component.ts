@@ -10,6 +10,7 @@ import { LeagueTradeWidgetComponent } from '../../league-widgets/league-trade-wi
 import { StageSwitcherComponent } from '../../league-widgets/stage-switcher/stage-switcher.component';
 import { League } from '../../league.interface';
 import { getLeagueLogoUrl } from '../../league.util';
+import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 
 @Component({
   selector: 'pdz-division-dashboard',
@@ -21,6 +22,7 @@ import { getLeagueLogoUrl } from '../../league.util';
     LeagueTradeWidgetComponent,
     LeagueScheduleWidgetComponent,
     StageSwitcherComponent,
+    ButtonComponent,
   ],
   templateUrl: './division-dashboard.component.html',
   styleUrls: ['./division-dashboard.component.scss'],

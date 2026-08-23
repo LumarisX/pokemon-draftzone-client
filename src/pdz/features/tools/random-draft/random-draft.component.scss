@@ -81,26 +81,3 @@
   gap: pdz.space(sm);
 }
 
-.random-actions__btn {
-  padding: 0.125rem;
-  font: inherit;
-  @include pdz.text(body-sm-strong, $family: false);
-  background: pdz.color(menu-container);
-  color: pdz.color(on-menu-container);
-  border: 2px solid pdz.color(menu-border);
-  border-radius: pdz.shape(corner-xxs);
-  cursor: pointer;
-  transition:
-    background-color pdz.duration(base) pdz.easing(standard),
-    border-color pdz.duration(base) pdz.easing(standard);
-
-  &:hover {
-    background: pdz.color(menu-container-hover);
-    border-color: pdz.color(primary-accent);
-  }
-
-  &:focus-visible {
-    outline: 2px solid pdz.color(primary-accent);
-    outline-offset: 2px;
-  }
-}

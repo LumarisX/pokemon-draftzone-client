@@ -6,6 +6,7 @@ import { PokemonTypeComponent } from '@pdz/shared/dialogs/pokemon-type/pokemon-t
 import { DraftPokemon } from '../../../../draft.model';
 import { CoverageChart, TypeChart } from '../../../matchup-interface';
 import { EffectivenessChartComponent } from './effectiveness-chart/effectiveness-chart.component';
+import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 
 @Component({
   selector: 'pdz-coverage',
@@ -16,6 +17,7 @@ import { EffectivenessChartComponent } from './effectiveness-chart/effectiveness
     EffectivenessChartComponent,
     TooltipDirective,
     PokemonTypeComponent,
+    ButtonComponent,
   ],
 })
 export class CoverageComponent implements OnInit, OnDestroy {

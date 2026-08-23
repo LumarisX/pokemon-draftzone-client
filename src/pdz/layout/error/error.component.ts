@@ -5,10 +5,13 @@ import { environment } from '@pdz/environments/environment';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import type { ClientError } from './error.service';
 import { ErrorService } from './error.service';
+import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 
 @Component({
   selector: 'pdz-error',
-  imports: [CommonModule, IconComponent],
+  imports: [CommonModule, IconComponent,
+    ButtonComponent,
+  ],
   templateUrl: './error.component.html',
   styleUrl: './error.component.scss',
 })

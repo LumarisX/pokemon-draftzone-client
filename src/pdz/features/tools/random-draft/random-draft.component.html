@@ -23,8 +23,10 @@
 
       <div class="random-actions">
         <button
-          type="button"
-          class="random-actions__btn"
+          pdz-button
+          size="sm"
+          color="neutral"
+          variant="outlined"
           [routerLink]="['/', draftPath, 'new']"
           [queryParams]="{
             team: teamIds(),
@@ -35,8 +37,10 @@
           Save to New League
         </button>
         <button
-          type="button"
-          class="random-actions__btn"
+          pdz-button
+          size="sm"
+          color="neutral"
+          variant="outlined"
           [routerLink]="['/', 'tools', 'quick-matchup']"
           [queryParams]="{
             team: teamIds(),

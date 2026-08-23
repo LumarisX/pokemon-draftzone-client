@@ -27,6 +27,9 @@ import {
   PokemonSetData,
 } from './pokemon-builder.model';
 import { ChoiceDirective } from '@pdz/shared/inputs/choice/choice.directive';
+import { SelectOptionComponent } from '@pdz/shared/dropdowns/select/select-option.component';
+import { SelectComponent } from '@pdz/shared/dropdowns/select/select.component';
+import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 
 export type PokemonBuilderView =
   | 'details'
@@ -58,6 +61,9 @@ type SpeedTier = {
     SpriteComponent,
     IconComponent,
     ChoiceDirective,
+    SelectComponent,
+    SelectOptionComponent,
+    ButtonComponent,
   ],
 })
 export class MatchupPokemonBuilderComponent implements OnInit, OnDestroy {
@@ -68,12 +74,8 @@ export class MatchupPokemonBuilderComponent implements OnInit, OnDestroy {
   @Output() pokemonChange = new EventEmitter<void>();
 
   private teambuilderService = inject(TeambuilderService);
-  openDropdown: string | null = null;
 
   STATS = STATS;
-
-  itemSearchQuery = '';
-  filteredItems: Item[] = [];
 
   moveSearchQuery = '';
   filteredMoves: Move[] | null = null;
@@ -86,8 +88,6 @@ export class MatchupPokemonBuilderComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     document.addEventListener('click', this.docClickHandler);
-
-    this.filteredItems = this.pokemon().items;
     const processedLearnset = this.getProcessedLearnset(this.pokemon());
     this.filteredMoves = processedLearnset ?? null;
     if (this.view() === 'moves' && !processedLearnset) {
@@ -108,33 +108,8 @@ export class MatchupPokemonBuilderComponent implements OnInit, OnDestroy {
       !target.closest('.teambuilder__dropdown') &&
       !target.closest('.dropdown-item')
     ) {
-      this.openDropdown = null;
     }
   }
-
-  toggleDropdown(type: string, event?: MouseEvent) {
-    if (event) {
-      event.stopPropagation();
-    }
-
-    this.openDropdown = this.openDropdown === type ? null : type;
-
-    // Special handling for items dropdown
-    if (type === 'item' && this.openDropdown === 'item') {
-      this.itemSearchQuery = '';
-      const pokemon = this.pokemon();
-      if (pokemon) {
-        this.filteredItems = pokemon.items;
-      }
-      setTimeout(() => {
-        const searchInput = document.querySelector(
-          '.dropdown-search',
-        ) as HTMLInputElement;
-        searchInput?.focus();
-      }, 0);
-    }
-  }
-
   selectTeraType(type: TeraType, event?: MouseEvent) {
     if (event) {
       event.stopPropagation();
@@ -144,7 +119,6 @@ export class MatchupPokemonBuilderComponent implements OnInit, OnDestroy {
       pokemon.teraType = type;
       this.pokemonChange.emit();
     }
-    this.openDropdown = null;
   }
 
   selectItem(itemName: string, event?: MouseEvent) {
@@ -156,8 +130,6 @@ export class MatchupPokemonBuilderComponent implements OnInit, OnDestroy {
       pokemon.item = itemName;
       this.pokemonChange.emit();
     }
-    this.itemSearchQuery = '';
-    this.openDropdown = null;
   }
 
   selectAbility(ability: string, event?: MouseEvent) {
@@ -171,7 +143,6 @@ export class MatchupPokemonBuilderComponent implements OnInit, OnDestroy {
       this.refreshProcessedLearnset(pokemon);
       this.pokemonChange.emit();
     }
-    this.openDropdown = null;
   }
 
   selectView(viewName: PokemonBuilderView, event?: Event) {
@@ -332,26 +303,6 @@ export class MatchupPokemonBuilderComponent implements OnInit, OnDestroy {
     const emptySlot = this.pokemon().moves.findIndex((m) => m === null);
     if (emptySlot >= 0) this.selectedMove = emptySlot;
   }
-
-  toggleItemDropdown(event?: MouseEvent) {
-    this.toggleDropdown('item', event);
-  }
-
-  filterItems() {
-    const pokemon = this.pokemon();
-    if (!pokemon) return;
-    const query = this.itemSearchQuery.toLowerCase().trim();
-    if (!query) {
-      this.filteredItems = pokemon.items;
-    } else {
-      this.filteredItems = pokemon.items.filter(
-        (item) =>
-          item.name.toLowerCase().includes(query) ||
-          item.tags.some((tag) => tag.toLowerCase().includes(query)),
-      );
-    }
-  }
-
   filterMoves() {
     const pokemonValue = this.pokemon();
     if (!pokemonValue) return;

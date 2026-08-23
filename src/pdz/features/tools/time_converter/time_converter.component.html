@@ -19,7 +19,11 @@
       <pdz-icon name="discord" [size]="18"></pdz-icon>
       <code class="converter-stamp__code">{{ discordTimestamp }}</code>
       <button
-        type="button"
+        pdz-button
+        iconOnly
+        size="sm"
+        variant="ghost"
+        color="neutral"
         class="converter-stamp__copy"
         [attr.aria-label]="copied ? 'Copied' : 'Copy Discord timestamp'"
         [cdkCopyToClipboard]="discordTimestamp"

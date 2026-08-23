@@ -272,16 +272,18 @@
                     @if (trade.status === "PENDING" && trade.id) {
                       <span class="trade-entry__actions">
                         <button
-                          type="button"
-                          class="trade-entry__action trade-entry__action--approve"
+                          pdz-button
+                          size="sm"
                           [disabled]="resolvingTradeId === trade.id"
                           (click)="resolveTrade(trade, 'APPROVED')"
                         >
                           Approve
                         </button>
                         <button
-                          type="button"
-                          class="trade-entry__action trade-entry__action--reject"
+                          pdz-button
+                          size="sm"
+                          color="danger"
+                          variant="outlined"
                           [disabled]="resolvingTradeId === trade.id"
                           (click)="resolveTrade(trade, 'REJECTED')"
                         >

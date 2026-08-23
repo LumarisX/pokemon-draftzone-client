@@ -507,38 +507,6 @@
     @include pdz.text(label);
     font-weight: 600;
   }
-
-  .save-button {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: auto;
-    margin: 0;
-    padding: 0.5rem 1.5rem;
-    text-align: center;
-    box-shadow: var(--pdz-level-2);
-    cursor: pointer;
-    border-radius: pdz.shape(corner-md);
-    background-color: pdz.color(primary);
-    color: pdz.color(on-primary);
-    font-weight: var(--pdz-font-weight-bold);
-    font-family: var(--pdz-font-display);
-
-    &:hover {
-      box-shadow: var(--pdz-level-1);
-    }
-
-    &:active:not(:disabled) {
-      box-shadow: var(--pdz-level-0);
-    }
-
-    &:disabled {
-      cursor: not-allowed;
-      background-color: pdz.color(outline-variant);
-      color: pdz.color(on-surface);
-      box-shadow: none;
-    }
-  }
 }
 
 .my-pick {

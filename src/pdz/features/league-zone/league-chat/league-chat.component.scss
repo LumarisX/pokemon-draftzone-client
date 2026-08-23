@@ -114,22 +114,6 @@
     @include text(label);
     color: pdz.color("on-surface-variant");
   }
-
-  &__remove {
-    display: inline-flex;
-    padding: 0;
-    border: none;
-    background: none;
-    color: pdz.color("on-surface-variant");
-    cursor: pointer;
-    opacity: 0;
-    transition: opacity pdz.duration(fast) pdz.easing(standard);
-
-    &:focus-visible {
-      opacity: 1;
-    }
-  }
-
   &__message:hover &__remove {
     opacity: 1;
   }
@@ -166,25 +150,6 @@
       border-color: pdz.color("primary");
     }
   }
-
-  &__send {
-    display: inline-flex;
-    align-items: center;
-    gap: pdz.space(3xs);
-    padding: pdz.space(2xs) pdz.space(md);
-    border: none;
-    border-radius: pdz.shape("corner-full");
-    background: pdz.color("primary");
-    color: pdz.color("on-primary");
-    cursor: pointer;
-    @include text(label);
-
-    &:disabled {
-      opacity: 0.5;
-      cursor: default;
-    }
-  }
-
   &__readonly {
     @include text(label);
     margin: 0;

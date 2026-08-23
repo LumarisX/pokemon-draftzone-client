@@ -20,8 +20,10 @@
     </div>
     <div class="filter-drawer__header-actions">
       <button
-        type="button"
-        class="filter-drawer__apply-btn"
+        pdz-button
+        iconOnly
+        size="sm"
+        variant="ghost"
         [disabled]="!isApplyEnabled"
         (click)="applyFilter()"
         aria-label="Apply filter"
@@ -29,8 +31,11 @@
         <pdz-icon name="check"></pdz-icon>
       </button>
       <button
-        type="button"
-        class="filter-drawer__close"
+        pdz-button
+        iconOnly
+        size="sm"
+        variant="ghost"
+        color="neutral"
         (click)="cancelFilter()"
         aria-label="Close filter drawer"
       >

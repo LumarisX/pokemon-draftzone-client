@@ -20,8 +20,11 @@
     </button>
     @if (!locked()) {
       <button
-        type="button"
-        class="pokemon-search__clear"
+        pdz-button
+        iconOnly
+        size="sm"
+        variant="ghost"
+        color="neutral"
         aria-label="Clear selection"
         [disabled]="disabled"
         (click)="clearSelection($event)"
@@ -53,8 +56,11 @@
     />
     @if (query.value) {
       <button
-        type="button"
-        class="pokemon-search__clear"
+        pdz-button
+        iconOnly
+        size="sm"
+        variant="ghost"
+        color="neutral"
         aria-label="Clear search"
         (mousedown)="$event.preventDefault()"
         (click)="clear()"

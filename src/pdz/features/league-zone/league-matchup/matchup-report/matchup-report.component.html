@@ -52,8 +52,11 @@
                 <span class="report__kills" [title]="kill.label + ' KOs'">
                   <span class="report__kills-controls">
                     <button
-                      type="button"
-                      class="report__step"
+                      pdz-button
+                      iconOnly
+                      size="xs"
+                      variant="ghost"
+                      color="neutral"
                       [disabled]="control.controls[kill.field].value === 0"
                       (click)="adjustKills(control, kill.field, -1, game, side)"
                     >
@@ -63,8 +66,11 @@
                       control.controls[kill.field].value
                     }}</span>
                     <button
-                      type="button"
-                      class="report__step"
+                      pdz-button
+                      iconOnly
+                      size="xs"
+                      variant="ghost"
+                      color="neutral"
                       (click)="adjustKills(control, kill.field, 1, game, side)"
                     >
                       <pdz-icon name="add" [size]="14"></pdz-icon>
@@ -182,8 +188,11 @@
           <div class="report__game-header">
             <span class="report__game-title">Game {{ $index + 1 }}</span>
             <button
-              type="button"
-              class="report__remove"
+              pdz-button
+              iconOnly
+              size="xs"
+              variant="ghost"
+              color="danger"
               aria-label="Remove game"
               (click)="removeGame($index)"
             >
@@ -200,8 +209,10 @@
               placeholder="Replay link"
             />
             <button
-              type="button"
-              class="report__analyze"
+              pdz-button
+              size="sm"
+              color="secondary"
+              variant="outlined"
               [disabled]="
                 !isReplayUrl(game.controls.link.value) ||
                 analyzingIndex() !== null
@@ -258,8 +269,11 @@
                   />
                   @if (game.controls.team1ScoreLocked.value) {
                     <button
-                      type="button"
-                      class="report__score-reset"
+                      pdz-button
+                      iconOnly
+                      size="xs"
+                      variant="ghost"
+                      color="neutral"
                       title="Go back to counting survivors"
                       (click)="resetScore(game, 'side1')"
                     >
@@ -281,8 +295,11 @@
                   />
                   @if (game.controls.team2ScoreLocked.value) {
                     <button
-                      type="button"
-                      class="report__score-reset"
+                      pdz-button
+                      iconOnly
+                      size="xs"
+                      variant="ghost"
+                      color="neutral"
                       title="Go back to counting survivors"
                       (click)="resetScore(game, 'side2')"
                     >
@@ -392,7 +409,13 @@
 
   <div class="report__footer">
     @if (mode() === "games") {
-      <button type="button" class="report__add" (click)="addGame()">
+      <button
+        pdz-button
+        size="sm"
+        color="neutral"
+        variant="outlined"
+        (click)="addGame()"
+      >
         <pdz-icon name="add" [size]="16"></pdz-icon>
         <span>Add game</span>
       </button>
@@ -403,7 +426,7 @@
       </span>
     }
 
-    <button class="report__submit" type="submit" [disabled]="!canSubmit">
+    <button pdz-button type="submit" [loading]="saving()" [disabled]="!canSubmit">
       {{ saving() ? "Sending…" : "Submit for review" }}
     </button>
   </div>

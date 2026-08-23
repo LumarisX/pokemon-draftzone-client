@@ -47,6 +47,9 @@ const VIEWPORT_MARGIN = 8;
       (click)="toggle()"
       (keydown)="onTriggerKeydown($event)"
     >
+      @if (selected()?.iconUrl(); as iconUrl) {
+        <img class="pdz-select__icon" [src]="iconUrl" alt="" aria-hidden="true" />
+      }
       <span class="pdz-select__value">{{
         triggerLabel() ?? placeholder()
       }}</span>
@@ -104,6 +107,14 @@ const VIEWPORT_MARGIN = 8;
           (click)="pick(i)"
           (mouseenter)="activeIndex.set(i)"
         >
+          @if (entry.option.iconUrl(); as iconUrl) {
+            <img
+              class="pdz-select__icon"
+              [src]="iconUrl"
+              alt=""
+              aria-hidden="true"
+            />
+          }
           <span class="pdz-select__option-text">
             <span class="pdz-select__option-label">{{
               entry.option.label()

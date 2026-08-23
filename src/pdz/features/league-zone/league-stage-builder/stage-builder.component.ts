@@ -49,6 +49,7 @@ import {
   stageSpans,
   trimAutoRounds,
 } from './stage-builder.model';
+import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 
 function assignColumns(spans: StageSpan[]): Map<string, number> {
   const columns = new Map<string, number>();
@@ -113,6 +114,7 @@ const STAGE_TYPES: Record<string, { label: string; icon: string }> = {
     CdkScrollable,
     IconComponent,
     MatchCardComponent,
+    ButtonComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './stage-builder.component.html',

@@ -33,16 +33,22 @@
             <div class="planner__draft-actions">
               @if (pendingDeleteIndex() === $index) {
                 <button
-                  type="button"
-                  class="planner__draft-action"
+                  pdz-button
+                  iconOnly
+                  size="xs"
+                  variant="ghost"
+                  color="neutral"
                   aria-label="Cancel delete"
                   (click)="cancelDelete(); $event.stopPropagation()"
                 >
                   <pdz-icon name="close" [size]="18"></pdz-icon>
                 </button>
                 <button
-                  type="button"
-                  class="planner__draft-action planner__draft-action--danger"
+                  pdz-button
+                  iconOnly
+                  size="xs"
+                  variant="ghost"
+                  color="danger"
                   aria-label="Confirm delete draft plan"
                   (click)="confirmDelete($index); $event.stopPropagation()"
                 >
@@ -54,8 +60,11 @@
                 </button>
               } @else {
                 <button
-                  type="button"
-                  class="planner__draft-action"
+                  pdz-button
+                  iconOnly
+                  size="xs"
+                  variant="ghost"
+                  color="neutral"
                   aria-label="Duplicate draft plan"
                   [disabled]="isAtDraftLimit"
                   (click)="copyToNew($index); $event.stopPropagation()"
@@ -64,8 +73,11 @@
                 </button>
                 @if (draftArray.controls.length > 1) {
                   <button
-                    type="button"
-                    class="planner__draft-action planner__draft-action--danger"
+                    pdz-button
+                    iconOnly
+                    size="xs"
+                    variant="ghost"
+                    color="danger"
                     aria-label="Delete draft plan"
                     (click)="requestDelete($index); $event.stopPropagation()"
                   >

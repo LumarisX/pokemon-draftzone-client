@@ -83,7 +83,6 @@
   }
 }
 
-
 // ── Settings / order panel layout ────────────────────────────────────────────
 // Stacked on mobile; side by side (equal width, equal height) from `large` up.
 
@@ -143,10 +142,6 @@
 
     .form-field__input {
       flex: 1 1 auto;
-    }
-
-    .turn__btn {
-      flex: 0 0 auto;
     }
   }
 
@@ -584,31 +579,6 @@
     flex: 1 1 auto;
     min-width: 0;
   }
-
-  &__btn {
-    @include text(label);
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    column-gap: pdz.space(2xs);
-    padding: pdz.space(2xs) pdz.space(xs);
-    border: 1px solid pdz.color(outline-variant);
-    border-radius: pdz.shape(corner-xs);
-    background: pdz.color(surface-container-lowest);
-    color: pdz.color(on-surface-variant);
-    cursor: pointer;
-
-    &:hover:not(:disabled) {
-      border-color: pdz.color(primary-accent);
-      color: pdz.color(primary-accent);
-    }
-
-    &:disabled {
-      opacity: 0.45;
-      cursor: not-allowed;
-    }
-  }
-
   &__btn--set {
     flex: 1 1 auto;
     min-width: 0;

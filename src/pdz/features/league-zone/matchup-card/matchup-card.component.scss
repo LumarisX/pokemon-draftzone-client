@@ -69,29 +69,6 @@ $mark-width: 3px;
   &:focus-within &__actions {
     opacity: 1;
   }
-
-  &__action {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: pdz.space(3xs);
-    border: none;
-    background: none;
-    border-radius: pdz.shape("corner-xs");
-    color: pdz.color("on-surface-variant");
-    cursor: pointer;
-
-    &:hover {
-      background: pdz.color("primary-container-hover");
-      color: pdz.color("on-primary-container");
-    }
-
-    &--danger:hover {
-      background: pdz.color("danger-container");
-      color: pdz.color("on-danger-container");
-    }
-  }
-
   &__slot {
     position: relative;
     display: flex;

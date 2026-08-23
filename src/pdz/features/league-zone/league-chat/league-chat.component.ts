@@ -15,12 +15,15 @@ import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { Subject, takeUntil } from 'rxjs';
 import { LeagueZoneService } from '../league-zone.service';
 import { ChatChannel, ChatMessage } from './league-chat.model';
+import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 
 const POLL_INTERVAL_MS = 10000;
 
 @Component({
   selector: 'pdz-league-chat',
-  imports: [CommonModule, FormsModule, IconComponent],
+  imports: [CommonModule, FormsModule, IconComponent,
+    ButtonComponent,
+  ],
   templateUrl: './league-chat.component.html',
   styleUrl: './league-chat.component.scss',
 })

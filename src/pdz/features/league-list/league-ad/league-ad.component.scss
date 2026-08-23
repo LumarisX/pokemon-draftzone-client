@@ -1,6 +1,5 @@
 @use "pdz-theming" as pdz;
 @use "mixins" as *;
-@use "mixins/cards" as *;
 @use "mixins/buttons" as *;
 
 :host {
@@ -9,14 +8,6 @@
 
 .league-ad-card {
   transition: box-shadow pdz.duration(base) pdz.easing(standard);
-
-  &.team-a {
-    @include pdz-card("primary");
-  }
-
-  &.team-b {
-    @include pdz-card("secondary");
-  }
 
   &:hover {
     box-shadow: var(--pdz-level-2);
@@ -299,21 +290,6 @@
 
     .details-button {
       @include flat-button-primary();
-    }
-
-    .delete-btn {
-      @include flat-button-menu(
-        (
-          padding: pdz.space(xs) pdz.space(md),
-        )
-      );
-      background-color: pdz.color(danger-container);
-      color: pdz.color(on-danger-container);
-
-      &:hover {
-        background-color: pdz.color(danger);
-        color: pdz.color(on-danger);
-      }
     }
   }
 }

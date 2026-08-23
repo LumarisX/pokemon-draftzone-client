@@ -24,11 +24,6 @@
     @include pdz.text(subtitle, $family: false);
     color: pdz.color(on-surface);
   }
-
-  .close-button {
-    @include icon-button-menu();
-  }
-
   &__content {
     flex: 1;
     display: flex;
@@ -111,39 +106,6 @@
       border-bottom: 2px solid transparent;
     }
   }
-
-  &__delete-btn {
-    position: absolute;
-    top: 2px;
-    right: 2px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 1.25rem;
-    height: 1.25rem;
-    padding: 0;
-    background-color: pdz.color(danger-container);
-    color: pdz.color(on-danger-container);
-    border: none;
-    border-radius: 50%;
-    cursor: pointer;
-    opacity: 0;
-    transition:
-      opacity pdz.duration(fast) pdz.easing(standard),
-      transform pdz.duration(fast) pdz.easing(standard),
-      background-color pdz.duration(fast) pdz.easing(standard);
-    z-index: 2;
-
-    &:hover {
-      background-color: pdz.color(danger);
-      transform: scale(1.1);
-    }
-
-    &:active {
-      transform: scale(0.95);
-    }
-  }
-
   &__tab--pokemon:hover .teambuilder__delete-btn {
     opacity: 1;
   }

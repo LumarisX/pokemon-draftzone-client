@@ -98,113 +98,41 @@
         />
       </div>
       <div class="section">
-        <div
-          class="input-field input-field--items"
-          [class.open]="openDropdown === 'item'"
-          (click)="toggleDropdown('item', $event)"
-          tabindex="0"
-          role="button"
-          aria-haspopup="listbox"
-        >
-          <label for="item" class="input-field__label">Item</label>
-          <div class="dropdown-control">
-            @if (getSelectedItem(); as selectedItem) {
-              <img
-                [src]="getItemIcon(selectedItem.pngId)"
-                class="dropdown-icon"
-                width="20"
-                height="20"
-                [alt]="selectedItem.name + ' icon'"
+        <div class="input-field input-field--items">
+          <label class="input-field__label">Item</label>
+          <pdz-select
+            searchable
+            aria-label="Item"
+            placeholder="Select Item"
+            searchPlaceholder="Search items..."
+            [value]="pokemon().item"
+            (valueChange)="selectItem($any($event))"
+          >
+            @for (item of pokemon().items; track item.id) {
+              <pdz-option
+                [value]="item.name"
+                [label]="item.name"
+                [iconUrl]="getItemIcon(item.pngId)"
               />
             }
-            <span class="dropdown-label">{{
-              pokemon().item || "Select Item"
-            }}</span>
-            <span class="dropdown-arrow" aria-hidden="true">▾</span>
-          </div>
-          @if (openDropdown === "item") {
-            <div class="dropdown-list" role="listbox">
-              <div class="dropdown-search">
-                <input
-                  type="text"
-                  placeholder="Search items..."
-                  [(ngModel)]="itemSearchQuery"
-                  (ngModelChange)="filterItems()"
-                  (click)="$event.stopPropagation()"
-                />
-                <button>X</button>
-              </div>
-
-              @if (filteredItems.length === 0) {
-                <div class="dropdown-empty">No items found</div>
-              } @else {
-                <ul class="dropdown-items-list">
-                  @for (item of filteredItems; track item.id) {
-                    <li
-                      class="dropdown-item"
-                      [class.selected]="item.name === pokemon().item"
-                      role="option"
-                      (click)="selectItem(item.name, $event)"
-                    >
-                      <img
-                        [src]="getItemIcon(item.pngId)"
-                        class="dropdown-item-icon"
-                        width="20"
-                        height="20"
-                        [alt]="item.name + ' icon'"
-                      />
-                      <span class="dropdown-item-label">{{ item.name }}</span>
-                    </li>
-                  }
-                </ul>
-              }
-            </div>
-          }
+          </pdz-select>
         </div>
-        <div
-          class="input-field input-field--tera"
-          [class.open]="openDropdown === 'tera'"
-          (click)="toggleDropdown('tera', $event)"
-          tabindex="0"
-          role="button"
-          aria-haspopup="listbox"
-        >
-          <label for="tera" class="input-field__label">Tera</label>
-          <div class="dropdown-control" #teraControl>
-            @if (pokemon().teraType) {
-              <img
-                [src]="getTeraIcon(pokemon().teraType)"
-                class="dropdown-icon"
-                width="20"
-                height="20"
-                [alt]="pokemon().teraType + ' icon'"
+        <div class="input-field input-field--tera">
+          <label class="input-field__label">Tera</label>
+          <pdz-select
+            aria-label="Tera type"
+            placeholder="Select Tera"
+            [value]="pokemon().teraType"
+            (valueChange)="selectTeraType($any($event))"
+          >
+            @for (type of pokemon().teraTypes; track type) {
+              <pdz-option
+                [value]="type"
+                [label]="type"
+                [iconUrl]="getTeraIcon(type)"
               />
             }
-            <span class="dropdown-label">{{
-              pokemon().teraType || "Select Tera"
-            }}</span>
-            <span class="dropdown-arrow" aria-hidden="true">▾</span>
-          </div>
-          @if (openDropdown === "tera") {
-            <ul class="dropdown-list" role="listbox">
-              @for (type of pokemon().teraTypes; track type) {
-                <li
-                  class="dropdown-item"
-                  role="option"
-                  (click)="selectTeraType(type, $event)"
-                >
-                  <img
-                    [src]="getTeraIcon(type)"
-                    class="dropdown-item-icon"
-                    width="20"
-                    height="20"
-                    [alt]="type + ' icon'"
-                  />
-                  <span class="dropdown-item-label">{{ type }}</span>
-                </li>
-              }
-            </ul>
-          }
+          </pdz-select>
         </div>
         <pdz-animated-selector
           [options]="pokemon().abilities"
@@ -401,7 +329,10 @@
                   pokemon().stats[stat.id].mid()
                 ) {
                   <button
-                    class="btn-reset"
+                    pdz-button
+                    size="xs"
+                    variant="ghost"
+                    color="neutral"
                     (click)="pokemon().stats[stat.id].reset()"
                   >
                     Reset

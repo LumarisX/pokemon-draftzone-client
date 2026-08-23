@@ -16,15 +16,17 @@
       ></textarea>
       <div class="team-editor__import-actions">
         <button
-          type="button"
-          class="team-editor__btn team-editor__btn--ghost"
+          pdz-button
+          size="sm"
+          color="neutral"
+          variant="ghost"
           (click)="toggleImporting(false)"
         >
           Cancel
         </button>
         <button
-          type="button"
-          class="team-editor__btn team-editor__btn--primary"
+          pdz-button
+          size="sm"
           [disabled]="!importInput.trim()"
           (click)="confirmImport()"
         >

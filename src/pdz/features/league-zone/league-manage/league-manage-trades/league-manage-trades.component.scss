@@ -382,40 +382,6 @@
     gap: pdz.space(xs);
     margin-inline-start: auto;
   }
-
-  &__action {
-    @include text(label);
-    padding: pdz.space(2xs) pdz.space(sm);
-    border-radius: pdz.shape(corner-sm);
-    border: 1px solid pdz.color(outline-variant);
-    background: transparent;
-    font-weight: 600;
-    cursor: pointer;
-
-    &--approve {
-      color: pdz.color(success);
-
-      &:hover:not(:disabled) {
-        background: pdz.color(success-container);
-        border-color: pdz.color(success);
-      }
-    }
-
-    &--reject {
-      color: pdz.color(danger);
-
-      &:hover:not(:disabled) {
-        background: pdz.color(danger-container);
-        border-color: pdz.color(danger);
-      }
-    }
-
-    &:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-    }
-  }
-
   &__error {
     @include text(body-sm);
     color: pdz.color(danger);

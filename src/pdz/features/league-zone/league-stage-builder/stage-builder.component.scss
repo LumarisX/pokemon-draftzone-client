@@ -152,33 +152,6 @@ $gutter-width: var(--gutter-width, 11rem);
   &:focus-within &__actions {
     opacity: 1;
   }
-
-  &__action {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: pdz.space(3xs);
-    border: none;
-    background: none;
-    border-radius: pdz.shape("corner-xs");
-    color: pdz.color("on-surface-variant");
-    cursor: pointer;
-
-    &:hover:not(:disabled) {
-      background: pdz.color("primary-container-hover");
-      color: pdz.color("on-primary-container");
-    }
-
-    &--danger:hover:not(:disabled) {
-      background: pdz.color("danger-container");
-      color: pdz.color("on-danger-container");
-    }
-
-    &:disabled {
-      color: pdz.color("on-surface-disabled");
-      cursor: default;
-    }
-  }
 }
 
 .round-rule {
@@ -303,21 +276,6 @@ $stage-header-height: 2.25rem;
   &__header:hover &__actions,
   &__header:focus-within &__actions {
     opacity: 1;
-  }
-
-  &__action {
-    display: inline-flex;
-    padding: pdz.space(3xs);
-    border: none;
-    background: none;
-    border-radius: pdz.shape("corner-xs");
-    color: pdz.color("on-surface-variant");
-    cursor: pointer;
-
-    &:hover {
-      background: pdz.color("primary-container-hover");
-      color: pdz.color("on-primary-container");
-    }
   }
 }
 

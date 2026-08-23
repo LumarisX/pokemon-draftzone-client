@@ -1,7 +1,6 @@
 @use "pdz-theming" as pdz;
 @use "mixins" as *;
 @use "mixins/buttons" as *;
-@use "mixins/cards" as *;
 
 :host {
   display: block;
@@ -72,7 +71,12 @@
 }
 
 .round-control {
-  @include pdz-card("menu");
+  background-color: pdz.color(menu-container);
+  color: pdz.color(on-menu-container);
+  border: 1px solid pdz.color(menu-border);
+  border-radius: pdz.shape(corner-md);
+  display: flex;
+  flex-direction: column;
   padding: pdz.space(lg);
   gap: pdz.space(md);
   margin-bottom: pdz.space(xl);
@@ -203,7 +207,12 @@
 }
 
 .matchup-card {
-  @include pdz-card("menu");
+  background-color: pdz.color(menu-container);
+  color: pdz.color(on-menu-container);
+  border: 1px solid pdz.color(menu-border);
+  border-radius: pdz.shape(corner-md);
+  display: flex;
+  flex-direction: column;
   padding: pdz.space(lg);
   gap: pdz.space(md);
 }
@@ -612,18 +621,6 @@ input[type="number"] {
   max-width: 200px;
   text-align: right;
 }
-
-.btn-remove {
-  @include flat-button(
-    (
-      background: transparent,
-      background-hover: pdz.color(danger-container),
-      color: pdz.color(danger),
-      color-hover: pdz.color(on-danger-container),
-    )
-  );
-}
-
 @include respond-above("medium") {
   .match-controls {
     grid-template-columns: 2fr repeat(3, minmax(0, 1fr));

@@ -26,6 +26,7 @@ import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
 import { ChipInputComponent } from '../chip-input/chip-input.component';
 import { PokemonSearchComponent } from '@pdz/shared/dropdowns/pokemon-search/pokemon-search.component';
+import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 
 type CaptKind = 'tera' | 'z' | 'dmax';
 
@@ -42,6 +43,7 @@ type CaptKind = 'tera' | 'z' | 'dmax';
     SpriteComponent,
     ChipInputComponent,
     PokemonSearchComponent,
+    ButtonComponent,
   ],
   templateUrl: './team-editor.component.html',
   styleUrl: './team-editor.component.scss',

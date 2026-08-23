@@ -23,8 +23,11 @@
         </div>
 
         <button
-          class="toast__close"
-          type="button"
+          pdz-button
+          iconOnly
+          size="xs"
+          variant="ghost"
+          color="neutral"
           (click)="dismissError(error.id)"
           aria-label="Dismiss error"
         >

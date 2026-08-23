@@ -8,9 +8,7 @@ import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 
 @Component({
   selector: 'pdz-league-rules-form',
-  imports: [CommonModule, FormsModule,
-    ButtonComponent,
-  ],
+  imports: [CommonModule, FormsModule, ButtonComponent],
   templateUrl: './league-rules-form.component.html',
   styleUrls: ['./league-rules-form.component.scss'],
 })

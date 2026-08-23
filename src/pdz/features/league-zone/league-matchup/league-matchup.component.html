@@ -207,16 +207,18 @@
         </div>
         <div class="review__actions">
           <button
-            type="button"
-            class="review__action review__action--approve"
+            pdz-button
+            size="sm"
             [disabled]="reviewing()"
             (click)="review('approve')"
           >
             Approve
           </button>
           <button
-            type="button"
-            class="review__action"
+            pdz-button
+            size="sm"
+            color="neutral"
+            variant="outlined"
             [disabled]="reviewing()"
             (click)="review('reject')"
           >

@@ -10,6 +10,7 @@ import {
   SearchFilter,
 } from './pokemon-search.types';
 import { PageComponent } from '@pdz/shared/layout/page/page.component';
+import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 
 @Component({
   selector: 'pdz-pokemon-search',
@@ -20,6 +21,7 @@ import { PageComponent } from '@pdz/shared/layout/page/page.component';
     PokemonSearchCoreComponent,
     IconComponent,
     PageComponent,
+    ButtonComponent,
   ],
 })
 export class PokemonSearchComponent {

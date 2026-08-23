@@ -21,6 +21,7 @@ import { LeagueNotificationService } from '../league-notification.service';
 import { LeagueZoneService } from '../league-zone.service';
 import { League } from '../league.interface';
 import { formatCountdown } from '../league.util';
+import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 
 interface DraftAddedEvent {
   draftSlug: string;
@@ -93,6 +94,7 @@ type DraftDetailsResponse =
     LoadingComponent,
     RouterModule,
     PokemonTypeComponent,
+    ButtonComponent,
   ],
   templateUrl: './league-drafting.component.html',
   styleUrls: ['./league-drafting.component.scss', '../league.scss'],

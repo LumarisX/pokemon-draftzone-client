@@ -10,10 +10,13 @@ import { RouterModule } from '@angular/router';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { getLogoUrl } from '../league.util';
 import { MatchupCard } from './matchup-card.model';
+import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 
 @Component({
   selector: 'pdz-matchup-card',
-  imports: [NgTemplateOutlet, RouterModule, IconComponent],
+  imports: [NgTemplateOutlet, RouterModule, IconComponent,
+    ButtonComponent,
+  ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './matchup-card.component.html',
   styleUrl: './matchup-card.component.scss',

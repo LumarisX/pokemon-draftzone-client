@@ -54,16 +54,6 @@
     line-height: 1.2;
     white-space: nowrap;
   }
-
-  &__submit {
-    @include flat-button-primary(
-      (
-        padding: pdz.space(sm) pdz.space(xl),
-        font-weight: 600,
-      )
-    );
-  }
-
   // -------------------------------------------------------------------------
   // Body layout
   // -------------------------------------------------------------------------
@@ -129,17 +119,6 @@
       flex: 1;
       min-width: 0;
     }
-  }
-
-  &__doc-open {
-    @include icon-button(
-      (
-        width: 2.5rem,
-        height: 2.5rem,
-        color: pdz.color(on-surface-variant),
-        background-hover: pdz.color(surface-container-high),
-      )
-    );
   }
 }
 

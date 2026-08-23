@@ -78,8 +78,11 @@
             />
           </label>
           <button
-            type="button"
-            class="signup-card__edit-btn"
+            pdz-button
+            iconOnly
+            size="xs"
+            variant="ghost"
+            color="neutral"
             (click)="openTeamEdit(signup)"
             aria-label="Edit team info"
           >
@@ -116,8 +119,11 @@
           </div>
         </div>
         <button
-          type="button"
-          class="signup-card__edit-btn"
+          pdz-button
+          iconOnly
+          size="xs"
+          variant="ghost"
+          color="neutral"
           (click)="openCoachEdit(signup)"
           aria-label="Edit coach info"
         >
@@ -193,8 +199,8 @@
           signUpInDraft(draft?.draftSlug).length
         }}</span>
         <button
-          type="button"
-          class="pool__move-btn"
+          pdz-button
+          size="sm"
           (click)="moveToDraft(draft?.draftSlug)"
         >
           Move Here

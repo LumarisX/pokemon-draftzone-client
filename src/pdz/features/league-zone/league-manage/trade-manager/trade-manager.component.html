@@ -63,8 +63,11 @@
                     <span class="pick__name">{{ pokemon.name }}</span>
                     <span class="pick__tier">{{ pokemon.tier }}</span>
                     <button
-                      type="button"
-                      class="pick__remove"
+                      pdz-button
+                      iconOnly
+                      size="xs"
+                      variant="ghost"
+                      color="danger"
                       [attr.aria-label]="'Remove ' + pokemon.name"
                       (click)="removePick($any(key), pokemon.id)"
                     >
@@ -211,16 +214,18 @@
                 @if (trade.status === "PENDING" && trade.id) {
                   <span class="trade__actions">
                     <button
-                      type="button"
-                      class="trade__action trade__action--approve"
+                      pdz-button
+                      size="sm"
                       [disabled]="resolvingTradeId === trade.id"
                       (click)="resolveTrade(trade, 'APPROVED')"
                     >
                       Approve
                     </button>
                     <button
-                      type="button"
-                      class="trade__action trade__action--reject"
+                      pdz-button
+                      size="sm"
+                      color="danger"
+                      variant="outlined"
                       [disabled]="resolvingTradeId === trade.id"
                       (click)="resolveTrade(trade, 'REJECTED')"
                     >

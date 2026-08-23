@@ -17,6 +17,7 @@ import {
 } from './league-matchup.model';
 import { LeagueChatComponent } from '../league-chat/league-chat.component';
 import { MatchupReportComponent } from './matchup-report/matchup-report.component';
+import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 
 type GameSlot = {
   id: PokemonId;
@@ -35,6 +36,7 @@ type GameSlot = {
     SpriteComponent,
     LeagueChatComponent,
     MatchupReportComponent,
+    ButtonComponent,
   ],
   templateUrl: './league-matchup.component.html',
   styleUrl: './league-matchup.component.scss',

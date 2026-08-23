@@ -5,7 +5,15 @@
         <pdz-sprite [pokemon]="pokemon()" flipped></pdz-sprite>
       </div>
     </div>
-    <button class="reset-button" (click)="resetRecommended()">Reset</button>
+    <button
+      pdz-button
+      size="sm"
+      color="neutral"
+      variant="outlined"
+      (click)="resetRecommended()"
+    >
+      Reset
+    </button>
   </div>
   <div class="coverage-container">
     <div class="category-container">

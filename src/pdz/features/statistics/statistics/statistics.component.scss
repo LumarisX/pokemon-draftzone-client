@@ -1,6 +1,5 @@
 @use "pdz-theming" as pdz;
 @use "mixins" as *;
-@use "mixins/cards" as *;
 
 :host {
   display: block;
@@ -38,12 +37,6 @@
     grid-template-columns: repeat(2, minmax(0, 1fr));
     align-items: start;
   }
-}
-
-.format-panel {
-  @include pdz-card("menu");
-  display: grid;
-  gap: pdz.space(md);
 }
 
 .format-panel__header h2 {

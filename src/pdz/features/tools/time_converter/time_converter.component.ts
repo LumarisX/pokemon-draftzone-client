@@ -13,6 +13,7 @@ import {
   TimeZone,
   TimezoneSelectComponent,
 } from './timezone-select/timezone-select.component';
+import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -32,6 +33,7 @@ type Side = 'local' | 'opponent';
     IconComponent,
     SliderComponent,
     TimezoneSelectComponent,
+    ButtonComponent,
   ],
 })
 export class TimeConverterComponent {

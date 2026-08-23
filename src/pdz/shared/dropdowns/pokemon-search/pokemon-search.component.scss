@@ -95,24 +95,6 @@
       color: pdz.color(on-surface-variant);
     }
   }
-
-  &__clear {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0.125rem;
-    border: none;
-    border-radius: pdz.shape(corner-full);
-    background: transparent;
-    color: pdz.color(on-surface-variant);
-    cursor: pointer;
-
-    &:hover {
-      background: pdz.color(surface-container-high);
-      color: pdz.color(on-surface);
-    }
-  }
-
   &__panel {
     position: fixed;
     inset: auto;

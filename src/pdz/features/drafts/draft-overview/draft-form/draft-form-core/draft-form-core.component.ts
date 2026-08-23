@@ -30,7 +30,6 @@ import {
 } from '../components/team-editor/team-editor.component';
 import {
   FieldErrorDirective,
-  FieldHintDirective,
 } from '@pdz/shared/inputs/field/field-message.directive';
 import { FieldComponent } from '@pdz/shared/inputs/field/field.component';
 import { InputDirective } from '@pdz/shared/inputs/field/input.directive';
@@ -47,7 +46,6 @@ import { InputDirective } from '@pdz/shared/inputs/field/input.directive';
     FieldComponent,
     InputDirective,
     FieldErrorDirective,
-    FieldHintDirective,
   ],
   templateUrl: './draft-form-core.component.html',
   styleUrl: './draft-form-core.component.scss',

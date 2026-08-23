@@ -6,7 +6,6 @@ import {
   DialogRef,
 } from '@pdz/shared/dialogs/dialog/dialog.service';
 import { FieldComponent } from '@pdz/shared/inputs/field/field.component';
-import { InputDirective } from '@pdz/shared/inputs/field/input.directive';
 import { SelectOptionComponent } from '@pdz/shared/dropdowns/select/select-option.component';
 import { SelectComponent } from '@pdz/shared/dropdowns/select/select.component';
 
@@ -33,7 +32,6 @@ const NEW_TIER = '__NEW_TIER__';
     FormsModule,
     ButtonComponent,
     FieldComponent,
-    InputDirective,
     SelectComponent,
     SelectOptionComponent,
   ],

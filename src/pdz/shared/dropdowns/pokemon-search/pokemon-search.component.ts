@@ -36,6 +36,7 @@ import {
   switchMap,
   takeUntil,
 } from 'rxjs/operators';
+import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 
 const ITEM_SIZE = 44;
 const MAX_LIST_HEIGHT = 308;
@@ -58,6 +59,7 @@ export type PokemonSearchOption = DraftPokemon & {
     ReactiveFormsModule,
     IconComponent,
     SpriteComponent,
+    ButtonComponent,
   ],
   templateUrl: './pokemon-search.component.html',
   styleUrl: './pokemon-search.component.scss',

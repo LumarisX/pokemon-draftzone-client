@@ -30,16 +30,22 @@
       @if (editable()) {
         <span class="card__actions">
           <button
-            type="button"
-            class="card__action"
+            pdz-button
+            iconOnly
+            size="xs"
+            variant="ghost"
+            color="neutral"
             aria-label="Edit match"
             (click)="edit.emit(card().id)"
           >
             <pdz-icon name="edit" size="sm"></pdz-icon>
           </button>
           <button
-            type="button"
-            class="card__action card__action--danger"
+            pdz-button
+            iconOnly
+            size="xs"
+            variant="ghost"
+            color="danger"
             aria-label="Delete match"
             (click)="remove.emit(card().id)"
           >

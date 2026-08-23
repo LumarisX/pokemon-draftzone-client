@@ -106,27 +106,6 @@
     @include text(title);
     color: pdz.color(on-surface);
   }
-
-  &__close {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: pdz.space(2xs);
-    border: 1px solid transparent;
-    border-radius: pdz.shape(corner-sm);
-    background: transparent;
-    color: pdz.color(on-surface-variant);
-    cursor: pointer;
-    transition:
-      background pdz.duration(fast) pdz.easing(standard),
-      color pdz.duration(fast) pdz.easing(standard);
-
-    &:hover {
-      background: pdz.color(surface-container-high);
-      color: pdz.color(on-surface);
-    }
-  }
-
   &__body {
     flex: 1;
     overflow-y: auto;

@@ -6,77 +6,80 @@
     </button>
   </div>
 
-  <div
-    class="save-message"
-    *ngIf="saveMessage()"
-    [class.success]="saveMessage()?.type === 'success'"
-    [class.error]="saveMessage()?.type === 'error'"
-  >
-    {{ saveMessage()?.text }}
-  </div>
+  @if (saveMessage(); as message) {
+    <div
+      class="save-message"
+      [class.success]="message.type === 'success'"
+      [class.error]="message.type === 'error'"
+    >
+      {{ message.text }}
+    </div>
+  }
 
   <div class="sections-list">
-    <div *ngIf="rules().length === 0" class="empty-state">
-      <p>No rule sections yet. Click "Add Section" to create one.</p>
-    </div>
+    @for (section of rules(); track $index) {
+      <div class="section-editor">
+        <div class="section-header">
+          <div class="section-controls">
+            <button
+              pdz-button
+              size="sm"
+              color="neutral"
+              variant="ghost"
+              (click)="moveUp($index)"
+              [disabled]="$index === 0"
+              title="Move up"
+            >
+              ↑
+            </button>
+            <button
+              pdz-button
+              size="sm"
+              color="neutral"
+              variant="ghost"
+              (click)="moveDown($index)"
+              [disabled]="$index === rules().length - 1"
+              title="Move down"
+            >
+              ↓
+            </button>
+            <button
+              pdz-button
+              size="sm"
+              color="danger"
+              variant="ghost"
+              (click)="deleteSection($index)"
+              title="Delete section"
+            >
+              Delete
+            </button>
+          </div>
+        </div>
 
-    <div *ngFor="let section of rules(); let i = index" class="section-editor">
-      <div class="section-header">
-        <div class="section-controls">
-          <button
-            pdz-button
-            size="sm"
-            color="neutral"
-            variant="ghost"
-            (click)="moveUp(i)"
-            [disabled]="i === 0"
-            title="Move up"
-          >
-            ↑
-          </button>
-          <button
-            pdz-button
-            size="sm"
-            color="neutral"
-            variant="ghost"
-            (click)="moveDown(i)"
-            [disabled]="i === rules().length - 1"
-            title="Move down"
-          >
-            ↓
-          </button>
-          <button
-            pdz-button
-            size="sm"
-            color="danger"
-            variant="ghost"
-            (click)="deleteSection(i)"
-            title="Delete section"
-          >
-            Delete
-          </button>
+        <div class="section-content">
+          <label class="label">Section Title</label>
+          <input
+            type="text"
+            class="input-title"
+            [(ngModel)]="section.title"
+            (change)="onRuleChange()"
+            placeholder="Enter section title"
+          />
+
+          <label class="label">Section Body</label>
+          <textarea
+            class="textarea-body"
+            [(ngModel)]="section.body"
+            (change)="onRuleChange()"
+            placeholder="Enter rule details here..."
+          ></textarea>
         </div>
       </div>
-
-      <div class="section-content">
-        <label class="label">Section Title</label>
-        <input
-          type="text"
-          class="input-title"
-          [(ngModel)]="section.title"
-          (change)="onRuleChange()"
-          placeholder="Enter section title"
-        />
-
-        <label class="label">Section Body</label>
-        <textarea
-          class="textarea-body"
-          [(ngModel)]="section.body"
-          (change)="onRuleChange()"
-          placeholder="Enter rule details here..."
-        ></textarea>
+    } @empty {
+      <div class="empty-state">
+        <p>No rule sections yet. Click "Add Section" to create one.</p>
       </div>
-    </div>
+    }
   </div>
 
   <div class="actions-footer">
@@ -88,8 +91,8 @@
     >
       {{ isSaving() ? "Saving..." : "Save Rules" }}
     </button>
-    <span class="unsaved-indicator" *ngIf="hasUnsavedChanges()">
-      ⚠ You have unsaved changes
-    </span>
+    @if (hasUnsavedChanges()) {
+      <span class="unsaved-indicator"> ⚠ You have unsaved changes </span>
+    }
   </div>
 </div>

@@ -1,7 +1,6 @@
 @use "pdz-theming" as pdz;
 @use "mixins" as *;
 @use "mixins/buttons" as *;
-@use "mixins/cards" as *;
 
 :host {
   display: block;
@@ -15,7 +14,6 @@
   align-items: flex-start;
 
   &__card {
-    @include pdz-card("menu");
     max-width: 600px;
     width: 100%;
   }

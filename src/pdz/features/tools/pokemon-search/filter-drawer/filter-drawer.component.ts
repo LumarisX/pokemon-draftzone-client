@@ -18,10 +18,13 @@ import {
   SearchFilter,
   SearchOperator,
 } from '../pokemon-search.types';
+import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 
 @Component({
   selector: 'pdz-filter-drawer',
-  imports: [FormsModule, IconComponent, PokemonTypeComponent],
+  imports: [FormsModule, IconComponent, PokemonTypeComponent,
+    ButtonComponent,
+  ],
   templateUrl: './filter-drawer.component.html',
   styleUrl: './filter-drawer.component.scss',
 })

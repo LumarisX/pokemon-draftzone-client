@@ -143,44 +143,6 @@
     pointer-events: auto;
   }
 
-  &__draft-action {
-    display: inline-flex;
-    flex-shrink: 0;
-    align-items: center;
-    justify-content: center;
-    width: 1.15rem;
-    height: 1.15rem;
-    padding: 0;
-    border: none;
-    background: transparent;
-    color: inherit;
-    cursor: pointer;
-    opacity: 0.75;
-    transition:
-      color 0.15s ease,
-      opacity 0.15s ease;
-
-    &:not(:disabled):hover {
-      color: pdz.color(primary);
-      opacity: 1;
-    }
-
-    &--danger:not(:disabled):hover {
-      color: pdz.color(danger);
-    }
-
-    &:disabled {
-      opacity: 0.35;
-      cursor: not-allowed;
-    }
-
-    &:focus-visible {
-      opacity: 1;
-      outline: 2px solid pdz.color(primary);
-      outline-offset: 1px;
-    }
-  }
-
   &__toolbar {
     display: grid;
     grid-template-columns: auto minmax(0, 1fr) auto;

@@ -91,17 +91,6 @@
     padding: pdz.space(2xs) pdz.space(sm);
     margin-right: auto;
   }
-
-  &__move-btn {
-    @include flat-button-primary(
-      (
-        padding: pdz.space(xs) pdz.space(md),
-        border-radius: pdz.shape(corner-sm),
-        font-weight: 600,
-      )
-    );
-  }
-
   &__cards {
     display: grid;
     grid-template-columns: 1fr;
@@ -284,32 +273,6 @@
   }
 
   // ── Shared edit button ────────────────────────────────────────────────────
-
-  &__edit-btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: pdz.space(xs);
-    border: none;
-    border-radius: pdz.shape(corner-full);
-    background: transparent;
-    color: pdz.color(on-surface-variant);
-    opacity: 0.45;
-    cursor: pointer;
-    flex-shrink: 0;
-    transition:
-      opacity pdz.duration(base) pdz.easing(standard),
-      background pdz.duration(base) pdz.easing(standard),
-      color pdz.duration(base) pdz.easing(standard);
-
-    &:hover,
-    &:focus-visible {
-      opacity: 1;
-      color: pdz.color(on-surface);
-      background: pdz.color(surface-container-high);
-    }
-  }
-
   // ── Footer ────────────────────────────────────────────────────────────────
 
   &__footer {

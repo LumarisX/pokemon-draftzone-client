@@ -300,26 +300,6 @@ button:disabled {
       }
     }
   }
-
-  &__quick-search-btn {
-    flex-shrink: 0;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 2.5rem;
-    padding: 0;
-    border: none;
-    border-left: 1px solid pdz.color(outline-variant);
-    border-radius: 0;
-    background: pdz.color(surface-container);
-    color: pdz.color(on-surface-variant);
-    cursor: pointer;
-
-    &:hover {
-      background: pdz.color(primary-container);
-      color: pdz.color(on-primary-container);
-    }
-  }
 }
 
 @keyframes fieldMenuIn {

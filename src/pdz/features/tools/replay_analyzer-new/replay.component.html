@@ -17,14 +17,9 @@
           spellcheck="false"
         />
         <button
-          type="button"
+          pdz-button
           (click)="analyze()"
           [disabled]="analyzed || !replayURI.trim()"
-          class="replay-analyzer__analyze-button"
-          [ngClass]="{
-            'replay-analyzer__analyze-button--disabled':
-              analyzed || !replayURI.trim(),
-          }"
         >
           Analyze
         </button>

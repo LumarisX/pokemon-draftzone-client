@@ -14,31 +14,6 @@
   display: flex;
   flex-direction: column;
   gap: pdz.space(md);
-
-  &__btn {
-    &--primary {
-      @include flat-button-primary(
-        (
-          padding: pdz.space(xs) pdz.space(lg),
-          gap: pdz.space(xs),
-        )
-      );
-    }
-
-    &--ghost {
-      @include flat-button(
-        (
-          padding: pdz.space(xs) pdz.space(lg),
-          gap: pdz.space(xs),
-          border-width: 1px,
-          border-color: pdz.color(outline),
-          color: pdz.color(on-surface),
-          background-hover: pdz.color(surface-container-low),
-        )
-      );
-    }
-  }
-
   // Toolbar -----------------------------------------------------------------
 
   &__toolbar {
@@ -435,20 +410,6 @@
   &__spacer {
     flex: 1;
   }
-
-  &__btn {
-    @include flat-button(
-      (
-        padding: pdz.space(2xs) pdz.space(sm),
-        font-size: 0.75rem,
-        border-width: 1px,
-        border-color: pdz.color(outline),
-        color: pdz.color(on-surface-variant),
-        background-hover: pdz.color(surface-container-low),
-      )
-    );
-  }
-
   &__grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(2.25rem, 1fr));

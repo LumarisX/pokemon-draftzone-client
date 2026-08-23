@@ -1,6 +1,6 @@
 <pdz-page width="narrow">
   <div class="external-link">
-    <div class="external-link__card">
+    <pdz-card class="external-link__card" padding="lg">
       <div class="external-link__header">
         <div class="external-link__icon">
           <pdz-icon name="warning"></pdz-icon>
@@ -51,7 +51,9 @@
 
       <div class="external-link__actions">
         <button
-          class="external-link__btn external-link__btn--back"
+          pdz-button
+          color="neutral"
+          variant="outlined"
           (click)="goBack()"
           type="button"
         >
@@ -67,6 +69,6 @@
           Continue to Site
         </a>
       </div>
-    </div>
+    </pdz-card>
   </div>
 </pdz-page>

@@ -1,6 +1,14 @@
 <div class="teambuilder-panel__header">
   <span class="teambuilder-panel__title">Teambuilder</span>
-  <button class="close-button" (click)="closePanel.emit()">
+  <button
+    pdz-button
+    iconOnly
+    size="sm"
+    variant="ghost"
+    color="neutral"
+    aria-label="Close teambuilder"
+    (click)="closePanel.emit()"
+  >
     <pdz-icon name="close"></pdz-icon>
   </button>
 </div>
@@ -19,7 +27,11 @@
           (keydown.space)="selectTab($index, $event)"
         >
           <button
-            class="teambuilder__delete-btn"
+            pdz-button
+            iconOnly
+            size="xs"
+            variant="ghost"
+            color="danger"
             (click)="deletePokemon($index, $event)"
             [attr.aria-label]="'Delete ' + pokemon.name"
             title="Delete Pokemon"

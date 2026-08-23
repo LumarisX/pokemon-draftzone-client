@@ -9,6 +9,7 @@ import {
   BallSVG,
 } from '@pdz/shared/images/svg-components/ball.component';
 import { CoinSVG } from '@pdz/shared/images/svg-components/pokecoin.component';
+import { CardComponent } from '@pdz/shared/data/card/card.component';
 
 type TeamType = 'team-a' | 'team-b';
 export type LeagueAdMode = 'public' | 'manage';
@@ -17,7 +18,9 @@ export type LeagueAdMode = 'public' | 'manage';
   selector: 'pdz-league-ad',
   templateUrl: './league-ad.component.html',
   styleUrls: ['./league-ad.component.scss'],
-  imports: [CommonModule, RouterModule, MarkdownModule, BallSVG, CoinSVG],
+  imports: [CommonModule, RouterModule, MarkdownModule, BallSVG, CoinSVG,
+    CardComponent,
+  ],
 })
 export class LeagueAdComponent implements OnInit {
   readonly league = input.required<LeagueAd>();

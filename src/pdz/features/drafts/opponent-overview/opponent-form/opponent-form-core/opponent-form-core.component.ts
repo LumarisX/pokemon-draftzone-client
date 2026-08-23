@@ -28,7 +28,6 @@ import { Draft, DraftPokemon } from '../../../draft.model';
 import { Opponent } from '../../opponent.model';
 import {
   FieldErrorDirective,
-  FieldHintDirective,
 } from '@pdz/shared/inputs/field/field-message.directive';
 import { FieldComponent } from '@pdz/shared/inputs/field/field.component';
 import { InputDirective } from '@pdz/shared/inputs/field/input.directive';
@@ -43,7 +42,6 @@ import { InputDirective } from '@pdz/shared/inputs/field/input.directive';
     FieldComponent,
     InputDirective,
     FieldErrorDirective,
-    FieldHintDirective,
   ],
   templateUrl: './opponent-form-core.component.html',
   styleUrl: './opponent-form-core.component.scss',

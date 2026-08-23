@@ -33,8 +33,11 @@
             <span class="chat__time">{{ timeOf(message) }}</span>
             @if (message.canDelete) {
               <button
-                type="button"
-                class="chat__remove"
+                pdz-button
+                iconOnly
+                size="xs"
+                variant="ghost"
+                color="danger"
                 aria-label="Delete message"
                 (click)="remove(message)"
               >
@@ -59,8 +62,8 @@
         (keydown)="onKeydown($event)"
       ></textarea>
       <button
-        type="button"
-        class="chat__send"
+        pdz-button
+        size="sm"
         [disabled]="!draft.trim() || sending()"
         (click)="send()"
       >

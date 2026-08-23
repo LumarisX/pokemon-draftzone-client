@@ -48,8 +48,11 @@
 
             <div class="gutter__actions">
               <button
-                type="button"
-                class="gutter__action"
+                pdz-button
+                iconOnly
+                size="xs"
+                variant="ghost"
+                color="neutral"
                 aria-label="Move round up"
                 [disabled]="$index === 0"
                 (click)="onMoveRound($index, -1)"
@@ -57,8 +60,11 @@
                 <pdz-icon name="arrow_upward" size="sm"></pdz-icon>
               </button>
               <button
-                type="button"
-                class="gutter__action"
+                pdz-button
+                iconOnly
+                size="xs"
+                variant="ghost"
+                color="neutral"
                 aria-label="Move round down"
                 [disabled]="$index === rounds.length - 1"
                 (click)="onMoveRound($index, 1)"
@@ -66,16 +72,22 @@
                 <pdz-icon name="arrow_downward" size="sm"></pdz-icon>
               </button>
               <button
-                type="button"
-                class="gutter__action"
+                pdz-button
+                iconOnly
+                size="xs"
+                variant="ghost"
+                color="neutral"
                 aria-label="Insert round below"
                 (click)="onInsertRound($index + 1)"
               >
                 <pdz-icon name="add" size="sm"></pdz-icon>
               </button>
               <button
-                type="button"
-                class="gutter__action gutter__action--danger"
+                pdz-button
+                iconOnly
+                size="xs"
+                variant="ghost"
+                color="danger"
                 aria-label="Delete round"
                 [disabled]="!canRemoveRound($index)"
                 [title]="
@@ -155,8 +167,11 @@
 
             <div class="stage__actions">
               <button
-                type="button"
-                class="stage__action"
+                pdz-button
+                iconOnly
+                size="xs"
+                variant="ghost"
+                color="neutral"
                 aria-label="Move this stage a round earlier"
                 [disabled]="!canMoveStage(stage, -1)"
                 (click)="onMoveStage(stage.key, -1)"
@@ -164,8 +179,11 @@
                 <pdz-icon name="arrow_upward" size="sm"></pdz-icon>
               </button>
               <button
-                type="button"
-                class="stage__action"
+                pdz-button
+                iconOnly
+                size="xs"
+                variant="ghost"
+                color="neutral"
                 aria-label="Move this stage a round later"
                 (click)="onMoveStage(stage.key, 1)"
               >
@@ -214,7 +232,14 @@
           }
 
           @if (editable() && cell.inSpan) {
-            <button type="button" class="cell__add" (click)="onAddMatch(cell)">
+            <button
+              pdz-button
+              size="xs"
+              variant="ghost"
+              color="neutral"
+              class="cell__add"
+              (click)="onAddMatch(cell)"
+            >
               <pdz-icon name="add" size="sm"></pdz-icon>
               <span>Match</span>
             </button>
@@ -226,7 +251,11 @@
     @if (editable()) {
       @for (round of rounds; track trackRound($index, round)) {
         <button
-          type="button"
+          pdz-button
+          iconOnly
+          size="xs"
+          variant="ghost"
+          color="neutral"
           class="add-stage"
           [style.grid-row]="$index + 1"
           [style.grid-column]="columnCount + 2"

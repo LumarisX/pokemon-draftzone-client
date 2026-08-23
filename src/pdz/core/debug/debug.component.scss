@@ -67,11 +67,3 @@
   margin-top: pdz.space(lg);
 }
 
-.debug-actions__copy {
-  @include flat-button-primary();
-}
-
-.debug-actions__download {
-  @include flat-button-secondary();
-}
-

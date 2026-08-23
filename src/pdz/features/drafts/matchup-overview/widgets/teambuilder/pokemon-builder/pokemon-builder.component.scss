@@ -1,5 +1,4 @@
 @use "pdz-theming" as pdz;
-@use "mixins/dropdown" as dropdown;
 @use "tokens/typography" as *;
 @use "tokens/breakpoints" as *;
 @use "mixins" as *;
@@ -122,10 +121,6 @@ input {
       gap: 1.5rem;
     }
 
-    .dropdowns {
-      width: 100%;
-    }
-
     .section--export {
       width: 100%;
       align-items: stretch;
@@ -206,8 +201,6 @@ input {
   transition:
     border-color pdz.duration(fast) pdz.easing(standard),
     box-shadow pdz.duration(fast) pdz.easing(standard);
-
-  @include dropdown.autocomplete-dropdown(16rem, 1.25rem, true);
 
   &:hover {
     border-color: pdz.color(menu);
@@ -479,22 +472,6 @@ input {
         justify-content: space-between;
       }
     }
-
-    .btn-reset {
-      height: $stat-field-size;
-      width: 3.5rem;
-      border-radius: pdz.shape(corner-xs);
-      border: 1px solid pdz.color(menu-border);
-      background: pdz.color(menu-container-low);
-      cursor: pointer;
-      @include text(body-sm);
-      text-transform: uppercase;
-
-      &:hover {
-        background: pdz.color(menu-container);
-      }
-    }
-
     .hp-rating {
       display: flex;
       align-items: center;

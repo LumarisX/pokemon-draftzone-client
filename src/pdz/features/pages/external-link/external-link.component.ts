@@ -3,10 +3,11 @@ import { Component, OnInit, inject } from '@angular/core';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { ActivatedRoute, Router } from '@angular/router';
 import { PageComponent } from '@pdz/shared/layout/page/page.component';
+import { CardComponent } from '@pdz/shared/data/card/card.component';
 
 @Component({
   selector: 'pdz-external-link',
-  imports: [IconComponent, PageComponent],
+  imports: [IconComponent, PageComponent, CardComponent],
   templateUrl: './external-link.component.html',
   styleUrl: './external-link.component.scss',
 })

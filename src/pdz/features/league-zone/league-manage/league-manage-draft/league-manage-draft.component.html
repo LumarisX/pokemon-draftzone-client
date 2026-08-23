@@ -127,8 +127,10 @@
           (input)="pendingChannelId = $any($event.target).value"
         />
         <button
-          type="button"
-          class="turn__btn"
+          pdz-button
+          size="sm"
+          color="neutral"
+          variant="outlined"
           [disabled]="!channelId || testingMessage"
           [title]="
             channelId
@@ -234,8 +236,10 @@
       <span class="order-panel__dirty">Unsaved changes</span>
     }
     <button
-      type="button"
-      class="turn__btn"
+      pdz-button
+          size="sm"
+          color="neutral"
+          variant="outlined"
       [disabled]="!isSettingsDirty || settingsSaving"
       (click)="saveSettings()"
     >
@@ -292,8 +296,10 @@
         <span class="order-panel__dirty">Unsaved changes</span>
       }
       <button
-        type="button"
-        class="turn__btn"
+        pdz-button
+          size="sm"
+          color="neutral"
+          variant="outlined"
         [disabled]="!isOrderDirty || orderSaving"
         (click)="saveOrder()"
       >
@@ -401,8 +407,11 @@
                     (pokemonSelected)="setTurnPick(turn, $event)"
                   ></pdz-pokemon-search>
                   <button
-                    type="button"
-                    class="turn__btn turn__btn--icon"
+                    pdz-button
+                    iconOnly
+                    size="xs"
+                    variant="ghost"
+                    color="neutral"
                     aria-label="Cancel"
                     (click)="cancelEdit()"
                   >
@@ -410,8 +419,8 @@
                   </button>
                 } @else {
                   <button
-                    type="button"
-                    class="turn__btn turn__btn--set"
+                    pdz-button
+                    size="xs"
                     [disabled]="!canSetTurn(turn) || isPending(turn)"
                     [title]="
                       canSetTurn(turn)
@@ -428,8 +437,11 @@
                   </button>
                   @if (turn.pokemon) {
                     <button
-                      type="button"
-                      class="turn__btn turn__btn--icon turn__btn--clear"
+                      pdz-button
+                      iconOnly
+                      size="xs"
+                      variant="ghost"
+                      color="danger"
                       aria-label="Clear pick"
                       title="Clear pick"
                       [disabled]="isPending(turn)"
@@ -439,8 +451,11 @@
                     </button>
                   } @else if (canMakeCurrent(turn)) {
                     <button
-                      type="button"
-                      class="turn__btn turn__btn--icon turn__btn--rewind"
+                      pdz-button
+                      iconOnly
+                      size="xs"
+                      variant="ghost"
+                      color="neutral"
                       aria-label="Put this turn back on the clock"
                       title="Put this turn back on the clock and restart the timer"
                       [disabled]="isPending(turn)"
