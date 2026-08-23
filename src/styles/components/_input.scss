@@ -58,6 +58,32 @@ select.pdz-input {
   cursor: pointer;
 }
 
+input.pdz-input[type="date"],
+input.pdz-input[type="time"],
+input.pdz-input[type="datetime-local"],
+input.pdz-input[type="month"],
+input.pdz-input[type="week"] {
+  cursor: pointer;
+
+  &::-webkit-calendar-picker-indicator {
+    padding: pdz.space(3xs);
+    border-radius: pdz.shape(corner-xs);
+    cursor: pointer;
+    opacity: 0.65;
+    transition: opacity pdz.duration(fast) pdz.easing(standard),
+      background-color pdz.duration(fast) pdz.easing(standard);
+  }
+
+  &:hover::-webkit-calendar-picker-indicator {
+    opacity: 1;
+    background-color: pdz.color(surface-container-highest);
+  }
+
+  &::-webkit-datetime-edit-fields-wrapper {
+    padding: 0;
+  }
+}
+
 [pdz-error] {
   font-size: pdz.font-size(xs);
   font-weight: pdz.font-weight(semibold);

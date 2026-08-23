@@ -26,6 +26,12 @@ import { BehaviorSubject, Observable, switchMap } from 'rxjs';
 import { DraftService } from '../../../draft-overview/draft.service';
 import { Draft, DraftPokemon } from '../../../draft.model';
 import { Opponent } from '../../opponent.model';
+import {
+  FieldErrorDirective,
+  FieldHintDirective,
+} from '@pdz/shared/inputs/field/field-message.directive';
+import { FieldComponent } from '@pdz/shared/inputs/field/field.component';
+import { InputDirective } from '@pdz/shared/inputs/field/input.directive';
 
 @Component({
   selector: 'pdz-opponent-form-core',
@@ -34,6 +40,10 @@ import { Opponent } from '../../opponent.model';
     ReactiveFormsModule,
     IconComponent,
     TeamEditorComponent,
+    FieldComponent,
+    InputDirective,
+    FieldErrorDirective,
+    FieldHintDirective,
   ],
   templateUrl: './opponent-form-core.component.html',
   styleUrl: './opponent-form-core.component.scss',

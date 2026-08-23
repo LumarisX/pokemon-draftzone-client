@@ -30,54 +30,41 @@
           [formGroup]="opponentForm.controls.details"
           (ngSubmit)="onSubmit()"
         >
-          <div class="form-field">
-            <label class="form-field__label" for="opponent-team-name">
-              Team Name
-            </label>
+          <label pdz-field class="form-field" label="Team Name">
             <input
               id="opponent-team-name"
-              class="form-field__input"
+              pdz-input
               type="text"
               spellcheck="false"
               formControlName="teamName"
-              [class.form-field__input--invalid]="
-                showError(teamNameControl, 'required')
-              "
             />
             @if (showError(teamNameControl, "required")) {
-              <span class="form-field__error">Team name is required</span>
+              <span pdz-error>Team name is required</span>
             }
-          </div>
+          </label>
 
-          <div class="form-field">
-            <label class="form-field__label" for="opponent-coach">
-              Coach Name
-            </label>
+          <label pdz-field class="form-field" label="Coach Name">
             <input
               id="opponent-coach"
-              class="form-field__input"
+              pdz-input
               type="text"
               spellcheck="false"
               formControlName="coach"
             />
-          </div>
+          </label>
 
-          <div class="form-field">
-            <label class="form-field__label" for="opponent-stage">Stage</label>
+          <label pdz-field class="form-field" label="Stage">
             <input
               id="opponent-stage"
-              class="form-field__input"
+              pdz-input
               type="text"
               spellcheck="false"
               formControlName="stage"
-              [class.form-field__input--invalid]="
-                showError(stageControl, 'required')
-              "
             />
             @if (showError(stageControl, "required")) {
-              <span class="form-field__error">Stage is required</span>
+              <span pdz-error>Stage is required</span>
             }
-          </div>
+          </label>
         </form>
       </aside>
 

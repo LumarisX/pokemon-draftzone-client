@@ -28,6 +28,14 @@ import { League } from '../league.interface';
 import { getLeagueLogoUrl } from '../league.util';
 import { SelectOptionComponent } from '@pdz/shared/dropdowns/select/select-option.component';
 import { SelectComponent } from '@pdz/shared/dropdowns/select/select.component';
+import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
+import { ChoiceDirective } from '@pdz/shared/inputs/choice/choice.directive';
+import {
+  FieldErrorDirective,
+  FieldHintDirective,
+} from '@pdz/shared/inputs/field/field-message.directive';
+import { FieldComponent } from '@pdz/shared/inputs/field/field.component';
+import { InputDirective } from '@pdz/shared/inputs/field/input.directive';
 
 @Component({
   selector: 'pdz-league-sign-up',
@@ -41,6 +49,12 @@ import { SelectComponent } from '@pdz/shared/dropdowns/select/select.component';
     LoadingComponent,
     SelectComponent,
     SelectOptionComponent,
+    ChoiceDirective,
+    ButtonComponent,
+    FieldComponent,
+    InputDirective,
+    FieldErrorDirective,
+    FieldHintDirective,
   ],
 })
 export class LeagueSignUpComponent implements OnInit, OnDestroy {

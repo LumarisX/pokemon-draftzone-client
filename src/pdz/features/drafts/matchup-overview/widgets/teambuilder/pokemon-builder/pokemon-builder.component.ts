@@ -26,6 +26,7 @@ import {
   PokemonBuilder,
   PokemonSetData,
 } from './pokemon-builder.model';
+import { ChoiceDirective } from '@pdz/shared/inputs/choice/choice.directive';
 
 export type PokemonBuilderView =
   | 'details'
@@ -56,6 +57,7 @@ type SpeedTier = {
     LoadingComponent,
     SpriteComponent,
     IconComponent,
+    ChoiceDirective,
   ],
 })
 export class MatchupPokemonBuilderComponent implements OnInit, OnDestroy {

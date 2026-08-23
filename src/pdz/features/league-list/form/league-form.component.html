@@ -8,72 +8,56 @@
 
   <form [formGroup]="leagueForm" (ngSubmit)="onSubmit()" class="league-form">
     <!-- League Name -->
-    <div class="form-field">
-      <label for="leagueName" class="form-label">
-        League Name <span class="required">*</span>
-      </label>
+    <label pdz-field class="form-field" label="League Name" required>
       <input
-        id="leagueName"
+        pdz-input
         type="text"
         formControlName="leagueName"
-        class="form-input"
-        [class.is-invalid]="isFieldInvalid('leagueName')"
         placeholder="Enter your league name"
         [maxlength]="LEAGUE_NAME_MAX_LENGTH"
       />
       @if (isFieldInvalid("leagueName")) {
-        <span class="error-message"
-          >League name is required (max
-          {{ LEAGUE_NAME_MAX_LENGTH }} characters)</span
-        >
+        <span pdz-error>
+          League name is required (max
+          {{ LEAGUE_NAME_MAX_LENGTH }} characters)
+        </span>
       }
-    </div>
+    </label>
 
     <!-- Description -->
-    <div class="form-field">
-      <label for="description" class="form-label">
-        Description <span class="required">*</span>
-      </label>
+    <label pdz-field class="form-field" label="Description" required>
       <textarea
-        id="description"
+        pdz-input
         formControlName="description"
-        class="form-textarea"
-        [class.is-invalid]="isFieldInvalid('description')"
         placeholder="Describe your league, rules, and what makes it unique"
         rows="4"
         [maxlength]="DESCRIPTION_MAX_LENGTH"
       ></textarea>
       @if (isFieldInvalid("description")) {
-        <span class="error-message"
-          >Description is required (max
-          {{ DESCRIPTION_MAX_LENGTH }} characters)</span
-        >
+        <span pdz-error>
+          Description is required (max
+          {{ DESCRIPTION_MAX_LENGTH }} characters)
+        </span>
       }
-    </div>
+    </label>
 
     <div class="form-row">
       <!-- Signup Link -->
-      <div class="form-field">
-        <label for="signupLink" class="form-label">
-          Signup Link <span class="required">*</span>
-        </label>
+      <label pdz-field class="form-field" label="Signup Link" required>
         <input
-          id="signupLink"
+          pdz-input
           type="text"
           formControlName="signupLink"
-          class="form-input"
-          [class.is-invalid]="isFieldInvalid('signupLink')"
           placeholder="Link to your league signup form or page"
           maxlength="100"
         />
         @if (isFieldInvalid("signupLink")) {
-          <span class="error-message">Signup link is required</span>
+          <span pdz-error>Signup link is required</span>
         }
-      </div>
+      </label>
 
       <!-- Prize Value -->
-      <div class="form-field">
-        <label class="form-label"> Prize Value </label>
+      <div pdz-field class="form-field" label="Prize Value">
         <pdz-select aria-label="Prize Value" formControlName="prizeValue">
           <pdz-option value="0" label="None" />
           <pdz-option value="1" label="Small (&lt; $25)" />
@@ -85,38 +69,32 @@
 
     <div class="form-row">
       <!-- Server Link -->
-      <div class="form-field">
-        <label for="serverLink" class="form-label"> Server Link </label>
+      <label pdz-field class="form-field" label="Server Link">
         <input
-          id="serverLink"
+          pdz-input
           type="text"
           formControlName="serverLink"
-          class="form-input"
           placeholder="Discord server invite link (optional)"
         />
-      </div>
+      </label>
 
       <!-- League Documents Link -->
-      <div class="form-field">
-        <label for="leagueDoc" class="form-label"> League Documents </label>
+      <label pdz-field class="form-field" label="League Documents">
         <input
-          id="leagueDoc"
+          pdz-input
           type="text"
           formControlName="leagueDoc"
-          class="form-input"
-          [class.is-invalid]="isFieldInvalid('leagueDoc')"
           placeholder="Google Doc or other league info link (optional)"
           maxlength="100"
         />
-      </div>
+      </label>
     </div>
 
     <!-- Skill Level Range -->
     <div formGroupName="skillLevelRange">
       <label class="form-label"> Skill Level Range </label>
       <div class="form-row">
-        <div class="form-field form-field--inline">
-          <label class="form-label-inline">From</label>
+        <div pdz-field inline class="form-field form-field--inline" label="From">
           <pdz-select aria-label="Skill Level From" formControlName="from">
             <pdz-option value="0" label="Novice" />
             <pdz-option value="1" label="Intermediate" />
@@ -125,8 +103,7 @@
           </pdz-select>
         </div>
 
-        <div class="form-field form-field--inline">
-          <label class="form-label-inline">To</label>
+        <div pdz-field inline class="form-field form-field--inline" label="To">
           <pdz-select aria-label="Skill Level To" formControlName="to">
             <pdz-option value="0" label="Novice" />
             <pdz-option value="1" label="Intermediate" />
@@ -140,10 +117,7 @@
     <!-- Multi-Select Game Settings -->
     <div class="form-row form-row--three">
       <!-- Platforms -->
-      <div class="form-field">
-        <label class="form-label">
-          Platform(s) <span class="required">*</span>
-        </label>
+      <div pdz-field class="form-field" label="Platform(s)" required>
         <div
           class="checkbox-group"
           [class.is-invalid]="isFieldInvalid('platforms')"
@@ -151,21 +125,18 @@
         >
           @for (platform of platforms; track platform; let i = $index) {
             <label class="checkbox-item">
-              <input type="checkbox" [formControlName]="i" />
+              <input pdz-checkbox [formControlName]="i" />
               <span class="checkbox-label">{{ platform }}</span>
             </label>
           }
         </div>
         @if (isFieldInvalid("platforms")) {
-          <span class="error-message">Select at least one platform</span>
+          <span pdz-error>Select at least one platform</span>
         }
       </div>
 
       <!-- Formats -->
-      <div class="form-field">
-        <label class="form-label">
-          Format(s) <span class="required">*</span>
-        </label>
+      <div pdz-field class="form-field" label="Format(s)" required>
         <div
           class="checkbox-group"
           [class.is-invalid]="isFieldInvalid('formats')"
@@ -173,21 +144,18 @@
         >
           @for (format of formats; track format; let i = $index) {
             <label class="checkbox-item">
-              <input type="checkbox" [formControlName]="i" />
+              <input pdz-checkbox [formControlName]="i" />
               <span class="checkbox-label">{{ format }}</span>
             </label>
           }
         </div>
         @if (isFieldInvalid("formats")) {
-          <span class="error-message">Select at least one format</span>
+          <span pdz-error>Select at least one format</span>
         }
       </div>
 
       <!-- Rulesets -->
-      <div class="form-field">
-        <label class="form-label">
-          Ruleset(s) <span class="required">*</span>
-        </label>
+      <div pdz-field class="form-field" label="Ruleset(s)" required>
         <div
           class="checkbox-group"
           [class.is-invalid]="isFieldInvalid('rulesets')"
@@ -195,13 +163,13 @@
         >
           @for (ruleset of rulesets; track ruleset; let i = $index) {
             <label class="checkbox-item">
-              <input type="checkbox" [formControlName]="i" />
+              <input pdz-checkbox [formControlName]="i" />
               <span class="checkbox-label">{{ ruleset }}</span>
             </label>
           }
         </div>
         @if (isFieldInvalid("rulesets")) {
-          <span class="error-message">Select at least one ruleset</span>
+          <span pdz-error>Select at least one ruleset</span>
         }
       </div>
     </div>
@@ -209,42 +177,21 @@
     <!-- Dates Section -->
     <div class="form-row form-row--three">
       <!-- Closes At -->
-      <div class="form-field">
-        <label for="closesAt" class="form-label">
-          Registration Closes <span class="required">*</span>
-        </label>
-        <input
-          id="closesAt"
-          type="date"
-          formControlName="closesAt"
-          class="form-input"
-          [class.is-invalid]="isFieldInvalid('closesAt')"
-        />
+      <label pdz-field class="form-field" label="Registration Closes" required>
+        <input pdz-input type="date" formControlName="closesAt" />
         @if (isFieldInvalid("closesAt")) {
-          <span class="error-message">Registration close date is required</span>
+          <span pdz-error>Registration close date is required</span>
         }
-      </div>
+      </label>
 
       <!-- Season Start -->
-      <div class="form-field">
-        <label for="seasonStart" class="form-label"> Season Start Date </label>
-        <input
-          id="seasonStart"
-          type="date"
-          formControlName="seasonStart"
-          class="form-input"
-        />
-      </div>
+      <label pdz-field class="form-field" label="Season Start Date">
+        <input pdz-input type="date" formControlName="seasonStart" />
+      </label>
       <!-- Season End -->
-      <div class="form-field">
-        <label for="seasonEnd" class="form-label"> Season End Date </label>
-        <input
-          id="seasonEnd"
-          type="date"
-          formControlName="seasonEnd"
-          class="form-input"
-        />
-      </div>
+      <label pdz-field class="form-field" label="Season End Date">
+        <input pdz-input type="date" formControlName="seasonEnd" />
+      </label>
     </div>
 
     <!-- Form Actions -->

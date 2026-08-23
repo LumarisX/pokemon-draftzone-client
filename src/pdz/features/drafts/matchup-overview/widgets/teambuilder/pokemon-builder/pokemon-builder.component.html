@@ -220,9 +220,9 @@
           <label for="shiny" class="input-field__label">Shiny</label>
           <div class="input-field__container">
             <input
+              pdz-checkbox
               [(ngModel)]="pokemon().shiny"
               (ngModelChange)="pokemonChange.emit()"
-              type="checkbox"
             />
           </div>
         </div>
@@ -580,7 +580,7 @@
         <div class="section__footer">
           <div>
             Choice Scarf
-            <input type="checkbox" [(ngModel)]="modifiers['Choice Scarf']" />
+            <input pdz-checkbox [(ngModel)]="modifiers['Choice Scarf']" />
           </div>
         </div>
       </div>

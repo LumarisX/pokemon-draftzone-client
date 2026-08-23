@@ -151,7 +151,8 @@
           <input
             type="number"
             min="0"
-            class="report__input"
+            pdz-input
+            size="sm"
             formControlName="manualScoreTeam1"
           />
         </label>
@@ -160,7 +161,8 @@
           <input
             type="number"
             min="0"
-            class="report__input"
+            pdz-input
+            size="sm"
             formControlName="manualScoreTeam2"
           />
         </label>
@@ -191,7 +193,8 @@
 
           <div class="report__replay">
             <input
-              class="report__input report__input--grow"
+              pdz-input
+              class="report__input--grow"
               type="url"
               formControlName="link"
               placeholder="Replay link"
@@ -246,7 +249,9 @@
                   <input
                     type="number"
                     min="0"
-                    class="report__input report__input--score"
+                    pdz-input
+                    size="sm"
+                    class="report__input--score"
                     formControlName="team1Score"
                     [attr.aria-label]="teamName('side1') + ' score'"
                     (input)="lockScore(game, 'side1')"
@@ -267,7 +272,9 @@
                   <input
                     type="number"
                     min="0"
-                    class="report__input report__input--score"
+                    pdz-input
+                    size="sm"
+                    class="report__input--score"
                     formControlName="team2Score"
                     [attr.aria-label]="teamName('side2') + ' score'"
                     (input)="lockScore(game, 'side2')"
@@ -363,6 +370,7 @@
   <label class="report__notes">
     <span class="report__notes-label">Notes for the organizers (optional)</span>
     <textarea
+      pdz-input
       class="report__notes-input"
       formControlName="notes"
       rows="2"

@@ -28,6 +28,12 @@ import {
   PokemonFormGroup,
   TeamEditorComponent,
 } from '../components/team-editor/team-editor.component';
+import {
+  FieldErrorDirective,
+  FieldHintDirective,
+} from '@pdz/shared/inputs/field/field-message.directive';
+import { FieldComponent } from '@pdz/shared/inputs/field/field.component';
+import { InputDirective } from '@pdz/shared/inputs/field/input.directive';
 
 @Component({
   selector: 'pdz-draft-form-core',
@@ -38,6 +44,10 @@ import {
     RulesetSelectComponent,
     IconComponent,
     TeamEditorComponent,
+    FieldComponent,
+    InputDirective,
+    FieldErrorDirective,
+    FieldHintDirective,
   ],
   templateUrl: './draft-form-core.component.html',
   styleUrl: './draft-form-core.component.scss',

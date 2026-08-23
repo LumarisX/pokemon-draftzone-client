@@ -24,6 +24,7 @@ import { LeagueManageService } from '../league-manage.service';
 import { LeagueZoneService } from '../../league-zone.service';
 import { StageSwitcherComponent } from '../../league-widgets/stage-switcher/stage-switcher.component';
 import { TradeLog } from '../../league.interface';
+import { ChoiceDirective } from '@pdz/shared/inputs/choice/choice.directive';
 
 interface TradeGroup {
   id: string;
@@ -72,6 +73,7 @@ export interface TradeData {
     StageSwitcherComponent,
     SelectComponent,
     SelectOptionComponent,
+    ChoiceDirective,
   ],
   templateUrl: './league-manage-trades.component.html',
   styleUrl: './league-manage-trades.component.scss',

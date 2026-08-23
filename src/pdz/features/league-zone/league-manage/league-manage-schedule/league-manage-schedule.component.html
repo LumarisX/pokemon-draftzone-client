@@ -152,24 +152,23 @@
                   }
 
                   <div class="score-grid">
-                    <div class="field">
-                      <label>Matchup {{ matchup.team1.name }} Score</label>
+                    <label pdz-field class="field" [label]="'Matchup ' + (matchup.team1.name) + ' Score'">
                       <input
+                        pdz-input
                         type="number"
                         min="0"
                         formControlName="matchupScoreTeam1"
                       />
-                    </div>
-                    <div class="field">
-                      <label>Matchup {{ matchup.team2.name }} Score</label>
+                    </label>
+                    <label pdz-field class="field" [label]="'Matchup ' + (matchup.team2.name) + ' Score'">
                       <input
+                        pdz-input
                         type="number"
                         min="0"
                         formControlName="matchupScoreTeam2"
                       />
-                    </div>
-                    <div class="field">
-                      <label>Matchup Outcome</label>
+                    </label>
+                    <label pdz-field class="field" label="Matchup Outcome">
                       <pdz-select
                         size="sm"
                         aria-label="Matchup winner"
@@ -194,7 +193,7 @@
                         />
                         <pdz-option value="dffl" label="Double Forfeit Loss" />
                       </pdz-select>
-                    </div>
+                    </label>
                   </div>
 
                   @if (needsAdvancement(matchup)) {
@@ -218,8 +217,7 @@
                           }
                         </div>
                       </div>
-                      <div class="field">
-                        <label>Advances</label>
+                      <label pdz-field class="field" label="Advances">
                         <pdz-select
                           size="sm"
                           aria-label="Advancement"
@@ -242,7 +240,7 @@
                           }
                           <pdz-option value="none" label="Nobody" />
                         </pdz-select>
-                      </div>
+                      </label>
                       @if (getAdvancementError(matchup.id); as advanceError) {
                         <div class="advancement__error">{{ advanceError }}</div>
                       }
@@ -424,32 +422,31 @@
                           }
 
                           <div class="match-controls">
-                            <div class="field">
-                              <label>Replay URL</label>
+                            <label pdz-field class="field" label="Replay URL">
                               <input
+                                pdz-input
                                 type="text"
                                 formControlName="link"
                                 placeholder="https://replay.pokemonshowdown.com/..."
                               />
-                            </div>
-                            <div class="field">
-                              <label>{{ matchup.team1.name }} Score</label>
+                            </label>
+                            <label pdz-field class="field" [label]="(matchup.team1.name) + ' Score'">
                               <input
+                                pdz-input
                                 type="number"
                                 min="0"
                                 formControlName="team1Score"
                               />
-                            </div>
-                            <div class="field">
-                              <label>{{ matchup.team2.name }} Score</label>
+                            </label>
+                            <label pdz-field class="field" [label]="(matchup.team2.name) + ' Score'">
                               <input
+                                pdz-input
                                 type="number"
                                 min="0"
                                 formControlName="team2Score"
                               />
-                            </div>
-                            <div class="field">
-                              <label>Match Winner</label>
+                            </label>
+                            <label pdz-field class="field" label="Match Winner">
                               <pdz-select
                                 size="sm"
                                 aria-label="Game winner"
@@ -465,7 +462,7 @@
                                   [label]="matchup.team2.name"
                                 />
                               </pdz-select>
-                            </div>
+                            </label>
                           </div>
 
                           <div class="team-grid">
@@ -524,6 +521,7 @@
                                   </pdz-select>
                                   <div formGroupName="kills">
                                     <input
+                                      pdz-input
                                       type="number"
                                       min="0"
                                       formControlName="direct"
@@ -531,6 +529,7 @@
                                   </div>
                                   <div formGroupName="kills">
                                     <input
+                                      pdz-input
                                       type="number"
                                       min="0"
                                       formControlName="indirect"
@@ -538,6 +537,7 @@
                                   </div>
                                   <div formGroupName="kills">
                                     <input
+                                      pdz-input
                                       type="number"
                                       min="0"
                                       formControlName="teammate"
@@ -602,6 +602,7 @@
                                   </pdz-select>
                                   <div formGroupName="kills">
                                     <input
+                                      pdz-input
                                       type="number"
                                       min="0"
                                       formControlName="direct"
@@ -609,6 +610,7 @@
                                   </div>
                                   <div formGroupName="kills">
                                     <input
+                                      pdz-input
                                       type="number"
                                       min="0"
                                       formControlName="indirect"
@@ -616,6 +618,7 @@
                                   </div>
                                   <div formGroupName="kills">
                                     <input
+                                      pdz-input
                                       type="number"
                                       min="0"
                                       formControlName="teammate"

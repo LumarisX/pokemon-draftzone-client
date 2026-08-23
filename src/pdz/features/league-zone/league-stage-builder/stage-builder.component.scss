@@ -122,7 +122,6 @@ $gutter-width: var(--gutter-width, 11rem);
     border-radius: pdz.shape("corner-xs");
     padding: pdz.space(3xs) pdz.space(2xs);
     width: 100%;
-    color-scheme: light dark;
 
     &--static {
       display: inline-flex;

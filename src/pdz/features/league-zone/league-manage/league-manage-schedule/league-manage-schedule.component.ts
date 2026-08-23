@@ -14,6 +14,8 @@ import { LeagueManageService } from '../league-manage.service';
 import { LeagueZoneService } from '../../league-zone.service';
 import { ReplayService } from '../../../tools/replay_analyzer/replay.service';
 import { SelectOptionComponent } from '@pdz/shared/dropdowns/select/select-option.component';
+import { FieldComponent } from '@pdz/shared/inputs/field/field.component';
+import { InputDirective } from '@pdz/shared/inputs/field/input.directive';
 import { SelectComponent } from '@pdz/shared/dropdowns/select/select.component';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
@@ -83,6 +85,8 @@ type MatchupPokemonSummary = {
     LoadingComponent,
     SelectComponent,
     SelectOptionComponent,
+    FieldComponent,
+    InputDirective,
   ],
   templateUrl: './league-manage-schedule.component.html',
   styleUrl: './league-manage-schedule.component.scss',

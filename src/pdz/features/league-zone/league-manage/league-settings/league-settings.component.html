@@ -17,8 +17,7 @@
       <section class="settings-section">
         <h2 class="settings-section__title">Tournament Info</h2>
         <div class="settings-section__body">
-          <div class="form-field">
-            <label class="form-field__label">Tournament Logo</label>
+          <div pdz-field class="form-field" label="Tournament Logo">
             <div class="logo-upload">
               <div class="logo-upload__preview">
                 @if (displayedLogoUrl) {
@@ -67,12 +66,12 @@
                   </button>
                 }
                 @if (isUploadingLogo) {
-                  <span class="form-field__hint"
+                  <span pdz-hint
                     >Uploading… {{ logoUploadProgress }}%</span
                   >
                 }
                 @if (logoUploadError) {
-                  <span class="form-field__hint form-field__hint--error">{{
+                  <span pdz-error>{{
                     logoUploadError
                   }}</span>
                 }
@@ -80,76 +79,56 @@
             </div>
           </div>
 
-          <div class="form-field">
-            <label class="form-field__label" for="name"
-              >Tournament Name *</label
-            >
+          <label pdz-field class="form-field" label="Tournament Name" required>
             <input
               id="name"
-              class="form-field__input"
-              [class.form-field__input--invalid]="
-                form.get('name')?.invalid && form.get('name')?.touched
-              "
+              pdz-input
               type="text"
               formControlName="name"
               placeholder="e.g. Spring 2025 Draft League"
             />
-          </div>
+          </label>
 
-          <div class="form-field">
-            <label class="form-field__label" for="description"
-              >Description</label
-            >
+          <label pdz-field class="form-field" label="Description">
             <textarea
               id="description"
-              class="form-field__textarea"
+              pdz-input
               formControlName="description"
               rows="3"
               placeholder="Optional tournament description"
             ></textarea>
-          </div>
+          </label>
 
           <div class="form-row">
-            <div class="form-field">
-              <label class="form-field__label" for="format">Format *</label>
+            <label pdz-field class="form-field" label="Format" required>
               <input
                 id="format"
-                class="form-field__input"
-                [class.form-field__input--invalid]="
-                  form.get('format')?.invalid && form.get('format')?.touched
-                "
+                pdz-input
                 type="text"
                 formControlName="format"
                 placeholder="e.g. VGC 2025"
               />
-            </div>
-            <div class="form-field">
-              <label class="form-field__label" for="ruleset">Ruleset *</label>
+            </label>
+            <label pdz-field class="form-field" label="Ruleset" required>
               <input
                 id="ruleset"
-                class="form-field__input"
-                [class.form-field__input--invalid]="
-                  form.get('ruleset')?.invalid && form.get('ruleset')?.touched
-                "
+                pdz-input
                 type="text"
                 formControlName="ruleset"
                 placeholder="e.g. Regulation G"
               />
-            </div>
+            </label>
           </div>
 
-          <div class="form-field">
-            <label class="form-field__label" for="discord"
-              >Discord Invite Link</label
-            >
+          <label pdz-field class="form-field" label="Discord Invite Link">
             <input
               id="discord"
-              class="form-field__input"
+              pdz-input
               type="text"
               formControlName="discord"
               placeholder="https://discord.gg/..."
             />
-          </div>
+          </label>
         </div>
       </section>
 
@@ -157,47 +136,38 @@
       <section class="settings-section">
         <h2 class="settings-section__title">Discord Integration</h2>
         <div class="settings-section__body">
-          <div class="form-field">
-            <label class="form-field__label" for="discordGuildId"
-              >Server ID</label
-            >
+          <label pdz-field class="form-field" label="Server ID">
             <input
               id="discordGuildId"
-              class="form-field__input"
+              pdz-input
               type="text"
               formControlName="discordGuildId"
               placeholder="e.g. 1183936734719922176"
             />
-            <span class="form-field__hint"
+            <span pdz-hint
               >Used to check whether coaches have joined the server</span
             >
-          </div>
+          </label>
 
           <div class="form-row">
-            <div class="form-field">
-              <label class="form-field__label" for="discordCoachRoleId"
-                >Coach Role ID</label
-              >
+            <label pdz-field class="form-field" label="Coach Role ID">
               <input
                 id="discordCoachRoleId"
-                class="form-field__input"
+                pdz-input
                 type="text"
                 formControlName="discordCoachRoleId"
                 placeholder="Role granted on sign-up"
               />
-            </div>
-            <div class="form-field">
-              <label class="form-field__label" for="discordSignUpChannelId"
-                >Sign-up Channel ID</label
-              >
+            </label>
+            <label pdz-field class="form-field" label="Sign-up Channel ID">
               <input
                 id="discordSignUpChannelId"
-                class="form-field__input"
+                pdz-input
                 type="text"
                 formControlName="discordSignUpChannelId"
                 placeholder="Channel for sign-up announcements"
               />
-            </div>
+            </label>
           </div>
         </div>
       </section>
@@ -207,69 +177,52 @@
         <h2 class="settings-section__title">Schedule</h2>
         <div class="settings-section__body">
           <div class="form-row">
-            <div class="form-field">
-              <label class="form-field__label" for="signUpDeadline"
-                >Sign-up Deadline *</label
-              >
+            <label pdz-field class="form-field" label="Sign-up Deadline" required>
               <input
                 id="signUpDeadline"
-                class="form-field__input"
-                [class.form-field__input--invalid]="
-                  form.get('signUpDeadline')?.invalid &&
-                  form.get('signUpDeadline')?.touched
-                "
+                pdz-input
                 type="date"
                 formControlName="signUpDeadline"
               />
-            </div>
+            </label>
           </div>
 
           <div class="form-row">
-            <div class="form-field">
-              <label class="form-field__label" for="draftStart"
-                >Draft Start</label
-              >
+            <label pdz-field class="form-field" label="Draft Start">
               <input
                 id="draftStart"
-                class="form-field__input"
+                pdz-input
                 type="date"
                 formControlName="draftStart"
               />
-            </div>
-            <div class="form-field">
-              <label class="form-field__label" for="draftEnd">Draft End</label>
+            </label>
+            <label pdz-field class="form-field" label="Draft End">
               <input
                 id="draftEnd"
-                class="form-field__input"
+                pdz-input
                 type="date"
                 formControlName="draftEnd"
               />
-            </div>
+            </label>
           </div>
 
           <div class="form-row">
-            <div class="form-field">
-              <label class="form-field__label" for="seasonStart"
-                >Season Start</label
-              >
+            <label pdz-field class="form-field" label="Season Start">
               <input
                 id="seasonStart"
-                class="form-field__input"
+                pdz-input
                 type="date"
                 formControlName="seasonStart"
               />
-            </div>
-            <div class="form-field">
-              <label class="form-field__label" for="seasonEnd"
-                >Season End</label
-              >
+            </label>
+            <label pdz-field class="form-field" label="Season End">
               <input
                 id="seasonEnd"
-                class="form-field__input"
+                pdz-input
                 type="date"
                 formControlName="seasonEnd"
               />
-            </div>
+            </label>
           </div>
         </div>
       </section>
@@ -278,11 +231,11 @@
       <section class="settings-section">
         <h2 class="settings-section__title">Scoring &amp; Forfeits</h2>
         <div class="settings-section__body">
-          <div class="form-field">
-            <label class="form-field__label">Score Mode</label>
+          <div pdz-field class="form-field" label="Score Mode">
             <div class="radio-group">
               <label class="radio-option">
                 <input
+                  pdz-radio
                   type="radio"
                   formControlName="diffMode"
                   value="pokemon"
@@ -293,7 +246,7 @@
                 >
               </label>
               <label class="radio-option">
-                <input type="radio" formControlName="diffMode" value="game" />
+                <input pdz-radio type="radio" formControlName="diffMode" value="game" />
                 <span class="radio-option__label">Game Diff</span>
                 <span class="radio-option__hint">Score based on game wins</span>
               </label>
@@ -301,36 +254,32 @@
           </div>
 
           <div class="form-row">
-            <div class="form-field">
-              <label class="form-field__label" for="forfeitGameDiff"
-                >Forfeit Game Diff</label
-              >
+            <label pdz-field class="form-field" label="Forfeit Game Diff">
               <input
                 id="forfeitGameDiff"
-                class="form-field__input form-field__input--number"
+                pdz-input
+                class="form-field__input--number"
                 type="number"
                 formControlName="forfeitGameDiff"
                 min="0"
               />
-              <span class="form-field__hint"
+              <span pdz-hint
                 >Points awarded for a game forfeit win</span
               >
-            </div>
-            <div class="form-field">
-              <label class="form-field__label" for="forfeitPokemonDiff"
-                >Forfeit Pokémon Diff</label
-              >
+            </label>
+            <label pdz-field class="form-field" label="Forfeit Pokémon Diff">
               <input
                 id="forfeitPokemonDiff"
-                class="form-field__input form-field__input--number"
+                pdz-input
+                class="form-field__input--number"
                 type="number"
                 formControlName="forfeitPokemonDiff"
                 min="0"
               />
-              <span class="form-field__hint"
+              <span pdz-hint
                 >Pokémon diff awarded for a forfeit win</span
               >
-            </div>
+            </label>
           </div>
         </div>
       </section>
@@ -341,24 +290,24 @@
         <div class="settings-section__body">
           <div class="form-field">
             <label class="checkbox-option">
-              <input type="checkbox" formControlName="matchupChat" />
+              <input pdz-checkbox formControlName="matchupChat" />
               <span class="checkbox-option__label"
                 >Enable match chat between the two teams</span
               >
             </label>
-            <span class="form-field__hint"
+            <span pdz-hint
               >Private to both coaches and the organizers</span
             >
           </div>
 
           <div class="form-field">
             <label class="checkbox-option">
-              <input type="checkbox" formControlName="coachReporting" />
+              <input pdz-checkbox formControlName="coachReporting" />
               <span class="checkbox-option__label"
                 >Let coaches submit their own match results</span
               >
             </label>
-            <span class="form-field__hint"
+            <span pdz-hint
               >Submissions wait for your approval before they count. Organizers
               can always submit results.</span
             >
@@ -371,43 +320,31 @@
         <h2 class="settings-section__title">Draft Rules</h2>
         <div class="settings-section__body">
           <div class="form-row">
-            <div class="form-field">
-              <label class="form-field__label" for="draftCountMin"
-                >Min Roster Size *</label
-              >
+            <label pdz-field class="form-field" label="Min Roster Size" required>
               <input
                 id="draftCountMin"
-                class="form-field__input form-field__input--number"
-                [class.form-field__input--invalid]="
-                  form.get('draftCountMin')?.invalid &&
-                  form.get('draftCountMin')?.touched
-                "
+                pdz-input
+                class="form-field__input--number"
                 type="number"
                 formControlName="draftCountMin"
                 min="1"
               />
-            </div>
-            <div class="form-field">
-              <label class="form-field__label" for="draftCountMax"
-                >Max Roster Size *</label
-              >
+            </label>
+            <label pdz-field class="form-field" label="Max Roster Size" required>
               <input
                 id="draftCountMax"
-                class="form-field__input form-field__input--number"
-                [class.form-field__input--invalid]="
-                  form.get('draftCountMax')?.invalid &&
-                  form.get('draftCountMax')?.touched
-                "
+                pdz-input
+                class="form-field__input--number"
                 type="number"
                 formControlName="draftCountMax"
                 min="1"
               />
-            </div>
+            </label>
           </div>
 
           <div class="form-field">
             <label class="checkbox-option">
-              <input type="checkbox" formControlName="pointTotalEnabled" />
+              <input pdz-checkbox formControlName="pointTotalEnabled" />
               <span class="checkbox-option__label"
                 >Limit total draft points</span
               >
@@ -415,12 +352,13 @@
             @if (form.get("pointTotalEnabled")?.value) {
               <input
                 id="pointTotal"
-                class="form-field__input form-field__input--number"
+                pdz-input
+                class="form-field__input--number"
                 type="number"
                 formControlName="pointTotal"
                 min="0"
               />
-              <span class="form-field__hint"
+              <span pdz-hint
                 >Teams cannot draft a roster exceeding this many points</span
               >
             }
@@ -428,18 +366,19 @@
 
           <div class="form-field">
             <label class="checkbox-option">
-              <input type="checkbox" formControlName="tradePointLimitEnabled" />
+              <input pdz-checkbox formControlName="tradePointLimitEnabled" />
               <span class="checkbox-option__label">Limit trade points</span>
             </label>
             @if (form.get("tradePointLimitEnabled")?.value) {
               <input
                 id="tradePointLimit"
-                class="form-field__input form-field__input--number"
+                pdz-input
+                class="form-field__input--number"
                 type="number"
                 formControlName="tradePointLimit"
                 min="0"
               />
-              <span class="form-field__hint"
+              <span pdz-hint
                 >Trade points a team may spend across a stage. Approving a trade
                 that would exceed this is blocked.</span
               >
@@ -447,9 +386,8 @@
           </div>
 
           @if (availableTierNames.length) {
-            <div class="form-field" formArrayName="tierRequirements">
-              <label class="form-field__label">Required Tier Picks</label>
-              <span class="form-field__hint"
+            <label pdz-field class="form-field" formArrayName="tierRequirements" label="Required Tier Picks">
+              <span pdz-hint
                 >Minimum picks a team must draft from each tier</span
               >
               <div class="form-row">
@@ -458,27 +396,30 @@
                   track tierReq.value.tierName;
                   let i = $index
                 ) {
-                  <div class="form-field" [formGroupName]="i">
-                    <label class="form-field__label">{{
-                      tierReq.value.tierName
-                    }}</label>
+                  <label
+                    pdz-field
+                    class="form-field"
+                    [formGroupName]="i"
+                    [label]="tierReq.value.tierName"
+                  >
                     <input
-                      class="form-field__input form-field__input--number"
+                      pdz-input
+                      class="form-field__input--number"
                       type="number"
                       formControlName="required"
                       min="0"
                     />
-                  </div>
+                  </label>
                 }
               </div>
               <span
-                class="form-field__hint"
+                pdz-hint
                 [class.form-field__hint--error]="tierRequirementsExceedMax"
               >
                 Total required: {{ tierRequirementsTotal }} /
                 {{ form.get("draftCountMax")?.value }} max roster slots
               </span>
-            </div>
+            </label>
           }
         </div>
       </section>
@@ -489,22 +430,19 @@
         <div class="settings-section__body">
           <div class="form-field">
             <label class="checkbox-option">
-              <input type="checkbox" formControlName="adAdvertise" />
+              <input pdz-checkbox formControlName="adAdvertise" />
               <span class="checkbox-option__label"
                 >Advertise this tournament on the Find a League page</span
               >
             </label>
-            <span class="form-field__hint"
+            <span pdz-hint
               >Shown publicly until the sign-up deadline passes</span
             >
           </div>
 
           @if (form.get("adAdvertise")?.value) {
             <div class="form-row">
-              <div class="form-field">
-                <label class="form-field__label"
-                  >Skill Level From</label
-                >
+              <label pdz-field class="form-field" label="Skill Level From">
                 <pdz-select
                   aria-label="Skill Level From"
                   formControlName="adSkillFrom"
@@ -514,45 +452,38 @@
                   <pdz-option value="2" label="Advanced" />
                   <pdz-option value="3" label="Expert" />
                 </pdz-select>
-              </div>
-              <div class="form-field">
-                <label class="form-field__label"
-                  >Skill Level To</label
-                >
+              </label>
+              <label pdz-field class="form-field" label="Skill Level To">
                 <pdz-select aria-label="Skill Level To" formControlName="adSkillTo">
                   <pdz-option value="0" label="Novice" />
                   <pdz-option value="1" label="Intermediate" />
                   <pdz-option value="2" label="Advanced" />
                   <pdz-option value="3" label="Expert" />
                 </pdz-select>
-              </div>
+              </label>
             </div>
 
-            <div class="form-field">
-              <label class="form-field__label"
-                >Prize Value</label
-              >
+            <label pdz-field class="form-field" label="Prize Value">
               <pdz-select aria-label="Prize Value" formControlName="adPrizeValue">
                 <pdz-option value="0" label="None" />
                 <pdz-option value="1" label="Small (&lt; $25)" />
                 <pdz-option value="2" label="Medium ($25-$100)" />
                 <pdz-option value="3" label="Large (&gt; $100)" />
               </pdz-select>
-            </div>
+            </label>
 
-            <div class="form-field" formArrayName="adPlatforms">
-              <label class="form-field__label">Platforms</label>
+            <label pdz-field class="form-field" formArrayName="adPlatforms" label="Platforms">
               @for (
                 platform of adPlatformOptions;
                 track platform;
                 let i = $index
               ) {
                 <label class="checkbox-option">
-                  <input type="checkbox" [formControlName]="i" />
+                  <input pdz-checkbox [formControlName]="i" />
                   <span class="checkbox-option__label">{{ platform }}</span>
                 </label>
               }
-            </div>
+            </label>
           }
         </div>
       </section>

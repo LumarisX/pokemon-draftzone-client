@@ -87,14 +87,11 @@
       </div>
       <div class="form-section__body">
         <div class="form-row">
-          <div class="form-field">
-            <label for="name" class="form-field__label">
-              Display Name <span class="required">*</span>
-            </label>
+          <label pdz-field class="form-field" label="Display Name" required>
             <input
               id="name"
               type="text"
-              class="form-field__input"
+              pdz-input
               placeholder="Deoxys"
               formControlName="name"
             />
@@ -102,18 +99,15 @@
               signupForm.get("name")?.hasError("required") &&
               signupForm.get("name")?.touched
             ) {
-              <span class="form-field__error">Required</span>
+              <span pdz-error>Required</span>
             }
-          </div>
+          </label>
 
-          <div class="form-field">
-            <label for="gameName" class="form-field__label">
-              Showdown Name <span class="required">*</span>
-            </label>
+          <label pdz-field class="form-field" label="Showdown Name" required>
             <input
               id="gameName"
               type="text"
-              class="form-field__input"
+              pdz-input
               placeholder="Deoxys-II"
               formControlName="gameName"
             />
@@ -121,20 +115,17 @@
               signupForm.get("gameName")?.hasError("required") &&
               signupForm.get("gameName")?.touched
             ) {
-              <span class="form-field__error">Required</span>
+              <span pdz-error>Required</span>
             }
-          </div>
+          </label>
         </div>
 
         <div class="form-row">
-          <div class="form-field">
-            <label for="discordName" class="form-field__label">
-              Discord Username <span class="required">*</span>
-            </label>
+          <label pdz-field class="form-field" label="Discord Username" required>
             <input
               id="discordName"
               type="text"
-              class="form-field__input"
+              pdz-input
               placeholder="Deoxys#0386"
               formControlName="discordName"
             />
@@ -142,14 +133,11 @@
               signupForm.get("discordName")?.hasError("required") &&
               signupForm.get("discordName")?.touched
             ) {
-              <span class="form-field__error">Required</span>
+              <span pdz-error>Required</span>
             }
-          </div>
+          </label>
 
-          <div class="form-field">
-            <label for="timezone" class="form-field__label">
-              Time Zone <span class="required">*</span>
-            </label>
+          <label pdz-field class="form-field" label="Time Zone" required>
             <pdz-select
               searchable
               aria-label="Timezone"
@@ -160,16 +148,13 @@
                 <pdz-option [value]="tz" [label]="tz" />
               }
             </pdz-select>
-          </div>
+          </label>
         </div>
 
-        <div class="form-field">
-          <label for="experience" class="form-field__label">
-            Experience <span class="required">*</span>
-          </label>
+        <label pdz-field class="form-field" label="Experience" required>
           <textarea
             id="experience"
-            class="form-field__input form-field__input--textarea"
+            pdz-input
             formControlName="experience"
             maxlength="500"
             rows="4"
@@ -179,17 +164,19 @@
             signupForm.get("experience")?.hasError("required") &&
             signupForm.get("experience")?.touched
           ) {
-            <span class="form-field__error">Required</span>
+            <span pdz-error>Required</span>
           }
-        </div>
+        </label>
 
-        <div class="form-field">
-          <div class="form-field__label">
-            Have you dropped from a league before?
-          </div>
+        <div
+          pdz-field
+          class="form-field"
+          label="Have you dropped from a league before?"
+        >
           <div class="radio-group">
             <label class="radio-label">
               <input
+                pdz-radio
                 type="radio"
                 name="droppedBefore"
                 class="radio-input"
@@ -200,6 +187,7 @@
             </label>
             <label class="radio-label">
               <input
+                pdz-radio
                 type="radio"
                 name="droppedBefore"
                 class="radio-input"
@@ -212,13 +200,10 @@
         </div>
 
         @if (signupForm.get("droppedBefore")?.value) {
-          <div class="form-field">
-            <label for="droppedWhy" class="form-field__label">
-              Why? <span class="required">*</span>
-            </label>
+          <label pdz-field class="form-field" label="Why?" required>
             <textarea
               id="droppedWhy"
-              class="form-field__input form-field__input--textarea"
+              pdz-input
               formControlName="droppedWhy"
               maxlength="500"
               rows="4"
@@ -227,9 +212,9 @@
               signupForm.get("droppedWhy")?.hasError("required") &&
               signupForm.get("droppedWhy")?.touched
             ) {
-              <span class="form-field__error">Required</span>
+              <span pdz-error>Required</span>
             }
-          </div>
+          </label>
         }
       </div>
     </section>
@@ -241,14 +226,11 @@
       </div>
       <div class="form-section__body">
         <div class="form-row">
-          <div class="form-field">
-            <label for="teamName" class="form-field__label">
-              Team Name <span class="required">*</span>
-            </label>
+          <label pdz-field class="form-field" label="Team Name" required>
             <input
               id="teamName"
               type="text"
-              class="form-field__input"
+              pdz-input
               placeholder="The Double Helixes"
               formControlName="teamName"
             />
@@ -256,12 +238,11 @@
               signupForm.get("teamName")?.hasError("required") &&
               signupForm.get("teamName")?.touched
             ) {
-              <span class="form-field__error">Required</span>
+              <span pdz-error>Required</span>
             }
-          </div>
+          </label>
 
-          <div class="form-field">
-            <label class="form-field__label">Team Logo</label>
+          <div pdz-field class="form-field" label="Team Logo">
             <input
               #logoInput
               id="logo"
@@ -271,14 +252,17 @@
               (change)="onLogoUpload($event)"
             />
             <button
+              pdz-button
               type="button"
-              class="form-field__input file-input-button"
+              color="neutral"
+              variant="outlined"
+              class="file-input-button"
               [disabled]="isSubmitting"
               (click)="logoInput.click()"
             >
               {{ logoFileName || "Choose File" }}
             </button>
-            <span class="form-field__hint"
+            <span pdz-hint
               >You can submit one later if you need to</span
             >
           </div>
@@ -290,7 +274,7 @@
     <div class="form-field">
       <label class="checkbox-label">
         <input
-          type="checkbox"
+          pdz-checkbox
           class="checkbox-input"
           formControlName="confirm"
         />

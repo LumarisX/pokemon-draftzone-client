@@ -18,6 +18,7 @@ import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
 import { ReplayAnalysis } from '../../../tools/replay_analyzer/replay.interface';
+import { ChoiceDirective } from '@pdz/shared/inputs/choice/choice.directive';
 
 type SideMonValue = {
   pokemon: DraftPokemon;
@@ -38,6 +39,7 @@ type SideMonValue = {
     ReactiveFormsModule,
     IconComponent,
     LoadingComponent,
+    ChoiceDirective,
   ],
 })
 export class OpponentScoreComponent implements OnInit {

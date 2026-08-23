@@ -36,6 +36,13 @@ import { TierListService } from '@pdz/features/tier-lists/tier-list.service';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 import { SelectOptionComponent } from '@pdz/shared/dropdowns/select/select-option.component';
 import { SelectComponent } from '@pdz/shared/dropdowns/select/select.component';
+import { ChoiceDirective } from '@pdz/shared/inputs/choice/choice.directive';
+import {
+  FieldErrorDirective,
+  FieldHintDirective,
+} from '@pdz/shared/inputs/field/field-message.directive';
+import { FieldComponent } from '@pdz/shared/inputs/field/field.component';
+import { InputDirective } from '@pdz/shared/inputs/field/input.directive';
 
 const NON_DRAFTABLE_TIER_NAMES = new Set(['untiered', 'ban', 'banned']);
 
@@ -58,6 +65,11 @@ const ALLOWED_LOGO_TYPES = [
     ButtonComponent,
     SelectComponent,
     SelectOptionComponent,
+    ChoiceDirective,
+    FieldComponent,
+    InputDirective,
+    FieldErrorDirective,
+    FieldHintDirective,
   ],
   templateUrl: './league-settings.component.html',
   styleUrl: './league-settings.component.scss',

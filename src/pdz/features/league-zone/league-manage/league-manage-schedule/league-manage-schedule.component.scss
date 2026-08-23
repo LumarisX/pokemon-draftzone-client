@@ -563,28 +563,6 @@ input[type="number"] {
   justify-content: flex-end;
 }
 
-.field {
-  display: flex;
-  flex-direction: column;
-  gap: pdz.space(2xs);
-
-  label {
-    font-size: var(--pdz-font-size-xs);
-    color: pdz.color(on-surface-variant);
-  }
-}
-
-input,
-select {
-  width: 100%;
-  padding: pdz.space(xs) pdz.space(sm);
-  border-radius: pdz.shape(corner-sm);
-  border: 1px solid pdz.color(outline-variant);
-  background: pdz.color(surface);
-  color: pdz.color(on-surface);
-  font-size: var(--pdz-font-size-sm);
-}
-
 .btn-primary {
   @include flat-button-primary();
 

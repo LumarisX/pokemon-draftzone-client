@@ -125,7 +125,7 @@
     align-items: center;
     gap: pdz.space(xs);
 
-    .form-field__input {
+    .pdz-input {
       flex: 1;
       min-width: 0;
     }
@@ -146,50 +146,6 @@
 // ---------------------------------------------------------------------------
 // Fields
 // ---------------------------------------------------------------------------
-
-.form-field {
-  display: grid;
-  gap: pdz.space(2xs);
-
-  &__label {
-    @include pdz.text(field-label, $family: false);
-    color: pdz.color(on-surface-variant);
-  }
-
-  &__input {
-    width: 100%;
-    padding: pdz.space(xs) pdz.space(sm);
-    border: 1px solid pdz.color(outline);
-    border-radius: pdz.shape(corner-sm);
-    background: pdz.color(surface);
-    color: pdz.color(on-surface);
-    font: inherit;
-    transition: border-color pdz.duration(base) pdz.easing(standard);
-
-    &::placeholder {
-      color: pdz.color(on-surface-variant);
-    }
-
-    &:focus {
-      outline: 2px solid pdz.color(primary-accent);
-      outline-offset: 1px;
-      border-color: pdz.color(primary-accent);
-    }
-
-    &--invalid {
-      border-color: pdz.color(danger);
-
-      &:focus {
-        outline-color: pdz.color(danger);
-      }
-    }
-  }
-
-  &__error {
-    @include pdz.text(label, $family: false);
-    color: pdz.color(danger);
-  }
-}
 
 // ---------------------------------------------------------------------------
 // Responsive

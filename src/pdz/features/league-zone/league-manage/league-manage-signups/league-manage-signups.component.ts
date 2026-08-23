@@ -37,6 +37,7 @@ import {
 } from '../../tournaments/tournament-home/team-edit-dialog/team-edit-dialog.component';
 import { SelectOptionComponent } from '@pdz/shared/dropdowns/select/select-option.component';
 import { SelectComponent } from '@pdz/shared/dropdowns/select/select.component';
+import { ChoiceDirective } from '@pdz/shared/inputs/choice/choice.directive';
 
 type SignUpEntry = League.LeagueSignUp & {
   selected?: boolean;
@@ -54,6 +55,7 @@ type SignUpEntry = League.LeagueSignUp & {
     RouterLink,
     SelectComponent,
     SelectOptionComponent,
+    ChoiceDirective,
   ],
 })
 export class LeagueManageSignupsComponent implements OnInit, OnDestroy {

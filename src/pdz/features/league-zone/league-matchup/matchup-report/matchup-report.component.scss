@@ -99,7 +99,7 @@
     @include text(label);
     color: pdz.color("on-surface-variant");
 
-    .report__input {
+    .pdz-input {
       width: 6rem;
     }
   }
@@ -158,18 +158,6 @@
   }
 
   &__input {
-    padding: pdz.space(2xs) pdz.space(sm);
-    border: 1px solid pdz.color("outline-variant");
-    border-radius: pdz.shape("corner-sm");
-    background: pdz.color("surface");
-    color: pdz.color("on-surface");
-    @include text(body-sm);
-
-    &:focus {
-      outline: none;
-      border-color: pdz.color("primary");
-    }
-
     &--grow {
       flex: 1;
       min-width: 12rem;
@@ -588,19 +576,8 @@
   }
 
   &__notes-input {
-    resize: vertical;
     min-height: 2.5rem;
-    padding: pdz.space(2xs) pdz.space(sm);
-    border: 1px solid pdz.color("outline-variant");
-    border-radius: pdz.shape("corner-sm");
     background: pdz.color("surface-container-lowest");
-    color: pdz.color("on-surface");
-    @include text(body-sm);
-
-    &:focus {
-      outline: none;
-      border-color: pdz.color("primary");
-    }
   }
 
   // ─── Footer ─────────────────────────────────────────────────────────────

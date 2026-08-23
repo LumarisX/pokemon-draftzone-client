@@ -86,71 +86,12 @@
 }
 
 .form-field {
-  display: flex;
-  flex-direction: column;
-  gap: pdz.space(xs);
-
-  &__label {
-    @include text(label);
-    color: pdz.color(on-surface-variant);
+  &__input--number {
+    max-width: 120px;
   }
 
-  &__input {
-    background: pdz.color(surface);
-    border: 1px solid pdz.color(outline-variant);
-    border-radius: pdz.shape(corner-sm);
-    color: pdz.color(on-surface);
-    @include text(body);
-    padding: pdz.space(sm) pdz.space(md);
-    transition: border-color pdz.duration(base) pdz.easing(standard);
-    width: 100%;
-    box-sizing: border-box;
-
-    &:focus {
-      outline: none;
-      border-color: pdz.color(primary-accent);
-      box-shadow: 0 0 0 2px pdz.color(primary-subtle);
-    }
-
-    &--invalid {
-      border-color: pdz.color(danger);
-
-      &:focus {
-        box-shadow: 0 0 0 2px pdz.color(danger-container);
-      }
-    }
-
-    &--number {
-      max-width: 120px;
-    }
-  }
-
-  &__textarea {
-    background: pdz.color(surface);
-    border: 1px solid pdz.color(outline-variant);
-    border-radius: pdz.shape(corner-sm);
-    color: pdz.color(on-surface);
-    @include text(body);
-    padding: pdz.space(sm) pdz.space(md);
-    resize: vertical;
-    transition: border-color pdz.duration(base) pdz.easing(standard);
-    width: 100%;
-    box-sizing: border-box;
-
-    &:focus {
-      outline: none;
-      border-color: pdz.color(primary-accent);
-      box-shadow: 0 0 0 2px pdz.color(primary-subtle);
-    }
-  }
-
-  &__hint {
-    @include text(body-sm);
-    color: pdz.color(on-surface-variant);
-
-    &--error {
-      color: pdz.color(danger);
-    }
+  &__hint--error {
+    color: pdz.color(danger);
   }
 }
 
@@ -214,13 +155,6 @@
     border-color: pdz.color(primary-border);
   }
 
-  input[type="radio"] {
-    accent-color: pdz.color(primary-accent);
-    width: 1rem;
-    height: 1rem;
-    flex-shrink: 0;
-  }
-
   &__label {
     @include text(label);
     color: pdz.color(on-surface);
@@ -249,13 +183,6 @@
   &:has(input:checked) {
     background: pdz.color(primary-container-low);
     border-color: pdz.color(primary-border);
-  }
-
-  input[type="checkbox"] {
-    accent-color: pdz.color(primary-accent);
-    width: 1rem;
-    height: 1rem;
-    flex-shrink: 0;
   }
 
   &__label {

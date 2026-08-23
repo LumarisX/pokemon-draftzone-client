@@ -72,17 +72,22 @@
     @include text(body, $leading: snug);
 
     // Default theme (classic light)
+    color-scheme: light;
     @include apply-theme(map.get(map.get(pdz-themes.$themes, classic), light));
 
     // Pre-hydration fallback (OS preference)
     @media (prefers-color-scheme: dark) {
+      color-scheme: dark;
       @include apply-theme(map.get(map.get(pdz-themes.$themes, classic), dark));
     }
 
-    // All theme / mode variants
+    // All theme / mode variants. `color-scheme` is what makes browser-rendered
+    // UI -- date pickers, scrollbars, spin buttons -- follow the active mode
+    // instead of the OS preference.
     @each $theme-name, $variations in pdz-themes.$themes {
       @each $variation-name, $palette in $variations {
         &[pdz-theme="#{$theme-name}"][pdz-theme-mode="#{$variation-name}"] {
+          color-scheme: #{$variation-name};
           @include apply-theme($palette);
         }
       }

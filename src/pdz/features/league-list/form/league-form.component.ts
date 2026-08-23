@@ -16,6 +16,10 @@ import { DataService } from '@pdz/core/services/data.service';
 import { SelectOptionComponent } from '@pdz/shared/dropdowns/select/select-option.component';
 import { SelectComponent } from '@pdz/shared/dropdowns/select/select.component';
 import { LeagueAdsService } from '../league-ads.service';
+import { ChoiceDirective } from '@pdz/shared/inputs/choice/choice.directive';
+import { FieldErrorDirective } from '@pdz/shared/inputs/field/field-message.directive';
+import { FieldComponent } from '@pdz/shared/inputs/field/field.component';
+import { InputDirective } from '@pdz/shared/inputs/field/input.directive';
 
 @Component({
   selector: 'pdz-league-form',
@@ -27,6 +31,10 @@ import { LeagueAdsService } from '../league-ads.service';
     RouterLink,
     SelectComponent,
     SelectOptionComponent,
+    ChoiceDirective,
+    FieldComponent,
+    InputDirective,
+    FieldErrorDirective,
   ],
 })
 export class LeagueFormComponent implements OnInit {

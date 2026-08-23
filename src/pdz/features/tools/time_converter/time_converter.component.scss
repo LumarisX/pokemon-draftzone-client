@@ -135,10 +135,6 @@
   }
 }
 
-:host-context([pdz-theme-mode="dark"]) .converter-field__input {
-  color-scheme: dark;
-}
-
 .converter-slider {
   display: flex;
   flex-direction: column;

@@ -151,6 +151,7 @@
       <div class="radio-group">
         <label class="radio-option">
           <input
+            pdz-radio
             type="radio"
             name="order-progression"
             value="snake"
@@ -162,6 +163,7 @@
         </label>
         <label class="radio-option">
           <input
+            pdz-radio
             type="radio"
             name="order-progression"
             value="linear"
@@ -181,7 +183,7 @@
 
     <label class="checkbox-option">
       <input
-        type="checkbox"
+        pdz-checkbox
         [checked]="pendingSequentialTurns"
         [disabled]="!canEditOrder"
         (change)="pendingSequentialTurns = !pendingSequentialTurns"
@@ -194,6 +196,7 @@
       <div class="radio-group">
         <label class="radio-option">
           <input
+            pdz-radio
             type="radio"
             name="visibility"
             value="ALL"
@@ -204,6 +207,7 @@
         </label>
         <label class="radio-option">
           <input
+            pdz-radio
             type="radio"
             name="visibility"
             value="SELF"
@@ -217,7 +221,7 @@
 
     <label class="checkbox-option">
       <input
-        type="checkbox"
+        pdz-checkbox
         [checked]="pendingAllowRemovals"
         (change)="pendingAllowRemovals = !pendingAllowRemovals"
       />
@@ -245,7 +249,7 @@
     <h3 class="order-panel__title">Draft Order</h3>
     <label class="order-panel__toggle">
       <input
-        type="checkbox"
+        pdz-checkbox
         [checked]="pendingUseRandomSeeding"
         [disabled]="!canEditOrder"
         (change)="toggleRandomSeeding()"

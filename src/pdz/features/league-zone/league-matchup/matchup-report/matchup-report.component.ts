@@ -31,6 +31,7 @@ import {
   MatchupReportPayload,
   MatchupSideKey,
 } from '../league-matchup.model';
+import { InputDirective } from '@pdz/shared/inputs/field/input.directive';
 
 // Mirrors the server's REPLAY_URL_PATTERN (replay-analysis.controller.ts) so
 // the button never enables for a link the server would reject anyway.
@@ -70,7 +71,9 @@ type MatchupPokemonSummary = {
 
 @Component({
   selector: 'pdz-matchup-report',
-  imports: [CommonModule, ReactiveFormsModule, IconComponent, SpriteComponent],
+  imports: [CommonModule, ReactiveFormsModule, IconComponent, SpriteComponent,
+    InputDirective,
+  ],
   templateUrl: './matchup-report.component.html',
   styleUrl: './matchup-report.component.scss',
 })
