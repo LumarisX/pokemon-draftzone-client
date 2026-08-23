@@ -17,6 +17,8 @@ import { PokemonTypeComponent } from '../pokemon-type/pokemon-type.component';
 import { SpriteComponent } from '../../images/sprite/sprite.component';
 import { IconComponent } from '../../images/icon/icon.component';
 import { makeBanString } from '@pdz/features/tier-lists/tier-list/tier-list.utils';
+import { SegmentedOptionComponent } from '@pdz/shared/inputs/segmented/segmented-option.component';
+import { SegmentedComponent } from '@pdz/shared/inputs/segmented/segmented.component';
 
 export interface PokemonDialogButton {
   label: string;
@@ -58,6 +60,8 @@ export type PokemonDialogResult = unknown;
     SpriteComponent,
     IconComponent,
     PokemonTypeComponent,
+    SegmentedComponent,
+    SegmentedOptionComponent,
   ],
   templateUrl: './pokemon-dialog.component.html',
   styleUrls: ['./pokemon-dialog.component.scss'],

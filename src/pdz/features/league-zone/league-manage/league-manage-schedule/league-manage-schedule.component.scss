@@ -110,37 +110,6 @@
   }
 }
 
-.round-chip {
-  // Body rather than a label style: the label scale uppercases, and round
-  // names are the organizer's own text ("Week 1", "Quarterfinals").
-  @include text(body);
-  font-weight: 600;
-  padding: pdz.space(sm) pdz.space(md);
-  border-radius: pdz.shape(corner-md);
-  border: 1px solid pdz.color(outline-variant);
-  background: pdz.color(menu-container);
-  color: pdz.color(on-menu-container);
-  cursor: pointer;
-  transition: all pdz.duration(base) pdz.easing(standard);
-
-  &:hover:not(:disabled):not(.round-chip--active) {
-    background: pdz.color(menu-container-hover);
-    border-color: pdz.color(outline);
-  }
-
-  &--active {
-    background: pdz.color(primary-subtle);
-    border-color: pdz.color(primary-accent);
-    color: pdz.color(on-primary-container);
-    cursor: default;
-  }
-
-  &:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-}
-
 .schedule {
   display: flex;
   flex-direction: column;

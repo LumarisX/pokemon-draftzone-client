@@ -26,6 +26,8 @@ import {
 import { League } from '../../league.interface';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 import { DisclosureComponent } from '@pdz/shared/layout/disclosure/disclosure.component';
+import { SegmentedOptionComponent } from '@pdz/shared/inputs/segmented/segmented-option.component';
+import { SegmentedComponent } from '@pdz/shared/inputs/segmented/segmented.component';
 
 type PokemonStatsForm = FormGroup<{
   id: FormControl<PokemonId | ''>;
@@ -91,6 +93,8 @@ type MatchupPokemonSummary = {
     InputDirective,
     ButtonComponent,
     DisclosureComponent,
+    SegmentedComponent,
+    SegmentedOptionComponent,
   ],
   templateUrl: './league-manage-schedule.component.html',
   styleUrl: './league-manage-schedule.component.scss',

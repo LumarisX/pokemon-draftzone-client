@@ -13,30 +13,28 @@
       <h2 class="round-control__title">Active Round</h2>
       <span class="round-control__current">{{ currentRoundName }}</span>
     </div>
-    <div class="round-control__options">
-      <button
-        type="button"
-        class="round-chip"
-        [class.round-chip--active]="isCurrentRound(-1)"
+    <pdz-segmented
+      class="round-control__options"
+      size="sm"
+      aria-label="Active round"
+      [value]="currentRoundIndex"
+      (valueChange)="setCurrentRound($any($event))"
+    >
+      <pdz-segmented-option
+        [value]="-1"
+        label="Not Started"
         [disabled]="savingRoundIndex !== null"
-        (click)="setCurrentRound(-1)"
-      >
-        Not Started
-      </button>
+      />
       <!-- $index is the axis position the server indexes: the organizer
            schedule is unfiltered, so no round is missing from this list. -->
       @for (round of scheduleStages; track round._id; let i = $index) {
-        <button
-          type="button"
-          class="round-chip"
-          [class.round-chip--active]="isCurrentRound(i)"
+        <pdz-segmented-option
+          [value]="i"
+          [label]="round.name"
           [disabled]="savingRoundIndex !== null"
-          (click)="setCurrentRound(i)"
-        >
-          {{ round.name }}
-        </button>
+        />
       }
-    </div>
+    </pdz-segmented>
     @if (roundError) {
       <div class="round-control__error">{{ roundError }}</div>
     }

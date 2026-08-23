@@ -1,26 +1,16 @@
 <div class="dialog">
   <!-- Tabs + prev/next -->
   <div class="dialog__toolbar">
-    <div class="dialog__tabs" role="tablist">
-      <button
-        class="dialog__tab"
-        role="tab"
-        [attr.aria-selected]="activeTab === 'overview'"
-        [class.dialog__tab--active]="activeTab === 'overview'"
-        (click)="selectTab('overview')"
-      >
-        Overview
-      </button>
-      <button
-        class="dialog__tab"
-        role="tab"
-        [attr.aria-selected]="activeTab === 'moves'"
-        [class.dialog__tab--active]="activeTab === 'moves'"
-        (click)="selectTab('moves')"
-      >
-        Moves
-      </button>
-    </div>
+    <pdz-segmented
+      class="dialog__tabs"
+      size="sm"
+      aria-label="Pokemon detail section"
+      [value]="activeTab"
+      (valueChange)="selectTab($any($event))"
+    >
+      <pdz-segmented-option value="overview" label="Overview" />
+      <pdz-segmented-option value="moves" label="Moves" />
+    </pdz-segmented>
 
     @if (data.prev || data.next) {
       <div class="dialog__nav">

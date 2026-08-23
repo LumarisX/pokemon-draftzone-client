@@ -1,25 +1,15 @@
 @if (movechart()) {
   <div class="movechart-toolbar">
     <div class="toolbar-search-row">
-      <div class="movechart-view-toggle" role="group" aria-label="View mode">
-        <button
-          type="button"
-          class="movechart-view-button"
-          [class.is-active]="view === 'cards'"
-          (click)="view = 'cards'"
-        >
-          <pdz-icon name="view_cozy" size="sm"></pdz-icon>
-        </button>
-        <button
-          type="button"
-          class="movechart-view-button"
-          [class.is-active]="view === 'list'"
-          [attr.aria-pressed]="view === 'list'"
-          (click)="view = 'list'"
-        >
-          <pdz-icon name="view_list" size="sm"></pdz-icon>
-        </button>
-      </div>
+      <pdz-segmented
+        size="sm"
+        aria-label="View mode"
+        [value]="view"
+        (valueChange)="view = $any($event)"
+      >
+        <pdz-segmented-option value="cards" label="Cards" icon="view_cozy" />
+        <pdz-segmented-option value="list" label="List" icon="view_list" />
+      </pdz-segmented>
       <div class="search-wrapper">
         <pdz-icon name="search" size="sm"></pdz-icon>
         <input

@@ -79,37 +79,6 @@
   flex-shrink: 0;
 }
 
-.movechart-view-toggle {
-  display: flex;
-  border: 1px solid pdz.color(outline-variant);
-  border-radius: pdz.shape(corner-sm);
-  overflow: hidden;
-}
-
-.movechart-view-button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: pdz.space(2xs) pdz.space(xs);
-  color: pdz.color(on-surface-variant);
-  background: none;
-  border: none;
-  cursor: pointer;
-  transition:
-    background-color pdz.duration(base) pdz.easing(standard),
-    color pdz.duration(base) pdz.easing(standard);
-
-  &:hover:not(.is-active) {
-    background-color: var(--pdz-cmp-movechart-hover);
-    color: pdz.color(on-surface);
-  }
-
-  &.is-active {
-    background-color: var(--pdz-cmp-movechart-container);
-    color: pdz.color(on-primary-container);
-  }
-}
-
 .search-input {
   border: 1px solid pdz.color(outline-variant);
   border-radius: pdz.shape(corner-sm);

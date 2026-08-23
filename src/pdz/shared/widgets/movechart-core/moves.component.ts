@@ -6,6 +6,8 @@ import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
 import { Pokemon } from '@pdz/core/utils/pokemon';
 import { PokemonTypeComponent } from '@pdz/shared/dialogs/pokemon-type/pokemon-type.component';
+import { SegmentedOptionComponent } from '@pdz/shared/inputs/segmented/segmented-option.component';
+import { SegmentedComponent } from '@pdz/shared/inputs/segmented/segmented.component';
 
 @Component({
   selector: 'pdz-moves-core',
@@ -17,6 +19,8 @@ import { PokemonTypeComponent } from '@pdz/shared/dialogs/pokemon-type/pokemon-t
     SpriteComponent,
     IconComponent,
     PokemonTypeComponent,
+    SegmentedComponent,
+    SegmentedOptionComponent,
   ],
 })
 export class MoveCoreComponent {
