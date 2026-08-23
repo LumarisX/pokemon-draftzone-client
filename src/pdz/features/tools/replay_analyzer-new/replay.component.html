@@ -54,18 +54,17 @@
               </a>
 
               <button
-                type="button"
-                class="replay-analyzer__advanced-toggle"
+                pdz-button
+                size="sm"
+                color="neutral"
+                [variant]="showAdvancedDetails ? 'tonal' : 'outlined'"
+                [icon]="
+                  showAdvancedDetails ? 'visibility_off' : 'visibility'
+                "
                 [attr.aria-pressed]="showAdvancedDetails"
                 (click)="toggleAdvancedDetails()"
               >
-                <pdz-icon
-                  [name]="showAdvancedDetails ? 'visibility_off' : 'visibility'"
-                  size="sm"
-                ></pdz-icon>
-                <span class="replay-analyzer__advanced-toggle-label">
-                  {{ showAdvancedDetails ? "Hide details" : "Show details" }}
-                </span>
+                {{ showAdvancedDetails ? "Hide details" : "Show details" }}
               </button>
             </div>
 

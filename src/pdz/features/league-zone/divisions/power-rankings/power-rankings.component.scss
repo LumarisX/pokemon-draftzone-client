@@ -64,48 +64,6 @@ input {
   }
   background-color: inherit;
 }
-.custom-dropdown-container {
-  position: relative;
-  display: flex;
-  width: 100%;
-  border-radius: 1rem;
-  padding: 0.25rem;
-  &:hover {
-    background-color: pdz.color(surface);
-    box-shadow: var(--pdz-level-1);
-  }
-}
-
-.custom-dropdown-menu {
-  position: absolute;
-  top: 100%;
-  left: 0;
-  width: 100%;
-  max-height: 200px;
-  overflow-y: auto;
-  background-color: pdz.color(surface);
-  border: 1px solid pdz.color(outline);
-  border-radius: 0.5rem;
-  box-shadow: var(--pdz-level-2);
-  font-size: 1rem;
-  z-index: pdz.z(popover);
-}
-
-.custom-dropdown-item {
-  display: block;
-  width: 100%;
-  padding: 0.5rem 1rem;
-  text-align: left;
-  background: none;
-  border: none;
-  cursor: pointer;
-  color: pdz.color(on-surface);
-
-  &:hover {
-    background-color: pdz.color(surface-container-highest);
-  }
-}
-
 .sprite-wrapper {
   height: 2rem;
   width: 2rem;

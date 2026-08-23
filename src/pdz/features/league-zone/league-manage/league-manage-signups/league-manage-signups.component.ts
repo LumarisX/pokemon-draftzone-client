@@ -39,6 +39,7 @@ import { SelectOptionComponent } from '@pdz/shared/dropdowns/select/select-optio
 import { SelectComponent } from '@pdz/shared/dropdowns/select/select.component';
 import { ChoiceDirective } from '@pdz/shared/inputs/choice/choice.directive';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
+import { DisclosureComponent } from '@pdz/shared/layout/disclosure/disclosure.component';
 
 type SignUpEntry = League.LeagueSignUp & {
   selected?: boolean;
@@ -58,6 +59,7 @@ type SignUpEntry = League.LeagueSignUp & {
     SelectOptionComponent,
     ChoiceDirective,
     ButtonComponent,
+    DisclosureComponent,
   ],
 })
 export class LeagueManageSignupsComponent implements OnInit, OnDestroy {

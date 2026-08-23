@@ -15,6 +15,10 @@ import { PlannerSummaryComponent } from '../../../planner/summary/summary.compon
 import { PlannerTypechartComponent } from '../../../planner/typechart/typechart.component';
 import { LeagueZoneService } from '../../league-zone.service';
 import { League } from '../../league.interface';
+import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
+import { MenuComponent } from '@pdz/shared/menu/menu.component';
+import { MenuItemComponent } from '@pdz/shared/menu/menu-item.component';
+import { MenuTriggerDirective } from '@pdz/shared/menu/menu-trigger.directive';
 
 @Component({
   selector: 'pdz-league-power-rankings',
@@ -33,6 +37,10 @@ import { League } from '../../league.interface';
     SortDirective,
     SortHeaderComponent,
     SpriteComponent,
+    MenuComponent,
+    MenuItemComponent,
+    MenuTriggerDirective,
+    ButtonComponent,
   ],
   templateUrl: './power-rankings.component.html',
   styleUrls: ['./power-rankings.component.scss'],
@@ -46,7 +54,6 @@ export class PowerRankingsComponent implements OnInit, OnDestroy {
 
   selectedTeam?: League.PowerRankingTeam;
   teams?: League.PowerRankingTeam[];
-  isDropdownOpen: boolean = false;
   displayedColumns: string[] = ['position', 'teamName', 'draft', 'score'];
   ngOnInit() {
     this.leagueService
@@ -80,13 +87,8 @@ export class PowerRankingsComponent implements OnInit, OnDestroy {
     }
   }
 
-  toggleDropdown() {
-    this.isDropdownOpen = !this.isDropdownOpen;
-  }
-
   selectTeamAndClose(team: League.PowerRankingTeam) {
     this.selectedTeam = team;
-    this.isDropdownOpen = false;
   }
 
   private getSavedScores(): { [id: string]: number } {

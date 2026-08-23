@@ -219,34 +219,22 @@
 
   @if (deniedSignUps().length > 0) {
     <section class="pool pool--denied">
-      <header class="pool__header pool__header--denied">
-        <button
-          type="button"
-          class="pool__toggle"
-          (click)="deniedCollapsed = !deniedCollapsed"
-          [attr.aria-expanded]="!deniedCollapsed"
-          aria-controls="denied-signups"
-        >
-          <pdz-icon
-            name="expand_more"
-            [size]="20"
-            class="pool__toggle-icon"
-            [class.pool__toggle-icon--collapsed]="deniedCollapsed"
-          ></pdz-icon>
-          <h3 class="pool__title">Denied</h3>
-        </button>
-        <span class="pool__count">{{ deniedSignUps().length }}</span>
-      </header>
-
-      @if (!deniedCollapsed) {
-        <div class="pool__cards" id="denied-signups">
+      <pdz-disclosure
+        heading="Denied"
+        [open]="!deniedCollapsed"
+        (openChange)="deniedCollapsed = !deniedCollapsed"
+      >
+        <span pdz-disclosure-trailing class="pool__count">
+          {{ deniedSignUps().length }}
+        </span>
+        <div class="pool__cards">
           @for (signup of deniedSignUps(); track signup.id) {
             <ng-container
               *ngTemplateOutlet="signupCard; context: { signup }"
             ></ng-container>
           }
         </div>
-      }
+      </pdz-disclosure>
     </section>
   }
 } @else {

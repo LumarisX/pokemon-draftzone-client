@@ -5,31 +5,23 @@
       <div class="value">{{ selectedTeam.info.index + 1 }}</div>
     </div>
     <div class="team-name">
-      <div class="custom-dropdown-container">
+      <pdz-menu align="start" aria-label="Select team">
         <button
-          type="button"
-          class="my-draft-title draft-section-title"
-          [attr.aria-expanded]="isDropdownOpen"
-          (click)="toggleDropdown()"
+          pdz-button
+          pdz-menu-trigger
+          color="neutral"
+          variant="ghost"
+          class="draft-section-title"
         >
-          <span> {{ selectedTeam.info.name }} </span
-          ><pdz-icon
-            [name]="isDropdownOpen ? 'arrow_drop_up' : 'arrow_drop_down'"
-          ></pdz-icon>
+          {{ selectedTeam.info.name }}
+          <pdz-icon name="arrow_drop_down"></pdz-icon>
         </button>
-        @if (isDropdownOpen) {
-          <div class="custom-dropdown-menu">
-            @for (team of teams; track team) {
-              <button
-                class="custom-dropdown-item"
-                (click)="selectTeamAndClose(team)"
-              >
-                <span>{{ team.info.name }}</span>
-              </button>
-            }
-          </div>
+        @for (team of teams; track team) {
+          <button pdz-menu-item (click)="selectTeamAndClose(team)">
+            {{ team.info.name }}
+          </button>
         }
-      </div>
+      </pdz-menu>
     </div>
     <div class="info-card">
       <div class="label">Score</div>

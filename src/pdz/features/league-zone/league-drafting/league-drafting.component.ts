@@ -22,6 +22,9 @@ import { LeagueZoneService } from '../league-zone.service';
 import { League } from '../league.interface';
 import { formatCountdown } from '../league.util';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
+import { MenuComponent } from '@pdz/shared/menu/menu.component';
+import { MenuItemComponent } from '@pdz/shared/menu/menu-item.component';
+import { MenuTriggerDirective } from '@pdz/shared/menu/menu-trigger.directive';
 
 interface DraftAddedEvent {
   draftSlug: string;
@@ -95,6 +98,9 @@ type DraftDetailsResponse =
     RouterModule,
     PokemonTypeComponent,
     ButtonComponent,
+    MenuComponent,
+    MenuItemComponent,
+    MenuTriggerDirective,
   ],
   templateUrl: './league-drafting.component.html',
   styleUrls: ['./league-drafting.component.scss', '../league.scss'],
@@ -139,7 +145,6 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
   };
 
   selectedPick: number = 0;
-  isDropdownOpen: boolean = false;
   skipTimeDisplay: string | null = null;
   noTimer: boolean = false;
   draftStart?: Date;
@@ -166,15 +171,10 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
   private readonly COUNTDOWN_TICK_MS = 1000;
   private readonly FAST_TIME_THRESHOLD_MS = 300; // seconds
 
-  toggleDropdown(): void {
-    this.isDropdownOpen = !this.isDropdownOpen;
-  }
-
   selectTeamAndClose(team: League.LeagueTeam): void {
     this.selectedTeam = team;
     this.originalDraft = [...team.draft];
     this.picksChanged = false;
-    this.isDropdownOpen = false;
   }
 
   get teamsMap(): Map<string, League.LeagueTeam> {

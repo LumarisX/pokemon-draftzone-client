@@ -421,25 +421,6 @@
     color: pdz.color("on-surface");
   }
 
-  &__report-toggle {
-    display: inline-flex;
-    align-items: center;
-    gap: pdz.space(3xs);
-    padding: pdz.space(3xs) pdz.space(md);
-    border: 1px solid pdz.color("primary-border");
-    border-radius: pdz.shape("corner-full");
-    background: pdz.color("primary-subtle");
-    color: pdz.color("on-primary-container");
-    cursor: pointer;
-    @include text(label);
-
-    &--open {
-      border-color: pdz.color("outline-variant");
-      background: pdz.color("surface-container-low");
-      color: pdz.color("on-surface-variant");
-    }
-  }
-
   &__tabs {
     display: flex;
     flex-wrap: wrap;

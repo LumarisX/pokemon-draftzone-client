@@ -252,17 +252,15 @@
         <h2 class="games__title">Games</h2>
         @if (m.viewer.canReport) {
           <button
-            type="button"
-            class="games__report-toggle"
-            [class.games__report-toggle--open]="reportOpen()"
+            pdz-button
+            size="sm"
+            [variant]="reportOpen() ? 'outlined' : 'filled'"
+            [color]="reportOpen() ? 'neutral' : 'primary'"
+            [icon]="reportOpen() ? 'close' : 'edit_note'"
             [attr.aria-expanded]="reportOpen()"
             (click)="toggleReport()"
           >
-            <pdz-icon
-              [name]="reportOpen() ? 'close' : 'edit_note'"
-              [size]="16"
-            ></pdz-icon>
-            <span>{{ reportOpen() ? "Cancel" : "Report result" }}</span>
+            {{ reportOpen() ? "Cancel" : "Report result" }}
           </button>
         }
       </div>

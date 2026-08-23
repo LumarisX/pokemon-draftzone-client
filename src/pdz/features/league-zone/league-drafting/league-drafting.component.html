@@ -32,34 +32,26 @@
       </a>
       <div class="my-draft-main">
         <div class="draft-section">
-          <div class="custom-dropdown-container">
+          <pdz-menu align="start" aria-label="Select team">
             <button
-              type="button"
-              class="my-draft-title draft-section-title"
+              pdz-button
+              pdz-menu-trigger
+              color="neutral"
+              variant="ghost"
+              class="draft-section-title"
               [disabled]="draftDetails.visibility === 'SELF'"
-              [attr.aria-expanded]="isDropdownOpen"
-              (click)="toggleDropdown()"
             >
-              <span>{{ selectedTeam.name }} </span>
+              {{ selectedTeam.name }}
               @if (draftDetails.visibility !== "SELF") {
-                <pdz-icon
-                  [name]="isDropdownOpen ? 'arrow_drop_up' : 'arrow_drop_down'"
-                ></pdz-icon>
+                <pdz-icon name="arrow_drop_down"></pdz-icon>
               }
             </button>
-            @if (isDropdownOpen) {
-              <div class="custom-dropdown-menu">
-                @for (team of teams; track team) {
-                  <button
-                    class="custom-dropdown-item"
-                    (click)="selectTeamAndClose(team)"
-                  >
-                    <span>{{ team.name }}</span>
-                  </button>
-                }
-              </div>
+            @for (team of teams; track team) {
+              <button pdz-menu-item (click)="selectTeamAndClose(team)">
+                {{ team.name }}
+              </button>
             }
-          </div>
+          </pdz-menu>
           <ol class="my-draft-pokemons draft-section-body">
             @for (pokemon of selectedTeam.draft; track pokemon.id) {
               <li

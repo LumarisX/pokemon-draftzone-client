@@ -118,8 +118,7 @@
     white-space: nowrap;
   }
 
-  &__watch-replay,
-  &__advanced-toggle {
+  &__watch-replay {
     display: flex;
     align-items: center;
     gap: pdz.space(xs);
@@ -143,8 +142,7 @@
     }
   }
 
-  &__watch-replay-label,
-  &__advanced-toggle-label {
+  &__watch-replay-label {
     line-height: 1;
     overflow-wrap: normal;
     flex-grow: 1;
