@@ -17,6 +17,7 @@ export class SelectOptionComponent {
 
   value = input.required<unknown>();
   label = input.required<string>();
+  description = input<string>();
   disabled = input(false, { transform: booleanAttribute });
   group = input<string>();
 }

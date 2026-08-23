@@ -1,11 +1,13 @@
 import { Component, forwardRef, inject, OnInit } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 import { DataService } from '@pdz/core/services/data.service';
-import { GroupedSelectComponent } from '../grouped-select/grouped-select.component';
+import { FieldComponent } from '@pdz/shared/inputs/field/field.component';
+import { SelectOptionComponent } from '../select/select-option.component';
+import { SelectComponent } from '../select/select.component';
 
 @Component({
   selector: 'pdz-format-select',
-  imports: [GroupedSelectComponent],
+  imports: [FieldComponent, SelectComponent, SelectOptionComponent],
   templateUrl: './format.component.html',
   styleUrl: './format.component.scss',
   providers: [

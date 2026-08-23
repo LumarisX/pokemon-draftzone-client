@@ -114,21 +114,25 @@
   }
 
   &__panel {
-    // The overlay pane is a flex container; without an explicit width this
-    // panel shrink-wraps to 0 because the virtual-scroll content is
-    // absolutely positioned.
-    width: 100%;
+    position: fixed;
+    inset: auto;
+    margin: 0;
+    padding: 0;
     background: pdz.color(surface);
     border: 1px solid pdz.color(outline-variant);
     border-radius: pdz.shape(corner-sm);
     box-shadow: var(--pdz-level-3);
     overflow: hidden;
+
+    &:popover-open {
+      display: block;
+    }
   }
 
   &__viewport {
     width: 100%;
-    // The panel is a detached overlay, so the input's focus never triggers the
-    // global :focus-within scrollbar reveal. Keep it on and reserve its gutter.
+    // Always-on scrollbar with a reserved gutter, so revealing it never
+    // reflows the option rows.
     scrollbar-width: thin;
     scrollbar-color: var(--pdz-scrollbar-thumb-idle) transparent;
     scrollbar-gutter: stable;

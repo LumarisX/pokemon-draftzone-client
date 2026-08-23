@@ -126,10 +126,30 @@
   cursor: not-allowed;
 }
 
+.pdz-select__option-text {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(3xs);
+  min-width: 0;
+}
+
 .pdz-select__option-label {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.pdz-select__option-description {
+  @include pdz.text(label, $family: false);
+  color: pdz.color(on-surface-variant);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pdz-select__option--selected .pdz-select__option-description {
+  color: inherit;
+  opacity: 0.75;
 }
 
 .pdz-select__empty {

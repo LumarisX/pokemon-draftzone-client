@@ -1,70 +1,52 @@
-import { OverlayRef } from '@angular/cdk/overlay';
-
-import { Component, EventEmitter, OnInit, Output, inject } from '@angular/core';
-import { DomSanitizer, SafeUrl } from '@angular/platform-browser';
-import { InjectionToken } from '@angular/core';
-import { CardComponent } from '@pdz/shared/data/card/card.component';
-import { IconComponent } from '@pdz/shared/images/icon/icon.component';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  OnDestroy,
+  inject,
+  signal,
+} from '@angular/core';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
-export const OVERLAY_REF_TOKEN = new InjectionToken<OverlayRef>('OverlayRef');
-export const FILE_PREVIEW_DATA_TOKEN = new InjectionToken<FilePreviewData>(
-  'FilePreviewData',
-);
+import {
+  DIALOG_DATA,
+  DialogRef,
+} from '@pdz/shared/dialogs/dialog/dialog.service';
+import { IconComponent } from '@pdz/shared/images/icon/icon.component';
+
 export interface FilePreviewData {
   file: File;
 }
 
 @Component({
   selector: 'pdz-file-upload-preview',
-  imports: [CardComponent, IconComponent, ButtonComponent],
+  imports: [IconComponent, ButtonComponent],
   templateUrl: './file-upload-preview.component.html',
   styleUrls: ['./file-upload-preview.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class FileUploadPreviewComponent implements OnInit {
-  overlayRef = inject<OverlayRef>(OVERLAY_REF_TOKEN);
-  data = inject<FilePreviewData>(FILE_PREVIEW_DATA_TOKEN);
-  private sanitizer = inject(DomSanitizer);
+export class FileUploadPreviewComponent implements OnDestroy {
+  protected readonly ref = inject(DialogRef) as DialogRef<boolean>;
+  protected readonly data = inject<FilePreviewData>(DIALOG_DATA);
 
-  @Output() confirm = new EventEmitter<void>();
-  @Output() cancel = new EventEmitter<void>();
+  protected readonly file = this.data?.file ?? null;
+  protected readonly isImage = this.file?.type.startsWith('image/') ?? false;
+  protected readonly previewUrl = signal<string | null>(null);
 
-  previewUrl: SafeUrl | null = null;
-  isImage = false;
-  file: File | null = null;
+  private objectUrl?: string;
 
-  ngOnInit(): void {
-    this.file = this.data.file;
-    this.isImage = this.file?.type.startsWith('image/') ?? false;
-
+  constructor() {
     if (this.isImage && this.file) {
-      this.generatePreview(this.file);
+      this.objectUrl = URL.createObjectURL(this.file);
+      this.previewUrl.set(this.objectUrl);
     }
   }
 
-  generatePreview(file: File): void {
-    const reader = new FileReader();
-    reader.onload = (e: ProgressEvent<FileReader>) => {
-      this.previewUrl = this.sanitizer.bypassSecurityTrustUrl(
-        e.target?.result as string,
-      );
-    };
-    reader.onerror = (error) => {
-      console.error('FileReader error:', error);
-      this.previewUrl = null; // Handle error case
-    };
-    reader.readAsDataURL(file);
+  ngOnDestroy(): void {
+    if (this.objectUrl) {
+      URL.revokeObjectURL(this.objectUrl);
+    }
   }
 
-  onConfirm(): void {
-    this.confirm.emit();
-  }
-
-  onCancel(): void {
-    this.cancel.emit();
-    this.overlayRef.dispose();
-  }
-
-  formatBytes(bytes: number, decimals = 2): string {
+  protected formatBytes(bytes: number, decimals = 2): string {
     if (bytes === 0) return '0 Bytes';
     const k = 1024;
     const dm = decimals < 0 ? 0 : decimals;

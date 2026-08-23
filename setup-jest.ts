@@ -2,6 +2,13 @@ import { setupZoneTestEnv } from 'jest-preset-angular/setup-env/zone';
 
 setupZoneTestEnv();
 
+// jsdom does not implement the object-URL store.
+if (!URL.createObjectURL) {
+  let nextObjectUrl = 0;
+  URL.createObjectURL = () => `blob:jest/${nextObjectUrl++}`;
+  URL.revokeObjectURL = () => {};
+}
+
 // jsdom ships HTMLDialogElement without its modal behaviour.
 if (!HTMLDialogElement.prototype.showModal) {
   HTMLDialogElement.prototype.showModal = function showModal(

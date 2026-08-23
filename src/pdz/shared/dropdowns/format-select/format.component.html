@@ -1,6 +1,18 @@
-<pdz-grouped-select
-  label="Format"
-  [groups]="formats"
-  [value]="selectedFormat"
-  (valueChange)="onSelectionChange($event)"
-></pdz-grouped-select>
+<div pdz-field label="Format">
+  <pdz-select
+    aria-label="Format"
+    [value]="selectedFormat"
+    (valueChange)="onSelectionChange($any($event))"
+  >
+    @for (group of formats; track group[0]) {
+      @for (format of group[1]; track format.id) {
+        <pdz-option
+          [value]="format.id"
+          [label]="format.name"
+          [description]="format.desc"
+          [group]="group[0]"
+        />
+      }
+    }
+  </pdz-select>
+</div>

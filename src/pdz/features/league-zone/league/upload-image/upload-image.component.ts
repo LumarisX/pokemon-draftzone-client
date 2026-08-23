@@ -1,15 +1,5 @@
-import { Overlay, OverlayConfig, OverlayRef } from '@angular/cdk/overlay';
-import { ComponentPortal } from '@angular/cdk/portal';
-
 import { HttpEventType, HttpResponse } from '@angular/common/http';
-import {
-  Component,
-  ElementRef,
-  Injector,
-  OnDestroy,
-  ViewChild,
-  inject,
-} from '@angular/core';
+import { Component, ElementRef, OnDestroy, ViewChild, inject } from '@angular/core';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import {
   Subject,
@@ -21,12 +11,12 @@ import {
   throwError,
 } from 'rxjs';
 import { UploadService } from '@pdz/core/services/upload.service';
+import { DialogService } from '@pdz/shared/dialogs/dialog/dialog.service';
 import { HostedImageComponent } from '@pdz/shared/images/hosted-image/hosted-image.component';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 import {
-  FILE_PREVIEW_DATA_TOKEN,
+  FilePreviewData,
   FileUploadPreviewComponent,
-  OVERLAY_REF_TOKEN,
 } from '../file-upload-preview/file-upload-preview.component';
 @Component({
   selector: 'pdz-upload-image',
@@ -40,8 +30,7 @@ import {
 })
 export class UploadImageComponent implements OnDestroy {
   private uploadService = inject(UploadService);
-  private overlay = inject(Overlay);
-  private injector = inject(Injector);
+  private dialogs = inject(DialogService);
   @ViewChild('fileInput') fileInputRef!: ElementRef<HTMLInputElement>;
 
   selectedFile: File | null = null;
@@ -61,7 +50,6 @@ export class UploadImageComponent implements OnDestroy {
     'image/webp',
   ];
 
-  private overlayRef: OverlayRef | null = null;
   private destroy$ = new Subject<void>();
 
   openFileInput(): void {
@@ -90,7 +78,7 @@ export class UploadImageComponent implements OnDestroy {
       this.uploadProgress = 0;
       this.uploadedFileKey = null;
       this.confirmed = false;
-      this.openPreviewOverlay(this.selectedFile);
+      void this.confirmUpload(this.selectedFile);
     } else {
       this.selectedFile = null;
     }
@@ -127,67 +115,30 @@ export class UploadImageComponent implements OnDestroy {
     return { valid: true };
   }
 
-  openPreviewOverlay(file: File): void {
-    if (this.overlayRef) {
-      this.overlayRef.dispose();
+  private async confirmUpload(file: File): Promise<void> {
+    const confirmed = await this.dialogs.open<
+      FileUploadPreviewComponent,
+      boolean,
+      FilePreviewData
+    >(FileUploadPreviewComponent, {
+      heading: 'Confirm Upload',
+      size: 'sm',
+      data: { file },
+    }).closed;
+
+    if (confirmed !== true) {
+      this.cancelUpload();
+      return;
     }
 
-    const overlayConfig = new OverlayConfig({
-      hasBackdrop: true,
-      backdropClass: 'cdk-overlay-dark-backdrop',
-      positionStrategy: this.overlay
-        .position()
-        .global()
-        .centerHorizontally()
-        .centerVertically(),
-      scrollStrategy: this.overlay.scrollStrategies.block(),
-    });
+    if (!this.selectedFile) {
+      this.cancelUpload();
+      this.uploadMessage = 'Error: File selection lost. Please try again.';
+      this.uploadError = true;
+      return;
+    }
 
-    this.overlayRef = this.overlay.create(overlayConfig);
-
-    const customInjector = Injector.create({
-      providers: [
-        { provide: OVERLAY_REF_TOKEN, useValue: this.overlayRef },
-        { provide: FILE_PREVIEW_DATA_TOKEN, useValue: { file: file } },
-      ],
-      parent: this.injector,
-    });
-
-    const previewPortal = new ComponentPortal(
-      FileUploadPreviewComponent,
-      null,
-      customInjector,
-    );
-
-    const componentRef = this.overlayRef.attach(previewPortal);
-
-    this.overlayRef
-      .backdropClick()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(() => {
-        this.cancelUpload();
-      });
-
-    componentRef.instance.confirm
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(() => {
-        if (this.selectedFile) {
-          this.overlayRef?.dispose();
-          this.overlayRef = null;
-          this.startUpload();
-        } else {
-          console.error('Error: File became null before upload confirmation.');
-          this.cancelUpload();
-          this.uploadMessage = 'Error: File selection lost. Please try again.';
-          this.uploadError = true;
-        }
-      });
-
-    componentRef.instance.cancel
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(() => {
-        this.cancelUpload();
-      });
+    this.startUpload();
   }
 
   startUpload(): void {
@@ -263,11 +214,6 @@ export class UploadImageComponent implements OnDestroy {
 
   cancelUpload(): void {
     this.resetUploadState();
-    if (this.overlayRef) {
-      this.overlayRef.dispose();
-      this.overlayRef = null;
-    }
-    console.log('Upload cancelled.');
   }
 
   resetUploadState(): void {
@@ -284,9 +230,6 @@ export class UploadImageComponent implements OnDestroy {
   }
 
   ngOnDestroy(): void {
-    if (this.overlayRef) {
-      this.overlayRef.dispose();
-    }
     this.destroy$.next();
     this.destroy$.complete();
   }

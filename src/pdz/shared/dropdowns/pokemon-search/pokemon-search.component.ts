@@ -1,8 +1,8 @@
-import { OverlayModule } from '@angular/cdk/overlay';
 import {
   CdkVirtualScrollViewport,
   ScrollingModule,
 } from '@angular/cdk/scrolling';
+import { DOCUMENT } from '@angular/common';
 import {
   booleanAttribute,
   Component,
@@ -39,6 +39,12 @@ import {
 
 const ITEM_SIZE = 44;
 const MAX_LIST_HEIGHT = 308;
+const PANEL_GAP = 4;
+const VIEWPORT_MARGIN = 8;
+const MIN_PANEL_SPACE = 200;
+const MIN_PANEL_HEIGHT = 120;
+
+let nextSearchId = 0;
 
 export type PokemonSearchOption = DraftPokemon & {
   cost?: number;
@@ -48,7 +54,6 @@ export type PokemonSearchOption = DraftPokemon & {
 @Component({
   selector: 'pdz-pokemon-search',
   imports: [
-    OverlayModule,
     ScrollingModule,
     ReactiveFormsModule,
     IconComponent,
@@ -69,7 +74,10 @@ export class PokemonSearchComponent
 {
   private readonly dataService = inject(DataService);
   private readonly destroy$ = new Subject<void>();
+  private readonly document = inject(DOCUMENT);
   private blurTimeout?: ReturnType<typeof setTimeout>;
+  private editTimeout?: ReturnType<typeof setTimeout>;
+  private reposition?: () => void;
   readonly options$ = input<BehaviorSubject<DraftPokemon[]>>();
   readonly placeholder = input('Search Pokémon...');
   readonly takenIds = input<(string | null | undefined)[]>([]);
@@ -92,12 +100,26 @@ export class PokemonSearchComponent
   disabled = false;
   value: DraftPokemon | null = null;
 
-  panelWidth = 0;
-
   readonly itemSize = ITEM_SIZE;
+
+  private readonly uid = nextSearchId++;
+  readonly listboxId = `pdz-pokemon-search-listbox-${this.uid}`;
+
+  optionId(index: number): string {
+    return `pdz-pokemon-search-option-${this.uid}-${index}`;
+  }
+
+  get activeOptionId(): string | null {
+    return this.isOpen && this.filteredOptions.value.length
+      ? this.optionId(this.highlightedIndex)
+      : null;
+  }
 
   @ViewChild('fieldEl', { static: true })
   fieldEl?: ElementRef<HTMLElement>;
+
+  @ViewChild('panelEl', { static: true })
+  panelEl?: ElementRef<HTMLElement>;
 
   @ViewChild('inputEl')
   inputEl?: ElementRef<HTMLInputElement>;
@@ -123,13 +145,26 @@ export class PokemonSearchComponent
       )
       .subscribe((filtered) => {
         this.filteredOptions.next(filtered);
-        this.highlightedIndex = 0;
+        this.highlightedIndex = this.firstSelectable(filtered);
         this.virtualScroll?.scrollToIndex(0, 'instant');
+        if (this.isOpen) queueMicrotask(() => this.position());
       });
+
+    this.reposition = () => {
+      if (this.isOpen) this.position();
+    };
+    window.addEventListener('resize', this.reposition);
+    window.addEventListener('scroll', this.reposition, true);
   }
 
   ngOnDestroy(): void {
     clearTimeout(this.blurTimeout);
+    clearTimeout(this.editTimeout);
+    if (this.reposition) {
+      window.removeEventListener('resize', this.reposition);
+      window.removeEventListener('scroll', this.reposition, true);
+    }
+    this.hidePanel();
     this.destroy$.next();
     this.destroy$.complete();
   }
@@ -176,9 +211,53 @@ export class PokemonSearchComponent
 
   setOpen(value: boolean): void {
     if (value && this.locked()) return;
-    if (value && this.fieldEl)
-      this.panelWidth = this.fieldEl.nativeElement.offsetWidth;
+    if (value === this.isOpen) return;
     this.isOpen = value;
+
+    if (value) {
+      const panel = this.panelEl?.nativeElement;
+      if (panel && this.document.contains(panel)) {
+        panel.showPopover();
+        this.position();
+      }
+    } else {
+      this.hidePanel();
+    }
+  }
+
+  private hidePanel(): void {
+    const panel = this.panelEl?.nativeElement;
+    if (panel?.matches(':popover-open')) panel.hidePopover();
+  }
+
+  private position(): void {
+    const field = this.fieldEl?.nativeElement;
+    const panel = this.panelEl?.nativeElement;
+    if (!field || !panel) return;
+
+    const rect = field.getBoundingClientRect();
+    const below = window.innerHeight - rect.bottom;
+    const flip = below < MIN_PANEL_SPACE && rect.top > below;
+
+    panel.style.width = `${rect.width}px`;
+    panel.style.maxHeight = `${Math.max(
+      MIN_PANEL_HEIGHT,
+      (flip ? rect.top : below) - PANEL_GAP * 2,
+    )}px`;
+
+    if (flip) {
+      panel.style.top = 'auto';
+      panel.style.bottom = `${window.innerHeight - rect.top + PANEL_GAP}px`;
+    } else {
+      panel.style.bottom = 'auto';
+      panel.style.top = `${rect.bottom + PANEL_GAP}px`;
+    }
+
+    const maxLeft = window.innerWidth - rect.width - VIEWPORT_MARGIN;
+    panel.style.left = `${Math.max(
+      VIEWPORT_MARGIN,
+      Math.min(rect.left, maxLeft),
+    )}px`;
   }
 
   onBlur(): void {
@@ -193,7 +272,7 @@ export class PokemonSearchComponent
     if (this.disabled || this.locked()) return;
     this.isEditing = true;
     this.query.setValue('');
-    setTimeout(() => {
+    this.editTimeout = setTimeout(() => {
       this.inputEl?.nativeElement.focus();
       this.setOpen(true);
     });
@@ -220,7 +299,7 @@ export class PokemonSearchComponent
     clearTimeout(this.blurTimeout);
     this.value = option;
     this.isEditing = false;
-    this.isOpen = false;
+    this.setOpen(false);
     this.query.setValue('');
     this.onChange(option);
     this.onTouched();
@@ -246,21 +325,42 @@ export class PokemonSearchComponent
 
     switch (event.key) {
       case 'ArrowDown':
-        this.highlightedIndex = (this.highlightedIndex + 1) % options.length;
-        this.scrollToHighlighted();
+      case 'ArrowUp': {
         event.preventDefault();
+        const next = this.step(
+          this.highlightedIndex,
+          event.key === 'ArrowDown' ? 1 : -1,
+        );
+        if (next !== undefined) {
+          this.highlightedIndex = next;
+          this.scrollToHighlighted();
+        }
         break;
-      case 'ArrowUp':
-        this.highlightedIndex =
-          (this.highlightedIndex - 1 + options.length) % options.length;
-        this.scrollToHighlighted();
+      }
+      case 'Enter': {
         event.preventDefault();
+        const option = options[this.highlightedIndex];
+        if (option) this.selectOption(option);
         break;
-      case 'Enter':
-        this.selectOption(options[this.highlightedIndex]);
-        event.preventDefault();
-        break;
+      }
     }
+  }
+
+  /** Next selectable index in `direction`, wrapping and skipping taken ones. */
+  private step(from: number, direction: number): number | undefined {
+    const options = this.filteredOptions.value;
+    if (!options.length) return undefined;
+    for (let i = 1; i <= options.length; i++) {
+      const index =
+        (from + direction * i + options.length * i) % options.length;
+      if (!this.isTaken(options[index])) return index;
+    }
+    return undefined;
+  }
+
+  private firstSelectable(options: DraftPokemon[]): number {
+    const index = options.findIndex((option) => !this.isTaken(option));
+    return index === -1 ? 0 : index;
   }
 
   trackByFn(index: number, item: DraftPokemon): string {

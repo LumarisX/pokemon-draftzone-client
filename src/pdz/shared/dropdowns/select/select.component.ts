@@ -23,6 +23,7 @@ let nextSelectId = 0;
 
 const TYPEAHEAD_RESET = 700;
 const MIN_LISTBOX_SPACE = 240;
+const VIEWPORT_MARGIN = 8;
 
 @Component({
   selector: 'pdz-select',
@@ -47,7 +48,7 @@ const MIN_LISTBOX_SPACE = 240;
       (keydown)="onTriggerKeydown($event)"
     >
       <span class="pdz-select__value">{{
-        selected()?.label() ?? placeholder()
+        triggerLabel() ?? placeholder()
       }}</span>
       <pdz-icon
         class="pdz-select__arrow"
@@ -85,9 +86,16 @@ const MIN_LISTBOX_SPACE = 240;
           (click)="pick(i)"
           (mouseenter)="activeIndex.set(i)"
         >
-          <span class="pdz-select__option-label">{{
-            entry.option.label()
-          }}</span>
+          <span class="pdz-select__option-text">
+            <span class="pdz-select__option-label">{{
+              entry.option.label()
+            }}</span>
+            @if (entry.option.description(); as description) {
+              <span class="pdz-select__option-description">{{
+                description
+              }}</span>
+            }
+          </span>
           @if (entry.option.value() === value()) {
             <pdz-icon aria-hidden="true" name="check" [size]="16" />
           }
@@ -159,6 +167,13 @@ export class SelectComponent implements ControlValueAccessor {
   protected readonly selected = computed(() =>
     this.options().find((option) => option.value() === this.value()),
   );
+
+  protected readonly triggerLabel = computed(() => {
+    const option = this.selected();
+    if (!option) return null;
+    const group = option.group();
+    return group ? `${group} · ${option.label()}` : option.label();
+  });
 
   protected readonly activeId = computed(() =>
     this.activeIndex() >= 0 ? this.optionId(this.activeIndex()) : null,
@@ -358,8 +373,13 @@ export class SelectComponent implements ControlValueAccessor {
     const flip = below < MIN_LISTBOX_SPACE && trigger.top > below;
 
     listbox.style.minWidth = `${trigger.width}px`;
-    listbox.style.left = `${trigger.left}px`;
+    listbox.style.left = '0';
+    listbox.style.maxWidth = `${window.innerWidth - VIEWPORT_MARGIN * 2}px`;
     listbox.style.maxHeight = `${Math.max(120, (flip ? trigger.top : below) - 16)}px`;
+
+    const width = listbox.getBoundingClientRect().width;
+    const maxLeft = window.innerWidth - width - VIEWPORT_MARGIN;
+    listbox.style.left = `${Math.max(VIEWPORT_MARGIN, Math.min(trigger.left, maxLeft))}px`;
 
     if (flip) {
       listbox.style.top = 'auto';

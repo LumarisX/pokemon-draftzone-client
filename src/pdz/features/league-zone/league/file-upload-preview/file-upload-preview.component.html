@@ -1,37 +1,43 @@
 @if (file) {
-  <pdz-card class="preview-card" padding="sm">
-    <div pdz-card-header>
-      <div class="preview-card__titles">
-        <span class="preview-card__title">Confirm Upload</span>
-        <span class="preview-card__subtitle"
-          >{{ file.name }} ({{ formatBytes(file.size) }})</span
-        >
+  <div class="preview-container">
+    @if (isImage && previewUrl(); as url) {
+      <img [src]="url" alt="File preview" class="file-preview-image" />
+    } @else {
+      <div class="file-preview-placeholder">
+        <pdz-icon name="insert_drive_file" size="xl" aria-hidden="true" />
+        <span>{{ file.type || "File" }}</span>
       </div>
-    </div>
-    <div class="preview-container">
-      @if (isImage && previewUrl) {
-        <img [src]="previewUrl" alt="File Preview" class="file-preview-image" />
-      } @else {
-        <div class="file-preview-placeholder">
-          <pdz-icon name="insert_drive_file" size="xl"></pdz-icon>
-          <span>{{ file.type || "File" }}</span>
-        </div>
-      }
-    </div>
-    <div pdz-card-footer class="preview-card__actions">
-      <button pdz-button variant="ghost" color="neutral" (click)="onCancel()">
-        Cancel
-      </button>
-      <button pdz-button (click)="onConfirm()">Okay & Upload</button>
-    </div>
-  </pdz-card>
+    }
+  </div>
+
+  <p class="preview-meta">{{ file.name }} ({{ formatBytes(file.size) }})</p>
+
+  <div class="pdz-dialog-actions">
+    <button
+      pdz-button
+      type="button"
+      variant="outlined"
+      color="neutral"
+      (click)="ref.close(false)"
+    >
+      Cancel
+    </button>
+    <button pdz-button type="button" (click)="ref.close(true)">
+      Okay &amp; Upload
+    </button>
+  </div>
 } @else {
-  <pdz-card padding="sm">
-    <p>No file data available.</p>
-    <div pdz-card-footer class="preview-card__actions">
-      <button pdz-button variant="ghost" color="neutral" (click)="onCancel()">
-        Close
-      </button>
-    </div>
-  </pdz-card>
+  <p>No file data available.</p>
+
+  <div class="pdz-dialog-actions">
+    <button
+      pdz-button
+      type="button"
+      variant="outlined"
+      color="neutral"
+      (click)="ref.close(false)"
+    >
+      Close
+    </button>
+  </div>
 }

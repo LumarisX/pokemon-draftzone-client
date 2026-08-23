@@ -1,34 +1,5 @@
 @use "pdz-theming" as pdz;
 
-.preview-card {
-  max-width: 28rem;
-  min-width: 19rem;
-
-  &__titles {
-    display: flex;
-    flex-direction: column;
-    gap: pdz.space(3xs);
-    min-width: 0;
-  }
-
-  &__title {
-    @include pdz.text(title);
-  }
-
-  &__subtitle {
-    @include pdz.text(body-sm);
-    color: pdz.color(on-surface-variant);
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  &__actions {
-    justify-content: flex-end;
-    gap: pdz.space(xs);
-  }
-}
-
 .preview-container {
   display: flex;
   justify-content: center;
@@ -65,4 +36,12 @@
     text-overflow: ellipsis;
     white-space: nowrap;
   }
+}
+
+.preview-meta {
+  margin: pdz.space(sm) 0 0;
+  @include pdz.text(body-sm);
+  color: pdz.color(on-surface-variant);
+  text-align: center;
+  overflow-wrap: anywhere;
 }

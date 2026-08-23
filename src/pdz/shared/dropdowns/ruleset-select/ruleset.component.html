@@ -1,6 +1,18 @@
-<pdz-grouped-select
-  label="Ruleset"
-  [groups]="rulesets"
-  [value]="selectedRuleset"
-  (valueChange)="onSelectionChange($event)"
-></pdz-grouped-select>
+<div pdz-field label="Ruleset">
+  <pdz-select
+    aria-label="Ruleset"
+    [value]="selectedRuleset"
+    (valueChange)="onSelectionChange($any($event))"
+  >
+    @for (group of rulesets; track group[0]) {
+      @for (ruleset of group[1]; track ruleset.id) {
+        <pdz-option
+          [value]="ruleset.id"
+          [label]="ruleset.name"
+          [description]="ruleset.desc"
+          [group]="group[0]"
+        />
+      }
+    }
+  </pdz-select>
+</div>
