@@ -33,7 +33,9 @@
           [step]="minBidIncrease"
           [min]="auction.currentBid + minBidIncrease"
         />
-        <button (click)="placeBid(auction.itemId)">Place Bid</button>
+        <button pdz-button size="sm" (click)="placeBid(auction.itemId)">
+          Place Bid
+        </button>
       </div>
     </div>
   } @empty {

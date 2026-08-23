@@ -1,10 +1,19 @@
 <div class="page-header">
   <div class="page-header__left">
-    <button routerLink="../" class="back-btn" aria-label="Back">Back</button>
+    <button routerLink="../" pdz-button color="neutral" variant="tonal">
+      Back
+    </button>
     <h1 class="page-header__title">My Leagues</h1>
     <div class="page-header__actions"></div>
   </div>
-  <button routerLink="new" class="add-league-btn" aria-label="Add new league">
+  <button
+    routerLink="new"
+    pdz-button
+    iconOnly
+    color="neutral"
+    variant="tonal"
+    aria-label="Add new league"
+  >
     <pdz-icon name="add"></pdz-icon>
   </button>
 </div>

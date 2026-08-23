@@ -25,6 +25,7 @@ import {
 import { LeagueZoneService } from '../../league-zone.service';
 import { DraftSwitcherComponent } from '../../league-widgets/draft-switcher/draft-switcher.component';
 import { TradeLog, TradeStatus } from '../../league.interface';
+import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 
 const FREE_AGENCY = 'free-agency';
 
@@ -64,6 +65,7 @@ interface ManagedTeam {
     DraftSwitcherComponent,
     SelectComponent,
     SelectOptionComponent,
+    ButtonComponent,
   ],
   templateUrl: './trade-manager.component.html',
   styleUrl: './trade-manager.component.scss',

@@ -127,16 +127,18 @@
                       </div>
                       <div class="pending-report__actions">
                         <button
-                          type="button"
-                          class="btn-primary"
+                          pdz-button
+                          size="sm"
                           [disabled]="isReviewing(matchup.id)"
                           (click)="reviewReport(matchup, 'approve')"
                         >
                           Approve
                         </button>
                         <button
-                          type="button"
-                          class="btn-secondary"
+                          pdz-button
+                          size="sm"
+                          color="neutral"
+                          variant="outlined"
                           [disabled]="isReviewing(matchup.id)"
                           (click)="reviewReport(matchup, 'reject')"
                         >
@@ -374,8 +376,10 @@
                           </button>
                           <div class="match-card__actions">
                             <button
-                              type="button"
-                              class="btn-secondary"
+                              pdz-button
+                              size="sm"
+                              color="neutral"
+                              variant="outlined"
                               (click)="analyzeMatchReplay(matchup, matchIndex)"
                               [disabled]="isAnalyzing(matchup.id, matchIndex)"
                             >

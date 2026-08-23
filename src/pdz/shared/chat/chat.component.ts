@@ -5,12 +5,15 @@ import { CommonModule } from '@angular/common';
 import { AuthService } from '@pdz/core/services/auth0.service';
 import { MarkdownModule } from 'ngx-markdown';
 import { ChatService } from '../../core/services/chat.service';
+import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 
 @Component({
   selector: 'pdz-chat',
   templateUrl: './chat.component.html',
   styleUrls: ['./chat.component.scss'],
-  imports: [FormsModule, CommonModule, MarkdownModule],
+  imports: [FormsModule, CommonModule, MarkdownModule,
+    ButtonComponent,
+  ],
 })
 export class ChatComponent implements OnInit, OnDestroy {
   private chatService = inject(ChatService);

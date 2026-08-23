@@ -1,7 +1,7 @@
 <div class="rules-editor">
   <div class="rules-header">
     <h2>League Rule Sections</h2>
-    <button class="btn-add" (click)="addSection()" [disabled]="isSaving()">
+    <button pdz-button (click)="addSection()" [disabled]="isSaving()">
       + Add Section
     </button>
   </div>
@@ -24,7 +24,10 @@
       <div class="section-header">
         <div class="section-controls">
           <button
-            class="btn-move"
+            pdz-button
+            size="sm"
+            color="neutral"
+            variant="ghost"
             (click)="moveUp(i)"
             [disabled]="i === 0"
             title="Move up"
@@ -32,7 +35,10 @@
             ↑
           </button>
           <button
-            class="btn-move"
+            pdz-button
+            size="sm"
+            color="neutral"
+            variant="ghost"
             (click)="moveDown(i)"
             [disabled]="i === rules().length - 1"
             title="Move down"
@@ -40,7 +46,10 @@
             ↓
           </button>
           <button
-            class="btn-delete"
+            pdz-button
+            size="sm"
+            color="danger"
+            variant="ghost"
             (click)="deleteSection(i)"
             title="Delete section"
           >
@@ -72,8 +81,9 @@
 
   <div class="actions-footer">
     <button
-      class="btn-save"
+      pdz-button
       (click)="saveRules()"
+      [loading]="isSaving()"
       [disabled]="!hasUnsavedChanges() || isSaving()"
     >
       {{ isSaving() ? "Saving..." : "Save Rules" }}

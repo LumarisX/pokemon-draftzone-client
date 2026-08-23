@@ -4,10 +4,13 @@ import { FormsModule } from '@angular/forms';
 import { League } from '../../league.interface';
 import { LeagueZoneService } from '../../league-zone.service';
 import { Subject, takeUntil } from 'rxjs';
+import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 
 @Component({
   selector: 'pdz-league-rules-form',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule,
+    ButtonComponent,
+  ],
   templateUrl: './league-rules-form.component.html',
   styleUrls: ['./league-rules-form.component.scss'],
 })

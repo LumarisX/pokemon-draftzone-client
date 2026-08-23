@@ -29,23 +29,6 @@
   }
 }
 
-.add-league-btn {
-  @include icon-button-menu(
-    (
-      width: 2.5rem,
-      height: 2.5rem,
-    )
-  );
-}
-
-.back-btn {
-  @include flat-button-menu(
-    (
-      height: 2.5rem,
-    )
-  );
-}
-
 .toolbar {
   display: flex;
   justify-content: space-between;

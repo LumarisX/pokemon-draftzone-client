@@ -43,17 +43,6 @@ h4 {
     border: 1px solid #ccc;
     border-radius: pdz.shape(corner-xs);
   }
-  button {
-    padding: 0.5rem 1rem;
-    background-color: #28a745;
-    color: white;
-    border: none;
-    border-radius: pdz.shape(corner-xs);
-    cursor: pointer;
-    &:hover {
-      background-color: #218838;
-    }
-  }
 }
 
 .ended-auctions-container {

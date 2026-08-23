@@ -6,9 +6,12 @@ import { interval, Subscription } from 'rxjs';
 import { AuctionService } from './auction.service';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
+import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 @Component({
   selector: 'pdz-league-auction',
-  imports: [CommonModule, FormsModule, IconComponent, SpriteComponent],
+  imports: [CommonModule, FormsModule, IconComponent, SpriteComponent,
+    ButtonComponent,
+  ],
   templateUrl: './league-auction.component.html',
   styleUrl: './league-auction.component.scss',
 })

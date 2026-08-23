@@ -17,6 +17,7 @@ import {
 import { PokemonBuilder } from './widgets/teambuilder/pokemon-builder/pokemon-builder.model';
 import { MatchupTeambuilderComponent } from './widgets/teambuilder/teambuilder.component';
 import { TeambuilderService } from './widgets/teambuilder/teambuilder.service';
+import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 
 @Component({
   selector: 'pdz-matchup-overview',
@@ -28,6 +29,7 @@ import { TeambuilderService } from './widgets/teambuilder/teambuilder.service';
     RouterModule,
     MatchupTeambuilderComponent,
     IconComponent,
+    ButtonComponent,
   ],
 })
 export class MatchupOverviewComponent implements OnInit {

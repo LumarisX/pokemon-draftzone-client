@@ -221,39 +221,3 @@
   }
 }
 
-.btn {
-  display: inline-flex;
-  align-items: center;
-  gap: pdz.space(xs);
-  padding: pdz.space(sm) pdz.space(lg);
-  border-radius: pdz.shape(corner-sm);
-  border: none;
-  cursor: pointer;
-  @include text(label);
-  transition:
-    background pdz.duration(base) pdz.easing(standard),
-    opacity pdz.duration(base) pdz.easing(standard);
-
-  &:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-
-  &--primary {
-    background: pdz.color(primary);
-    color: pdz.color(on-primary);
-
-    &:hover:not(:disabled) {
-      background: pdz.color(primary-hover);
-    }
-  }
-
-  &--secondary {
-    background: pdz.color(surface-container-high);
-    color: pdz.color(on-surface);
-
-    &:hover:not(:disabled) {
-      background: pdz.color(surface-container-highest);
-    }
-  }
-}

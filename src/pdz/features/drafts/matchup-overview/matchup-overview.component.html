@@ -1,7 +1,9 @@
 @if (matchupId && matchupData) {
   <div class="matchup-main">
     <div class="matchup-header">
-      <button [routerLink]="backLink">Back</button>
+      <button pdz-button color="neutral" variant="tonal" [routerLink]="backLink">
+        Back
+      </button>
       <div class="details-spacer">
         <div class="details-container">
           @if (matchupData) {
@@ -25,7 +27,14 @@
         </div>
       </div>
       @if (matchupData) {
-        <button (click)="openShareDialog()">Share</button>
+        <button
+          pdz-button
+          color="neutral"
+          variant="tonal"
+          (click)="openShareDialog()"
+        >
+          Share
+        </button>
       }
     </div>
 

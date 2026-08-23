@@ -56,14 +56,14 @@
           drop from the league.
         </p>
         <div class="message-card__actions">
-          <button
+          <button pdz-button
             type="button"
-            class="btn btn--primary"
+            
             (click)="confirmSignUpAsSub()"
           >
             Yes, Sign Up as a Sub
           </button>
-          <a routerLink=".." class="btn btn--secondary"> No, Thanks </a>
+          <a pdz-button color="neutral" variant="outlined" routerLink=".." > No, Thanks </a>
         </div>
         @if (leagueInfo.discord) {
           <p class="message-card__text message-card__text--secondary">
@@ -298,16 +298,12 @@
     </div>
 
     <button
-      class="submit-btn"
+      pdz-button
       type="submit"
+      [loading]="isSubmitting"
       [disabled]="!signupForm.valid || isSubmitting"
     >
-      @if (isSubmitting) {
-        <span class="submit-btn__spinner" aria-hidden="true"></span>
-        <span>Submitting...</span>
-      } @else {
-        <span>Submit</span>
-      }
+      {{ isSubmitting ? "Submitting..." : "Submit" }}
     </button>
   </form>
 } @else {

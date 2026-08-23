@@ -7,10 +7,13 @@ import { LeagueZoneService } from '../league-zone.service';
 import { League } from '../league.interface';
 import { getLogoUrl } from '../league.util';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
+import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 
 @Component({
   selector: 'pdz-league-coach',
-  imports: [CommonModule, RouterModule, LoadingComponent, IconComponent],
+  imports: [CommonModule, RouterModule, LoadingComponent, IconComponent,
+    ButtonComponent,
+  ],
   templateUrl: './league-coach.component.html',
   styleUrl: './league-coach.component.scss',
 })

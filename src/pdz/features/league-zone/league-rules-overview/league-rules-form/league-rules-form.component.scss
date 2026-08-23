@@ -28,28 +28,6 @@
   }
 }
 
-.btn-add {
-  padding: pdz.space(sm) pdz.space(md);
-  background: pdz.color(primary);
-  color: pdz.color(on-primary);
-  border: none;
-  border-radius: pdz.shape(corner-md);
-  cursor: pointer;
-  font-weight: 600;
-  transition: all pdz.duration(base) pdz.easing(standard);
-
-  &:hover:not(:disabled) {
-    background: pdz.color(primary-hover);
-    transform: translateY(-2px);
-    box-shadow: var(--pdz-level-2);
-  }
-
-  &:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-  }
-}
-
 .save-message {
   padding: pdz.space(md);
   border-radius: pdz.shape(corner-md);
@@ -118,26 +96,6 @@
 }
 
 .btn-move,
-.btn-delete {
-  padding: pdz.space(xs) pdz.space(sm);
-  background: pdz.color(menu);
-  color: pdz.color(on-menu);
-  border: 1px solid pdz.color(menu-border);
-  border-radius: pdz.shape(corner-sm);
-  cursor: pointer;
-  transition: all pdz.duration(base) pdz.easing(standard);
-  @include pdz.text(body-sm-strong, $family: false);
-
-  &:hover:not(:disabled) {
-    background: pdz.color(menu-darker);
-  }
-
-  &:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
-}
-
 .btn-delete {
   &:hover:not(:disabled) {
     background: pdz.color(danger);
@@ -214,28 +172,6 @@
   gap: pdz.space(md);
   padding-top: pdz.space(md);
   border-top: 1px solid pdz.color(outline-variant);
-}
-
-.btn-save {
-  padding: pdz.space(sm) pdz.space(lg);
-  background: pdz.color(primary);
-  color: pdz.color(on-primary);
-  border: none;
-  border-radius: pdz.shape(corner-md);
-  cursor: pointer;
-  @include pdz.text(card-title, $family: false);
-  transition: all pdz.duration(base) pdz.easing(standard);
-
-  &:hover:not(:disabled) {
-    background: pdz.color(primary-hover);
-    transform: translateY(-2px);
-    box-shadow: var(--pdz-level-3);
-  }
-
-  &:disabled {
-    opacity: 0.5;
-    cursor: not-allowed;
-  }
 }
 
 .unsaved-indicator {

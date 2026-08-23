@@ -87,8 +87,16 @@
           </div>
 
           <div class="dropdown-actions">
-            <button (click)="applyFilters()" class="apply-button">Apply</button>
-            <button (click)="clearFilters()" class="clear-button">Clear</button>
+            <button pdz-button size="sm" (click)="applyFilters()">Apply</button>
+            <button
+              pdz-button
+              size="sm"
+              color="neutral"
+              variant="outlined"
+              (click)="clearFilters()"
+            >
+              Clear
+            </button>
           </div>
         </div>
       }

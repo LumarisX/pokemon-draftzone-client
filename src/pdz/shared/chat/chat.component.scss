@@ -63,21 +63,4 @@ $background-color: pdz.color(surface);
       box-shadow: 0 0 0 3px rgba($primary-color, 0.25);
     }
   }
-
-  button {
-    border: none;
-    background: $primary-color;
-    color: white;
-    padding: 0.5rem 1rem;
-    margin-left: 0.5rem;
-    border-radius: pdz.shape(corner-xs);
-    cursor: pointer;
-    font-weight: 600;
-    align-self: flex-end;
-    transition: background-color pdz.duration(base) pdz.easing(standard);
-
-    &:hover {
-      background: $primary-hover-color;
-    }
-  }
 }

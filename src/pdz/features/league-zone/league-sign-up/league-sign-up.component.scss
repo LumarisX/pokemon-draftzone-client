@@ -168,27 +168,6 @@
   }
 }
 
-.btn {
-  padding: pdz.space(md) pdz.space(lg);
-  border-radius: pdz.shape(corner-sm);
-  border: none;
-  cursor: pointer;
-  text-decoration: none;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 600;
-  transition: all pdz.duration(base) pdz.easing(standard);
-
-  &--primary {
-    @include flat-button-primary();
-  }
-
-  &--secondary {
-    @include flat-button-menu();
-  }
-}
-
 // ─── Form Fields ──────────────────────────────────────────────────────────
 .form-row {
   display: grid;
@@ -335,31 +314,6 @@
 }
 
 // ─── Submit Button ────────────────────────────────────────────────────────
-.submit-btn {
-  @include flat-button-primary();
-  width: 100%;
-  margin-top: pdz.space(xs);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: pdz.space(sm);
-
-  @include respond-above(medium) {
-    width: auto;
-    min-width: 12rem;
-    align-self: flex-end;
-  }
-
-  &__spinner {
-    width: 1rem;
-    height: 1rem;
-    border: 2px solid currentColor;
-    border-right-color: transparent;
-    border-radius: 50%;
-    animation: submit-spin 0.8s linear infinite;
-  }
-}
-
 @keyframes submit-spin {
   to {
     transform: rotate(360deg);

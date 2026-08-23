@@ -20,6 +20,7 @@ import { ChoiceDirective } from '@pdz/shared/inputs/choice/choice.directive';
 import { FieldErrorDirective } from '@pdz/shared/inputs/field/field-message.directive';
 import { FieldComponent } from '@pdz/shared/inputs/field/field.component';
 import { InputDirective } from '@pdz/shared/inputs/field/input.directive';
+import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 
 @Component({
   selector: 'pdz-league-form',
@@ -35,6 +36,7 @@ import { InputDirective } from '@pdz/shared/inputs/field/input.directive';
     FieldComponent,
     InputDirective,
     FieldErrorDirective,
+    ButtonComponent,
   ],
 })
 export class LeagueFormComponent implements OnInit {

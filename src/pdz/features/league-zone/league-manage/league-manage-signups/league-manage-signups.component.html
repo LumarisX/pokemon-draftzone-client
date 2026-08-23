@@ -1,17 +1,17 @@
 <div class="page-header">
   <h2 class="page-header__title">League Sign-Ups</h2>
   <div class="page-header__actions">
-    <button
+    <button pdz-button
       type="button"
-      class="btn btn--primary"
+      
       (click)="saveChanges()"
       [disabled]="!modified"
     >
       Save
     </button>
-    <button
+    <button pdz-button color="neutral" variant="ghost"
       type="button"
-      class="btn btn--ghost"
+      
       (click)="revertChanges()"
       [disabled]="!modified"
     >

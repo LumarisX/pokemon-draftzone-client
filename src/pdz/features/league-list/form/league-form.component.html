@@ -197,23 +197,16 @@
     <!-- Form Actions -->
     <div class="form-actions">
       <button
-        type="button"
+        pdz-button
+        color="neutral"
+        variant="outlined"
         routerLink="/league-list"
-        class="form-button form-button--secondary"
         [disabled]="isSubmitting"
       >
         Cancel
       </button>
-      <button
-        type="submit"
-        class="form-button form-button--primary"
-        [disabled]="isSubmitting"
-      >
-        @if (isSubmitting) {
-          <span>Creating...</span>
-        } @else {
-          <span>Create League Ad</span>
-        }
+      <button pdz-button type="submit" [loading]="isSubmitting">
+        {{ isSubmitting ? "Creating..." : "Create League Ad" }}
       </button>
     </div>
   </form>

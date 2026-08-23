@@ -217,14 +217,14 @@
 
     <!-- Action Buttons -->
     <div class="trade-actions">
-      <button type="button" (click)="resetTrade()" class="btn btn--secondary">
+      <button pdz-button color="neutral" variant="outlined" type="button" (click)="resetTrade()" >
         Reset
       </button>
-      <button
+      <button pdz-button
         type="button"
         (click)="submitTrade()"
         [disabled]="tradeForm.invalid || submitting || loading"
-        class="btn btn--primary"
+        
       >
         Send Trade
       </button>
@@ -347,10 +347,10 @@
                   </div>
 
                   <div class="trade-entry__actions">
-                    <button type="button" class="btn btn--secondary" disabled>
+                    <button pdz-button color="neutral" variant="outlined" type="button"  disabled>
                       Delete
                     </button>
-                    <button type="button" class="btn btn--primary" disabled>
+                    <button pdz-button type="button"  disabled>
                       Approve
                     </button>
                   </div>

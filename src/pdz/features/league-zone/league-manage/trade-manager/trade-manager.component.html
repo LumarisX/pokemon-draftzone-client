@@ -15,7 +15,7 @@
         This tournament has no drafts yet. Assign coaches to one before
         recording trades.
       </p>
-      <a class="btn btn--primary trade-manager__cta" [routerLink]="signUpsPath">
+      <a pdz-button class="trade-manager__cta"  [routerLink]="signUpsPath">
         Go to Sign-ups
       </a>
     </section>
@@ -134,9 +134,9 @@
           </pdz-select>
         </label>
 
-        <button
+        <button pdz-button
           type="button"
-          class="btn btn--primary"
+          
           [disabled]="!canSubmit"
           (click)="submitTrade()"
         >

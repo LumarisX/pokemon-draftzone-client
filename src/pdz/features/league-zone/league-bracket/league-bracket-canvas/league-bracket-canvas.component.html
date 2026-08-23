@@ -9,24 +9,28 @@
     <div class="canvas-toolbar">
       @if (editable) {
         <button
-          type="button"
-          class="toolbar-btn toolbar-btn--danger"
+          pdz-button
+          size="sm"
+          color="danger"
+          variant="outlined"
           (click)="clearDraft()"
           title="Remove every matchup, round, and section"
         >
           Clear
         </button>
         <button
-          type="button"
-          class="toolbar-btn"
+          pdz-button
+          size="sm"
+          color="neutral"
+          variant="outlined"
           (click)="toggleSectionPrompt()"
           title="Add a new bracket section (e.g. losers bracket)"
         >
           + Section
         </button>
         <button
-          type="button"
-          class="toolbar-btn toolbar-btn--primary"
+          pdz-button
+          size="sm"
           [disabled]="!canSave"
           (click)="onSaveClick()"
           title="Save the bracket"
@@ -35,8 +39,10 @@
         </button>
       }
       <button
-        type="button"
-        class="toolbar-btn"
+        pdz-button
+        size="sm"
+        color="neutral"
+        variant="outlined"
         (click)="resetView()"
         title="Fit bracket to view"
       >
@@ -54,8 +60,8 @@
           (keydown.escape)="cancelSectionPrompt()"
         />
         <button
-          type="button"
-          class="toolbar-btn toolbar-btn--primary"
+          pdz-button
+          size="sm"
           (click)="commitAddSection(sectionInput.value)"
         >
           Add
@@ -131,12 +137,18 @@
         }
 
         <div class="match-editor__actions">
-          <button type="button" class="toolbar-btn" (click)="cancelMatchEditor()">
+          <button
+            pdz-button
+            size="sm"
+            color="neutral"
+            variant="outlined"
+            (click)="cancelMatchEditor()"
+          >
             Cancel
           </button>
           <button
-            type="button"
-            class="toolbar-btn toolbar-btn--primary"
+            pdz-button
+            size="sm"
             (click)="applyMatchEditor(editorLabel.value)"
           >
             Apply

@@ -5,6 +5,7 @@ import { RouterModule } from '@angular/router';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { LeagueAdComponent } from '../league-ad/league-ad.component';
 import { LeagueAdsService, LeagueAd } from '../league-ads.service';
+import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 
 type FilterStatus = 'All' | 'Pending' | 'Approved' | 'Denied';
 
@@ -12,7 +13,9 @@ type FilterStatus = 'All' | 'Pending' | 'Approved' | 'Denied';
   selector: 'pdz-league-manage',
   templateUrl: './league-manage.component.html',
   styleUrls: ['./league-manage.component.scss'],
-  imports: [FormsModule, RouterModule, IconComponent, LeagueAdComponent],
+  imports: [FormsModule, RouterModule, IconComponent, LeagueAdComponent,
+    ButtonComponent,
+  ],
 })
 export class LeagueManageComponent implements OnInit {
   private leagueService = inject(LeagueAdsService);

@@ -231,15 +231,3 @@
   }
 }
 
-.btn {
-  padding: pdz.space(md) pdz.space(xl);
-  border-radius: pdz.shape(corner-sm);
-  text-decoration: none;
-  display: inline-flex;
-  align-items: center;
-  font-weight: 600;
-
-  &--secondary {
-    @include flat-button-menu();
-  }
-}

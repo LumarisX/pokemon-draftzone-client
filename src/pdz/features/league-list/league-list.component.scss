@@ -98,22 +98,6 @@
   gap: pdz.space(sm);
 }
 
-.apply-button {
-  @include flat-button-primary(
-    (
-      padding: pdz.space(xs) pdz.space(md),
-    )
-  );
-}
-
-.clear-button {
-  @include flat-button-secondary(
-    (
-      padding: pdz.space(xs) pdz.space(md),
-    )
-  );
-}
-
 .league-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(20rem, 1fr));

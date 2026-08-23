@@ -58,6 +58,7 @@ import {
   screenToWorld,
   worldToScreen,
 } from './bracket-transform';
+import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 
 const EMPTY_LAYOUT: CanvasLayout = {
   width: 0,
@@ -136,7 +137,9 @@ interface PointerSession {
  */
 @Component({
   selector: 'pdz-league-bracket-canvas',
-  imports: [CommonModule, SelectComponent, SelectOptionComponent],
+  imports: [CommonModule, SelectComponent, SelectOptionComponent,
+    ButtonComponent,
+  ],
   templateUrl: './league-bracket-canvas.component.html',
   styleUrl: './league-bracket-canvas.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
