@@ -45,26 +45,17 @@
   <div class="schedule">
     @for (stage of scheduleStages; track stage._id; let roundIndex = $index) {
       <section class="stage">
-        <button
-          type="button"
-          class="stage__header"
-          (click)="toggleStage(stage._id)"
-          [class.stage__header--collapsed]="!isStageOpen(stage._id)"
-          [attr.aria-expanded]="isStageOpen(stage._id)"
+        <pdz-disclosure
+          tone="panel"
+          [heading]="stage.name"
+          [open]="isStageOpen(stage._id)"
+          (openChange)="toggleStage(stage._id)"
         >
-          <pdz-icon
-            class="stage__toggle-icon"
-            [name]="
-              isStageOpen(stage._id)
-                ? 'keyboard_arrow_down'
-                : 'keyboard_arrow_right'
-            "
-          ></pdz-icon>
-          <h2 class="stage__title">{{ stage.name }}</h2>
           @if (isCurrentRound(roundIndex)) {
-            <span class="stage__current-badge">Current</span>
+            <span pdz-disclosure-trailing class="stage__current-badge">
+              Current
+            </span>
           }
-        </button>
         @if (isStageOpen(stage._id)) {
           <div class="stage__matchups">
             @for (phase of stage.stages; track phase._id) {
@@ -257,23 +248,11 @@
                   }
 
                   <div class="matchup-summary">
-                    <button
-                      type="button"
-                      class="matchup-summary__header"
-                      (click)="toggleMatchupSummary(matchup.id)"
-                      [attr.aria-expanded]="isMatchupSummaryOpen(matchup.id)"
+                    <pdz-disclosure
+                      heading="Pokemon Totals Summary"
+                      [open]="isMatchupSummaryOpen(matchup.id)"
+                      (openChange)="toggleMatchupSummary(matchup.id)"
                     >
-                      <pdz-icon
-                        class="matchup-summary__toggle-icon"
-                        [name]="
-                          isMatchupSummaryOpen(matchup.id)
-                            ? 'keyboard_arrow_down'
-                            : 'keyboard_arrow_right'
-                        "
-                      ></pdz-icon>
-                      <span>Pokemon Totals Summary</span>
-                    </button>
-
                     @if (isMatchupSummaryOpen(matchup.id)) {
                       <div class="matchup-summary__content">
                         <div class="matchup-summary__teams">
@@ -329,6 +308,7 @@
                         </div>
                       </div>
                     }
+                    </pdz-disclosure>
                   </div>
 
                   <div class="match-list" formArrayName="matches">
@@ -665,6 +645,7 @@
             }
           </div>
         }
+        </pdz-disclosure>
       </section>
     }
   </div>

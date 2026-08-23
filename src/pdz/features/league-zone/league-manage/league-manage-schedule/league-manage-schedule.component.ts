@@ -25,6 +25,7 @@ import {
 } from '../../../tools/replay_analyzer/replay.interface';
 import { League } from '../../league.interface';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
+import { DisclosureComponent } from '@pdz/shared/layout/disclosure/disclosure.component';
 
 type PokemonStatsForm = FormGroup<{
   id: FormControl<PokemonId | ''>;
@@ -89,6 +90,7 @@ type MatchupPokemonSummary = {
     FieldComponent,
     InputDirective,
     ButtonComponent,
+    DisclosureComponent,
   ],
   templateUrl: './league-manage-schedule.component.html',
   styleUrl: './league-manage-schedule.component.scss',
