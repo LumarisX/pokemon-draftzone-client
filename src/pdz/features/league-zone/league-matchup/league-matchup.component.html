@@ -15,9 +15,10 @@
     <div class="scoreboard__contact">
       @if (handleFor(side); as handle) {
         <button
-          type="button"
-          class="scoreboard__discord"
-          [class.scoreboard__discord--copied]="copiedHandle() === handle"
+          pdz-button
+          size="xs"
+          [variant]="copiedHandle() === handle ? 'tonal' : 'ghost'"
+          [color]="copiedHandle() === handle ? 'success' : 'neutral'"
           [attr.aria-label]="'Copy ' + handle"
           (click)="copyHandle(side)"
         >
@@ -274,21 +275,27 @@
       }
 
       @if (m.matches.length) {
-        <div class="games__tabs">
+        <pdz-segmented
+          class="games__tabs"
+          size="sm"
+          aria-label="Game"
+          [value]="selectedGame()"
+          (valueChange)="selectGame($any($event))"
+        >
           @for (game of m.matches; track $index) {
-            <button
-              type="button"
-              class="games__tab"
-              [class.games__tab--selected]="selectedGame() === $index"
-              (click)="selectGame($index)"
-            >
-              <span class="games__tab-label">Game {{ $index + 1 }}</span>
-              <span class="games__tab-score"
-                >{{ game.team1.score }}–{{ game.team2.score }}</span
-              >
-            </button>
+            <pdz-segmented-option
+              [value]="$index"
+              [label]="
+                'Game ' +
+                ($index + 1) +
+                ' · ' +
+                game.team1.score +
+                '–' +
+                game.team2.score
+              "
+            />
           }
-        </div>
+        </pdz-segmented>
 
         @if (m.matches[selectedGame()]; as game) {
           <div class="games__body">

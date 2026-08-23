@@ -114,33 +114,6 @@
 }
 
 // Status chips
-.chip {
-  @include text(label);
-  display: inline-block;
-  padding: 2px pdz.space(sm);
-  border-radius: pdz.shape(corner-full);
-
-  &--success {
-    background: pdz.color("success-container");
-    color: pdz.color("on-success-container");
-  }
-
-  &--warning {
-    background: pdz.color("warning-container");
-    color: pdz.color("on-warning-container");
-  }
-
-  &--primary {
-    background: pdz.color("primary-container");
-    color: pdz.color("on-primary-container");
-  }
-
-  &--muted {
-    background: pdz.color("surface-container-high");
-    color: pdz.color("on-surface-variant");
-  }
-}
-
 // Date items in header
 .date-item {
   display: flex;

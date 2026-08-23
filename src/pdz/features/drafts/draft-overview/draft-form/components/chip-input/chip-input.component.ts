@@ -1,10 +1,10 @@
 import { Component, input } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { IconComponent } from '@pdz/shared/images/icon/icon.component';
+import { ChipComponent } from '@pdz/shared/data/chip/chip.component';
 
 @Component({
   selector: 'pdz-chip-input',
-  imports: [IconComponent],
+  imports: [ChipComponent],
   templateUrl: './chip-input.component.html',
   styleUrl: './chip-input.component.scss',
 })

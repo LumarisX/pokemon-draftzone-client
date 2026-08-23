@@ -32,26 +32,6 @@
     gap: pdz.space(xs);
   }
 
-  &__chip {
-    display: inline-flex;
-    align-items: center;
-    gap: pdz.space(3xs);
-    padding: pdz.space(3xs) pdz.space(sm);
-    border: 1px solid pdz.color(outline-variant);
-    border-radius: pdz.shape(corner-full);
-    background: pdz.color(surface-container-lowest);
-    color: pdz.color(on-surface-variant);
-    white-space: nowrap;
-    @include text(label);
-
-    &--current {
-      border-color: pdz.color(primary-border);
-      background: pdz.color(primary-subtle);
-      color: pdz.color(on-primary-container);
-      font-weight: var(--pdz-font-weight-semibold);
-    }
-  }
-
   &__body {
     display: flex;
     flex-direction: column;

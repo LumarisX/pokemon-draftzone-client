@@ -365,6 +365,52 @@
 </section>
 
 <section class="section">
+  <h2 class="section__title">Chip</h2>
+  <h3 class="section__sub">Tones × variants</h3>
+  <div class="row">
+    @for (v of chipVariants; track v) {
+      @for (t of chipTones; track t) {
+        <pdz-chip [tone]="t" [variant]="v">{{ t }}</pdz-chip>
+      }
+    }
+  </div>
+
+  <h3 class="section__sub">Sizes, icons and state</h3>
+  <div class="row">
+    <pdz-chip size="sm">Small</pdz-chip>
+    <pdz-chip>Medium</pdz-chip>
+    <pdz-chip icon="calendar_month">With icon</pdz-chip>
+    <pdz-chip tone="primary" selected>Selected</pdz-chip>
+    <pdz-chip disabled>Disabled</pdz-chip>
+  </div>
+
+  <h3 class="section__sub">
+    Interactive — <code>clickable</code> makes the body a button;
+    <code>removable</code> adds a sibling button, never nested inside it
+  </h3>
+  <div class="row">
+    @for (chip of demoChips(); track chip) {
+      <pdz-chip
+        clickable
+        removable
+        [selected]="activeChip() === chip"
+        [removeLabel]="'Remove ' + chip"
+        (activated)="activeChip.set(chip)"
+        (removed)="dropChip(chip)"
+      >
+        {{ chip }}
+      </pdz-chip>
+    }
+    @if (!demoChips().length) {
+      <span class="section__hint">All removed — </span>
+      <button pdz-button size="sm" variant="outlined" (click)="resetChips()">
+        Reset
+      </button>
+    }
+  </div>
+</section>
+
+<section class="section">
   <h2 class="section__title">Card</h2>
 
   <h3 class="section__sub">
@@ -378,6 +424,29 @@
       </pdz-card>
     }
   </div>
+
+  <h3 class="section__sub">
+    Selectable — <code>button[pdz-card]</code> with <code>selected</code>, for
+    result cards, option tiles and pickable rows
+  </h3>
+  <div class="cards">
+    @for (option of selectableCards; track option.id) {
+      <button
+        pdz-card
+        padding="sm"
+        [selected]="selectedCard() === option.id"
+        [attr.aria-pressed]="selectedCard() === option.id"
+        (click)="selectedCard.set(option.id)"
+      >
+        <strong>{{ option.name }}</strong>
+        <p class="cards__text">{{ option.detail }}</p>
+      </button>
+    }
+  </div>
+  <p class="section__hint">
+    A card hosted on a button or anchor is interactive automatically — no
+    <code>interactive</code> needed.
+  </p>
 
   <h3 class="section__sub">
     Colors — <code>color</code> tints container, header and border; it

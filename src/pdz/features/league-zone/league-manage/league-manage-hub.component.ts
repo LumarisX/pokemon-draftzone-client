@@ -7,10 +7,13 @@ import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
 import { LeagueZoneService } from '../league-zone.service';
 import { League } from '../league.interface';
 import { getLeagueLogoUrl } from '../league.util';
+import { ChipComponent } from '@pdz/shared/data/chip/chip.component';
 
 @Component({
   selector: 'pdz-league-manage-hub',
-  imports: [CommonModule, RouterModule, IconComponent, LoadingComponent],
+  imports: [CommonModule, RouterModule, IconComponent, LoadingComponent,
+    ChipComponent,
+  ],
   templateUrl: './league-manage-hub.component.html',
   styleUrls: ['./league-manage-hub.component.scss'],
 })

@@ -55,15 +55,6 @@
   gap: 0.25rem;
 }
 
-.preview-chip {
-  font-size: pdz.font-size(xs);
-  padding: 0.1rem 0.4rem;
-  border-radius: pdz.shape(corner-xs);
-  background: pdz.color(surface-container);
-  color: pdz.color(on-surface-variant);
-  border: 1px solid pdz.color(outline-variant);
-}
-
 .preview-empty {
   font-size: pdz.font-size(xs);
   color: pdz.color(on-surface-variant);

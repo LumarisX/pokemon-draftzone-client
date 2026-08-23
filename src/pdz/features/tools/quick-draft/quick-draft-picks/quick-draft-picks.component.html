@@ -86,9 +86,11 @@
         <div class="qd-option-container">
           @for (draftOption of draftOptions; track $index) {
             <button
+              pdz-card
+              padding="sm"
               class="draft-option qd-option"
+              [selected]="$index == selectedOption"
               [ngClass]="{
-                selected: $index == selectedOption,
                 'draft-option--exit': optionExits[$index] !== null,
                 'draft-option--exit-selected':
                   optionExits[$index] === 'selected',

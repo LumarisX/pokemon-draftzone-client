@@ -43,40 +43,6 @@
   flex-direction: column;
   gap: pdz.space(md);
 
-  &__header {
-    display: flex;
-    align-items: center;
-    gap: pdz.space(sm);
-    background: transparent;
-    border: none;
-    padding: pdz.space(sm) pdz.space(md);
-    margin: 0 calc(-1 * pdz.space(md));
-    border-radius: pdz.shape(corner-sm);
-    cursor: pointer;
-    color: pdz.color(on-surface);
-    transition: background-color pdz.duration(base) pdz.easing(standard);
-
-    &:hover {
-      background: pdz.color(surface-container-low);
-    }
-
-    &--collapsed {
-      opacity: 0.7;
-    }
-  }
-
-  &__toggle-icon {
-    flex-shrink: 0;
-    font-size: var(--pdz-font-size-xl);
-  }
-
-  &__title {
-    @include text(title);
-    margin: 0;
-    color: pdz.color(on-surface);
-    text-align: left;
-  }
-
   &__count {
     @include text(label);
     padding: 0 pdz.space(sm);

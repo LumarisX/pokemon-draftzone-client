@@ -101,23 +101,6 @@
   }
 
   // ---- Details ------------------------------------------------------------
-  &__expand {
-    align-self: flex-start;
-    display: inline-flex;
-    align-items: center;
-    gap: pdz.space(xs);
-    padding: 0;
-    border: none;
-    background: transparent;
-    color: pdz.color("on-surface-variant");
-    cursor: pointer;
-    @include text(label);
-
-    &:hover {
-      color: pdz.color("on-surface");
-    }
-  }
-
   &__expand-chevron {
     transition: transform pdz.duration(base) pdz.easing(standard);
 

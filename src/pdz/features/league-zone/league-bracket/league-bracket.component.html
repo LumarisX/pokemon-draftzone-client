@@ -5,19 +5,14 @@
     @if (!isLoading && hasBracket) {
       <div class="schedule__meta">
         @if (currentRoundName; as roundName) {
-          <span class="schedule__chip schedule__chip--current">
-            <pdz-icon name="play_arrow" [size]="16"></pdz-icon>
-            {{ roundName }}
-          </span>
+          <pdz-chip tone="primary" icon="play_arrow">{{ roundName }}</pdz-chip>
         }
-        <span class="schedule__chip">
-          <pdz-icon name="calendar_month" [size]="16"></pdz-icon>
+        <pdz-chip icon="calendar_month">
           {{ draft.rounds.length }} rounds
-        </span>
-        <span class="schedule__chip">
-          <pdz-icon name="scoreboard" [size]="16"></pdz-icon>
+        </pdz-chip>
+        <pdz-chip icon="scoreboard">
           {{ playedCount }} / {{ draft.matches.length }} played
-        </span>
+        </pdz-chip>
       </div>
     }
   </div>

@@ -316,21 +316,11 @@
     }
 
     <div class="report__summary">
-      <button
-        type="button"
-        class="report__summary-header"
-        [attr.aria-expanded]="summaryOpen()"
-        (click)="toggleSummary()"
+      <pdz-disclosure
+        heading="Pokemon totals"
+        [open]="summaryOpen()"
+        (openChange)="toggleSummary()"
       >
-        <pdz-icon
-          [name]="
-            summaryOpen() ? 'keyboard_arrow_down' : 'keyboard_arrow_right'
-          "
-          [size]="18"
-        ></pdz-icon>
-        <span>Pokemon totals</span>
-      </button>
-
       @if (summaryOpen()) {
         <div class="report__summary-content">
           @for (side of sides; track side) {
@@ -354,6 +344,7 @@
           }
         </div>
       }
+      </pdz-disclosure>
     </div>
   }
 

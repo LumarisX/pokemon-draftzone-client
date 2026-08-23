@@ -6,6 +6,7 @@ import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
 import { LeagueZoneService } from '../league-zone.service';
 import { League } from '../league.interface';
 import { LeagueTeamCardComponent } from './league-team-card/league-team-card.component';
+import { DisclosureComponent } from '@pdz/shared/layout/disclosure/disclosure.component';
 
 type DraftGroup = {
   draftSlug: string | null;
@@ -21,6 +22,7 @@ type DraftGroup = {
     RouterModule,
     ButtonComponent,
     IconComponent,
+    DisclosureComponent,
   ],
   templateUrl: './league-teams.component.html',
   styleUrls: ['./league-teams.component.scss'],

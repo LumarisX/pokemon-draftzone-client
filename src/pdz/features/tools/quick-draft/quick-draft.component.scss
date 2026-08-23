@@ -42,19 +42,15 @@ h3 {
   }
 }
 
+// The picker leans on a chunky border to show the choice, so it thickens the
+// card's selected treatment rather than replacing it.
 .qd-option {
   border-radius: pdz.shape(corner-lg);
-  border: 2px solid pdz.color(primary-border);
   margin: 4px;
-  &.selected {
-    border: 6px solid pdz.color(primary-border);
-    background-color: pdz.color(surface);
-    color: pdz.color(on-primary-container);
-    margin: 0px;
-  }
 
-  &:not(.selected):hover {
-    border: 2px solid pdz.color(primary-border);
+  &.pdz-card--selected {
+    border-width: 6px;
+    margin: 0px;
   }
 }
 

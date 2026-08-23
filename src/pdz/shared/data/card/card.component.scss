@@ -50,6 +50,34 @@ $paddings: (
   box-shadow: var(--pdz-level-2);
 }
 
+// A card hosted on a button or anchor inherits native chrome that would fight
+// the card surface, so it is reset here rather than at every call site.
+:host(button),
+:host(a) {
+  width: 100%;
+  margin: 0;
+  font: inherit;
+  text-align: inherit;
+  text-decoration: none;
+  appearance: none;
+}
+
+:host(.pdz-card--selected) {
+  border-color: var(--pdz-card-accent);
+  background-color: var(--pdz-card-hover-bg);
+}
+
+:host(.pdz-card--selected.pdz-card--interactive):hover {
+  border-color: var(--pdz-card-accent);
+}
+
+@media (forced-colors: active) {
+  :host(.pdz-card--selected) {
+    outline: 2px solid CanvasText;
+    outline-offset: -2px;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   :host(.pdz-card--interactive) {
     transition: none;

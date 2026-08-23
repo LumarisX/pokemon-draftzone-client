@@ -26,17 +26,6 @@
     <!-- Bucket selector -->
     <section class="controls">
       <span class="controls-label">Bucket</span>
-      <div class="bucket-toggle" role="group" aria-label="Bucket size">
-        @for (b of buckets; track b) {
-          <button
-            type="button"
-            [class.active]="bucket() === b"
-            (click)="setBucket(b)"
-          >
-            {{ b }}
-          </button>
-        }
-      </div>
       <div>
         <pdz-segmented
           align="stretch"

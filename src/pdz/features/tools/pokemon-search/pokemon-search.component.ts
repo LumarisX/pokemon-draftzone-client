@@ -11,6 +11,7 @@ import {
 } from './pokemon-search.types';
 import { PageComponent } from '@pdz/shared/layout/page/page.component';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
+import { CardComponent } from '@pdz/shared/data/card/card.component';
 
 @Component({
   selector: 'pdz-pokemon-search',
@@ -22,6 +23,7 @@ import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
     IconComponent,
     PageComponent,
     ButtonComponent,
+    CardComponent,
   ],
 })
 export class PokemonSearchComponent {

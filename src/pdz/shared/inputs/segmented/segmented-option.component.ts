@@ -14,7 +14,7 @@ import { PDZ_SEGMENTED } from './segmented.token';
 })
 export class SegmentedOptionComponent<T = unknown> {
   value = input.required<T>();
-  label = input.required<string>();
+  label = input<string>();
   icon = input<string>();
   trailingIcon = input<string>();
   disabled = input(false, { transform: booleanAttribute });

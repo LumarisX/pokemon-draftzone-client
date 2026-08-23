@@ -12,7 +12,7 @@
 
       <div class="column-preview">
         @for (name of col.preview; track name) {
-          <span class="preview-chip">{{ name }}</span>
+          <pdz-chip size="sm">{{ name }}</pdz-chip>
         }
         @if (col.preview.length === 0) {
           <span class="preview-empty">No Pokémon in this column</span>

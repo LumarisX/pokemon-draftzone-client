@@ -79,6 +79,8 @@
       <div class="teambuilder__options">
         @for (pokemon of matchupData().summary[0].team; track $index) {
           <button
+            pdz-card
+            padding="sm"
             class="teambuilder__pokemon-option"
             [disabled]="isPokemonInTeam(pokemon)"
             (click)="addPokemonToTeamAndSelect(pokemon)"

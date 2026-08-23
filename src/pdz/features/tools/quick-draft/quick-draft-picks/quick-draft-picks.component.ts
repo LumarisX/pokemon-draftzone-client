@@ -16,6 +16,7 @@ import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
 import { QDSettings } from '../quick-draft-setting/quick-draft-setting.component';
 import { typeColor } from '@pdz/core/utils/styling';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
+import { CardComponent } from '@pdz/shared/data/card/card.component';
 
 const OPTION_EXIT_MS = 240;
 
@@ -38,6 +39,7 @@ export type QDPokemon = Pokemon<{
     SpriteComponent,
     LoadingComponent,
     ButtonComponent,
+    CardComponent,
   ],
   templateUrl: './quick-draft-picks.component.html',
   styleUrls: [

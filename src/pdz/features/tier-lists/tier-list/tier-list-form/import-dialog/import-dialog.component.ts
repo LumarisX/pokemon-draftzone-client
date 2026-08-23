@@ -8,6 +8,7 @@ import {
 import { FieldComponent } from '@pdz/shared/inputs/field/field.component';
 import { SelectOptionComponent } from '@pdz/shared/dropdowns/select/select-option.component';
 import { SelectComponent } from '@pdz/shared/dropdowns/select/select.component';
+import { ChipComponent } from '@pdz/shared/data/chip/chip.component';
 
 export interface ImportColumn {
   csvHeader: string;
@@ -34,6 +35,7 @@ const NEW_TIER = '__NEW_TIER__';
     FieldComponent,
     SelectComponent,
     SelectOptionComponent,
+    ChipComponent,
   ],
   templateUrl: './import-dialog.component.html',
   styleUrls: ['./import-dialog.component.scss'],

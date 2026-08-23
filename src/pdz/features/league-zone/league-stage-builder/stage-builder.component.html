@@ -142,9 +142,10 @@
 
           @if (editable()) {
             <button
-              type="button"
-              class="stage__visibility"
-              [class.stage__visibility--hidden]="!stage.public"
+              pdz-button
+              size="xs"
+              [variant]="stage.public ? 'tonal' : 'outlined'"
+              [color]="stage.public ? 'primary' : 'neutral'"
               [attr.aria-pressed]="stage.public"
               [attr.aria-label]="
                 stage.public ? 'Hide this stage' : 'Publish this stage'

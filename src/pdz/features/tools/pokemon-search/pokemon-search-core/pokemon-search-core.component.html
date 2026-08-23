@@ -68,75 +68,41 @@
     <!-- Active filter pills -->
     <div class="pokemon-search__pill-bar" aria-label="Active filters">
       @for (filter of filters; track $index; let i = $index) {
-        <button
-          type="button"
-          class="pokemon-search__pill"
-          [class.is-editing]="drawerOpen && editingFilterIndex === i"
-          [attr.aria-label]="getPillAriaLabel(filter, i)"
-          (click)="openEditDrawer(i)"
+        <pdz-chip
+          clickable
+          removable
+          size="sm"
+          removeLabel="Remove filter"
+          [selected]="drawerOpen && editingFilterIndex === i"
+          [actionLabel]="getPillAriaLabel(filter, i)"
+          (activated)="openEditDrawer(i)"
+          (removed)="removeFilter(i)"
         >
-          <span class="pokemon-search__pill__label">{{
-            getPillLabel(filter)
-          }}</span>
-          <span
-            class="pokemon-search__pill__remove"
-            role="button"
-            tabindex="0"
-            aria-label="Remove filter"
-            (click)="$event.stopPropagation(); removeFilter(i)"
-            (keydown.enter)="$event.stopPropagation(); removeFilter(i)"
-            (keydown.space)="$event.stopPropagation(); removeFilter(i)"
-            >✕</span
-          >
-        </button>
+          {{ getPillLabel(filter) }}
+        </pdz-chip>
       }
 
       <div class="pokemon-search__add-filter-wrap">
-        @if (fieldMenuOpen) {
-          <div
-            class="pokemon-search__field-menu-backdrop"
-            (click)="closeFieldMenu()"
-            aria-hidden="true"
-          ></div>
-        }
-        <button
-          type="button"
-          class="pokemon-search__add-filter"
-          [class.is-open]="fieldMenuOpen"
-          (click)="openFieldMenu()"
-          aria-label="Add filter"
-          aria-haspopup="listbox"
-          [attr.aria-expanded]="fieldMenuOpen"
-        >
-          + Add Filter
-        </button>
-        @if (fieldMenuOpen) {
-          <div
-            class="pokemon-search__field-menu"
-            role="listbox"
-            aria-label="Select a filter field"
+        <pdz-menu align="start" aria-label="Select a filter field">
+          <button
+            pdz-button
+            pdz-menu-trigger
+            size="sm"
+            variant="outlined"
+            color="neutral"
+            (click)="closeDrawer()"
           >
-            @for (cat of fieldCategories; track cat) {
-              <div class="pokemon-search__field-menu-category">
-                <span class="pokemon-search__field-menu-cat-label">{{
-                  cat
-                }}</span>
-                <div class="pokemon-search__field-menu-options">
-                  @for (f of fieldsInCategory(cat); track f.key) {
-                    <button
-                      type="button"
-                      class="pokemon-search__field-menu-option"
-                      role="option"
-                      (click)="selectFieldForNewFilter(f.key)"
-                    >
-                      {{ f.label }}
-                    </button>
-                  }
-                </div>
-              </div>
+            + Add Filter
+          </button>
+          @for (cat of fieldCategories; track cat) {
+            <span class="pokemon-search__field-menu-cat-label">{{ cat }}</span>
+            @for (f of fieldsInCategory(cat); track f.key) {
+              <button pdz-menu-item (click)="selectFieldForNewFilter(f.key)">
+                {{ f.label }}
+              </button>
             }
-          </div>
-        }
+          }
+        </pdz-menu>
       </div>
 
       @if (filters.length > 0) {
@@ -257,11 +223,10 @@
         @for (pokemon of results; track pokemon.id + "-" + $index) {
           <div class="pokemon-results__cell">
             <button
-              type="button"
+              pdz-card
+              padding="sm"
               class="pokemon-results__card"
-              [class.pokemon-results__card--taken]="
-                selectable() && isTaken(pokemon)
-              "
+              [selected]="selectable() && isTaken(pokemon)"
               [attr.title]="
                 selectable() && isTaken(pokemon) ? 'Already on your team' : null
               "
@@ -277,7 +242,9 @@
             </button>
             @if (selectable() && !isTaken(pokemon)) {
               <button
-                type="button"
+                pdz-button
+                iconOnly
+                size="xs"
                 class="pokemon-results__select"
                 [attr.aria-label]="'Add ' + pokemon.name + ' to your team'"
                 title="Add to team"
@@ -295,7 +262,9 @@
           <div class="pokemon-results__cell pokemon-results__cell--list">
             @if (selectable() && !isTaken(pokemon)) {
               <button
-                type="button"
+                pdz-button
+                iconOnly
+                size="xs"
                 class="pokemon-results__select pokemon-results__select--list"
                 [attr.aria-label]="'Add ' + pokemon.name + ' to your team'"
                 title="Add to team"
@@ -305,11 +274,10 @@
               </button>
             }
             <button
-              type="button"
+              pdz-card
+              padding="sm"
               class="pokemon-results__list-row"
-              [class.pokemon-results__list-row--taken]="
-                selectable() && isTaken(pokemon)
-              "
+              [selected]="selectable() && isTaken(pokemon)"
               [attr.title]="
                 selectable() && isTaken(pokemon) ? 'Already on your team' : null
               "

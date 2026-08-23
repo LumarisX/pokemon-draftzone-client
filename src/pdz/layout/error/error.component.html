@@ -59,8 +59,11 @@
 
       @if (hasDetails(error) || hasStack(error) || hasRequestId(error)) {
         <button
-          class="toast__expand"
-          type="button"
+          pdz-button
+          iconOnly
+          size="xs"
+          variant="ghost"
+          color="neutral"
           (click)="toggleDetails(error.id)"
           [attr.aria-expanded]="isExpanded(error.id)"
         >

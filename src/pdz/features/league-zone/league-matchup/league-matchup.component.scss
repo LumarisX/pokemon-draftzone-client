@@ -229,32 +229,6 @@
     gap: pdz.space(2xs);
   }
 
-  &__discord {
-    display: inline-flex;
-    align-items: center;
-    gap: pdz.space(3xs);
-    padding: pdz.space(3xs) pdz.space(xs);
-    border: 1px solid pdz.color("outline-variant");
-    border-radius: pdz.shape("corner-full");
-    background: pdz.color("surface-container-low");
-    color: pdz.color("on-surface-variant");
-    cursor: pointer;
-    @include text(label);
-    transition: all pdz.duration(fast) pdz.easing(standard);
-
-    &:hover {
-      border-color: pdz.color("primary-border");
-      background: pdz.color("primary-subtle");
-      color: pdz.color("on-primary-container");
-    }
-
-    &--copied {
-      border-color: pdz.color("positive");
-      background: pdz.color("positive-container");
-      color: pdz.color("on-positive-container");
-    }
-  }
-
   &__handle {
     text-transform: none;
     max-width: 12rem;
@@ -425,30 +399,6 @@
     display: flex;
     flex-wrap: wrap;
     gap: pdz.space(2xs);
-  }
-
-  &__tab {
-    display: inline-flex;
-    align-items: center;
-    gap: pdz.space(2xs);
-    padding: pdz.space(3xs) pdz.space(sm);
-    border: 1px solid pdz.color("outline-variant");
-    border-radius: pdz.shape("corner-full");
-    background: pdz.color("surface-container-low");
-    color: pdz.color("on-surface-variant");
-    cursor: pointer;
-    @include text(label);
-
-    &--selected {
-      border-color: pdz.color("primary-border");
-      background: pdz.color("primary-subtle");
-      color: pdz.color("on-primary-container");
-    }
-  }
-
-  &__tab-score {
-    font-variant-numeric: tabular-nums;
-    font-weight: var(--pdz-font-weight-semibold);
   }
 
   &__body {

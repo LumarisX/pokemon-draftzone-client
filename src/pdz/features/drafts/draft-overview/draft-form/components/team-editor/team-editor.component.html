@@ -90,8 +90,11 @@
       }
 
       <button
-        type="button"
-        class="team-editor__btn team-editor__btn--ghost team-editor__import-toggle"
+        pdz-button
+        size="sm"
+        variant="ghost"
+        color="neutral"
+        class="team-editor__import-toggle"
         (click)="toggleImporting(true)"
       >
         <pdz-icon name="playlist_add" [size]="20"></pdz-icon>
@@ -290,8 +293,10 @@
                       </span>
                       <span class="type-picker__spacer"></span>
                       <button
-                        type="button"
-                        class="type-picker__btn"
+                        pdz-button
+                        size="xs"
+                        variant="ghost"
+                        color="neutral"
                         [disabled]="
                           monGroup.controls.tera.value.length ===
                           teraTypes.length
@@ -303,8 +308,10 @@
                         All
                       </button>
                       <button
-                        type="button"
-                        class="type-picker__btn"
+                        pdz-button
+                        size="xs"
+                        variant="ghost"
+                        color="neutral"
                         [disabled]="!monGroup.controls.tera.value.length"
                         (click)="setArrayControl(monGroup.controls.tera, [])"
                       >
@@ -340,8 +347,10 @@
                       </span>
                       <span class="type-picker__spacer"></span>
                       <button
-                        type="button"
-                        class="type-picker__btn"
+                        pdz-button
+                        size="xs"
+                        variant="ghost"
+                        color="neutral"
                         [disabled]="
                           monGroup.controls.z.value.length === zTypes.length
                         "
@@ -350,8 +359,10 @@
                         All
                       </button>
                       <button
-                        type="button"
-                        class="type-picker__btn"
+                        pdz-button
+                        size="xs"
+                        variant="ghost"
+                        color="neutral"
                         [disabled]="!monGroup.controls.z.value.length"
                         (click)="setArrayControl(monGroup.controls.z, [])"
                       >

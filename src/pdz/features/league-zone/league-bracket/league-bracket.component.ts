@@ -1,16 +1,18 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, computed, inject } from '@angular/core';
-import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
 import { StageBuilderComponent } from '../league-stage-builder/stage-builder.component';
 import { toBuilderDraft } from '../league-stage-builder/stage-builder.adapter';
 import { BuilderDraft } from '../league-stage-builder/stage-builder.model';
 import { LeagueZoneService } from '../league-zone.service';
 import { BracketTeamFlex } from './bracket.model';
+import { ChipComponent } from '@pdz/shared/data/chip/chip.component';
 
 @Component({
   selector: 'pdz-league-bracket',
-  imports: [CommonModule, IconComponent, LoadingComponent, StageBuilderComponent],
+  imports: [CommonModule, LoadingComponent, StageBuilderComponent,
+    ChipComponent,
+  ],
   templateUrl: './league-bracket.component.html',
   styleUrl: './league-bracket.component.scss',
 })

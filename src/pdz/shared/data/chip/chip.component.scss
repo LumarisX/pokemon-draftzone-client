@@ -1,0 +1,211 @@
+@use "sass:map";
+@use "pdz-theming" as pdz;
+
+$tones: (
+  neutral: (
+    solid: surface-inverse,
+    on-solid: on-surface-inverse,
+    soft: surface-container-high,
+    on-soft: on-surface-variant,
+    line: outline,
+  ),
+  primary: (
+    solid: primary,
+    on-solid: on-primary,
+    soft: primary-container,
+    on-soft: on-primary-container,
+    line: primary-border,
+  ),
+  success: (
+    solid: success,
+    on-solid: on-success,
+    soft: success-container,
+    on-soft: on-success-container,
+    line: success-border,
+  ),
+  warning: (
+    solid: warning,
+    on-solid: on-warning,
+    soft: warning-container,
+    on-soft: on-warning-container,
+    line: warning-border,
+  ),
+  danger: (
+    solid: danger,
+    on-solid: on-danger,
+    soft: danger-container,
+    on-soft: on-danger-container,
+    line: danger-border,
+  ),
+  info: (
+    solid: info,
+    on-solid: on-info,
+    soft: info-container,
+    on-soft: on-info-container,
+    line: info-border,
+  ),
+);
+
+$sizes: (
+  sm: (
+    height: 1.375rem,
+    pad: pdz.space(xs),
+    gap: pdz.space(3xs),
+    role: label,
+  ),
+  md: (
+    height: 1.75rem,
+    pad: pdz.space(sm),
+    gap: pdz.space(2xs),
+    role: body-sm,
+  ),
+);
+
+:host {
+  --pdz-chip-solid: #{pdz.color(surface-inverse)};
+  --pdz-chip-on-solid: #{pdz.color(on-surface-inverse)};
+  --pdz-chip-soft: #{pdz.color(surface-container-high)};
+  --pdz-chip-on-soft: #{pdz.color(on-surface-variant)};
+  --pdz-chip-line: #{pdz.color(outline)};
+
+  display: inline-flex;
+  align-items: center;
+  max-width: 100%;
+  border: 1px solid transparent;
+  border-radius: pdz.shape(corner-full);
+  line-height: 1;
+  vertical-align: middle;
+  overflow: hidden;
+}
+
+@each $name, $tokens in $tones {
+  :host([data-tone="#{$name}"]) {
+    --pdz-chip-solid: #{pdz.color(map.get($tokens, solid))};
+    --pdz-chip-on-solid: #{pdz.color(map.get($tokens, on-solid))};
+    --pdz-chip-soft: #{pdz.color(map.get($tokens, soft))};
+    --pdz-chip-on-soft: #{pdz.color(map.get($tokens, on-soft))};
+    --pdz-chip-line: #{pdz.color(map.get($tokens, line))};
+  }
+}
+
+:host([data-variant="solid"]) {
+  background-color: var(--pdz-chip-solid);
+  color: var(--pdz-chip-on-solid);
+}
+
+:host([data-variant="soft"]) {
+  background-color: var(--pdz-chip-soft);
+  color: var(--pdz-chip-on-soft);
+}
+
+:host([data-variant="outline"]) {
+  border-color: var(--pdz-chip-line);
+  color: var(--pdz-chip-on-soft);
+}
+
+:host(.pdz-chip--selected) {
+  border-color: var(--pdz-chip-line);
+  box-shadow: inset 0 0 0 1px var(--pdz-chip-line);
+}
+
+:host(.pdz-chip--disabled) {
+  opacity: 0.6;
+}
+
+.pdz-chip__action {
+  display: inline-flex;
+  align-items: center;
+  min-width: 0;
+  border: none;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: inherit;
+}
+
+.pdz-chip__action:not(.pdz-chip__action--static) {
+  cursor: pointer;
+
+  &:hover:not(:disabled) {
+    background-color: pdz.color-rgba(on-surface, 0.08);
+  }
+
+  &:focus-visible {
+    outline: 2px solid pdz.color(primary-accent);
+    outline-offset: -2px;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+  }
+}
+
+@each $name, $s in $sizes {
+  :host([data-size="#{$name}"]) {
+    min-height: map.get($s, height);
+    @include pdz.text(map.get($s, role), $family: false);
+  }
+
+  :host([data-size="#{$name}"]) .pdz-chip__action {
+    gap: map.get($s, gap);
+    padding: 0 map.get($s, pad);
+  }
+
+  :host([data-size="#{$name}"]) .pdz-chip__remove {
+    width: map.get($s, height);
+  }
+
+  // The body loses its trailing padding when a remove control follows it, so
+  // the two read as one chip rather than two adjacent targets.
+  :host([data-size="#{$name}"]) .pdz-chip__action:has(+ .pdz-chip__remove) {
+    padding-inline-end: map.get($s, gap);
+  }
+}
+
+.pdz-chip__icon {
+  flex: none;
+}
+
+.pdz-chip__label {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pdz-chip__remove {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  align-self: stretch;
+  padding: 0;
+  border: none;
+  background: none;
+  color: inherit;
+  cursor: pointer;
+  opacity: 0.7;
+  transition: opacity pdz.duration(fast) pdz.easing(standard),
+    background-color pdz.duration(fast) pdz.easing(standard);
+
+  &:hover:not(:disabled) {
+    opacity: 1;
+    background-color: pdz.color-rgba(on-surface, 0.08);
+  }
+
+  &:focus-visible {
+    outline: 2px solid pdz.color(primary-accent);
+    outline-offset: -2px;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+  }
+}
+
+@media (forced-colors: active) {
+  :host(.pdz-chip--selected) {
+    outline: 2px solid CanvasText;
+    outline-offset: -2px;
+  }
+}

@@ -31,28 +31,6 @@
     flex: 1;
   }
 
-  &__action {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: pdz.space(2xs) pdz.space(xs);
-    border: 1px solid pdz.color(outline-variant);
-    border-radius: pdz.shape(corner-sm);
-    background: transparent;
-    color: pdz.color(on-surface-variant);
-    cursor: pointer;
-    transition:
-      background pdz.duration(fast) pdz.easing(standard),
-      color pdz.duration(fast) pdz.easing(standard),
-      border-color pdz.duration(fast) pdz.easing(standard);
-
-    &:hover,
-    &.is-active {
-      background: pdz.color(primary-container);
-      border-color: pdz.color(primary-border);
-      color: pdz.color(on-primary-container);
-    }
-  }
 }
 
 .bookmarks-backdrop {

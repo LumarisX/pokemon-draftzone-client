@@ -76,10 +76,17 @@
             </div>
           </div>
         }
-        <button type="button" class="match-add" (click)="addMatch()">
-          <div class="match-add__inner">
-            <pdz-icon name="add" size="sm" ariaLabel="Add game"></pdz-icon>
-          </div>
+        <button
+          pdz-button
+          iconOnly
+          size="sm"
+          variant="outlined"
+          color="neutral"
+          class="match-add"
+          aria-label="Add game"
+          (click)="addMatch()"
+        >
+          <pdz-icon name="add" size="sm"></pdz-icon>
         </button>
       </div>
 

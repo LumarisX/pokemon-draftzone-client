@@ -5,8 +5,11 @@
       <div class="toolbar__spacer"></div>
       <button
         type="button"
-        class="toolbar__action"
-        [class.is-active]="bookmarksPanelOpen"
+        pdz-button
+        iconOnly
+        size="sm"
+        [variant]="bookmarksPanelOpen ? 'tonal' : 'ghost'"
+        [color]="bookmarksPanelOpen ? 'primary' : 'neutral'"
         (click)="openBookmarksPanel()"
         aria-label="Saved searches"
       >
@@ -60,7 +63,8 @@
               </div>
               <div class="bookmarks-panel__item">
                 <button
-                  type="button"
+                  pdz-card
+                  padding="sm"
                   class="bookmarks-panel__load"
                   (click)="loadSavedSearch(search)"
                 >

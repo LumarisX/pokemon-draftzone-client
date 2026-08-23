@@ -6,10 +6,10 @@
 <div class="qd-option-container">
   @for (template of formatTemplates; track $index) {
     <button
+      pdz-card
+      padding="sm"
       class="qd-template qd-option"
-      [ngClass]="{
-        selected: $index == selectedTemplate,
-      }"
+      [selected]="$index == selectedTemplate"
       (click)="selectedTemplate = $index"
     >
       <div class="qd-header">Team of {{ getTotalPicks(template) }}</div>

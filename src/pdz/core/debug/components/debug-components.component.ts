@@ -55,6 +55,11 @@ import { SortHeaderComponent } from '@pdz/shared/data/sort/sort-header.component
 import { Sort, SortDirective } from '@pdz/shared/data/sort/sort.directive';
 import { SelectOptionComponent } from '@pdz/shared/dropdowns/select/select-option.component';
 import { SelectComponent } from '@pdz/shared/dropdowns/select/select.component';
+import {
+  ChipComponent,
+  ChipTone,
+  ChipVariant,
+} from '@pdz/shared/data/chip/chip.component';
 
 const THEME_ATTR = 'pdz-theme';
 const MODE_ATTR = 'pdz-theme-mode';
@@ -89,6 +94,7 @@ const MODE_ATTR = 'pdz-theme-mode';
     SortHeaderComponent,
     SelectComponent,
     SelectOptionComponent,
+    ChipComponent,
   ],
   templateUrl: './debug-components.component.html',
   styleUrl: './debug-components.component.scss',
@@ -235,6 +241,36 @@ export class DebugComponentsComponent {
       label: 'Sceptile',
       description: 'Grass',
     },
+  ];
+
+  readonly chipTones: ChipTone[] = [
+    'neutral',
+    'primary',
+    'success',
+    'warning',
+    'danger',
+    'info',
+  ];
+  readonly chipVariants: ChipVariant[] = ['soft', 'solid', 'outline'];
+
+  private readonly allChips = ['Stealth Rock', 'Spikes', 'Toxic'];
+  readonly demoChips = signal(this.allChips);
+  readonly activeChip = signal<string | null>(null);
+
+  dropChip(chip: string) {
+    this.demoChips.update((chips) => chips.filter((c) => c !== chip));
+  }
+
+  resetChips() {
+    this.demoChips.set(this.allChips);
+  }
+
+  readonly selectedCard = signal('swiss');
+
+  readonly selectableCards = [
+    { id: 'swiss', name: 'Swiss', detail: 'Pairs on record, no elimination.' },
+    { id: 'rr', name: 'Round robin', detail: 'Everyone plays everyone.' },
+    { id: 'single', name: 'Single elim', detail: 'One loss and you are out.' },
   ];
 
   readonly tones: CardTone[] = ['lowest', 'low', 'default', 'high'];

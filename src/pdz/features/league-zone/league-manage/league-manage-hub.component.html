@@ -24,15 +24,15 @@
           </div>
           <div class="hub__chips">
             @if (isSignUpOpen()) {
-              <span class="chip chip--success">Sign-ups Open</span>
+              <pdz-chip tone="success">Sign-ups Open</pdz-chip>
             } @else {
-              <span class="chip chip--muted">Sign-ups Closed</span>
+              <pdz-chip>Sign-ups Closed</pdz-chip>
             }
             @if (isDraftActive()) {
-              <span class="chip chip--warning">Draft Active</span>
+              <pdz-chip tone="warning">Draft Active</pdz-chip>
             }
             @if (isSeasonActive()) {
-              <span class="chip chip--primary">Season Active</span>
+              <pdz-chip tone="primary">Season Active</pdz-chip>
             }
           </div>
         </div>

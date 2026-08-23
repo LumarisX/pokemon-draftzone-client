@@ -288,35 +288,6 @@
 
 // ─── Add tier ─────────────────────────────────────────────────────────────
 
-.add-tier-button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: pdz.space(lg);
-  min-width: 280px;
-  background-color: pdz.color(surface);
-  border: 2px dashed pdz.color(outline);
-  border-radius: pdz.shape(corner-md);
-  cursor: pointer;
-  transition:
-    background-color pdz.duration(base) pdz.easing(standard),
-    border-color pdz.duration(base) pdz.easing(standard),
-    color pdz.duration(base) pdz.easing(standard);
-  color: pdz.color(on-surface-variant);
-  flex-shrink: 0;
-
-  &:hover {
-    background-color: pdz.color(primary-container);
-    border-color: pdz.color(primary-accent);
-    color: pdz.color(on-primary-container);
-  }
-
-  &:focus-visible {
-    outline: 2px solid pdz.color(primary-accent);
-    outline-offset: 2px;
-  }
-}
-
 .unsaved-indicator {
   display: inline-flex;
   align-items: center;

@@ -60,38 +60,6 @@
   }
 }
 
-.bucket-toggle {
-  display: inline-flex;
-  border: 1px solid pdz.color(outline-variant);
-  border-radius: pdz.shape(corner-sm);
-  overflow: hidden;
-
-  button {
-    appearance: none;
-    border: none;
-    background: transparent;
-    padding: pdz.space(sm) pdz.space(lg);
-    font-size: pdz.font-size(sm);
-    text-transform: capitalize;
-    cursor: pointer;
-    color: pdz.color(on-surface);
-    transition: background pdz.duration(base) pdz.easing(standard);
-
-    &:not(:last-child) {
-      border-right: 1px solid pdz.color(outline-variant);
-    }
-
-    &:hover {
-      background: pdz.color(surface-container-high);
-    }
-
-    &.active {
-      background: pdz.color(primary);
-      color: pdz.color(on-primary);
-    }
-  }
-}
-
 .charts-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));

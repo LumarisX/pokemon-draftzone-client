@@ -235,32 +235,6 @@ $stage-header-height: 2.25rem;
     color: pdz.color("on-surface-variant");
   }
 
-  &__visibility {
-    display: inline-flex;
-    align-items: center;
-    gap: pdz.space(3xs);
-    padding: pdz.space(3xs) pdz.space(2xs);
-    border: none;
-    background: none;
-    border-radius: pdz.shape("corner-xs");
-    color: pdz.color("on-surface-variant");
-    cursor: pointer;
-    opacity: 0;
-    transition: opacity pdz.duration(fast) pdz.easing(standard);
-
-    &:hover {
-      background: pdz.color("primary-container-hover");
-      color: pdz.color("on-primary-container");
-    }
-
-    &--hidden {
-      @include text(label);
-      opacity: 1;
-      background: pdz.color("warning-container");
-      color: pdz.color("on-warning-container");
-    }
-  }
-
   &__header:hover &__visibility,
   &__header:focus-within &__visibility {
     opacity: 1;

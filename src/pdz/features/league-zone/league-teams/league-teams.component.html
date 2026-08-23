@@ -20,21 +20,14 @@
     @if (drafts) {
       @for (group of drafts; track groupKey(group)) {
         <section class="draft">
-          <button
-            type="button"
-            class="draft__header"
-            [class.draft__header--collapsed]="!isOpen(group)"
-            [attr.aria-expanded]="isOpen(group)"
-            (click)="toggle(group)"
+          <pdz-disclosure
+            [heading]="group.name"
+            [open]="isOpen(group)"
+            (openChange)="toggle(group)"
           >
-            <pdz-icon
-              class="draft__toggle-icon"
-              [name]="isOpen(group) ? 'keyboard_arrow_down' : 'keyboard_arrow_right'"
-            ></pdz-icon>
-            <h2 class="draft__title">{{ group.name }}</h2>
-            <span class="draft__count">{{ group.teams.length }}</span>
-          </button>
-          @if (isOpen(group)) {
+            <span pdz-disclosure-trailing class="draft__count">
+              {{ group.teams.length }}
+            </span>
             <div class="draft__teams">
               @for (team of group.teams; track team.id) {
                 <pdz-league-team-card [teamDetails]="team"></pdz-league-team-card>
@@ -42,7 +35,7 @@
                 <div class="teams__empty">No teams added to this division</div>
               }
             </div>
-          }
+          </pdz-disclosure>
         </section>
       } @empty {
         <div class="teams__empty">No teams have been added yet</div>

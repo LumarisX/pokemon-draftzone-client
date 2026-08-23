@@ -58,7 +58,9 @@ let nextSegmentedId = 0;
           @if (option.icon(); as icon) {
             <pdz-icon aria-hidden="true" [name]="icon" [size]="16" />
           }
-          <span class="pdz-segmented__label">{{ option.label() }}</span>
+          @if (option.label(); as label) {
+            <span class="pdz-segmented__label">{{ label }}</span>
+          }
           @if (option.trailingIcon(); as trailing) {
             <pdz-icon aria-hidden="true" [name]="trailing" [size]="16" />
           }

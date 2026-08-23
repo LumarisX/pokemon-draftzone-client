@@ -27,6 +27,7 @@ import {
 } from './pokemon-builder/pokemon-builder.model';
 import { TeambuilderService } from './teambuilder.service';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
+import { CardComponent } from '@pdz/shared/data/card/card.component';
 
 type Tab = number | 'add' | 'export';
 
@@ -41,6 +42,7 @@ type Tab = number | 'add' | 'export';
     MatchupPokemonBuilderComponent,
     IconComponent,
     ButtonComponent,
+    CardComponent,
   ],
 })
 export class MatchupTeambuilderComponent implements OnInit, OnDestroy {

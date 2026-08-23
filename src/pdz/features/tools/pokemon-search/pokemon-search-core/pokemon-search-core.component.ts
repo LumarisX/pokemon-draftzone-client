@@ -51,6 +51,11 @@ import { SelectOptionComponent } from '@pdz/shared/dropdowns/select/select-optio
 import { SelectComponent } from '@pdz/shared/dropdowns/select/select.component';
 import { SegmentedOptionComponent } from '@pdz/shared/inputs/segmented/segmented-option.component';
 import { SegmentedComponent } from '@pdz/shared/inputs/segmented/segmented.component';
+import { CardComponent } from '@pdz/shared/data/card/card.component';
+import { MenuComponent } from '@pdz/shared/menu/menu.component';
+import { MenuItemComponent } from '@pdz/shared/menu/menu-item.component';
+import { MenuTriggerDirective } from '@pdz/shared/menu/menu-trigger.directive';
+import { ChipComponent } from '@pdz/shared/data/chip/chip.component';
 
 @Component({
   selector: 'pdz-pokemon-search-core',
@@ -66,6 +71,11 @@ import { SegmentedComponent } from '@pdz/shared/inputs/segmented/segmented.compo
     SelectOptionComponent,
     SegmentedComponent,
     SegmentedOptionComponent,
+    CardComponent,
+    MenuComponent,
+    MenuItemComponent,
+    MenuTriggerDirective,
+    ChipComponent,
   ],
   templateUrl: './pokemon-search-core.component.html',
   styleUrl: './pokemon-search-core.component.scss',
@@ -109,7 +119,6 @@ export class PokemonSearchCoreComponent implements OnInit, OnDestroy {
   drawerOpen = false;
   editingFilterIndex: number | null = null;
   draftFilter: DraftFilter | null = null;
-  fieldMenuOpen = false;
 
   readonly sortFieldOptions: {
     value: string;
@@ -327,17 +336,7 @@ export class PokemonSearchCoreComponent implements OnInit, OnDestroy {
     this.updateURLQuery({ mode: this.mode, searches: [] });
   }
 
-  openFieldMenu(): void {
-    this.fieldMenuOpen = true;
-    this.closeDrawer();
-  }
-
-  closeFieldMenu(): void {
-    this.fieldMenuOpen = false;
-  }
-
   selectFieldForNewFilter(fieldKey: SearchField): void {
-    this.fieldMenuOpen = false;
     const field = this.getFieldDefinition(fieldKey);
     this.draftFilter = {
       field: field.key,

@@ -5,6 +5,7 @@ import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 import { FormatSelectComponent } from '@pdz/shared/dropdowns/format-select/format.component';
 import { RulesetSelectComponent } from '@pdz/shared/dropdowns/ruleset-select/ruleset.component';
 import { SliderComponent } from '@pdz/shared/inputs/slider/slider.component';
+import { CardComponent } from '@pdz/shared/data/card/card.component';
 
 export type QDSettings = {
   rerolls: number;
@@ -27,6 +28,7 @@ type Template = {
     RulesetSelectComponent,
     SliderComponent,
     ButtonComponent,
+    CardComponent,
   ],
   templateUrl: './quick-draft-setting.component.html',
   styleUrls: [
