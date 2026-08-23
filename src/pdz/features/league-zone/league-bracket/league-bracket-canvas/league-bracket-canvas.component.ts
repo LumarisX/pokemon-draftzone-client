@@ -48,6 +48,8 @@ import {
   MATCH_GAP,
   computeBracketLayout,
 } from './bracket-layout';
+import { SelectOptionComponent } from '@pdz/shared/dropdowns/select/select-option.component';
+import { SelectComponent } from '@pdz/shared/dropdowns/select/select.component';
 import { BracketTheme, resolveBracketTheme } from './bracket-theme-colors';
 import {
   MAX_SCALE,
@@ -134,7 +136,7 @@ interface PointerSession {
  */
 @Component({
   selector: 'pdz-league-bracket-canvas',
-  imports: [CommonModule],
+  imports: [CommonModule, SelectComponent, SelectOptionComponent],
   templateUrl: './league-bracket-canvas.component.html',
   styleUrl: './league-bracket-canvas.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -900,7 +902,7 @@ export class LeagueBracketCanvasComponent
     }
   }
 
-  onEditorSeedChange(slotIndex: 0 | 1, seed: string): void {
+  onEditorSeedChange(slotIndex: 0 | 1, seed: number): void {
     const slot = this.matchEditor?.slots[slotIndex];
     if (slot) slot.seed = Number(seed);
   }

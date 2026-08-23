@@ -169,12 +169,12 @@
       <input pdz-input type="number" value="120" />
     </label>
 
-    <label pdz-field label="Format">
-      <select pdz-input>
-        <option>Singles</option>
-        <option>VGC</option>
-      </select>
-    </label>
+    <div pdz-field label="Format">
+      <pdz-select aria-label="Format" value="singles">
+        <pdz-option value="singles" label="Singles" />
+        <pdz-option value="vgc" label="VGC" />
+      </pdz-select>
+    </div>
 
     <label pdz-field label="Rules" hint="Markdown supported">
       <textarea pdz-input rows="3" placeholder="House rules..."></textarea>
@@ -207,6 +207,88 @@
       Touch the auto-validated field
     </button>
   </div>
+</section>
+
+<section class="section">
+  <h2 class="section__title">Select</h2>
+  <div class="fields">
+    <div pdz-field label="Default">
+      <pdz-select aria-label="Default select" [(value)]="selectValue">
+        @for (option of selectOptions; track option.value) {
+          <pdz-option [value]="option.value" [label]="option.label" />
+        }
+      </pdz-select>
+    </div>
+
+    <div pdz-field label="Grouped" hint="Group name shows in the trigger">
+      <pdz-select aria-label="Grouped select" value="ou">
+        <pdz-option group="Singles" value="ou" label="OU" />
+        <pdz-option group="Singles" value="uu" label="UU" />
+        <pdz-option group="Doubles" value="vgc" label="VGC Reg H" />
+        <pdz-option group="Doubles" value="dou" label="Doubles OU" />
+      </pdz-select>
+    </div>
+
+    <div pdz-field label="Searchable" hint="searchable — filters as you type">
+      <pdz-select
+        searchable
+        aria-label="Searchable select"
+        searchPlaceholder="Search Pokémon"
+        [showGroupInTrigger]="false"
+      >
+        @for (option of searchableOptions; track option.value) {
+          <pdz-option
+            [group]="option.group"
+            [value]="option.value"
+            [label]="option.label"
+            [description]="option.description"
+          />
+        }
+      </pdz-select>
+    </div>
+
+    <div pdz-field label="With descriptions">
+      <pdz-select aria-label="Descriptive select" value="swiss">
+        <pdz-option
+          value="swiss"
+          label="Swiss"
+          description="Pairs on record, no elimination"
+        />
+        <pdz-option
+          value="rr"
+          label="Round robin"
+          description="Everyone plays everyone"
+        />
+        <pdz-option
+          value="single"
+          label="Single elimination"
+          description="One loss and you are out"
+        />
+      </pdz-select>
+    </div>
+
+    <div pdz-field label="Small" hint="size=sm">
+      <pdz-select size="sm" aria-label="Small select" value="a">
+        <pdz-option value="a" label="Compact option" />
+        <pdz-option value="b" label="Another option" />
+      </pdz-select>
+    </div>
+
+    <div pdz-field label="Invalid">
+      <pdz-select invalid aria-label="Invalid select" placeholder="Pick one" />
+    </div>
+
+    <div pdz-field label="Disabled">
+      <pdz-select [disabled]="true" aria-label="Disabled select" value="a">
+        <pdz-option value="a" label="Locked" />
+      </pdz-select>
+    </div>
+
+    <div pdz-field label="Empty">
+      <pdz-select aria-label="Empty select" />
+    </div>
+  </div>
+  <p class="section__hint">Selected: {{ selectValue() ?? "—" }}</p>
 </section>
 
 <section class="section">

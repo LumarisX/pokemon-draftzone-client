@@ -53,6 +53,8 @@ import { FieldComponent } from '@pdz/shared/inputs/field/field.component';
 import { InputDirective } from '@pdz/shared/inputs/field/input.directive';
 import { SortHeaderComponent } from '@pdz/shared/data/sort/sort-header.component';
 import { Sort, SortDirective } from '@pdz/shared/data/sort/sort.directive';
+import { SelectOptionComponent } from '@pdz/shared/dropdowns/select/select-option.component';
+import { SelectComponent } from '@pdz/shared/dropdowns/select/select.component';
 
 const THEME_ATTR = 'pdz-theme';
 const MODE_ATTR = 'pdz-theme-mode';
@@ -85,6 +87,8 @@ const MODE_ATTR = 'pdz-theme-mode';
     SlideToggleComponent,
     SortDirective,
     SortHeaderComponent,
+    SelectComponent,
+    SelectOptionComponent,
   ],
   templateUrl: './debug-components.component.html',
   styleUrl: './debug-components.component.scss',
@@ -183,6 +187,54 @@ export class DebugComponentsComponent {
   touchRequired() {
     this.requiredCtrl.markAsTouched();
   }
+
+  readonly selectValue = signal<unknown>('ou');
+
+  readonly selectOptions = [
+    { value: 'ou', label: 'OU' },
+    { value: 'uu', label: 'UU' },
+    { value: 'ru', label: 'RU' },
+    { value: 'nu', label: 'NU' },
+  ];
+
+  readonly searchableOptions = [
+    {
+      group: 'Fire',
+      value: 'charizard',
+      label: 'Charizard',
+      description: 'Fire · Flying',
+    },
+    {
+      group: 'Fire',
+      value: 'arcanine',
+      label: 'Arcanine',
+      description: 'Fire',
+    },
+    {
+      group: 'Water',
+      value: 'blastoise',
+      label: 'Blastoise',
+      description: 'Water',
+    },
+    {
+      group: 'Water',
+      value: 'gyarados',
+      label: 'Gyarados',
+      description: 'Water · Flying',
+    },
+    {
+      group: 'Grass',
+      value: 'venusaur',
+      label: 'Venusaur',
+      description: 'Grass · Poison',
+    },
+    {
+      group: 'Grass',
+      value: 'sceptile',
+      label: 'Sceptile',
+      description: 'Grass',
+    },
+  ];
 
   readonly tones: CardTone[] = ['lowest', 'low', 'default', 'high'];
   readonly cardColors: CardColor[] = [

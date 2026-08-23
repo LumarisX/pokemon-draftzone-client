@@ -16,12 +16,12 @@
 
     <div class="edit-dialog__main">
       <label pdz-field label="Current Tier">
-        <select pdz-input formControlName="currentTier">
-          <option [ngValue]="null">Untiered</option>
+        <pdz-select aria-label="Tier" formControlName="currentTier">
+          <pdz-option [value]="null" label="Untiered" />
           @for (tier of data.tiers; track tier.name) {
-            <option [ngValue]="tier.name">{{ tier.name }}</option>
+            <pdz-option [value]="tier.name" [label]="tier.name" />
           }
-        </select>
+        </pdz-select>
       </label>
 
       <section class="edit-dialog__section">

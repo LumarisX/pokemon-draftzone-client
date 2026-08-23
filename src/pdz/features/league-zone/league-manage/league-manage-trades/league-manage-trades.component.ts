@@ -16,6 +16,8 @@ import {
   take,
   takeUntil,
 } from 'rxjs';
+import { SelectOptionComponent } from '@pdz/shared/dropdowns/select/select-option.component';
+import { SelectComponent } from '@pdz/shared/dropdowns/select/select.component';
 import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
 import { TierPokemonAddon } from '../../../tier-lists/tier-list.model';
 import { LeagueManageService } from '../league-manage.service';
@@ -68,6 +70,8 @@ export interface TradeData {
     LoadingComponent,
     RouterModule,
     StageSwitcherComponent,
+    SelectComponent,
+    SelectOptionComponent,
   ],
   templateUrl: './league-manage-trades.component.html',
   styleUrl: './league-manage-trades.component.scss',

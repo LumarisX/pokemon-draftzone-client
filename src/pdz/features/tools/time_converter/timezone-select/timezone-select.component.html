@@ -3,95 +3,30 @@
     {{ label() }}
   </label>
 }
-<button
-  type="button"
-  class="timezone-select__trigger"
-  [class.timezone-select__trigger--open]="isOpen"
-  role="combobox"
-  [attr.aria-expanded]="isOpen"
-  [attr.aria-labelledby]="selectId + '-label'"
-  cdkOverlayOrigin
-  #trigger="cdkOverlayOrigin"
-  #triggerEl
-  (click)="toggle()"
-  (keydown)="handleTriggerKeydown($event)"
+<pdz-select
+  searchable
+  [showGroupInTrigger]="false"
+  searchPlaceholder="Search time zones"
+  placeholder="Select a time zone..."
+  [aria-labelledby]="label() ? selectId + '-label' : undefined"
+  [aria-label]="label() ? undefined : 'Time zone'"
+  [value]="selectedKey()"
+  (valueChange)="onKeyChange($event)"
 >
-  <span class="timezone-select__value" [title]="value()?.name ?? ''">
-    {{ triggerLabel }}
-  </span>
-  <pdz-icon
-    class="timezone-select__chevron"
-    name="expand_more"
-    [size]="20"
-  ></pdz-icon>
-</button>
-
-<ng-template
-  cdkConnectedOverlay
-  [cdkConnectedOverlayOrigin]="trigger"
-  [cdkConnectedOverlayOpen]="isOpen"
-  [cdkConnectedOverlayWidth]="triggerEl.offsetWidth"
-  [cdkConnectedOverlayOffsetY]="4"
-  [cdkConnectedOverlayHasBackdrop]="true"
-  cdkConnectedOverlayBackdropClass="cdk-overlay-transparent-backdrop"
-  (backdropClick)="close()"
-  (detach)="close()"
->
-  <div class="timezone-select__panel">
-    <div class="timezone-select__search">
-      <pdz-icon
-        class="timezone-select__search-icon"
-        name="search"
-        [size]="18"
-      ></pdz-icon>
-      <input
-        #searchEl
-        type="text"
-        class="timezone-select__search-input"
-        placeholder="Search time zones"
-        [(ngModel)]="search"
-        (ngModelChange)="applyFilter()"
-        (keydown)="handleSearchKeydown($event)"
-      />
-    </div>
-    <div class="timezone-select__list" role="listbox">
-      @if (filteredShort.length) {
-        <div class="timezone-select__group-label">Abbreviated</div>
-        @for (tz of filteredShort; track tz.name + tz.short) {
-          <button
-            type="button"
-            class="timezone-select__option"
-            role="option"
-            [class.timezone-select__option--selected]="isSelected(tz)"
-            [class.timezone-select__option--highlighted]="highlighted === tz"
-            [attr.aria-selected]="isSelected(tz)"
-            (click)="select(tz)"
-          >
-            <span class="timezone-select__option-name">{{ tz.short }}</span>
-            <span class="timezone-select__option-meta">{{ tz.utc }}</span>
-          </button>
-        }
-      }
-      @if (filteredZones.length) {
-        <div class="timezone-select__group-label">Locations</div>
-        @for (tz of filteredZones; track tz.name) {
-          <button
-            type="button"
-            class="timezone-select__option"
-            role="option"
-            [class.timezone-select__option--selected]="isSelected(tz)"
-            [class.timezone-select__option--highlighted]="highlighted === tz"
-            [attr.aria-selected]="isSelected(tz)"
-            (click)="select(tz)"
-          >
-            <span class="timezone-select__option-name">{{ tz.name }}</span>
-            <span class="timezone-select__option-meta">{{ tz.short }}</span>
-          </button>
-        }
-      }
-      @if (!filteredShort.length && !filteredZones.length) {
-        <div class="timezone-select__empty">No time zones match.</div>
-      }
-    </div>
-  </div>
-</ng-template>
+  @for (tz of shortZones(); track tz.name + tz.short) {
+    <pdz-option
+      group="Abbreviated"
+      [value]="key(tz)"
+      [label]="tz.short ?? tz.name"
+      [description]="tz.utc"
+    />
+  }
+  @for (tz of zones(); track tz.name) {
+    <pdz-option
+      group="Locations"
+      [value]="key(tz)"
+      [label]="tz.name"
+      [description]="tz.short ? tz.short + ' · ' + tz.utc : tz.utc"
+    />
+  }
+</pdz-select>

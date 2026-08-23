@@ -35,46 +35,55 @@
 
           <div class="filter-group">
             <label class="filter-group__label">Format</label>
-            <select [(ngModel)]="filter.format" class="filter-group__select">
-              <option value="">Any</option>
+            <pdz-select size="sm" aria-label="Format" [(ngModel)]="filter.format">
+              <pdz-option value="" label="Any" />
               @for (format of formats; track format) {
-                <option [value]="format">{{ format }}</option>
+                <pdz-option [value]="format" [label]="format" />
               }
-            </select>
+            </pdz-select>
           </div>
 
           <div class="filter-group">
             <label class="filter-group__label">Ruleset</label>
-            <select [(ngModel)]="filter.ruleset" class="filter-group__select">
-              <option value="">Any</option>
+            <pdz-select
+              size="sm"
+              aria-label="Ruleset"
+              [(ngModel)]="filter.ruleset"
+            >
+              <pdz-option value="" label="Any" />
               @for (ruleset of rulesets; track ruleset) {
-                <option [value]="ruleset">{{ ruleset }}</option>
+                <pdz-option [value]="ruleset" [label]="ruleset" />
               }
-            </select>
+            </pdz-select>
           </div>
 
           <div class="filter-group">
             <label class="filter-group__label">Platform</label>
-            <select [(ngModel)]="filter.platform" class="filter-group__select">
-              <option value="">Any</option>
-              <option value="Pokémon Showdown">Pokémon Showdown</option>
-              <option value="Scarlet/Violet">Scarlet/Violet</option>
-              <option value="Pokémon Champions">Pokémon Champions</option>
-            </select>
+            <pdz-select
+              size="sm"
+              aria-label="Platform"
+              [(ngModel)]="filter.platform"
+            >
+              <pdz-option value="" label="Any" />
+              <pdz-option value="Pokémon Showdown" label="Pokémon Showdown" />
+              <pdz-option value="Scarlet/Violet" label="Scarlet/Violet" />
+              <pdz-option value="Pokémon Champions" label="Pokémon Champions" />
+            </pdz-select>
           </div>
 
           <div class="filter-group">
             <label class="filter-group__label">Skill Level</label>
-            <select
+            <pdz-select
+              size="sm"
+              aria-label="Skill Level"
               [(ngModel)]="filter.skillLevel"
-              class="filter-group__select"
             >
-              <option value="any">Any</option>
-              <option value="0">Amateur</option>
-              <option value="1">Intermediate</option>
-              <option value="2">Advanced</option>
-              <option value="3">Expert</option>
-            </select>
+              <pdz-option value="any" label="Any" />
+              <pdz-option value="0" label="Amateur" />
+              <pdz-option value="1" label="Intermediate" />
+              <pdz-option value="2" label="Advanced" />
+              <pdz-option value="3" label="Expert" />
+            </pdz-select>
           </div>
 
           <div class="dropdown-actions">
@@ -92,10 +101,10 @@
         <div class="dropdown" (click)="$event.stopPropagation()">
           <div class="filter-group">
             <label class="filter-group__label">Sort</label>
-            <select [(ngModel)]="sortOption" class="sort-select">
-              <option value="createdAt">Created At</option>
-              <option value="closesAt">Closes At</option>
-            </select>
+            <pdz-select size="sm" aria-label="Sort" [(ngModel)]="sortOption">
+              <pdz-option value="createdAt" label="Created At" />
+              <pdz-option value="closesAt" label="Closes At" />
+            </pdz-select>
           </div>
         </div>
       }

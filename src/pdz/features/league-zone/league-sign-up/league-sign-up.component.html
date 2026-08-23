@@ -150,16 +150,16 @@
             <label for="timezone" class="form-field__label">
               Time Zone <span class="required">*</span>
             </label>
-            <select
-              id="timezone"
-              class="form-field__input"
+            <pdz-select
+              searchable
+              aria-label="Timezone"
+              placeholder="Select a timezone"
               formControlName="timezone"
             >
-              <option value="" disabled>Select a timezone</option>
               @for (tz of timezones; track $index) {
-                <option [value]="tz">{{ tz }}</option>
+                <pdz-option [value]="tz" [label]="tz" />
               }
-            </select>
+            </pdz-select>
           </div>
         </div>
 

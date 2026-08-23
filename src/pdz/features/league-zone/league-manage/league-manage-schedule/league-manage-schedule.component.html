@@ -170,22 +170,30 @@
                     </div>
                     <div class="field">
                       <label>Matchup Outcome</label>
-                      <select formControlName="matchupWinner">
-                        <option [ngValue]="null">---</option>
-                        <option value="side1">
-                          Win: {{ matchup.team1.name }}
-                        </option>
-                        <option value="side2">
-                          Win: {{ matchup.team2.name }}
-                        </option>
-                        <option value="side1ffw">
-                          Forfeit Win: {{ matchup.team1.name }}
-                        </option>
-                        <option value="side2ffw">
-                          Forfeit Win: {{ matchup.team2.name }}
-                        </option>
-                        <option value="dffl">Double Forfeit Loss</option>
-                      </select>
+                      <pdz-select
+                        size="sm"
+                        aria-label="Matchup winner"
+                        formControlName="matchupWinner"
+                      >
+                        <pdz-option [value]="null" label="---" />
+                        <pdz-option
+                          value="side1"
+                          [label]="'Win: ' + matchup.team1.name"
+                        />
+                        <pdz-option
+                          value="side2"
+                          [label]="'Win: ' + matchup.team2.name"
+                        />
+                        <pdz-option
+                          value="side1ffw"
+                          [label]="'Forfeit Win: ' + matchup.team1.name"
+                        />
+                        <pdz-option
+                          value="side2ffw"
+                          [label]="'Forfeit Win: ' + matchup.team2.name"
+                        />
+                        <pdz-option value="dffl" label="Double Forfeit Loss" />
+                      </pdz-select>
                     </div>
                   </div>
 
@@ -212,22 +220,28 @@
                       </div>
                       <div class="field">
                         <label>Advances</label>
-                        <select
+                        <pdz-select
+                          size="sm"
+                          aria-label="Advancement"
                           [value]="advancementValue(matchup)"
                           [disabled]="isSettingAdvancement(matchup.id)"
-                          (change)="
-                            setAdvancement(matchup, $any($event.target).value)
-                          "
+                          (valueChange)="setAdvancement(matchup, $any($event))"
                         >
-                          <option value="">Undecided</option>
+                          <pdz-option value="" label="Undecided" />
                           @if (matchup.team1.id) {
-                            <option value="side1">{{ matchup.team1.name }}</option>
+                            <pdz-option
+                              value="side1"
+                              [label]="matchup.team1.name"
+                            />
                           }
                           @if (matchup.team2.id) {
-                            <option value="side2">{{ matchup.team2.name }}</option>
+                            <pdz-option
+                              value="side2"
+                              [label]="matchup.team2.name"
+                            />
                           }
-                          <option value="none">Nobody</option>
-                        </select>
+                          <pdz-option value="none" label="Nobody" />
+                        </pdz-select>
                       </div>
                       @if (getAdvancementError(matchup.id); as advanceError) {
                         <div class="advancement__error">{{ advanceError }}</div>
@@ -436,15 +450,21 @@
                             </div>
                             <div class="field">
                               <label>Match Winner</label>
-                              <select formControlName="winner">
-                                <option [ngValue]="null">Unassigned</option>
-                                <option value="side1">
-                                  {{ matchup.team1.name }}
-                                </option>
-                                <option value="side2">
-                                  {{ matchup.team2.name }}
-                                </option>
-                              </select>
+                              <pdz-select
+                                size="sm"
+                                aria-label="Game winner"
+                                formControlName="winner"
+                              >
+                                <pdz-option [value]="null" label="Unassigned" />
+                                <pdz-option
+                                  value="side1"
+                                  [label]="matchup.team1.name"
+                                />
+                                <pdz-option
+                                  value="side2"
+                                  [label]="matchup.team2.name"
+                                />
+                              </pdz-select>
                             </div>
                           </div>
 
@@ -483,12 +503,25 @@
                                       getPokemonLabel(pokemon.controls.id.value)
                                     }}
                                   </span>
-                                  <select formControlName="status">
-                                    <option [ngValue]="null">-</option>
-                                    <option value="brought">Brought</option>
-                                    <option value="survived">Survived</option>
-                                    <option value="fainted">Fainted</option>
-                                  </select>
+                                  <pdz-select
+                                    size="sm"
+                                    aria-label="Pokemon status"
+                                    formControlName="status"
+                                  >
+                                    <pdz-option [value]="null" label="-" />
+                                    <pdz-option
+                                      value="brought"
+                                      label="Brought"
+                                    />
+                                    <pdz-option
+                                      value="survived"
+                                      label="Survived"
+                                    />
+                                    <pdz-option
+                                      value="fainted"
+                                      label="Fainted"
+                                    />
+                                  </pdz-select>
                                   <div formGroupName="kills">
                                     <input
                                       type="number"
@@ -548,12 +581,25 @@
                                       getPokemonLabel(pokemon.controls.id.value)
                                     }}
                                   </span>
-                                  <select formControlName="status">
-                                    <option [ngValue]="null">-</option>
-                                    <option value="brought">Brought</option>
-                                    <option value="survived">Survived</option>
-                                    <option value="fainted">Fainted</option>
-                                  </select>
+                                  <pdz-select
+                                    size="sm"
+                                    aria-label="Pokemon status"
+                                    formControlName="status"
+                                  >
+                                    <pdz-option [value]="null" label="-" />
+                                    <pdz-option
+                                      value="brought"
+                                      label="Brought"
+                                    />
+                                    <pdz-option
+                                      value="survived"
+                                      label="Survived"
+                                    />
+                                    <pdz-option
+                                      value="fainted"
+                                      label="Fainted"
+                                    />
+                                  </pdz-select>
                                   <div formGroupName="kills">
                                     <input
                                       type="number"

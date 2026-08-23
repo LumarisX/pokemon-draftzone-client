@@ -128,19 +128,16 @@
       <!-- Footer -->
       <footer class="signup-card__footer">
         <div class="signup-card__badges">
-          <select
-            class="status-select"
-            [class.status-select--approved]="signup.status === 'approved'"
-            [class.status-select--pending]="signup.status === 'pending'"
-            [class.status-select--denied]="signup.status === 'denied'"
+          <pdz-select
+            size="sm"
+            [aria-label]="'Sign-up status for ' + signup.teamName"
             [ngModel]="signup.status"
             (ngModelChange)="setStatus(signup, $event)"
-            [attr.aria-label]="'Sign-up status for ' + signup.teamName"
           >
             @for (option of statusOptions; track option.value) {
-              <option [value]="option.value">{{ option.label }}</option>
+              <pdz-option [value]="option.value" [label]="option.label" />
             }
-          </select>
+          </pdz-select>
           <span
             class="status-badge"
             [class.status-badge--yes]="signup.inDiscordServer"

@@ -8,6 +8,8 @@ import {
 import { FieldComponent } from '@pdz/shared/inputs/field/field.component';
 import { FieldErrorDirective } from '@pdz/shared/inputs/field/field-message.directive';
 import { InputDirective } from '@pdz/shared/inputs/field/input.directive';
+import { SelectOptionComponent } from '@pdz/shared/dropdowns/select/select-option.component';
+import { SelectComponent } from '@pdz/shared/dropdowns/select/select.component';
 
 export interface CoachEditDialogData {
   name: string;
@@ -26,6 +28,8 @@ export type CoachEditDialogResult = CoachEditDialogData;
     FieldComponent,
     FieldErrorDirective,
     InputDirective,
+    SelectComponent,
+    SelectOptionComponent,
   ],
   templateUrl: './coach-edit-dialog.component.html',
   styleUrl: './coach-edit-dialog.component.scss',

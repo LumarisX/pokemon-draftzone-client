@@ -5,7 +5,7 @@ import { PDZ_MENU } from './menu.token';
   selector: '[pdz-menu-trigger]',
   host: {
     class: 'pdz-menu-trigger',
-    '[attr.aria-haspopup]': '"menu"',
+    '[attr.aria-haspopup]': 'menu.hasPopup()',
     '[attr.aria-expanded]': 'menu.isOpen()',
     '[attr.aria-controls]': 'menu.panelId',
     '(click)': 'onClick($event)',

@@ -175,28 +175,20 @@
 }
 
 .filter-main {
-  border-radius: 5px;
-  background-color: pdz.color(surface);
-  padding: 10px;
-  margin: 0;
-  color: pdz.color(on-surface);
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(2xs);
+  padding: pdz.space(2xs);
 
-  .reset-button {
-    text-align: center;
-    font-weight: 600;
-    border-bottom: 1px solid pdz.color(primary-border);
-    height: 1.5rem;
-    cursor: pointer;
-    &:hover {
-      font-size: pdz.font-size(md);
-    }
-  }
   .filter-label {
     font-weight: 600;
   }
+
   .option-row {
     width: 100%;
     display: flex;
+    align-items: center;
     justify-content: space-between;
+    gap: pdz.space(md);
   }
 }

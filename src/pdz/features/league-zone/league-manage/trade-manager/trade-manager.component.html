@@ -29,19 +29,23 @@
           <div class="side">
             <label class="field">
               <span class="field__label">Side {{ $index + 1 }}</span>
-              <select
-                class="field__input"
+              <pdz-select
+                searchable
+                aria-label="Team"
+                placeholder="Select a team…"
                 [value]="side($any(key)).teamId"
-                (change)="onTeamChange($any(key), $any($event.target).value)"
+                (valueChange)="onTeamChange($any(key), $any($event))"
               >
-                <option value="">Select a team…</option>
-                <option [value]="freeAgency">Free Agency</option>
+                <pdz-option value="" label="Select a team…" />
+                <pdz-option [value]="freeAgency" label="Free Agency" />
                 @for (team of teams; track team.id) {
-                  <option [value]="team.id">
-                    {{ team.name }} — {{ team.coachName }}
-                  </option>
+                  <pdz-option
+                    [value]="team.id"
+                    [label]="team.name"
+                    [description]="team.coachName"
+                  />
                 }
-              </select>
+              </pdz-select>
             </label>
 
             @if (side($any(key)).teamId) {
@@ -119,15 +123,15 @@
       <div class="compose__actions">
         <label class="field field--inline">
           <span class="field__label">Takes effect in</span>
-          <select
-            class="field__input"
+          <pdz-select
+            aria-label="Round"
             [value]="roundIndex"
-            (change)="roundIndex = +$any($event.target).value"
+            (valueChange)="roundIndex = +$any($event)"
           >
             @for (name of roundNames; track $index) {
-              <option [value]="$index">{{ name }}</option>
+              <pdz-option [value]="$index" [label]="name" />
             }
-          </select>
+          </pdz-select>
         </label>
 
         <button

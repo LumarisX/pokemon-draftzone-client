@@ -4,6 +4,8 @@ import { RouterModule } from '@angular/router';
 import { DataService } from '@pdz/core/services/data.service';
 import { UnreadService } from '@pdz/features/pages/homepage/unread.service';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
+import { SelectOptionComponent } from '@pdz/shared/dropdowns/select/select-option.component';
+import { SelectComponent } from '@pdz/shared/dropdowns/select/select.component';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { forkJoin } from 'rxjs';
 import { LeagueAdComponent } from './league-ad/league-ad.component';
@@ -19,6 +21,8 @@ import { LeagueAd, LeagueAdsService } from './league-ads.service';
     RouterModule,
     IconComponent,
     ButtonComponent,
+    SelectComponent,
+    SelectOptionComponent,
   ],
 })
 export class LeagueAdListComponent implements OnInit {

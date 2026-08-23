@@ -20,13 +20,16 @@
       </div>
 
       <label pdz-field label="Map to" class="column-select">
-        <select pdz-input [(ngModel)]="columnMappings[$index]">
-          <option [value]="EXCLUDE">— Exclude —</option>
-          <option [value]="NEW_TIER">+ New tier "{{ col.csvHeader }}"</option>
+        <pdz-select aria-label="Column mapping" [(ngModel)]="columnMappings[$index]">
+          <pdz-option [value]="EXCLUDE" label="— Exclude —" />
+          <pdz-option
+            [value]="NEW_TIER"
+            [label]="'+ New tier &quot;' + col.csvHeader + '&quot;'"
+          />
           @for (opt of tierOptions; track opt.value) {
-            <option [value]="opt.value">{{ opt.label }}</option>
+            <pdz-option [value]="opt.value" [label]="opt.label" />
           }
-        </select>
+        </pdz-select>
       </label>
     </div>
   }

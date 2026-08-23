@@ -28,6 +28,8 @@ import {
   BuilderStageType,
   padRounds,
 } from './stage-builder.model';
+import { SelectOptionComponent } from '@pdz/shared/dropdowns/select/select-option.component';
+import { SelectComponent } from '@pdz/shared/dropdowns/select/select.component';
 
 type StageFormat = 'single-elim' | 'double-elim' | 'round-robin' | 'blank';
 
@@ -61,6 +63,8 @@ interface TeamOption {
     ButtonComponent,
     LoadingComponent,
     StageBuilderComponent,
+    SelectComponent,
+    SelectOptionComponent,
   ],
   templateUrl: './stage-builder-page.component.html',
   styleUrl: './stage-builder-page.component.scss',

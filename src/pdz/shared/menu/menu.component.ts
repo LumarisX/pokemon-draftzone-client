@@ -14,9 +14,9 @@ import {
 } from '@angular/core';
 import { MenuItemComponent } from './menu-item.component';
 import { MenuAlign, resolveMenuPlacement } from './menu-placement';
-import { PDZ_MENU } from './menu.token';
+import { PDZ_MENU, PdzMenuRole } from './menu.token';
 
-export { MenuAlign };
+export { MenuAlign, PdzMenuRole };
 
 let nextMenuId = 0;
 
@@ -30,7 +30,8 @@ const TYPEAHEAD_RESET = 700;
       #panel
       popover="manual"
       class="pdz-menu__panel"
-      role="menu"
+      [attr.role]="role()"
+      [attr.tabindex]="role() === 'menu' ? null : -1"
       [id]="panelId"
       [attr.aria-label]="ariaLabel()"
       (keydown)="onPanelKeydown($event)"
@@ -50,10 +51,14 @@ const TYPEAHEAD_RESET = 700;
 })
 export class MenuComponent {
   align = input<MenuAlign>('end');
+  role = input<PdzMenuRole>('menu');
   ariaLabel = input<string | undefined>(undefined, { alias: 'aria-label' });
 
   readonly panelId = `pdz-menu-panel-${nextMenuId++}`;
   readonly isOpen = signal(false);
+  readonly hasPopup = computed(() =>
+    this.role() === 'menu' ? 'menu' : 'dialog',
+  );
 
   private readonly panel = viewChild.required<ElementRef<HTMLElement>>('panel');
   private readonly projected = contentChildren(MenuItemComponent, {
@@ -117,6 +122,10 @@ export class MenuComponent {
     if (focus === 'none') return;
     queueMicrotask(() => {
       const items = this.items();
+      if (!items.length) {
+        this.panel().nativeElement.focus();
+        return;
+      }
       const item = focus === 'first' ? items[0] : items[items.length - 1];
       item?.focus();
     });
@@ -133,11 +142,15 @@ export class MenuComponent {
     const keyEvent = event as KeyboardEvent;
     const key = keyEvent.key;
 
+    if (key === 'Escape') {
+      event.preventDefault();
+      this.close(true);
+      return;
+    }
+
+    if (this.role() !== 'menu') return;
+
     switch (key) {
-      case 'Escape':
-        event.preventDefault();
-        this.close(true);
-        return;
       case 'Tab':
         this.close(false);
         return;

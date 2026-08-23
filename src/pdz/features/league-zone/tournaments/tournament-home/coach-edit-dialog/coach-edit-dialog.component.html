@@ -28,12 +28,16 @@
     </label>
 
     <label pdz-field label="Time Zone" required>
-      <select pdz-input formControlName="timezone">
-        <option value="" disabled>Select a timezone</option>
+      <pdz-select
+        searchable
+        aria-label="Timezone"
+        placeholder="Select a timezone"
+        formControlName="timezone"
+      >
         @for (tz of timezones; track tz) {
-          <option [value]="tz">{{ tz }}</option>
+          <pdz-option [value]="tz" [label]="tz" />
         }
-      </select>
+      </pdz-select>
       @if (form.controls.timezone.touched && form.controls.timezone.invalid) {
         <span pdz-error>Required</span>
       }

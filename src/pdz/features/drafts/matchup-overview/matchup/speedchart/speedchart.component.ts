@@ -1,4 +1,3 @@
-import { OverlayModule } from '@angular/cdk/overlay';
 import { CommonModule } from '@angular/common';
 import {
   AfterViewInit,
@@ -28,6 +27,8 @@ import { DraftPokemon } from '../../../draft.model';
 import { SpeedChart, Speedtier } from '../../matchup-interface';
 import { SpeedtierComponent } from './speedtier/speedtier.component';
 import { ChoiceDirective } from '@pdz/shared/inputs/choice/choice.directive';
+import { MenuComponent } from '@pdz/shared/menu/menu.component';
+import { MenuTriggerDirective } from '@pdz/shared/menu/menu-trigger.directive';
 
 @Component({
   selector: 'pdz-speedchart',
@@ -40,10 +41,11 @@ import { ChoiceDirective } from '@pdz/shared/inputs/choice/choice.directive';
     SpriteComponent,
     SpeedtierComponent,
     IconComponent,
-    OverlayModule,
     ButtonComponent,
     ChoiceDirective,
     WidgetComponent,
+    MenuComponent,
+    MenuTriggerDirective,
   ],
 })
 export class SpeedchartComponent implements OnInit, OnDestroy, AfterViewInit {
@@ -101,7 +103,6 @@ export class SpeedchartComponent implements OnInit, OnDestroy, AfterViewInit {
       .sort((x, y) => y.speed - x.speed);
   }
   readonly level = model(100);
-  filterOpen: boolean = false;
   pokemons: (DraftPokemon & { spe: number; team: number })[] = [];
   enabledMons: [string | null, string | null] = [null, null];
   sortedTiers: {

@@ -26,6 +26,8 @@ import { UploadService } from '@pdz/core/services/upload.service';
 import { LeagueZoneService } from '../league-zone.service';
 import { League } from '../league.interface';
 import { getLeagueLogoUrl } from '../league.util';
+import { SelectOptionComponent } from '@pdz/shared/dropdowns/select/select-option.component';
+import { SelectComponent } from '@pdz/shared/dropdowns/select/select.component';
 
 @Component({
   selector: 'pdz-league-sign-up',
@@ -37,6 +39,8 @@ import { getLeagueLogoUrl } from '../league.util';
     ReactiveFormsModule,
     RouterModule,
     LoadingComponent,
+    SelectComponent,
+    SelectOptionComponent,
   ],
 })
 export class LeagueSignUpComponent implements OnInit, OnDestroy {

@@ -47,6 +47,8 @@ import {
   SearchPokemonRequest,
 } from '../pokemon-search.types';
 import { SaveSearchesServices } from '../save-searches.service';
+import { SelectOptionComponent } from '@pdz/shared/dropdowns/select/select-option.component';
+import { SelectComponent } from '@pdz/shared/dropdowns/select/select.component';
 
 @Component({
   selector: 'pdz-pokemon-search-core',
@@ -58,6 +60,8 @@ import { SaveSearchesServices } from '../save-searches.service';
     FilterDrawerComponent,
     RulesetSelectComponent,
     ButtonComponent,
+    SelectComponent,
+    SelectOptionComponent,
   ],
   templateUrl: './pokemon-search-core.component.html',
   styleUrl: './pokemon-search-core.component.scss',

@@ -229,15 +229,16 @@
         <pdz-icon [name]="copyLinkSuccess ? 'check' : 'link_2'"></pdz-icon>
       </button>
       <div class="pokemon-results__sort">
-        <select
+        <pdz-select
+          size="sm"
+          aria-label="Sort by"
           [(ngModel)]="sortField"
           (ngModelChange)="onSortFieldChange()"
-          aria-label="Sort by"
         >
           @for (opt of sortFieldOptions; track opt.value) {
-            <option [value]="opt.value">{{ opt.label }}</option>
+            <pdz-option [value]="opt.value" [label]="opt.label" />
           }
-        </select>
+        </pdz-select>
         <button
           type="button"
           class="pokemon-results__sort-dir"

@@ -86,47 +86,41 @@
         @for (slot of ed.slots; track $index) {
           <fieldset class="match-editor__slot">
             <legend>{{ $index === 0 ? 'Slot A' : 'Slot B' }}</legend>
-            <select
-              class="match-editor__mode"
-              (change)="onEditorModeChange($any($index), $any($event.target).value)"
+            <pdz-select
+              size="sm"
+              aria-label="Slot source"
+              [value]="slot.mode"
+              (valueChange)="onEditorModeChange($any($index), $any($event))"
             >
-              <option value="empty" [selected]="slot.mode === 'empty'">
-                — TBD / Unassigned —
-              </option>
-              <option value="seed" [selected]="slot.mode === 'seed'">
-                Static seed
-              </option>
-              <option value="winner" [selected]="slot.mode === 'winner'">
-                Winner of a matchup
-              </option>
-              <option value="loser" [selected]="slot.mode === 'loser'">
-                Loser of a matchup
-              </option>
-            </select>
+              <pdz-option value="empty" label="— TBD / Unassigned —" />
+              <pdz-option value="seed" label="Static seed" />
+              <pdz-option value="winner" label="Winner of a matchup" />
+              <pdz-option value="loser" label="Loser of a matchup" />
+            </pdz-select>
 
             @if (slot.mode === 'seed') {
-              <select
-                class="match-editor__value"
-                (change)="onEditorSeedChange($any($index), $any($event.target).value)"
+              <pdz-select
+                size="sm"
+                aria-label="Seed"
+                [value]="slot.seed"
+                (valueChange)="onEditorSeedChange($any($index), $any($event))"
               >
                 @for (opt of ed.seedOptions; track opt.seed) {
-                  <option [value]="opt.seed" [selected]="opt.seed === slot.seed">
-                    {{ opt.label }}
-                  </option>
+                  <pdz-option [value]="opt.seed" [label]="opt.label" />
                 }
-              </select>
+              </pdz-select>
             } @else if (slot.mode === 'winner' || slot.mode === 'loser') {
               @if (ed.matchOptions.length) {
-                <select
-                  class="match-editor__value"
-                  (change)="onEditorFromChange($any($index), $any($event.target).value)"
+                <pdz-select
+                  size="sm"
+                  aria-label="Source matchup"
+                  [value]="slot.from"
+                  (valueChange)="onEditorFromChange($any($index), $any($event))"
                 >
                   @for (opt of ed.matchOptions; track opt.id) {
-                    <option [value]="opt.id" [selected]="opt.id === slot.from">
-                      {{ opt.label }}
-                    </option>
+                    <pdz-option [value]="opt.id" [label]="opt.label" />
                   }
-                </select>
+                </pdz-select>
               } @else {
                 <p class="match-editor__hint">
                   No other matchups exist yet — add one first.

@@ -1,39 +1,47 @@
 <pdz-widget label="Speed Tiers">
   <ng-container widget-options>
-    <button
-      pdz-button
-      iconOnly
-      size="sm"
-      variant="ghost"
-      color="neutral"
-      aria-label="Filter speed tiers"
-      cdkOverlayOrigin
-      #trigger="cdkOverlayOrigin"
-      (click)="filterOpen = !filterOpen"
-    >
-      <pdz-icon name="filter_list"></pdz-icon>
-    </button>
-    <ng-template
-      cdkConnectedOverlay
-      [cdkConnectedOverlayOrigin]="trigger"
-      [cdkConnectedOverlayOpen]="filterOpen"
-      (overlayOutsideClick)="filterOpen = false"
-      (detach)="filterOpen = false"
-      [cdkConnectedOverlayFlexibleDimensions]="true"
-      [cdkConnectedOverlayPush]="true"
-    >
+    <pdz-menu role="group" aria-label="Speed tier filters">
+      <button
+        pdz-button
+        iconOnly
+        size="sm"
+        variant="ghost"
+        color="neutral"
+        aria-label="Filter speed tiers"
+        pdz-menu-trigger
+      >
+        <pdz-icon name="filter_list"></pdz-icon>
+      </button>
+
       <div class="filter-main">
-        <div class="reset-button" (click)="resetModifiers()">Reset</div>
+        <button
+          type="button"
+          pdz-button
+          size="sm"
+          variant="ghost"
+          color="neutral"
+          (click)="resetModifiers()"
+        >
+          Reset
+        </button>
         @for (modifier of getModifiers(); track $index) {
           <div class="option-row">
-            <input pdz-checkbox [formControl]="modifier[1].at(0)" />
+            <input
+              pdz-checkbox
+              [formControl]="modifier[1].at(0)"
+              [attr.aria-label]="modifier[0] + ' for your team'"
+            />
 
             <span class="filter-label">{{ modifier[0] }}</span>
-            <input pdz-checkbox [formControl]="modifier[1].at(1)" />
+            <input
+              pdz-checkbox
+              [formControl]="modifier[1].at(1)"
+              [attr.aria-label]="modifier[0] + ' for opponent team'"
+            />
           </div>
         }
       </div>
-    </ng-template>
+    </pdz-menu>
   </ng-container>
 
   <div class="speed-main">

@@ -73,17 +73,13 @@
 
       <!-- Prize Value -->
       <div class="form-field">
-        <label for="prizeValue" class="form-label"> Prize Value </label>
-        <select
-          id="prizeValue"
-          formControlName="prizeValue"
-          class="form-select"
-        >
-          <option value="0">None</option>
-          <option value="1">Small (&lt; $25)</option>
-          <option value="2">Medium ($25-$100)</option>
-          <option value="3">Large (&gt; $100)</option>
-        </select>
+        <label class="form-label"> Prize Value </label>
+        <pdz-select aria-label="Prize Value" formControlName="prizeValue">
+          <pdz-option value="0" label="None" />
+          <pdz-option value="1" label="Small (&lt; $25)" />
+          <pdz-option value="2" label="Medium ($25-$100)" />
+          <pdz-option value="3" label="Large (&gt; $100)" />
+        </pdz-select>
       </div>
     </div>
 
@@ -120,27 +116,23 @@
       <label class="form-label"> Skill Level Range </label>
       <div class="form-row">
         <div class="form-field form-field--inline">
-          <label for="skillLevelFrom" class="form-label-inline">From</label>
-          <select
-            id="skillLevelFrom"
-            formControlName="from"
-            class="form-select"
-          >
-            <option value="0">Novice</option>
-            <option value="1">Intermediate</option>
-            <option value="2">Advanced</option>
-            <option value="3">Expert</option>
-          </select>
+          <label class="form-label-inline">From</label>
+          <pdz-select aria-label="Skill Level From" formControlName="from">
+            <pdz-option value="0" label="Novice" />
+            <pdz-option value="1" label="Intermediate" />
+            <pdz-option value="2" label="Advanced" />
+            <pdz-option value="3" label="Expert" />
+          </pdz-select>
         </div>
 
         <div class="form-field form-field--inline">
-          <label for="skillLevelTo" class="form-label-inline">To</label>
-          <select id="skillLevelTo" formControlName="to" class="form-select">
-            <option value="0">Novice</option>
-            <option value="1">Intermediate</option>
-            <option value="2">Advanced</option>
-            <option value="3">Expert</option>
-          </select>
+          <label class="form-label-inline">To</label>
+          <pdz-select aria-label="Skill Level To" formControlName="to">
+            <pdz-option value="0" label="Novice" />
+            <pdz-option value="1" label="Intermediate" />
+            <pdz-option value="2" label="Advanced" />
+            <pdz-option value="3" label="Expert" />
+          </pdz-select>
         </div>
       </div>
     </div>

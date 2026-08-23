@@ -58,15 +58,33 @@ const VIEWPORT_MARGIN = 8;
       />
     </button>
 
-    <div
-      #listbox
-      popover="manual"
-      class="pdz-select__listbox"
-      role="listbox"
-      [id]="listboxId"
-      [attr.aria-labelledby]="ariaLabelledby() ?? triggerId"
-    >
-      @for (entry of entries(); track entry.option; let i = $index) {
+    <div #panel popover="manual" class="pdz-select__panel">
+      @if (searchable()) {
+        <div class="pdz-select__search">
+          <pdz-icon aria-hidden="true" name="search" [size]="16" />
+          <input
+            #searchInput
+            type="text"
+            class="pdz-select__search-input"
+            autocomplete="off"
+            spellcheck="false"
+            [placeholder]="searchPlaceholder()"
+            [attr.aria-label]="searchPlaceholder()"
+            [attr.aria-controls]="listboxId"
+            [attr.aria-activedescendant]="activeId()"
+            [value]="query()"
+            (input)="onQuery($event)"
+            (keydown)="onPanelKeydown($event)"
+          />
+        </div>
+      }
+      <div
+        class="pdz-select__listbox"
+        role="listbox"
+        [id]="listboxId"
+        [attr.aria-labelledby]="ariaLabelledby() ?? triggerId"
+      >
+        @for (entry of entries(); track entry.option; let i = $index) {
         @if (entry.groupStart) {
           <p class="pdz-select__group" role="presentation">
             {{ entry.option.group() }}
@@ -100,10 +118,13 @@ const VIEWPORT_MARGIN = 8;
             <pdz-icon aria-hidden="true" name="check" [size]="16" />
           }
         </div>
-      }
-      @if (!entries().length) {
-        <p class="pdz-select__empty">No options</p>
-      }
+        }
+        @if (!entries().length) {
+          <p class="pdz-select__empty">
+            {{ query() ? "No matches" : "No options" }}
+          </p>
+        }
+      </div>
     </div>
   `,
   styleUrl: './select.component.scss',
@@ -130,6 +151,9 @@ export class SelectComponent implements ControlValueAccessor {
   placeholder = input('Select…');
   disabled = model(false);
   invalid = input(false, { transform: booleanAttribute });
+  searchable = input(false, { transform: booleanAttribute });
+  searchPlaceholder = input('Search…');
+  showGroupInTrigger = input(true, { transform: booleanAttribute });
   ariaLabel = input<string | undefined>(undefined, { alias: 'aria-label' });
   ariaLabelledby = input<string | undefined>(undefined, {
     alias: 'aria-labelledby',
@@ -144,19 +168,33 @@ export class SelectComponent implements ControlValueAccessor {
   });
   private readonly trigger =
     viewChild.required<ElementRef<HTMLButtonElement>>('trigger');
-  private readonly listbox =
-    viewChild.required<ElementRef<HTMLElement>>('listbox');
+  private readonly panel =
+    viewChild.required<ElementRef<HTMLElement>>('panel');
+  private readonly searchInput =
+    viewChild<ElementRef<HTMLInputElement>>('searchInput');
 
   protected readonly isOpen = signal(false);
   protected readonly activeIndex = signal(-1);
+  protected readonly query = signal('');
 
   protected readonly options = computed(() =>
     this.projected().filter((option) => option.owner === this),
   );
 
+  protected readonly filtered = computed(() => {
+    const query = this.query().trim().toLowerCase();
+    const options = this.options();
+    if (!query) return options;
+    return options.filter((option) =>
+      [option.label(), option.description(), option.group()].some((text) =>
+        text?.toLowerCase().includes(query),
+      ),
+    );
+  });
+
   protected readonly entries = computed(() => {
     let previousGroup: string | undefined;
-    return this.options().map((option) => {
+    return this.filtered().map((option) => {
       const group = option.group();
       const groupStart = !!group && group !== previousGroup;
       previousGroup = group;
@@ -172,7 +210,9 @@ export class SelectComponent implements ControlValueAccessor {
     const option = this.selected();
     if (!option) return null;
     const group = option.group();
-    return group ? `${group} · ${option.label()}` : option.label();
+    return group && this.showGroupInTrigger()
+      ? `${group} · ${option.label()}`
+      : option.label();
   });
 
   protected readonly activeId = computed(() =>
@@ -191,7 +231,7 @@ export class SelectComponent implements ControlValueAccessor {
       const target = event.target as Node;
       if (
         this.trigger().nativeElement.contains(target) ||
-        this.listbox().nativeElement.contains(target)
+        this.panel().nativeElement.contains(target)
       ) {
         return;
       }
@@ -243,32 +283,76 @@ export class SelectComponent implements ControlValueAccessor {
 
   protected openList() {
     if (this.disabled() || this.isOpen()) return;
+    this.query.set('');
     this.isOpen.set(true);
-    this.listbox().nativeElement.showPopover();
+    this.panel().nativeElement.showPopover();
     this.position();
-
-    const selected = this.selected();
-    const selectedIndex = selected ? this.options().indexOf(selected) : -1;
-    this.activeIndex.set(
-      selectedIndex >= 0 ? selectedIndex : (this.step(-1, 1) ?? -1),
-    );
+    this.syncActiveToSelection();
     this.scrollActiveIntoView();
+
+    if (this.searchable()) {
+      queueMicrotask(() => this.searchInput()?.nativeElement.focus());
+    }
   }
 
   protected close() {
     if (!this.isOpen()) return;
     this.isOpen.set(false);
-    this.listbox().nativeElement.hidePopover();
+    this.panel().nativeElement.hidePopover();
+    this.query.set('');
     this.onTouched();
   }
 
   protected pick(index: number) {
-    const option = this.options()[index];
+    const option = this.filtered()[index];
     if (!option || option.disabled()) return;
     this.value.set(option.value());
     this.onChange(option.value());
     this.close();
     this.trigger().nativeElement.focus();
+  }
+
+  protected onQuery(event: Event) {
+    this.query.set((event.target as HTMLInputElement).value);
+    this.activeIndex.set(this.step(-1, 1) ?? -1);
+    this.scrollActiveIntoView();
+    this.position();
+  }
+
+  protected onPanelKeydown(event: KeyboardEvent) {
+    switch (event.key) {
+      case 'Escape':
+        event.preventDefault();
+        this.close();
+        this.trigger().nativeElement.focus();
+        return;
+      case 'Tab':
+        this.close();
+        return;
+      case 'Enter':
+        event.preventDefault();
+        this.pick(this.activeIndex());
+        return;
+      case 'ArrowDown':
+      case 'ArrowUp': {
+        event.preventDefault();
+        const next = this.step(
+          this.activeIndex(),
+          event.key === 'ArrowDown' ? 1 : -1,
+        );
+        if (next !== undefined) this.activeIndex.set(next);
+        this.scrollActiveIntoView();
+        return;
+      }
+    }
+  }
+
+  private syncActiveToSelection() {
+    const selected = this.selected();
+    const selectedIndex = selected ? this.filtered().indexOf(selected) : -1;
+    this.activeIndex.set(
+      selectedIndex >= 0 ? selectedIndex : (this.step(-1, 1) ?? -1),
+    );
   }
 
   protected onTriggerKeydown(event: KeyboardEvent) {
@@ -317,14 +401,19 @@ export class SelectComponent implements ControlValueAccessor {
         const next =
           key === 'Home'
             ? this.step(-1, 1)
-            : this.step(this.options().length, -1);
+            : this.step(this.filtered().length, -1);
         if (next !== undefined) this.activeIndex.set(next);
         this.scrollActiveIntoView();
         return;
       }
     }
 
-    if (key.length === 1 && !event.metaKey && !event.ctrlKey) {
+    if (
+      !this.searchable() &&
+      key.length === 1 &&
+      !event.metaKey &&
+      !event.ctrlKey
+    ) {
       this.search(key);
     }
   }
@@ -336,7 +425,7 @@ export class SelectComponent implements ControlValueAccessor {
       this.typeahead = '';
     }, TYPEAHEAD_RESET);
 
-    const match = this.options().findIndex(
+    const match = this.filtered().findIndex(
       (option) =>
         !option.disabled() &&
         option.label().toLowerCase().startsWith(this.typeahead),
@@ -348,7 +437,7 @@ export class SelectComponent implements ControlValueAccessor {
   }
 
   private step(from: number, direction: number) {
-    const options = this.options();
+    const options = this.filtered();
     if (!options.length) return undefined;
     for (let i = 1; i <= options.length; i++) {
       const index =
@@ -360,7 +449,7 @@ export class SelectComponent implements ControlValueAccessor {
 
   private scrollActiveIntoView() {
     queueMicrotask(() => {
-      this.listbox()
+      this.panel()
         .nativeElement.querySelector('.pdz-select__option--active')
         ?.scrollIntoView({ block: 'nearest' });
     });
@@ -368,7 +457,7 @@ export class SelectComponent implements ControlValueAccessor {
 
   private position() {
     const trigger = this.trigger().nativeElement.getBoundingClientRect();
-    const listbox = this.listbox().nativeElement;
+    const listbox = this.panel().nativeElement;
     const below = window.innerHeight - trigger.bottom;
     const flip = below < MIN_LISTBOX_SPACE && trigger.top > below;
 

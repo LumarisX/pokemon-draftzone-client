@@ -12,6 +12,8 @@ import { FieldComponent } from '@pdz/shared/inputs/field/field.component';
 import { InputDirective } from '@pdz/shared/inputs/field/input.directive';
 import { LeagueTier } from '../../../tier-list.model';
 import { EditTierPokemon } from '../tier-list-form.component';
+import { SelectOptionComponent } from '@pdz/shared/dropdowns/select/select-option.component';
+import { SelectComponent } from '@pdz/shared/dropdowns/select/select.component';
 
 export interface PokemonEditDialogData {
   pokemon: EditTierPokemon &
@@ -40,6 +42,8 @@ export interface PokemonEditDialogResult {
     FieldComponent,
     InputDirective,
     SpriteComponent,
+    SelectComponent,
+    SelectOptionComponent,
   ],
   templateUrl: './pokemon-edit-dialog.component.html',
   styleUrls: ['./pokemon-edit-dialog.component.scss'],

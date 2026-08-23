@@ -2,6 +2,8 @@ import { CommonModule } from '@angular/common';
 import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { PokemonSearchComponent } from '@pdz/shared/dropdowns/pokemon-search/pokemon-search.component';
+import { SelectOptionComponent } from '@pdz/shared/dropdowns/select/select-option.component';
+import { SelectComponent } from '@pdz/shared/dropdowns/select/select.component';
 import { DraftPokemon } from '@pdz/features/drafts/draft.model';
 import { TierListService } from '@pdz/features/tier-lists/tier-list.service';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
@@ -60,6 +62,8 @@ interface ManagedTeam {
     SpriteComponent,
     PokemonSearchComponent,
     DraftSwitcherComponent,
+    SelectComponent,
+    SelectOptionComponent,
   ],
   templateUrl: './trade-manager.component.html',
   styleUrl: './trade-manager.component.scss',

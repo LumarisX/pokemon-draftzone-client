@@ -1,5 +1,4 @@
 import { AsyncPipe } from '@angular/common';
-import { ConnectedPosition, OverlayModule } from '@angular/cdk/overlay';
 import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { AuthService } from '@pdz/core/services/auth0.service';
@@ -18,7 +17,6 @@ import { MenuTriggerDirective } from '@pdz/shared/menu/menu-trigger.directive';
   selector: 'pdz-login-button',
   imports: [
     AsyncPipe,
-    OverlayModule,
     IconComponent,
     ButtonComponent,
     MenuComponent,

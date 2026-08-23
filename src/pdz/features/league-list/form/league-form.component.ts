@@ -13,13 +13,21 @@ import {
 } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { DataService } from '@pdz/core/services/data.service';
+import { SelectOptionComponent } from '@pdz/shared/dropdowns/select/select-option.component';
+import { SelectComponent } from '@pdz/shared/dropdowns/select/select.component';
 import { LeagueAdsService } from '../league-ads.service';
 
 @Component({
   selector: 'pdz-league-form',
   templateUrl: './league-form.component.html',
   styleUrls: ['./league-form.component.scss'],
-  imports: [FormsModule, ReactiveFormsModule, RouterLink],
+  imports: [
+    FormsModule,
+    ReactiveFormsModule,
+    RouterLink,
+    SelectComponent,
+    SelectOptionComponent,
+  ],
 })
 export class LeagueFormComponent implements OnInit {
   private fb = inject(FormBuilder);

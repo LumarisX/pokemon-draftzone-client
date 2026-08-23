@@ -7,6 +7,8 @@ import {
 } from '@pdz/shared/dialogs/dialog/dialog.service';
 import { FieldComponent } from '@pdz/shared/inputs/field/field.component';
 import { InputDirective } from '@pdz/shared/inputs/field/input.directive';
+import { SelectOptionComponent } from '@pdz/shared/dropdowns/select/select-option.component';
+import { SelectComponent } from '@pdz/shared/dropdowns/select/select.component';
 
 export interface ImportColumn {
   csvHeader: string;
@@ -27,7 +29,14 @@ const NEW_TIER = '__NEW_TIER__';
 
 @Component({
   selector: 'pdz-import-dialog',
-  imports: [FormsModule, ButtonComponent, FieldComponent, InputDirective],
+  imports: [
+    FormsModule,
+    ButtonComponent,
+    FieldComponent,
+    InputDirective,
+    SelectComponent,
+    SelectOptionComponent,
+  ],
   templateUrl: './import-dialog.component.html',
   styleUrls: ['./import-dialog.component.scss'],
 })

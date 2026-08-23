@@ -57,15 +57,15 @@
 
         <label class="field">
           <span class="field__label">Format</span>
-          <select
-            class="field__input"
+          <pdz-select
+            aria-label="Format"
             [value]="formFormat"
-            (change)="setFormFormat($any($event.target).value)"
+            (valueChange)="setFormFormat($any($event))"
           >
             @for (format of formats; track format) {
-              <option [value]="format">{{ formatLabels[format] }}</option>
+              <pdz-option [value]="format" [label]="formatLabels[format]" />
             }
-          </select>
+          </pdz-select>
         </label>
 
         @if (formFormat === "round-robin") {

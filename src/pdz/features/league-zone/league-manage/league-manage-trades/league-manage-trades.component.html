@@ -15,22 +15,22 @@
 
         <!-- Group Selection -->
         <div class="trade-side__group-select">
-          <label for="side1Group" class="trade-label">Select Team</label>
-          <select
-            id="side1Group"
+          <label class="trade-label">Select Team</label>
+          <pdz-select
+            searchable
+            aria-label="Team 1"
+            placeholder="-- Choose a team --"
             formControlName="side1Group"
-            class="trade-dropdown"
           >
-            <option value="">-- Choose a team --</option>
+            <pdz-option value="" label="-- Choose a team --" />
             @for (group of groups(); track group.id) {
-              <option [value]="group.id">
-                {{ group.name }}
-                @if (group.team) {
-                  ({{ group.team.coachName }})
-                }
-              </option>
+              <pdz-option
+                [value]="group.id"
+                [label]="group.name"
+                [description]="group.team?.coachName"
+              />
             }
-          </select>
+          </pdz-select>
         </div>
 
         <!-- Pokemon Selection -->
@@ -115,22 +115,22 @@
 
         <!-- Group Selection -->
         <div class="trade-side__group-select">
-          <label for="side2Group" class="trade-label">Select Team</label>
-          <select
-            id="side2Group"
+          <label class="trade-label">Select Team</label>
+          <pdz-select
+            searchable
+            aria-label="Team 2"
+            placeholder="-- Choose a team --"
             formControlName="side2Group"
-            class="trade-dropdown"
           >
-            <option value="">-- Choose a team --</option>
+            <pdz-option value="" label="-- Choose a team --" />
             @for (group of groups(); track group.id) {
-              <option [value]="group.id">
-                {{ group.name }}
-                @if (group.team) {
-                  ({{ group.team.coachName }})
-                }
-              </option>
+              <pdz-option
+                [value]="group.id"
+                [label]="group.name"
+                [description]="group.team?.coachName"
+              />
             }
-          </select>
+          </pdz-select>
         </div>
 
         <!-- Pokemon Selection -->
@@ -206,12 +206,12 @@
 
       <!-- Stage Selector -->
       <div class="stage-selector-inline">
-        <label for="stage" class="trade-label">Trade Stage</label>
-        <select id="stage" formControlName="stage" class="trade-dropdown">
+        <label class="trade-label">Trade Stage</label>
+        <pdz-select aria-label="Stage" formControlName="stage">
           @for (stage of stageOptions; track stage) {
-            <option [value]="$index">{{ stage }}</option>
+            <pdz-option [value]="$index" [label]="stage" />
           }
-        </select>
+        </pdz-select>
       </div>
     </form>
 

@@ -34,6 +34,8 @@ import { LeagueZoneService } from '../../league-zone.service';
 import { getLeagueLogoUrl } from '../../league.util';
 import { TierListService } from '@pdz/features/tier-lists/tier-list.service';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
+import { SelectOptionComponent } from '@pdz/shared/dropdowns/select/select-option.component';
+import { SelectComponent } from '@pdz/shared/dropdowns/select/select.component';
 
 const NON_DRAFTABLE_TIER_NAMES = new Set(['untiered', 'ban', 'banned']);
 
@@ -54,6 +56,8 @@ const ALLOWED_LOGO_TYPES = [
     IconComponent,
     LoadingComponent,
     ButtonComponent,
+    SelectComponent,
+    SelectOptionComponent,
   ],
   templateUrl: './league-settings.component.html',
   styleUrl: './league-settings.component.scss',

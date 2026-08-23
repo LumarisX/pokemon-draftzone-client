@@ -35,6 +35,8 @@ import {
   TeamEditDialogData,
   TeamEditDialogResult,
 } from '../../tournaments/tournament-home/team-edit-dialog/team-edit-dialog.component';
+import { SelectOptionComponent } from '@pdz/shared/dropdowns/select/select-option.component';
+import { SelectComponent } from '@pdz/shared/dropdowns/select/select.component';
 
 type SignUpEntry = League.LeagueSignUp & {
   selected?: boolean;
@@ -45,7 +47,14 @@ type SignUpEntry = League.LeagueSignUp & {
   selector: 'pdz-league-manage-signups',
   templateUrl: './league-manage-signups.component.html',
   styleUrls: ['./league-manage-signups.component.scss'],
-  imports: [CommonModule, IconComponent, FormsModule, RouterLink],
+  imports: [
+    CommonModule,
+    IconComponent,
+    FormsModule,
+    RouterLink,
+    SelectComponent,
+    SelectOptionComponent,
+  ],
 })
 export class LeagueManageSignupsComponent implements OnInit, OnDestroy {
   tournamentSlug: string | null = null;

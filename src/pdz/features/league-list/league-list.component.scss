@@ -114,15 +114,6 @@
   );
 }
 
-.sort-select {
-  width: 100%;
-  background-color: pdz.color(menu-container);
-  padding: pdz.space(xs);
-  border: 1px solid pdz.color(outline);
-  border-radius: pdz.shape(corner-sm);
-  color: pdz.color(on-surface);
-}
-
 .league-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(20rem, 1fr));
