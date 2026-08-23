@@ -1,5 +1,4 @@
 @use "pdz-theming" as pdz;
-@use "mixins/_buttons.scss" as *;
 
 :host {
   display: block;
@@ -37,30 +36,6 @@
     border: 1px solid pdz.color(outline-variant);
     border-radius: pdz.shape(corner-full);
   }
-
-  &__capt-toggle {
-    @include flat-button(
-      (
-        padding: pdz.space(2xs) pdz.space(sm),
-        gap: pdz.space(2xs),
-        font-size: 0.8125rem,
-        border-radius: pdz.shape(corner-full),
-        color: pdz.color(on-surface-variant),
-        background-hover: pdz.color(surface-container-low),
-      )
-    );
-
-    &--on {
-      background: pdz.color(primary-container);
-      color: pdz.color(on-primary-container);
-    }
-
-    &--partial {
-      background: pdz.color(surface-container);
-      color: pdz.color(on-surface);
-    }
-  }
-
   &__import-toggle {
     margin-left: auto;
   }
@@ -269,19 +244,8 @@
     white-space: nowrap;
   }
 
-  &__action {
-    @include icon-button(
-      (
-        width: 2.25rem,
-        height: 2.25rem,
-        color: pdz.color(on-surface-variant),
-        background-hover: pdz.color(surface-container-high),
-      )
-    );
-
-    &--expand pdz-icon {
-      transition: transform pdz.duration(base) pdz.easing(standard);
-    }
+  &__action--expand pdz-icon {
+    transition: transform pdz.duration(base) pdz.easing(standard);
   }
 
   &--expanded &__action--expand pdz-icon {
@@ -304,10 +268,6 @@
     align-items: stretch;
     gap: pdz.space(sm);
     min-width: 0;
-
-    .pill-toggle {
-      align-self: flex-start;
-    }
   }
 
   &__section-title {
@@ -357,29 +317,6 @@
 // ---------------------------------------------------------------------------
 // pill-toggle block
 // ---------------------------------------------------------------------------
-
-.pill-toggle {
-  @include flat-button(
-    (
-      padding: pdz.space(xs) pdz.space(md),
-      gap: pdz.space(xs),
-      border-width: 1px,
-      border-color: pdz.color(outline),
-      border-radius: pdz.shape(corner-full),
-      color: pdz.color(on-surface-variant),
-      background-hover: pdz.color(surface-container-low),
-      font-size: 0.875rem,
-    )
-  );
-  justify-self: start;
-
-  &--on {
-    background: pdz.color(primary-container);
-    border-color: pdz.color(primary-border);
-    color: pdz.color(on-primary-container);
-  }
-}
-
 // ---------------------------------------------------------------------------
 // type-picker block
 // ---------------------------------------------------------------------------
@@ -459,29 +396,11 @@
 // ---------------------------------------------------------------------------
 
 .forme-chip {
-  @include flat-button(
-    (
-      padding: pdz.space(2xs) pdz.space(sm) pdz.space(2xs) pdz.space(2xs),
-      gap: pdz.space(2xs),
-      font-size: 0.875rem,
-      border-width: 1px,
-      border-color: pdz.color(outline),
-      border-radius: pdz.shape(corner-full),
-      color: pdz.color(on-surface-variant),
-      background-hover: pdz.color(surface-container-low),
-    )
-  );
-
   pdz-sprite {
     width: 1.75rem;
     height: 1.75rem;
   }
 
-  &--selected {
-    background: pdz.color(primary-container);
-    border-color: pdz.color(primary-border);
-    color: pdz.color(on-primary-container);
-  }
 }
 
 // ---------------------------------------------------------------------------

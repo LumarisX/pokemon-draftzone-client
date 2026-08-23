@@ -10,7 +10,12 @@ import {
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 
 export type ButtonVariant = 'filled' | 'tonal' | 'outlined' | 'ghost' | 'link';
-export type ButtonColor = 'primary' | 'secondary' | 'neutral' | 'danger';
+export type ButtonColor =
+  | 'primary'
+  | 'secondary'
+  | 'neutral'
+  | 'danger'
+  | 'success';
 export type ButtonSize = 'xs' | 'sm' | 'md' | 'lg';
 export type ButtonType = 'button' | 'submit' | 'reset';
 

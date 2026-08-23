@@ -89,17 +89,24 @@
                     </div>
                     <div class="matchup-header__action">
                       <button
-                        type="button"
-                        class="btn-primary"
+                        pdz-button
+                        size="sm"
                         (click)="saveMatchup(matchup)"
+                        [loading]="isSaving(matchup.id)"
                         [disabled]="isSaving(matchup.id)"
-                        [class.btn-success]="getSaveSuccess(matchup.id)"
-                        [class.btn-error]="getSaveError(matchup.id)"
+                        [color]="
+                          getSaveSuccess(matchup.id)
+                            ? 'success'
+                            : getSaveError(matchup.id)
+                              ? 'danger'
+                              : 'primary'
+                        "
                       >
                         @if (isSaving(matchup.id)) {
-                          <span class="btn-loading">Saving...</span>
+                          Saving...
                         } @else if (getSaveSuccess(matchup.id)) {
-                          <span class="btn-check">✓ Saved</span>
+                          <pdz-icon name="check" [size]="16" />
+                          Saved
                         } @else {
                           Save Matchup
                         }

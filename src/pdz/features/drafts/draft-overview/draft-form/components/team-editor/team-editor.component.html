@@ -51,12 +51,11 @@
           aria-label="Team-wide captain settings"
         >
           <button
-            type="button"
-            class="team-editor__capt-toggle"
-            [class.team-editor__capt-toggle--on]="captState('tera') === 'all'"
-            [class.team-editor__capt-toggle--partial]="
-              captState('tera') === 'some'
-            "
+            pdz-button
+            size="xs"
+            pill
+            [variant]="captState('tera') === 'none' ? 'ghost' : 'tonal'"
+            [color]="captState('tera') === 'all' ? 'primary' : 'neutral'"
             title="Toggle Tera for the whole team"
             (click)="toggleTeamCapt('tera')"
           >
@@ -64,12 +63,11 @@
             <span>Tera</span>
           </button>
           <button
-            type="button"
-            class="team-editor__capt-toggle"
-            [class.team-editor__capt-toggle--on]="captState('z') === 'all'"
-            [class.team-editor__capt-toggle--partial]="
-              captState('z') === 'some'
-            "
+            pdz-button
+            size="xs"
+            pill
+            [variant]="captState('z') === 'none' ? 'ghost' : 'tonal'"
+            [color]="captState('z') === 'all' ? 'primary' : 'neutral'"
             title="Toggle Z for the whole team"
             (click)="toggleTeamCapt('z')"
           >
@@ -77,12 +75,11 @@
             <span>Z</span>
           </button>
           <button
-            type="button"
-            class="team-editor__capt-toggle"
-            [class.team-editor__capt-toggle--on]="captState('dmax') === 'all'"
-            [class.team-editor__capt-toggle--partial]="
-              captState('dmax') === 'some'
-            "
+            pdz-button
+            size="xs"
+            pill
+            [variant]="captState('dmax') === 'none' ? 'ghost' : 'tonal'"
+            [color]="captState('dmax') === 'all' ? 'primary' : 'neutral'"
             title="Toggle Dynamax for the whole team"
             (click)="toggleTeamCapt('dmax')"
           >
@@ -244,27 +241,33 @@
                 </h4>
                 <div class="pokemon-card__toggle-row">
                   <button
-                    type="button"
-                    class="pill-toggle"
-                    [class.pill-toggle--on]="!!monGroup.controls.tera.value"
+                    pdz-button
+                    size="sm"
+                    pill
+                    [variant]="!!monGroup.controls.tera.value ? 'tonal' : 'outlined'"
+                    [color]="!!monGroup.controls.tera.value ? 'primary' : 'neutral'"
                     (click)="toggleCapt(monGroup.controls.tera, teraTypes)"
                   >
                     <pdz-icon name="tera" [size]="16"></pdz-icon>
                     Tera
                   </button>
                   <button
-                    type="button"
-                    class="pill-toggle"
-                    [class.pill-toggle--on]="!!monGroup.controls.z.value"
+                    pdz-button
+                    size="sm"
+                    pill
+                    [variant]="!!monGroup.controls.z.value ? 'tonal' : 'outlined'"
+                    [color]="!!monGroup.controls.z.value ? 'primary' : 'neutral'"
                     (click)="toggleCapt(monGroup.controls.z, zTypes)"
                   >
                     <pdz-icon name="z" [size]="16"></pdz-icon>
                     Z
                   </button>
                   <button
-                    type="button"
-                    class="pill-toggle"
-                    [class.pill-toggle--on]="!!monGroup.controls.dmax.value"
+                    pdz-button
+                    size="sm"
+                    pill
+                    [variant]="!!monGroup.controls.dmax.value ? 'tonal' : 'outlined'"
+                    [color]="!!monGroup.controls.dmax.value ? 'primary' : 'neutral'"
                     (click)="
                       monGroup.controls.dmax.setValue(
                         !monGroup.controls.dmax.value
@@ -380,9 +383,11 @@
                   Cosmetics
                 </h4>
                 <button
-                  type="button"
-                  class="pill-toggle"
-                  [class.pill-toggle--on]="!!monGroup.controls.shiny.value"
+                  pdz-button
+                  size="sm"
+                  pill
+                  [variant]="!!monGroup.controls.shiny.value ? 'tonal' : 'outlined'"
+                  [color]="!!monGroup.controls.shiny.value ? 'primary' : 'neutral'"
                   (click)="
                     monGroup.controls.shiny.setValue(
                       !monGroup.controls.shiny.value
@@ -426,10 +431,19 @@
                     <div class="pokemon-card__forme-options">
                       @for (forme of monGroup.formeList; track forme.id) {
                         <button
-                          type="button"
+                          pdz-button
+                          size="sm"
+                          pill
                           class="forme-chip"
-                          [class.forme-chip--selected]="
+                          [variant]="
                             isFormeSelected(monGroup, forme)
+                              ? 'tonal'
+                              : 'outlined'
+                          "
+                          [color]="
+                            isFormeSelected(monGroup, forme)
+                              ? 'primary'
+                              : 'neutral'
                           "
                           (click)="toggleForme(monGroup, forme)"
                         >

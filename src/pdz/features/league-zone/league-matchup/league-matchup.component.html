@@ -111,7 +111,13 @@
 } @else if (matchup(); as m) {
   <div class="matchup">
     <header class="matchup__header">
-      <a class="matchup__back" [routerLink]="schedulePath()">
+      <a
+        pdz-button
+        size="sm"
+        color="neutral"
+        variant="ghost"
+        [routerLink]="schedulePath()"
+      >
         <pdz-icon name="arrow_back" [size]="16"></pdz-icon>
         <span>Schedule</span>
       </a>

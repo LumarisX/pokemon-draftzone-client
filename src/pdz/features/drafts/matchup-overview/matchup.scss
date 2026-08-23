@@ -1,4 +1,3 @@
-@use "mixins/buttons" as *;
 @use "pdz-theming" as pdz;
 
 .matchup-main {
@@ -14,11 +13,7 @@
 
     button {
       pointer-events: auto;
-      @include flat-button-menu(
-        (
-          max-width: 4rem,
-        )
-      );
+      max-width: 4rem;
     }
 
     .details-spacer {
@@ -51,11 +46,7 @@
 
       button {
         pointer-events: auto;
-        @include flat-button-menu(
-          (
-            max-width: 5rem,
-          )
-        );
+        max-width: 5rem;
       }
     }
   }

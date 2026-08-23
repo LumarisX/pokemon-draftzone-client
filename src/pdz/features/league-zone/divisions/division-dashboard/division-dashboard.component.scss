@@ -1,6 +1,5 @@
 @use "pdz-theming" as pdz;
 @use "mixins" as *;
-@use "mixins/buttons" as *;
 @use "../../league.mixins" as *;
 
 .widget {
@@ -47,7 +46,6 @@
   }
 
   &__back {
-    @include pdz-league-page-back-button();
   }
 
   &__info {

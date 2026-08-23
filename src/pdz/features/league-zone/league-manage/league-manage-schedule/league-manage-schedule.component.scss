@@ -1,6 +1,5 @@
 @use "pdz-theming" as pdz;
 @use "mixins" as *;
-@use "mixins/buttons" as *;
 
 :host {
   display: block;
@@ -570,37 +569,6 @@ input[type="number"] {
 .matchup-footer {
   display: flex;
   justify-content: flex-end;
-}
-
-.btn-primary {
-  @include flat-button-primary();
-
-  &.btn-success {
-    background: pdz.color(success-container);
-    color: pdz.color(on-success-container);
-    cursor: default;
-
-    &:hover {
-      background: pdz.color(success-container);
-    }
-
-    &:disabled {
-      opacity: 1;
-    }
-  }
-
-  &.btn-error {
-    background: pdz.color(danger-container);
-    color: pdz.color(on-danger-container);
-  }
-
-  &:disabled {
-    opacity: 0.5;
-    pointer-events: none;
-  }
-}
-.btn-check {
-  font-weight: 600;
 }
 
 .matchup-header__action {

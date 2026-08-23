@@ -1,5 +1,4 @@
 @use "pdz-theming" as pdz;
-@use "mixins/_buttons.scss" as *;
 
 :host {
   display: block;
@@ -73,32 +72,3 @@
 
 // Shared toggle chip for legal abilities and formes, matching the draft
 // team editor's forme chips.
-.toggle-chip {
-  @include flat-button(
-    (
-      padding: pdz.space(2xs) pdz.space(sm) pdz.space(2xs) pdz.space(2xs),
-      gap: pdz.space(2xs),
-      font-size: 0.875rem,
-      border-width: 1px,
-      border-color: pdz.color(outline),
-      border-radius: pdz.shape(corner-full),
-      color: pdz.color(on-surface-variant),
-      background-hover: pdz.color(surface-container-low),
-    )
-  );
-
-  pdz-sprite {
-    width: 1.75rem;
-    height: 1.75rem;
-  }
-
-  &:not(:has(pdz-sprite)) {
-    padding-left: pdz.space(sm);
-  }
-
-  &--selected {
-    background: pdz.color(primary-container);
-    border-color: pdz.color(primary-border);
-    color: pdz.color(on-primary-container);
-  }
-}

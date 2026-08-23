@@ -28,7 +28,6 @@
   }
 
   &__back {
-    @include pdz-league-page-back-button();
     display: inline-flex;
     align-items: center;
     gap: pdz.space(3xs);

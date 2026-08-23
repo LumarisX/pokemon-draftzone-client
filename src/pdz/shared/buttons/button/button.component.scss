@@ -46,6 +46,17 @@ $colors: (
     border: danger-border,
     state: danger,
   ),
+  success: (
+    solid: success,
+    on-solid: on-success,
+    hover-solid: success,
+    container: success-container,
+    on-container: on-success-container,
+    container-hover: success-container,
+    accent: success,
+    border: success-border,
+    state: success,
+  ),
 );
 
 $sizes: (

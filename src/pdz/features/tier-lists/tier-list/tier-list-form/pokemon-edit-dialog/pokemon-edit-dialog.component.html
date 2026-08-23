@@ -30,9 +30,11 @@
           <div class="edit-dialog__chips">
             @for (ability of abilityNames; track ability) {
               <button
-                type="button"
-                class="toggle-chip"
-                [class.toggle-chip--selected]="isAbilitySelected(ability)"
+                pdz-button
+                size="sm"
+                pill
+                [variant]="isAbilitySelected(ability) ? 'tonal' : 'outlined'"
+                [color]="isAbilitySelected(ability) ? 'primary' : 'neutral'"
                 [attr.aria-pressed]="isAbilitySelected(ability)"
                 (click)="toggleAbility(ability)"
               >
@@ -55,9 +57,11 @@
           <div class="edit-dialog__chips">
             @for (forme of availableFormes; track forme.id) {
               <button
-                type="button"
-                class="toggle-chip"
-                [class.toggle-chip--selected]="isFormeSelected(forme)"
+                pdz-button
+                size="sm"
+                pill
+                [variant]="isFormeSelected(forme) ? 'tonal' : 'outlined'"
+                [color]="isFormeSelected(forme) ? 'primary' : 'neutral'"
                 [attr.aria-pressed]="isFormeSelected(forme)"
                 (click)="toggleForme(forme)"
               >

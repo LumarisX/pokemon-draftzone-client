@@ -106,6 +106,7 @@ export class DebugComponentsComponent {
     'secondary',
     'neutral',
     'danger',
+    'success',
   ];
   readonly sizes: ButtonSize[] = ['xs', 'sm', 'md', 'lg'];
   readonly themes = ['classic', 'classic-reverse', 'fern', 'shiny', 'sunset'];

@@ -1,6 +1,5 @@
 @use "pdz-theming" as pdz;
 @use "mixins" as *;
-@use "mixins/buttons" as *;
 
 @mixin pdz-league-logo($size: 4rem) {
   width: $size;
@@ -54,20 +53,6 @@
     justify-content: space-between;
     height: $height;
   }
-}
-
-@mixin pdz-league-page-back-button(
-  $padding: pdz.space(2xs) pdz.space(sm),
-  $height: 2rem
-) {
-  align-self: flex-start;
-  @include flat-button-primary(
-    (
-      padding: $padding,
-      height: $height,
-    )
-  );
-  @include text(label);
 }
 
 @mixin pdz-league-page-title($color: pdz.color(primary), $weight: 700) {
