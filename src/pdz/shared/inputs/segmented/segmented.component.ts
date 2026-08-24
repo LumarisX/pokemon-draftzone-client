@@ -121,6 +121,7 @@ export class SegmentedComponent<T = unknown> implements ControlValueAccessor {
     return this.options().findIndex((option) => !option.disabled());
   });
 
+  private placedIndex = -1;
   private onChange: (value: T) => void = () => {};
   private onTouched: () => void = () => {};
 
@@ -129,19 +130,21 @@ export class SegmentedComponent<T = unknown> implements ControlValueAccessor {
     const destroyRef = inject(DestroyRef);
 
     afterRenderEffect(() => {
-      this.checkedIndex();
+      const index = this.checkedIndex();
       this.options();
-      this.moveIndicator();
+      const previous = this.placedIndex;
+      this.placedIndex = index;
+      this.moveIndicator(previous >= 0 && index >= 0 && previous !== index);
     });
 
     afterNextRender(() => {
-      const observer = new ResizeObserver(() => this.moveIndicator());
+      const observer = new ResizeObserver(() => this.moveIndicator(false));
       observer.observe(host.nativeElement);
       destroyRef.onDestroy(() => observer.disconnect());
     });
   }
 
-  private moveIndicator() {
+  private moveIndicator(animate: boolean) {
     const indicator = this.indicator()?.nativeElement;
     if (!indicator) return;
 
@@ -151,6 +154,7 @@ export class SegmentedComponent<T = unknown> implements ControlValueAccessor {
       return;
     }
 
+    indicator.toggleAttribute('data-animate', animate);
     indicator.style.opacity = '1';
     indicator.style.transform = `translateX(${element.offsetLeft}px)`;
     indicator.style.width = `${element.offsetWidth}px`;

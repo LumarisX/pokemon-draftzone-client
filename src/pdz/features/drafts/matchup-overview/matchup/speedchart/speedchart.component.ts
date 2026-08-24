@@ -1,60 +1,75 @@
-import { CommonModule } from '@angular/common';
 import {
   AfterViewInit,
+  ChangeDetectionStrategy,
   Component,
+  DestroyRef,
   ElementRef,
   Input,
   OnDestroy,
   OnInit,
-  ViewChild,
   inject,
   model,
+  signal,
+  viewChild,
 } from '@angular/core';
-import {
-  FormArray,
-  FormControl,
-  FormGroup,
-  FormsModule,
-  NonNullableFormBuilder,
-  ReactiveFormsModule,
-} from '@angular/forms';
-import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
-import { IconComponent } from '@pdz/shared/images/icon/icon.component';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { NonNullableFormBuilder } from '@angular/forms';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
+import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { WidgetComponent } from '@pdz/shared/layout/widget/widget.component';
-import { BehaviorSubject, Subject, takeUntil } from 'rxjs';
 import { DraftPokemon } from '../../../draft.model';
 import { SpeedChart, Speedtier } from '../../matchup-interface';
-import { SpeedtierComponent } from './speedtier/speedtier.component';
-import { ChoiceDirective } from '@pdz/shared/inputs/choice/choice.directive';
-import { MenuComponent } from '@pdz/shared/menu/menu.component';
-import { MenuTriggerDirective } from '@pdz/shared/menu/menu-trigger.directive';
+import {
+  ModifierForms,
+  SpeedchartFiltersComponent,
+} from './filters/speedchart-filters.component';
+import {
+  SpeedtierGroup,
+  SpeedtierGroupComponent,
+} from './tier-group/speedtier-group.component';
+
+type BaseSpeed = DraftPokemon & { spe: number; team: number };
+
+const DEFAULT_MODIFIERS = [
+  '252',
+  '252+',
+  '32+',
+  '32',
+  '0',
+  '0- 0ivs',
+  'Swift Swim',
+  'Sand Rush',
+  'Chlorophyll',
+  'Slush Rush',
+  'Protosynthesis',
+  'Quick Feet',
+  'Unburden',
+  'Quark Drive',
+  'Surge Surfer',
+];
 
 @Component({
   selector: 'pdz-speedchart',
   templateUrl: './speedchart.component.html',
   styleUrl: './speedchart.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    CommonModule,
-    FormsModule,
-    ReactiveFormsModule,
-    SpriteComponent,
-    SpeedtierComponent,
     IconComponent,
-    ButtonComponent,
-    ChoiceDirective,
+    SpeedchartFiltersComponent,
+    SpeedtierGroupComponent,
+    SpriteComponent,
     WidgetComponent,
-    MenuComponent,
-    MenuTriggerDirective,
   ],
 })
-export class SpeedchartComponent implements OnInit, OnDestroy, AfterViewInit {
-  private fb = inject(NonNullableFormBuilder);
+export class SpeedchartComponent implements OnInit, AfterViewInit, OnDestroy {
+  private readonly fb = inject(NonNullableFormBuilder);
+  private readonly destroyRef = inject(DestroyRef);
 
   @Input()
   set speedchart(value: SpeedChart) {
     this.level.set(value.level);
     this.setModifiers(value.modifiers);
+
     const entries = value.teams.flatMap((team, teamIndex) =>
       team.flatMap((pokemon) => {
         const base = {
@@ -87,9 +102,15 @@ export class SpeedchartComponent implements OnInit, OnDestroy, AfterViewInit {
       }),
     );
 
-    this.pokemons = entries
-      .map((entry) => ({ ...entry.pokemon, spe: entry.spe, team: entry.team }))
-      .sort((x, y) => y.spe - x.spe);
+    this.pokemons.set(
+      entries
+        .map((entry) => ({
+          ...entry.pokemon,
+          spe: entry.spe,
+          team: entry.team,
+        }))
+        .sort((x, y) => y.spe - x.spe),
+    );
 
     this.sortedTiers = entries
       .flatMap((entry) =>
@@ -102,83 +123,97 @@ export class SpeedchartComponent implements OnInit, OnDestroy, AfterViewInit {
       )
       .sort((x, y) => y.speed - x.speed);
   }
+
   readonly level = model(100);
-  pokemons: (DraftPokemon & { spe: number; team: number })[] = [];
-  enabledMons: [string | null, string | null] = [null, null];
-  sortedTiers: {
-    modifiers: string[];
-    speed: number;
-    pokemon: DraftPokemon & {
-      spe: number;
-    };
-    team: number;
-  }[] = [];
-  speedGroups = new BehaviorSubject<
-    {
-      tiers: Speedtier[];
-      pokemon: DraftPokemon[];
-      opened: boolean;
-    }[]
-  >([]);
-  $destroy = new Subject<void>();
-  modifiersForms!: FormGroup<{
-    [key: string]: FormArray<FormControl<boolean>>;
-  }>;
+
+  protected readonly pokemons = signal<BaseSpeed[]>([]);
+  protected readonly groups = signal<SpeedtierGroup[]>([]);
+  protected readonly lockedMons = signal<[string | null, string | null]>([
+    null,
+    null,
+  ]);
+  protected modifiersForms!: ModifierForms;
+
+  private sortedTiers: (Omit<Speedtier, 'pokemon'> & {
+    pokemon: DraftPokemon & { spe: number };
+  })[] = [];
+  private resizeObserver?: ResizeObserver;
+
+  private readonly baseList = viewChild<ElementRef<HTMLElement>>('baseList');
+  private readonly groupList = viewChild<ElementRef<HTMLElement>>('groupList');
 
   ngOnInit() {
     this.resetModifiers();
     this.filter();
     this.modifiersForms.valueChanges
-      .pipe(takeUntil(this.$destroy))
-      .subscribe(() => {
-        this.filter();
-      });
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => this.filter());
   }
 
-  @ViewChild('speedContainer', { static: false }) speedContainer!: ElementRef;
-  @ViewChild('tiersContainer', { static: false }) tiersMain!: ElementRef;
+  ngAfterViewInit() {
+    const base = this.baseList()?.nativeElement;
+    const groups = this.groupList()?.nativeElement;
+    if (!base || !groups) return;
 
-  private resizeObserver!: ResizeObserver;
-
-  ngAfterViewInit(): void {
-    this.observeBaseTiersHeight();
+    this.resizeObserver = new ResizeObserver(() => {
+      groups.style.maxHeight = `${base.offsetHeight}px`;
+    });
+    this.resizeObserver.observe(base);
   }
 
-  private observeBaseTiersHeight(): void {
-    if (this.speedContainer && this.tiersMain) {
-      this.resizeObserver = new ResizeObserver(() => {
-        this.updateTiersMainHeight();
-      });
-      this.resizeObserver.observe(this.speedContainer.nativeElement);
-    }
+  ngOnDestroy() {
+    this.resizeObserver?.disconnect();
   }
 
-  private updateTiersMainHeight(): void {
-    if (this.speedContainer && this.tiersMain) {
-      const baseHeight = this.speedContainer.nativeElement.offsetHeight;
-      this.tiersMain.nativeElement.style.maxHeight = `${baseHeight}px`;
-    }
+  protected isLocked(pokemon: BaseSpeed) {
+    return this.lockedMons()[pokemon.team] === pokemon.id;
   }
 
-  ngOnDestroy(): void {
-    this.$destroy.next();
-    this.$destroy.complete();
+  protected toggleLock(pokemon: BaseSpeed) {
+    this.lockedMons.update((locked) => {
+      const next: [string | null, string | null] = [...locked];
+      next[pokemon.team] = this.isLocked(pokemon) ? null : pokemon.id;
+      return next;
+    });
+    this.filter();
   }
 
-  setModifiers(modifiers: string[]) {
+  protected resetModifiers() {
+    Object.entries(this.modifiersForms.controls).forEach(
+      ([modifier, teams]) => {
+        const isDefault = DEFAULT_MODIFIERS.includes(modifier);
+        teams.controls.forEach((control) => control.setValue(isDefault));
+      },
+    );
+  }
+
+  private setModifiers(modifiers: string[]) {
     this.modifiersForms = this.fb.group(
       modifiers.reduce(
         (acc, item) => {
           acc[item] = this.fb.array([false, false]);
           return acc;
         },
-        {} as { [key: string]: FormArray<FormControl<boolean>> },
+        {} as ModifierForms['controls'],
       ),
     );
   }
 
-  generateGroups(tiers?: Speedtier[]) {
-    if (!tiers) return;
+  private filter() {
+    this.groupTiers(
+      this.sortedTiers.filter((tier) => {
+        const locked = this.lockedMons()[tier.team];
+        if (locked && tier.pokemon.id !== locked) return false;
+
+        return tier.modifiers.every(
+          (mod) =>
+            this.modifiersForms.controls[mod]?.controls.at(tier.team)?.value,
+        );
+      }),
+    );
+  }
+
+  private groupTiers(tiers: Speedtier[]) {
     const groups = tiers.reduce((groups: Speedtier[][], tier) => {
       const lastGroup = groups[groups.length - 1];
       if (lastGroup && tier.team === lastGroup[0].team) {
@@ -189,74 +224,15 @@ export class SpeedchartComponent implements OnInit, OnDestroy, AfterViewInit {
       return groups;
     }, []);
 
-    this.speedGroups.next(
-      groups.map((group) => ({
-        tiers: group,
-        opened: false,
-        pokemon: group.reduce((pokemon: DraftPokemon[], tier) => {
+    this.groups.set(
+      groups.map((tiers) => ({
+        tiers,
+        pokemon: tiers.reduce((pokemon: DraftPokemon[], tier) => {
           if (pokemon.every((p) => p.id !== tier.pokemon.id))
             pokemon.push(tier.pokemon);
           return pokemon;
         }, []),
       })),
-    );
-  }
-
-  filter() {
-    this.generateGroups(
-      this.sortedTiers.filter((tier) => {
-        if (
-          this.enabledMons[tier.team] &&
-          tier.pokemon.id !== this.enabledMons[tier.team]
-        )
-          return false;
-
-        return tier.modifiers.every(
-          (mod) =>
-            this.modifiersForms.controls[mod]?.controls.at(tier.team)?.value,
-        );
-      }),
-    );
-  }
-
-  toggleView(
-    pokemon: DraftPokemon & {
-      spe: number;
-      team: number;
-    },
-  ) {
-    this.enabledMons[pokemon.team] =
-      this.enabledMons[pokemon.team] == pokemon.id ? null : pokemon.id;
-    this.filter();
-  }
-
-  resetModifiers() {
-    const defaultModifiers = [
-      '252',
-      '252+',
-      '32+',
-      '32',
-      '0',
-      '0- 0ivs',
-      'Swift Swim',
-      'Sand Rush',
-      'Chlorophyll',
-      'Slush Rush',
-      'Protosynthesis',
-      'Quick Feet',
-      'Unburden',
-      'Quark Drive',
-      'Surge Surfer',
-    ];
-    this.getModifiers().forEach(([modifier, array]) => {
-      const isDefault = defaultModifiers.includes(modifier);
-      array.controls.forEach((control) => control.setValue(isDefault));
-    });
-  }
-
-  getModifiers() {
-    return Object.entries(this.modifiersForms.controls).sort((x, y) =>
-      x[0].localeCompare(y[0]),
     );
   }
 }

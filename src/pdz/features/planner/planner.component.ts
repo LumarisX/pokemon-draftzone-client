@@ -70,8 +70,8 @@ const AUTOSAVE_DEBOUNCE_MS = 800;
 const ADD_FEEDBACK_MS = 2500;
 const LARGE_SCREEN_QUERY = '(min-width: 1024px)';
 const DEFAULT_PANEL_RATIO = 0.34;
-const MIN_PANEL_RATIO = 0.2;
 const MAX_PANEL_RATIO = 0.6;
+const MIN_PANEL_WIDTH_REM = 18;
 const DEFAULT_PANEL_MAX_WIDTH_REM = 32;
 
 @Component({
@@ -120,6 +120,7 @@ export class PlannerComponent implements OnInit, OnDestroy {
   isLargeScreen = signal(false);
   panelOpen = signal(false);
   panelRatio = signal(DEFAULT_PANEL_RATIO);
+  panelCustomized = signal(false);
   isResizing = signal(false);
   hasUnsavedEdits = signal(false);
   pendingDeleteIndex = signal<number | null>(null);
@@ -149,7 +150,7 @@ export class PlannerComponent implements OnInit, OnDestroy {
 
   panelFlex = computed(() => {
     const percent = `${(this.panelRatio() * 100).toFixed(2)}%`;
-    if (this.panelRatio() !== DEFAULT_PANEL_RATIO) return `0 0 ${percent}`;
+    if (this.panelCustomized()) return `0 0 ${percent}`;
     return `0 0 min(${DEFAULT_PANEL_MAX_WIDTH_REM}rem, ${percent})`;
   });
 
@@ -381,29 +382,45 @@ export class PlannerComponent implements OnInit, OnDestroy {
   onPanelResizeStart(event: PointerEvent): void {
     const splitter = event.currentTarget as HTMLElement | null;
     const container = splitter?.closest('.planner__body') as HTMLElement | null;
-    if (!splitter || !container) return;
+    const panel = container?.querySelector(
+      '.planner__panel',
+    ) as HTMLElement | null;
+    if (!splitter || !container || !panel) return;
 
     event.preventDefault();
     splitter.setPointerCapture(event.pointerId);
 
     this.resizingPointerId = event.pointerId;
     this.resizeStartX = event.clientX;
-    this.resizeStartRatio = this.panelRatio();
     this.resizeContainerWidth = Math.max(container.clientWidth, 1);
+    this.resizeStartRatio = this.clampPanelRatio(
+      panel.getBoundingClientRect().width / this.resizeContainerWidth,
+      this.resizeContainerWidth,
+    );
+    this.setPanelRatio(this.resizeStartRatio);
     this.isResizing.set(true);
   }
 
   onPanelSplitterKeyDown(event: KeyboardEvent): void {
     const step = event.shiftKey ? 0.05 : 0.02;
 
-    if (event.key === 'ArrowLeft') {
+    if (event.key === 'ArrowLeft' || event.key === 'ArrowRight') {
       event.preventDefault();
-      this.panelRatio.update((ratio) => clampPanelRatio(ratio - step));
-    } else if (event.key === 'ArrowRight') {
-      event.preventDefault();
-      this.panelRatio.update((ratio) => clampPanelRatio(ratio + step));
+      const container = (event.currentTarget as HTMLElement).closest(
+        '.planner__body',
+      ) as HTMLElement | null;
+      const panel = container?.querySelector(
+        '.planner__panel',
+      ) as HTMLElement | null;
+      if (!container || !panel) return;
+
+      const containerWidth = Math.max(container.clientWidth, 1);
+      const current = panel.getBoundingClientRect().width / containerWidth;
+      const delta = event.key === 'ArrowLeft' ? -step : step;
+      this.setPanelRatio(this.clampPanelRatio(current + delta, containerWidth));
     } else if (event.key === 'Home') {
       event.preventDefault();
+      this.panelCustomized.set(false);
       this.panelRatio.set(DEFAULT_PANEL_RATIO);
     }
   }
@@ -412,9 +429,10 @@ export class PlannerComponent implements OnInit, OnDestroy {
   onDocumentPointerMove(event: PointerEvent): void {
     if (!this.isPointerResizing(event)) return;
     const deltaX = event.clientX - this.resizeStartX;
-    this.panelRatio.set(
-      clampPanelRatio(
+    this.setPanelRatio(
+      this.clampPanelRatio(
         this.resizeStartRatio + deltaX / this.resizeContainerWidth,
+        this.resizeContainerWidth,
       ),
     );
   }
@@ -508,6 +526,19 @@ export class PlannerComponent implements OnInit, OnDestroy {
     } else if (newSize < currentSize) {
       for (let i = currentSize; i > newSize; i--) team.removeAt(i - 1);
     }
+  }
+
+  private setPanelRatio(ratio: number): void {
+    this.panelCustomized.set(true);
+    this.panelRatio.set(ratio);
+  }
+
+  private clampPanelRatio(ratio: number, containerWidth: number): number {
+    const minRatio = Math.min(
+      remToPx(MIN_PANEL_WIDTH_REM) / containerWidth,
+      MAX_PANEL_RATIO,
+    );
+    return Math.min(MAX_PANEL_RATIO, Math.max(minRatio, ratio));
   }
 
   private isPointerResizing(event: PointerEvent): boolean {
@@ -643,8 +674,14 @@ function normalizeName(name?: string): string {
   return (name ?? '').trim().toLowerCase();
 }
 
-function clampPanelRatio(value: number): number {
-  return Math.max(MIN_PANEL_RATIO, Math.min(MAX_PANEL_RATIO, value));
+function remToPx(rem: number): number {
+  const rootFontSize = parseFloat(
+    getComputedStyle(document.documentElement).fontSize,
+  );
+  return (
+    rem *
+    (Number.isFinite(rootFontSize) && rootFontSize > 0 ? rootFontSize : 16)
+  );
 }
 
 function maxValidator(max: number) {

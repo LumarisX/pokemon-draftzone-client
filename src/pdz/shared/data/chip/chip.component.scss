@@ -54,6 +54,13 @@ $tones: (
 );
 
 $sizes: (
+  xs: (
+    height: 1.125rem,
+    pad: pdz.space(xs),
+    gap: pdz.space(3xs),
+    role: label,
+    font-size: 2xs,
+  ),
   sm: (
     height: 1.375rem,
     pad: pdz.space(xs),
@@ -151,6 +158,10 @@ $sizes: (
   :host([data-size="#{$name}"]) {
     min-height: map.get($s, height);
     @include pdz.text(map.get($s, role), $family: false);
+
+    @if map.has-key($s, font-size) {
+      font-size: pdz.font-size(map.get($s, font-size));
+    }
   }
 
   :host([data-size="#{$name}"]) .pdz-chip__action {
@@ -162,8 +173,6 @@ $sizes: (
     width: map.get($s, height);
   }
 
-  // The body loses its trailing padding when a remove control follows it, so
-  // the two read as one chip rather than two adjacent targets.
   :host([data-size="#{$name}"]) .pdz-chip__action:has(+ .pdz-chip__remove) {
     padding-inline-end: map.get($s, gap);
   }

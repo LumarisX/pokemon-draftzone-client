@@ -1,127 +1,58 @@
 <pdz-widget label="Speed Tiers">
   <ng-container widget-options>
-    <pdz-menu role="group" aria-label="Speed tier filters">
-      <button
-        pdz-button
-        iconOnly
-        size="sm"
-        variant="ghost"
-        color="neutral"
-        aria-label="Filter speed tiers"
-        pdz-menu-trigger
-      >
-        <pdz-icon name="filter_list"></pdz-icon>
-      </button>
-
-      <div class="filter-main">
-        <button
-          type="button"
-          pdz-button
-          size="sm"
-          variant="ghost"
-          color="neutral"
-          (click)="resetModifiers()"
-        >
-          Reset
-        </button>
-        @for (modifier of getModifiers(); track $index) {
-          <div class="option-row">
-            <input
-              pdz-checkbox
-              [formControl]="modifier[1].at(0)"
-              [attr.aria-label]="modifier[0] + ' for your team'"
-            />
-
-            <span class="filter-label">{{ modifier[0] }}</span>
-            <input
-              pdz-checkbox
-              [formControl]="modifier[1].at(1)"
-              [attr.aria-label]="modifier[0] + ' for opponent team'"
-            />
-          </div>
-        }
-      </div>
-    </pdz-menu>
+    <pdz-speedchart-filters
+      [modifiers]="modifiersForms"
+      (reset)="resetModifiers()"
+    ></pdz-speedchart-filters>
   </ng-container>
 
-  <div class="speed-main">
-    <div class="base-tiers-container">
-      <div class="section-title">Base Speed</div>
-      <div class="speed-container" #speedContainer>
-        @for (pokemon of pokemons; track $index) {
-          <div
-            class="speed-row"
-            [ngClass]="{
-              alternate: pokemon.team,
-              selected: enabledMons[pokemon.team] === pokemon.id,
-            }"
-            (click)="toggleView(pokemon)"
+  <div class="speedchart">
+    <section class="speedchart__pane speedchart__pane--base">
+      <span class="speedchart__title">Base Speed</span>
+      <div class="speedchart__rows" #baseList>
+        @for (pokemon of pokemons(); track $index) {
+          @let locked = isLocked(pokemon);
+          <button
+            type="button"
+            class="speedchart__row"
+            [class.speedchart__row--opponent]="pokemon.team === 1"
+            [class.speedchart__row--locked]="locked"
+            [attr.aria-pressed]="locked"
+            [attr.aria-label]="
+              (pokemon.nickname || pokemon.name) +
+              ', ' +
+              pokemon.spe +
+              ' base speed'
+            "
+            (click)="toggleLock(pokemon)"
           >
-            <div class="sprite-wrapper">
+            <span class="speedchart__sprite">
               <pdz-sprite
                 [pokemon]="pokemon"
-                [flipped]="pokemon.team ? null : true"
+                [flipped]="pokemon.team === 0"
               ></pdz-sprite>
-            </div>
-            <div class="base-speed-label">
-              {{ pokemon.spe }}
-            </div>
-            <div class="speed-icon">
-              @if (enabledMons[pokemon.team] === pokemon.id) {
-                <pdz-icon name="lock"></pdz-icon>
+            </span>
+            <span class="speedchart__speed">{{ pokemon.spe }}</span>
+            <span class="speedchart__lock">
+              @if (locked) {
+                <pdz-icon name="lock" size="sm"></pdz-icon>
               }
-            </div>
-          </div>
+            </span>
+          </button>
         }
       </div>
-    </div>
-    <div class="tiers-main">
-      <div class="tiers-titles">
-        <div class="section-title">Speed Tier Groups</div>
-        <div class="section-title">Lvl {{ level() }}</div>
-      </div>
-      <div class="tiers-container" #tiersContainer>
-        @for (group of speedGroups | async; track group) {
-          <div
-            class="tier-group"
-            [ngClass]="{
-              alternate: +group.tiers[0].team,
-              grouped: group.tiers.length > 1,
-            }"
-            (click)="group.opened = !group.opened"
-          >
-            @if (group.tiers.length === 1 || group.opened) {
-              @for (tier of group.tiers; track $index) {
-                <div class="speedtier-wrapper">
-                  <pdz-speedtier [tier]="tier"></pdz-speedtier>
-                </div>
-              }
-            } @else {
-              <div class="collapsed-group">
-                <div class="pokemon-row">
-                  @for (pokemon of group.pokemon; track pokemon) {
-                    <div class="sprite-wrapper">
-                      <pdz-sprite [pokemon]="pokemon" flipped></pdz-sprite>
-                    </div>
-                  }
-                </div>
-                <div class="group-speeds">
-                  <div class="top-speed">{{ group.tiers[0].speed }}</div>
-                  @if (
-                    group.tiers[group.tiers.length - 1].speed !==
-                    group.tiers[0].speed
-                  ) {
-                    <div class="speed-spacer"></div>
-                    <div class="bot-speed">
-                      {{ group.tiers[group.tiers.length - 1].speed }}
-                    </div>
-                  }
-                </div>
-              </div>
-            }
-          </div>
+    </section>
+
+    <section class="speedchart__pane speedchart__pane--tiers">
+      <header class="speedchart__pane-header">
+        <span class="speedchart__title">Speed Tier Groups</span>
+        <span class="speedchart__title">Lvl {{ level() }}</span>
+      </header>
+      <div class="speedchart__groups" #groupList>
+        @for (group of groups(); track group) {
+          <pdz-speedtier-group [group]="group"></pdz-speedtier-group>
         }
       </div>
-    </div>
+    </section>
   </div>
 </pdz-widget>

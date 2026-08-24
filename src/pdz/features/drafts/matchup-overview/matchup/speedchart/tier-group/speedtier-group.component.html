@@ -1,0 +1,22 @@
+@if (expanded()) {
+  @for (tier of tiers(); track $index) {
+    <pdz-speedtier class="speedtier-group__tier" [tier]="tier"></pdz-speedtier>
+  }
+} @else {
+  <div class="speedtier-group__summary">
+    <div class="speedtier-group__range">
+      <span class="speedtier-group__speed">{{ topSpeed() }}</span>
+      @if (ranged()) {
+        <span class="speedtier-group__rule"></span>
+        <span class="speedtier-group__speed">{{ bottomSpeed() }}</span>
+      }
+    </div>
+    <div class="speedtier-group__sprites">
+      @for (pokemon of group().pokemon; track pokemon) {
+        <div class="speedtier-group__sprite">
+          <pdz-sprite [pokemon]="pokemon" flipped></pdz-sprite>
+        </div>
+      }
+    </div>
+  </div>
+}

@@ -1,13 +1,9 @@
-<div class="tier-row">
-  <div class="sprite-wrapper">
-    <pdz-sprite [pokemon]="tier().pokemon" flipped></pdz-sprite>
-  </div>
-  <div class="modifier-container">
-    @for (modifier of tier().modifiers; track modifier) {
-      <div class="modifier">{{ modifier }}</div>
-    }
-  </div>
-  <div class="speed-label">
-    {{ tier().speed }}
-  </div>
+<span class="speedtier__speed">{{ tier().speed }}</span>
+<div class="speedtier__sprite">
+  <pdz-sprite [pokemon]="tier().pokemon" flipped></pdz-sprite>
+</div>
+<div class="speedtier__modifiers">
+  @for (modifier of tier().modifiers; track modifier) {
+    <pdz-chip size="xs" variant="soft" [tone]="tone()">{{ modifier }}</pdz-chip>
+  }
 </div>

@@ -1,194 +1,147 @@
 @use "pdz-theming" as pdz;
-
-.speed-main {
+.speedchart {
   display: flex;
-  column-gap: 0.5rem;
+  column-gap: pdz.space(sm);
   width: 100%;
   max-width: 100%;
 
-  .base-tiers-container {
+  &__pane {
     display: flex;
-    row-gap: 1px;
     flex-direction: column;
-    align-items: center;
-    .speed-container {
-      .speed-row {
-        display: flex;
-        background-color: pdz.color(primary-container);
-        border-radius: pdz.shape(corner-sm);
-        border-bottom: 1px solid pdz.color(primary-border);
-        column-gap: 0.25rem;
-        margin-bottom: 1px;
-        cursor: pointer;
-        &:hover {
-          background-color: pdz.color(primary-container-hover);
-        }
-        &.alternate,
-        :host-context(.alternate) & {
-          background-color: pdz.color(secondary-container);
-          border-bottom: 1px solid pdz.color(secondary-border);
-          .speed-icon {
-            color: pdz.color(on-secondary-container);
-          }
-          .base-speed-label {
-            color: pdz.color(on-secondary-container);
-          }
 
-          &:hover {
-            background-color: pdz.color(secondary-container-hover);
-          }
-        }
-        &.alternate {
-          flex-direction: row-reverse;
-        }
-        &.selected {
-          border-bottom: 1px solid pdz.color(surface);
-          margin-bottom: 0px;
-          margin-top: 2px;
-        }
+    &--base {
+      align-items: center;
+      row-gap: pdz.space(3xs);
+    }
 
-        .speed-icon {
-          justify-content: center;
-          align-items: center;
-          display: flex;
-          color: pdz.color(on-primary-container);
-        }
-
-        div {
-          width: 2rem;
-          height: 2rem;
-        }
-
-        .base-speed-label {
-          @include pdz.numeric;
-          text-align: center;
-          line-height: 2rem;
-          font-weight: var(--pdz-font-weight-bold);
-          color: pdz.color(on-primary-container);
-        }
-      }
+    &--tiers {
+      flex-grow: 1;
+      max-width: 20rem;
+      overflow: hidden;
+      margin-right: calc(-1 * pdz.space(md));
     }
   }
-  .tiers-main {
-    flex-grow: 1;
-    max-width: 20rem;
-    overflow: hidden;
-    margin-right: -0.75rem;
 
-    .tiers-titles {
-      margin-right: 0.75rem;
-      display: flex;
-      justify-content: space-between;
-      column-gap: 1rem;
-    }
-    .tiers-container {
-      width: 100%;
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-      gap: pdz.space(3xs);
-      overflow: auto;
-      scrollbar-gutter: stable;
-      .tier-group {
-        background-color: pdz.color(primary-container);
-        border-color: pdz.color(primary-border);
-        border-width: 1px;
-        border-radius: pdz.shape(corner-sm);
-        padding: 0 pdz.space(xs);
-        width: 40rem;
-        max-width: 100%;
-
-        &.alternate,
-        :host-context(.alternate) & {
-          background-color: pdz.color(secondary-container);
-          border-color: pdz.color(secondary-border);
-          .speed-spacer {
-            border-right: 2px solid pdz.color(secondary-border) !important;
-          }
-          > :not(:first-child) {
-            border-top: 1px solid pdz.color(secondary-border);
-          }
-        }
-
-        &.grouped {
-          cursor: pointer;
-          &:hover {
-            background-color: pdz.color(primary-container-hover);
-            &.alternate,
-            :host-context(.alternate) & {
-              background-color: pdz.color(secondary-container-hover);
-            }
-          }
-        }
-
-        > :not(:first-child) {
-          border-top: 1px solid pdz.color(primary-border);
-        }
-
-        .speedtier-wrapper {
-          padding: 0.125rem 0;
-        }
-        .collapsed-group {
-          display: flex;
-          align-items: center;
-          height: fit-content;
-          .pokemon-row {
-            display: flex;
-            flex-grow: 1;
-            flex-wrap: wrap;
-          }
-          .sprite-wrapper {
-            width: 2rem;
-            height: 2rem;
-          }
-          .group-speeds {
-            color: pdz.color(on-primary-container);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            align-self: stretch;
-            justify-content: center;
-            padding: 0.25rem 0;
-            .speed-spacer {
-              min-height: 0.5rem;
-              width: 0;
-              display: flex;
-              flex-grow: 1;
-              border-radius: pdz.shape(corner-lg);
-              border-right: 2px solid pdz.color(primary-border);
-            }
-            .top-speed,
-            .bot-speed {
-              @include pdz.numeric;
-              line-height: 1rem;
-              font-weight: var(--pdz-font-weight-bold);
-            }
-          }
-        }
-      }
-    }
+  &__pane-header {
+    display: flex;
+    justify-content: space-between;
+    column-gap: pdz.space(lg);
+    margin-right: pdz.space(md);
   }
-  .section-title {
+
+  &__title {
     font-size: pdz.font-size(sm);
     font-family: var(--pdz-font-display);
   }
-}
 
-.filter-main {
-  display: flex;
-  flex-direction: column;
-  gap: pdz.space(2xs);
-  padding: pdz.space(2xs);
-
-  .filter-label {
-    font-weight: 600;
+  &__rows {
+    display: flex;
+    flex-direction: column;
+    row-gap: pdz.space(3xs);
   }
 
-  .option-row {
-    width: 100%;
+  &__row {
+    --speedchart-line: #{pdz.color(primary-border)};
+    --speedchart-line-strong: #{pdz.color(primary-soft)};
+    --speedchart-ink: #{pdz.color(on-primary-container)};
+    --speedchart-accent: #{pdz.color(primary-accent)};
+    --speedchart-wash: #{pdz.color-rgba(primary, 0.09)};
+    --speedchart-wash-strong: #{pdz.color-rgba(primary, 0.18)};
+
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    gap: pdz.space(md);
+    column-gap: pdz.space(2xs);
+    padding: 0 pdz.space(2xs);
+    border: 1px solid var(--speedchart-line);
+    border-radius: pdz.shape(corner-sm);
+    background: none;
+    color: inherit;
+    font: inherit;
+    cursor: pointer;
+    transition:
+      background-color pdz.duration(fast) pdz.easing(standard),
+      border-color pdz.duration(fast) pdz.easing(standard);
+
+    &:hover {
+      border-color: var(--speedchart-line-strong);
+      background-color: var(--speedchart-wash);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--speedchart-accent);
+      outline-offset: 1px;
+    }
+
+    &--opponent {
+      --speedchart-line: #{pdz.color(secondary-border)};
+      --speedchart-line-strong: #{pdz.color(secondary-soft)};
+      --speedchart-ink: #{pdz.color(on-secondary-container)};
+      --speedchart-accent: #{pdz.color(secondary-accent)};
+      --speedchart-wash: #{pdz.color-rgba(secondary, 0.09)};
+      --speedchart-wash-strong: #{pdz.color-rgba(secondary, 0.18)};
+
+      flex-direction: row-reverse;
+    }
+
+    &--locked {
+      border-color: var(--speedchart-line-strong);
+      background-color: var(--speedchart-wash-strong);
+    }
+  }
+
+  &__sprite,
+  &__lock,
+  &__speed {
+    width: 2rem;
+    height: 2rem;
+    flex: none;
+  }
+
+  &__lock {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--speedchart-ink);
+  }
+
+  &__speed {
+    @include pdz.numeric;
+    text-align: center;
+    line-height: 2rem;
+    font-size: pdz.font-size(md);
+    font-weight: pdz.font-weight(bold);
+    color: var(--speedchart-ink);
+  }
+
+  &__groups {
+    display: flex;
+    flex-direction: column;
+    row-gap: pdz.space(3xs);
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    scrollbar-gutter: stable;
+    .filter-label {
+      font-weight: 600;
+    }
+
+    .option-row {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: pdz.space(md);
+      .filter-label {
+        font-weight: 600;
+      }
+
+      .option-row {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: pdz.space(md);
+      }
+    }
   }
 }

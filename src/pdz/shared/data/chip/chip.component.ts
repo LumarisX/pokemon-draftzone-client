@@ -18,7 +18,7 @@ export type ChipTone =
   | 'danger'
   | 'info';
 export type ChipVariant = 'soft' | 'solid' | 'outline';
-export type ChipSize = 'sm' | 'md';
+export type ChipSize = 'xs' | 'sm' | 'md';
 
 @Component({
   selector: 'pdz-chip',
@@ -82,9 +82,7 @@ export class ChipComponent {
   size = input<ChipSize>('md');
   icon = input<string>();
 
-  /** Makes the chip body a button. A plain chip stays a span. */
   clickable = input(false, { transform: booleanAttribute });
-  /** Overrides the chip text for screen readers when it needs more context. */
   actionLabel = input<string>();
   selected = input(false, { transform: booleanAttribute });
   removable = input(false, { transform: booleanAttribute });
@@ -94,18 +92,14 @@ export class ChipComponent {
   activated = output<void>();
   removed = output<void>();
 
-  /**
-   * Remove is a sibling of the body rather than nested inside it: a chip that is
-   * both clickable and removable would otherwise put a button inside a button.
-   */
   protected readonly pressed = computed(() =>
     this.clickable() && this.selected() ? true : null,
   );
 
-  protected readonly iconSize = computed(() =>
-    this.size() === 'sm' ? 14 : 16,
+  protected readonly iconSize = computed(
+    () => ({ xs: 12, sm: 14, md: 16 })[this.size()],
   );
-  protected readonly removeIconSize = computed(() =>
-    this.size() === 'sm' ? 12 : 14,
+  protected readonly removeIconSize = computed(
+    () => ({ xs: 10, sm: 12, md: 14 })[this.size()],
   );
 }

@@ -1,0 +1,20 @@
+@use "pdz-theming" as pdz;
+
+.speedchart-filters {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(2xs);
+  padding: pdz.space(2xs);
+
+  &__row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: pdz.space(md);
+    width: 100%;
+  }
+
+  &__label {
+    @include pdz.text(body-sm-strong, $family: false);
+  }
+}

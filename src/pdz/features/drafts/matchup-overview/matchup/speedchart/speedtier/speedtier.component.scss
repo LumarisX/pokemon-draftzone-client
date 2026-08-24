@@ -1,52 +1,33 @@
 @use "pdz-theming" as pdz;
 
-.tier-row {
+:host {
   display: flex;
+  align-items: center;
+  gap: pdz.space(xs);
   width: 100%;
-  .sprite-wrapper {
-    width: 2rem;
-    flex-shrink: 0;
-    height: 2rem;
-    align-self: center;
-  }
-  .speed-label {
+}
+
+.speedtier {
+  &__speed {
     @include pdz.numeric;
+    font-size: pdz.font-size(md);
+    font-weight: pdz.font-weight(bold);
     line-height: 2rem;
-    font-weight: var(--pdz-font-weight-bold);
-    color: pdz.color(on-primary-container);
-  }
-  .modifier-container {
-    display: flex;
-    flex-wrap: wrap;
-    flex-grow: 1;
-    align-items: center;
-    gap: 0.125rem;
-    padding: 0.125rem 0.25rem;
-    .modifier {
-      height: 1rem;
-      overflow: hidden;
-      padding: 0 0.25rem;
-      @include pdz.text(label-strong, $family: false);
-      line-height: 1rem;
-      border: 1px solid pdz.color(on-primary-container);
-      background-color: pdz.color(primary-subtle);
-      color: pdz.color(on-primary-container);
-      border-radius: pdz.shape(corner-lg);
-      user-select: none;
-    }
+    color: var(--speedchart-ink, #{pdz.color(on-surface)});
   }
 
-  &.alternate,
-  :host-context(.alternate) & {
-    .speed-label {
-      color: pdz.color(on-secondary-container);
-    }
-    .modifier-container {
-      .modifier {
-        border: 1px solid pdz.color(on-secondary-container);
-        background-color: pdz.color(secondary-subtle);
-        color: pdz.color(on-secondary-container);
-      }
-    }
+  &__sprite {
+    width: 2rem;
+    height: 2rem;
+    flex-shrink: 0;
+  }
+
+  &__modifiers {
+    display: flex;
+    flex-grow: 1;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: pdz.space(2xs);
+    padding: pdz.space(2xs) pdz.space(xs);
   }
 }

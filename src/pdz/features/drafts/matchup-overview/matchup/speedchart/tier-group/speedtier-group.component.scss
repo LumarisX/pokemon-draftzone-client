@@ -1,0 +1,93 @@
+@use "pdz-theming" as pdz;
+
+:host {
+  --speedchart-line: #{pdz.color(primary-border)};
+  --speedchart-line-strong: #{pdz.color(primary-soft)};
+  --speedchart-ink: #{pdz.color(on-primary-container)};
+  --speedchart-accent: #{pdz.color(primary-accent)};
+  --speedchart-wash: #{pdz.color-rgba(primary, 0.09)};
+
+  display: flex;
+  flex-direction: column;
+  padding: 0 pdz.space(xs);
+  border: 1px solid var(--speedchart-line);
+  border-radius: pdz.shape(corner-sm);
+  transition:
+    background-color pdz.duration(fast) pdz.easing(standard),
+    border-color pdz.duration(fast) pdz.easing(standard);
+}
+
+:host(.speedtier-group--opponent) {
+  --speedchart-line: #{pdz.color(secondary-border)};
+  --speedchart-line-strong: #{pdz.color(secondary-soft)};
+  --speedchart-ink: #{pdz.color(on-secondary-container)};
+  --speedchart-accent: #{pdz.color(secondary-accent)};
+  --speedchart-wash: #{pdz.color-rgba(secondary, 0.09)};
+}
+
+:host(.speedtier-group--collapsible) {
+  cursor: pointer;
+
+  &:hover {
+    border-color: var(--speedchart-line-strong);
+    background-color: var(--speedchart-wash);
+  }
+
+  &:focus-visible {
+    outline: 2px solid var(--speedchart-accent);
+    outline-offset: 1px;
+  }
+}
+
+.speedtier-group {
+  &__tier {
+    padding: pdz.space(2xs) 0;
+  }
+
+  &__tier + &__tier {
+    border-top: 1px solid var(--speedchart-line);
+  }
+
+  &__summary {
+    display: flex;
+    align-items: center;
+    gap: pdz.space(xs);
+    height: fit-content;
+  }
+
+  &__range {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    align-self: stretch;
+    justify-content: center;
+    padding: pdz.space(xs) 0;
+    color: var(--speedchart-ink);
+  }
+
+  &__speed {
+    @include pdz.numeric;
+    font-size: pdz.font-size(md);
+    font-weight: pdz.font-weight(bold);
+    line-height: 1;
+  }
+
+  &__rule {
+    flex-grow: 1;
+    min-height: pdz.space(sm);
+    width: 0;
+    border-right: 2px solid var(--speedchart-line);
+    border-radius: pdz.shape(corner-lg);
+  }
+
+  &__sprites {
+    display: flex;
+    flex-grow: 1;
+    flex-wrap: wrap;
+  }
+
+  &__sprite {
+    width: 2rem;
+    height: 2rem;
+  }
+}

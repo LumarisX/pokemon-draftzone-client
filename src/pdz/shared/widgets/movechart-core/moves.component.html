@@ -1,12 +1,7 @@
 @if (movechart()) {
   <div class="movechart-toolbar">
     <div class="toolbar-search-row">
-      <pdz-segmented
-        size="sm"
-        aria-label="View mode"
-        [value]="view"
-        (valueChange)="view = $any($event)"
-      >
+      <pdz-segmented size="sm" aria-label="View mode" [(value)]="view">
         <pdz-segmented-option value="cards" icon="view_cozy" />
         <pdz-segmented-option value="list" icon="view_list" />
       </pdz-segmented>
@@ -16,7 +11,8 @@
           class="search-input"
           type="text"
           placeholder="Search move or type..."
-          [(ngModel)]="searchQuery"
+          [ngModel]="searchQuery()"
+          (ngModelChange)="search($event)"
         />
       </div>
     </div>
@@ -26,11 +22,11 @@
           pdz-button
           size="xs"
           pill
-          [variant]="selectedTags.get(tag) ? 'tonal' : 'outlined'"
+          [variant]="selectedTags().get(tag) ? 'tonal' : 'outlined'"
           [color]="
-            selectedTags.get(tag) === 'enable'
+            selectedTags().get(tag) === 'enable'
               ? 'primary'
-              : selectedTags.get(tag) === 'disable'
+              : selectedTags().get(tag) === 'disable'
                 ? 'danger'
                 : 'neutral'
           "
@@ -43,9 +39,9 @@
     </div>
   </div>
 
-  @if (view === "list") {
+  @if (view() === "list") {
     <div class="move-list">
-      @for (move of filteredMoves; track move.name) {
+      @for (move of filteredMoves(); track move.name) {
         <button class="move-entry" (click)="toggleDescription(move.name)">
           <div class="move-info">
             <span class="move-name">{{ move.name }}</span>
@@ -60,7 +56,7 @@
               </div>
             </div>
           </div>
-          @if (showDescription === move.name) {
+          @if (showDescription() === move.name) {
             <!-- <div>
             <div>
               <div class="move-basepower">
@@ -83,14 +79,13 @@
             </div>
           }
         </button>
-      }
-      @if (filteredMoves.length === 0) {
+      } @empty {
         <div class="no-results">No moves match the current filter.</div>
       }
     </div>
-  } @else if (view === "cards") {
+  } @else if (view() === "cards") {
     <div class="move-cards">
-      @for (move of filteredMoves; track move.name) {
+      @for (move of filteredMoves(); track move.name) {
         <button class="card-entry" (click)="toggleDescription(move.name)">
           <div class="card-info">
             <span class="move-name">{{ move.name }}</span>

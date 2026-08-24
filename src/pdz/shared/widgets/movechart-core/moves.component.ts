@@ -1,5 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component, input } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  effect,
+  input,
+  signal,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { MoveChart } from '@pdz/features/drafts/matchup-overview/matchup-interface';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
@@ -11,10 +18,14 @@ import { SegmentedOptionComponent } from '@pdz/shared/inputs/segmented/segmented
 import { SegmentedComponent } from '@pdz/shared/inputs/segmented/segmented.component';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 
+type MoveView = 'list' | 'cards';
+type TagMode = 'enable' | 'disable';
+
 @Component({
   selector: 'pdz-moves-core',
   templateUrl: './moves.component.html',
   styleUrl: './moves.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     CommonModule,
     FormsModule,
@@ -31,57 +42,35 @@ export class MoveCoreComponent {
 
   private static readonly VIEW_KEY = 'matchup_moves_view';
 
-  private _view: 'list' | 'cards' =
-    (localStorage.getItem(MoveCoreComponent.VIEW_KEY) as 'list' | 'cards') ??
-    'cards';
+  readonly view = signal<MoveView>(
+    (localStorage.getItem(MoveCoreComponent.VIEW_KEY) as MoveView | null) ??
+      'cards',
+  );
+  readonly searchQuery = signal('');
+  readonly selectedTags = signal<ReadonlyMap<string, TagMode>>(new Map());
+  readonly showDescription = signal<string | null>(null);
 
-  get view(): 'list' | 'cards' {
-    return this._view;
-  }
-  set view(value: 'list' | 'cards') {
-    this._view = value;
-    localStorage.setItem(MoveCoreComponent.VIEW_KEY, value);
-  }
+  private readonly pokemonById = computed(
+    () =>
+      new Map(
+        (this.movechart()?.pokemon ?? []).map((pokemon) => [
+          pokemon.id,
+          pokemon,
+        ]),
+      ),
+  );
 
-  selectedTags = new Map<string, 'enable' | 'disable'>();
-  showDescription: string | null = null;
-
-  private _searchQuery: string = '';
-
-  get searchQuery(): string {
-    return this._searchQuery;
-  }
-
-  set searchQuery(value: string) {
-    this._searchQuery = value;
-    this.selectedTags.clear();
-  }
-
-  typeColor = typeInk;
-
-  toggleTag(tag: string, mode: 'enable' | 'disable'): void {
-    if (this.selectedTags.get(tag) === mode) this.selectedTags.delete(tag);
-    else {
-      if (mode === 'enable') this.selectedTags.clear();
-      this.selectedTags.set(tag, mode);
-    }
-    this._searchQuery = '';
-  }
-
-  get filteredMoves() {
+  readonly filteredMoves = computed(() => {
     const movechart = this.movechart();
     if (!movechart) return [];
-    const query = this.searchQuery.trim().toLowerCase();
+    const query = this.searchQuery().trim().toLowerCase();
+    const tags = this.selectedTags();
 
     return movechart.moves.filter((move) => {
       const matchesTag =
-        this.selectedTags.size === 0 ||
-        (move.tags.some(
-          (tag) => tag && this.selectedTags.get(tag) === 'enable',
-        ) &&
-          !move.tags.some(
-            (tag) => tag && this.selectedTags.get(tag) === 'disable',
-          ));
+        tags.size === 0 ||
+        (move.tags.some((tag) => tag && tags.get(tag) === 'enable') &&
+          !move.tags.some((tag) => tag && tags.get(tag) === 'disable'));
       const matchesSearch =
         !query ||
         move.name.toLowerCase().includes(query) ||
@@ -89,15 +78,38 @@ export class MoveCoreComponent {
         move.category.toLowerCase().includes(query);
       return matchesTag && matchesSearch;
     });
+  });
+
+  typeColor = typeInk;
+
+  constructor() {
+    effect(() => localStorage.setItem(MoveCoreComponent.VIEW_KEY, this.view()));
+  }
+
+  search(query: string): void {
+    this.searchQuery.set(query);
+    this.selectedTags.set(new Map());
+  }
+
+  toggleTag(tag: string, mode: TagMode): void {
+    const current = this.selectedTags();
+    if (current.get(tag) === mode) {
+      const next = new Map(current);
+      next.delete(tag);
+      this.selectedTags.set(next);
+    } else {
+      const next = new Map<string, TagMode>(mode === 'enable' ? [] : current);
+      next.set(tag, mode);
+      this.selectedTags.set(next);
+    }
+    this.searchQuery.set('');
   }
 
   getPokemon(pid: string): Pokemon | undefined {
-    const movechart = this.movechart();
-    if (!movechart) return undefined;
-    return movechart.pokemon.find((p) => p.id === pid);
+    return this.pokemonById().get(pid);
   }
 
   toggleDescription(name: string) {
-    this.showDescription = this.showDescription === name ? null : name;
+    this.showDescription.set(this.showDescription() === name ? null : name);
   }
 }

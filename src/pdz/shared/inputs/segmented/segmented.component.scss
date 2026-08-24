@@ -70,6 +70,10 @@ $inner-radius: calc(#{$track-radius} - #{$track-pad});
   pointer-events: none;
 
   &[data-ready] {
+    transition: opacity pdz.duration(fast) pdz.easing(standard);
+  }
+
+  &[data-ready][data-animate] {
     transition:
       transform pdz.duration(base) pdz.easing(standard),
       width pdz.duration(base) pdz.easing(standard),
@@ -96,7 +100,7 @@ $inner-radius: calc(#{$track-radius} - #{$track-pad});
   white-space: nowrap;
   transition:
     background-color pdz.duration(fast) pdz.easing(standard),
-    color pdz.duration(fast) pdz.easing(standard);
+    color pdz.duration(base) pdz.easing(standard);
 
   &:hover:not(:disabled):not(.pdz-segmented__option--checked) {
     background: pdz.color(surface-container-high);

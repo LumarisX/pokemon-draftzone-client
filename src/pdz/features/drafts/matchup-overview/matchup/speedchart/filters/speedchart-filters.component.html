@@ -1,0 +1,41 @@
+<pdz-menu role="group" aria-label="Speed tier filters">
+  <button
+    pdz-button
+    iconOnly
+    size="sm"
+    variant="ghost"
+    color="neutral"
+    aria-label="Filter speed tiers"
+    pdz-menu-trigger
+  >
+    <pdz-icon name="filter_list"></pdz-icon>
+  </button>
+
+  <div class="speedchart-filters">
+    <button
+      type="button"
+      pdz-button
+      size="sm"
+      variant="ghost"
+      color="neutral"
+      (click)="reset.emit()"
+    >
+      Reset
+    </button>
+    @for (row of rows(); track row.name) {
+      <div class="speedchart-filters__row">
+        <input
+          pdz-checkbox
+          [formControl]="row.own"
+          [attr.aria-label]="row.name + ' for your team'"
+        />
+        <span class="speedchart-filters__label">{{ row.name }}</span>
+        <input
+          pdz-checkbox
+          [formControl]="row.opponent"
+          [attr.aria-label]="row.name + ' for opponent team'"
+        />
+      </div>
+    }
+  </div>
+</pdz-menu>
