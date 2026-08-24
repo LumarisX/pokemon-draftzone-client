@@ -1,35 +1,23 @@
-import { Injectable, signal } from '@angular/core';
-import type { BadgeTone } from '@pdz/shared/data/badge/badge.component';
+import { Injectable, Signal, signal } from '@angular/core';
 
-export interface NavMenuLink {
-  label: string;
-  route?: string[];
-  href?: string;
-  icon?: string;
-  badge?: string | null;
-  badgeTone?: BadgeTone;
-  groupLabel?: string;
-}
-
-export interface NavMenuContext {
+export interface NavDrawerContext {
   ariaLabel: string;
-  items: NavMenuLink[];
+  isOpen: Signal<boolean>;
+  toggle(): void;
+  close(): void;
 }
 
-/**
- * Lets a feature area (e.g. the tournament section) swap what the global
- * navbar's mobile menu shows, instead of shipping its own separate menu
- * trigger. Set on entry to the section, cleared on the way out.
- */
 @Injectable({ providedIn: 'root' })
 export class NavContextService {
-  readonly context = signal<NavMenuContext | null>(null);
+  readonly drawer = signal<NavDrawerContext | null>(null);
 
-  set(context: NavMenuContext): void {
-    this.context.set(context);
+  set(drawer: NavDrawerContext): void {
+    this.drawer.set(drawer);
   }
 
-  clear(): void {
-    this.context.set(null);
+  clear(drawer?: NavDrawerContext): void {
+    if (!drawer || this.drawer() === drawer) {
+      this.drawer.set(null);
+    }
   }
 }

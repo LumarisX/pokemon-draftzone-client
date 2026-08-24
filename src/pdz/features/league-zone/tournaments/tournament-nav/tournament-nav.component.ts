@@ -3,10 +3,6 @@ import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { catchError, of, Subject, switchMap, takeUntil } from 'rxjs';
 import { AuthService } from '@pdz/core/services/auth0.service';
-import {
-  NavContextService,
-  NavMenuLink,
-} from '@pdz/core/services/nav-context.service';
 import { LeagueZoneService } from '../../league-zone.service';
 import { LeagueManageService } from '../../league-manage/league-manage.service';
 import { League } from '../../league.interface';
@@ -22,7 +18,6 @@ export class TournamentNavComponent implements OnInit, OnDestroy {
   readonly leagueService = inject(LeagueZoneService);
   private readonly authService = inject(AuthService);
   private readonly manageService = inject(LeagueManageService);
-  private readonly navContext = inject(NavContextService);
   private readonly destroy$ = new Subject<void>();
 
   leagueInfo: League.LeagueInfo | null = null;
@@ -40,10 +35,7 @@ export class TournamentNavComponent implements OnInit, OnDestroy {
       .getLeagueInfo()
       .pipe(takeUntil(this.destroy$))
       .subscribe({
-        next: (info) => {
-          this.leagueInfo = info;
-          this.pushNavContext();
-        },
+        next: (info) => (this.leagueInfo = info),
         error: (error) => console.error('Error fetching league info:', error),
       });
 
@@ -75,7 +67,6 @@ export class TournamentNavComponent implements OnInit, OnDestroy {
         if (profile?.draft) {
           this.loadDraftStatus(profile.draft.draftSlug);
         }
-        this.pushNavContext();
       });
   }
 
@@ -89,16 +80,12 @@ export class TournamentNavComponent implements OnInit, OnDestroy {
         takeUntil(this.destroy$),
         catchError(() => of([] as string[])),
       )
-      .subscribe((roles) => {
-        this.canManage = roles.includes('organizer');
-        this.pushNavContext();
-      });
+      .subscribe((roles) => (this.canManage = roles.includes('organizer')));
   }
 
   ngOnDestroy(): void {
     this.destroy$.next();
     this.destroy$.complete();
-    this.navContext.clear();
   }
 
   private loadDraftStatus(draftSlug: string): void {
@@ -106,92 +93,10 @@ export class TournamentNavComponent implements OnInit, OnDestroy {
       .getDraftDetails(draftSlug)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
-        next: (details) => {
-          this.draftStatus = this.ongoingDraftLabel(details.status);
-          this.pushNavContext();
-        },
-        error: () => {
-          this.draftStatus = null;
-          this.pushNavContext();
-        },
+        next: (details) =>
+          (this.draftStatus = this.ongoingDraftLabel(details.status)),
+        error: () => (this.draftStatus = null),
       });
-  }
-
-  private pushNavContext(): void {
-    const items: NavMenuLink[] = [];
-
-    if (this.profile?.draft && this.profile.teamSlug) {
-      items.push({ label: 'My Team', route: this.teamLink });
-      items.push({
-        label: 'Draft',
-        route: [...this.draftBase, 'draft'],
-
-        badge: this.draftStatus,
-        badgeTone: 'primary',
-      });
-    }
-
-    items.push(
-      { label: 'Standings', route: this.standingsLink },
-      { label: 'Teams', route: this.teamsLink },
-      { label: 'Schedule', route: this.scheduleLink },
-      {
-        label: 'Rules',
-        route: [...this.tournamentBase(), 'rules'],
-      },
-      {
-        label: 'Tier List',
-        route: [...this.tournamentBase(), 'tier-list'],
-      },
-    );
-
-    if (this.leagueInfo?.discord) {
-      items.push({
-        label: 'Discord',
-        href: `https://discord.gg/${this.leagueInfo.discord}`,
-
-        badge: this.notJoinedDiscord ? 'Not Joined' : null,
-        badgeTone: 'danger',
-      });
-    }
-
-    if (this.canManage) {
-      items.push(
-        {
-          label: 'Settings',
-          route: [...this.manageLink, 'settings'],
-
-          groupLabel: 'Manage',
-        },
-        {
-          label: 'Sign-Ups',
-          route: [...this.manageLink, 'sign-ups'],
-        },
-        {
-          label: 'Rules',
-          route: [...this.manageLink, 'rules'],
-        },
-        {
-          label: 'Tier List',
-          route: [...this.tournamentBase(), 'tier-list', 'edit'],
-        },
-        {
-          label: 'Trades',
-          route: [...this.manageLink, 'trades'],
-        },
-        {
-          label: 'Dashboard',
-          route: this.manageLink,
-        },
-      );
-    }
-
-    this.navContext.set({
-      ariaLabel: this.leagueInfo?.name
-        ? `${this.leagueInfo.name} navigation`
-        : 'Tournament navigation',
-      items,
-    });
   }
 
   private ongoingDraftLabel(

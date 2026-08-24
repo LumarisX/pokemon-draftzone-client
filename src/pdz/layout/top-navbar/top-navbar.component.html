@@ -1,47 +1,36 @@
 <header class="navbar">
-  <!-- Mobile navigation menu -->
-  <pdz-menu
-    class="mobile-menu"
-    align="start"
-    [aria-label]="navContext()?.ariaLabel ?? 'Navigation menu'"
-  >
+  <!-- Mobile navigation: a section can take the trigger over with its own drawer -->
+  @if (navDrawer(); as drawer) {
     <button
       type="button"
       pdz-button
       variant="ghost"
       color="neutral"
       iconOnly
-      pdz-menu-trigger
-      aria-label="Open navigation menu"
+      class="mobile-menu"
+      [attr.aria-label]="drawer.ariaLabel"
+      [attr.aria-expanded]="drawer.isOpen()"
+      (click)="drawer.toggle()"
     >
       <pdz-icon name="menu"></pdz-icon>
-      @if (anyBadge$ | async) {
-        <pdz-badge dot floating></pdz-badge>
-      }
     </button>
-
-    @if (navContext(); as ctx) {
-      @for (item of ctx.items; track item.label + (item.route ?? item.href)) {
-        @if (item.groupLabel) {
-          <div class="menu-section-label">{{ item.groupLabel }}</div>
+  } @else {
+    <pdz-menu class="mobile-menu" align="start" aria-label="Navigation menu">
+      <button
+        type="button"
+        pdz-button
+        variant="ghost"
+        color="neutral"
+        iconOnly
+        pdz-menu-trigger
+        aria-label="Open navigation menu"
+      >
+        <pdz-icon name="menu"></pdz-icon>
+        @if (anyBadge$ | async) {
+          <pdz-badge dot floating></pdz-badge>
         }
-        <a
-          pdz-menu-item
-          [icon]="item.icon"
-          [routerLink]="item.href ? null : item.route"
-          [attr.href]="item.href ?? null"
-          [attr.target]="item.href ? '_blank' : null"
-          [attr.rel]="item.href ? 'noopener noreferrer' : null"
-        >
-          {{ item.label }}
-          @if (item.badge) {
-            <pdz-badge size="sm" [tone]="item.badgeTone ?? 'danger'">
-              {{ item.badge }}
-            </pdz-badge>
-          }
-        </a>
-      }
-    } @else {
+      </button>
+
       @for (tab of TABS; track tab.route) {
         <a pdz-menu-item [routerLink]="tab.route">
           {{ tab.title }}
@@ -66,8 +55,8 @@
           Admin
         </a>
       }
-    }
-  </pdz-menu>
+    </pdz-menu>
+  }
 
   <!-- Home button with logo -->
   <a

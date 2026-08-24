@@ -1,6 +1,8 @@
 @use "pdz-theming" as pdz;
 @use "mixins" as *;
 
+$navbar-height: 3.5rem;
+
 :host {
   display: block;
   padding: pdz.space(md);
@@ -24,13 +26,78 @@
     align-items: stretch;
   }
 
-  // ─── Nav (mobile nav lives in the global navbar's hamburger; this is
-  // desktop-only) ───────────────────────────────────────────────────────
   &__nav {
-    display: none;
+    position: fixed;
+    inset-block: $navbar-height 0;
+    inset-inline-start: 0;
+    z-index: pdz.z(drawer);
+    width: min(18rem, 85vw);
+    padding: pdz.space(md);
+    overflow-y: auto;
+    background: pdz.color(surface);
+    box-shadow: var(--pdz-level-3);
+    transform: translateX(-100%);
+    visibility: hidden;
+    transition:
+      transform pdz.duration(slow) pdz.easing(standard),
+      visibility pdz.duration(slow) pdz.easing(standard);
 
     @include respond-above(medium) {
-      display: block;
+      position: static;
+      z-index: auto;
+      width: auto;
+      min-height: 0;
+      padding: 0;
+      background: transparent;
+      box-shadow: none;
+      transform: none;
+      visibility: visible;
+    }
+  }
+
+  &__nav-close {
+    position: fixed;
+    top: calc(#{$navbar-height} + #{pdz.space(xs)});
+    inset-inline-start: calc(min(18rem, 85vw) - 3rem);
+    z-index: pdz.z(drawer-control);
+    display: none;
+    background: pdz.color(surface-container-high);
+    border-radius: pdz.shape(corner-full);
+  }
+
+  &__backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: pdz.z(drawer-backdrop);
+    background: pdz.color-rgba(scrim, 0.5);
+    opacity: 0;
+    visibility: hidden;
+    transition:
+      opacity pdz.duration(slow) pdz.easing(standard),
+      visibility pdz.duration(slow) pdz.easing(standard);
+
+    @include respond-above(medium) {
+      display: none;
+    }
+  }
+
+  &--nav-open {
+    .layout__nav {
+      transform: translateX(0);
+      visibility: visible;
+    }
+
+    .layout__backdrop {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .layout__nav-close {
+      display: inline-flex;
+
+      @include respond-above(medium) {
+        display: none;
+      }
     }
   }
 

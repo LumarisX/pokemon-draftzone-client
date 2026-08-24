@@ -59,7 +59,7 @@ export class TopNavbarComponent {
 
   readonly adminPath = `/${ADMIN_PATH}/users`;
   readonly isAdmin$ = inject(RoleService).isAdmin$;
-  readonly navContext = inject(NavContextService).context;
+  readonly navDrawer = inject(NavContextService).drawer;
 
   readonly TABS: NavTab[] = [
     { title: 'My Drafts', route: DRAFT_OVERVIEW_PATH },
