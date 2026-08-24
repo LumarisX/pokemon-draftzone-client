@@ -1,14 +1,14 @@
 <div class="sprite-container" [style.width]="size()" [style.height]="size()">
   @if (pokemon().id) {
     <img
-      [pdzTooltip]="tooltipPosition() ? pokemonName : ''"
+      [pdzTooltip]="tooltipPosition() ? pokemonName() : ''"
       [pdzTooltipPosition]="tooltipPosition() ?? 'above'"
-      [ngClass]="classes"
-      [src]="path"
-      [alt]="pokemonName + ' sprite'"
+      [ngClass]="classes()"
+      [src]="path()"
+      [alt]="pokemonName() + ' sprite'"
       loading="lazy"
       (error)="fallback()"
-      (load)="onSpriteLoaded()"
+      (load)="loadedEvent.emit()"
     />
   }
 </div>

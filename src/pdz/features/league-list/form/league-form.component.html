@@ -125,7 +125,7 @@
         >
           @for (platform of platforms; track platform; let i = $index) {
             <label class="checkbox-item">
-              <input pdz-checkbox [formControlName]="i" />
+              <input pdz-checkbox type="checkbox" [formControlName]="i" />
               <span class="checkbox-label">{{ platform }}</span>
             </label>
           }
@@ -144,7 +144,7 @@
         >
           @for (format of formats; track format; let i = $index) {
             <label class="checkbox-item">
-              <input pdz-checkbox [formControlName]="i" />
+              <input pdz-checkbox type="checkbox" [formControlName]="i" />
               <span class="checkbox-label">{{ format }}</span>
             </label>
           }
@@ -163,7 +163,7 @@
         >
           @for (ruleset of rulesets; track ruleset; let i = $index) {
             <label class="checkbox-item">
-              <input pdz-checkbox [formControlName]="i" />
+              <input pdz-checkbox type="checkbox" [formControlName]="i" />
               <span class="checkbox-label">{{ ruleset }}</span>
             </label>
           }

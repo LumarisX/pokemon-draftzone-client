@@ -1,17 +1,37 @@
 <pdz-page>
-  <input pdz-checkbox #shiny />
-  Shiny
-  <div class="sprite-grid">
-    @for (pokemon of names; track pokemon) {
-      <div class="sprite-grid__cell" [pdzTooltip]="pokemon.id + ' ' + sprite">
-        <pdz-sprite
-          [pokemon]="{
-            id: pokemon.id,
-            name: pokemon.name,
-            shiny: shiny.checked,
-          }"
-          #sprite
-        ></pdz-sprite>
+  <header class="sprites__head">
+    <h1 class="sprites__title">Sprite Coverage</h1>
+
+    <div class="sprites__controls">
+      <label pdz-field label="Search">
+        <input pdz-input [(ngModel)]="search" placeholder="id or name" />
+      </label>
+
+      <pdz-segmented [(value)]="filter" aria-label="Filter by resolution">
+        <pdz-segmented-option value="all" label="All" />
+        <pdz-segmented-option value="fallback" label="Fell back" />
+        <pdz-segmented-option value="missing" label="Missing" />
+      </pdz-segmented>
+
+      <label pdz-check label="Shiny">
+        <input pdz-checkbox type="checkbox" [(ngModel)]="shiny" />
+      </label>
+    </div>
+
+    <p class="sprites__count">{{ rows().length }} matching</p>
+  </header>
+
+  <div class="sprite-grid" [attr.data-filter]="filter()">
+    @for (pokemon of rows(); track pokemon.id) {
+      <div class="sprite-grid__cell">
+        <pdz-sprite-image #cell [pokemon]="pokemon" size="3rem" />
+        <span
+          class="sprite-grid__step"
+          [attr.data-step]="stepLabel(cell.resolvedStep(), cell.lastStep())"
+        >
+          {{ stepLabel(cell.resolvedStep(), cell.lastStep()) }}
+        </span>
+        <span class="sprite-grid__id">{{ pokemon.id }}</span>
       </div>
     }
   </div>

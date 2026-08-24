@@ -9,7 +9,6 @@ import {
 } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { DRAFT_OVERVIEW_PATH } from '@pdz/core/route-paths';
-import { PokemonId } from '@pdz/shared/data/namedex';
 import { DraftPokemon } from '../../draft.model';
 import { Matchup } from '../../matchup-overview/matchup.model';
 import { DraftService } from '../../draft-overview/draft.service';
@@ -139,10 +138,10 @@ export class OpponentScoreComponent implements OnInit {
     let teamGroup = team.map((pokemon: DraftPokemon) => {
       let monGroup = this.fb.group({
         pokemon: pokemon,
-        kills: [stats[<PokemonId>pokemon.id]?.kills ?? 0],
-        fainted: [stats[<PokemonId>pokemon.id]?.deaths ?? 0],
-        indirect: [stats[<PokemonId>pokemon.id]?.indirect ?? 0],
-        brought: [stats[<PokemonId>pokemon.id]?.brought ?? 0],
+        kills: [stats[pokemon.id]?.kills ?? 0],
+        fainted: [stats[pokemon.id]?.deaths ?? 0],
+        indirect: [stats[pokemon.id]?.indirect ?? 0],
+        brought: [stats[pokemon.id]?.brought ?? 0],
       });
       monGroup.get('fainted')?.valueChanges.subscribe((fainted) => {
         if (monGroup.get('fainted')?.value) {
@@ -404,23 +403,23 @@ export class OpponentScoreComponent implements OnInit {
     return null;
   }
 
-  private getSideDraftFormes(team: DraftPokemon[]): Set<PokemonId> {
+  private getSideDraftFormes(team: DraftPokemon[]): Set<string> {
     return new Set(
       team.flatMap((pokemon) => this.getPokemonDraftFormes(pokemon)),
     );
   }
 
-  private getPokemonDraftFormes(pokemon: DraftPokemon): PokemonId[] {
+  private getPokemonDraftFormes(pokemon: DraftPokemon): string[] {
     const formeCandidates = [
       pokemon.id,
       ...(pokemon.draftFormes?.map((forme) => forme.id) ?? []),
     ];
-    return formeCandidates.filter((id): id is PokemonId => !!id);
+    return formeCandidates.filter((id) => !!id);
   }
 
   private countFormeMatches(
     replayPlayer: ReplayAnalysis['players'][number],
-    draftFormes: Set<PokemonId>,
+    draftFormes: Set<string>,
   ): number {
     const replayFormes = this.getSideDraftFormes(replayPlayer.team);
     let matches = 0;

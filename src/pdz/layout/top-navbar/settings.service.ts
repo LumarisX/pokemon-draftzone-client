@@ -1,4 +1,5 @@
 import { Injectable, inject } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { ApiService } from '@pdz/core/services/api.service';
 import { BehaviorSubject } from 'rxjs';
 
@@ -19,6 +20,7 @@ export class SettingsService {
   private apiService = inject(ApiService);
 
   settingsData$ = new BehaviorSubject<Settings>({});
+  readonly settings = toSignal(this.settingsData$, { requireSync: true });
   get settingsData() {
     return this.settingsData$.value;
   }

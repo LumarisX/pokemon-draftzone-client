@@ -1,7 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, computed, inject, OnDestroy, signal } from '@angular/core';
 import { ActivatedRoute, RouterModule } from '@angular/router';
-import { getNameByPid, PokemonId } from '@pdz/shared/data/namedex';
+import { getNameByPid } from '@pdz/shared/data/namedex';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { SkeletonComponent } from '@pdz/shared/data/skeleton/skeleton.component';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
@@ -22,7 +22,7 @@ import { SegmentedComponent } from '@pdz/shared/inputs/segmented/segmented.compo
 import { SegmentedOptionComponent } from '@pdz/shared/inputs/segmented/segmented-option.component';
 
 type GameSlot = {
-  id: PokemonId;
+  id: string;
   name: string;
   status?: 'brought' | 'survived' | 'fainted';
   kills: number;
@@ -211,8 +211,8 @@ export class LeagueMatchupComponent implements OnDestroy {
 
   gameSlots(team: League.MatchTeamStats): GameSlot[] {
     return Object.entries(team).map(([id, stats]) => ({
-      id: id as PokemonId,
-      name: getNameByPid(id as PokemonId),
+      id,
+      name: getNameByPid(id),
       status: stats.status,
       kills: (stats.kills?.direct || 0) + (stats.kills?.indirect || 0),
     }));

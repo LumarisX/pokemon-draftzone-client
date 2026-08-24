@@ -1,4 +1,3 @@
-import { PokemonId } from '@pdz/shared/data/namedex';
 import { League } from '../league.interface';
 
 export type MatchupSideKey = 'side1' | 'side2';
@@ -18,7 +17,7 @@ export type MatchupSideDetail = {
   coach: string;
   logo?: string;
   score: number;
-  draft: { id: PokemonId; capt?: { tera?: boolean } }[];
+  draft: { id: string; capt?: { tera?: boolean } }[];
   coachId: string;
   timezone?: string;
   discordName?: string;

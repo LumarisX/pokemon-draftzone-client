@@ -64,7 +64,7 @@
       <div class="filter-panel__header">
         <div class="filter-type-option">
           <input
-            pdz-checkbox
+            pdz-checkbox type="checkbox"
             #allTypes
             id="filter-all-types"
             [checked]="selectedTypes().length === types.length"
@@ -82,7 +82,7 @@
         @for (type of types; track $index; let i = $index) {
           <div class="filter-type-option">
             <input
-              pdz-checkbox
+              pdz-checkbox type="checkbox"
               #typeBox
               [attr.id]="'filter-type-' + type"
               [checked]="selectedTypes().includes(type)"

@@ -1,4 +1,3 @@
-import { PokemonId } from '@pdz/shared/data/namedex';
 
 export type ReplayData = {
   gametype: string;
@@ -43,7 +42,7 @@ export type ReplayPlayerOld = {
 };
 
 export type ReplayMon = {
-  formes: { detail: string; id: PokemonId }[];
+  formes: { detail: string; id: string }[];
   moveset: string[];
   kills: [number, number, number];
   damageDealt: [number, number];
@@ -61,10 +60,10 @@ type StatBreakdown = {
 };
 
 export type ReplayPokemon = {
-  id: PokemonId;
+  id: string;
   name: string;
   shiny?: true;
-  formes?: PokemonId[];
+  formes?: string[];
   item?: string;
   kills: StatBreakdown;
   status: 'brought' | 'survived' | 'fainted';

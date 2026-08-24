@@ -25,13 +25,13 @@
     @for (row of rows(); track row.name) {
       <div class="speedchart-filters__row">
         <input
-          pdz-checkbox
+          pdz-checkbox type="checkbox"
           [formControl]="row.own"
           [attr.aria-label]="row.name + ' for your team'"
         />
         <span class="speedchart-filters__label">{{ row.name }}</span>
         <input
-          pdz-checkbox
+          pdz-checkbox type="checkbox"
           [formControl]="row.opponent"
           [attr.aria-label]="row.name + ' for opponent team'"
         />

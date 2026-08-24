@@ -1,5 +1,4 @@
 import { Injectable, inject } from '@angular/core';
-import { PokemonId } from '@pdz/shared/data/namedex';
 import { ApiService } from '@pdz/core/services/api.service';
 import { Observable, map, of } from 'rxjs';
 import {
@@ -39,7 +38,7 @@ export class PlannerService {
   private currentIndex: number = 0;
 
   getPlannerDetails(
-    team: PokemonId[],
+    team: string[],
     format: string,
     ruleset: string,
   ): Observable<Planner> {

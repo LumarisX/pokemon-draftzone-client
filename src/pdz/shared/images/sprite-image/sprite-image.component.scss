@@ -39,11 +39,11 @@
 
     &.sprite-border {
       filter: url(#borderFilter);
-      padding: 2px;
+      padding: pdz.space(2xs);
     }
 
     &.pmd {
-      border-radius: 0.75rem;
+      border-radius: pdz.shape(corner-md);
       border: 1px solid pdz.color(outline, currentColor);
     }
   }

@@ -290,7 +290,7 @@
         <div class="settings-section__body">
           <div class="form-field">
             <label class="checkbox-option">
-              <input pdz-checkbox formControlName="matchupChat" />
+              <input pdz-checkbox type="checkbox" formControlName="matchupChat" />
               <span class="checkbox-option__label"
                 >Enable match chat between the two teams</span
               >
@@ -302,7 +302,7 @@
 
           <div class="form-field">
             <label class="checkbox-option">
-              <input pdz-checkbox formControlName="coachReporting" />
+              <input pdz-checkbox type="checkbox" formControlName="coachReporting" />
               <span class="checkbox-option__label"
                 >Let coaches submit their own match results</span
               >
@@ -344,7 +344,7 @@
 
           <div class="form-field">
             <label class="checkbox-option">
-              <input pdz-checkbox formControlName="pointTotalEnabled" />
+              <input pdz-checkbox type="checkbox" formControlName="pointTotalEnabled" />
               <span class="checkbox-option__label"
                 >Limit total draft points</span
               >
@@ -366,7 +366,7 @@
 
           <div class="form-field">
             <label class="checkbox-option">
-              <input pdz-checkbox formControlName="tradePointLimitEnabled" />
+              <input pdz-checkbox type="checkbox" formControlName="tradePointLimitEnabled" />
               <span class="checkbox-option__label">Limit trade points</span>
             </label>
             @if (form.get("tradePointLimitEnabled")?.value) {
@@ -430,7 +430,7 @@
         <div class="settings-section__body">
           <div class="form-field">
             <label class="checkbox-option">
-              <input pdz-checkbox formControlName="adAdvertise" />
+              <input pdz-checkbox type="checkbox" formControlName="adAdvertise" />
               <span class="checkbox-option__label"
                 >Advertise this tournament on the Find a League page</span
               >
@@ -479,7 +479,7 @@
                 let i = $index
               ) {
                 <label class="checkbox-option">
-                  <input pdz-checkbox [formControlName]="i" />
+                  <input pdz-checkbox type="checkbox" [formControlName]="i" />
                   <span class="checkbox-option__label">{{ platform }}</span>
                 </label>
               }

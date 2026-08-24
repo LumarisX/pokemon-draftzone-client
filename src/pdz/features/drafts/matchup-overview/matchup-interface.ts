@@ -1,5 +1,4 @@
 import { ExtendedType, StatsTable, Type } from '@pdz/shared/data';
-import { PokemonId } from '@pdz/shared/data/namedex';
 import { DraftPokemon } from '../draft.model';
 import { Pokemon } from '@pdz/core/utils/pokemon';
 import { PokemonData } from './widgets/teambuilder/pokemon-builder/pokemon-builder.model';
@@ -160,7 +159,7 @@ export type FullCoverageMove = {
 };
 
 export type CoveragePokemon = {
-  id: PokemonId;
+  id: string;
   coverage: {
     physical: CoverageMove[];
     special: CoverageMove[];

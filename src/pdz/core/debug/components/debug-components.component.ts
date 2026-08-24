@@ -38,6 +38,7 @@ import {
   DialogSize,
 } from '@pdz/shared/dialogs/dialog/dialog.component';
 import { DialogService } from '@pdz/shared/dialogs/dialog/dialog.service';
+import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
 import { TooltipDirective } from '@pdz/shared/tooltip/tooltip.directive';
 import { WidgetComponent } from '@pdz/shared/layout/widget/widget.component';
 import { SlideToggleComponent } from '@pdz/shared/inputs/slide-toggle/slide-toggle.component';
@@ -101,11 +102,36 @@ const MODE_ATTR = 'pdz-theme-mode';
     SelectOptionComponent,
     ChipComponent,
     PokemonTypeComponent,
+    SpriteComponent,
   ],
   templateUrl: './debug-components.component.html',
   styleUrl: './debug-components.component.scss',
 })
 export class DebugComponentsComponent {
+  protected readonly spriteBasic = { id: 'charizard', name: 'Charizard' };
+  protected readonly spriteShiny = {
+    id: 'charizard',
+    name: 'Charizard',
+    shiny: true,
+  };
+  protected readonly spriteBordered = { id: 'greninja', name: 'Greninja' };
+  protected readonly spriteFormes = {
+    id: 'charizard',
+    name: 'Charizard',
+    draftFormes: [
+      { id: 'charizardmegax', name: 'Mega Charizard X' },
+      { id: 'charizardmegay', name: 'Mega Charizard Y' },
+      { id: 'charizardgmax', name: 'Charizard-Gmax' },
+    ],
+  };
+  protected readonly spriteUnreleased = {
+    id: 'magearnaoriginalmega',
+    name: 'Mega Magearna-Original',
+  };
+  protected readonly spriteUnknown = { id: 'notapokemon', name: 'Unknown' };
+  protected readonly spriteDisabled = signal(false);
+  protected readonly spriteFormeIndex = signal(0);
+
   readonly variants: ButtonVariant[] = [
     'filled',
     'tonal',

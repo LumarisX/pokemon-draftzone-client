@@ -16,7 +16,7 @@ import {
   FormGroup,
   ReactiveFormsModule,
 } from '@angular/forms';
-import { getNameByPid, PokemonId } from '@pdz/shared/data/namedex';
+import { getNameByPid } from '@pdz/shared/data/namedex';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
 import { Subject, takeUntil } from 'rxjs';
@@ -46,7 +46,7 @@ type PokemonStatus = 'brought' | 'survived' | 'fainted' | null;
 type ReportMode = 'games' | 'forfeit' | 'score';
 
 type PokemonStatsForm = FormGroup<{
-  id: FormControl<PokemonId>;
+  id: FormControl<string>;
   direct: FormControl<number>;
   indirect: FormControl<number>;
   teammate: FormControl<number>;
@@ -195,7 +195,7 @@ export class MatchupReportComponent implements OnInit, OnDestroy {
       : game.controls.team2.controls;
   }
 
-  nameOf(id: PokemonId): string {
+  nameOf(id: string): string {
     return getNameByPid(id) || id;
   }
 
@@ -579,7 +579,7 @@ export class MatchupReportComponent implements OnInit, OnDestroy {
   }
 
   private buildPokemon(
-    id: PokemonId,
+    id: string,
     stats?: {
       kills?: { direct?: number; indirect?: number; teammate?: number };
       status: 'brought' | 'survived' | 'fainted';

@@ -1,8 +1,86 @@
-.sprite-grid {
+@use "pdz-theming" as pdz;
+
+.sprites__head {
+  display: grid;
+  gap: pdz.space(sm);
+  margin-bottom: pdz.space(lg);
+}
+
+.sprites__title {
+  @include pdz.text(title);
+  color: pdz.color(on-surface);
+}
+
+.sprites__note {
+  @include pdz.text(body-sm);
+  color: pdz.color(on-surface-variant);
+  max-width: 60ch;
+}
+
+.sprites__controls {
   display: flex;
   flex-wrap: wrap;
+  align-items: flex-end;
+  gap: pdz.space(md);
+}
+
+.sprites__count {
+  @include pdz.caps;
+  font-size: pdz.font-size(xs);
+  color: pdz.color(on-surface-variant);
+}
+
+.sprite-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(6rem, 1fr));
+  gap: pdz.space(sm);
 }
 
 .sprite-grid__cell {
-  width: 3rem;
+  display: grid;
+  justify-items: center;
+  gap: pdz.space(2xs);
+  padding: pdz.space(sm);
+  border: 1px solid pdz.color(outline-variant);
+  border-radius: pdz.shape(corner-sm);
+  overflow: hidden;
+
+}
+
+.sprite-grid[data-filter="missing"]
+  .sprite-grid__cell:not(:has(.sprite-grid__step[data-step="missing"])),
+.sprite-grid[data-filter="fallback"]
+  .sprite-grid__cell:has(.sprite-grid__step[data-step="primary"]) {
+  display: none;
+}
+
+.sprite-grid__id {
+  @include pdz.text(label);
+  font-size: pdz.font-size(3xs);
+  color: pdz.color(on-surface-variant);
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sprite-grid__step {
+  @include pdz.caps;
+  font-size: pdz.font-size(2xs);
+  font-weight: 700;
+  line-height: 1.5;
+  padding: 0 pdz.space(2xs);
+  border-radius: pdz.shape(corner-xxs);
+  color: pdz.color(on-surface-variant);
+  background-color: pdz.color(surface-container-high);
+
+  &[data-step="primary"] {
+    color: pdz.color(on-success-container);
+    background-color: pdz.color(success-container);
+  }
+
+  &[data-step="missing"] {
+    color: pdz.color(on-danger-container);
+    background-color: pdz.color(danger-container);
+  }
 }

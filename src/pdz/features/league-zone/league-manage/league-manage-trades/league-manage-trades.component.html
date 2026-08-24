@@ -68,7 +68,7 @@
                   <div class="pokemon-tera" (click)="$event.stopPropagation()">
                     <span>Tera</span>
                     <input
-                      pdz-checkbox
+                      pdz-checkbox type="checkbox"
                       class="tera-checkbox"
                       [checked]="isPokemonTera('side1', pokemon.id)"
                       [disabled]="!isPokemonSelected('side1', pokemon.id)"
@@ -168,7 +168,7 @@
                   <div class="pokemon-tera" (click)="$event.stopPropagation()">
                     <span>Tera</span>
                     <input
-                      pdz-checkbox
+                      pdz-checkbox type="checkbox"
                       class="tera-checkbox"
                       [checked]="isPokemonTera('side2', pokemon.id)"
                       [disabled]="!isPokemonSelected('side2', pokemon.id)"

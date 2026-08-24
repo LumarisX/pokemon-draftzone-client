@@ -1,4 +1,3 @@
-import { PokemonId } from '@pdz/shared/data/namedex';
 
 export type Archive = {
   _id: string;
@@ -13,5 +12,5 @@ export type Archive = {
     diff: string;
   };
   owner: string;
-  team: { id: PokemonId; name: string }[];
+  team: { id: string; name: string }[];
 };

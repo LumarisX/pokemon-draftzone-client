@@ -309,22 +309,22 @@
     <div class="choices__col">
       <span class="surfaces__name">Checkbox</span>
       <label pdz-check label="Include shinies">
-        <input pdz-checkbox />
+        <input pdz-checkbox type="checkbox" />
       </label>
       <label pdz-check label="Captain" description="Only one per team.">
-        <input pdz-checkbox checked />
+        <input pdz-checkbox type="checkbox" checked />
       </label>
       <label pdz-check label="Indeterminate">
-        <input pdz-checkbox #ind (click)="ind.indeterminate = false" />
+        <input pdz-checkbox type="checkbox" #ind (click)="ind.indeterminate = false" />
       </label>
       <label pdz-check label="Disabled">
-        <input pdz-checkbox disabled />
+        <input pdz-checkbox type="checkbox" disabled />
       </label>
       <label pdz-check label="Disabled + checked">
-        <input pdz-checkbox checked disabled />
+        <input pdz-checkbox type="checkbox" checked disabled />
       </label>
       <label pdz-check label="Label before" labelBefore>
-        <input pdz-checkbox />
+        <input pdz-checkbox type="checkbox" />
       </label>
     </div>
 
@@ -1252,4 +1252,118 @@
       Done
     </button>
   </pdz-dialog>
+</section>
+
+<section class="section">
+  <h2 class="section__title">Sprite</h2>
+  <p class="section__hint">
+    Resolves a Pokémon id against the selected sprite set, then walks a fallback
+    chain on load failure — set fallback first, then progressively shorter forme
+    ids — so an unreleased forme degrades to its base rather than to the unknown
+    icon. Stacked formes cycle on click, right-click, or arrow keys.
+  </p>
+
+  <h3 class="section__sub">Base, shiny, bordered set, unknown id</h3>
+  <div class="sprites">
+    <div class="sprites__demo">
+      <span class="sprites__name">default</span>
+      <pdz-sprite [pokemon]="spriteBasic" size="5rem" />
+    </div>
+    <div class="sprites__demo">
+      <span class="sprites__name">shiny</span>
+      <pdz-sprite [pokemon]="spriteShiny" size="5rem" />
+    </div>
+    <div class="sprites__demo">
+      <span class="sprites__name">flipped</span>
+      <pdz-sprite [pokemon]="spriteBordered" size="5rem" flipped />
+    </div>
+    <div class="sprites__demo">
+      <span class="sprites__name">unknown id</span>
+      <pdz-sprite [pokemon]="spriteUnknown" size="5rem" />
+    </div>
+  </div>
+
+  <h3 class="section__sub">
+    Fallback chain — an unreleased mega degrading to its base forme
+  </h3>
+  <div class="sprites">
+    <div class="sprites__demo">
+      <span class="sprites__name">magearna-original-mega</span>
+      <pdz-sprite [pokemon]="spriteUnreleased" size="5rem" />
+    </div>
+  </div>
+
+  <h3 class="section__sub">
+    Formes — click, right-click, or focus and use the arrow keys
+  </h3>
+  <div class="sprites">
+    <div class="sprites__demo">
+      <span class="sprites__name">interactive</span>
+      <pdz-sprite
+        [pokemon]="spriteFormes"
+        size="5rem"
+        [(formeIndex)]="spriteFormeIndex"
+      />
+    </div>
+    <div class="sprites__demo">
+      <span class="sprites__name">non-interactive</span>
+      <pdz-sprite [pokemon]="spriteFormes" size="5rem" [interactive]="false" />
+    </div>
+    <div class="sprites__demo">
+      <span class="sprites__name">formes hidden</span>
+      <pdz-sprite [pokemon]="spriteFormes" size="5rem" [showFormes]="false" />
+    </div>
+    <div class="sprites__demo">
+      <span class="sprites__name">index: {{ spriteFormeIndex() }}</span>
+      <pdz-sprite
+        [pokemon]="spriteFormes"
+        size="5rem"
+        [formeIndex]="spriteFormeIndex()"
+        [interactive]="false"
+      />
+    </div>
+  </div>
+
+  <h3 class="section__sub">Disabled, and cycling through disabled</h3>
+  <div class="sprites">
+    <div class="sprites__demo">
+      <span class="sprites__name">disabled</span>
+      <pdz-sprite [pokemon]="spriteBasic" size="5rem" [disabled]="true" />
+    </div>
+    <div class="sprites__demo">
+      <span class="sprites__name">
+        cycleDisabled ({{ spriteDisabled() ? "off" : "on" }})
+      </span>
+      <pdz-sprite
+        [pokemon]="spriteFormes"
+        size="5rem"
+        cycleDisabled
+        [(disabled)]="spriteDisabled"
+      />
+    </div>
+  </div>
+
+  <h3 class="section__sub">Tooltip positions</h3>
+  <div class="sprites">
+    @for (pos of ["above", "below", "before", "after"]; track pos) {
+      <div class="sprites__demo">
+        <span class="sprites__name">{{ pos }}</span>
+        <pdz-sprite
+          [pokemon]="spriteBasic"
+          size="4rem"
+          [tooltipPosition]="$any(pos)"
+        />
+      </div>
+    }
+  </div>
+
+  <h3 class="section__sub">Sizes</h3>
+  <div class="sprites">
+    @for (s of ["1.5rem", "2.5rem", "4rem", "6rem"]; track s) {
+      <div class="sprites__demo">
+        <span class="sprites__name">{{ s }}</span>
+        <pdz-sprite [pokemon]="spriteBasic" [size]="s" />
+      </div>
+    }
+  </div>
 </section>

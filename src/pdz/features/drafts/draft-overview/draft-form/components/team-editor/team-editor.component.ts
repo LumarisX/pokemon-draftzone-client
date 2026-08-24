@@ -124,7 +124,7 @@ export class TeamEditorComponent {
     pokemonNames.forEach((name) => {
       this.teamArray().push(
         new PokemonFormGroup(
-          { id: getPidByName(name), name },
+          { id: getPidByName(name) ?? '', name },
           this.pokemonList$(),
         ),
       );

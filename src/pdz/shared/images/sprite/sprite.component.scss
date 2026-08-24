@@ -23,6 +23,12 @@
       opacity: 0.75;
     }
   }
+
+  &:focus-visible {
+    outline: 2px solid pdz.color(menu);
+    outline-offset: pdz.space(2xs);
+    border-radius: pdz.shape(corner-xs);
+  }
 }
 
 .forme-slot {

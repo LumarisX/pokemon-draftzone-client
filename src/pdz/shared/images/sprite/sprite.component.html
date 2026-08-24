@@ -1,11 +1,15 @@
 <div
   class="forme-stack"
-  [class.interactive]="interactive() && stateCount() > 1"
+  [class.interactive]="isInteractive()"
   [style.width]="size()"
   [style.height]="size()"
+  [attr.role]="isInteractive() ? 'button' : null"
+  [attr.tabindex]="isInteractive() ? 0 : null"
+  [attr.aria-label]="isInteractive() ? ariaLabel() : null"
+  (keydown)="onKeydown($event)"
   (contextmenu)="onContextMenu($event)"
 >
-  @for (slot of slots(); track slot.pokemon.id) {
+  @for (slot of slots(); track slot.index) {
     <div
       class="forme-slot"
       [class.active]="slot.isActive"
@@ -13,7 +17,8 @@
       [class.hidden-slot]="!slot.visible"
       [style.transform]="slot.transform"
       [style.zIndex]="slot.zIndex"
-      [title]="slot.isActive ? '' : slot.pokemon.name"
+      [attr.aria-hidden]="slot.isActive ? null : 'true'"
+      [pdzTooltip]="slot.isActive ? '' : slot.pokemon.name"
       (click)="onSlotClick(slot)"
     >
       <pdz-sprite-image

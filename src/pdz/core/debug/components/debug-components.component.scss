@@ -280,3 +280,25 @@
   border: 1px solid pdz.color(outline-variant);
   border-radius: pdz.shape(corner-sm);
 }
+
+.sprites {
+  display: flex;
+  flex-wrap: wrap;
+  gap: pdz.space(lg);
+  align-items: flex-end;
+}
+
+.sprites__demo {
+  display: grid;
+  justify-items: center;
+  gap: pdz.space(sm);
+  padding: pdz.space(lg);
+  border: 1px solid pdz.color(outline-variant);
+  border-radius: pdz.shape(corner-md);
+}
+
+.sprites__name {
+  @include pdz.text(label);
+  color: pdz.color(on-surface-variant);
+  text-align: center;
+}

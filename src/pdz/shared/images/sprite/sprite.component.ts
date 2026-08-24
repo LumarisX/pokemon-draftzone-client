@@ -7,9 +7,9 @@ import {
   input,
   model,
   output,
-  untracked,
 } from '@angular/core';
 import { DraftOptions, Pokemon } from '@pdz/core/utils/pokemon';
+import { TooltipDirective } from '@pdz/shared/tooltip/tooltip.directive';
 import { SpriteImageComponent } from '../sprite-image/sprite-image.component';
 
 type SpritePokemon = Pokemon<DraftOptions>;
@@ -25,7 +25,7 @@ type FormeSlot = {
 
 @Component({
   selector: 'pdz-sprite',
-  imports: [SpriteImageComponent],
+  imports: [SpriteImageComponent, TooltipDirective],
   templateUrl: './sprite.component.html',
   styleUrl: './sprite.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -41,7 +41,6 @@ export class SpriteComponent {
   showFormes = input(true, { transform: booleanAttribute });
   interactive = input(true, { transform: booleanAttribute });
   cycleDisabled = input(false, { transform: booleanAttribute });
-  formeId = model<string | undefined>(undefined);
   formeIndex = model(0);
   loadedEvent = output<void>();
   cycled = output<void>();
@@ -114,27 +113,22 @@ export class SpriteComponent {
       }
       lastBaseId = baseId;
     });
-
-    effect(() => {
-      const id = this.formeId();
-      if (id === undefined) return;
-      const index = this.formes().findIndex((forme) => forme.id === id);
-      if (index >= 0 && index !== untracked(this.normalizedIndex)) {
-        this.formeIndex.set(index);
-      }
-    });
-
-    effect(() => {
-      const id = this.activeForme()?.id;
-      if (id && id !== untracked(this.formeId)) {
-        this.formeId.set(id);
-      }
-    });
   }
 
   protected readonly stateCount = computed(
     () => this.formes().length + (this.cycleDisabled() ? 1 : 0),
   );
+
+  protected readonly isInteractive = computed(
+    () => this.interactive() && this.stateCount() > 1,
+  );
+
+  protected readonly ariaLabel = computed(() => {
+    const name = this.activeForme()?.name ?? this.pokemon().name;
+    const count = this.formes().length;
+    if (!this.isInteractive() || count < 2) return name;
+    return `${name}, forme ${this.normalizedIndex() + 1} of ${count}`;
+  });
 
   next(): void {
     this.step(1);
@@ -183,9 +177,29 @@ export class SpriteComponent {
   }
 
   protected onContextMenu(event: Event): void {
-    if (!this.interactive() || this.stateCount() < 2) return;
+    if (!this.isInteractive()) return;
     event.preventDefault();
     this.step(-1);
+  }
+
+  protected onKeydown(event: KeyboardEvent): void {
+    if (!this.isInteractive()) return;
+    switch (event.key) {
+      case 'Enter':
+      case ' ':
+      case 'ArrowRight':
+      case 'ArrowDown':
+        event.preventDefault();
+        this.step(1);
+        break;
+      case 'ArrowLeft':
+      case 'ArrowUp':
+        event.preventDefault();
+        this.step(-1);
+        break;
+      default:
+        break;
+    }
   }
 
   protected onSlotLoaded(slot: FormeSlot): void {

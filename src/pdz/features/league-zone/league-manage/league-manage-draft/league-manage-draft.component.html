@@ -185,7 +185,7 @@
 
     <label class="checkbox-option">
       <input
-        pdz-checkbox
+        pdz-checkbox type="checkbox"
         [checked]="pendingSequentialTurns"
         [disabled]="!canEditOrder"
         (change)="pendingSequentialTurns = !pendingSequentialTurns"
@@ -223,7 +223,7 @@
 
     <label class="checkbox-option">
       <input
-        pdz-checkbox
+        pdz-checkbox type="checkbox"
         [checked]="pendingAllowRemovals"
         (change)="pendingAllowRemovals = !pendingAllowRemovals"
       />
@@ -253,7 +253,7 @@
     <h3 class="order-panel__title">Draft Order</h3>
     <label class="order-panel__toggle">
       <input
-        pdz-checkbox
+        pdz-checkbox type="checkbox"
         [checked]="pendingUseRandomSeeding"
         [disabled]="!canEditOrder"
         (change)="toggleRandomSeeding()"

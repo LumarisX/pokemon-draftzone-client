@@ -1,53 +1,29 @@
-import { CommonModule } from '@angular/common';
+import { NgClass } from '@angular/common';
 import {
   ChangeDetectionStrategy,
-  ChangeDetectorRef,
   Component,
-  EventEmitter,
-  OnChanges,
-  OnDestroy,
-  Output,
-  SimpleChanges,
   booleanAttribute,
+  computed,
   inject,
   input,
+  linkedSignal,
+  output,
 } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { TooltipDirective } from '@pdz/shared/tooltip/tooltip.directive';
-import { distinctUntilChanged, map } from 'rxjs';
-import { SpriteService } from '../../../core/services/sprite.service';
 import { DraftOptions, Pokemon } from '@pdz/core/utils/pokemon';
-import { SettingsService } from '@pdz/layout/top-navbar/settings.service';
+import { TooltipDirective } from '@pdz/shared/tooltip/tooltip.directive';
+import { SpriteData, SpriteService } from '../../../core/services/sprite.service';
 
 type SpritePokemon = Pokemon<DraftOptions>;
 
 @Component({
   selector: 'pdz-sprite-image',
-  imports: [CommonModule, TooltipDirective],
+  imports: [NgClass, TooltipDirective],
   styleUrl: './sprite-image.component.scss',
   templateUrl: './sprite-image.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SpriteImageComponent implements OnChanges, OnDestroy {
+export class SpriteImageComponent {
   private spriteService = inject(SpriteService);
-  private settingsService = inject(SettingsService);
-  private cdr = inject(ChangeDetectorRef);
-
-  constructor() {
-    this.settingsService.settings$
-      .pipe(
-        map((settings) => settings.spriteSet),
-        distinctUntilChanged(),
-        takeUntilDestroyed(),
-      )
-      .subscribe(() => {
-        const pokemon = this.pokemon();
-        if (pokemon?.id) {
-          this.updateData(pokemon);
-          this.cdr.markForCheck();
-        }
-      });
-  }
 
   readonly pokemon = input.required<SpritePokemon>();
   readonly tooltipPosition = input<
@@ -57,81 +33,56 @@ export class SpriteImageComponent implements OnChanges, OnDestroy {
   readonly flipped = input(false, { transform: booleanAttribute });
   readonly disabled = input<boolean | undefined>(false);
 
-  @Output() loadedEvent = new EventEmitter<void>();
+  readonly loadedEvent = output<void>();
 
-  protected loaded = false;
   protected readonly UNKNOWN_SPRITE_PATH =
     this.spriteService.UNKNOWN_SPRITE_PATH;
-  protected path = this.UNKNOWN_SPRITE_PATH;
-  private _baseClasses: string[] = [];
-  private _baseFlip = false;
-  private _fallbackPath: string | undefined;
-  private _destroyed = false;
 
-  protected get pokemonName(): string {
-    return this.pokemon()?.name ?? 'Unknown';
-  }
+  private readonly spriteData = computed<SpriteData>(
+    () =>
+      this.spriteService.getSpriteData(this.pokemon()) ?? {
+        path: this.UNKNOWN_SPRITE_PATH,
+        fallbackPaths: [],
+        classes: [],
+        flip: false,
+      },
+  );
 
-  protected get classes(): string[] {
-    const classes = [...this._baseClasses];
-    const isUnknownSprite = this.path === this.UNKNOWN_SPRITE_PATH;
-    if (!isUnknownSprite) {
-      const shouldFlip = this.flipped() !== this._baseFlip;
+  private readonly candidates = computed(() => [
+    this.spriteData().path,
+    ...this.spriteData().fallbackPaths,
+    this.UNKNOWN_SPRITE_PATH,
+  ]);
 
-      if (shouldFlip) {
-        classes.push('flip');
-      }
+  private readonly candidateIndex = linkedSignal({
+    source: this.candidates,
+    computation: () => 0,
+  });
+
+  readonly resolvedStep = this.candidateIndex.asReadonly();
+  readonly lastStep = computed(() => this.candidates().length - 1);
+
+  protected readonly path = computed(
+    () => this.candidates()[this.candidateIndex()] ?? this.UNKNOWN_SPRITE_PATH,
+  );
+
+  protected readonly pokemonName = computed(
+    () => this.pokemon().name ?? 'Unknown',
+  );
+
+  protected readonly classes = computed(() => {
+    const { classes, flip } = this.spriteData();
+    const resolved = [...classes];
+    if (this.path() !== this.UNKNOWN_SPRITE_PATH && this.flipped() !== flip) {
+      resolved.push('flip');
     }
-    if (this.disabled()) {
-      classes.push('disabled');
-    }
-    return classes;
-  }
-
-  ngOnChanges(changes: SimpleChanges): void {
-    const pokemon = this.pokemon();
-    if (changes['pokemon'] && pokemon?.id) {
-      this.updateData(pokemon);
-    }
-  }
-
-  ngOnDestroy(): void {
-    this._destroyed = true;
-  }
-
-  updateData(pokemon: SpritePokemon) {
-    const spriteData = this.spriteService.getSpriteData(pokemon) ?? {
-      path: this.UNKNOWN_SPRITE_PATH,
-      classes: [],
-      flip: false,
-    };
-    this.path = spriteData.path;
-    this._fallbackPath = spriteData.fallbackPath;
-    this._baseClasses = spriteData.classes;
-    this._baseFlip = spriteData.flip;
-    this.loaded = false;
-  }
+    if (this.disabled()) resolved.push('disabled');
+    return resolved;
+  });
 
   protected fallback(): void {
-    if (this._destroyed) return;
-
-    if (this.path !== this.UNKNOWN_SPRITE_PATH) {
-      if (this._fallbackPath) {
-        this.path = this._fallbackPath;
-        this._fallbackPath = undefined;
-      } else {
-        this.path = this.UNKNOWN_SPRITE_PATH;
-      }
-    }
-    this.loaded = true;
-    this.cdr.markForCheck();
-  }
-
-  protected onSpriteLoaded(): void {
-    if (this._destroyed) return;
-
-    this.loaded = true;
-    this.loadedEvent.emit();
-    this.cdr.markForCheck();
+    this.candidateIndex.update((index) =>
+      Math.min(index + 1, this.candidates().length - 1),
+    );
   }
 }

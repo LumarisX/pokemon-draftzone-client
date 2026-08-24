@@ -9,7 +9,7 @@ import {
 } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
-import { getNameByPid, PokemonId } from '@pdz/shared/data/namedex';
+import { getNameByPid } from '@pdz/shared/data/namedex';
 import { LeagueManageService } from '../league-manage.service';
 import { LeagueZoneService } from '../../league-zone.service';
 import { ReplayService } from '../../../tools/replay_analyzer/replay.service';
@@ -30,7 +30,7 @@ import { SegmentedOptionComponent } from '@pdz/shared/inputs/segmented/segmented
 import { SegmentedComponent } from '@pdz/shared/inputs/segmented/segmented.component';
 
 type PokemonStatsForm = FormGroup<{
-  id: FormControl<PokemonId | ''>;
+  id: FormControl<string>;
   kills: FormGroup<{
     direct: FormControl<number>;
     indirect: FormControl<number>;
@@ -233,9 +233,9 @@ export class LeagueManageScheduleComponent {
       : (matchForm.controls.team2Pokemon.controls as PokemonStatsForm[]);
   }
 
-  getPokemonLabel(pokemonId: PokemonId | ''): string {
+  getPokemonLabel(pokemonId: string): string {
     if (!pokemonId) return '';
-    return getNameByPid(pokemonId as PokemonId) || pokemonId;
+    return getNameByPid(pokemonId) || pokemonId;
   }
 
   addMatch(matchup: League.Matchup): void {
@@ -701,7 +701,7 @@ export class LeagueManageScheduleComponent {
   }
 
   private buildPokemonStatsForm(
-    pokemonId: PokemonId | '',
+    pokemonId: string,
     stats?: League.MatchPokemonStats,
   ): PokemonStatsForm {
     return this.fb.group({
@@ -801,7 +801,7 @@ export class LeagueManageScheduleComponent {
       : { team1: second.player, team2: first.player };
   }
 
-  private countOverlap(player: ReplayPlayer, ids: Set<PokemonId | ''>): number {
+  private countOverlap(player: ReplayPlayer, ids: Set<string>): number {
     return player.team.reduce((count, mon) => {
       const pid = mon.id;
       return ids.has(pid) ? count + 1 : count;

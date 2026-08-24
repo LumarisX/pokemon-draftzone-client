@@ -11,7 +11,6 @@ import { finalize } from 'rxjs/operators';
 import { DraftPokemon } from '../../../drafts/draft.model';
 import { PokemonSearchComponent } from '@pdz/shared/dropdowns/pokemon-search/pokemon-search.component';
 import { TierListService } from '../../../tier-lists/tier-list.service';
-import { PokemonId } from '@pdz/shared/data/namedex';
 import { LeagueNotificationService } from '../../league-notification.service';
 import { DraftDetails, LeagueManageService } from '../league-manage.service';
 import { LeagueZoneService } from '../../league-zone.service';
@@ -262,7 +261,7 @@ export class LeagueManageDraftComponent implements OnInit, OnDestroy {
           this.pokemonList$.next(
             tierList.flatMap((tier) =>
               tier.pokemon.map((pokemon) => ({
-                id: pokemon.id as PokemonId,
+                id: pokemon.id,
                 name: pokemon.name,
               })),
             ),

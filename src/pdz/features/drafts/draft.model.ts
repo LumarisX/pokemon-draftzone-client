@@ -1,4 +1,3 @@
-import { PokemonId } from '@pdz/shared/data/namedex';
 
 export type Draft = {
   _id: string;
@@ -20,7 +19,7 @@ export type Draft = {
 };
 
 export type DraftPokemon = {
-  id: PokemonId | '';
+  id: string;
   name: string;
   unresolved?: boolean;
   shiny?: boolean;

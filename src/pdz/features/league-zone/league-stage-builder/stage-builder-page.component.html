@@ -83,20 +83,20 @@
 
         @if (formFormat === "double-elim") {
           <label class="field field--check">
-            <input pdz-checkbox [(ngModel)]="formGrandFinalsReset" />
+            <input pdz-checkbox type="checkbox" [(ngModel)]="formGrandFinalsReset" />
             <span>Include a grand finals reset</span>
           </label>
         }
 
         <label class="field field--check">
-          <input pdz-checkbox [(ngModel)]="formRandom" />
+          <input pdz-checkbox type="checkbox" [(ngModel)]="formRandom" />
           <span>
             Seed randomly (drawn once by DraftZone when you save — no re-rolls)
           </span>
         </label>
 
         <label class="field field--check">
-          <input pdz-checkbox [(ngModel)]="formPublic" />
+          <input pdz-checkbox type="checkbox" [(ngModel)]="formPublic" />
           <span>
             Visible to everyone (leave off to build it first — hidden stages are
             organizer-only, and the eye on a stage flips this later)
@@ -112,7 +112,7 @@
               <li class="teams__row">
                 <label>
                   <input
-                    pdz-checkbox
+                    pdz-checkbox type="checkbox"
                     [checked]="row.selected"
                     (change)="toggleFormTeam(row.team.id)"
                   />
