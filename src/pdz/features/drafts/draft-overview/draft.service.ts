@@ -104,8 +104,14 @@ export class DraftService {
   }
 
   archiveDraft(teamName: string) {
+    return this.apiService.post(`${ROOTPATH}/${teamName}/archive`, {}, {
+      invalidateCache: [ROOTPATH, `${ROOTPATH}/${teamName}`, 'archive/teams'],
+    });
+  }
+
+  unarchiveDraft(teamName: string) {
     return this.apiService.delete(`${ROOTPATH}/${teamName}/archive`, {
-      invalidateCache: ['tournaments/teams', `tournaments/${teamName}`],
+      invalidateCache: [ROOTPATH, `${ROOTPATH}/${teamName}`, 'archive/teams'],
     });
   }
 

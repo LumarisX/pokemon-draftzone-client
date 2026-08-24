@@ -169,7 +169,13 @@
                   [queryParams]="{ draft: toPlanner(draft) }"
                   >Open in Planner</a
                 >
-                <button pdz-menu-item icon="archive" disabled>Archive</button>
+                <button
+                  pdz-menu-item
+                  icon="archive"
+                  (click)="confirmArchive(draft)"
+                >
+                  Archive
+                </button>
                 <button
                   pdz-menu-item
                   icon="delete_forever"
@@ -263,6 +269,15 @@
               >
                 <pdz-icon name="more_vert"></pdz-icon>
               </button>
+              @if (archive.slug) {
+                <button
+                  pdz-menu-item
+                  icon="unarchive"
+                  (click)="restore(archive)"
+                >
+                  Restore
+                </button>
+              }
               <!-- <button
                 pdz-menu-item
                 icon="delete_forever"

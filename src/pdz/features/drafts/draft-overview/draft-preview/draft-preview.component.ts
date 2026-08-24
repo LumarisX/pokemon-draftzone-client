@@ -107,6 +107,34 @@ export class DraftPreviewComponent {
     });
   }
 
+  async confirmArchive(draft: Draft) {
+    const confirmed = await this.dialogs.confirm('Are you sure?', {
+      message: `${draft.leagueName} will be archived. This can be undone.`,
+      confirmLabel: 'Archive',
+    });
+    if (!confirmed) return;
+
+    this.draftService.archiveDraft(draft.slug).subscribe({
+      next: () => {
+        this.loadDrafts();
+        this.loadArchives();
+      },
+      error: (error) => console.error('Failed to archive draft', error),
+    });
+  }
+
+  restore(archive: Archive) {
+    if (!archive.slug) return;
+
+    this.draftService.unarchiveDraft(archive.slug).subscribe({
+      next: () => {
+        this.loadDrafts();
+        this.loadArchives();
+      },
+      error: (error) => console.error('Failed to restore draft', error),
+    });
+  }
+
   async confirmDelete(draft: Draft) {
     const confirmed = await this.dialogs.confirm('Delete draft', {
       message: `Delete ${draft.leagueName}? This cannot be undone.`,
