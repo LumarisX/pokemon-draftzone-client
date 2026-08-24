@@ -1,0 +1,129 @@
+@use "sass:map";
+@use "pdz-theming" as pdz;
+
+// `label` is the resting width of the text, so a row of badges lines up
+// regardless of how long the type name is. It is wide enough for "Fighting",
+// the longest name, at that step's font size.
+$sizes: (
+  xs: (
+    height: 0.75rem,
+    font: 4xs,
+    pad-x: 2xs,
+    pad-y: 3xs,
+    gap: 2xs,
+    gap-y: xs,
+    label: 2rem,
+  ),
+  sm: (
+    height: 1rem,
+    font: 3xs,
+    pad-x: xs,
+    pad-y: 2xs,
+    gap: 2xs,
+    gap-y: xs,
+    label: 2.5rem,
+  ),
+  md: (
+    height: 1.25rem,
+    font: 2xs,
+    pad-x: xs,
+    pad-y: 2xs,
+    gap: xs,
+    gap-y: xs,
+    label: 2.75rem,
+  ),
+  lg: (
+    height: 1.5rem,
+    font: xs,
+    pad-x: sm,
+    pad-y: xs,
+    gap: xs,
+    gap-y: sm,
+    label: 3rem,
+  ),
+  xl: (
+    height: 2rem,
+    font: sm,
+    pad-x: sm,
+    pad-y: xs,
+    gap: sm,
+    gap-y: sm,
+    label: 3.5rem,
+  ),
+);
+
+:host {
+  --pdz-pokemon-type-fill: #{pdz.color(surface-variant)};
+  --pdz-pokemon-type-ink: #{pdz.color(on-surface-variant)};
+  --pdz-pokemon-type-on-fill: #{pdz.color(on-primary, white)};
+
+  display: inline-flex;
+  box-sizing: border-box;
+  align-items: center;
+  justify-content: center;
+  max-width: 100%;
+  border: 1px solid transparent;
+  border-radius: pdz.shape(corner-xs);
+  font-family: var(--pdz-font-body);
+  font-weight: pdz.font-weight(bold);
+  line-height: 1;
+  vertical-align: middle;
+  user-select: none;
+  overflow: hidden;
+}
+
+@each $name, $s in $sizes {
+  :host([data-size="#{$name}"]) {
+    --pdz-pokemon-type-label-width: #{map.get($s, label)};
+
+    min-height: map.get($s, height);
+    gap: pdz.space(map.get($s, gap));
+    padding: 0 pdz.space(map.get($s, pad-x));
+    font-size: pdz.font-size(map.get($s, font));
+  }
+
+  :host([data-size="#{$name}"][data-direction="vertical"]) {
+    gap: pdz.space(map.get($s, gap-y));
+    padding: pdz.space(map.get($s, pad-y)) pdz.space(map.get($s, pad-x));
+  }
+}
+
+:host([data-direction="vertical"]) {
+  flex-direction: column;
+  min-height: 0;
+}
+
+:host([data-variant="solid"]) {
+  background: var(--pdz-pokemon-type-fill);
+  color: var(--pdz-pokemon-type-on-fill);
+}
+
+:host([data-variant="soft"]) {
+  background: color-mix(in srgb, var(--pdz-pokemon-type-ink) 20%, transparent);
+  color: var(--pdz-pokemon-type-ink);
+}
+
+:host([data-variant="outline"]) {
+  background: pdz.color(surface);
+  border-color: var(--pdz-pokemon-type-ink);
+  color: var(--pdz-pokemon-type-ink);
+}
+
+:host(.pdz-pokemon-type--disabled) {
+  opacity: 0.5;
+}
+
+.pdz-pokemon-type__icon {
+  flex: none;
+  color: inherit;
+}
+
+.pdz-pokemon-type__label {
+  width: var(--pdz-pokemon-type-label-width);
+  max-width: 100%;
+  min-width: 0;
+  overflow: hidden;
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

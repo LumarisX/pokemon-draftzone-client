@@ -266,6 +266,11 @@
   padding-inline: pdz.space(2xs);
 }
 
+.types-grid pdz-pokemon-type {
+  width: 2.5rem;
+  height: 1.5rem;
+}
+
 .tooltips__clip {
   display: flex;
   gap: pdz.space(2xs);

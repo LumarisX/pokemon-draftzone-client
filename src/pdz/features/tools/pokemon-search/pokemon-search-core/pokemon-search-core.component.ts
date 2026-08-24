@@ -25,7 +25,7 @@ import {
   PokemonDialogComponent,
   PokemonDialogData,
 } from '@pdz/shared/dialogs/pokemon-dialog/pokemon-dialog.component';
-import { PokemonTypeComponent } from '@pdz/shared/dialogs/pokemon-type/pokemon-type.component';
+import { PokemonTypeComponent } from '@pdz/shared/data/pokemon-type/pokemon-type.component';
 import { RulesetSelectComponent } from '@pdz/shared/dropdowns/ruleset-select/ruleset.component';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';

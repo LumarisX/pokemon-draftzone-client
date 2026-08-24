@@ -5,7 +5,8 @@ import { MoveChart } from '@pdz/features/drafts/matchup-overview/matchup-interfa
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
 import { Pokemon } from '@pdz/core/utils/pokemon';
-import { PokemonTypeComponent } from '@pdz/shared/dialogs/pokemon-type/pokemon-type.component';
+import { typeInk } from '@pdz/core/utils/styling';
+import { PokemonTypeComponent } from '@pdz/shared/data/pokemon-type/pokemon-type.component';
 import { SegmentedOptionComponent } from '@pdz/shared/inputs/segmented/segmented-option.component';
 import { SegmentedComponent } from '@pdz/shared/inputs/segmented/segmented.component';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
@@ -56,7 +57,7 @@ export class MoveCoreComponent {
     this.selectedTags.clear();
   }
 
-  typeColor = PokemonTypeComponent.typeColor;
+  typeColor = typeInk;
 
   toggleTag(tag: string, mode: 'enable' | 'disable'): void {
     if (this.selectedTags.get(tag) === mode) this.selectedTags.delete(tag);

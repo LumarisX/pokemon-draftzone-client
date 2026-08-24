@@ -411,6 +411,82 @@
 </section>
 
 <section class="section">
+  <h2 class="section__title">Pokémon type</h2>
+
+  <h3 class="section__sub">
+    Sizes — text, icon, and both. The label holds a fixed width per size so a
+    row lines up whatever the type name is
+  </h3>
+  @for (c of ["text", "icon", "both"]; track c) {
+    <div class="row">
+      @for (s of typeSizes; track s) {
+        <pdz-pokemon-type type="Fighting" [size]="s" [content]="$any(c)" />
+      }
+      <span class="section__hint"><code>content="{{ c }}"</code></span>
+    </div>
+  }
+
+  <h3 class="section__sub">
+    Variants — <code>outline</code> is the unselected state; Stellar has no
+    glyph and no flat fill, so it falls back to text and a solid ink
+  </h3>
+  @for (v of typeVariants; track v) {
+    <div class="row">
+      @for (t of sampleTypes; track t) {
+        <pdz-pokemon-type [type]="t" [variant]="v" content="both" />
+      }
+      <span class="section__hint"><code>variant="{{ v }}"</code></span>
+    </div>
+  }
+
+  <h3 class="section__sub">
+    Vertical — icon-led tiles. The consumer owns the box:
+    <code>pdz-pokemon-type &#123; width: 2.5rem; height: 2.5rem &#125;</code>
+  </h3>
+  <div class="row">
+    @for (s of typeSizes; track s) {
+      <pdz-pokemon-type
+        type="Psychic"
+        [size]="s"
+        content="both"
+        direction="vertical"
+      />
+    }
+  </div>
+
+  <h3 class="section__sub">
+    Sized by the consumer — a fixed box wins over the intrinsic width, which is
+    how the typechart header keeps its 2.5rem grid
+  </h3>
+  <div class="row types-grid">
+    @for (t of sampleTypes; track t) {
+      <pdz-pokemon-type [type]="t" size="xs" content="both" />
+    }
+  </div>
+
+  <h3 class="section__sub">
+    <code>labelWidth</code> — widen it, or pass <code>auto</code> to shrink to
+    the name
+  </h3>
+  <div class="row">
+    @for (t of sampleTypes; track t) {
+      <pdz-pokemon-type [type]="t" content="both" labelWidth="auto" />
+    }
+  </div>
+  <div class="row">
+    @for (t of sampleTypes; track t) {
+      <pdz-pokemon-type [type]="t" content="both" labelWidth="4.5rem" />
+    }
+  </div>
+
+  <h3 class="section__sub">Disabled</h3>
+  <div class="row">
+    <pdz-pokemon-type type="Dragon" content="both" />
+    <pdz-pokemon-type type="Dragon" content="both" disabled />
+  </div>
+</section>
+
+<section class="section">
   <h2 class="section__title">Card</h2>
 
   <h3 class="section__sub">

@@ -5,14 +5,13 @@
         <th></th>
         @for (type of types; track $index) {
           <th
+            [pdzTooltip]="type"
             (mouseenter)="columnHovered.next(type)"
             (mouseleave)="columnHovered.next(null)"
-            [ngClass]="{ 'column-hovered': type === columnHovered.value }"
+            [class.column-hovered]="type === columnHovered.value"
           >
             <div class="flex-wrapper">
-              <div class="pdz-type" [style.backgroundColor]="typeColor(type)">
-                <span class="pdz-type__text">{{ type }}</span>
-              </div>
+              <pdz-pokemon-type [type]="type" size="lg" content="icon" />
             </div>
           </th>
         }
@@ -30,7 +29,7 @@
             class="stat-cell"
             (mouseenter)="columnHovered.next(type)"
             (mouseleave)="columnHovered.next(null)"
-            [ngClass]="{ 'column-hovered': type === columnHovered.value }"
+            [class.column-hovered]="type === columnHovered.value"
           >
             <div class="flex-wrapper">
               <div class="stat-wrapper" [ngClass]="countColor(counts[$index])">

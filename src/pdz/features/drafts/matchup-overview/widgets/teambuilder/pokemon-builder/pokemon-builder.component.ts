@@ -30,6 +30,7 @@ import { ChoiceDirective } from '@pdz/shared/inputs/choice/choice.directive';
 import { SelectOptionComponent } from '@pdz/shared/dropdowns/select/select-option.component';
 import { SelectComponent } from '@pdz/shared/dropdowns/select/select.component';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
+import { ChipComponent } from '@pdz/shared/data/chip/chip.component';
 
 export type PokemonBuilderView =
   | 'details'
@@ -64,6 +65,7 @@ type SpeedTier = {
     SelectComponent,
     SelectOptionComponent,
     ButtonComponent,
+    ChipComponent,
   ],
 })
 export class MatchupPokemonBuilderComponent implements OnInit, OnDestroy {

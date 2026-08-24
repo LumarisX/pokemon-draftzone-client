@@ -10,11 +10,11 @@ import {
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
 import { SliderComponent } from '@pdz/shared/inputs/slider/slider.component';
 import { typeColor } from '@pdz/core/utils/styling';
+import { PokemonTypeComponent } from '@pdz/shared/data/pokemon-type/pokemon-type.component';
 
 type StatKey = 'hp' | 'atk' | 'def' | 'spa' | 'spd' | 'spe' | 'bst' | 'cst';
 type AggregateKey = 'mean' | 'median' | 'max';
 
-/** The values actually rendered for a row: the active forme resolved over its base Pokemon. */
 interface ActiveForme {
   name: string;
   types: string[];
@@ -33,7 +33,13 @@ interface SortState {
   selector: 'pdz-summary-core',
   templateUrl: './summary-core.component.html',
   styleUrl: './summary-core.component.scss',
-  imports: [CommonModule, FormsModule, SpriteComponent, SliderComponent],
+  imports: [
+    CommonModule,
+    FormsModule,
+    SpriteComponent,
+    SliderComponent,
+    PokemonTypeComponent,
+  ],
 })
 export class SummaryCoreComponent {
   baseValue: number = 80;
@@ -102,13 +108,11 @@ export class SummaryCoreComponent {
     this.sortSubject.next(this.currentSort);
   }
 
-  /** Index 0 is the base Pokemon; 1..N map onto draftFormes. */
   activeForme(pokemon: SummaryPokemon): ActiveForme {
     const index = pokemon.formeIndex ?? 0;
     const forme = index > 0 ? pokemon.draftFormes?.[index - 1] : undefined;
     if (!forme) return pokemon;
 
-    // Formes only carry what differs, so fall back to the base Pokemon.
     return {
       name: forme.name,
       types: forme.types ?? pokemon.types,
@@ -134,9 +138,6 @@ export class SummaryCoreComponent {
     return this.isTotal(key) ? this.bstColor(value) : this.statColor(value);
   }
 
-  /** Computed over each Pokemon's active forme so the aggregates track forme
-   * rotation, rather than reading the server's base-team precomputation.
-   * Rounding mirrors the server so the initial (all base) render is identical. */
   aggregateValue(row: AggregateKey, key: StatKey): number | undefined {
     const team = this.summary?.team;
     if (!team?.length) return undefined;

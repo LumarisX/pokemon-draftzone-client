@@ -33,8 +33,9 @@
           >
             <pdz-pokemon-type
               [type]="move.type"
-              [disabled]="!move.selected"
-              [display]="isMobile ? 'icon' : 'both'"
+              size="sm"
+              [variant]="move.selected ? 'solid' : 'outline'"
+              [content]="isMobile ? 'icon' : 'both'"
             ></pdz-pokemon-type>
           </button>
         }
@@ -57,8 +58,9 @@
           >
             <pdz-pokemon-type
               [type]="move.type"
-              [disabled]="!move.selected"
-              [display]="isMobile ? 'icon' : 'both'"
+              size="sm"
+              [variant]="move.selected ? 'solid' : 'outline'"
+              [content]="isMobile ? 'icon' : 'both'"
             ></pdz-pokemon-type>
           </button>
         }

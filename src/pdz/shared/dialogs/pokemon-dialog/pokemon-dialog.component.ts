@@ -13,7 +13,7 @@ import {
   DataService,
   PokemonSearchMoveData,
 } from '@pdz/core/services/data.service';
-import { PokemonTypeComponent } from '../pokemon-type/pokemon-type.component';
+import { PokemonTypeComponent } from '@pdz/shared/data/pokemon-type/pokemon-type.component';
 import { SpriteComponent } from '../../images/sprite/sprite.component';
 import { IconComponent } from '../../images/icon/icon.component';
 import { makeBanString } from '@pdz/features/tier-lists/tier-list/tier-list.utils';

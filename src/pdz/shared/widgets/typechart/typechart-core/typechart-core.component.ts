@@ -23,12 +23,19 @@ import {
 } from '@pdz/features/drafts/matchup-overview/matchup-interface';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
 import { typeColor } from '@pdz/core/utils/styling';
+import { PokemonTypeComponent } from '@pdz/shared/data/pokemon-type/pokemon-type.component';
 
 @Component({
   selector: 'pdz-typechart-core',
   templateUrl: './typechart-core.component.html',
   styleUrl: './typechart-core.component.scss',
-  imports: [CommonModule, SpriteComponent, FormsModule, ReactiveFormsModule],
+  imports: [
+    CommonModule,
+    SpriteComponent,
+    FormsModule,
+    ReactiveFormsModule,
+    PokemonTypeComponent,
+  ],
 })
 export class TypechartCoreComponent implements OnInit, OnDestroy {
   sortedTeam = new BehaviorSubject<TypeChartPokemon[]>([]);

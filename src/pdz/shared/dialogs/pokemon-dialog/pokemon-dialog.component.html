@@ -65,7 +65,7 @@
             <div class="pdz-types">
               @for (type of data.pokemon.types; track $index) {
                 <pdz-pokemon-type
-                  display="both"
+                  content="both"
                   [type]="type"
                 ></pdz-pokemon-type>
               }
@@ -267,7 +267,7 @@
                       @if (move.type) {
                         <pdz-pokemon-type
                           [type]="move.type"
-                          display="both"
+                          content="both"
                         ></pdz-pokemon-type>
                       } @else {
                         <span>?</span>

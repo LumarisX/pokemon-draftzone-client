@@ -15,6 +15,7 @@ import {
 } from '@pdz/features/drafts/matchup-overview/matchup-interface';
 import { typeColor } from '@pdz/core/utils/styling';
 import { TYPES } from '@pdz/shared/data';
+import { PokemonTypeComponent } from '@pdz/shared/data/pokemon-type/pokemon-type.component';
 
 type ScoreRange = {
   min: number;
@@ -26,7 +27,13 @@ type ScoreRange = {
   selector: 'pdz-typestats-core',
   templateUrl: './typestats-core.component.html',
   styleUrl: './typestats-core.component.scss',
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, TooltipDirective],
+  imports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    TooltipDirective,
+    PokemonTypeComponent,
+  ],
 })
 export class TypestatsCoreComponent implements OnInit, OnDestroy {
   sortedTeam = new BehaviorSubject<TypeChartPokemon[]>([]);

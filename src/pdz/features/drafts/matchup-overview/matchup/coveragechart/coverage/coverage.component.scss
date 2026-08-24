@@ -83,13 +83,13 @@
         flex-shrink: 0;
       }
       .pdz-types {
-        flex-grow: 1;
         display: grid;
-        grid-template-columns: repeat(4, minmax(0, 1fr));
+        grid-template-columns: repeat(4, max-content);
         gap: pdz.space(xs);
-        justify-items: start;
+        justify-content: start;
 
         @media (max-width: 768px) {
+          flex-grow: 1;
           grid-template-columns: repeat(6, minmax(0, 1fr));
           gap: pdz.space(2xs);
 

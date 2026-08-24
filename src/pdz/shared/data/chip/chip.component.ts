@@ -12,6 +12,7 @@ import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 export type ChipTone =
   | 'neutral'
   | 'primary'
+  | 'secondary'
   | 'success'
   | 'warning'
   | 'danger'
@@ -101,7 +102,9 @@ export class ChipComponent {
     this.clickable() && this.selected() ? true : null,
   );
 
-  protected readonly iconSize = computed(() => (this.size() === 'sm' ? 14 : 16));
+  protected readonly iconSize = computed(() =>
+    this.size() === 'sm' ? 14 : 16,
+  );
   protected readonly removeIconSize = computed(() =>
     this.size() === 'sm' ? 12 : 14,
   );

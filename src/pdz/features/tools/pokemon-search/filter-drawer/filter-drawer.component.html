@@ -95,9 +95,10 @@
             >
               <pdz-pokemon-type
                 [type]="type"
-                [disabled]="draft.value !== type"
-                display="both"
-                direction="column"
+                [variant]="draft.value === type ? 'solid' : 'outline'"
+                size="sm"
+                content="both"
+                direction="vertical"
               ></pdz-pokemon-type>
             </button>
           }

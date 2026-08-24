@@ -1,3 +1,16 @@
+const TYPE_SOLID: Readonly<Record<string, string>> = {
+  Stellar: 'hsl(180 75% 45%)',
+};
+
+/**
+ * The flat colour for a type, for the places a gradient cannot go: borders,
+ * text, SVG fills. Every type but Stellar matches `typeColor`.
+ */
+export function typeInk(type?: string | null) {
+  if (!type) return undefined;
+  return TYPE_SOLID[type] ?? typeColor(type);
+}
+
 export function typeColor(type?: string | null) {
   if (!type) return undefined;
   switch (type) {

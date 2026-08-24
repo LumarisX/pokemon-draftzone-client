@@ -56,6 +56,11 @@ import { Sort, SortDirective } from '@pdz/shared/data/sort/sort.directive';
 import { SelectOptionComponent } from '@pdz/shared/dropdowns/select/select-option.component';
 import { SelectComponent } from '@pdz/shared/dropdowns/select/select.component';
 import {
+  PokemonTypeComponent,
+  PokemonTypeSize,
+  PokemonTypeVariant,
+} from '@pdz/shared/data/pokemon-type/pokemon-type.component';
+import {
   ChipComponent,
   ChipTone,
   ChipVariant,
@@ -95,6 +100,7 @@ const MODE_ATTR = 'pdz-theme-mode';
     SelectComponent,
     SelectOptionComponent,
     ChipComponent,
+    PokemonTypeComponent,
   ],
   templateUrl: './debug-components.component.html',
   styleUrl: './debug-components.component.scss',
@@ -246,12 +252,26 @@ export class DebugComponentsComponent {
   readonly chipTones: ChipTone[] = [
     'neutral',
     'primary',
+    'secondary',
     'success',
     'warning',
     'danger',
     'info',
   ];
   readonly chipVariants: ChipVariant[] = ['soft', 'solid', 'outline'];
+
+  readonly typeSizes: PokemonTypeSize[] = ['xs', 'sm', 'md', 'lg', 'xl'];
+  readonly typeVariants: PokemonTypeVariant[] = ['solid', 'soft', 'outline'];
+  readonly sampleTypes = [
+    'Fire',
+    'Water',
+    'Grass',
+    'Fighting',
+    'Ghost',
+    'Steel',
+    'Stellar',
+  ];
+  readonly selectedType = signal('Fire');
 
   private readonly allChips = ['Stealth Rock', 'Spikes', 'Toxic'];
   readonly demoChips = signal(this.allChips);

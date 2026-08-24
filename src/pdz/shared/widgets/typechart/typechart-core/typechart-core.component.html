@@ -12,21 +12,12 @@
             [class.column-hovered]="type === columnHovered.value"
           >
             <div class="pdz-types" [class.sort-press]="sortedBy.value === type">
-              <div class="pdz-type" [style.backgroundColor]="typeColor(type)">
-                <div class="pdz-type__icon-wrapper">
-                  <img
-                    class="pdz-type__icon"
-                    [src]="
-                      '../../../assets/icons/types/gen9icon/' + type + '.png'
-                    "
-                    onerror="
-                      this.src = '../../../assets/icons/types/Unknown.png'
-                    "
-                    [alt]="type"
-                  />
-                </div>
-                <span class="pdz-type__text">{{ type }}</span>
-              </div>
+              <pdz-pokemon-type
+                [type]="type"
+                size="xs"
+                content="both"
+                direction="vertical"
+              />
             </div>
           </th>
         }

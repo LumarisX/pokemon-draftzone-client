@@ -4,7 +4,6 @@
 :host {
   @include generate-bg-scale();
   --bevel-radius: #{pdz.shape(corner-sm)};
-  --bevel-padding: #{pdz.space(2xs)};
 }
 
 .type-cell {
@@ -25,7 +24,6 @@
   overflow: hidden;
   &.type-colored {
     color: pdz.color(on-primary, white);
-    box-shadow: var(--pdz-level-1);
   }
   &.type-empty {
     color: transparent;
@@ -64,38 +62,22 @@ th {
   &.sort-press {
     margin-bottom: 0;
     margin-top: 1px;
-
-    .pdz-type {
-      box-shadow: var(--pdz-level-0);
-    }
   }
 
-  .pdz-type {
-    flex-direction: column;
+  pdz-pokemon-type {
     width: 2.5rem;
     height: 2.5rem;
-    padding: 0 var(--bevel-padding) var(--bevel-padding);
   }
+}
 
-  .pdz-type__text {
-    flex-shrink: 0;
-    font-size: 0.5rem;
-    line-height: 1;
-  }
+.flex-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
-  .pdz-type__icon-wrapper {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    flex-grow: 1;
-    width: pdz.space(lg);
-    overflow: hidden;
-
-    .pdz-type__icon {
-      height: pdz.space(lg);
-      width: pdz.space(lg);
-    }
+  pdz-pokemon-type {
+    width: 2.5rem;
+    height: 1.5rem;
   }
 }
 
@@ -208,7 +190,6 @@ tbody {
       line-height: 0.7rem;
       font-weight: bold;
       overflow: hidden;
-      box-shadow: var(--pdz-level-1);
     }
   }
 }
@@ -233,7 +214,6 @@ tbody {
   width: 2.5rem;
   @include pdz.text(label-strong, $family: false);
   overflow: hidden;
-  box-shadow: var(--pdz-level-1);
 }
 
 .stat-cell {

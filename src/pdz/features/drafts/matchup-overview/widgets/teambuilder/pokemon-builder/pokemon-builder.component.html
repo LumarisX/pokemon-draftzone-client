@@ -536,9 +536,12 @@
                 </div>
                 <div class="modifiers">
                   @for (modifier of tier.modifiers; track $index) {
-                    <span class="modifier">
-                      {{ modifier }}
-                    </span>
+                    <pdz-chip
+                      size="sm"
+                      variant="outline"
+                      [tone]="tier.team === '0' ? 'primary' : 'secondary'"
+                      >{{ modifier }}</pdz-chip
+                    >
                   }
                 </div>
               </div>

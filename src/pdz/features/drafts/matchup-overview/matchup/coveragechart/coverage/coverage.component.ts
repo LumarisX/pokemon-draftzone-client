@@ -2,7 +2,7 @@ import { Component, Input, OnDestroy, OnInit, input } from '@angular/core';
 import { TooltipDirective } from '@pdz/shared/tooltip/tooltip.directive';
 import { ExtendedType } from '@pdz/shared/data';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
-import { PokemonTypeComponent } from '@pdz/shared/dialogs/pokemon-type/pokemon-type.component';
+import { PokemonTypeComponent } from '@pdz/shared/data/pokemon-type/pokemon-type.component';
 import { DraftPokemon } from '../../../../draft.model';
 import { CoverageChart, TypeChart } from '../../../matchup-interface';
 import { EffectivenessChartComponent } from './effectiveness-chart/effectiveness-chart.component';
