@@ -23,8 +23,8 @@ import { Subject, takeUntil } from 'rxjs';
 import {
   ReplayAnalysis,
   ReplayPlayer,
-} from '../../../tools/replay_analyzer/replay.interface';
-import { ReplayService } from '../../../tools/replay_analyzer/replay.service';
+} from '@pdz/features/tools/replay_analyzer-new/replay.interface';
+import { ReplayService } from '@pdz/features/tools/replay_analyzer/replay.service';
 import { LeagueZoneService } from '../../league-zone.service';
 import {
   MatchupDetail,
@@ -418,7 +418,7 @@ export class MatchupReportComponent implements OnInit, OnDestroy {
     this.analysisError.set(null);
 
     this.replayService
-      .analyzeReplay(url)
+      .analyzeReplayV2(url)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (data) => {

@@ -12,7 +12,7 @@ import { Subject, takeUntil } from 'rxjs';
 import { getNameByPid } from '@pdz/shared/data/namedex';
 import { LeagueManageService } from '../league-manage.service';
 import { LeagueZoneService } from '../../league-zone.service';
-import { ReplayService } from '../../../tools/replay_analyzer/replay.service';
+import { ReplayService } from '@pdz/features/tools/replay_analyzer/replay.service';
 import { SelectOptionComponent } from '@pdz/shared/dropdowns/select/select-option.component';
 import { FieldComponent } from '@pdz/shared/inputs/field/field.component';
 import { InputDirective } from '@pdz/shared/inputs/field/input.directive';
@@ -22,7 +22,7 @@ import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
 import {
   ReplayAnalysis,
   ReplayPlayer,
-} from '../../../tools/replay_analyzer/replay.interface';
+} from '@pdz/features/tools/replay_analyzer-new/replay.interface';
 import { League } from '../../league.interface';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 import { DisclosureComponent } from '@pdz/shared/layout/disclosure/disclosure.component';
@@ -377,7 +377,7 @@ export class LeagueManageScheduleComponent {
     this.analysisState.set(stateKey, { loading: true });
 
     this.replayService
-      .analyzeReplay(replayUrl)
+      .analyzeReplayV2(replayUrl)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (data) => {

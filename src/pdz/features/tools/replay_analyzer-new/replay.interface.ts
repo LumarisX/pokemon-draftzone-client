@@ -134,6 +134,21 @@ export type ReplayAnalysis = {
   events: { player: number; turn: number; message: string }[];
 };
 
-export type ReplayWarning = {
+export type ReplayArgWarning = {
+  lineId: string;
+  action: string;
+  args: string[];
   message: string;
+};
+
+export type ReplayBuildWarning = {
+  lineId: string;
+  action: string;
+  message: string;
+};
+
+export type ReplayWarnings = {
+  args: ReplayArgWarning[];
+  build: ReplayBuildWarning[];
+  unknownActions: Record<string, number>;
 };
