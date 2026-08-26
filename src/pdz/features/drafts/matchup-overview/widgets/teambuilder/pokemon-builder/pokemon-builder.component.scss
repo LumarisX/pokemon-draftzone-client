@@ -230,7 +230,7 @@ input {
     transition: color pdz.duration(fast) pdz.easing(standard);
 
     &::placeholder {
-      color: pdz.color(on-surface-variant);
+      color: pdz.color(on-surface-placeholder);
     }
 
     &:focus {

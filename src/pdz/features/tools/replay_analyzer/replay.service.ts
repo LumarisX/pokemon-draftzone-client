@@ -3,11 +3,8 @@ import { ApiService } from '@pdz/core/services/api.service';
 import {
   ReplayAnalysis,
   ReplayWarning,
+  ReplayWarnings,
 } from '@pdz/features/tools/replay_analyzer/replay.interface';
-import {
-  ReplayAnalysis as ReplayAnalysisV2,
-  ReplayWarnings as ReplayWarningsV2,
-} from '@pdz/features/tools/replay_analyzer-new/replay.interface';
 @Injectable({
   providedIn: 'root',
 })
@@ -25,8 +22,8 @@ export class ReplayService {
 
   analyzeReplayV2(replayURI: string) {
     return this.apiService.get<{
-      analysis: ReplayAnalysisV2;
-      warnings: ReplayWarningsV2;
+      analysis: ReplayAnalysis;
+      warnings: ReplayWarnings;
     }>(`replay/analyze/v2`, {
       params: { url: replayURI.trim() },
     });

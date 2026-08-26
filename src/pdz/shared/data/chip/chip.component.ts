@@ -74,6 +74,7 @@ export type ChipSize = 'xs' | 'sm' | 'md';
     '[attr.data-size]': 'size()',
     '[class.pdz-chip--selected]': 'selected()',
     '[class.pdz-chip--disabled]': 'disabled()',
+    '[class.pdz-chip--block]': 'block()',
   },
 })
 export class ChipComponent {
@@ -81,6 +82,8 @@ export class ChipComponent {
   variant = input<ChipVariant>('soft');
   size = input<ChipSize>('md');
   icon = input<string>();
+
+  block = input(false, { transform: booleanAttribute });
 
   clickable = input(false, { transform: booleanAttribute });
   actionLabel = input<string>();

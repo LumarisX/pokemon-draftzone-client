@@ -22,7 +22,7 @@ import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
 import {
   ReplayAnalysis,
   ReplayPlayer,
-} from '@pdz/features/tools/replay_analyzer-new/replay.interface';
+} from '@pdz/features/tools/replay_analyzer/replay.interface';
 import { League } from '../../league.interface';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 import { DisclosureComponent } from '@pdz/shared/layout/disclosure/disclosure.component';

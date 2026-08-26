@@ -127,7 +127,7 @@
   @include pdz.text(body-sm, $family: false);
 
   &::placeholder {
-    color: pdz.color(on-surface-variant);
+    color: pdz.color(on-surface-placeholder);
   }
 
   &:focus {

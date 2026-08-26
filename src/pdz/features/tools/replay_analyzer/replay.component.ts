@@ -1,148 +1,268 @@
-import { CommonModule } from '@angular/common';
-import { Component, DestroyRef, OnInit, inject } from '@angular/core';
+import { DecimalPipe, PercentPipe, TitleCasePipe } from '@angular/common';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  computed,
+  inject,
+  signal,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute, RouterModule } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
+import { Observable } from 'rxjs';
 
-import { ReplayChartComponent } from './replay-chart/replay-chart.component';
-import { ReplayAnalysis, ReplayPlayer } from './replay.interface';
-import { ReplayService } from './replay.service';
+import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
+import { CardComponent } from '@pdz/shared/data/card/card.component';
+import { ChipComponent } from '@pdz/shared/data/chip/chip.component';
+import { SkeletonComponent } from '@pdz/shared/data/skeleton/skeleton.component';
+import { DialogService } from '@pdz/shared/dialogs/dialog/dialog.service';
+import { EmptyStateComponent } from '@pdz/shared/feedback/empty-state/empty-state.component';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
+import { FieldComponent } from '@pdz/shared/inputs/field/field.component';
+import { InputDirective } from '@pdz/shared/inputs/field/input.directive';
+import { SlideToggleComponent } from '@pdz/shared/inputs/slide-toggle/slide-toggle.component';
 import { PageComponent } from '@pdz/shared/layout/page/page.component';
-import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
+import { WidgetComponent } from '@pdz/shared/layout/widget/widget.component';
+import { TooltipDirective } from '@pdz/shared/tooltip/tooltip.directive';
+
+import { ReplayChartComponent } from './replay-chart/replay-chart.component';
+import {
+  ReplayHistoryEntry,
+  ReplayHistoryService,
+} from './replay-history.service';
+import {
+  ReplayAnalysis,
+  ReplayAnalyzerVersion,
+  ReplayPlayer,
+} from './replay.interface';
+import { ReplayService } from './replay.service';
+
+const DETAILS_STORAGE_KEY = 'pdz.replayAnalyzer.showAdvancedDetails';
+
+type ReplayStatus = 'idle' | 'loading' | 'ready' | 'error';
+
+type PlayerView = ReplayPlayer & {
+  killsMismatch: boolean;
+  deathsMismatch: boolean;
+};
 
 @Component({
   selector: 'pdz-replay-analyzer',
   templateUrl: './replay.component.html',
   styleUrls: ['./replay.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    CommonModule,
-    RouterModule,
+    DecimalPipe,
+    PercentPipe,
+    TitleCasePipe,
     FormsModule,
-    IconComponent,
-    SpriteComponent,
-    ReplayChartComponent, PageComponent,
     ButtonComponent,
+    CardComponent,
+    ChipComponent,
+    EmptyStateComponent,
+    FieldComponent,
+    IconComponent,
+    InputDirective,
+    PageComponent,
+    ReplayChartComponent,
+    SkeletonComponent,
+    SlideToggleComponent,
+    SpriteComponent,
+    TooltipDirective,
+    WidgetComponent,
   ],
 })
-export class ReplayComponent implements OnInit {
-  private readonly advancedDetailsStorageKey =
-    'pdz.replayAnalyzer.showAdvancedDetails';
-  private replayService = inject(ReplayService);
-  private route = inject(ActivatedRoute);
-  private destroyRef = inject(DestroyRef);
+export class ReplayComponent {
+  private readonly replayService = inject(ReplayService);
+  private readonly history = inject(ReplayHistoryService);
+  private readonly dialog = inject(DialogService);
+  private readonly route = inject(ActivatedRoute);
+  private readonly destroyRef = inject(DestroyRef);
 
-  private _replayURI = '';
-  replayData?: ReplayAnalysis;
-  analyzed = true;
-  showAdvancedDetails = false;
-  analyzedReplayURI = '';
+  protected readonly historyEntries = this.history.entries;
+  protected readonly historyFilter = signal('');
 
-  get replayURI(): string {
-    return this._replayURI;
-  }
+  protected readonly visibleHistory = computed(() => {
+    const term = this.historyFilter().trim().toLowerCase();
+    const entries = this.historyEntries();
+    if (!term) {
+      return entries;
+    }
+    return entries.filter((entry) =>
+      [entry.id, ...entry.players].some((field) =>
+        field.toLowerCase().includes(term),
+      ),
+    );
+  });
 
-  set replayURI(value: string) {
-    this.analyzed = false;
-    this._replayURI = value;
-  }
+  private readonly version: ReplayAnalyzerVersion =
+    this.route.snapshot.data['version'] === 'v2' ? 'v2' : 'v1';
 
-  ngOnInit(): void {
-    this.showAdvancedDetails = this.loadAdvancedDetailsPreference();
+  protected readonly replayURI = signal('');
+  protected readonly analyzedURI = signal('');
+  protected readonly status = signal<ReplayStatus>('idle');
+  protected readonly showDetails = signal(readDetailsPreference());
 
+  private readonly analysis = signal<ReplayAnalysis | undefined>(undefined);
+
+  protected readonly loading = computed(() => this.status() === 'loading');
+
+  protected readonly skeletonStats = Array.from({ length: 4 });
+  protected readonly skeletonPlayers = Array.from({ length: 2 });
+  protected readonly skeletonTeam = Array.from({ length: 6 });
+
+  protected readonly canAnalyze = computed(() => {
+    const uri = this.replayURI().trim();
+    if (!uri || this.loading()) {
+      return false;
+    }
+    return this.status() !== 'ready' || uri !== this.analyzedURI();
+  });
+
+  protected readonly summary = computed(() => {
+    const analysis = this.analysis();
+    if (!analysis) {
+      return undefined;
+    }
+    const seconds = analysis.gameTime;
+    return {
+      format: analysis.gametype,
+      generation: analysis.genNum,
+      turns: analysis.turns,
+      duration: `${Math.floor(seconds / 60)}m ${Math.floor(seconds % 60)}s`,
+    };
+  });
+
+  protected readonly players = computed<PlayerView[]>(() => {
+    const roster = this.analysis()?.players ?? [];
+    return roster.map((player, index) => {
+      const others = roster.filter((_, otherIndex) => otherIndex !== index);
+      const otherDeaths = others.reduce((sum, p) => sum + p.total.deaths, 0);
+      const otherKills = others.reduce((sum, p) => sum + p.total.kills, 0);
+      return {
+        ...player,
+        killsMismatch: player.total.kills !== otherDeaths,
+        deathsMismatch: player.total.deaths !== otherKills,
+      };
+    });
+  });
+
+  protected readonly events = computed(() => this.analysis()?.events ?? []);
+
+  protected readonly chartPlayers = computed(
+    () => this.analysis()?.players ?? [],
+  );
+
+  constructor() {
     this.route.queryParams
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((params) => {
-        if ('replay' in params && typeof params['replay'] === 'string') {
-          this.replayURI = decodeURIComponent(params['replay']);
+        const replay = params['replay'];
+        if (typeof replay === 'string') {
+          this.replayURI.set(decodeURIComponent(replay));
           this.analyze();
         }
       });
   }
 
-  analyze(): void {
-    const replayURI = this.replayURI.trim();
-    if (!replayURI) {
-      this.analyzed = false;
-      this.replayData = undefined;
+  protected analyze(): void {
+    this.run(this.replayURI().trim());
+  }
+
+  protected load(entry: ReplayHistoryEntry): void {
+    this.replayURI.set(entry.uri);
+    this.run(entry.uri);
+  }
+
+  protected forget(entry: ReplayHistoryEntry): void {
+    this.history.remove(entry.id);
+  }
+
+  protected async clearHistory(): Promise<void> {
+    const count = this.historyEntries().length;
+    const confirmed = await this.dialog.confirm('Clear analyzed replays?', {
+      message: `This forgets all ${count} replays in the list. The replays themselves are not affected.`,
+      confirmLabel: 'Clear',
+      confirmColor: 'danger',
+    });
+
+    if (confirmed) {
+      this.history.clear();
+      this.historyFilter.set('');
+    }
+  }
+
+  protected selectOnFocus(event: Event): void {
+    const input = event.target as HTMLInputElement | null;
+    if (input?.value) {
+      input.select();
+    }
+  }
+
+  protected selectOnPointerDown(event: PointerEvent): void {
+    const input = event.currentTarget as HTMLInputElement;
+    if (!input.value || input === document.activeElement) {
+      return;
+    }
+    event.preventDefault();
+    input.focus();
+    input.select();
+  }
+
+  private run(replayURI: string): void {
+    if (!replayURI || this.loading()) {
       return;
     }
 
-    this.analyzed = true;
-    this.analyzedReplayURI = replayURI;
-    this._replayURI = '';
-    this.replayService
-      .analyzeReplay(replayURI)
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe({
-        next: (data) => {
-          this.replayData = data.analysis;
-        },
-        error: () => {
-          this.replayData = undefined;
-          this.analyzed = false;
-        },
-      });
-  }
+    this.analyzedURI.set(replayURI);
 
-  toggleAdvancedDetails(): void {
-    this.showAdvancedDetails = !this.showAdvancedDetails;
-    this.storeAdvancedDetailsPreference(this.showAdvancedDetails);
-  }
-
-  private loadAdvancedDetailsPreference(): boolean {
-    if (typeof window === 'undefined') {
-      return false;
-    }
-
-    try {
-      return (
-        window.localStorage.getItem(this.advancedDetailsStorageKey) === 'true'
-      );
-    } catch {
-      return false;
-    }
-  }
-
-  private storeAdvancedDetailsPreference(enabled: boolean): void {
-    if (typeof window === 'undefined') {
+    const cached = this.history.cached(replayURI);
+    if (cached) {
+      this.analysis.set(cached);
+      this.status.set('ready');
       return;
     }
 
-    try {
-      window.localStorage.setItem(
-        this.advancedDetailsStorageKey,
-        String(enabled),
-      );
-    } catch {
-      // Ignore storage errors to keep the toggle functional.
-    }
+    this.status.set('loading');
+
+    const analysis$: Observable<{ analysis: ReplayAnalysis }> =
+      this.version === 'v2'
+        ? this.replayService.analyzeReplayV2(replayURI)
+        : this.replayService.analyzeReplay(replayURI);
+
+    analysis$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe({
+      next: ({ analysis }) => {
+        this.analysis.set(analysis);
+        this.status.set('ready');
+        this.history.record(replayURI, analysis);
+      },
+      error: () => {
+        this.analysis.set(undefined);
+        this.status.set('error');
+      },
+    });
   }
 
-  remainingSeconds(seconds: number): number {
-    return Math.floor(seconds % 60);
+  protected setShowDetails(enabled: boolean): void {
+    this.showDetails.set(enabled);
+    writeDetailsPreference(enabled);
   }
+}
 
-  toMinutes(seconds: number): number {
-    return Math.floor(seconds / 60);
+function readDetailsPreference(): boolean {
+  try {
+    return localStorage.getItem(DETAILS_STORAGE_KEY) === 'true';
+  } catch {
+    return false;
   }
+}
 
-  validateKills(player: ReplayPlayer) {
-    return (
-      player.total.kills ===
-      this.replayData?.players
-        .filter((p) => p.username !== player.username)
-        .reduce((sum, p) => sum + p.total.deaths, 0)
-    );
-  }
-
-  validateDeaths(player: ReplayPlayer) {
-    return (
-      player.total.deaths ===
-      this.replayData?.players
-        .filter((p) => p.username !== player.username)
-        .reduce((sum, p) => sum + p.total.kills, 0)
-    );
+function writeDetailsPreference(enabled: boolean): void {
+  try {
+    localStorage.setItem(DETAILS_STORAGE_KEY, String(enabled));
+  } catch {
+    return;
   }
 }

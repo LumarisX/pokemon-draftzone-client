@@ -126,6 +126,16 @@ $sizes: (
   opacity: 0.6;
 }
 
+:host(.pdz-chip--block) {
+  display: flex;
+  width: 100%;
+
+  .pdz-chip__action {
+    flex: 1 1 auto;
+    justify-content: center;
+  }
+}
+
 .pdz-chip__action {
   display: inline-flex;
   align-items: center;

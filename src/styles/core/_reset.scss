@@ -202,13 +202,13 @@ textarea {
 
 input::-moz-placeholder, textarea::-moz-placeholder {
   opacity: 1;
-  color: pdz.color(on-surface-variant);
+  color: pdz.color(on-surface-placeholder);
 }
 
 input::placeholder,
 textarea::placeholder {
   opacity: 1;
-  color: pdz.color(on-surface-variant);
+  color: pdz.color(on-surface-placeholder);
 }
 
 button,

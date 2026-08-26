@@ -129,7 +129,7 @@
     transition: border-color pdz.duration(base) pdz.easing(standard);
 
     &::placeholder {
-      color: pdz.color(on-surface-variant);
+      color: pdz.color(on-surface-placeholder);
     }
 
     &:focus {
