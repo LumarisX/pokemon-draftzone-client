@@ -1,4 +1,9 @@
-import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  signal,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { nameList } from '@pdz/shared/data/namedex';
 import { SpriteImageComponent } from '@pdz/shared/images/sprite-image/sprite-image.component';
@@ -9,7 +14,6 @@ import { InputDirective } from '@pdz/shared/inputs/field/input.directive';
 import { PageComponent } from '@pdz/shared/layout/page/page.component';
 import { SegmentedComponent } from '@pdz/shared/inputs/segmented/segmented.component';
 import { SegmentedOptionComponent } from '@pdz/shared/inputs/segmented/segmented-option.component';
-import { TooltipDirective } from '@pdz/shared/tooltip/tooltip.directive';
 
 type Filter = 'all' | 'fallback' | 'missing';
 
@@ -20,7 +24,6 @@ type Filter = 'all' | 'fallback' | 'missing';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     SpriteImageComponent,
-    TooltipDirective,
     PageComponent,
     ChoiceDirective,
     CheckComponent,

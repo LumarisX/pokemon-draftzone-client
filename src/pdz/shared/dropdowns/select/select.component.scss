@@ -12,10 +12,10 @@
   width: 100%;
   min-height: 2.25rem;
   padding: pdz.space(xs) pdz.space(md);
-  border: 1px solid pdz.color(outline);
+  border: 1px solid var(--pdz-select-border, #{pdz.color(outline)});
   border-radius: pdz.shape(corner-sm);
-  background-color: pdz.color(surface-container-lowest);
-  color: pdz.color(on-surface);
+  background-color: var(--pdz-select-surface, #{pdz.color(surface-container)});
+  color: var(--pdz-select-on-surface, #{pdz.color(on-surface)});
   cursor: pointer;
   text-align: left;
   text-transform: inherit;

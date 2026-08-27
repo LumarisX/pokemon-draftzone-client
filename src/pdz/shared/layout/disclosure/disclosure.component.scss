@@ -20,7 +20,9 @@
 }
 
 .pdz-disclosure__header {
+  position: relative;
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: pdz.space(xs);
   width: 100%;
@@ -84,12 +86,23 @@
 .pdz-disclosure__trailing {
   flex-shrink: 0;
   display: inline-flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: pdz.space(xs);
+  max-width: 100%;
 
   &:not(:empty) {
     padding-inline-end: pdz.space(md);
   }
+}
+
+:host([data-trailing="grow"]) .pdz-disclosure__toggle {
+  flex: 0 1 auto;
+}
+
+:host([data-trailing="grow"]) .pdz-disclosure__trailing {
+  flex: 1 1 auto;
+  min-width: 0;
 }
 
 .pdz-disclosure__panel {

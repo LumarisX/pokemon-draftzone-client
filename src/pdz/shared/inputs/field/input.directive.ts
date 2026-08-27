@@ -21,7 +21,7 @@ export class InputDirective {
 
   protected readonly field = inject(FieldComponent, { optional: true });
 
-  size = input<'sm' | 'md'>('md');
+  size = input<'xs' | 'sm' | 'md'>('md');
   invalid = input<boolean | null>(null);
 
   protected get showInvalid(): boolean {

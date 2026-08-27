@@ -71,6 +71,7 @@ let nextDisclosureId = 0;
     class: 'pdz-disclosure',
     '[attr.data-tone]': 'tone()',
     '[attr.data-chevron]': 'chevronPosition()',
+    '[attr.data-trailing]': 'trailingGrow() ? "grow" : null',
     '[class.pdz-disclosure--open]': 'open()',
   },
 })
@@ -81,6 +82,7 @@ export class DisclosureComponent {
   tone = input<DisclosureTone>('plain');
   chevronPosition = input<DisclosureChevronPosition>('start');
   disabled = input(false, { transform: booleanAttribute });
+  trailingGrow = input(false, { transform: booleanAttribute });
 
   private readonly id = nextDisclosureId++;
   protected readonly headerId = `pdz-disclosure-header-${this.id}`;
