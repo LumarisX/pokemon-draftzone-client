@@ -1,553 +1,517 @@
-import { CommonModule } from '@angular/common';
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject, signal } from '@angular/core';
 import {
-  AbstractControl,
   FormArray,
   FormBuilder,
+  FormControl,
   FormGroup,
   ReactiveFormsModule,
 } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { DRAFT_OVERVIEW_PATH } from '@pdz/core/route-paths';
-import { DraftPokemon } from '../../draft.model';
-import { Matchup } from '../../matchup-overview/matchup.model';
-import { DraftService } from '../../draft-overview/draft.service';
-import { ReplayService } from '../../../tools/replay_analyzer/replay.service';
+import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
-import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
-import { ReplayAnalysis } from '../../../tools/replay_analyzer/replay.interface';
-import { ChoiceDirective } from '@pdz/shared/inputs/choice/choice.directive';
-import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
+import { InputDirective } from '@pdz/shared/inputs/field/input.directive';
+import { SelectOptionComponent } from '@pdz/shared/dropdowns/select/select-option.component';
+import { SelectComponent } from '@pdz/shared/dropdowns/select/select.component';
+import { ScoreEntryGameComponent } from '@pdz/shared/widgets/score-entry/score-entry-game.component';
+import {
+  applyReplayToGame,
+  buildGameEntry,
+  rosterPayload,
+  matchWins,
+} from '@pdz/shared/widgets/score-entry/score-entry.form';
+import {
+  ScoreEntryGameForm,
+  ScoreEntryGameSeed,
+  ScoreEntryPokemon,
+  ScoreEntryRoster,
+  ScoreEntrySide,
+} from '@pdz/shared/widgets/score-entry/score-entry.model';
+import { Subject, takeUntil } from 'rxjs';
+import { ReplayService } from '@pdz/features/tools/replay_analyzer/replay.service';
+import { DraftService } from '../../draft-overview/draft.service';
+import { DraftPokemon } from '../../draft.model';
+import {
+  ForfeitSide,
+  MatchSide,
+  Matchup,
+  Match,
+  MatchTeam,
+  ScorePatch,
+  MatchStatTuple,
+} from '../../matchup-overview/matchup.model';
 
-type SideMonValue = {
-  pokemon: DraftPokemon;
-  kills: number;
-  fainted: number;
-  indirect: number;
-  brought: number;
-};
+const SIDE_OF: Record<ScoreEntrySide, MatchSide> = { side1: 'a', side2: 'b' };
 
 @Component({
-  selector: 'pdz-opponent-form',
+  selector: 'pdz-opponent-score',
   templateUrl: './opponent-score.component.html',
   styleUrl: './opponent-score.component.scss',
   imports: [
-    CommonModule,
     RouterModule,
-    SpriteComponent,
     ReactiveFormsModule,
-    IconComponent,
-    LoadingComponent,
-    ChoiceDirective,
     ButtonComponent,
+    IconComponent,
+    InputDirective,
+    LoadingComponent,
+    ScoreEntryGameComponent,
+    SelectComponent,
+    SelectOptionComponent,
   ],
 })
-export class OpponentScoreComponent implements OnInit {
+export class OpponentScoreComponent implements OnInit, OnDestroy {
   private fb = inject(FormBuilder);
   private draftService = inject(DraftService);
   private replayService = inject(ReplayService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
+  private readonly destroy$ = new Subject<void>();
 
-  teamId: string = '';
-  matchupId: string = '';
-  title: string = 'New Matchup';
-  matchup!: Matchup;
-  scoreForm!: FormGroup;
-  selectedMatch = 0;
   readonly draftPath = DRAFT_OVERVIEW_PATH;
-  readonly sides: ('a' | 'b')[] = ['a', 'b'];
+  readonly sides: ScoreEntrySide[] = ['side1', 'side2'];
+
+  readonly accents: Record<ScoreEntrySide, 'primary' | 'secondary'> = {
+    side1: 'primary',
+    side2: 'secondary',
+  };
+
+  teamId = '';
+  matchupId = '';
+  matchup?: Matchup;
+  pokedex: Record<string, ScoreEntryPokemon> = {};
+
+  form?: FormGroup<{
+    aTeamPaste: FormControl<string>;
+    bTeamPaste: FormControl<string>;
+    games: FormArray<ScoreEntryGameForm>;
+    matchScore1: FormControl<number>;
+    matchScore2: FormControl<number>;
+    matchScoreLocked: FormControl<boolean>;
+    matchWinner: FormControl<ScoreEntrySide | null>;
+    forfeit1: FormControl<boolean>;
+    forfeit2: FormControl<boolean>;
+  }>;
+
+  saving = signal(false);
+  saveError = signal<string | null>(null);
+  analyzingIndex = signal<number | null>(null);
+  analysisError = signal<string | null>(null);
+  openGames = signal<number[]>([0]);
+
+  private rosterIds: Record<ScoreEntrySide, string[]> = {
+    side1: [],
+    side2: [],
+  };
+  private formeLookup = new Map<string, string>();
 
   ngOnInit(): void {
     this.teamId = this.route.parent!.snapshot.paramMap.get('teamId') || '';
-    this.route.queryParams.subscribe((params) => {
-      if ('matchup' in params) {
+    this.route.queryParams
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((params) => {
+        if (!('matchup' in params)) return;
         this.matchupId = params['matchup'];
         this.draftService
           .getMatchup(this.matchupId, this.teamId)
+          .pipe(takeUntil(this.destroy$))
           .subscribe((data) => {
             this.matchup = data;
-            this.initForm();
+            this.initForm(data);
           });
-      }
-    });
-  }
-
-  private initForm(): void {
-    let matchArray = [];
-    if (this.matchup.matches.length === 0) {
-      let matchGroup = this.fb.group({
-        aTeam: this.sideForm(this.matchup.aTeam.team),
-        bTeam: this.sideForm(this.matchup.bTeam.team),
-        replay: '',
-        winner: '',
-        analyzed: true,
       });
-      matchGroup.get('replay')?.valueChanges.subscribe((replay) => {
-        if (matchGroup.get('analyzed')?.value) {
-          matchGroup.patchValue({ analyzed: false });
-        }
-      });
-      matchArray.push(matchGroup);
-    } else {
-      for (let i in this.matchup.matches) {
-        let matchGroup = this.fb.group({
-          aTeam: this.sideForm(
-            this.matchup.aTeam.team,
-            this.matchup.matches[i].aTeam,
-          ),
-          bTeam: this.sideForm(
-            this.matchup.bTeam.team,
-            this.matchup.matches[i].bTeam,
-          ),
-          replay: this.matchup.matches[i].replay,
-          winner: this.matchup.matches[i].winner || '',
-          analyzed: true,
-        });
-        matchGroup.get('replay')?.valueChanges.subscribe((replay) => {
-          if (matchGroup.get('analyzed')?.value) {
-            matchGroup.patchValue({ analyzed: false });
-          }
-        });
-        matchArray.push(matchGroup);
-      }
-    }
-    this.scoreForm = this.fb.group({
-      aTeamPaste: this.matchup.aTeam.paste || '',
-      bTeamPaste: this.matchup.bTeam.paste || '',
-      matches: this.fb.array(matchArray),
-    });
   }
 
-  get matchesFormArray(): FormArray {
-    return this.scoreForm.get('matches') as FormArray;
+  ngOnDestroy(): void {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
-  get selectedMatchForm(): FormGroup {
-    return this.matchesFormArray.controls[this.selectedMatch] as FormGroup;
-  }
+  private initForm(matchup: Matchup): void {
+    this.indexTeams(matchup);
 
-  private sideForm(
-    team: DraftPokemon[],
-    side: {
-      stats: [string, any][];
-    } = { stats: [] },
-  ): FormGroup {
-    let stats = Object.fromEntries(side.stats);
-    let teamGroup = team.map((pokemon: DraftPokemon) => {
-      let monGroup = this.fb.group({
-        pokemon: pokemon,
-        kills: [stats[pokemon.id]?.kills ?? 0],
-        fainted: [stats[pokemon.id]?.deaths ?? 0],
-        indirect: [stats[pokemon.id]?.indirect ?? 0],
-        brought: [stats[pokemon.id]?.brought ?? 0],
-      });
-      monGroup.get('fainted')?.valueChanges.subscribe((fainted) => {
-        if (monGroup.get('fainted')?.value) {
-          monGroup.patchValue({ brought: 1 });
-        }
-        let a = this.statCount(this.aTeamArray, ['fainted']);
-        let b = this.statCount(this.bTeamArray, ['fainted']);
-        if (a > b) {
-          this.setWinner('b');
-        } else if (a < b) {
-          this.setWinner('a');
-        } else {
-          this.setWinner('');
-        }
-      });
-      monGroup.get('kills')?.valueChanges.subscribe((kills) => {
-        if (monGroup.get('kills')?.value) {
-          monGroup.patchValue({ brought: 1 });
-        }
-      });
-      monGroup.get('indirect')?.valueChanges.subscribe((indirect) => {
-        if (monGroup.get('indirect')?.value) {
-          monGroup.patchValue({ brought: 1 });
-        }
-      });
-      return monGroup;
-    });
-    return this.fb.group({
-      team: this.fb.array(teamGroup),
-    });
-  }
+    const games = matchup.matches.length
+      ? matchup.matches.map((match) => this.buildGame(this.seedFrom(match)))
+      : [this.buildGame()];
 
-  get aTeamArray(): FormArray {
-    return this.matchesFormArray.controls[this.selectedMatch].get(
-      'aTeam.team',
-    ) as FormArray;
-  }
+    const override = matchup.scoreOverride ?? null;
 
-  get bTeamArray(): FormArray {
-    return this.matchesFormArray.controls[this.selectedMatch].get(
-      'bTeam.team',
-    ) as FormArray;
-  }
-
-  statCount(teamArray: FormArray, controlNames: string[]) {
-    let total = 0;
-    for (let control of teamArray.controls) {
-      for (let name of controlNames) {
-        total += Number(control.get(name)?.value ?? 0);
-      }
-    }
-
-    return total;
-  }
-
-  /**
-   * Converts the reactive form value into the shape the score endpoint
-   * expects (ScorePatchDto). The form stores each side as
-   * `{ team: [{ pokemon, kills, fainted, indirect, brought }] }`, but the API
-   * wants `{ stats: [[pokemonId, { kills, deaths, indirect, brought }]], score }`.
-   */
-  private buildScorePayload() {
-    const value = this.scoreForm.value as {
-      aTeamPaste?: string;
-      bTeamPaste?: string;
-      matches: Array<{
-        aTeam: { team: SideMonValue[] };
-        bTeam: { team: SideMonValue[] };
-        replay?: string;
-        winner?: 'a' | 'b' | '';
-      }>;
-    };
-
-    return {
-      aTeamPaste: value.aTeamPaste ?? '',
-      bTeamPaste: value.bTeamPaste ?? '',
-      matches: value.matches.map((match) => {
-        const replay = match.replay?.trim();
-        return {
-          aTeam: this.buildSideStats(match.aTeam.team),
-          bTeam: this.buildSideStats(match.bTeam.team),
-          // `replay` has a minLength(1) constraint and is optional server-side.
-          ...(replay ? { replay } : {}),
-          // `winner` only accepts 'a' | 'b'; omit when undecided.
-          ...(match.winner ? { winner: match.winner } : {}),
-        };
+    this.form = this.fb.group({
+      aTeamPaste: this.fb.control(matchup.aTeam.paste ?? '', {
+        nonNullable: true,
       }),
-    };
+      bTeamPaste: this.fb.control(matchup.bTeam.paste ?? '', {
+        nonNullable: true,
+      }),
+      games: this.fb.array(games),
+      matchScore1: this.fb.control(override?.[0] ?? 0, { nonNullable: true }),
+      matchScore2: this.fb.control(override?.[1] ?? 0, { nonNullable: true }),
+      matchScoreLocked: this.fb.control(override !== null, {
+        nonNullable: true,
+      }),
+      matchWinner: this.fb.control<ScoreEntrySide | null>(
+        matchup.winnerOverride === 'a'
+          ? 'side1'
+          : matchup.winnerOverride === 'b'
+            ? 'side2'
+            : null,
+      ),
+      forfeit1: this.fb.control(
+        matchup.forfeitedBy === 'a' || matchup.forfeitedBy === 'both',
+        { nonNullable: true },
+      ),
+      forfeit2: this.fb.control(
+        matchup.forfeitedBy === 'b' || matchup.forfeitedBy === 'both',
+        { nonNullable: true },
+      ),
+    });
+
+    if (override === null) this.syncMatchScore();
+
+    this.form.controls.games.valueChanges
+      .pipe(takeUntil(this.destroy$))
+      .subscribe(() => this.syncMatchScore());
   }
 
-  private buildSideStats(team: SideMonValue[]): {
-    stats: [string, { kills: number; deaths: number; indirect: number; brought: number }][];
-    score: number;
-  } {
-    const broughtMons = team.filter((mon) => Number(mon.brought));
-    return {
-      stats: broughtMons.map((mon) => [
-        mon.pokemon.id,
-        {
-          kills: Number(mon.kills) || 0,
-          deaths: Number(mon.fainted) ? 1 : 0,
-          indirect: Number(mon.indirect) || 0,
-          brought: 1,
-        },
-      ]),
-      // Score is the number of Pokémon that were brought and did not faint,
-      // matching the server's alive-Pokémon count.
-      score: broughtMons.filter((mon) => !Number(mon.fainted)).length,
-    };
-  }
-
-  submit() {
-    this.draftService
-      .scoreMatchup(this.matchupId, this.teamId, this.buildScorePayload())
-      .subscribe({
-        next: (response) => {
-          console.log('Success!', response);
-          this.router.navigate(['/', this.draftPath, this.teamId]);
-        },
-        error: (error) => {
-          console.error('Error!', error);
-        },
+  private indexTeams(matchup: Matchup): void {
+    this.pokedex = {};
+    this.formeLookup = new Map();
+    const index = (team: DraftPokemon[]) => {
+      team.forEach((pokemon) => {
+        this.pokedex[pokemon.id] = pokemon;
+        this.formeLookup.set(pokemon.id, pokemon.id);
+        pokemon.draftFormes?.forEach((forme) =>
+          this.formeLookup.set(forme.id, pokemon.id),
+        );
       });
+      return team.map((pokemon) => pokemon.id);
+    };
+    this.rosterIds = {
+      side1: index(matchup.aTeam.team),
+      side2: index(matchup.bTeam.team),
+    };
   }
 
-  addMatch() {
-    let matchGroup = this.fb.group({
-      aTeam: this.sideForm(this.matchup.aTeam.team),
-      bTeam: this.sideForm(this.matchup.bTeam.team),
-      replay: '',
-      winner: '',
-      analyzed: true,
-    });
-    matchGroup.get('replay')?.valueChanges.subscribe((replay) => {
-      if (matchGroup.get('analyzed')?.value) {
-        matchGroup.patchValue({ analyzed: false });
-      }
-    });
-    this.matchesFormArray.push(matchGroup);
-    this.selectedMatch = this.matchesFormArray.length - 1;
+  private buildGame(seed?: ScoreEntryGameSeed): ScoreEntryGameForm {
+    return buildGameEntry(this.fb, this.rosterIds, seed);
   }
 
-  deleteMatch(index: number, event?: Event) {
-    event?.stopPropagation();
-    this.matchesFormArray.removeAt(index);
-    if (this.selectedMatch >= this.matchesFormArray.length) {
-      this.selectedMatch = this.matchesFormArray.length - 1;
+  private seedFrom(match: Match): ScoreEntryGameSeed {
+    return {
+      link: match.replay ?? '',
+      winner:
+        match.winner === 'a' ? 'side1' : match.winner === 'b' ? 'side2' : null,
+      side1Score: match.aTeam?.score,
+      side2Score: match.bTeam?.score,
+      side1: this.rosterFrom(match.aTeam),
+      side2: this.rosterFrom(match.bTeam),
+    };
+  }
+
+  private rosterFrom(team?: MatchTeam): ScoreEntryRoster {
+    return (team?.stats ?? []).reduce<ScoreEntryRoster>((acc, [id, stat]) => {
+      acc[id] = {
+        kills: {
+          direct: stat.kills ?? 0,
+          indirect: stat.indirect ?? 0,
+          teammate: stat.teammate ?? 0,
+        },
+        status:
+          stat.status ??
+          (stat.deaths ? 'fainted' : stat.brought ? 'survived' : 'brought'),
+      };
+      return acc;
+    }, {});
+  }
+
+  get games(): FormArray<ScoreEntryGameForm> {
+    return this.form!.controls.games;
+  }
+
+  get gameControls(): ScoreEntryGameForm[] {
+    return this.games.controls;
+  }
+
+  teamName(side: ScoreEntrySide): string {
+    const matchup = this.matchup;
+    if (!matchup) return '';
+    return side === 'side1' ? matchup.aTeam.teamName : matchup.bTeam.teamName;
+  }
+
+  get sideNames(): Record<ScoreEntrySide, string> {
+    return { side1: this.teamName('side1'), side2: this.teamName('side2') };
+  }
+
+  addGame(): void {
+    this.games.push(this.buildGame());
+    this.openGames.set([this.games.length - 1]);
+    this.syncMatchScore();
+  }
+
+  removeGame(index: number): void {
+    this.games.removeAt(index);
+    if (!this.games.length) this.games.push(this.buildGame());
+    this.openGames.update((open) =>
+      open.filter((i) => i !== index).map((i) => (i > index ? i - 1 : i)),
+    );
+    this.syncMatchScore();
+  }
+
+  isGameOpen(index: number): boolean {
+    return this.openGames().includes(index);
+  }
+
+  setGameOpen(index: number, open: boolean): void {
+    this.openGames.update((current) =>
+      open
+        ? [...new Set([...current, index])]
+        : current.filter((i) => i !== index),
+    );
+  }
+
+  inferredMatchScore(): [number, number] {
+    const games = this.gameControls;
+    if (games.length === 1) {
+      return [
+        games[0].controls.side1Score.value,
+        games[0].controls.side2Score.value,
+      ];
+    }
+    return [matchWins(games, 'side1'), matchWins(games, 'side2')];
+  }
+
+  matchScore(side: ScoreEntrySide): number {
+    const form = this.form;
+    if (!form) return 0;
+    if (form.controls.matchScoreLocked.value) {
+      return side === 'side1'
+        ? form.controls.matchScore1.value
+        : form.controls.matchScore2.value;
+    }
+    const inferred = this.inferredMatchScore();
+    return side === 'side1' ? inferred[0] : inferred[1];
+  }
+
+  isMatchScoreLocked(): boolean {
+    return !!this.form?.controls.matchScoreLocked.value;
+  }
+
+  matchScoreControl(side: ScoreEntrySide): FormControl<number> {
+    return side === 'side1'
+      ? this.form!.controls.matchScore1
+      : this.form!.controls.matchScore2;
+  }
+
+  pasteControl(side: ScoreEntrySide): FormControl<string> {
+    return side === 'side1'
+      ? this.form!.controls.aTeamPaste
+      : this.form!.controls.bTeamPaste;
+  }
+
+  onMatchScoreInput(event: Event): void {
+    if ((event.target as HTMLInputElement).value.trim() === '') return;
+    this.form?.controls.matchScoreLocked.setValue(true);
+  }
+
+  onMatchScoreBlur(side: ScoreEntrySide): void {
+    const value = this.matchScoreControl(side).value;
+    if (value === null || value === undefined || Number.isNaN(Number(value))) {
+      this.resetMatchScore();
     }
   }
 
-  isBrought(pokemonForm: AbstractControl<any, any>): boolean {
-    return !!pokemonForm.value.brought;
+  resetMatchScore(): void {
+    this.form?.controls.matchScoreLocked.setValue(false);
+    this.syncMatchScore();
   }
 
-  switchMatch(index: number) {
-    this.selectedMatch = index;
+  syncMatchScore(): void {
+    const form = this.form;
+    if (!form || form.controls.matchScoreLocked.value) return;
+    const [side1, side2] = this.inferredMatchScore();
+    form.controls.matchScore1.setValue(side1);
+    form.controls.matchScore2.setValue(side2);
   }
 
-  teamArray(side: 'a' | 'b'): FormArray {
-    return side === 'a' ? this.aTeamArray : this.bTeamArray;
-  }
-
-  teamName(side: 'a' | 'b'): string {
-    return side === 'a'
-      ? this.matchup.aTeam.teamName
-      : this.matchup.bTeam.teamName;
-  }
-
-  killCaution(side: 'a' | 'b'): boolean {
-    return side === 'a' ? this.aKillCaution() : this.bKillCaution();
-  }
-
-  deathCaution(side: 'a' | 'b'): boolean {
-    return side === 'a' ? this.bKillCaution() : this.aKillCaution();
-  }
-
-  analyzeReplay() {
-    const selectedMatchForm = this.selectedMatchForm;
-    const replayURI = selectedMatchForm.get('replay')?.value;
-    if (!replayURI) return;
-    selectedMatchForm.patchValue({ analyzed: true });
-    this.replayService.analyzeReplay(replayURI).subscribe({
-      next: (data) => {
-        const replayData = data.analysis;
-        const teamMapping = this.resolveReplayTeamMapping(replayData);
-        if (!teamMapping) {
-          console.warn(
-            'Could not confidently map replay players to draft sides.',
-          );
-          selectedMatchForm.patchValue({ analyzed: false });
-          return;
-        }
-
-        const aTeamArray = this.getTeamArray(selectedMatchForm, 'aTeam');
-        const bTeamArray = this.getTeamArray(selectedMatchForm, 'bTeam');
-
-        this.resetTeamStats(aTeamArray);
-        this.resetTeamStats(bTeamArray);
-
-        const aPlayer = replayData.players[teamMapping.aPlayerIndex];
-        const bPlayer = replayData.players[teamMapping.bPlayerIndex];
-
-        this.applyReplayStats(aTeamArray, aPlayer.team);
-        this.applyReplayStats(bTeamArray, bPlayer.team);
-
-        if (aPlayer.win && !bPlayer.win) {
-          selectedMatchForm.patchValue({ winner: 'a' });
-        } else if (bPlayer.win && !aPlayer.win) {
-          selectedMatchForm.patchValue({ winner: 'b' });
-        } else {
-          selectedMatchForm.patchValue({ winner: '' });
-        }
-      },
-      error: () => {
-        selectedMatchForm.patchValue({ analyzed: false });
-      },
-    });
-  }
-
-  private resolveReplayTeamMapping(replayData: ReplayAnalysis): {
-    aPlayerIndex: number;
-    bPlayerIndex: number;
-  } | null {
-    if (replayData.players.length !== 2) {
-      return null;
-    }
-
-    const aDraftFormes = this.getSideDraftFormes(this.matchup.aTeam.team);
-    const bDraftFormes = this.getSideDraftFormes(this.matchup.bTeam.team);
-
-    const p0ToA = this.countFormeMatches(replayData.players[0], aDraftFormes);
-    const p0ToB = this.countFormeMatches(replayData.players[0], bDraftFormes);
-    const p1ToA = this.countFormeMatches(replayData.players[1], aDraftFormes);
-    const p1ToB = this.countFormeMatches(replayData.players[1], bDraftFormes);
-
-    const directAssignmentScore = p0ToA + p1ToB;
-    const swappedAssignmentScore = p0ToB + p1ToA;
-
-    if (directAssignmentScore > swappedAssignmentScore) {
-      return { aPlayerIndex: 0, bPlayerIndex: 1 };
-    }
-    if (swappedAssignmentScore > directAssignmentScore) {
-      return { aPlayerIndex: 1, bPlayerIndex: 0 };
-    }
-
-    if (p0ToA > p0ToB) {
-      return { aPlayerIndex: 0, bPlayerIndex: 1 };
-    }
-    if (p0ToB > p0ToA) {
-      return { aPlayerIndex: 1, bPlayerIndex: 0 };
-    }
-    if (p1ToA > p1ToB) {
-      return { aPlayerIndex: 1, bPlayerIndex: 0 };
-    }
-    if (p1ToB > p1ToA) {
-      return { aPlayerIndex: 0, bPlayerIndex: 1 };
-    }
-
+  inferredMatchWinner(): ScoreEntrySide | null {
+    const [side1, side2] = [this.matchScore('side1'), this.matchScore('side2')];
+    if (side1 > side2) return 'side1';
+    if (side2 > side1) return 'side2';
     return null;
   }
 
-  private getSideDraftFormes(team: DraftPokemon[]): Set<string> {
-    return new Set(
-      team.flatMap((pokemon) => this.getPokemonDraftFormes(pokemon)),
-    );
+  matchWinner(): ScoreEntrySide | null {
+    const forfeited = this.forfeitedBy();
+    if (forfeited === 'both') return null;
+    if (forfeited === 'a') return 'side2';
+    if (forfeited === 'b') return 'side1';
+    return this.form?.controls.matchWinner.value ?? this.inferredMatchWinner();
   }
 
-  private getPokemonDraftFormes(pokemon: DraftPokemon): string[] {
-    const formeCandidates = [
-      pokemon.id,
-      ...(pokemon.draftFormes?.map((forme) => forme.id) ?? []),
-    ];
-    return formeCandidates.filter((id) => !!id);
+  isMatchWinnerOverridden(): boolean {
+    return this.form?.controls.matchWinner.value !== null;
   }
 
-  private countFormeMatches(
-    replayPlayer: ReplayAnalysis['players'][number],
-    draftFormes: Set<string>,
-  ): number {
-    const replayFormes = this.getSideDraftFormes(replayPlayer.team);
-    let matches = 0;
-    draftFormes.forEach((draftForme) => {
-      const foundMatch = [...replayFormes].some((replayForme) =>
-        draftForme.startsWith(replayForme),
-      );
-      if (foundMatch) {
-        matches++;
-      }
-    });
-    return matches;
-  }
-
-  private getTeamArray(
-    matchForm: FormGroup,
-    side: 'aTeam' | 'bTeam',
-  ): FormArray {
-    return matchForm.get(`${side}.team`) as FormArray;
-  }
-
-  private resetTeamStats(teamArray: FormArray): void {
-    teamArray.controls.forEach((control) => {
-      control.patchValue(
-        {
-          brought: 0,
-          kills: 0,
-          indirect: 0,
-          fainted: 0,
-        },
-        { emitEvent: false },
-      );
-    });
-  }
-
-  private applyReplayStats(
-    teamArray: FormArray,
-    replayTeam: ReplayAnalysis['players'][number]['team'],
-  ): void {
-    replayTeam.forEach((replayMon) => {
-      const teamControl = teamArray.controls.find((control) => {
-        const draftMon = control.get('pokemon')?.value as
-          | DraftPokemon
-          | undefined;
-        if (!draftMon) {
-          return false;
-        }
-        const draftFormes = this.getPokemonDraftFormes(draftMon);
-        console.log(replayMon.id, replayMon.formes);
-        return (
-          draftFormes.includes(replayMon.id) ||
-          replayMon.formes?.some((replayForme) =>
-            draftFormes.some((draftForme) => draftForme === replayForme),
-          )
-        );
-      });
-
-      if (!teamControl) {
-        return;
-      }
-
-      teamControl.patchValue(
-        {
-          brought:
-            replayMon.status === 'survived' || replayMon.status === 'fainted'
-              ? 1
-              : 0,
-          kills: replayMon.kills.direct,
-          indirect: replayMon.kills.indirect,
-          fainted: replayMon.status === 'fainted' ? 1 : 0,
-        },
-        { emitEvent: false },
-      );
-    });
-  }
-
-  private setWinner(player: 'a' | 'b' | '') {
-    this.selectedMatchForm.patchValue({ winner: player });
-  }
-
-  changeWinner(player: 'a' | 'b' | '') {
-    if (this.selectedMatchForm.get('winner')?.value == player) {
-      this.selectedMatchForm.patchValue({ winner: '' });
-    } else {
-      this.selectedMatchForm.patchValue({ winner: player });
+  setMatchWinner(side: ScoreEntrySide | null): void {
+    if (side && !this.isForfeit()) {
+      this.form?.controls.matchWinner.setValue(side);
     }
   }
 
-  isWinner(player: 'a' | 'b'): boolean {
-    return this.selectedMatchForm.get('winner')?.value == player;
+  clearMatchWinner(): void {
+    this.form?.controls.matchWinner.setValue(null);
   }
 
-  isSelectedMatch(index: number): boolean {
-    return this.selectedMatch === index;
+  forfeitControl(side: ScoreEntrySide): FormControl<boolean> {
+    return side === 'side1'
+      ? this.form!.controls.forfeit1
+      : this.form!.controls.forfeit2;
   }
 
-  isAnalyzed(): boolean {
-    return !!this.selectedMatchForm.get('analyzed')?.value;
+  hasForfeited(side: ScoreEntrySide): boolean {
+    return !!this.form && this.forfeitControl(side).value;
   }
 
-  broughtCaution() {
-    return (
-      this.statCount(this.aTeamArray, ['brought']) !==
-      this.statCount(this.bTeamArray, ['brought'])
-    );
+  toggleForfeit(side: ScoreEntrySide): void {
+    const control = this.forfeitControl(side);
+    control.setValue(!control.value);
   }
 
-  aKillCaution() {
-    return (
-      this.statCount(this.aTeamArray, ['kills', 'indirect']) !==
-      this.statCount(this.bTeamArray, ['fainted'])
-    );
+  forfeitedBy(): ForfeitSide | null {
+    const side1 = this.hasForfeited('side1');
+    const side2 = this.hasForfeited('side2');
+    if (side1 && side2) return 'both';
+    if (side1) return 'a';
+    if (side2) return 'b';
+    return null;
   }
 
-  bKillCaution() {
-    return (
-      this.statCount(this.bTeamArray, ['kills', 'indirect']) !==
-      this.statCount(this.aTeamArray, ['fainted'])
-    );
+  isForfeit(): boolean {
+    return this.forfeitedBy() !== null;
   }
 
-  getWins(player: 'a' | 'b') {
-    let sum = 0;
-    this.matchesFormArray.controls.forEach((ctrl) => {
-      if (ctrl.get('winner')?.value == player) {
-        sum++;
-      }
+  isDoubleForfeit(): boolean {
+    return this.forfeitedBy() === 'both';
+  }
+
+  //Empty intentionally. May add match warning in the future if a good use case is found.
+  matchWarnings(): string[] {
+    const warnings: string[] = [];
+    return warnings;
+  }
+
+  analyze(index: number): void {
+    if (this.analyzingIndex() !== null) return;
+    const game = this.gameControls[index];
+
+    this.analyzingIndex.set(index);
+    this.analysisError.set(null);
+
+    this.replayService
+      .analyzeReplayV2(game.controls.link.value.trim())
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (data) => {
+          const applied = applyReplayToGame(
+            game,
+            data.analysis.players,
+            {
+              side1: this.formeSet('side1'),
+              side2: this.formeSet('side2'),
+            },
+            (replayId) => this.formeLookup.get(replayId),
+          );
+          if (!applied) {
+            this.analysisError.set('That replay does not have two players.');
+          }
+          this.syncMatchScore();
+          this.analyzingIndex.set(null);
+        },
+        error: (error) => {
+          this.analyzingIndex.set(null);
+          this.analysisError.set(
+            error?.message || 'Could not read that replay.',
+          );
+        },
+      });
+  }
+
+  private formeSet(side: ScoreEntrySide): Set<string> {
+    const ids = new Set(this.rosterIds[side]);
+    this.formeLookup.forEach((ownerId, formeId) => {
+      if (ids.has(ownerId)) ids.add(formeId);
     });
-    return sum;
+    return ids;
+  }
+
+  submit(): void {
+    if (!this.form || this.saving()) return;
+
+    this.saving.set(true);
+    this.saveError.set(null);
+
+    this.draftService
+      .scoreMatchup(this.matchupId, this.teamId, this.buildPayload())
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: () => {
+          this.saving.set(false);
+          this.router.navigate(['/', this.draftPath, this.teamId]);
+        },
+        error: (error) => {
+          this.saving.set(false);
+          this.saveError.set(error?.message || 'Could not save the score.');
+        },
+      });
+  }
+
+  private buildPayload(): ScorePatch {
+    const form = this.form!;
+    const winner = form.controls.matchWinner.value;
+
+    return {
+      aTeamPaste: form.controls.aTeamPaste.value,
+      bTeamPaste: form.controls.bTeamPaste.value,
+      matches: this.gameControls.map((game) => {
+        const replay = game.controls.link.value.trim();
+        const gameWinner = game.controls.winner.value;
+        return {
+          aTeam: this.teamPayload(game, 'side1'),
+          bTeam: this.teamPayload(game, 'side2'),
+          ...(replay ? { replay } : {}),
+          ...(gameWinner ? { winner: SIDE_OF[gameWinner] } : {}),
+        };
+      }),
+      scoreOverride: form.controls.matchScoreLocked.value
+        ? [form.controls.matchScore1.value, form.controls.matchScore2.value]
+        : null,
+      winnerOverride: winner ? SIDE_OF[winner] : null,
+      forfeitedBy: this.forfeitedBy(),
+    };
+  }
+
+  private teamPayload(
+    game: ScoreEntryGameForm,
+    side: ScoreEntrySide,
+  ): MatchTeam {
+    const roster = rosterPayload(game, side);
+    const stats: MatchStatTuple[] = Object.entries(roster).map(
+      ([id, entry]) => [
+        id,
+        {
+          kills: entry.kills?.direct ?? 0,
+          indirect: entry.kills?.indirect ?? 0,
+          teammate: entry.kills?.teammate ?? 0,
+          status: entry.status,
+        },
+      ],
+    );
+    return {
+      stats,
+      score:
+        side === 'side1'
+          ? game.controls.side1Score.value
+          : game.controls.side2Score.value,
+    };
   }
 }

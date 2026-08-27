@@ -196,6 +196,10 @@
       <input pdz-input size="sm" type="text" placeholder="Compact" />
     </label>
 
+    <label pdz-field label="Extra small" hint="size=xs, pairs with button xs">
+      <input pdz-input size="xs" type="text" placeholder="Compact" />
+    </label>
+
     <label pdz-field label="Date" hint="Native picker, themed">
       <input pdz-input type="date" />
     </label>
@@ -1375,4 +1379,22 @@
       </div>
     }
   </div>
+</section>
+
+<section class="section">
+  <h2 class="section__title">Score entry</h2>
+  <p class="section__hint">
+    One game of a match report: a compact replay link plus analyze in the header,
+    an overridable winner and score, non-blocking warnings when the numbers
+    disagree, and a roster per side where each Pokémon carries a status dropdown
+    and three boxed kill steppers. The score tracks survivors until someone types
+    over it, then a reset button hands it back. Shared by the league coach report
+    and the draft opponent score page.
+  </p>
+
+  <pdz-score-entry-game
+    [game]="scoreEntryGame"
+    [sideNames]="scoreEntrySideNames"
+    label="Game 1"
+  />
 </section>

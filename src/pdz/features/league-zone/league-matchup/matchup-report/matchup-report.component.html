@@ -1,92 +1,3 @@
-<ng-template #rosterTpl let-game let-side="side">
-  <div class="report__roster">
-    <div class="report__roster-header">
-      <span class="report__roster-team">{{ teamName(side) }}</span>
-      <span class="report__roster-alive">{{ survivors(game, side) }} left</span>
-    </div>
-
-    <div class="report__roster-list">
-      @for (
-        control of rosterControls(game, side);
-        track control.controls.id.value
-      ) {
-        <div
-          class="report__mon"
-          [class.report__mon--survived]="
-            control.controls.status.value === 'survived'
-          "
-          [class.report__mon--fainted]="
-            control.controls.status.value === 'fainted'
-          "
-        >
-          <div class="report__mon-top">
-            <span class="report__mon-name">{{
-              nameOf(control.controls.id.value)
-            }}</span>
-
-            <pdz-segmented
-              class="report__status"
-              size="sm"
-              aria-label="Pokemon status"
-              [value]="control.controls.status.value"
-              (valueChange)="setStatus(control, $any($event), game, side)"
-            >
-              @for (option of statuses; track option.label) {
-                <pdz-segmented-option
-                  [value]="option.value"
-                  [label]="option.label"
-                />
-              }
-            </pdz-segmented>
-          </div>
-
-          <div class="report__mon-bottom">
-            <pdz-sprite
-              class="report__mon-sprite"
-              [pokemon]="spriteFor(control)"
-              [interactive]="false"
-            ></pdz-sprite>
-
-            <div class="report__kills-group">
-              @for (kill of killFields; track kill.field) {
-                <span class="report__kills" [title]="kill.label + ' KOs'">
-                  <span class="report__kills-controls">
-                    <button
-                      pdz-button
-                      iconOnly
-                      size="xs"
-                      variant="ghost"
-                      color="neutral"
-                      [disabled]="control.controls[kill.field].value === 0"
-                      (click)="adjustKills(control, kill.field, -1, game, side)"
-                    >
-                      <pdz-icon name="remove" [size]="14"></pdz-icon>
-                    </button>
-                    <span class="report__kills-value">{{
-                      control.controls[kill.field].value
-                    }}</span>
-                    <button
-                      pdz-button
-                      iconOnly
-                      size="xs"
-                      variant="ghost"
-                      color="neutral"
-                      (click)="adjustKills(control, kill.field, 1, game, side)"
-                    >
-                      <pdz-icon name="add" [size]="14"></pdz-icon>
-                    </button>
-                  </span>
-                  <span class="report__kills-label">{{ kill.label }}</span>
-                </span>
-              }
-            </div>
-          </div>
-        </div>
-      }
-    </div>
-  </div>
-</ng-template>
-
 <form class="report" [formGroup]="form" (ngSubmit)="submit()">
   <pdz-segmented
     class="report__mode"
@@ -161,153 +72,19 @@
       hit analyze to fill the stats in for you.
     </p>
 
-    <div class="report__games" formArrayName="games">
+    <div class="report__games">
       @for (game of gameControls; track $index) {
-        <div class="report__game" [formGroupName]="$index">
-          <div class="report__game-header">
-            <span class="report__game-title">Game {{ $index + 1 }}</span>
-            <button
-              pdz-button
-              iconOnly
-              size="xs"
-              variant="ghost"
-              color="danger"
-              aria-label="Remove game"
-              (click)="removeGame($index)"
-            >
-              <pdz-icon name="close" [size]="16"></pdz-icon>
-            </button>
-          </div>
-
-          <div class="report__replay">
-            <input
-              pdz-input
-              class="report__input--grow"
-              type="url"
-              formControlName="link"
-              placeholder="Replay link"
-            />
-            <button
-              pdz-button
-              size="sm"
-              color="secondary"
-              variant="outlined"
-              [disabled]="
-                !isReplayUrl(game.controls.link.value) ||
-                analyzingIndex() !== null
-              "
-              (click)="analyze($index)"
-            >
-              <pdz-icon name="auto_fix_high" [size]="16"></pdz-icon>
-              <span>{{
-                analyzingIndex() === $index ? "Reading…" : "Analyze"
-              }}</span>
-            </button>
-          </div>
-
-          <div class="report__result">
-            <div class="report__result-group">
-              <span class="report__result-label">Winner</span>
-              <pdz-segmented
-                class="report__result-controls"
-                size="sm"
-                aria-label="Game winner"
-                [value]="game.controls.winner.value"
-                (valueChange)="setWinner(game, $any($event))"
-              >
-                <pdz-segmented-option
-                  value="side1"
-                  [label]="teamName('side1')"
-                />
-                <pdz-segmented-option
-                  value="side2"
-                  [label]="teamName('side2')"
-                />
-              </pdz-segmented>
-            </div>
-
-            <div class="report__result-group">
-              <span class="report__result-label">Score</span>
-              <div class="report__result-controls">
-                <div class="report__score-field">
-                  <input
-                    type="number"
-                    min="0"
-                    pdz-input
-                    size="sm"
-                    class="report__input--score"
-                    formControlName="team1Score"
-                    [attr.aria-label]="teamName('side1') + ' score'"
-                    (input)="lockScore(game, 'side1')"
-                  />
-                  @if (game.controls.team1ScoreLocked.value) {
-                    <button
-                      pdz-button
-                      iconOnly
-                      size="xs"
-                      variant="ghost"
-                      color="neutral"
-                      title="Go back to counting survivors"
-                      (click)="resetScore(game, 'side1')"
-                    >
-                      <pdz-icon name="restart_alt" [size]="13"></pdz-icon>
-                    </button>
-                  }
-                </div>
-                <span class="report__result-dash">–</span>
-                <div class="report__score-field">
-                  <input
-                    type="number"
-                    min="0"
-                    pdz-input
-                    size="sm"
-                    class="report__input--score"
-                    formControlName="team2Score"
-                    [attr.aria-label]="teamName('side2') + ' score'"
-                    (input)="lockScore(game, 'side2')"
-                  />
-                  @if (game.controls.team2ScoreLocked.value) {
-                    <button
-                      pdz-button
-                      iconOnly
-                      size="xs"
-                      variant="ghost"
-                      color="neutral"
-                      title="Go back to counting survivors"
-                      (click)="resetScore(game, 'side2')"
-                    >
-                      <pdz-icon name="restart_alt" [size]="13"></pdz-icon>
-                    </button>
-                  }
-                </div>
-              </div>
-            </div>
-          </div>
-
-          @if (gameValidationWarnings(game); as warnings) {
-            @if (warnings.length) {
-              <div class="report__warnings">
-                <pdz-icon name="warning" [size]="14"></pdz-icon>
-                <div class="report__warnings-list">
-                  @for (warning of warnings; track warning) {
-                    <span class="report__warning">{{ warning }}</span>
-                  }
-                </div>
-              </div>
-            }
-          }
-
-          <div class="report__rosters">
-            <ng-container
-              [ngTemplateOutlet]="rosterTpl"
-              [ngTemplateOutletContext]="{ $implicit: game, side: 'side1' }"
-            ></ng-container>
-            <ng-container
-              [ngTemplateOutlet]="rosterTpl"
-              [ngTemplateOutletContext]="{ $implicit: game, side: 'side2' }"
-            ></ng-container>
-          </div>
-        </div>
+        <pdz-score-entry-game
+          [game]="game"
+          [sideNames]="sideNames"
+          [label]="'Game ' + ($index + 1)"
+          [analyzing]="analyzingIndex() === $index"
+          [expectedRoster]="rosterSize"
+          [open]="isGameOpen($index)"
+          (openChange)="setGameOpen($index, $event)"
+          (analyze)="analyze($index)"
+          (remove)="removeGame($index)"
+        />
       }
     </div>
 
@@ -321,29 +98,31 @@
         [open]="summaryOpen()"
         (openChange)="toggleSummary()"
       >
-      @if (summaryOpen()) {
-        <div class="report__summary-content">
-          @for (side of sides; track side) {
-            <div class="report__summary-team">
-              <div class="report__summary-team-title">{{ teamName(side) }}</div>
-              <div class="report__summary-row report__summary-row--header">
-                <span>Pokemon</span>
-                <span>Kills</span>
-                <span>Deaths</span>
-              </div>
-              @for (summary of getPokemonSummary(side); track summary.key) {
-                <div class="report__summary-row">
-                  <span>{{ summary.name }}</span>
-                  <span>{{ summary.kills }}</span>
-                  <span>{{ summary.deaths }}</span>
+        @if (summaryOpen()) {
+          <div class="report__summary-content">
+            @for (side of sides; track side) {
+              <div class="report__summary-team">
+                <div class="report__summary-team-title">
+                  {{ teamName(side) }}
                 </div>
-              } @empty {
-                <p class="report__summary-empty">No Pokemon reported yet.</p>
-              }
-            </div>
-          }
-        </div>
-      }
+                <div class="report__summary-row report__summary-row--header">
+                  <span>Pokemon</span>
+                  <span>Kills</span>
+                  <span>Deaths</span>
+                </div>
+                @for (summary of getPokemonSummary(side); track summary.key) {
+                  <div class="report__summary-row">
+                    <span>{{ summary.name }}</span>
+                    <span>{{ summary.kills }}</span>
+                    <span>{{ summary.deaths }}</span>
+                  </div>
+                } @empty {
+                  <p class="report__summary-empty">No Pokemon reported yet.</p>
+                }
+              </div>
+            }
+          </div>
+        }
       </pdz-disclosure>
     </div>
   }
@@ -378,6 +157,7 @@
         size="sm"
         color="neutral"
         variant="outlined"
+        type="button"
         (click)="addGame()"
       >
         <pdz-icon name="add" [size]="16"></pdz-icon>
@@ -390,7 +170,12 @@
       </span>
     }
 
-    <button pdz-button type="submit" [loading]="saving()" [disabled]="!canSubmit">
+    <button
+      pdz-button
+      type="submit"
+      [loading]="saving()"
+      [disabled]="!canSubmit"
+    >
       {{ saving() ? "Sending…" : "Submit for review" }}
     </button>
   </div>

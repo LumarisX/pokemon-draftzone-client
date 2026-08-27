@@ -1,304 +1,154 @@
-@if (scoreForm) {
-  <form [formGroup]="scoreForm">
-    <div class="score-bar">
+@if (form && matchup) {
+  <form class="score" [formGroup]="form" (ngSubmit)="submit()">
+    <header class="score__bar">
       <button
         pdz-button
         size="sm"
         color="neutral"
         variant="outlined"
+        type="button"
         [routerLink]="['/', draftPath, teamId]"
       >
         Cancel
       </button>
-      <h1 class="score-bar__title">Score</h1>
-      <button pdz-button size="sm" type="submit" (click)="submit()">
-        Submit
+      <h1 class="score__title">
+        {{ teamName("side1") }} vs {{ teamName("side2") }}
+      </h1>
+      <button pdz-button size="sm" type="submit" [loading]="saving()">
+        {{ saving() ? "Saving…" : "Submit" }}
       </button>
-    </div>
+    </header>
 
-    <div class="paste-row">
-      <div class="paste-side">
-        <div class="paste-side__field">
-          <label class="paste-label">
-            <span>PokePaste</span>
+    <section class="match">
+      @for (side of sides; track side; let first = $first) {
+        <div
+          class="match__side"
+          [class.match__side--end]="!first"
+          [attr.data-accent]="accents[side]"
+        >
+          <div class="match__side-head">
+            <span class="match__name">{{ teamName(side) }}</span>
             <input
-              formControlName="aTeamPaste"
-              spellcheck="false"
-              class="paste-input paste-input--a"
+              pdz-input
+              size="sm"
+              class="match__score-input"
+              type="number"
+              min="0"
+              inputmode="numeric"
+              [formControl]="matchScoreControl(side)"
+              [attr.aria-label]="teamName(side) + ' match score'"
+              (input)="onMatchScoreInput($event)"
+              (blur)="onMatchScoreBlur(side)"
             />
-          </label>
-        </div>
-        <div class="spacer"></div>
-        <div class="wins-box wins-box--a">
-          <div class="wins-box__value">{{ getWins("a") }}</div>
-        </div>
-      </div>
-      <div class="paste-side">
-        <div class="wins-box wins-box--b">
-          <div class="wins-box__value">{{ getWins("b") }}</div>
-        </div>
-        <div class="spacer"></div>
-        <div class="paste-side__field">
-          <label class="paste-label">
-            <span>PokePaste</span>
-            <input
-              formControlName="bTeamPaste"
-              spellcheck="false"
-              class="paste-input paste-input--b"
-            />
-          </label>
-        </div>
-      </div>
-    </div>
-
-    <div class="controls-row">
-      <div class="matches" formArrayName="matches">
-        @for (matchCtrl of matchesFormArray.controls; track $index) {
-          <div
-            class="match-tab"
-            [formGroupName]="$index"
-            (click)="switchMatch($index)"
-          >
-            <div
-              class="match-tab__inner"
-              [class.match-tab__inner--active]="isSelectedMatch($index)"
+            <button
+              pdz-button
+              size="sm"
+              type="button"
+              class="match__forfeit"
+              [color]="hasForfeited(side) ? 'danger' : 'neutral'"
+              [variant]="hasForfeited(side) ? 'filled' : 'outlined'"
+              [attr.aria-pressed]="hasForfeited(side)"
+              [attr.aria-label]="teamName(side) + ' forfeited'"
+              (click)="toggleForfeit(side)"
             >
-              Game {{ $index + 1 }}
-              @if ($index > 0) {
-                <pdz-icon
-                  class="match-tab__delete"
-                  name="delete"
-                  size="sm"
-                  ariaLabel="Delete game"
-                  (click)="deleteMatch($index, $event)"
-                ></pdz-icon>
+              Forfeit
+            </button>
+          </div>
+        </div>
+      }
+
+      @for (side of sides; track side; let first = $first) {
+        <input
+          pdz-input
+          size="sm"
+          class="match__paste"
+          [attr.data-accent]="accents[side]"
+          [class.match__paste--end]="!first"
+          type="url"
+          spellcheck="false"
+          placeholder="Team link"
+          [formControl]="pasteControl(side)"
+          [attr.aria-label]="teamName(side) + ' team link'"
+        />
+
+        @if (first) {
+          <div class="match__winner-cell">
+            <pdz-select
+              class="match__winner"
+              size="sm"
+              placeholder="Undecided"
+              aria-label="Match winner"
+              [attr.data-winner]="matchWinner()"
+              [disabled]="isForfeit()"
+              [value]="matchWinner()"
+              (valueChange)="setMatchWinner($any($event))"
+            >
+              @for (option of sides; track option) {
+                <pdz-option [value]="option" [label]="teamName(option)" />
               }
-            </div>
+            </pdz-select>
           </div>
         }
-        <button
-          pdz-button
-          iconOnly
-          size="sm"
-          variant="outlined"
-          color="neutral"
-          class="match-add"
-          aria-label="Add game"
-          (click)="addMatch()"
-        >
-          <pdz-icon name="add" size="sm"></pdz-icon>
-        </button>
-      </div>
+      }
+    </section>
 
-      <div class="replay" [formGroup]="selectedMatchForm">
-        <div class="replay__field">
-          <span class="replay__label">Replay:</span>
-          <input
-            spellcheck="false"
-            formControlName="replay"
-            class="replay__input"
+    @if (matchWarnings(); as warnings) {
+      @if (warnings.length) {
+        <div class="score__warnings" role="status">
+          <pdz-icon name="warning" [size]="14"></pdz-icon>
+          <div class="score__warnings-list">
+            @for (warning of warnings; track warning) {
+              <span class="score__warning">{{ warning }}</span>
+            }
+          </div>
+        </div>
+      }
+    }
+
+    @if (!isForfeit()) {
+      <div class="score__games">
+        @for (game of gameControls; track $index) {
+          <pdz-score-entry-game
+            [game]="game"
+            [sideNames]="sideNames"
+            [pokedex]="pokedex"
+            [label]="'Game ' + ($index + 1)"
+            [analyzing]="analyzingIndex() === $index"
+            [removable]="gameControls.length > 1"
+            [open]="isGameOpen($index)"
+            (openChange)="setGameOpen($index, $event)"
+            (analyze)="analyze($index)"
+            (remove)="removeGame($index)"
           />
-        </div>
+        }
+      </div>
+
+      @if (analysisError()) {
+        <p class="score__error">{{ analysisError() }}</p>
+      }
+    }
+    @if (saveError()) {
+      <p class="score__error">{{ saveError() }}</p>
+    }
+
+    <div class="score__footer">
+      @if (!isForfeit()) {
         <button
           pdz-button
           size="sm"
-          color="secondary"
+          color="neutral"
           variant="outlined"
-          [disabled]="isAnalyzed()"
-          (click)="analyzeReplay()"
+          type="button"
+          (click)="addGame()"
         >
-          Analyze
+          <pdz-icon name="add" [size]="16"></pdz-icon>
+          <span>Add game</span>
         </button>
-      </div>
-    </div>
+      }
 
-    <div formArrayName="matches">
-      <div [formGroup]="selectedMatchForm">
-        <div class="teams">
-          <div class="teams__col">
-            <div class="team team--a" formGroupName="aTeam">
-              <div class="team__header">
-                <h2 class="team__name">{{ matchup.aTeam.teamName }}</h2>
-                <div
-                  class="team__winner"
-                  [class.team__winner--active]="isWinner('a')"
-                  (click)="changeWinner('a')"
-                >
-                  Winner
-                </div>
-              </div>
-              <div class="team__panel">
-                <div class="team__stats">
-                  <div class="team__stat">
-                    <div class="team__stat-label">Brought:</div>
-                    <div [class.stat-caution]="broughtCaution()">
-                      {{ statCount(aTeamArray, ["brought"]) }}
-                    </div>
-                  </div>
-                  <div class="team__stat">
-                    <div class="team__stat-label">Kills:</div>
-                    <div [class.stat-caution]="aKillCaution()">
-                      {{ statCount(aTeamArray, ["kills", "indirect"]) }}
-                    </div>
-                  </div>
-                  <div class="team__stat">
-                    <div class="team__stat-label">Deaths:</div>
-                    <div [class.stat-caution]="bKillCaution()">
-                      {{ statCount(aTeamArray, ["fainted"]) }}
-                    </div>
-                  </div>
-                </div>
-                <div class="team__grid" formArrayName="team">
-                  @for (pokemonForm of aTeamArray.controls; track $index) {
-                    <div class="mon" [formGroupName]="$index">
-                      <div class="mon__top">
-                        <pdz-sprite
-                          class="mon__sprite"
-                          [class.mon__sprite--out]="!isBrought(pokemonForm)"
-                          [pokemon]="pokemonForm.value.pokemon"
-                        ></pdz-sprite>
-                        <div class="mon__right">
-                          <div class="mon__kills-title">Kills</div>
-                          <div class="mon__kills-row">
-                            <div class="mon__kill">
-                              <div class="mon__kill-label">Direct</div>
-                              <div class="mon__kill-input">
-                                <input
-                                  type="number"
-                                  formControlName="kills"
-                                  min="0"
-                                  class="mon__input"
-                                />
-                              </div>
-                            </div>
-                            <div class="mon__kill">
-                              <div class="mon__kill-label">Indirect</div>
-                              <div class="mon__kill-input">
-                                <input
-                                  type="number"
-                                  formControlName="indirect"
-                                  min="0"
-                                  class="mon__input"
-                                />
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="mon__flags">
-                        <div class="mon__flag">
-                          <div class="mon__flag-label">Brought</div>
-                          <div class="mon__flag-input">
-                            <input pdz-checkbox type="checkbox" formControlName="brought" />
-                          </div>
-                        </div>
-                        <div class="mon__flag">
-                          <div class="mon__flag-label">Fainted</div>
-                          <div class="mon__flag-input">
-                            <input pdz-checkbox type="checkbox" formControlName="fainted" />
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  }
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="teams__col">
-            <div class="team team--b" formGroupName="bTeam">
-              <div class="team__header team__header--reverse">
-                <div
-                  class="team__winner"
-                  [class.team__winner--active]="isWinner('b')"
-                  (click)="changeWinner('b')"
-                >
-                  Winner
-                </div>
-                <h2 class="team__name team__name--end">
-                  {{ matchup.bTeam.teamName }}
-                </h2>
-              </div>
-              <div class="team__panel">
-                <div class="team__stats">
-                  <div class="team__stat">
-                    <div class="team__stat-label">Brought:</div>
-                    <div [class.stat-caution]="broughtCaution()">
-                      {{ statCount(bTeamArray, ["brought"]) }}
-                    </div>
-                  </div>
-                  <div class="team__stat">
-                    <div class="team__stat-label">Kills:</div>
-                    <div [class.stat-caution]="bKillCaution()">
-                      {{ statCount(bTeamArray, ["kills", "indirect"]) }}
-                    </div>
-                  </div>
-                  <div class="team__stat">
-                    <div class="team__stat-label">Deaths:</div>
-                    <div [class.stat-caution]="aKillCaution()">
-                      {{ statCount(bTeamArray, ["fainted"]) }}
-                    </div>
-                  </div>
-                </div>
-                <div class="team__grid" formArrayName="team">
-                  @for (pokemonForm of bTeamArray.controls; track $index) {
-                    <div class="mon" [formGroupName]="$index">
-                      <div class="mon__top">
-                        <pdz-sprite
-                          class="mon__sprite"
-                          [class.mon__sprite--out]="!isBrought(pokemonForm)"
-                          [pokemon]="pokemonForm.value.pokemon"
-                        ></pdz-sprite>
-                        <div class="mon__right">
-                          <div class="mon__kills-title">Kills</div>
-                          <div class="mon__kills-row">
-                            <div class="mon__kill">
-                              <div class="mon__kill-label">Direct</div>
-                              <div class="mon__kill-input">
-                                <input
-                                  type="number"
-                                  formControlName="kills"
-                                  min="0"
-                                  class="mon__input"
-                                />
-                              </div>
-                            </div>
-                            <div class="mon__kill">
-                              <div class="mon__kill-label">Indirect</div>
-                              <div class="mon__kill-input">
-                                <input
-                                  type="number"
-                                  formControlName="indirect"
-                                  min="0"
-                                  class="mon__input"
-                                />
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      </div>
-                      <div class="mon__flags">
-                        <div class="mon__flag">
-                          <div class="mon__flag-label">Brought</div>
-                          <div class="mon__flag-input">
-                            <input pdz-checkbox type="checkbox" formControlName="brought" />
-                          </div>
-                        </div>
-                        <div class="mon__flag">
-                          <div class="mon__flag-label">Fainted</div>
-                          <div class="mon__flag-input">
-                            <input pdz-checkbox type="checkbox" formControlName="fainted" />
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  }
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <button pdz-button type="submit" [loading]="saving()">
+        {{ saving() ? "Saving…" : "Submit" }}
+      </button>
     </div>
   </form>
 } @else {

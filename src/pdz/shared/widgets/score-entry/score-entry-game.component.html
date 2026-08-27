@@ -1,0 +1,99 @@
+<pdz-disclosure
+  class="game"
+  tone="panel"
+  [trailingGrow]="true"
+  [heading]="label()"
+  [attr.data-winner]="game().controls.winner.value"
+  [(open)]="open"
+>
+  <div pdz-disclosure-trailing class="game__controls">
+    <div class="game__replay">
+      <input
+        pdz-input
+        size="sm"
+        class="game__replay-input"
+        type="url"
+        spellcheck="false"
+        placeholder="Replay link"
+        aria-label="Replay link"
+        [formControl]="game().controls.link"
+      />
+      @if (canAnalyze()) {
+        <button
+          pdz-button
+          iconOnly
+          size="xs"
+          color="secondary"
+          variant="ghost"
+          class="game__replay-action"
+          aria-label="Analyze replay"
+          [title]="analyzing() ? 'Reading replay…' : 'Fill stats from replay'"
+          (click)="analyze.emit()"
+        >
+          <pdz-icon
+            [name]="analyzing() ? 'hourglass_top' : 'auto_fix_high'"
+            [size]="16"
+          ></pdz-icon>
+        </button>
+      }
+    </div>
+
+    <div class="game__winner-cell">
+      <pdz-select
+        class="game__winner"
+        size="sm"
+        placeholder="Undecided"
+        aria-label="Game winner"
+        [attr.data-winner]="game().controls.winner.value"
+        [value]="game().controls.winner.value"
+        (valueChange)="onWinner($any($event))"
+      >
+        <pdz-option [value]="null" label="Undecided" />
+        @for (side of sides; track side) {
+          <pdz-option [value]="side" [label]="teamName(side)" />
+        }
+      </pdz-select>
+    </div>
+
+    @if (removable()) {
+      <button
+        pdz-button
+        iconOnly
+        size="sm"
+        variant="ghost"
+        color="danger"
+        type="button"
+        aria-label="Remove game"
+        (click)="remove.emit()"
+      >
+        <pdz-icon name="close" [size]="16"></pdz-icon>
+      </button>
+    }
+  </div>
+
+  <div class="game__body">
+    <div class="game__rosters">
+      @for (side of sides; track side) {
+        <pdz-score-entry-roster
+          [game]="game()"
+          [side]="side"
+          [teamName]="teamName(side)"
+          [pokedex]="pokedex()"
+          [accent]="accents[side]"
+        />
+      }
+    </div>
+    @if (warnings(); as list) {
+      @if (list.length) {
+        <div class="game__warnings" role="status">
+          <pdz-icon name="warning" [size]="14"></pdz-icon>
+          <div class="game__warnings-list">
+            @for (warning of list; track warning) {
+              <span class="game__warning">{{ warning }}</span>
+            }
+          </div>
+        </div>
+      }
+    }
+  </div>
+</pdz-disclosure>

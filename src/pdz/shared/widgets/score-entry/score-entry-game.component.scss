@@ -1,0 +1,116 @@
+@use "pdz-theming" as pdz;
+
+:host {
+  display: block;
+}
+
+.game {
+  transition: border-color pdz.duration(base) pdz.easing(standard);
+
+  &[data-winner="side1"] {
+    border-color: pdz.color(primary-border);
+  }
+
+  &[data-winner="side2"] {
+    border-color: pdz.color(secondary-border);
+  }
+}
+
+.game__controls {
+  display: flex;
+  flex: 1 1 auto;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: pdz.space(2xs);
+  min-width: 0;
+}
+
+.game__winner-cell {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+
+  @include pdz.respond-above(desktop) {
+    position: absolute;
+    inset-inline-start: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+  }
+}
+
+.game__replay {
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex: 1 1 9rem;
+  min-width: 6rem;
+  max-width: 20rem;
+}
+
+.game__replay-input {
+  width: 100%;
+  min-width: 0;
+  padding-inline-end: 1.75rem;
+}
+
+.game__replay-action {
+  position: absolute;
+  inset-inline-end: pdz.space(3xs);
+}
+
+.game__winner {
+  --pdz-select-surface: #{pdz.color(surface-container-lowest)};
+
+  min-width: 9rem;
+
+  &[data-winner="side1"] {
+    --pdz-select-surface: #{pdz.color(primary-container-low)};
+    --pdz-select-border: #{pdz.color(primary-border)};
+    --pdz-select-on-surface: #{pdz.color(on-primary-container)};
+  }
+
+  &[data-winner="side2"] {
+    --pdz-select-surface: #{pdz.color(secondary-container-low)};
+    --pdz-select-border: #{pdz.color(secondary-border)};
+    --pdz-select-on-surface: #{pdz.color(on-secondary-container)};
+  }
+}
+
+.game__body {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(sm);
+  padding: 0 pdz.space(md) pdz.space(md);
+}
+
+.game__warnings {
+  display: flex;
+  gap: pdz.space(2xs);
+  padding: pdz.space(2xs) pdz.space(sm);
+  border-radius: pdz.shape(corner-sm);
+  border-left: 3px solid pdz.color(warning);
+  background: pdz.color(warning-container);
+  color: pdz.color(on-warning-container);
+}
+
+.game__warnings-list {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.game__warning {
+  @include pdz.text(label, $family: false);
+}
+
+.game__rosters {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: pdz.space(sm);
+
+  @include pdz.respond-above(large) {
+    grid-template-columns: 1fr 1fr;
+  }
+}

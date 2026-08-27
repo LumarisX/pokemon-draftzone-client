@@ -1,0 +1,103 @@
+<div class="roster" [attr.data-accent]="accent()">
+  <div class="roster__header" [class.roster__header--mirrored]="!facingRight()">
+    <span class="roster__team">{{ teamName() }}</span>
+    <input
+      pdz-input
+      size="sm"
+      class="roster__score"
+      type="number"
+      min="0"
+      inputmode="numeric"
+      placeholder="–"
+      [attr.aria-label]="teamName() + ' score'"
+      [formControl]="score()"
+      (input)="onScoreInput($event)"
+      (blur)="onScoreBlur()"
+    />
+  </div>
+
+  <div class="roster__list">
+    @for (entry of entries(); track entry.controls.id.value) {
+      <div
+        class="mon"
+        [class.mon--brought]="entry.controls.status.value === 'brought'"
+        [class.mon--survived]="entry.controls.status.value === 'survived'"
+        [class.mon--fainted]="entry.controls.status.value === 'fainted'"
+      >
+        <div class="mon__head">
+          <pdz-sprite
+            class="mon__sprite"
+            size="4rem"
+            [pokemon]="spriteFor(entry)"
+            [flipped]="facingRight()"
+            [disabled]="entry.controls.status.value === null"
+            [interactive]="false"
+          ></pdz-sprite>
+          <div class="mon__identity">
+            <span class="mon__name">{{ nameOf(entry) }}</span>
+            <pdz-select
+              class="mon__status"
+              size="sm"
+              [attr.aria-label]="nameOf(entry) + ' status'"
+              [value]="entry.controls.status.value"
+              (valueChange)="onStatus(entry, $any($event))"
+            >
+              @for (option of statuses; track option.label) {
+                <pdz-option [value]="option.value" [label]="option.label" />
+              }
+            </pdz-select>
+          </div>
+        </div>
+        @if (entry.controls.status.value !== null) {
+          <div class="mon__kills">
+            @for (kill of killFields; track kill.field) {
+              <div class="stepper">
+                <span class="stepper__label">{{ kill.label }}</span>
+                <div class="stepper__controls">
+                  <button
+                    pdz-button
+                    iconOnly
+                    size="xs"
+                    color="neutral"
+                    variant="outlined"
+                    [attr.aria-label]="
+                      'Decrease ' + kill.label + ' KOs for ' + nameOf(entry)
+                    "
+                    [disabled]="!entry.controls[kill.field].value"
+                    (click)="onStep(entry, kill.field, -1)"
+                  >
+                    <pdz-icon name="remove" [size]="16"></pdz-icon>
+                  </button>
+                  <input
+                    pdz-input
+                    size="xs"
+                    class="stepper__input"
+                    type="number"
+                    min="0"
+                    inputmode="numeric"
+                    [formControl]="entry.controls[kill.field]"
+                    [attr.aria-label]="kill.label + ' KOs for ' + nameOf(entry)"
+                    (blur)="onKillBlur(entry, kill.field)"
+                  />
+                  <button
+                    pdz-button
+                    iconOnly
+                    size="xs"
+                    color="neutral"
+                    variant="outlined"
+                    [attr.aria-label]="
+                      'Increase ' + kill.label + ' KOs for ' + nameOf(entry)
+                    "
+                    (click)="onStep(entry, kill.field, 1)"
+                  >
+                    <pdz-icon name="add" [size]="16"></pdz-icon>
+                  </button>
+                </div>
+              </div>
+            }
+          </div>
+        }
+      </div>
+    }
+  </div>
+</div>

@@ -20,8 +20,6 @@
     color: pdz.color("on-surface-variant");
   }
 
-  // ─── Mode switch ──────────────────────────────────────────────────────
-
   &__mode {
     display: flex;
     gap: pdz.space(3xs);
@@ -30,7 +28,6 @@
     border-radius: pdz.shape("corner-full");
     background: pdz.color("surface-container-lowest");
   }
-  // ─── Forfeit / manual-score panel ────────────────────────────────────
 
   &__panel {
     display: flex;
@@ -74,266 +71,11 @@
     }
   }
 
-  // ─── Game cards ───────────────────────────────────────────────────────
-
   &__games {
     display: flex;
     flex-direction: column;
     gap: pdz.space(md);
   }
-
-  &__game {
-    display: flex;
-    flex-direction: column;
-    gap: pdz.space(md);
-    padding: pdz.space(md);
-    border: 1px solid pdz.color("outline-variant");
-    border-radius: pdz.shape("corner-md");
-    background: pdz.color("surface-container-lowest");
-  }
-
-  &__game-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-
-  &__game-title {
-    @include text(label);
-    font-weight: var(--pdz-font-weight-semibold);
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-    color: pdz.color("on-surface-variant");
-  }
-  &__replay {
-    display: flex;
-    flex-wrap: wrap;
-    gap: pdz.space(2xs);
-  }
-
-  &__input {
-    &--grow {
-      flex: 1;
-      min-width: 12rem;
-    }
-
-    &--score {
-      width: 4rem;
-      text-align: center;
-    }
-  }
-  // ─── Result row: winner + score, grouped ──────────────────────────────
-
-  &__result {
-    display: flex;
-    flex-wrap: wrap;
-    gap: pdz.space(lg);
-    padding: pdz.space(sm) pdz.space(md);
-    border-radius: pdz.shape("corner-sm");
-    background: pdz.color("surface-container-low");
-  }
-
-  &__result-group {
-    display: flex;
-    flex-direction: column;
-    gap: pdz.space(3xs);
-  }
-
-  &__result-label {
-    @include text(label);
-    color: pdz.color("on-surface-variant");
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-  }
-
-  &__result-controls {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: pdz.space(2xs);
-  }
-
-  &__result-dash {
-    color: pdz.color("on-surface-variant");
-  }
-  &__score-field {
-    display: inline-flex;
-    align-items: center;
-    gap: pdz.space(3xs);
-  }
-  // ─── Validation warnings ───────────────────────────────────────────────
-
-  &__warnings {
-    display: flex;
-    gap: pdz.space(2xs);
-    padding: pdz.space(2xs) pdz.space(sm);
-    background: pdz.color("warning-container");
-    border-radius: pdz.shape("corner-sm");
-    border-left: 3px solid pdz.color("warning");
-    color: pdz.color("on-warning-container");
-  }
-
-  &__warnings-list {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-  }
-
-  &__warning {
-    @include text(label);
-  }
-
-  // ─── Rosters ────────────────────────────────────────────────────────────
-
-  &__rosters {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: pdz.space(md);
-
-    @include respond-above(large) {
-      grid-template-columns: 1fr 1fr;
-    }
-  }
-
-  &__roster {
-    display: flex;
-    flex-direction: column;
-    gap: pdz.space(2xs);
-    min-width: 0;
-    padding: pdz.space(sm);
-    border: 1px solid pdz.color("outline-variant");
-    border-radius: pdz.shape("corner-md");
-    background: pdz.color("surface-container-low");
-  }
-
-  &__roster-header {
-    display: flex;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: pdz.space(2xs);
-    padding-bottom: pdz.space(3xs);
-    border-bottom: 1px solid pdz.color("outline-variant");
-  }
-
-  &__roster-team {
-    @include text(label);
-    font-weight: var(--pdz-font-weight-semibold);
-    color: pdz.color("on-surface");
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  &__roster-alive {
-    @include text(label);
-    color: pdz.color("on-surface-variant");
-    white-space: nowrap;
-  }
-
-  &__roster-list {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
-    gap: pdz.space(2xs);
-  }
-
-  &__mon {
-    display: flex;
-    flex-direction: column;
-    gap: pdz.space(2xs);
-    padding: pdz.space(sm);
-    border-radius: pdz.shape("corner-sm");
-    background: pdz.color("surface-container-lowest");
-
-    &--survived {
-      background: pdz.color("positive-container");
-    }
-
-    &--fainted {
-      background: pdz.color("negative-container");
-      opacity: 0.85;
-    }
-  }
-
-  &__mon-sprite {
-    flex: none;
-    width: 2.5rem;
-    height: 2.5rem;
-  }
-
-  &__mon-top {
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: pdz.space(sm);
-  }
-
-  &__mon-bottom {
-    display: flex;
-    align-items: center;
-    gap: pdz.space(sm);
-  }
-
-  &__mon-name {
-    @include text(label);
-    text-transform: none;
-    flex: none;
-    max-width: 8rem;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    color: pdz.color("on-surface");
-    font-weight: var(--pdz-font-weight-semibold);
-  }
-
-  &__status {
-    flex: 1 1 11rem;
-    max-width: 16rem;
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    border: 1px solid pdz.color("outline-variant");
-    border-radius: pdz.shape("corner-sm");
-    overflow: hidden;
-  }
-  &__kills-group {
-    flex: 1;
-    display: flex;
-    align-items: stretch;
-    gap: pdz.space(3xs);
-  }
-
-  &__kills {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 2px;
-    padding: pdz.space(3xs) pdz.space(2xs);
-    border-radius: pdz.shape("corner-sm");
-    background: pdz.color("surface");
-  }
-
-  &__kills-controls {
-    display: inline-flex;
-    align-items: center;
-    gap: pdz.space(3xs);
-  }
-  &__kills-value {
-    @include text(label);
-    min-width: 1rem;
-    text-align: center;
-    font-variant-numeric: tabular-nums;
-    color: pdz.color("on-surface");
-  }
-
-  &__kills-label {
-    @include text(label);
-    color: pdz.color("on-surface-variant");
-    text-transform: uppercase;
-    letter-spacing: 0.03em;
-  }
-
-  // ─── Pokemon totals summary ─────────────────────────────────────────────
 
   &__summary {
     border: 1px solid pdz.color("outline-variant");
@@ -396,8 +138,6 @@
     color: pdz.color("on-surface-variant");
   }
 
-  // ─── Notes ────────────────────────────────────────────────────────────
-
   &__notes {
     display: flex;
     flex-direction: column;
@@ -414,8 +154,6 @@
     background: pdz.color("surface-container-lowest");
   }
 
-  // ─── Footer ─────────────────────────────────────────────────────────────
-
   &__footer {
     display: flex;
     flex-wrap: wrap;
@@ -425,11 +163,13 @@
     padding-top: pdz.space(md);
     border-top: 1px solid pdz.color("outline-variant");
   }
+
   &__series {
     @include text(label);
     font-variant-numeric: tabular-nums;
     color: pdz.color("on-surface-variant");
   }
+
   &__hint {
     @include text(label);
     margin: 0;

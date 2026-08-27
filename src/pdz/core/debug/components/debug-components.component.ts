@@ -6,7 +6,12 @@ import {
   inject,
   signal,
 } from '@angular/core';
-import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
+import {
+  FormBuilder,
+  FormControl,
+  ReactiveFormsModule,
+  Validators,
+} from '@angular/forms';
 import {
   ButtonColor,
   ButtonComponent,
@@ -66,6 +71,9 @@ import {
   ChipTone,
   ChipVariant,
 } from '@pdz/shared/data/chip/chip.component';
+import { ScoreEntryGameComponent } from '@pdz/shared/widgets/score-entry/score-entry-game.component';
+import { buildGameEntry } from '@pdz/shared/widgets/score-entry/score-entry.form';
+import { ScoreEntrySide } from '@pdz/shared/widgets/score-entry/score-entry.model';
 
 const THEME_ATTR = 'pdz-theme';
 const MODE_ATTR = 'pdz-theme-mode';
@@ -103,6 +111,7 @@ const MODE_ATTR = 'pdz-theme-mode';
     ChipComponent,
     PokemonTypeComponent,
     SpriteComponent,
+    ScoreEntryGameComponent,
   ],
   templateUrl: './debug-components.component.html',
   styleUrl: './debug-components.component.scss',
@@ -506,6 +515,32 @@ export class DebugComponentsComponent {
   ];
 
   readonly tooltipDialogOpen = signal(false);
+
+  readonly scoreEntrySideNames: Record<ScoreEntrySide, string> = {
+    side1: 'Alolan Exiles',
+    side2: 'Rocket Grunts',
+  };
+
+  readonly scoreEntryGame = buildGameEntry(
+    inject(FormBuilder),
+    {
+      side1: ['charizard', 'greninja', 'garchomp'],
+      side2: ['gengar', 'snorlax', 'dragapult'],
+    },
+    {
+      link: 'replay.pokemonshowdown.com/gen9draft-2200000001',
+      winner: 'side1',
+      side1: {
+        charizard: { kills: { direct: 2 }, status: 'survived' },
+        greninja: { kills: { indirect: 1 }, status: 'fainted' },
+        garchomp: { status: 'brought' },
+      },
+      side2: {
+        gengar: { kills: { direct: 1 }, status: 'fainted' },
+        snorlax: { status: 'fainted' },
+      },
+    },
+  );
 
   readonly manyTabs = [
     'Overview',

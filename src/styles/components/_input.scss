@@ -6,7 +6,7 @@
   padding: pdz.space(xs) pdz.space(sm);
   border: 1px solid pdz.color(outline);
   border-radius: pdz.shape(corner-sm);
-  background: pdz.color(surface);
+  background: pdz.color(surface-container);
   color: pdz.color(on-surface);
   font: inherit;
   transition: border-color pdz.duration(base) pdz.easing(standard),
@@ -30,13 +30,21 @@
   &:disabled {
     opacity: 0.6;
     cursor: not-allowed;
-    background: pdz.color(surface-container);
+    background: pdz.color(surface-disabled);
   }
 
   &[data-size="sm"] {
     min-height: 1.75rem;
     padding: pdz.space(2xs) pdz.space(xs);
+    border-radius: pdz.shape(corner-xs);
     font-size: pdz.font-size(sm);
+  }
+
+  &[data-size="xs"] {
+    min-height: 1.5rem;
+    padding: pdz.space(3xs) pdz.space(xs);
+    border-radius: pdz.shape(corner-xs);
+    font-size: pdz.font-size(xs);
   }
 }
 

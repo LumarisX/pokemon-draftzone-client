@@ -1,0 +1,202 @@
+@use "pdz-theming" as pdz;
+
+:host {
+  display: block;
+  min-width: 0;
+}
+
+.roster {
+  --roster-line: #{pdz.color(outline-variant)};
+  --roster-tint: #{pdz.color(surface-container)};
+  --roster-text: #{pdz.color(on-surface)};
+  --roster-accent: #{pdz.color(outline)};
+
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  border: 1px solid var(--roster-line);
+  border-radius: pdz.shape(corner-md);
+  background: pdz.color(surface-container-lowest);
+  overflow: hidden;
+
+  &[data-accent="primary"] {
+    --roster-line: #{pdz.color(primary-border)};
+    --roster-tint: #{pdz.color(primary-container-low)};
+    --roster-text: #{pdz.color(on-primary-container)};
+    --roster-accent: #{pdz.color(primary-accent)};
+  }
+
+  &[data-accent="secondary"] {
+    --roster-line: #{pdz.color(secondary-border)};
+    --roster-tint: #{pdz.color(secondary-container-low)};
+    --roster-text: #{pdz.color(on-secondary-container)};
+    --roster-accent: #{pdz.color(secondary-accent)};
+  }
+}
+
+.roster__header {
+  display: flex;
+  align-items: center;
+  gap: pdz.space(sm);
+  padding: pdz.space(2xs) pdz.space(sm);
+  background: var(--roster-tint);
+  border-bottom: 1px solid var(--roster-line);
+
+  &--mirrored {
+    flex-direction: row-reverse;
+
+    .roster__team {
+      text-align: end;
+    }
+  }
+}
+
+.roster__team {
+  @include pdz.text(body-sm-strong, $family: false);
+  flex: 1 1 auto;
+  min-width: 0;
+  color: var(--roster-text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.roster__score {
+  flex: none;
+  width: 3.25rem;
+  min-height: 2rem;
+  padding-inline: pdz.space(2xs);
+  @include pdz.text(card-title, $family: false);
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+  color: var(--roster-text);
+  background: pdz.color(surface-container-lowest);
+  border-color: var(--roster-line);
+
+  &:focus,
+  &:focus-visible {
+    border-color: var(--roster-accent);
+    box-shadow: 0 0 0 2px var(--roster-tint);
+  }
+
+  &::-webkit-outer-spin-button,
+  &::-webkit-inner-spin-button {
+    appearance: none;
+    margin: 0;
+  }
+
+  appearance: textfield;
+}
+
+.roster__list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr));
+  gap: pdz.space(2xs);
+  padding: pdz.space(sm);
+}
+
+.mon {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: pdz.space(2xs);
+  min-width: 0;
+  padding: pdz.space(2xs) pdz.space(sm) pdz.space(sm);
+  border: 1px solid transparent;
+  border-radius: pdz.shape(corner-sm);
+  background: pdz.color(surface);
+  transition:
+    background-color pdz.duration(fast) pdz.easing(standard),
+    border-color pdz.duration(fast) pdz.easing(standard);
+
+  &--survived {
+    background: pdz.color(positive-container);
+    border-color: pdz.color(positive);
+  }
+
+  &--fainted {
+    background: pdz.color(negative-container);
+    border-color: pdz.color(negative);
+  }
+}
+
+.mon__head {
+  display: flex;
+  align-items: center;
+  gap: pdz.space(sm);
+  min-width: 0;
+}
+
+.mon__sprite {
+  flex: none;
+}
+
+.mon__identity {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(3xs);
+  flex: 1;
+  min-width: 0;
+}
+
+.mon__name {
+  @include pdz.text(body-sm, $family: false);
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: var(--pdz-font-weight-semibold);
+  color: pdz.color(on-surface);
+}
+
+.mon__status {
+  width: 100%;
+  min-width: 0;
+}
+
+.mon__kills {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  gap: pdz.space(2xs);
+}
+
+.stepper {
+  flex: 1 1 5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: pdz.space(3xs);
+  min-width: 0;
+}
+
+.stepper__label {
+  @include pdz.text(label, $family: false);
+  color: pdz.color(on-surface-variant);
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.stepper__controls {
+  display: flex;
+  align-items: center;
+  gap: pdz.space(3xs);
+  min-width: 0;
+}
+
+.stepper__input {
+  width: 2rem;
+  min-width: 0;
+  padding-left: pdz.space(3xs);
+  padding-right: pdz.space(3xs);
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+
+  &::-webkit-outer-spin-button,
+  &::-webkit-inner-spin-button {
+    appearance: none;
+    margin: 0;
+  }
+
+  appearance: textfield;
+}
