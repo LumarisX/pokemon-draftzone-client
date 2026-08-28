@@ -1,4 +1,3 @@
-import { CommonModule } from '@angular/common';
 import {
   Component,
   EventEmitter,
@@ -25,27 +24,36 @@ import {
   MatchupReportPayload,
   MatchupSideKey,
 } from '../league-matchup.model';
-import { InputDirective } from '@pdz/shared/inputs/field/input.directive';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
-import { SegmentedOptionComponent } from '@pdz/shared/inputs/segmented/segmented-option.component';
-import { SegmentedComponent } from '@pdz/shared/inputs/segmented/segmented.component';
 import { DisclosureComponent } from '@pdz/shared/layout/disclosure/disclosure.component';
 import { ScoreEntryGameComponent } from '@pdz/shared/widgets/score-entry/score-entry-game.component';
+import { ScoreEntryMatchComponent } from '@pdz/shared/widgets/score-entry/score-entry-match.component';
+import { confirmScoreEntry } from '@pdz/shared/widgets/score-entry/score-entry-warnings-dialog.component';
+import { DialogService } from '@pdz/shared/dialogs/dialog/dialog.service';
 import {
   applyReplayToGame,
   buildGameEntry,
+  buildMatchEntry,
+  carriedRosterSeed,
+  forfeitNeedsReason,
+  gameWinner,
+  isGameEmpty,
+  isMatchForfeit,
+  matchForfeitedBy,
+  matchScoreOf,
+  resolvedMatchWinner,
   rosterEntries,
   rosterPayload,
-  matchWins,
+  scoreEntryWarnings,
 } from '@pdz/shared/widgets/score-entry/score-entry.form';
 import {
   SCORE_ENTRY_SIDES,
   ScoreEntryGameForm,
+  ScoreEntryMatchForm,
   ScoreEntrySide,
+  ScoreEntryWarningGroup,
 } from '@pdz/shared/widgets/score-entry/score-entry.model';
-
-type ReportMode = 'games' | 'forfeit' | 'score';
 
 type MatchupPokemonSummary = {
   key: string;
@@ -59,15 +67,12 @@ const ROSTER_SIZE = 6;
 @Component({
   selector: 'pdz-matchup-report',
   imports: [
-    CommonModule,
     ReactiveFormsModule,
     IconComponent,
-    InputDirective,
     ButtonComponent,
-    SegmentedComponent,
-    SegmentedOptionComponent,
     DisclosureComponent,
     ScoreEntryGameComponent,
+    ScoreEntryMatchComponent,
   ],
   templateUrl: './matchup-report.component.html',
   styleUrl: './matchup-report.component.scss',
@@ -81,13 +86,12 @@ export class MatchupReportComponent implements OnInit, OnDestroy {
   private fb = inject(FormBuilder);
   private leagueService = inject(LeagueZoneService);
   private replayService = inject(ReplayService);
+  private dialogs = inject(DialogService);
   private readonly destroy$ = new Subject<void>();
 
   form!: FormGroup<{
+    match: ScoreEntryMatchForm;
     games: FormArray<ScoreEntryGameForm>;
-    forfeitWinner: FormControl<MatchupSideKey | null>;
-    manualScoreTeam1: FormControl<number>;
-    manualScoreTeam2: FormControl<number>;
     notes: FormControl<string>;
   }>;
 
@@ -95,7 +99,6 @@ export class MatchupReportComponent implements OnInit, OnDestroy {
   saveError = signal<string | null>(null);
   analyzingIndex = signal<number | null>(null);
   analysisError = signal<string | null>(null);
-  mode = signal<ReportMode>('games');
   summaryOpen = signal(false);
   openGames = signal<number[]>([0]);
 
@@ -108,10 +111,20 @@ export class MatchupReportComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     const matchup = this.matchup();
-    const seed = matchup.report?.matches.length
-      ? matchup.report.matches
-      : matchup.matches;
+    const report = matchup.report;
+    const seed = report?.matches.length ? report.matches : matchup.matches;
+
     this.form = this.fb.group({
+      match: buildMatchEntry(this.fb, {
+        side1Paste: report?.side1Paste ?? matchup.team1.paste ?? '',
+        side2Paste: report?.side2Paste ?? matchup.team2.paste ?? '',
+        score: report ? [report.score.team1, report.score.team2] : null,
+        winner:
+          report?.winner === 'side1' || report?.winner === 'side2'
+            ? report.winner
+            : null,
+        forfeit: this.seedForfeit(),
+      }),
       games: this.fb.array(
         seed.length
           ? seed.map((game) =>
@@ -130,13 +143,16 @@ export class MatchupReportComponent implements OnInit, OnDestroy {
             )
           : [this.buildGame()],
       ),
-      forfeitWinner: this.fb.control<MatchupSideKey | null>(null),
-      manualScoreTeam1: this.fb.control(0, { nonNullable: true }),
-      manualScoreTeam2: this.fb.control(0, { nonNullable: true }),
-      notes: this.fb.control(this.matchup().report?.notes ?? '', {
-        nonNullable: true,
-      }),
+      notes: this.fb.control(report?.notes ?? '', { nonNullable: true }),
     });
+  }
+
+  private seedForfeit(): 'side1' | 'side2' | 'both' | null {
+    const report = this.matchup().report;
+    if (!report?.forfeit) return null;
+    if (report.winner === 'side1') return 'side2';
+    if (report.winner === 'side2') return 'side1';
+    return 'both';
   }
 
   ngOnDestroy(): void {
@@ -144,14 +160,8 @@ export class MatchupReportComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  setMode(mode: ReportMode): void {
-    this.mode.set(mode);
-  }
-
-  setForfeitWinner(side: MatchupSideKey): void {
-    this.form.controls.forfeitWinner.setValue(
-      this.form.controls.forfeitWinner.value === side ? null : side,
-    );
+  get match(): ScoreEntryMatchForm {
+    return this.form.controls.match;
   }
 
   get games(): FormArray<ScoreEntryGameForm> {
@@ -160,6 +170,10 @@ export class MatchupReportComponent implements OnInit, OnDestroy {
 
   get gameControls(): ScoreEntryGameForm[] {
     return this.games.controls;
+  }
+
+  get notesControl(): FormControl<string> {
+    return this.form.controls.notes;
   }
 
   nameOf(id: string): string {
@@ -176,8 +190,15 @@ export class MatchupReportComponent implements OnInit, OnDestroy {
     return { side1: this.teamName('side1'), side2: this.teamName('side2') };
   }
 
+  isForfeit(): boolean {
+    return isMatchForfeit(this.match);
+  }
+
   addGame(): void {
-    this.games.push(this.buildGame());
+    const previous = this.gameControls[this.gameControls.length - 1];
+    this.games.push(
+      this.buildGame(previous ? carriedRosterSeed(previous) : undefined),
+    );
     this.openGames.set([this.games.length - 1]);
   }
 
@@ -202,7 +223,7 @@ export class MatchupReportComponent implements OnInit, OnDestroy {
   }
 
   seriesScore(side: ScoreEntrySide): number {
-    return matchWins(this.gameControls, side);
+    return matchScoreOf(this.match, this.gameControls, side);
   }
 
   getPokemonSummary(side: ScoreEntrySide): MatchupPokemonSummary[] {
@@ -231,22 +252,18 @@ export class MatchupReportComponent implements OnInit, OnDestroy {
     });
   }
 
-  get incompleteGames(): number[] {
-    return this.gameControls
-      .map((game, index) => (game.controls.winner.value ? -1 : index + 1))
-      .filter((value) => value > 0);
+  get playedGames(): ScoreEntryGameForm[] {
+    if (this.isForfeit()) return [];
+    return this.gameControls.filter((game) => !isGameEmpty(game));
+  }
+
+  get needsForfeitReason(): boolean {
+    return forfeitNeedsReason(this.match, this.notesControl);
   }
 
   get canSubmit(): boolean {
     if (this.saving()) return false;
-    switch (this.mode()) {
-      case 'forfeit':
-        return this.form.controls.forfeitWinner.value !== null;
-      case 'score':
-        return true;
-      default:
-        return this.incompleteGames.length === 0;
-    }
+    return !this.needsForfeitReason;
   }
 
   analyze(index: number): void {
@@ -280,8 +297,23 @@ export class MatchupReportComponent implements OnInit, OnDestroy {
       });
   }
 
-  submit(): void {
+  warnings(): ScoreEntryWarningGroup[] {
+    return scoreEntryWarnings(this.match, this.gameControls, {
+      sideNames: this.sideNames,
+      expectedRoster: this.rosterSize,
+    });
+  }
+
+  async submit(): Promise<void> {
     if (!this.canSubmit) return;
+    if (
+      !(await confirmScoreEntry(
+        this.dialogs,
+        this.warnings(),
+        'Submit anyway',
+      ))
+    )
+      return;
 
     this.saving.set(true);
     this.saveError.set(null);
@@ -302,34 +334,12 @@ export class MatchupReportComponent implements OnInit, OnDestroy {
   }
 
   private buildPayload(): MatchupReportPayload {
-    const notes = this.form.controls.notes.value.trim() || undefined;
+    const forfeit = matchForfeitedBy(this.match);
+    const winner = resolvedMatchWinner(this.match, this.gameControls);
 
-    if (this.mode() === 'forfeit') {
-      const winner = this.form.controls.forfeitWinner.value as MatchupSideKey;
-      return { winner, forfeit: true, matches: [], notes };
-    }
-
-    if (this.mode() === 'score') {
-      const score = {
-        team1: this.form.controls.manualScoreTeam1.value,
-        team2: this.form.controls.manualScoreTeam2.value,
-      };
-      return {
-        score,
-        winner:
-          score.team1 > score.team2
-            ? 'side1'
-            : score.team2 > score.team1
-              ? 'side2'
-              : 'draw',
-        matches: [],
-        notes,
-      };
-    }
-
-    const matches = this.gameControls.map((game) => ({
+    const matches = this.playedGames.map((game) => ({
       link: game.controls.link.value.trim() || undefined,
-      winner: game.controls.winner.value as MatchupSideKey,
+      winner: (gameWinner(game) ?? 'draw') as MatchupSideKey | 'draw',
       team1: {
         score: game.controls.side1Score.value,
         pokemon: rosterPayload(game, 'side1'),
@@ -340,21 +350,17 @@ export class MatchupReportComponent implements OnInit, OnDestroy {
       },
     }));
 
-    const score = {
-      team1: this.seriesScore('side1'),
-      team2: this.seriesScore('side2'),
-    };
-
     return {
-      score,
-      winner:
-        score.team1 > score.team2
-          ? 'side1'
-          : score.team2 > score.team1
-            ? 'side2'
-            : 'draw',
+      score: {
+        team1: this.seriesScore('side1'),
+        team2: this.seriesScore('side2'),
+      },
+      winner: winner ?? 'draw',
+      ...(forfeit ? { forfeit: true } : {}),
       matches,
-      notes,
+      notes: this.notesControl.value.trim() || undefined,
+      side1Paste: this.match.controls.side1Paste.value.trim() || undefined,
+      side2Paste: this.match.controls.side2Paste.value.trim() || undefined,
     };
   }
 

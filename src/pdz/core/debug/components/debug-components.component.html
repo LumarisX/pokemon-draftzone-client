@@ -1385,11 +1385,13 @@
   <h2 class="section__title">Score entry</h2>
   <p class="section__hint">
     One game of a match report: a compact replay link plus analyze in the header,
-    an overridable winner and score, non-blocking warnings when the numbers
-    disagree, and a roster per side where each Pokémon carries a status dropdown
-    and three boxed kill steppers. The score tracks survivors until someone types
-    over it, then a reset button hands it back. Shared by the league coach report
-    and the draft opponent score page.
+    an overridable winner and score, and a roster per side where each Pokémon
+    carries a status dropdown and three boxed kill steppers. The score tracks
+    survivors until someone types over it, then a reset button hands it back.
+    Nothing is flagged while you type — roster gaps, unaccounted KOs and missing
+    winners are collected by `scoreEntryWarnings` and raised once, in a dialog,
+    on submit. Shared by the league coach report and the draft opponent score
+    page.
   </p>
 
   <pdz-score-entry-game
@@ -1397,4 +1399,38 @@
     [sideNames]="scoreEntrySideNames"
     label="Game 1"
   />
+</section>
+
+<section class="section">
+  <h2 class="section__title">Score entry — match header</h2>
+  <p class="section__hint">
+    The match-level row above the games: a team link and an overridable series
+    score per side, a forfeit toggle that hands the win to the other team and
+    takes the games out of play, and a winner select that follows the score
+    until it is set by hand. A forfeit captions the select to say why it locked.
+    Pass a notes control and it relabels itself to a required explanation the
+    moment a forfeit is toggled on. Shared by the league coach report and the
+    draft opponent score page.
+  </p>
+
+  <pdz-score-entry-match
+    [match]="scoreEntryMatch"
+    [sideNames]="scoreEntrySideNames"
+    [notes]="scoreEntryNotes"
+    notesLabel="Notes for the organizers (optional)"
+  />
+</section>
+
+<section class="section">
+  <h2 class="section__title">Score entry — submit checks</h2>
+  <p class="section__hint">
+    What `scoreEntryWarnings` collects while you fill a report, raised once on
+    submit instead of nagging inline. Grouped by where each problem came from,
+    and never blocking — "Submit anyway" is a real option, because a coach can
+    be right and the reconciliation wrong.
+  </p>
+
+  <button pdz-button (click)="openScoreEntryChecks()">
+    Open submit checks
+  </button>
 </section>

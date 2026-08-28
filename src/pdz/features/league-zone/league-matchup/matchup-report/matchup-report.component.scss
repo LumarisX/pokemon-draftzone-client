@@ -20,57 +20,6 @@
     color: pdz.color("on-surface-variant");
   }
 
-  &__mode {
-    display: flex;
-    gap: pdz.space(3xs);
-    padding: pdz.space(3xs);
-    border: 1px solid pdz.color("outline-variant");
-    border-radius: pdz.shape("corner-full");
-    background: pdz.color("surface-container-lowest");
-  }
-
-  &__panel {
-    display: flex;
-    flex-direction: column;
-    gap: pdz.space(sm);
-    padding: pdz.space(md);
-    border: 1px solid pdz.color("outline-variant");
-    border-radius: pdz.shape("corner-md");
-    background: pdz.color("surface-container-lowest");
-
-    .report__intro {
-      color: pdz.color("on-surface");
-    }
-  }
-
-  &__forfeit {
-    display: flex;
-    flex-direction: column;
-    gap: pdz.space(2xs);
-
-    @include respond-above(medium) {
-      flex-direction: row;
-    }
-  }
-
-  &__manual-score-fields {
-    display: flex;
-    flex-wrap: wrap;
-    gap: pdz.space(lg);
-  }
-
-  &__manual-score-field {
-    display: flex;
-    flex-direction: column;
-    gap: pdz.space(3xs);
-    @include text(label);
-    color: pdz.color("on-surface-variant");
-
-    .pdz-input {
-      width: 6rem;
-    }
-  }
-
   &__games {
     display: flex;
     flex-direction: column;
@@ -138,22 +87,6 @@
     color: pdz.color("on-surface-variant");
   }
 
-  &__notes {
-    display: flex;
-    flex-direction: column;
-    gap: pdz.space(3xs);
-  }
-
-  &__notes-label {
-    @include text(label);
-    color: pdz.color("on-surface-variant");
-  }
-
-  &__notes-input {
-    min-height: 2.5rem;
-    background: pdz.color("surface-container-lowest");
-  }
-
   &__footer {
     display: flex;
     flex-wrap: wrap;
@@ -167,12 +100,6 @@
   &__series {
     @include text(label);
     font-variant-numeric: tabular-nums;
-    color: pdz.color("on-surface-variant");
-  }
-
-  &__hint {
-    @include text(label);
-    margin: 0;
     color: pdz.color("on-surface-variant");
   }
 

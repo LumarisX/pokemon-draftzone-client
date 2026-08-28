@@ -11,22 +11,38 @@ import { DRAFT_OVERVIEW_PATH } from '@pdz/core/route-paths';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
-import { InputDirective } from '@pdz/shared/inputs/field/input.directive';
-import { SelectOptionComponent } from '@pdz/shared/dropdowns/select/select-option.component';
-import { SelectComponent } from '@pdz/shared/dropdowns/select/select.component';
+import { DialogService } from '@pdz/shared/dialogs/dialog/dialog.service';
 import { ScoreEntryGameComponent } from '@pdz/shared/widgets/score-entry/score-entry-game.component';
+import { ScoreEntryMatchComponent } from '@pdz/shared/widgets/score-entry/score-entry-match.component';
+import { confirmScoreEntry } from '@pdz/shared/widgets/score-entry/score-entry-warnings-dialog.component';
 import {
   applyReplayToGame,
   buildGameEntry,
+  buildMatchEntry,
+  carriedRosterSeed,
+  gameWinner,
+  inferredMatchScore,
+  inferredMatchWinner,
+  matchForfeitControl,
+  matchForfeitedBy,
+  matchScoreControl,
+  matchScoreOf,
+  resetMatchScore,
+  resolvedMatchWinner,
   rosterPayload,
-  matchWins,
+  scoreEntryWarnings,
+  setMatchWinner,
+  syncMatchScore,
+  toggleMatchForfeit,
 } from '@pdz/shared/widgets/score-entry/score-entry.form';
 import {
   ScoreEntryGameForm,
   ScoreEntryGameSeed,
+  ScoreEntryMatchForm,
   ScoreEntryPokemon,
   ScoreEntryRoster,
   ScoreEntrySide,
+  ScoreEntryWarningGroup,
 } from '@pdz/shared/widgets/score-entry/score-entry.model';
 import { Subject, takeUntil } from 'rxjs';
 import { ReplayService } from '@pdz/features/tools/replay_analyzer/replay.service';
@@ -53,11 +69,9 @@ const SIDE_OF: Record<ScoreEntrySide, MatchSide> = { side1: 'a', side2: 'b' };
     ReactiveFormsModule,
     ButtonComponent,
     IconComponent,
-    InputDirective,
     LoadingComponent,
     ScoreEntryGameComponent,
-    SelectComponent,
-    SelectOptionComponent,
+    ScoreEntryMatchComponent,
   ],
 })
 export class OpponentScoreComponent implements OnInit, OnDestroy {
@@ -66,15 +80,10 @@ export class OpponentScoreComponent implements OnInit, OnDestroy {
   private replayService = inject(ReplayService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
+  private dialogs = inject(DialogService);
   private readonly destroy$ = new Subject<void>();
 
   readonly draftPath = DRAFT_OVERVIEW_PATH;
-  readonly sides: ScoreEntrySide[] = ['side1', 'side2'];
-
-  readonly accents: Record<ScoreEntrySide, 'primary' | 'secondary'> = {
-    side1: 'primary',
-    side2: 'secondary',
-  };
 
   teamId = '';
   matchupId = '';
@@ -82,15 +91,8 @@ export class OpponentScoreComponent implements OnInit, OnDestroy {
   pokedex: Record<string, ScoreEntryPokemon> = {};
 
   form?: FormGroup<{
-    aTeamPaste: FormControl<string>;
-    bTeamPaste: FormControl<string>;
+    match: ScoreEntryMatchForm;
     games: FormArray<ScoreEntryGameForm>;
-    matchScore1: FormControl<number>;
-    matchScore2: FormControl<number>;
-    matchScoreLocked: FormControl<boolean>;
-    matchWinner: FormControl<ScoreEntrySide | null>;
-    forfeit1: FormControl<boolean>;
-    forfeit2: FormControl<boolean>;
   }>;
 
   saving = signal(false);
@@ -137,40 +139,29 @@ export class OpponentScoreComponent implements OnInit, OnDestroy {
     const override = matchup.scoreOverride ?? null;
 
     this.form = this.fb.group({
-      aTeamPaste: this.fb.control(matchup.aTeam.paste ?? '', {
-        nonNullable: true,
-      }),
-      bTeamPaste: this.fb.control(matchup.bTeam.paste ?? '', {
-        nonNullable: true,
+      match: buildMatchEntry(this.fb, {
+        side1Paste: matchup.aTeam.paste ?? '',
+        side2Paste: matchup.bTeam.paste ?? '',
+        score: override,
+        winner:
+          matchup.winnerOverride === 'a'
+            ? 'side1'
+            : matchup.winnerOverride === 'b'
+              ? 'side2'
+              : null,
+        forfeit:
+          matchup.forfeitedBy === 'a'
+            ? 'side1'
+            : matchup.forfeitedBy === 'b'
+              ? 'side2'
+              : matchup.forfeitedBy === 'both'
+                ? 'both'
+                : null,
       }),
       games: this.fb.array(games),
-      matchScore1: this.fb.control(override?.[0] ?? 0, { nonNullable: true }),
-      matchScore2: this.fb.control(override?.[1] ?? 0, { nonNullable: true }),
-      matchScoreLocked: this.fb.control(override !== null, {
-        nonNullable: true,
-      }),
-      matchWinner: this.fb.control<ScoreEntrySide | null>(
-        matchup.winnerOverride === 'a'
-          ? 'side1'
-          : matchup.winnerOverride === 'b'
-            ? 'side2'
-            : null,
-      ),
-      forfeit1: this.fb.control(
-        matchup.forfeitedBy === 'a' || matchup.forfeitedBy === 'both',
-        { nonNullable: true },
-      ),
-      forfeit2: this.fb.control(
-        matchup.forfeitedBy === 'b' || matchup.forfeitedBy === 'both',
-        { nonNullable: true },
-      ),
     });
 
-    if (override === null) this.syncMatchScore();
-
-    this.form.controls.games.valueChanges
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(() => this.syncMatchScore());
+    this.syncMatchScore();
   }
 
   private indexTeams(matchup: Matchup): void {
@@ -224,6 +215,10 @@ export class OpponentScoreComponent implements OnInit, OnDestroy {
     }, {});
   }
 
+  get match(): ScoreEntryMatchForm {
+    return this.form!.controls.match;
+  }
+
   get games(): FormArray<ScoreEntryGameForm> {
     return this.form!.controls.games;
   }
@@ -243,7 +238,10 @@ export class OpponentScoreComponent implements OnInit, OnDestroy {
   }
 
   addGame(): void {
-    this.games.push(this.buildGame());
+    const previous = this.gameControls[this.gameControls.length - 1];
+    this.games.push(
+      this.buildGame(previous ? carriedRosterSeed(previous) : undefined),
+    );
     this.openGames.set([this.games.length - 1]);
     this.syncMatchScore();
   }
@@ -270,47 +268,21 @@ export class OpponentScoreComponent implements OnInit, OnDestroy {
   }
 
   inferredMatchScore(): [number, number] {
-    const games = this.gameControls;
-    if (games.length === 1) {
-      return [
-        games[0].controls.side1Score.value,
-        games[0].controls.side2Score.value,
-      ];
-    }
-    return [matchWins(games, 'side1'), matchWins(games, 'side2')];
+    return inferredMatchScore(this.gameControls);
   }
 
   matchScore(side: ScoreEntrySide): number {
-    const form = this.form;
-    if (!form) return 0;
-    if (form.controls.matchScoreLocked.value) {
-      return side === 'side1'
-        ? form.controls.matchScore1.value
-        : form.controls.matchScore2.value;
-    }
-    const inferred = this.inferredMatchScore();
-    return side === 'side1' ? inferred[0] : inferred[1];
-  }
-
-  isMatchScoreLocked(): boolean {
-    return !!this.form?.controls.matchScoreLocked.value;
+    if (!this.form) return 0;
+    return matchScoreOf(this.match, this.gameControls, side);
   }
 
   matchScoreControl(side: ScoreEntrySide): FormControl<number> {
-    return side === 'side1'
-      ? this.form!.controls.matchScore1
-      : this.form!.controls.matchScore2;
-  }
-
-  pasteControl(side: ScoreEntrySide): FormControl<string> {
-    return side === 'side1'
-      ? this.form!.controls.aTeamPaste
-      : this.form!.controls.bTeamPaste;
+    return matchScoreControl(this.match, side);
   }
 
   onMatchScoreInput(event: Event): void {
     if ((event.target as HTMLInputElement).value.trim() === '') return;
-    this.form?.controls.matchScoreLocked.setValue(true);
+    this.match.controls.scoreLocked.setValue(true);
   }
 
   onMatchScoreBlur(side: ScoreEntrySide): void {
@@ -321,69 +293,43 @@ export class OpponentScoreComponent implements OnInit, OnDestroy {
   }
 
   resetMatchScore(): void {
-    this.form?.controls.matchScoreLocked.setValue(false);
-    this.syncMatchScore();
+    resetMatchScore(this.match, this.gameControls);
   }
 
   syncMatchScore(): void {
-    const form = this.form;
-    if (!form || form.controls.matchScoreLocked.value) return;
-    const [side1, side2] = this.inferredMatchScore();
-    form.controls.matchScore1.setValue(side1);
-    form.controls.matchScore2.setValue(side2);
+    if (!this.form) return;
+    syncMatchScore(this.match, this.gameControls);
   }
 
   inferredMatchWinner(): ScoreEntrySide | null {
-    const [side1, side2] = [this.matchScore('side1'), this.matchScore('side2')];
-    if (side1 > side2) return 'side1';
-    if (side2 > side1) return 'side2';
-    return null;
+    return inferredMatchWinner(this.match, this.gameControls);
   }
 
   matchWinner(): ScoreEntrySide | null {
-    const forfeited = this.forfeitedBy();
-    if (forfeited === 'both') return null;
-    if (forfeited === 'a') return 'side2';
-    if (forfeited === 'b') return 'side1';
-    return this.form?.controls.matchWinner.value ?? this.inferredMatchWinner();
-  }
-
-  isMatchWinnerOverridden(): boolean {
-    return this.form?.controls.matchWinner.value !== null;
+    if (!this.form) return null;
+    return resolvedMatchWinner(this.match, this.gameControls);
   }
 
   setMatchWinner(side: ScoreEntrySide | null): void {
-    if (side && !this.isForfeit()) {
-      this.form?.controls.matchWinner.setValue(side);
-    }
+    setMatchWinner(this.match, side);
   }
 
   clearMatchWinner(): void {
-    this.form?.controls.matchWinner.setValue(null);
-  }
-
-  forfeitControl(side: ScoreEntrySide): FormControl<boolean> {
-    return side === 'side1'
-      ? this.form!.controls.forfeit1
-      : this.form!.controls.forfeit2;
+    this.match.controls.winner.setValue(null);
   }
 
   hasForfeited(side: ScoreEntrySide): boolean {
-    return !!this.form && this.forfeitControl(side).value;
+    return !!this.form && matchForfeitControl(this.match, side).value;
   }
 
   toggleForfeit(side: ScoreEntrySide): void {
-    const control = this.forfeitControl(side);
-    control.setValue(!control.value);
+    toggleMatchForfeit(this.match, side);
   }
 
   forfeitedBy(): ForfeitSide | null {
-    const side1 = this.hasForfeited('side1');
-    const side2 = this.hasForfeited('side2');
-    if (side1 && side2) return 'both';
-    if (side1) return 'a';
-    if (side2) return 'b';
-    return null;
+    const forfeited = matchForfeitedBy(this.match);
+    if (forfeited === null) return null;
+    return forfeited === 'both' ? 'both' : SIDE_OF[forfeited];
   }
 
   isForfeit(): boolean {
@@ -392,12 +338,6 @@ export class OpponentScoreComponent implements OnInit, OnDestroy {
 
   isDoubleForfeit(): boolean {
     return this.forfeitedBy() === 'both';
-  }
-
-  //Empty intentionally. May add match warning in the future if a good use case is found.
-  matchWarnings(): string[] {
-    const warnings: string[] = [];
-    return warnings;
   }
 
   analyze(index: number): void {
@@ -444,8 +384,17 @@ export class OpponentScoreComponent implements OnInit, OnDestroy {
     return ids;
   }
 
-  submit(): void {
+  warnings(): ScoreEntryWarningGroup[] {
+    if (!this.form) return [];
+    return scoreEntryWarnings(this.match, this.gameControls, {
+      sideNames: this.sideNames,
+    });
+  }
+
+  async submit(): Promise<void> {
     if (!this.form || this.saving()) return;
+    if (!(await confirmScoreEntry(this.dialogs, this.warnings(), 'Save anyway')))
+      return;
 
     this.saving.set(true);
     this.saveError.set(null);
@@ -466,24 +415,24 @@ export class OpponentScoreComponent implements OnInit, OnDestroy {
   }
 
   private buildPayload(): ScorePatch {
-    const form = this.form!;
-    const winner = form.controls.matchWinner.value;
+    const match = this.match;
+    const winner = match.controls.winner.value;
 
     return {
-      aTeamPaste: form.controls.aTeamPaste.value,
-      bTeamPaste: form.controls.bTeamPaste.value,
+      aTeamPaste: match.controls.side1Paste.value,
+      bTeamPaste: match.controls.side2Paste.value,
       matches: this.gameControls.map((game) => {
         const replay = game.controls.link.value.trim();
-        const gameWinner = game.controls.winner.value;
+        const winner = gameWinner(game);
         return {
           aTeam: this.teamPayload(game, 'side1'),
           bTeam: this.teamPayload(game, 'side2'),
           ...(replay ? { replay } : {}),
-          ...(gameWinner ? { winner: SIDE_OF[gameWinner] } : {}),
+          ...(winner ? { winner: SIDE_OF[winner] } : {}),
         };
       }),
-      scoreOverride: form.controls.matchScoreLocked.value
-        ? [form.controls.matchScore1.value, form.controls.matchScore2.value]
+      scoreOverride: match.controls.scoreLocked.value
+        ? [match.controls.side1Score.value, match.controls.side2Score.value]
         : null,
       winnerOverride: winner ? SIDE_OF[winner] : null,
       forfeitedBy: this.forfeitedBy(),

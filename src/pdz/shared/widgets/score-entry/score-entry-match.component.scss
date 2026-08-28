@@ -1,0 +1,209 @@
+@use "pdz-theming" as pdz;
+
+:host {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(md);
+}
+
+.match {
+  display: grid;
+  grid-template-columns: 1fr;
+  align-items: center;
+  gap: pdz.space(2xs) pdz.space(md);
+  padding: pdz.space(md);
+  border: 1px solid pdz.color(outline-variant);
+  border-radius: pdz.shape(corner-md);
+  background: pdz.color(surface-container-low);
+
+  @include pdz.respond-above(medium) {
+    grid-template-columns: 1fr auto 1fr;
+
+    .match__side {
+      grid-column: 1;
+      grid-row: 1;
+    }
+
+    .match__side--end {
+      grid-column: 3;
+      grid-row: 1;
+    }
+
+    .match__paste {
+      grid-column: 1;
+      grid-row: 2;
+    }
+
+    .match__paste--end {
+      grid-column: 3;
+      grid-row: 2;
+    }
+
+    .match__winner-cell {
+      grid-column: 2;
+      grid-row: 1 / span 2;
+    }
+
+    .match__notes {
+      grid-column: 1 / -1;
+      grid-row: 3;
+    }
+  }
+}
+
+.match__side {
+  --side-line: #{pdz.color(outline-variant)};
+  --side-text: #{pdz.color(on-surface)};
+  --side-accent: #{pdz.color(outline)};
+  --side-tint: #{pdz.color(surface-container)};
+
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: pdz.space(3xs);
+  min-width: 0;
+  order: 1;
+
+  &[data-accent="primary"] {
+    --side-line: #{pdz.color(primary-border)};
+    --side-text: #{pdz.color(on-primary-container)};
+    --side-accent: #{pdz.color(primary-accent)};
+    --side-tint: #{pdz.color(primary-container-low)};
+  }
+
+  &[data-accent="secondary"] {
+    --side-line: #{pdz.color(secondary-border)};
+    --side-text: #{pdz.color(on-secondary-container)};
+    --side-accent: #{pdz.color(secondary-accent)};
+    --side-tint: #{pdz.color(secondary-container-low)};
+  }
+
+  &--end {
+    align-items: flex-end;
+    order: 4;
+  }
+}
+
+.match__side-head {
+  display: flex;
+  align-items: center;
+  gap: pdz.space(sm);
+  max-width: 100%;
+  min-width: 0;
+
+  .match__side--end & {
+    flex-direction: row-reverse;
+  }
+}
+
+.match__name {
+  @include pdz.text(subtitle, $family: false);
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--side-text);
+}
+
+.match__score-input {
+  flex: none;
+  width: 4rem;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+  font-size: pdz.font-size(lg);
+  font-weight: pdz.font-weight(semibold);
+  color: var(--side-text);
+  background: pdz.color(surface-container-lowest);
+  border-color: var(--side-line);
+
+  &:focus,
+  &:focus-visible {
+    border-color: var(--side-accent);
+    box-shadow: 0 0 0 2px var(--side-tint);
+  }
+}
+
+.match__forfeit {
+  flex: none;
+}
+
+.match__winner-cell {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: pdz.space(3xs);
+  min-width: 0;
+  order: 3;
+}
+
+.match__winner-caption {
+  @include pdz.text(label, $family: false);
+  text-align: center;
+  color: pdz.color(on-surface-variant);
+}
+
+.match__winner {
+  --pdz-select-surface: #{pdz.color(surface-container-lowest)};
+
+  min-width: 10rem;
+
+  &[data-winner="side1"] {
+    --pdz-select-surface: #{pdz.color(primary-container-low)};
+    --pdz-select-border: #{pdz.color(primary-border)};
+    --pdz-select-on-surface: #{pdz.color(on-primary-container)};
+  }
+
+  &[data-winner="side2"] {
+    --pdz-select-surface: #{pdz.color(secondary-container-low)};
+    --pdz-select-border: #{pdz.color(secondary-border)};
+    --pdz-select-on-surface: #{pdz.color(on-secondary-container)};
+  }
+}
+
+.match__paste {
+  --side-line: #{pdz.color(outline-variant)};
+
+  width: 100%;
+  min-width: 0;
+  order: 2;
+  background: pdz.color(surface-container-lowest);
+  border-color: var(--side-line);
+
+  &[data-accent="primary"] {
+    --side-line: #{pdz.color(primary-border)};
+  }
+
+  &[data-accent="secondary"] {
+    --side-line: #{pdz.color(secondary-border)};
+  }
+
+  &--end {
+    order: 5;
+  }
+}
+
+.match__notes {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(3xs);
+  min-width: 0;
+  order: 6;
+  padding-top: pdz.space(2xs);
+}
+
+.match__notes-label {
+  @include pdz.text(label, $family: false);
+  color: pdz.color(on-surface-variant);
+}
+
+.match__notes-input {
+  min-height: 2.5rem;
+  background: pdz.color(surface-container-lowest);
+}
+
+.match__notes-error {
+  @include pdz.text(label, $family: false);
+  color: pdz.color(danger);
+}
+

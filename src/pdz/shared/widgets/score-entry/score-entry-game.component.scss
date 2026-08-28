@@ -84,27 +84,6 @@
   padding: 0 pdz.space(md) pdz.space(md);
 }
 
-.game__warnings {
-  display: flex;
-  gap: pdz.space(2xs);
-  padding: pdz.space(2xs) pdz.space(sm);
-  border-radius: pdz.shape(corner-sm);
-  border-left: 3px solid pdz.color(warning);
-  background: pdz.color(warning-container);
-  color: pdz.color(on-warning-container);
-}
-
-.game__warnings-list {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  min-width: 0;
-}
-
-.game__warning {
-  @include pdz.text(label, $family: false);
-}
-
 .game__rosters {
   display: grid;
   grid-template-columns: 1fr;

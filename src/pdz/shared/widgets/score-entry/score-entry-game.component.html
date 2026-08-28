@@ -3,7 +3,7 @@
   tone="panel"
   [trailingGrow]="true"
   [heading]="label()"
-  [attr.data-winner]="game().controls.winner.value"
+  [attr.data-winner]="winner()"
   [(open)]="open"
 >
   <div pdz-disclosure-trailing class="game__controls">
@@ -44,11 +44,10 @@
         size="sm"
         placeholder="Undecided"
         aria-label="Game winner"
-        [attr.data-winner]="game().controls.winner.value"
-        [value]="game().controls.winner.value"
+        [attr.data-winner]="winner()"
+        [value]="winner()"
         (valueChange)="onWinner($any($event))"
       >
-        <pdz-option [value]="null" label="Undecided" />
         @for (side of sides; track side) {
           <pdz-option [value]="side" [label]="teamName(side)" />
         }
@@ -83,17 +82,5 @@
         />
       }
     </div>
-    @if (warnings(); as list) {
-      @if (list.length) {
-        <div class="game__warnings" role="status">
-          <pdz-icon name="warning" [size]="14"></pdz-icon>
-          <div class="game__warnings-list">
-            @for (warning of list; track warning) {
-              <span class="game__warning">{{ warning }}</span>
-            }
-          </div>
-        </div>
-      }
-    }
   </div>
 </pdz-disclosure>

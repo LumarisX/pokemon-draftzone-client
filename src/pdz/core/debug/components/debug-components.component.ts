@@ -72,7 +72,12 @@ import {
   ChipVariant,
 } from '@pdz/shared/data/chip/chip.component';
 import { ScoreEntryGameComponent } from '@pdz/shared/widgets/score-entry/score-entry-game.component';
-import { buildGameEntry } from '@pdz/shared/widgets/score-entry/score-entry.form';
+import { ScoreEntryMatchComponent } from '@pdz/shared/widgets/score-entry/score-entry-match.component';
+import { confirmScoreEntry } from '@pdz/shared/widgets/score-entry/score-entry-warnings-dialog.component';
+import {
+  buildGameEntry,
+  buildMatchEntry,
+} from '@pdz/shared/widgets/score-entry/score-entry.form';
 import { ScoreEntrySide } from '@pdz/shared/widgets/score-entry/score-entry.model';
 
 const THEME_ATTR = 'pdz-theme';
@@ -112,6 +117,7 @@ const MODE_ATTR = 'pdz-theme-mode';
     PokemonTypeComponent,
     SpriteComponent,
     ScoreEntryGameComponent,
+    ScoreEntryMatchComponent,
   ],
   templateUrl: './debug-components.component.html',
   styleUrl: './debug-components.component.scss',
@@ -541,6 +547,32 @@ export class DebugComponentsComponent {
       },
     },
   );
+
+  readonly scoreEntryMatch = buildMatchEntry(inject(FormBuilder), {
+    side1Paste: 'pokepast.es/alolan-exiles',
+    winner: 'side1',
+  });
+
+  readonly scoreEntryNotes = new FormControl('', { nonNullable: true });
+
+  openScoreEntryChecks(): void {
+    confirmScoreEntry(this.dialogs, [
+      {
+        where: 'Game 2',
+        messages: [
+          'No winner is picked.',
+          'Alolan Exiles brought 5 of 6 Pokemon.',
+          'Alolan Exiles is credited with 2 KOs but Rocket Grunts lost 4 Pokemon.',
+        ],
+      },
+      {
+        where: 'Match result',
+        messages: [
+          'Rocket Grunts is set as the winner but has the lower score.',
+        ],
+      },
+    ]);
+  }
 
   readonly manyTabs = [
     'Overview',

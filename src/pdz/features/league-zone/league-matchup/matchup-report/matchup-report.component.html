@@ -1,77 +1,20 @@
 <form class="report" [formGroup]="form" (ngSubmit)="submit()">
-  <pdz-segmented
-    class="report__mode"
-    aria-label="Report mode"
-    [value]="mode()"
-    (valueChange)="setMode($any($event))"
-  >
-    <pdz-segmented-option
-      value="games"
-      label="Games"
-      icon="stadia_controller"
-    />
-    <pdz-segmented-option value="forfeit" label="Forfeit" icon="flag" />
-    <pdz-segmented-option value="score" label="Score" icon="edit" />
-  </pdz-segmented>
+  <p class="report__intro">
+    Fill in each game, then send it to the organizers. Paste a replay link and
+    hit analyze to fill the stats in for you. Type over a team's score to set
+    the series result by hand, or mark a side as a forfeit.
+  </p>
 
-  @if (mode() === "forfeit") {
-    <div class="report__panel">
-      <p class="report__intro">Pick which team wins by forfeit.</p>
-      <pdz-segmented
-        class="report__forfeit"
-        align="stretch"
-        aria-label="Forfeit winner"
-        [value]="form.controls.forfeitWinner.value"
-        (valueChange)="setForfeitWinner($any($event))"
-      >
-        <pdz-segmented-option
-          value="side1"
-          [label]="'Forfeit win: ' + teamName('side1')"
-        />
-        <pdz-segmented-option
-          value="side2"
-          [label]="'Forfeit win: ' + teamName('side2')"
-        />
-      </pdz-segmented>
-    </div>
-  }
+  <pdz-score-entry-match
+    [match]="match"
+    [games]="games"
+    [sideNames]="sideNames"
+    [notes]="notesControl"
+    notesLabel="Notes for the organizers (optional)"
+    notesPlaceholder="Anything the organizers should know…"
+  />
 
-  @if (mode() === "score") {
-    <div class="report__panel">
-      <p class="report__intro">
-        Enter the final series score directly, without a game-by-game breakdown.
-      </p>
-      <div class="report__manual-score-fields">
-        <label class="report__manual-score-field">
-          <span>{{ teamName("side1") }}</span>
-          <input
-            type="number"
-            min="0"
-            pdz-input
-            size="sm"
-            formControlName="manualScoreTeam1"
-          />
-        </label>
-        <label class="report__manual-score-field">
-          <span>{{ teamName("side2") }}</span>
-          <input
-            type="number"
-            min="0"
-            pdz-input
-            size="sm"
-            formControlName="manualScoreTeam2"
-          />
-        </label>
-      </div>
-    </div>
-  }
-
-  @if (mode() === "games") {
-    <p class="report__intro">
-      Fill in each game, then send it to the organizers. Paste a replay link and
-      hit analyze to fill the stats in for you.
-    </p>
-
+  @if (!isForfeit()) {
     <div class="report__games">
       @for (game of gameControls; track $index) {
         <pdz-score-entry-game
@@ -80,6 +23,7 @@
           [label]="'Game ' + ($index + 1)"
           [analyzing]="analyzingIndex() === $index"
           [expectedRoster]="rosterSize"
+          [removable]="gameControls.length > 1"
           [open]="isGameOpen($index)"
           (openChange)="setGameOpen($index, $event)"
           (analyze)="analyze($index)"
@@ -127,31 +71,12 @@
     </div>
   }
 
-  <label class="report__notes">
-    <span class="report__notes-label">Notes for the organizers (optional)</span>
-    <textarea
-      pdz-input
-      class="report__notes-input"
-      formControlName="notes"
-      rows="2"
-      maxlength="500"
-      placeholder="Anything the organizers should know…"
-    ></textarea>
-  </label>
-
-  @if (mode() === "games" && incompleteGames.length) {
-    <p class="report__hint">
-      Pick a winner for game{{ incompleteGames.length > 1 ? "s" : "" }}
-      {{ incompleteGames.join(", ") }}.
-    </p>
-  }
-
   @if (saveError()) {
     <p class="report__error">{{ saveError() }}</p>
   }
 
   <div class="report__footer">
-    @if (mode() === "games") {
+    @if (!isForfeit()) {
       <button
         pdz-button
         size="sm"

@@ -29,6 +29,7 @@ export type ScoreEntryPokemonForm = FormGroup<{
 export type ScoreEntryGameForm = FormGroup<{
   link: FormControl<string>;
   winner: FormControl<ScoreEntrySide | null>;
+  winnerLocked: FormControl<boolean>;
   side1Score: FormControl<number>;
   side2Score: FormControl<number>;
   side1ScoreLocked: FormControl<boolean>;
@@ -44,6 +45,33 @@ export type ScoreEntryGameSeed = {
   side2Score?: number;
   side1?: ScoreEntryRoster;
   side2?: ScoreEntryRoster;
+};
+
+export type ScoreEntryForfeit = ScoreEntrySide | 'both';
+
+export type ScoreEntryWarningGroup = {
+  where: string;
+  messages: string[];
+};
+
+
+export type ScoreEntryMatchForm = FormGroup<{
+  side1Paste: FormControl<string>;
+  side2Paste: FormControl<string>;
+  side1Score: FormControl<number>;
+  side2Score: FormControl<number>;
+  scoreLocked: FormControl<boolean>;
+  winner: FormControl<ScoreEntrySide | null>;
+  side1Forfeit: FormControl<boolean>;
+  side2Forfeit: FormControl<boolean>;
+}>;
+
+export type ScoreEntryMatchSeed = {
+  side1Paste?: string;
+  side2Paste?: string;
+  score?: [number, number] | null;
+  winner?: ScoreEntrySide | null;
+  forfeit?: ScoreEntryForfeit | null;
 };
 
 export type ScoreEntryReplayPokemon = {

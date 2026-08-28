@@ -7,7 +7,7 @@ import { SelectOptionComponent } from '@pdz/shared/dropdowns/select/select-optio
 import { SelectComponent } from '@pdz/shared/dropdowns/select/select.component';
 import { DisclosureComponent } from '@pdz/shared/layout/disclosure/disclosure.component';
 import { ScoreEntryRosterComponent } from './score-entry-roster.component';
-import { gameWarnings, setGameWinner } from './score-entry.form';
+import { gameWinner, setGameWinner } from './score-entry.form';
 import {
   SCORE_ENTRY_SIDES,
   ScoreEntryGameForm,
@@ -51,15 +51,12 @@ export class ScoreEntryGameComponent {
     side2: 'secondary',
   };
 
-  protected warnings(): string[] {
-    return gameWarnings(this.game(), {
-      sideNames: this.sideNames(),
-      expectedRoster: this.expectedRoster(),
-    });
-  }
-
   protected teamName(side: ScoreEntrySide): string {
     return this.sideNames()[side];
+  }
+
+  protected winner(): ScoreEntrySide | null {
+    return gameWinner(this.game());
   }
 
   protected canAnalyze(): boolean {

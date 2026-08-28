@@ -19,91 +19,11 @@
       </button>
     </header>
 
-    <section class="match">
-      @for (side of sides; track side; let first = $first) {
-        <div
-          class="match__side"
-          [class.match__side--end]="!first"
-          [attr.data-accent]="accents[side]"
-        >
-          <div class="match__side-head">
-            <span class="match__name">{{ teamName(side) }}</span>
-            <input
-              pdz-input
-              size="sm"
-              class="match__score-input"
-              type="number"
-              min="0"
-              inputmode="numeric"
-              [formControl]="matchScoreControl(side)"
-              [attr.aria-label]="teamName(side) + ' match score'"
-              (input)="onMatchScoreInput($event)"
-              (blur)="onMatchScoreBlur(side)"
-            />
-            <button
-              pdz-button
-              size="sm"
-              type="button"
-              class="match__forfeit"
-              [color]="hasForfeited(side) ? 'danger' : 'neutral'"
-              [variant]="hasForfeited(side) ? 'filled' : 'outlined'"
-              [attr.aria-pressed]="hasForfeited(side)"
-              [attr.aria-label]="teamName(side) + ' forfeited'"
-              (click)="toggleForfeit(side)"
-            >
-              Forfeit
-            </button>
-          </div>
-        </div>
-      }
-
-      @for (side of sides; track side; let first = $first) {
-        <input
-          pdz-input
-          size="sm"
-          class="match__paste"
-          [attr.data-accent]="accents[side]"
-          [class.match__paste--end]="!first"
-          type="url"
-          spellcheck="false"
-          placeholder="Team link"
-          [formControl]="pasteControl(side)"
-          [attr.aria-label]="teamName(side) + ' team link'"
-        />
-
-        @if (first) {
-          <div class="match__winner-cell">
-            <pdz-select
-              class="match__winner"
-              size="sm"
-              placeholder="Undecided"
-              aria-label="Match winner"
-              [attr.data-winner]="matchWinner()"
-              [disabled]="isForfeit()"
-              [value]="matchWinner()"
-              (valueChange)="setMatchWinner($any($event))"
-            >
-              @for (option of sides; track option) {
-                <pdz-option [value]="option" [label]="teamName(option)" />
-              }
-            </pdz-select>
-          </div>
-        }
-      }
-    </section>
-
-    @if (matchWarnings(); as warnings) {
-      @if (warnings.length) {
-        <div class="score__warnings" role="status">
-          <pdz-icon name="warning" [size]="14"></pdz-icon>
-          <div class="score__warnings-list">
-            @for (warning of warnings; track warning) {
-              <span class="score__warning">{{ warning }}</span>
-            }
-          </div>
-        </div>
-      }
-    }
+    <pdz-score-entry-match
+      [match]="match"
+      [games]="games"
+      [sideNames]="sideNames"
+    />
 
     @if (!isForfeit()) {
       <div class="score__games">

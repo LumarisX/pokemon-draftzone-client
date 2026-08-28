@@ -3,6 +3,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { of } from 'rxjs';
 import {
   rosterEntries,
+  setGameWinner,
   setKills,
   setPokemonStatus,
 } from '@pdz/shared/widgets/score-entry/score-entry.form';
@@ -140,15 +141,29 @@ describe('OpponentScoreComponent', () => {
   });
 
   it('trims the replay link and maps side keys back to a/b', () => {
-    component.gameControls[0].patchValue({
-      link: '  replay.pokemonshowdown.com/gen9-1  ',
-      winner: 'side2',
-    });
+    component.gameControls[0].controls.link.setValue(
+      '  replay.pokemonshowdown.com/gen9-1  ',
+    );
+    setGameWinner(component.gameControls[0], 'side2');
 
     const match = payload().matches[0];
 
     expect(match.replay).toBe('replay.pokemonshowdown.com/gen9-1');
     expect(match.winner).toBe('b');
+  });
+
+  it('carries the previous game roster into a new game as brought', () => {
+    const game = component.gameControls[0];
+    setPokemonStatus(mon('side1', 0), 'survived', game, 'side1');
+    setKills(mon('side1', 0), 'direct', 2, game, 'side1');
+    setPokemonStatus(mon('side2', 0), 'fainted', game, 'side2');
+
+    component.addGame();
+
+    expect(mon('side1', 0, 1).controls.status.value).toBe('brought');
+    expect(mon('side1', 0, 1).controls.direct.value).toBe(0);
+    expect(mon('side2', 0, 1).controls.status.value).toBe('brought');
+    expect(mon('side1', 1, 1).controls.status.value).toBeNull();
   });
 
   it('infers a single-game match score from that game, and a match from wins', () => {
@@ -159,8 +174,8 @@ describe('OpponentScoreComponent', () => {
     expect(component.inferredMatchScore()).toEqual([2, 0]);
 
     component.addGame();
-    component.gameControls[0].controls.winner.setValue('side1');
-    component.gameControls[1].controls.winner.setValue('side2');
+    setGameWinner(component.gameControls[0], 'side1');
+    setGameWinner(component.gameControls[1], 'side2');
 
     expect(component.inferredMatchScore()).toEqual([1, 1]);
   });
@@ -175,8 +190,8 @@ describe('OpponentScoreComponent', () => {
 
   it('sends the match score override once typed in, and drops it on reset', () => {
     typeMatchScore('3');
-    component.form!.controls.matchScore1.setValue(3);
-    component.form!.controls.matchScore2.setValue(2);
+    component.matchScoreControl('side1').setValue(3);
+    component.matchScoreControl('side2').setValue(2);
 
     expect(payload().scoreOverride).toEqual([3, 2]);
 
@@ -189,11 +204,11 @@ describe('OpponentScoreComponent', () => {
     setPokemonStatus(mon('side1', 0), 'survived', game, 'side1');
 
     typeMatchScore('9');
-    component.form!.controls.matchScore1.setValue(9);
+    component.matchScoreControl('side1').setValue(9);
     expect(payload().scoreOverride).toEqual([9, 0]);
 
     typeMatchScore('');
-    component.form!.controls.matchScore1.setValue(null as never);
+    component.matchScoreControl('side1').setValue(null as never);
     component.onMatchScoreBlur('side1');
 
     expect(payload().scoreOverride).toBeNull();
@@ -215,15 +230,13 @@ describe('OpponentScoreComponent', () => {
     expect(payload().winnerOverride).toBeNull();
   });
 
-  it('warns without blocking when the set winner contradicts the score', () => {
+  it('does not block a set winner that contradicts the score', () => {
     const game = component.gameControls[0];
     setPokemonStatus(mon('side1', 0), 'survived', game, 'side1');
-    game.controls.winner.setValue('side1');
+    setGameWinner(game, 'side1');
     component.setMatchWinner('side2');
 
-    expect(component.matchWarnings()).toContain(
-      'Team B is set as the winner but Team A has the higher score.',
-    );
+    expect(component.matchWinner()).toBe('side2');
     expect(() => payload()).not.toThrow();
   });
 
@@ -247,9 +260,6 @@ describe('OpponentScoreComponent', () => {
 
     expect(payload().forfeitedBy).toBe('a');
     expect(component.matchWinner()).toBe('side2');
-    expect(component.matchWarnings()).toEqual([
-      'Team B wins by forfeit. The games below are ignored.',
-    ]);
 
     component.toggleForfeit('side1');
     component.toggleForfeit('side2');
@@ -265,9 +275,6 @@ describe('OpponentScoreComponent', () => {
     expect(payload().forfeitedBy).toBe('both');
     expect(component.isDoubleForfeit()).toBe(true);
     expect(component.matchWinner()).toBeNull();
-    expect(component.matchWarnings()).toEqual([
-      'Both teams forfeited. This counts as a loss for both.',
-    ]);
   });
 
   it('will not let a manual winner override a forfeit', () => {
@@ -283,17 +290,6 @@ describe('OpponentScoreComponent', () => {
 
     expect(component.hasForfeited('side1')).toBe(true);
     expect(component.hasForfeited('side2')).toBe(true);
-  });
-
-  it('warns about games with no winner picked', () => {
-    component.addGame();
-    component.gameControls[0].controls.winner.setValue('side1');
-
-    expect(
-      component
-        .matchWarnings()
-        .some((warning) => warning.startsWith('No winner picked for game 2')),
-    ).toBe(true);
   });
 
   it('rehydrates saved statuses, kills, and overrides', () => {

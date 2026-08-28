@@ -1,7 +1,7 @@
 import { FormBuilder } from '@angular/forms';
 import { TestBed } from '@angular/core/testing';
 import { ScoreEntryGameComponent } from './score-entry-game.component';
-import { buildGameEntry } from './score-entry.form';
+import { buildGameEntry, setGameWinner } from './score-entry.form';
 
 describe('ScoreEntryGameComponent', () => {
   function render() {
@@ -61,12 +61,12 @@ describe('ScoreEntryGameComponent', () => {
 
     expect(disclosure().getAttribute('data-winner')).toBeNull();
 
-    fixture.componentInstance.game().controls.winner.setValue('side2');
+    setGameWinner(fixture.componentInstance.game(),'side2');
     fixture.detectChanges();
 
     expect(disclosure().getAttribute('data-winner')).toBe('side2');
 
-    fixture.componentInstance.game().controls.winner.setValue(null);
+    setGameWinner(fixture.componentInstance.game(),null);
     fixture.detectChanges();
 
     expect(disclosure().getAttribute('data-winner')).toBeNull();

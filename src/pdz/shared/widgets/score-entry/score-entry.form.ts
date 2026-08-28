@@ -1,15 +1,25 @@
-import { FormArray, FormBuilder } from '@angular/forms';
+import { FormArray, FormBuilder, FormControl } from '@angular/forms';
 import {
+  SCORE_ENTRY_SIDES,
+  ScoreEntryForfeit,
   ScoreEntryGameForm,
   ScoreEntryGameSeed,
   ScoreEntryKillField,
+  ScoreEntryMatchForm,
+  ScoreEntryMatchSeed,
   ScoreEntryPokemonForm,
   ScoreEntryPokemonStats,
   ScoreEntryReplayPlayer,
   ScoreEntryRoster,
   ScoreEntrySide,
   ScoreEntryStatus,
+  ScoreEntryWarningGroup,
 } from './score-entry.model';
+
+const OTHER_SIDE: Record<ScoreEntrySide, ScoreEntrySide> = {
+  side1: 'side2',
+  side2: 'side1',
+};
 
 export function buildPokemonEntry(
   fb: FormBuilder,
@@ -42,6 +52,7 @@ export function buildGameEntry(
   return fb.group({
     link: fb.control(seed?.link ?? '', { nonNullable: true }),
     winner: fb.control<ScoreEntrySide | null>(seed?.winner ?? null),
+    winnerLocked: fb.control(!!seed?.winner, { nonNullable: true }),
     side1Score: fb.control(seed?.side1Score ?? survivorsOf(side1), {
       nonNullable: true,
     }),
@@ -159,18 +170,35 @@ export function adjustKills(
   setKills(entry, field, entry.controls[field].value + delta, game, side);
 }
 
+export function inferredGameWinner(
+  game: ScoreEntryGameForm,
+): ScoreEntrySide | null {
+  const side1 = game.controls.side1Score.value;
+  const side2 = game.controls.side2Score.value;
+  if (side1 > side2) return 'side1';
+  if (side2 > side1) return 'side2';
+  return null;
+}
+
+export function gameWinner(game: ScoreEntryGameForm): ScoreEntrySide | null {
+  return game.controls.winnerLocked.value
+    ? game.controls.winner.value
+    : inferredGameWinner(game);
+}
+
 export function setGameWinner(
   game: ScoreEntryGameForm,
   side: ScoreEntrySide | null,
 ): void {
   game.controls.winner.setValue(side);
+  game.controls.winnerLocked.setValue(side !== null);
 }
 
 export function matchWins(
   games: ScoreEntryGameForm[],
   side: ScoreEntrySide,
 ): number {
-  return games.filter((game) => game.controls.winner.value === side).length;
+  return games.filter((game) => gameWinner(game) === side).length;
 }
 
 export function rosterPayload(
@@ -205,64 +233,95 @@ function countRostered(roster: ScoreEntryPokemonForm[]): number {
   return roster.filter((entry) => entry.controls.status.value !== null).length;
 }
 
-export function gameWarnings(
+function gameWarningMessages(
   game: ScoreEntryGameForm,
   options: {
     sideNames: Record<ScoreEntrySide, string>;
     expectedRoster?: number;
   },
 ): string[] {
-  const { sideNames, expectedRoster } = options;
-  const warnings: string[] = [];
-  const side1 = rosterEntries(game, 'side1');
-  const side2 = rosterEntries(game, 'side2');
+  if (isGameEmpty(game)) return [];
 
-  const rostered1 = countRostered(side1);
-  const rostered2 = countRostered(side2);
+  const { sideNames, expectedRoster } = options;
+  const messages: string[] = [];
+  const rosters = {
+    side1: rosterEntries(game, 'side1'),
+    side2: rosterEntries(game, 'side2'),
+  };
+  const rostered = {
+    side1: countRostered(rosters.side1),
+    side2: countRostered(rosters.side2),
+  };
+
+  const winner = gameWinner(game);
+  if (!winner) {
+    messages.push('The score is tied and no winner is picked.');
+  } else if (
+    scoreControl(game, winner).value <
+    scoreControl(game, OTHER_SIDE[winner]).value
+  ) {
+    messages.push(
+      `${sideNames[winner]} is set as the winner but has the lower score.`,
+    );
+  }
 
   if (expectedRoster !== undefined) {
-    if (rostered1 !== expectedRoster) {
-      warnings.push(`${sideNames.side1} has ${rostered1} Pokemon`);
-    }
-    if (rostered2 !== expectedRoster) {
-      warnings.push(`${sideNames.side2} has ${rostered2} Pokemon`);
-    }
-  } else if (rostered1 !== rostered2) {
-    warnings.push(
-      `${sideNames.side1} brought ${rostered1} Pokemon, ${sideNames.side2} brought ${rostered2}`,
+    SCORE_ENTRY_SIDES.forEach((side) => {
+      if (!rostered[side] || rostered[side] === expectedRoster) return;
+      messages.push(
+        `${sideNames[side]} brought ${rostered[side]} of ${expectedRoster} Pokemon.`,
+      );
+    });
+  } else if (
+    rostered.side1 &&
+    rostered.side2 &&
+    rostered.side1 !== rostered.side2
+  ) {
+    const short = rostered.side1 < rostered.side2 ? 'side1' : 'side2';
+    const other = OTHER_SIDE[short];
+    messages.push(
+      `${sideNames[short]} brought ${rostered[short]} Pokemon, ${sideNames[other]} brought ${rostered[other]}.`,
     );
   }
 
-  const opposingFaints = (roster: ScoreEntryPokemonForm[]): number =>
-    countFainted(roster) - countTeammateKills(roster);
+  if (rostered.side1 && rostered.side2) {
+    const owedBy = (roster: ScoreEntryPokemonForm[]): number =>
+      countFainted(roster) - countTeammateKills(roster);
 
-  const kills1 = countKills(side1);
-  const kills2 = countKills(side2);
-  const owed1 = opposingFaints(side2);
-  const owed2 = opposingFaints(side1);
-
-  if (kills1 !== owed1) {
-    warnings.push(
-      `${sideNames.side1} KOs (${kills1}) don't match ${sideNames.side2} faints (${owed1})`,
-    );
-  }
-  if (kills2 !== owed2) {
-    warnings.push(
-      `${sideNames.side2} KOs (${kills2}) don't match ${sideNames.side1} faints (${owed2})`,
-    );
+    SCORE_ENTRY_SIDES.forEach((side) => {
+      const kills = countKills(rosters[side]);
+      const owed = owedBy(rosters[OTHER_SIDE[side]]);
+      if (kills === owed) return;
+      messages.push(
+        `${sideNames[side]} is credited with ${kills} KOs but ${sideNames[OTHER_SIDE[side]]} lost ${owed} Pokemon.`,
+      );
+    });
   }
 
-  const winner = game.controls.winner.value;
-  const score1 = game.controls.side1Score.value;
-  const score2 = game.controls.side2Score.value;
-  if (winner === 'side1' && score1 < score2) {
-    warnings.push(`${sideNames.side1} won but has the lower score`);
-  }
-  if (winner === 'side2' && score2 < score1) {
-    warnings.push(`${sideNames.side2} won but has the lower score`);
-  }
+  return messages;
+}
 
-  return warnings;
+export function scoreEntryWarnings(
+  match: ScoreEntryMatchForm,
+  games: ScoreEntryGameForm[],
+  options: {
+    sideNames: Record<ScoreEntrySide, string>;
+    expectedRoster?: number;
+  },
+): ScoreEntryWarningGroup[] {
+  if (isMatchForfeit(match)) return [];
+
+  const groups: ScoreEntryWarningGroup[] = [];
+
+  games.forEach((game, index) => {
+    const messages = gameWarningMessages(game, options);
+    if (messages.length) groups.push({ where: `Game ${index + 1}`, messages });
+  });
+
+  const notice = matchWinnerNotice(match, games, options.sideNames);
+  if (notice) groups.push({ where: 'Match result', messages: [notice] });
+
+  return groups;
 }
 
 export function resetRoster(roster: FormArray<ScoreEntryPokemonForm>): void {
@@ -320,6 +379,204 @@ export function orderReplayPlayers<T extends ScoreEntryReplayPlayer>(
     : { side1: second, side2: first };
 }
 
+export function buildMatchEntry(
+  fb: FormBuilder,
+  seed?: ScoreEntryMatchSeed,
+): ScoreEntryMatchForm {
+  const score = seed?.score ?? null;
+  const forfeit = seed?.forfeit ?? null;
+
+  return fb.group({
+    side1Paste: fb.control(seed?.side1Paste ?? '', { nonNullable: true }),
+    side2Paste: fb.control(seed?.side2Paste ?? '', { nonNullable: true }),
+    side1Score: fb.control(score?.[0] ?? 0, { nonNullable: true }),
+    side2Score: fb.control(score?.[1] ?? 0, { nonNullable: true }),
+    scoreLocked: fb.control(score !== null, { nonNullable: true }),
+    winner: fb.control<ScoreEntrySide | null>(seed?.winner ?? null),
+    side1Forfeit: fb.control(forfeit === 'side1' || forfeit === 'both', {
+      nonNullable: true,
+    }),
+    side2Forfeit: fb.control(forfeit === 'side2' || forfeit === 'both', {
+      nonNullable: true,
+    }),
+  });
+}
+
+export function matchPasteControl(
+  match: ScoreEntryMatchForm,
+  side: ScoreEntrySide,
+): FormControl<string> {
+  return side === 'side1'
+    ? match.controls.side1Paste
+    : match.controls.side2Paste;
+}
+
+export function matchScoreControl(
+  match: ScoreEntryMatchForm,
+  side: ScoreEntrySide,
+): FormControl<number> {
+  return side === 'side1'
+    ? match.controls.side1Score
+    : match.controls.side2Score;
+}
+
+export function matchForfeitControl(
+  match: ScoreEntryMatchForm,
+  side: ScoreEntrySide,
+): FormControl<boolean> {
+  return side === 'side1'
+    ? match.controls.side1Forfeit
+    : match.controls.side2Forfeit;
+}
+
+export function matchForfeitedBy(
+  match: ScoreEntryMatchForm,
+): ScoreEntryForfeit | null {
+  const side1 = match.controls.side1Forfeit.value;
+  const side2 = match.controls.side2Forfeit.value;
+  if (side1 && side2) return 'both';
+  if (side1) return 'side1';
+  if (side2) return 'side2';
+  return null;
+}
+
+export function isMatchForfeit(match: ScoreEntryMatchForm): boolean {
+  return matchForfeitedBy(match) !== null;
+}
+
+export function toggleMatchForfeit(
+  match: ScoreEntryMatchForm,
+  side: ScoreEntrySide,
+): void {
+  const control = matchForfeitControl(match, side);
+  control.setValue(!control.value);
+}
+
+export function forfeitNeedsReason(
+  match: ScoreEntryMatchForm,
+  reason: FormControl<string> | null,
+): boolean {
+  return !!reason && isMatchForfeit(match) && !reason.value.trim();
+}
+
+export function isGameEmpty(game: ScoreEntryGameForm): boolean {
+  if (game.controls.link.value.trim() || game.controls.winner.value) {
+    return false;
+  }
+  return SCORE_ENTRY_SIDES.every((side) =>
+    rosterEntries(game, side).every((entry) => {
+      const { status, direct, indirect, teammate } = entry.getRawValue();
+      return (
+        (status === null || status === 'brought') &&
+        !direct &&
+        !indirect &&
+        !teammate
+      );
+    }),
+  );
+}
+
+export function carriedRosterSeed(
+  game: ScoreEntryGameForm,
+): ScoreEntryGameSeed {
+  const carry = (side: ScoreEntrySide): ScoreEntryRoster =>
+    rosterEntries(game, side).reduce<ScoreEntryRoster>((acc, entry) => {
+      if (entry.controls.status.value === null) return acc;
+      acc[entry.controls.id.value] = { status: 'brought' };
+      return acc;
+    }, {});
+
+  return { side1: carry('side1'), side2: carry('side2') };
+}
+
+export function inferredMatchScore(
+  games: ScoreEntryGameForm[],
+): [number, number] {
+  if (games.length === 1) {
+    return [
+      games[0].controls.side1Score.value,
+      games[0].controls.side2Score.value,
+    ];
+  }
+  return [matchWins(games, 'side1'), matchWins(games, 'side2')];
+}
+
+export function syncMatchScore(
+  match: ScoreEntryMatchForm,
+  games: ScoreEntryGameForm[],
+): void {
+  if (match.controls.scoreLocked.value) return;
+  const [side1, side2] = inferredMatchScore(games);
+  match.controls.side1Score.setValue(side1);
+  match.controls.side2Score.setValue(side2);
+}
+
+export function resetMatchScore(
+  match: ScoreEntryMatchForm,
+  games: ScoreEntryGameForm[],
+): void {
+  match.controls.scoreLocked.setValue(false);
+  syncMatchScore(match, games);
+}
+
+export function matchScoreOf(
+  match: ScoreEntryMatchForm,
+  games: ScoreEntryGameForm[],
+  side: ScoreEntrySide,
+): number {
+  if (match.controls.scoreLocked.value) {
+    return matchScoreControl(match, side).value;
+  }
+  const inferred = inferredMatchScore(games);
+  return side === 'side1' ? inferred[0] : inferred[1];
+}
+
+export function inferredMatchWinner(
+  match: ScoreEntryMatchForm,
+  games: ScoreEntryGameForm[],
+): ScoreEntrySide | null {
+  const side1 = matchScoreOf(match, games, 'side1');
+  const side2 = matchScoreOf(match, games, 'side2');
+  if (side1 > side2) return 'side1';
+  if (side2 > side1) return 'side2';
+  return null;
+}
+
+export function resolvedMatchWinner(
+  match: ScoreEntryMatchForm,
+  games: ScoreEntryGameForm[],
+): ScoreEntrySide | null {
+  const forfeited = matchForfeitedBy(match);
+  if (forfeited === 'both') return null;
+  if (forfeited) return OTHER_SIDE[forfeited];
+  return match.controls.winner.value ?? inferredMatchWinner(match, games);
+}
+
+export function setMatchWinner(
+  match: ScoreEntryMatchForm,
+  side: ScoreEntrySide | null,
+): void {
+  if (isMatchForfeit(match)) return;
+  match.controls.winner.setValue(side);
+}
+
+export function matchWinnerNotice(
+  match: ScoreEntryMatchForm,
+  games: ScoreEntryGameForm[],
+  sideNames: Record<ScoreEntrySide, string>,
+): string | null {
+  if (isMatchForfeit(match)) return null;
+
+  const winner = match.controls.winner.value;
+  if (!winner) return null;
+
+  const other = OTHER_SIDE[winner];
+  if (matchScoreOf(match, games, winner) >= matchScoreOf(match, games, other)) {
+    return null;
+  }
+  return `${sideNames[winner]} is set as the winner but has the lower score.`;
+}
+
 export function applyReplayToGame(
   game: ScoreEntryGameForm,
   players: ScoreEntryReplayPlayer[],
@@ -336,7 +593,8 @@ export function applyReplayToGame(
   game.controls.side2ScoreLocked.setValue(false);
   game.controls.side1Score.setValue(survivors(game, 'side1'));
   game.controls.side2Score.setValue(survivors(game, 'side2'));
-  game.controls.winner.setValue(
+  setGameWinner(
+    game,
     ordered.side1.win ? 'side1' : ordered.side2.win ? 'side2' : null,
   );
 

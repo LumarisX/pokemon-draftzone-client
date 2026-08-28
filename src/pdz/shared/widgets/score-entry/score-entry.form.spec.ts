@@ -3,8 +3,13 @@ import {
   adjustKills,
   applyReplayToGame,
   buildGameEntry,
-  gameWarnings,
+  buildMatchEntry,
+  carriedRosterSeed,
+  gameWinner,
+  isGameEmpty,
   lockScore,
+  scoreEntryWarnings,
+  setGameWinner,
   rosterEntries,
   rosterPayload,
   matchWins,
@@ -159,7 +164,56 @@ describe('rosterPayload', () => {
   });
 });
 
-describe('gameWarnings', () => {
+describe('carriedRosterSeed', () => {
+  it('carries every mon that saw the field back as brought, and no kills', () => {
+    const game = build();
+    setPokemonStatus(entry(game, 'side1', 0), 'survived', game, 'side1');
+    setPokemonStatus(entry(game, 'side1', 1), 'fainted', game, 'side1');
+    setKills(entry(game, 'side1', 0), 'direct', 2, game, 'side1');
+    setPokemonStatus(entry(game, 'side2', 0), 'brought', game, 'side2');
+
+    expect(carriedRosterSeed(game)).toEqual({
+      side1: { pikachu: { status: 'brought' }, charizard: { status: 'brought' } },
+      side2: { gengar: { status: 'brought' } },
+    });
+  });
+
+  it('leaves benched mons benched in the next game', () => {
+    const game = build();
+    setPokemonStatus(entry(game, 'side1', 0), 'survived', game, 'side1');
+
+    const next = build(carriedRosterSeed(game));
+
+    expect(entry(next, 'side1', 0).controls.status.value).toBe('brought');
+    expect(entry(next, 'side1', 1).controls.status.value).toBeNull();
+    expect(entry(next, 'side1', 0).controls.direct.value).toBe(0);
+  });
+
+  it('leaves the carried game reading as untouched so it raises nothing', () => {
+    const game = build();
+    setPokemonStatus(entry(game, 'side1', 0), 'survived', game, 'side1');
+    setPokemonStatus(entry(game, 'side2', 0), 'fainted', game, 'side2');
+    setKills(entry(game, 'side1', 0), 'direct', 1, game, 'side1');
+
+    const next = build(carriedRosterSeed(game));
+
+    expect(isGameEmpty(next)).toBe(true);
+    expect(scoreEntryWarnings(buildMatchEntry(fb), [next], { sideNames: NAMES }))
+      .toEqual([]);
+  });
+});
+
+describe('scoreEntryWarnings', () => {
+  const warn = (games: ScoreEntryGameForm[], expectedRoster?: number) =>
+    scoreEntryWarnings(buildMatchEntry(fb), games, {
+      sideNames: NAMES,
+      expectedRoster,
+    });
+
+  it('says nothing at all about a game nobody has touched yet', () => {
+    expect(warn([build()], 2)).toEqual([]);
+  });
+
   it('is silent on a consistent game', () => {
     const game = build();
     setPokemonStatus(entry(game, 'side1', 0), 'survived', game, 'side1');
@@ -169,21 +223,41 @@ describe('gameWarnings', () => {
     setKills(entry(game, 'side1', 0), 'direct', 2, game, 'side1');
     setKills(entry(game, 'side2', 0), 'direct', 1, game, 'side2');
 
-    expect(gameWarnings(game, { sideNames: NAMES })).toEqual([]);
+    expect(warn([game])).toEqual([]);
   });
 
-  it('flags mismatched roster sizes and unaccounted KOs', () => {
+  it('names the game each warning came from, and skips the clean ones', () => {
+    const clean = build();
+    setPokemonStatus(entry(clean, 'side1', 0), 'survived', clean, 'side1');
+    setPokemonStatus(entry(clean, 'side2', 0), 'fainted', clean, 'side2');
+    setKills(entry(clean, 'side1', 0), 'direct', 1, clean, 'side1');
+
+    const tied = build();
+    setPokemonStatus(entry(tied, 'side1', 0), 'survived', tied, 'side1');
+    setPokemonStatus(entry(tied, 'side2', 0), 'survived', tied, 'side2');
+
+    expect(warn([clean, tied])).toEqual([
+      {
+        where: 'Game 2',
+        messages: ['The score is tied and no winner is picked.'],
+      },
+    ]);
+  });
+
+  it('reports mismatched rosters and unaccounted KOs against the teams by name', () => {
     const game = build();
     setPokemonStatus(entry(game, 'side1', 0), 'survived', game, 'side1');
     setPokemonStatus(entry(game, 'side2', 0), 'fainted', game, 'side2');
     setPokemonStatus(entry(game, 'side2', 1), 'fainted', game, 'side2');
 
-    const warnings = gameWarnings(game, { sideNames: NAMES });
+    const messages = warn([game])[0].messages;
 
-    expect(warnings).toContain('Team A brought 1 Pokemon, Team B brought 2');
-    expect(
-      warnings.some((w) => w.startsWith("Team A KOs (0) don't match")),
-    ).toBe(true);
+    expect(messages).toContain(
+      'Team A brought 1 Pokemon, Team B brought 2.',
+    );
+    expect(messages).toContain(
+      'Team A is credited with 0 KOs but Team B lost 2 Pokemon.',
+    );
   });
 
   it('discounts teammate KOs from the faints the other side owes', () => {
@@ -194,29 +268,80 @@ describe('gameWarnings', () => {
     setPokemonStatus(entry(game, 'side2', 1), 'survived', game, 'side2');
     setKills(entry(game, 'side2', 1), 'teammate', 1, game, 'side2');
 
-    expect(gameWarnings(game, { sideNames: NAMES })).toEqual([]);
+    expect(warn([game])).toEqual([]);
   });
 
-  it('flags a roster that does not match the expected size', () => {
+  it('holds the expected-roster count against the side that is short', () => {
     const game = build();
+    setPokemonStatus(entry(game, 'side1', 0), 'survived', game, 'side1');
+    setPokemonStatus(entry(game, 'side2', 0), 'fainted', game, 'side2');
+    setPokemonStatus(entry(game, 'side2', 1), 'fainted', game, 'side2');
 
-    const warnings = gameWarnings(game, {
-      sideNames: NAMES,
-      expectedRoster: 2,
-    });
+    const messages = warn([game], 2)[0].messages;
 
-    expect(warnings).toContain('Team A has 0 Pokemon');
-    expect(warnings).toContain('Team B has 0 Pokemon');
+    expect(messages).toContain('Team A brought 1 of 2 Pokemon.');
+    expect(messages.some((m) => m.startsWith('Team B brought'))).toBe(false);
   });
 
-  it('flags a winner that lost on score', () => {
+  it('picks the winner off the score without being asked', () => {
     const game = build();
     setPokemonStatus(entry(game, 'side2', 0), 'survived', game, 'side2');
-    game.controls.winner.setValue('side1');
 
-    expect(gameWarnings(game, { sideNames: NAMES })).toContain(
-      'Team A won but has the lower score',
+    expect(gameWinner(game)).toBe('side2');
+    expect(warn([game])).toEqual([]);
+  });
+
+  it('only asks for a winner when the score cannot answer', () => {
+    const game = build();
+    setPokemonStatus(entry(game, 'side1', 0), 'survived', game, 'side1');
+    setPokemonStatus(entry(game, 'side2', 0), 'survived', game, 'side2');
+
+    expect(gameWinner(game)).toBeNull();
+    expect(warn([game])[0].messages).toContain(
+      'The score is tied and no winner is picked.',
     );
+  });
+
+  it('flags a hand-picked winner that lost on score', () => {
+    const game = build();
+    setPokemonStatus(entry(game, 'side2', 0), 'survived', game, 'side2');
+    setGameWinner(game, 'side1');
+
+    expect(warn([game])[0].messages).toContain(
+      'Team A is set as the winner but has the lower score.',
+    );
+  });
+
+  it('hands the winner back to the score when the pick is cleared', () => {
+    const game = build();
+    setPokemonStatus(entry(game, 'side2', 0), 'survived', game, 'side2');
+    setGameWinner(game, 'side1');
+
+    expect(gameWinner(game)).toBe('side1');
+
+    setGameWinner(game, null);
+
+    expect(gameWinner(game)).toBe('side2');
+  });
+
+  it('files a contradicted match winner under the match, not a game', () => {
+    const game = build({ winner: 'side1', side1Score: 0, side2Score: 3 });
+    const match = buildMatchEntry(fb, { winner: 'side1', score: [0, 3] });
+
+    const groups = scoreEntryWarnings(match, [game], { sideNames: NAMES });
+
+    expect(groups.at(-1)).toEqual({
+      where: 'Match result',
+      messages: ['Team A is set as the winner but has the lower score.'],
+    });
+  });
+
+  it('drops every game warning once the match is a forfeit', () => {
+    const game = build();
+    setPokemonStatus(entry(game, 'side1', 0), 'survived', game, 'side1');
+    const match = buildMatchEntry(fb, { forfeit: 'side1' });
+
+    expect(scoreEntryWarnings(match, [game], { sideNames: NAMES })).toEqual([]);
   });
 });
 

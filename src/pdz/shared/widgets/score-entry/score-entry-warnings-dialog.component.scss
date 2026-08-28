@@ -1,0 +1,54 @@
+@use "pdz-theming" as pdz;
+
+.checks__intro {
+  @include pdz.text(body-sm, $family: false);
+  margin: 0 0 pdz.space(md);
+  color: pdz.color(on-surface-variant);
+}
+
+.checks__groups {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(sm);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.checks__group {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(3xs);
+  padding: pdz.space(2xs) pdz.space(sm);
+  border-inline-start: 3px solid pdz.color(warning);
+  border-radius: pdz.shape(corner-sm);
+  background: pdz.color(surface-container-low);
+}
+
+.checks__where {
+  @include pdz.caps;
+  color: pdz.color(on-surface-variant);
+}
+
+.checks__list {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(3xs);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.checks__item {
+  display: flex;
+  align-items: flex-start;
+  gap: pdz.space(2xs);
+  @include pdz.text(body-sm, $family: false);
+  color: pdz.color(on-surface);
+
+  pdz-icon {
+    flex: none;
+    margin-top: 2px;
+    color: pdz.color(warning);
+  }
+}

@@ -21,6 +21,7 @@ export type MatchupSideDetail = {
   coachId: string;
   timezone?: string;
   discordName?: string;
+  paste?: string;
 };
 
 export type MatchupGame = {
@@ -48,6 +49,8 @@ export type MatchupReport = {
   winner?: MatchupSideKey | 'draw';
   forfeit?: boolean;
   notes?: string;
+  side1Paste?: string;
+  side2Paste?: string;
   matches: MatchupGame[];
 };
 
@@ -77,6 +80,8 @@ export type MatchupReportPayload = {
   winner?: MatchupSideKey | 'draw';
   forfeit?: boolean;
   notes?: string;
+  side1Paste?: string;
+  side2Paste?: string;
   matches: {
     link?: string;
     winner: MatchupSideKey | 'draw';
