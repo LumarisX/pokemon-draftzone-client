@@ -12,9 +12,14 @@ export const matchupPath = 'external/matchups';
 export class MatchupService {
   private apiService = inject(ApiService);
 
-  getMatchup(matchupId: string) {
+  getMatchup(
+    matchupId: string,
+    options: { suppressErrorReporting?: boolean } = {},
+  ) {
     return this.apiService.get<MatchupData>(`${matchupPath}/${matchupId}`, {
-      errorHandlingOptions: { suppressErrorReporting: true },
+      errorHandlingOptions: {
+        suppressErrorReporting: options.suppressErrorReporting ?? false,
+      },
     });
   }
 
@@ -30,10 +35,6 @@ export class MatchupService {
 
   getQuickMatchup(matchupData: QuickFormData): Observable<MatchupData> {
     return this.apiService.post(`${matchupPath}/quick`, matchupData);
-  }
-
-  getSharedMatchup(matchupId: string) {
-    return this.apiService.get<MatchupData>(`${matchupPath}/${matchupId}`);
   }
 
   //Currently Unused

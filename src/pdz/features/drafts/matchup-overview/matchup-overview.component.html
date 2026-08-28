@@ -1,34 +1,47 @@
 @if (matchupId && matchupData) {
-  <div class="matchup-main">
-    <div class="matchup-header">
-      <button pdz-button color="neutral" variant="tonal" [routerLink]="backLink">
-        Back
-      </button>
-      <div class="details-spacer">
-        <div class="details-container">
-          @if (matchupData) {
-            <div class="detail-container">
-              <p class="detail-title">League Name</p>
-              <p class="detail-text">{{ matchupData.details.leagueName }}</p>
-            </div>
-            <div class="detail-container">
-              <p class="detail-title">Stage</p>
-              <p class="detail-text">{{ matchupData.details.stage }}</p>
-            </div>
-            <div class="detail-container">
-              <p class="detail-title">Ruleset</p>
-              <p class="detail-text">{{ matchupData.details.ruleset }}</p>
-            </div>
-            <div class="detail-container">
-              <p class="detail-title">Format</p>
-              <p class="detail-text">{{ matchupData.details.format }}</p>
-            </div>
-          }
-        </div>
-      </div>
-      @if (matchupData) {
+  <div class="matchup__main">
+    <div class="matchup__header">
+      @if (config.back) {
         <button
           pdz-button
+          class="matchup__action"
+          color="neutral"
+          variant="tonal"
+          [routerLink]="backLink"
+        >
+          Back
+        </button>
+      }
+      <div class="matchup__details">
+        <div class="matchup__details-card">
+          <div class="matchup__detail">
+            <p class="matchup__detail-label">League Name</p>
+            <p class="matchup__detail-value">
+              {{ matchupData.details.leagueName }}
+            </p>
+          </div>
+          <div class="matchup__detail">
+            <p class="matchup__detail-label">Stage</p>
+            <p class="matchup__detail-value">{{ matchupData.details.stage }}</p>
+          </div>
+          <div class="matchup__detail">
+            <p class="matchup__detail-label">Ruleset</p>
+            <p class="matchup__detail-value">
+              {{ matchupData.details.ruleset }}
+            </p>
+          </div>
+          <div class="matchup__detail">
+            <p class="matchup__detail-label">Format</p>
+            <p class="matchup__detail-value">
+              {{ matchupData.details.format }}
+            </p>
+          </div>
+        </div>
+      </div>
+      @if (config.share) {
+        <button
+          pdz-button
+          class="matchup__action"
           color="neutral"
           variant="tonal"
           (click)="openShareDialog()"
@@ -38,45 +51,56 @@
       }
     </div>
 
-    <div class="matchup-body">
+    <div class="matchup__body">
       <pdz-matchup
         [matchupId]="matchupId"
         [matchupData]="matchupData"
+        [options]="{ notes: config.notes }"
       ></pdz-matchup>
     </div>
   </div>
 
-  <div
-    class="matchup-teambuilder-panel"
-    [class.is-open]="teambuilderPanelOpen"
-    [class.is-resizing]="isResizing"
-    [style.width.%]="
-      teambuilderPanelOpen ? (isMobile ? 100 : panelWidthPercent) : 0
-    "
-  >
-    <div class="resize-handle" (mousedown)="startResize($event)"></div>
-    <pdz-matchup-teambuilder
-      [matchupData]="matchupData"
-      [matchupId]="matchupId"
-      (closePanel)="teambuilderPanelOpen = false"
-    />
-  </div>
+  @if (config.teambuilder) {
+    <div
+      class="matchup__panel"
+      [class.matchup__panel--open]="teambuilderPanelOpen"
+      [class.matchup__panel--resizing]="isResizing"
+      [style.width.%]="
+        teambuilderPanelOpen ? (isMobile ? 100 : panelWidthPercent) : 0
+      "
+    >
+      <div
+        class="matchup__resize-handle"
+        (mousedown)="startResize($event)"
+      ></div>
+      <pdz-matchup-teambuilder
+        [matchupData]="matchupData"
+        [matchupId]="matchupId"
+        (closePanel)="teambuilderPanelOpen = false"
+      />
+    </div>
 
-  <button
-    class="teambuilder-button matchup-teambuilder-container"
-    [class.is-hidden]="teambuilderPanelOpen"
-    (click)="teambuilderPanelOpen = !teambuilderPanelOpen"
-  >
-    <pdz-icon name="build" size="lg" />
-  </button>
+    <button
+      pdz-button
+      icon="build"
+      iconOnly
+      size="lg"
+      color="neutral"
+      class="matchup__fab"
+      [class.matchup__fab--hidden]="teambuilderPanelOpen"
+      (click)="teambuilderPanelOpen = !teambuilderPanelOpen"
+    ></button>
+  }
 } @else {
-  <div class="matchup-main" role="status" aria-label="Loading matchup">
-    <div class="matchup-header">
-      <pdz-skeleton variant="block" width="4rem" height="2rem"></pdz-skeleton>
-      <div class="details-spacer">
-        <div class="details-container">
+  <div class="matchup__main" role="status" aria-label="Loading matchup">
+    <div class="matchup__header">
+      @if (config.back) {
+        <pdz-skeleton variant="block" width="4rem" height="2rem"></pdz-skeleton>
+      }
+      <div class="matchup__details">
+        <div class="matchup__details-card">
           @for (detail of skeletonDetails; track $index) {
-            <div class="detail-container">
+            <div class="matchup__detail">
               <pdz-skeleton
                 variant="block"
                 width="4rem"
@@ -91,10 +115,12 @@
           }
         </div>
       </div>
-      <pdz-skeleton variant="block" width="4rem" height="2rem"></pdz-skeleton>
+      @if (config.share) {
+        <pdz-skeleton variant="block" width="4rem" height="2rem"></pdz-skeleton>
+      }
     </div>
 
-    <div class="matchup-body matchup-skeleton__body">
+    <div class="matchup__body matchup-skeleton__body">
       @for (widget of skeletonWidgets; track $index) {
         <div class="matchup-skeleton__widget" [style.height]="widget">
           <div class="matchup-skeleton__widget-head">

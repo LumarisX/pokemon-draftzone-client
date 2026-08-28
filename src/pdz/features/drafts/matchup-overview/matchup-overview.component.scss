@@ -1,6 +1,6 @@
 @use "pdz-theming" as pdz;
 
-$transition-duration: pdz.duration(base);
+$panel-transition: pdz.duration(base) pdz.easing(standard);
 
 :host {
   position: relative;
@@ -8,113 +8,202 @@ $transition-duration: pdz.duration(base);
   width: 100%;
   height: 100%;
   overflow: hidden;
+}
 
-  .matchup-main {
-    flex: 1;
-    min-width: 0;
-    transition: flex $transition-duration pdz.easing(standard);
+.matchup__main {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  overflow-y: auto;
+}
+
+.matchup__header {
+  display: flex;
+  align-items: center;
+  column-gap: pdz.space(lg);
+  padding: pdz.space(sm);
+  pointer-events: none;
+
+  @include pdz.respond-above(medium) {
+    position: sticky;
+    top: 0;
+    z-index: pdz.z(sticky);
+  }
+}
+
+.matchup__action {
+  max-width: 4rem;
+  pointer-events: auto;
+
+  @include pdz.respond-above(medium) {
+    max-width: 5rem;
+  }
+}
+
+.matchup__details {
+  display: flex;
+  flex-grow: 1;
+  justify-content: center;
+}
+
+.matchup__details-card {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+  width: fit-content;
+  padding: pdz.space(sm) pdz.space(lg);
+  column-gap: pdz.space(2xl);
+  row-gap: pdz.space(xs);
+  border-radius: pdz.shape(corner-sm);
+  background-color: pdz.color(surface-container);
+  pointer-events: auto;
+}
+
+.matchup__detail {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: pdz.space(2xs);
+  text-align: center;
+  color: pdz.color(on-surface);
+}
+
+.matchup__detail-label {
+  @include pdz.text(field-label, $family: false);
+}
+
+.matchup__detail-value {
+  @include pdz.text(card-title, $family: false);
+}
+
+.matchup__body {
+  padding: pdz.space(sm);
+
+  @include pdz.respond-above(medium) {
+    padding: pdz.space(lg);
+  }
+}
+
+.matchup__panel {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: pdz.z(panel);
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  height: 100%;
+  overflow: hidden;
+  visibility: hidden;
+  pointer-events: none;
+  background-color: pdz.color(surface);
+  box-shadow: var(--pdz-level-2);
+  transition:
+    width $panel-transition,
+    visibility pdz.duration(none) pdz.easing(standard) pdz.duration(base);
+
+  @include pdz.respond-above(medium) {
+    position: relative;
+    z-index: auto;
+    visibility: visible;
+    pointer-events: auto;
+    transition: width $panel-transition;
   }
 
-  .matchup-teambuilder-panel {
-    position: relative;
-    width: 0;
-    min-width: 0;
+  &--open {
+    visibility: visible;
+    pointer-events: auto;
+    transition: width $panel-transition;
+  }
+
+  &--resizing {
+    transition: none;
+    user-select: none;
+  }
+}
+
+.matchup__resize-handle {
+  display: none;
+
+  @include pdz.respond-above(medium) {
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 1;
+    display: block;
+    width: 6px;
     height: 100%;
-    background-color: pdz.color(surface);
-    box-shadow: var(--pdz-level-2);
-    transition: width $transition-duration pdz.easing(standard);
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
+    cursor: ew-resize;
+    background-color: transparent;
+    transition: background-color $panel-transition;
 
-    &.is-resizing {
-      transition: none;
-      user-select: none;
+    &::before {
+      content: "";
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: 4px;
+      height: 40px;
+      border-radius: pdz.shape(corner-full);
+      background-color: pdz.color(outline-variant);
+      opacity: 0;
+      transition: opacity $panel-transition;
     }
 
-    @media (max-width: 767px) {
-      position: absolute;
-      top: 0;
-      right: 0;
-      width: 100%;
-      z-index: pdz.z(panel);
-      visibility: hidden;
-      pointer-events: none;
-      transition:
-        width $transition-duration pdz.easing(standard),
-        visibility pdz.duration(none) pdz.easing(standard) $transition-duration;
-
-      &.is-open {
-        visibility: visible;
-        pointer-events: auto;
-        transition: width $transition-duration pdz.easing(standard);
-      }
-    }
-
-    .resize-handle {
-      position: absolute;
-      left: 0;
-      top: 0;
-      width: 6px;
-      height: 100%;
-      cursor: ew-resize;
-      background: transparent;
-      z-index: 2;
-      transition: background-color pdz.duration(base) pdz.easing(standard);
-
-      &:hover {
-        background-color: pdz.color(outline);
-      }
+    &:hover {
+      background-color: pdz.color(outline);
 
       &::before {
-        content: "";
-        position: absolute;
-        left: 50%;
-        top: 50%;
-        transform: translate(-50%, -50%);
-        width: 4px;
-        height: 40px;
-        border-radius: 2px;
-        background-color: pdz.color(outline-variant);
-        opacity: 0;
-        transition: opacity pdz.duration(base) pdz.easing(standard);
-      }
-
-      &:hover::before {
         opacity: 1;
         background-color: pdz.color(on-primary);
       }
-
-      @media (max-width: 767px) {
-        display: none;
-      }
     }
   }
+}
 
-  button {
-    &.teambuilder-button {
-      background-color: pdz.color(surface);
-      border: 1px solid pdz.color(menu-border);
-      border-right-width: 0px;
-      border-radius: 1rem 0 0 1rem;
-      position: absolute;
-      padding: pdz.space(sm);
-      bottom: pdz.space(lg);
-      right: 0.675rem;
-      z-index: pdz.z(fab);
-      transition: all pdz.duration(base) pdz.easing(standard);
-      display: flex;
-      align-items: center;
+.matchup__fab {
+  position: absolute;
+  right: pdz.space(md);
+  bottom: pdz.space(lg);
+  z-index: pdz.z(fab);
+  transition:
+    opacity $panel-transition,
+    transform $panel-transition;
 
-      &.is-hidden {
-        opacity: 0;
-        pointer-events: none;
-        transform: scale(0.8);
-      }
+  &--hidden {
+    opacity: 0;
+    transform: scale(0.8);
+    pointer-events: none;
+  }
+}
 
-      &:hover {
-        padding-right: pdz.space(md);
-      }
-    }
+.matchup-skeleton {
+  &__body {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
+    gap: pdz.space(lg);
+    align-items: start;
+  }
+
+  &__widget {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border: 1px solid pdz.color(outline-variant);
+    border-radius: pdz.shape(corner-md);
+    background-color: pdz.color(surface-container-lowest);
+  }
+
+  &__widget-head {
+    padding: pdz.space(sm) pdz.space(md);
+    border-bottom: 1px solid pdz.color(outline-variant);
+  }
+
+  &__widget-body {
+    flex: 1;
+    margin: pdz.space(md);
   }
 }

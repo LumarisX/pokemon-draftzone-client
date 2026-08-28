@@ -12,6 +12,7 @@ import {
   TOOLS_PATH,
 } from '@pdz/core/route-paths';
 import { adminGuard } from '@pdz/core/guards/admin/admin.guard';
+import { SHARED_MATCHUP_PAGE } from '@pdz/features/drafts/matchup-overview/matchup-page.config';
 import { HomeComponent } from '@pdz/features/pages/homepage/homepage.component';
 import { NotFoundComponent } from '@pdz/features/pages/not-found/not-found.component';
 import { externalLinkBypassGuard } from './features/pages/external-link/external-link.guard';
@@ -62,9 +63,10 @@ export const routes: Routes = [
   {
     path: 'matchup/:id',
     loadComponent: () =>
-      import('@pdz/features/drafts/matchup-overview/matchup-shared.component').then(
-        (c) => c.MatchupSharedComponent,
-      ),
+      import(
+        '@pdz/features/drafts/matchup-overview/matchup-overview.component'
+      ).then((c) => c.MatchupOverviewComponent),
+    data: { matchup: SHARED_MATCHUP_PAGE },
   },
   {
     path: LEAGUE_ADS_PATH,

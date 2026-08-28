@@ -3,6 +3,7 @@ import { AuthGuard } from '@auth0/auth0-angular';
 import { LEAGUE_ZONE_MANAGE_PATH } from '@pdz/core/route-paths';
 import { DraftPreviewComponent } from '../drafts/draft-overview/draft-preview/draft-preview.component';
 import { MatchupOverviewComponent } from '../drafts/matchup-overview/matchup-overview.component';
+import { LEAGUE_MATCHUP_PAGE } from '../drafts/matchup-overview/matchup-page.config';
 import { TierListFormComponent } from '../tier-lists/tier-list/tier-list-form/tier-list-form.component';
 import { unsavedChangesGuard } from '../tier-lists/tier-list/tier-list-form/unsaved-changes.guard';
 import { TierListComponent } from '../tier-lists/tier-list/tier-list.component';
@@ -107,6 +108,7 @@ export const routes: Routes = [
       {
         path: 'matchups/:matchupSlug/breakdown',
         component: MatchupOverviewComponent,
+        data: { matchup: LEAGUE_MATCHUP_PAGE },
       },
       {
         path: 'standings',
