@@ -17,6 +17,12 @@ import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
 import { ReplayAnalysis } from '../../../tools/replay_analyzer/replay.interface';
+import {
+  RosterEntry,
+  countRosterOverlap,
+  matchReplayTeamToRoster,
+  rosterEntryIds,
+} from '../../../tools/replay_analyzer/replay-roster';
 import { ChoiceDirective } from '@pdz/shared/inputs/choice/choice.directive';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 
@@ -369,13 +375,13 @@ export class OpponentScoreComponent implements OnInit {
       return null;
     }
 
-    const aDraftFormes = this.getSideDraftFormes(this.matchup.aTeam.team);
-    const bDraftFormes = this.getSideDraftFormes(this.matchup.bTeam.team);
+    const aRoster = this.rosterEntries(this.matchup.aTeam.team);
+    const bRoster = this.rosterEntries(this.matchup.bTeam.team);
 
-    const p0ToA = this.countFormeMatches(replayData.players[0], aDraftFormes);
-    const p0ToB = this.countFormeMatches(replayData.players[0], bDraftFormes);
-    const p1ToA = this.countFormeMatches(replayData.players[1], aDraftFormes);
-    const p1ToB = this.countFormeMatches(replayData.players[1], bDraftFormes);
+    const p0ToA = countRosterOverlap(replayData.players[0], aRoster);
+    const p0ToB = countRosterOverlap(replayData.players[0], bRoster);
+    const p1ToA = countRosterOverlap(replayData.players[1], aRoster);
+    const p1ToB = countRosterOverlap(replayData.players[1], bRoster);
 
     const directAssignmentScore = p0ToA + p1ToB;
     const swappedAssignmentScore = p0ToB + p1ToA;
@@ -403,35 +409,11 @@ export class OpponentScoreComponent implements OnInit {
     return null;
   }
 
-  private getSideDraftFormes(team: DraftPokemon[]): Set<string> {
-    return new Set(
-      team.flatMap((pokemon) => this.getPokemonDraftFormes(pokemon)),
-    );
-  }
-
-  private getPokemonDraftFormes(pokemon: DraftPokemon): string[] {
-    const formeCandidates = [
-      pokemon.id,
-      ...(pokemon.draftFormes?.map((forme) => forme.id) ?? []),
-    ];
-    return formeCandidates.filter((id) => !!id);
-  }
-
-  private countFormeMatches(
-    replayPlayer: ReplayAnalysis['players'][number],
-    draftFormes: Set<string>,
-  ): number {
-    const replayFormes = this.getSideDraftFormes(replayPlayer.team);
-    let matches = 0;
-    draftFormes.forEach((draftForme) => {
-      const foundMatch = [...replayFormes].some((replayForme) =>
-        draftForme.startsWith(replayForme),
-      );
-      if (foundMatch) {
-        matches++;
-      }
-    });
-    return matches;
+  private rosterEntries(team: DraftPokemon[]): RosterEntry[] {
+    return team.map((pokemon) => ({
+      key: pokemon.id,
+      ids: rosterEntryIds(pokemon),
+    }));
   }
 
   private getTeamArray(
@@ -459,29 +441,24 @@ export class OpponentScoreComponent implements OnInit {
     teamArray: FormArray,
     replayTeam: ReplayAnalysis['players'][number]['team'],
   ): void {
-    replayTeam.forEach((replayMon) => {
-      const teamControl = teamArray.controls.find((control) => {
-        const draftMon = control.get('pokemon')?.value as
-          | DraftPokemon
-          | undefined;
-        if (!draftMon) {
-          return false;
-        }
-        const draftFormes = this.getPokemonDraftFormes(draftMon);
-        console.log(replayMon.id, replayMon.formes);
-        return (
-          draftFormes.includes(replayMon.id) ||
-          replayMon.formes?.some((replayForme) =>
-            draftFormes.some((draftForme) => draftForme === replayForme),
-          )
-        );
-      });
+    const controls = teamArray.controls.filter(
+      (control) => !!(control.get('pokemon')?.value as DraftPokemon | undefined),
+    );
+    const matched = matchReplayTeamToRoster(
+      replayTeam,
+      controls.map((control, index) => ({
+        key: String(index),
+        ids: rosterEntryIds(control.get('pokemon')!.value as DraftPokemon),
+      })),
+    );
 
-      if (!teamControl) {
+    controls.forEach((control, index) => {
+      const replayMon = matched.get(String(index));
+      if (!replayMon) {
         return;
       }
 
-      teamControl.patchValue(
+      control.patchValue(
         {
           brought:
             replayMon.status === 'survived' || replayMon.status === 'fainted'

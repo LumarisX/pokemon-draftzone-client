@@ -24,6 +24,11 @@ import {
   ReplayAnalysis,
   ReplayPlayer,
 } from '@pdz/features/tools/replay_analyzer/replay.interface';
+import {
+  RosterEntry,
+  countRosterOverlap,
+  matchReplayTeamToRoster,
+} from '@pdz/features/tools/replay_analyzer/replay-roster';
 import { ReplayService } from '@pdz/features/tools/replay_analyzer/replay.service';
 import { LeagueZoneService } from '../../league-zone.service';
 import {
@@ -602,18 +607,15 @@ export class MatchupReportComponent implements OnInit, OnDestroy {
     const players = analysis.players.slice(0, 2);
     if (players.length < 2) return;
 
-    const team1Ids = new Set(this.matchup().team1.draft.map((mon) => mon.id));
-    const team2Ids = new Set(this.matchup().team2.draft.map((mon) => mon.id));
-    const overlap = (player: ReplayPlayer, ids: Set<string>) =>
-      player.team.reduce(
-        (count, mon) => (ids.has(mon.id) ? count + 1 : count),
-        0,
-      );
+    const team1Roster = this.rosterEntries(game.controls.team1.controls);
+    const team2Roster = this.rosterEntries(game.controls.team2.controls);
 
     const [first, second] = players;
     const straight =
-      overlap(first, team1Ids) + overlap(second, team2Ids) >=
-      overlap(first, team2Ids) + overlap(second, team1Ids);
+      countRosterOverlap(first, team1Roster) +
+        countRosterOverlap(second, team2Roster) >=
+      countRosterOverlap(first, team2Roster) +
+        countRosterOverlap(second, team1Roster);
     const side1Player = straight ? first : second;
     const side2Player = straight ? second : first;
 
@@ -631,6 +633,13 @@ export class MatchupReportComponent implements OnInit, OnDestroy {
     );
   }
 
+  private rosterEntries(controls: PokemonStatsForm[]): RosterEntry[] {
+    return controls.map((control) => ({
+      key: control.controls.id.value,
+      ids: [control.controls.id.value],
+    }));
+  }
+
   private applyPlayer(
     roster: FormArray<PokemonStatsForm>,
     player: ReplayPlayer,
@@ -644,13 +653,14 @@ export class MatchupReportComponent implements OnInit, OnDestroy {
       }),
     );
 
-    const byId = new Map(
-      roster.controls.map((control) => [control.controls.id.value, control]),
+    const matched = matchReplayTeamToRoster(
+      player.team,
+      this.rosterEntries(roster.controls),
     );
 
-    player.team.forEach((mon) => {
-      const control = byId.get(mon.id);
-      if (!control) return;
+    roster.controls.forEach((control) => {
+      const mon = matched.get(control.controls.id.value);
+      if (!mon) return;
       control.patchValue({
         direct: mon.kills?.direct ?? 0,
         indirect: mon.kills?.indirect ?? 0,
