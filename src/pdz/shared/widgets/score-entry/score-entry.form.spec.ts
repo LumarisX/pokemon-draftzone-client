@@ -19,11 +19,16 @@ import {
   unlockScore,
 } from './score-entry.form';
 import { ScoreEntryGameForm, ScoreEntryGameSeed } from './score-entry.model';
+import { toRosterEntries } from './score-entry.replay';
 
 const fb = new FormBuilder();
 const ROSTERS = {
   side1: ['pikachu', 'charizard'],
   side2: ['gengar', 'snorlax'],
+};
+const REPLAY_ROSTERS = {
+  side1: toRosterEntries(ROSTERS.side1.map((id) => ({ id }))),
+  side2: toRosterEntries(ROSTERS.side2.map((id) => ({ id }))),
 };
 const NAMES = { side1: 'Team A', side2: 'Team B' } as const;
 
@@ -380,12 +385,7 @@ describe('applyReplayToGame', () => {
   it('matches players to sides by roster overlap regardless of replay order', () => {
     const game = build();
 
-    expect(
-      applyReplayToGame(game, players, {
-        side1: new Set(ROSTERS.side1),
-        side2: new Set(ROSTERS.side2),
-      }),
-    ).toBe(true);
+    expect(applyReplayToGame(game, players, REPLAY_ROSTERS)).toBe(true);
 
     expect(entry(game, 'side1', 0).controls.status.value).toBe('survived');
     expect(entry(game, 'side1', 0).controls.direct.value).toBe(2);
@@ -399,16 +399,13 @@ describe('applyReplayToGame', () => {
     lockScore(game, 'side1');
     game.controls.side1Score.setValue(5);
 
-    applyReplayToGame(game, players, {
-      side1: new Set(ROSTERS.side1),
-      side2: new Set(ROSTERS.side2),
-    });
+    applyReplayToGame(game, players, REPLAY_ROSTERS);
 
     expect(game.controls.side1ScoreLocked.value).toBe(false);
     expect(game.controls.side1Score.value).toBe(1);
   });
 
-  it('maps a replay forme back onto the drafted Pokemon', () => {
+  it('maps a mid-battle forme change back onto the drafted Pokemon', () => {
     const game = build();
 
     applyReplayToGame(
@@ -416,28 +413,27 @@ describe('applyReplayToGame', () => {
       [
         {
           win: true,
-          team: [{ id: 'charizardmegay', status: 'survived', kills: {} }],
+          team: [
+            {
+              id: 'charizardmegay',
+              formes: ['charizard', 'charizardmegay'],
+              status: 'fainted',
+              kills: { direct: 3 },
+            },
+          ],
         },
         { win: false, team: [{ id: 'gengar', status: 'fainted', kills: {} }] },
       ],
-      {
-        side1: new Set([...ROSTERS.side1, 'charizardmegay']),
-        side2: new Set(ROSTERS.side2),
-      },
-      (id) => (id === 'charizardmegay' ? 'charizard' : id),
+      REPLAY_ROSTERS,
     );
 
-    expect(entry(game, 'side1', 1).controls.status.value).toBe('survived');
+    expect(entry(game, 'side1', 1).controls.status.value).toBe('fainted');
+    expect(entry(game, 'side1', 1).controls.direct.value).toBe(3);
   });
 
   it('refuses a replay that does not have two players', () => {
     const game = build();
 
-    expect(
-      applyReplayToGame(game, [players[0]], {
-        side1: new Set(ROSTERS.side1),
-        side2: new Set(ROSTERS.side2),
-      }),
-    ).toBe(false);
+    expect(applyReplayToGame(game, [players[0]], REPLAY_ROSTERS)).toBe(false);
   });
 });

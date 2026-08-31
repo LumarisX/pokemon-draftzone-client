@@ -76,6 +76,7 @@ export type ScoreEntryMatchSeed = {
 
 export type ScoreEntryReplayPokemon = {
   id: string;
+  formes?: string[];
   kills?: ScoreEntryKills;
   status?: ScoreEntryStatus;
 };

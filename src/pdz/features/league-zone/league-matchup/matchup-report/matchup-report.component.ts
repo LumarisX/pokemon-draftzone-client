@@ -54,6 +54,7 @@ import {
   ScoreEntrySide,
   ScoreEntryWarningGroup,
 } from '@pdz/shared/widgets/score-entry/score-entry.model';
+import { toRosterEntries } from '@pdz/shared/widgets/score-entry/score-entry.replay';
 
 type MatchupPokemonSummary = {
   key: string;
@@ -280,8 +281,8 @@ export class MatchupReportComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (data) => {
           const applied = applyReplayToGame(game, data.analysis.players, {
-            side1: new Set(this.matchup().team1.draft.map((mon) => mon.id)),
-            side2: new Set(this.matchup().team2.draft.map((mon) => mon.id)),
+            side1: toRosterEntries(this.matchup().team1.draft),
+            side2: toRosterEntries(this.matchup().team2.draft),
           });
           if (!applied) {
             this.analysisError.set('That replay does not have two players.');

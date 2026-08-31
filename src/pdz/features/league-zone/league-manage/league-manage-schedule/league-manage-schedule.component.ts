@@ -23,6 +23,11 @@ import {
   ReplayAnalysis,
   ReplayPlayer,
 } from '@pdz/features/tools/replay_analyzer/replay.interface';
+import {
+  RosterEntry,
+  countRosterOverlap,
+  matchReplayTeamToRoster,
+} from '@pdz/shared/widgets/score-entry/score-entry.replay';
 import { League } from '../../league.interface';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 import { DisclosureComponent } from '@pdz/shared/layout/disclosure/disclosure.component';
@@ -783,13 +788,13 @@ export class LeagueManageScheduleComponent {
       return { team1: players[0], team2: players[1] };
     }
 
-    const team1Ids = new Set(matchup.team1.draft.map((p) => p.id));
-    const team2Ids = new Set(matchup.team2.draft.map((p) => p.id));
+    const team1Roster = this.rosterEntries(matchup.team1.draft);
+    const team2Roster = this.rosterEntries(matchup.team2.draft);
 
     const overlaps = players.map((player) => ({
       player,
-      team1: this.countOverlap(player, team1Ids),
-      team2: this.countOverlap(player, team2Ids),
+      team1: countRosterOverlap(player, team1Roster),
+      team2: countRosterOverlap(player, team2Roster),
     }));
 
     const [first, second] = overlaps;
@@ -801,11 +806,8 @@ export class LeagueManageScheduleComponent {
       : { team1: second.player, team2: first.player };
   }
 
-  private countOverlap(player: ReplayPlayer, ids: Set<string>): number {
-    return player.team.reduce((count, mon) => {
-      const pid = mon.id;
-      return ids.has(pid) ? count + 1 : count;
-    }, 0);
+  private rosterEntries(draft: readonly { id: string }[]): RosterEntry[] {
+    return draft.map((pokemon) => ({ key: pokemon.id, ids: [pokemon.id] }));
   }
 
   private resetPokemonStats(array: FormArray<PokemonStatsForm>): void {
@@ -825,13 +827,16 @@ export class LeagueManageScheduleComponent {
     array: FormArray<PokemonStatsForm>,
     player: ReplayPlayer,
   ): void {
-    const controlMap = new Map(
-      array.controls.map((control) => [control.controls.id.value, control]),
+    const matched = matchReplayTeamToRoster(
+      player.team,
+      this.rosterEntries(
+        array.controls.map((control) => ({ id: control.controls.id.value })),
+      ),
     );
 
-    player.team.forEach((mon) => {
-      const control = controlMap.get(mon.id);
-      if (!control) return;
+    array.controls.forEach((control) => {
+      const mon = matched.get(control.controls.id.value);
+      if (!mon) return;
 
       control.patchValue({
         kills: {

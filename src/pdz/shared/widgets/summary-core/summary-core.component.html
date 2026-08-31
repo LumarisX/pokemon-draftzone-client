@@ -47,7 +47,7 @@
             <div class="summary__pokemon-name">{{ forme.name }}</div>
             <div class="pdz-types">
               @for (type of forme.types; track $index) {
-                <pdz-pokemon-type [type]="type"></pdz-pokemon-type>
+                <pdz-pokemon-type size="sm" [type]="type"></pdz-pokemon-type>
               }
             </div>
           </div>

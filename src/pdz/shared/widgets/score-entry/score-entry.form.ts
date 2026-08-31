@@ -15,6 +15,13 @@ import {
   ScoreEntryStatus,
   ScoreEntryWarningGroup,
 } from './score-entry.model';
+import {
+  RosterEntry,
+  ScoreEntryReplayRosters,
+  countRosterOverlap,
+  matchReplayTeamToRoster,
+  toRosterEntries,
+} from './score-entry.replay';
 
 const OTHER_SIDE: Record<ScoreEntrySide, ScoreEntrySide> = {
   side1: 'side2',
@@ -338,17 +345,17 @@ export function resetRoster(roster: FormArray<ScoreEntryPokemonForm>): void {
 export function applyReplayPlayer(
   roster: FormArray<ScoreEntryPokemonForm>,
   player: ScoreEntryReplayPlayer,
-  resolveId: (replayId: string) => string | undefined = (id) => id,
+  entries: readonly RosterEntry[] = toRosterEntries(
+    roster.controls.map((entry) => ({ id: entry.controls.id.value })),
+  ),
 ): void {
   resetRoster(roster);
 
-  const byId = new Map(
-    roster.controls.map((entry) => [entry.controls.id.value, entry]),
-  );
+  const matched = matchReplayTeamToRoster(player.team, entries);
 
-  player.team.forEach((mon) => {
-    const entry = byId.get(resolveId(mon.id) ?? mon.id);
-    if (!entry) return;
+  roster.controls.forEach((entry) => {
+    const mon = matched.get(entry.controls.id.value);
+    if (!mon) return;
     entry.patchValue({
       direct: mon.kills?.direct ?? 0,
       indirect: mon.kills?.indirect ?? 0,
@@ -360,19 +367,16 @@ export function applyReplayPlayer(
 
 export function orderReplayPlayers<T extends ScoreEntryReplayPlayer>(
   players: T[],
-  rosters: { side1: Set<string>; side2: Set<string> },
+  rosters: ScoreEntryReplayRosters,
 ): { side1: T; side2: T } | null {
   if (players.length < 2) return null;
   const [first, second] = players;
-  const overlap = (player: T, ids: Set<string>) =>
-    player.team.reduce(
-      (count, mon) => (ids.has(mon.id) ? count + 1 : count),
-      0,
-    );
 
   const straight =
-    overlap(first, rosters.side1) + overlap(second, rosters.side2) >=
-    overlap(first, rosters.side2) + overlap(second, rosters.side1);
+    countRosterOverlap(first, rosters.side1) +
+      countRosterOverlap(second, rosters.side2) >=
+    countRosterOverlap(first, rosters.side2) +
+      countRosterOverlap(second, rosters.side1);
 
   return straight
     ? { side1: first, side2: second }
@@ -580,14 +584,13 @@ export function matchWinnerNotice(
 export function applyReplayToGame(
   game: ScoreEntryGameForm,
   players: ScoreEntryReplayPlayer[],
-  rosters: { side1: Set<string>; side2: Set<string> },
-  resolveId?: (replayId: string) => string | undefined,
+  rosters: ScoreEntryReplayRosters,
 ): boolean {
   const ordered = orderReplayPlayers(players.slice(0, 2), rosters);
   if (!ordered) return false;
 
-  applyReplayPlayer(game.controls.side1, ordered.side1, resolveId);
-  applyReplayPlayer(game.controls.side2, ordered.side2, resolveId);
+  applyReplayPlayer(game.controls.side1, ordered.side1, rosters.side1);
+  applyReplayPlayer(game.controls.side2, ordered.side2, rosters.side2);
 
   game.controls.side1ScoreLocked.setValue(false);
   game.controls.side2ScoreLocked.setValue(false);

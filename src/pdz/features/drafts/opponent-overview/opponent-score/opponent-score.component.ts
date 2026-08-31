@@ -44,6 +44,10 @@ import {
   ScoreEntrySide,
   ScoreEntryWarningGroup,
 } from '@pdz/shared/widgets/score-entry/score-entry.model';
+import {
+  ScoreEntryReplayRosters,
+  toRosterEntries,
+} from '@pdz/shared/widgets/score-entry/score-entry.replay';
 import { Subject, takeUntil } from 'rxjs';
 import { ReplayService } from '@pdz/features/tools/replay_analyzer/replay.service';
 import { DraftService } from '../../draft-overview/draft.service';
@@ -105,7 +109,7 @@ export class OpponentScoreComponent implements OnInit, OnDestroy {
     side1: [],
     side2: [],
   };
-  private formeLookup = new Map<string, string>();
+  private rosters: ScoreEntryReplayRosters = { side1: [], side2: [] };
 
   ngOnInit(): void {
     this.teamId = this.route.parent!.snapshot.paramMap.get('teamId') || '';
@@ -166,20 +170,19 @@ export class OpponentScoreComponent implements OnInit, OnDestroy {
 
   private indexTeams(matchup: Matchup): void {
     this.pokedex = {};
-    this.formeLookup = new Map();
     const index = (team: DraftPokemon[]) => {
       team.forEach((pokemon) => {
         this.pokedex[pokemon.id] = pokemon;
-        this.formeLookup.set(pokemon.id, pokemon.id);
-        pokemon.draftFormes?.forEach((forme) =>
-          this.formeLookup.set(forme.id, pokemon.id),
-        );
       });
-      return team.map((pokemon) => pokemon.id);
+      return toRosterEntries(team);
     };
-    this.rosterIds = {
+    this.rosters = {
       side1: index(matchup.aTeam.team),
       side2: index(matchup.bTeam.team),
+    };
+    this.rosterIds = {
+      side1: this.rosters.side1.map((entry) => entry.key),
+      side2: this.rosters.side2.map((entry) => entry.key),
     };
   }
 
@@ -355,11 +358,7 @@ export class OpponentScoreComponent implements OnInit, OnDestroy {
           const applied = applyReplayToGame(
             game,
             data.analysis.players,
-            {
-              side1: this.formeSet('side1'),
-              side2: this.formeSet('side2'),
-            },
-            (replayId) => this.formeLookup.get(replayId),
+            this.rosters,
           );
           if (!applied) {
             this.analysisError.set('That replay does not have two players.');
@@ -374,14 +373,6 @@ export class OpponentScoreComponent implements OnInit, OnDestroy {
           );
         },
       });
-  }
-
-  private formeSet(side: ScoreEntrySide): Set<string> {
-    const ids = new Set(this.rosterIds[side]);
-    this.formeLookup.forEach((ownerId, formeId) => {
-      if (ids.has(ownerId)) ids.add(formeId);
-    });
-    return ids;
   }
 
   warnings(): ScoreEntryWarningGroup[] {
