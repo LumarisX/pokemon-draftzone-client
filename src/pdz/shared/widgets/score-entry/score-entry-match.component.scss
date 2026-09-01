@@ -10,14 +10,16 @@
   display: grid;
   grid-template-columns: 1fr;
   align-items: center;
-  gap: pdz.space(2xs) pdz.space(md);
-  padding: pdz.space(md);
+  gap: pdz.space(sm);
+  padding: pdz.space(sm);
   border: 1px solid pdz.color(outline-variant);
   border-radius: pdz.shape(corner-md);
   background: pdz.color(surface-container-low);
 
   @include pdz.respond-above(medium) {
     grid-template-columns: 1fr auto 1fr;
+    gap: pdz.space(2xs) pdz.space(md);
+    padding: pdz.space(md);
 
     .match__side {
       grid-column: 1;
@@ -79,8 +81,11 @@
   }
 
   &--end {
-    align-items: flex-end;
-    order: 4;
+    order: 3;
+
+    @include pdz.respond-above(medium) {
+      align-items: flex-end;
+    }
   }
 }
 
@@ -88,16 +93,22 @@
   display: flex;
   align-items: center;
   gap: pdz.space(sm);
+  width: 100%;
   max-width: 100%;
   min-width: 0;
 
-  .match__side--end & {
-    flex-direction: row-reverse;
+  @include pdz.respond-above(medium) {
+    width: auto;
+
+    .match__side--end & {
+      flex-direction: row-reverse;
+    }
   }
 }
 
 .match__name {
   @include pdz.text(subtitle, $family: false);
+  flex: 1 1 auto;
   min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -130,11 +141,15 @@
 .match__winner-cell {
   display: flex;
   flex-direction: column;
-  align-items: center;
+  align-items: stretch;
   justify-content: center;
   gap: pdz.space(3xs);
   min-width: 0;
-  order: 3;
+  order: 5;
+
+  @include pdz.respond-above(medium) {
+    align-items: center;
+  }
 }
 
 .match__winner-caption {
@@ -146,7 +161,11 @@
 .match__winner {
   --pdz-select-surface: #{pdz.color(surface-container-lowest)};
 
-  min-width: 10rem;
+  min-width: 0;
+
+  @include pdz.respond-above(medium) {
+    min-width: 10rem;
+  }
 
   &[data-winner="side1"] {
     --pdz-select-surface: #{pdz.color(primary-container-low)};
@@ -179,7 +198,7 @@
   }
 
   &--end {
-    order: 5;
+    order: 4;
   }
 }
 

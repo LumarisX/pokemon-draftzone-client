@@ -24,12 +24,24 @@
   justify-content: space-between;
   gap: pdz.space(2xs);
   min-width: 0;
+  padding-inline-start: pdz.space(md);
+  padding-block-end: pdz.space(sm);
+
+  @include pdz.respond-above(medium) {
+    padding-inline-start: 0;
+    padding-block-end: 0;
+  }
 }
 
 .game__winner-cell {
   display: flex;
   align-items: center;
+  flex: 1 1 auto;
   min-width: 0;
+
+  @include pdz.respond-above(medium) {
+    flex: 0 1 auto;
+  }
 
   @include pdz.respond-above(desktop) {
     position: absolute;
@@ -43,9 +55,16 @@
   position: relative;
   display: flex;
   align-items: center;
-  flex: 1 1 9rem;
-  min-width: 6rem;
-  max-width: 20rem;
+  flex: 1 1 100%;
+  order: 1;
+  min-width: 0;
+
+  @include pdz.respond-above(medium) {
+    flex: 1 1 9rem;
+    order: 0;
+    min-width: 6rem;
+    max-width: 20rem;
+  }
 }
 
 .game__replay-input {
@@ -62,7 +81,13 @@
 .game__winner {
   --pdz-select-surface: #{pdz.color(surface-container-lowest)};
 
-  min-width: 9rem;
+  min-width: 0;
+  width: 100%;
+
+  @include pdz.respond-above(medium) {
+    min-width: 9rem;
+    width: auto;
+  }
 
   &[data-winner="side1"] {
     --pdz-select-surface: #{pdz.color(primary-container-low)};
@@ -81,7 +106,11 @@
   display: flex;
   flex-direction: column;
   gap: pdz.space(sm);
-  padding: 0 pdz.space(md) pdz.space(md);
+  padding: 0 pdz.space(sm) pdz.space(sm);
+
+  @include pdz.respond-above(medium) {
+    padding: 0 pdz.space(md) pdz.space(md);
+  }
 }
 
 .game__rosters {

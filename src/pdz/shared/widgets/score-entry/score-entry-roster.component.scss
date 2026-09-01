@@ -90,9 +90,13 @@
 
 .roster__list {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(17rem, 100%), 1fr));
   gap: pdz.space(2xs);
-  padding: pdz.space(sm);
+  padding: pdz.space(2xs);
+
+  @include pdz.respond-above(medium) {
+    padding: pdz.space(sm);
+  }
 }
 
 .mon {
@@ -101,13 +105,17 @@
   justify-content: center;
   gap: pdz.space(2xs);
   min-width: 0;
-  padding: pdz.space(2xs) pdz.space(sm) pdz.space(sm);
+  padding: pdz.space(2xs) pdz.space(xs) pdz.space(sm);
   border: 1px solid transparent;
   border-radius: pdz.shape(corner-sm);
   background: pdz.color(surface);
   transition:
     background-color pdz.duration(fast) pdz.easing(standard),
     border-color pdz.duration(fast) pdz.easing(standard);
+
+  @include pdz.respond-above(medium) {
+    padding: pdz.space(2xs) pdz.space(sm) pdz.space(sm);
+  }
 
   &--survived {
     background: pdz.color(positive-container);

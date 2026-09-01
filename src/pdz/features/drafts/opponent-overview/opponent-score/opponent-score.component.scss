@@ -16,12 +16,15 @@
 
 .score__bar {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
+  justify-content: space-between;
   gap: pdz.space(sm);
 }
 
 .score__title {
-  flex: 1;
+  flex: 1 1 100%;
+  order: -1;
   min-width: 0;
   margin: 0;
   text-align: center;
@@ -29,6 +32,11 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   @include pdz.text(title, $family: false);
+
+  @include pdz.respond-above(medium) {
+    flex: 1;
+    order: 0;
+  }
 }
 
 .score__games {
