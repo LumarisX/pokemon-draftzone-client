@@ -10,4 +10,11 @@ export type Opponent = {
   team: DraftPokemon[];
   matches: Match[];
   score: [number, number] | null;
+  scheduledDate?: string | null;
+  opponentTimezone?: string | null;
+};
+
+export type MatchSchedule = {
+  scheduledDate: string | null;
+  opponentTimezone?: string;
 };

@@ -6,6 +6,7 @@ import { ErrorService } from '@pdz/layout/error/error.service';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 import { SkeletonComponent } from '@pdz/shared/data/skeleton/skeleton.component';
 import { DialogService } from '@pdz/shared/dialogs/dialog/dialog.service';
+import { CountdownComponent } from '@pdz/shared/time/countdown/countdown.component';
 import { Observable, combineLatest } from 'rxjs';
 import { DraftPokemon } from '../draft.model';
 import { MatchupData, Summary, TypeChartPokemon } from './matchup-interface';
@@ -32,6 +33,7 @@ const SITE_URL = 'https://pokemondraftzone.com';
     RouterModule,
     MatchupTeambuilderComponent,
     ButtonComponent,
+    CountdownComponent,
   ],
 })
 export class MatchupOverviewComponent implements OnInit {
@@ -59,6 +61,20 @@ export class MatchupOverviewComponent implements OnInit {
   private readonly MIN_WIDTH_PERCENT = 15;
   private readonly MAX_WIDTH_PERCENT = 70;
   isMobile: boolean = false;
+
+  scheduledLabel(): string | null {
+    const raw = this.matchupData?.details.scheduledDate;
+    if (!raw) return null;
+    const date = new Date(raw);
+    if (Number.isNaN(date.getTime())) return null;
+    return date.toLocaleString(undefined, {
+      weekday: 'short',
+      month: 'short',
+      day: 'numeric',
+      hour: 'numeric',
+      minute: '2-digit',
+    });
+  }
 
   startResize(event: MouseEvent): void {
     if (this.isMobile) return;

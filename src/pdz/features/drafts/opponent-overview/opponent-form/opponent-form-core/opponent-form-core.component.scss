@@ -160,3 +160,30 @@
 .draft-builder__title {
   font-family: var(--pdz-font-display);
 }
+
+.match-time {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(xs);
+  padding: pdz.space(sm);
+  background: pdz.color(surface-container);
+  border: 1px solid pdz.color(outline-variant);
+  border-radius: pdz.shape(corner-sm);
+}
+
+.match-time__value {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(3xs);
+}
+
+.match-time__when {
+  @include pdz.text(body-sm);
+  font-weight: 600;
+  color: pdz.color(on-surface);
+}
+
+.match-time__actions {
+  display: flex;
+  gap: pdz.space(2xs);
+}

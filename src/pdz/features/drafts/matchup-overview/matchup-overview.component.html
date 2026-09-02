@@ -36,6 +36,17 @@
               {{ matchupData.details.format }}
             </p>
           </div>
+          @if (scheduledLabel(); as when) {
+            <div class="matchup__detail">
+              <p class="matchup__detail-label">Match Time</p>
+              <p class="matchup__detail-value">
+                {{ when }}
+                <pdz-countdown
+                  [target]="matchupData.details.scheduledDate ?? null"
+                />
+              </p>
+            </div>
+          }
         </div>
       </div>
       @if (config.share) {

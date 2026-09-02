@@ -67,6 +67,51 @@
               <span pdz-error>Stage is required</span>
             }
           </label>
+
+          <div pdz-field class="form-field" label="Match Time">
+            @if (scheduledLabel(); as when) {
+              <div class="match-time">
+                <div class="match-time__value">
+                  <span class="match-time__when">{{ when }}</span>
+                  <pdz-countdown [target]="scheduledDate()" />
+                </div>
+                <div class="match-time__actions">
+                  <button
+                    pdz-button
+                    type="button"
+                    size="sm"
+                    variant="ghost"
+                    color="secondary"
+                    (click)="editMatchTime()"
+                  >
+                    Change
+                  </button>
+                  <button
+                    pdz-button
+                    type="button"
+                    size="sm"
+                    variant="ghost"
+                    color="danger"
+                    (click)="scheduledDate.set(null)"
+                  >
+                    Clear
+                  </button>
+                </div>
+              </div>
+            } @else {
+              <button
+                pdz-button
+                type="button"
+                size="sm"
+                variant="tonal"
+                color="secondary"
+                (click)="editMatchTime()"
+              >
+                <pdz-icon name="schedule" [size]="18"></pdz-icon>
+                Set Match Time
+              </button>
+            }
+          </div>
         </form>
       </aside>
 

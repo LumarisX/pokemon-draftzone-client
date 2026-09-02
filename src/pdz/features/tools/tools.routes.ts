@@ -3,7 +3,7 @@ import { PokemonSearchComponent } from './pokemon-search/pokemon-search.componen
 import { QuickMatchupBaseComponent } from './quick-matchup/quick-matchup-base.component';
 import { RandomDraftComponent } from './random-draft/random-draft.component';
 import { ReplayComponent } from './replay_analyzer/replay.component';
-import { TimeConverterComponent } from './time_converter/time_converter.component';
+import { TimeConverterPageComponent } from './time_converter/time_converter.component';
 import { ToolsComponent } from './tools.component';
 import { WheelComponent } from './wheel/wheel.component';
 
@@ -24,7 +24,7 @@ export const routes: Routes = [
   },
   {
     path: 'time-converter',
-    component: TimeConverterComponent,
+    component: TimeConverterPageComponent,
   },
   {
     path: 'pokemon-search',

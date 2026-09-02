@@ -1,0 +1,17 @@
+@use "pdz-theming" as pdz;
+
+:host {
+  display: inline;
+  color: pdz.color(on-surface-variant);
+  font-variant-numeric: tabular-nums;
+}
+
+:host([data-state="imminent"]) {
+  color: pdz.color(on-warning-container);
+  font-weight: 600;
+}
+
+:host([data-state="live"]) {
+  color: pdz.color(on-success-container);
+  font-weight: 600;
+}

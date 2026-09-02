@@ -1,0 +1,33 @@
+<div class="match-time__body">
+  <pdz-time-converter
+    [(value)]="scheduled"
+    [(localZone)]="localZone"
+    [(opponentZone)]="opponentZone"
+    localLabel="You"
+    [opponentLabel]="data.opponentName || 'Opponent'"
+  />
+
+  @if (scheduled(); as when) {
+    <p class="match-time__countdown">Starts <pdz-countdown [target]="when" /></p>
+  }
+</div>
+
+<div class="match-time__actions">
+  @if (canClear) {
+    <button pdz-button variant="ghost" color="danger" (click)="onClear()">
+      Clear Time
+    </button>
+  }
+  <span class="match-time__spacer"></span>
+  <button
+    pdz-button
+    variant="ghost"
+    color="secondary"
+    (click)="ref.close(undefined)"
+  >
+    Cancel
+  </button>
+  <button pdz-button [disabled]="!scheduled()" (click)="onSave()">
+    Save Time
+  </button>
+</div>

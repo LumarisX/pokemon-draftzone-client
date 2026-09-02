@@ -20,6 +20,15 @@ import { MatchupReportComponent } from './matchup-report/matchup-report.componen
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 import { SegmentedComponent } from '@pdz/shared/inputs/segmented/segmented.component';
 import { SegmentedOptionComponent } from '@pdz/shared/inputs/segmented/segmented-option.component';
+import { DialogService } from '@pdz/shared/dialogs/dialog/dialog.service';
+import { CountdownComponent } from '@pdz/shared/time/countdown/countdown.component';
+import {
+  MatchTimeDialogComponent,
+  MatchTimeDialogData,
+  MatchTimeDialogResult,
+} from '@pdz/shared/time/match-time-dialog/match-time-dialog.component';
+import { formatExactTime } from '@pdz/shared/time/timezone';
+import { TooltipDirective } from '@pdz/shared/tooltip/tooltip.directive';
 
 type GameSlot = {
   id: string;
@@ -41,6 +50,8 @@ type GameSlot = {
     ButtonComponent,
     SegmentedComponent,
     SegmentedOptionComponent,
+    CountdownComponent,
+    TooltipDirective,
   ],
   templateUrl: './league-matchup.component.html',
   styleUrl: './league-matchup.component.scss',
@@ -48,6 +59,7 @@ type GameSlot = {
 export class LeagueMatchupComponent implements OnDestroy {
   private route = inject(ActivatedRoute);
   private leagueService = inject(LeagueZoneService);
+  private dialogs = inject(DialogService);
   private readonly destroy$ = new Subject<void>();
   private clock = signal(Date.now());
   private clockTimer?: ReturnType<typeof setInterval>;
@@ -63,6 +75,7 @@ export class LeagueMatchupComponent implements OnDestroy {
   reviewing = signal(false);
   reviewError = signal<string | null>(null);
   copiedHandle = signal<string | null>(null);
+  schedulingError = signal<string | null>(null);
 
   private matchupSlug = '';
 
@@ -201,8 +214,47 @@ export class LeagueMatchupComponent implements OnDestroy {
     });
   }
 
-  scheduledIsDeadline(matchup: MatchupDetail): boolean {
-    return !matchup.scheduledDate && !!matchup.round?.matchDeadline;
+  scheduledExact(matchup: MatchupDetail): string | null {
+    const raw = matchup.scheduledDate ?? matchup.round?.matchDeadline;
+    if (!raw) return null;
+    const date = new Date(raw);
+    return Number.isNaN(date.getTime()) ? null : formatExactTime(date);
+  }
+
+  async editMatchTime(matchup: MatchupDetail): Promise<void> {
+    const opponent =
+      matchup.viewer.side === 'side2' ? matchup.team1 : matchup.team2;
+    const own = matchup.viewer.side === 'side2' ? matchup.team2 : matchup.team1;
+
+    const result = await this.dialogs.open<
+      MatchTimeDialogComponent,
+      MatchTimeDialogResult,
+      MatchTimeDialogData
+    >(MatchTimeDialogComponent, {
+      heading: matchup.scheduledDate ? 'Edit Match Time' : 'Set Match Time',
+      subheading: `${matchup.team1.name} vs ${matchup.team2.name}`,
+      size: 'lg',
+      data: {
+        opponentName: opponent.name,
+        scheduledDate: matchup.scheduledDate ?? null,
+        opponentTimezone: opponent.timezone,
+        localTimezone: matchup.viewer.side ? own.timezone : null,
+      },
+    }).closed;
+
+    if (!result) return;
+
+    this.schedulingError.set(null);
+    this.leagueService
+      .setMatchupSchedule(this.matchupSlug, result.scheduledDate)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: () => this.load(),
+        error: (error) =>
+          this.schedulingError.set(
+            error?.message || 'Failed to save the match time.',
+          ),
+      });
   }
 
   replayOf(game: MatchupGame): string | null {

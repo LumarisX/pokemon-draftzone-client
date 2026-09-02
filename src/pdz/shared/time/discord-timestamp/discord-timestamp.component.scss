@@ -1,0 +1,27 @@
+@use "pdz-theming" as pdz;
+
+:host {
+  display: flex;
+  align-items: center;
+  gap: pdz.space(sm);
+  padding: pdz.space(xs) pdz.space(sm);
+  background: pdz.color(surface-container);
+  color: pdz.color(on-surface);
+  border: 1px solid pdz.color(outline-variant);
+  border-radius: pdz.shape(corner-sm);
+}
+
+.pdz-discord-timestamp__code {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-family: var(--pdz-font-mono);
+  font-size: pdz.font-size(sm);
+  line-height: pdz.leading(tight);
+}
+
+.pdz-discord-timestamp__copy {
+  flex-shrink: 0;
+}

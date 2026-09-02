@@ -1,13 +1,11 @@
 import { Component, computed, input, model } from '@angular/core';
-import { SelectComponent } from '@pdz/shared/dropdowns/select/select.component';
 import { SelectOptionComponent } from '@pdz/shared/dropdowns/select/select-option.component';
-
-export type TimeZone = {
-  short?: string;
-  name: string;
-  utc: string;
-  offset: number;
-};
+import { SelectComponent } from '@pdz/shared/dropdowns/select/select.component';
+import {
+  abbreviatedTimeZones,
+  TimeZone,
+  timeZones,
+} from '@pdz/shared/time/timezone';
 
 let nextId = 0;
 
@@ -21,8 +19,8 @@ export class TimezoneSelectComponent {
   readonly selectId = `pdz-timezone-select-${nextId++}`;
 
   readonly label = input('');
-  readonly zones = input<TimeZone[]>([]);
-  readonly shortZones = input<TimeZone[]>([]);
+  readonly zones = input<TimeZone[]>(timeZones());
+  readonly shortZones = input<TimeZone[]>(abbreviatedTimeZones());
   readonly value = model<TimeZone>();
 
   readonly selectedKey = computed(() => {

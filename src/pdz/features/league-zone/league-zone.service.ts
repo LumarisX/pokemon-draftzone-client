@@ -564,6 +564,17 @@ export class LeagueZoneService {
     );
   }
 
+  setMatchupSchedule(
+    matchupSlug: string,
+    scheduledDate: string | null,
+  ): Observable<{ message: string; scheduledDate: string | null }> {
+    return this.apiService.post(
+      `${this.matchupPath(matchupSlug)}/schedule`,
+      { scheduledDate },
+      { invalidateCache: [this.matchupPath(matchupSlug)] },
+    );
+  }
+
   reviewMatchupReport(
     matchupSlug: string,
     decision: 'approve' | 'reject',

@@ -1,0 +1,104 @@
+@if (showSummary()) {
+  <div class="converter-summary">
+    <p class="converter-summary__row">
+      <span class="converter-summary__label">{{ localLabel() }}</span>
+      <span class="converter-summary__value">{{ localDisplay() }}</span>
+    </p>
+    <p class="converter-summary__row">
+      <span class="converter-summary__label">{{ opponentLabel() }}</span>
+      <span class="converter-summary__value">{{ opponentDisplay() }}</span>
+    </p>
+  </div>
+}
+
+@if (showStamp()) {
+  <pdz-discord-timestamp [value]="isoValue()" />
+}
+
+<div class="converter-columns">
+  <section class="converter-side">
+    <h3 class="converter-side__title">{{ localLabel() }}</h3>
+    <pdz-timezone-select
+      label="Time Zone"
+      [value]="localZone()"
+      (valueChange)="setZone('local', $event)"
+    />
+    <div class="converter-side__when">
+      <label pdz-field label="Date">
+        <input
+          pdz-input
+          type="date"
+          [ngModel]="localDate()"
+          (ngModelChange)="setDate('local', $event)"
+        />
+      </label>
+      <label pdz-field label="Time">
+        <input
+          pdz-input
+          type="time"
+          [ngModel]="localTime()"
+          (ngModelChange)="setTime('local', $event)"
+        />
+      </label>
+    </div>
+    <div class="converter-slider">
+      <div class="converter-slider__icons" aria-hidden="true">
+        <pdz-icon name="nightlight" [size]="18" />
+        <pdz-icon name="wb_twilight" [size]="18" />
+        <pdz-icon name="sunny" [size]="18" />
+        <pdz-icon name="wb_twilight" [size]="18" />
+        <pdz-icon name="nightlight" [size]="18" />
+      </div>
+      <pdz-slider
+        [min]="0"
+        [max]="sliderMax"
+        [step]="sliderStep"
+        [ngModel]="localMinutes()"
+        (valueChange)="setMinutes('local', $event)"
+      />
+    </div>
+  </section>
+
+  <section class="converter-side">
+    <h3 class="converter-side__title">{{ opponentLabel() }}</h3>
+    <pdz-timezone-select
+      label="Time Zone"
+      [value]="opponentZone()"
+      (valueChange)="setZone('opponent', $event)"
+    />
+    <div class="converter-side__when">
+      <label pdz-field label="Date">
+        <input
+          pdz-input
+          type="date"
+          [ngModel]="opponentDate()"
+          (ngModelChange)="setDate('opponent', $event)"
+        />
+      </label>
+      <label pdz-field label="Time">
+        <input
+          pdz-input
+          type="time"
+          [ngModel]="opponentTime()"
+          (ngModelChange)="setTime('opponent', $event)"
+        />
+      </label>
+    </div>
+    <div class="converter-slider">
+      <div class="converter-slider__icons" aria-hidden="true">
+        <pdz-icon name="nightlight" [size]="18" />
+        <pdz-icon name="wb_twilight" [size]="18" />
+        <pdz-icon name="sunny" [size]="18" />
+        <pdz-icon name="wb_twilight" [size]="18" />
+        <pdz-icon name="nightlight" [size]="18" />
+      </div>
+      <pdz-slider
+        [min]="0"
+        [max]="sliderMax"
+        [step]="sliderStep"
+        [ngModel]="opponentMinutes()"
+        (valueChange)="setMinutes('opponent', $event)"
+      />
+    </div>
+  </section>
+</div>

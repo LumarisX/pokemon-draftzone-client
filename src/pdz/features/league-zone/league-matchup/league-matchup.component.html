@@ -178,11 +178,42 @@
           <span class="scoreboard__format">Best of {{ m.round!.bestOf }}</span>
         }
 
-        @if (scheduledLabel(m); as when) {
-          <span class="scoreboard__when">
-            <pdz-icon name="event" [size]="14"></pdz-icon>
-            <span>{{ scheduledIsDeadline(m) ? "Due " : "" }}{{ when }}</span>
-          </span>
+        <div class="scoreboard__schedule">
+          @if (m.scheduledDate) {
+            <span
+              class="scoreboard__when"
+              tabindex="0"
+              [pdzTooltip]="scheduledExact(m)"
+            >
+              <pdz-icon name="schedule" [size]="14"></pdz-icon>
+              <pdz-countdown [target]="m.scheduledDate" [showTitle]="false" />
+            </span>
+          } @else if (scheduledLabel(m); as when) {
+            <span
+              class="scoreboard__when"
+              tabindex="0"
+              [pdzTooltip]="scheduledExact(m)"
+            >
+              <pdz-icon name="event" [size]="14"></pdz-icon>
+              <span>Due {{ when }}</span>
+            </span>
+          }
+
+          @if (m.viewer.canSchedule) {
+            <button
+              pdz-button
+              size="xs"
+              variant="ghost"
+              color="secondary"
+              (click)="editMatchTime(m)"
+            >
+              {{ m.scheduledDate ? "Change time" : "Set match time" }}
+            </button>
+          }
+        </div>
+
+        @if (schedulingError(); as error) {
+          <p class="scoreboard__schedule-error" role="alert">{{ error }}</p>
         }
       </div>
 

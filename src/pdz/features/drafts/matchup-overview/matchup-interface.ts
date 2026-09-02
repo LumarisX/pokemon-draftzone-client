@@ -220,6 +220,7 @@ export type MatchupData = {
     format: string;
     ruleset: string;
     level: number;
+    scheduledDate?: string | null;
   };
   notes?: string;
 };

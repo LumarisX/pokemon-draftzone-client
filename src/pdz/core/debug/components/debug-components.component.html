@@ -1434,3 +1434,41 @@
     Open submit checks
   </button>
 </section>
+
+<section class="section">
+  <h2 class="section__title">Countdown</h2>
+  <p class="section__hint">
+    Live relative time to a match. Ticks every 30s and re-tones itself as the
+    match approaches — neutral beyond an hour out, warning inside the hour,
+    success while it is starting. Hover for the exact local time.
+  </p>
+
+  <div class="stack">
+    @for (sample of countdownSamples; track sample.label) {
+      <p class="row">
+        <span class="section__hint">{{ sample.label }}</span>
+        <pdz-countdown [target]="sample.target" />
+      </p>
+    }
+  </div>
+</section>
+
+<section class="section">
+  <h2 class="section__title">Discord timestamp</h2>
+  <p class="section__hint">
+    Copyable <code>&lt;t:…&gt;</code> stamp — pasted into Discord it renders in
+    each reader's own zone, which is the point.
+  </p>
+
+  <pdz-discord-timestamp [value]="countdownSamples[0].target" />
+</section>
+
+<section class="section">
+  <h2 class="section__title">Time converter</h2>
+  <p class="section__hint">
+    Two-sided scheduler: pick a moment on either side and the other follows.
+    Backs both the /tools time converter and the draft "Set Match Time" dialog.
+  </p>
+
+  <pdz-time-converter [(value)]="converterValue" />
+</section>

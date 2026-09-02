@@ -90,6 +90,13 @@
                 >
                 <button
                   pdz-menu-item
+                  icon="schedule"
+                  (click)="setMatchTime(matchup)"
+                >
+                  {{ matchup.scheduledDate ? "Edit" : "Set" }} Match Time
+                </button>
+                <button
+                  pdz-menu-item
                   icon="delete_forever"
                   tone="danger"
                   (click)="deleteMatchup(matchup._id)"
@@ -99,7 +106,22 @@
               </pdz-menu>
             </div>
 
-            <p class="body-header">{{ matchup.stage }}</p>
+            <div class="matchup-meta">
+              <span class="matchup-meta__stage">{{ matchup.stage }}</span>
+              @if (scheduledExact(matchup); as exact) {
+                <span
+                  class="matchup-meta__time"
+                  tabindex="0"
+                  [pdzTooltip]="exact"
+                >
+                  <pdz-icon name="schedule" [size]="12"></pdz-icon>
+                  <pdz-countdown
+                    [target]="matchup.scheduledDate ?? null"
+                    [showTitle]="false"
+                  />
+                </span>
+              }
+            </div>
             <div class="sprites">
               @for (pokemon of matchup.team; track pokemon.name) {
                 <pdz-sprite

@@ -3,7 +3,7 @@ import { ApiService } from '@pdz/core/services/api.service';
 import { DraftFormData } from '@pdz/features/drafts/draft-overview/draft-form/draft-form-core/draft-form-core.component';
 import { Draft, DraftPokemon } from '../draft.model';
 import { Matchup } from '../matchup-overview/matchup.model';
-import { Opponent } from '../opponent-overview/opponent.model';
+import { MatchSchedule, Opponent } from '../opponent-overview/opponent.model';
 import { Archive } from './archive.model';
 
 export type PokemonStat = {
@@ -90,6 +90,23 @@ export class DraftService {
       matchupData,
       {
         invalidateCache: [`${ROOTPATH}/${teamId}/matchups`],
+      },
+    );
+  }
+
+  updateMatchupSchedule(
+    matchupId: string,
+    teamId: string,
+    schedule: MatchSchedule,
+  ) {
+    return this.apiService.patch<{ message: string; matchup: Opponent }>(
+      `${ROOTPATH}/${teamId}/matchups/${matchupId}/schedule`,
+      schedule,
+      {
+        invalidateCache: [
+          `${ROOTPATH}/${teamId}/matchups`,
+          `${ROOTPATH}/${teamId}/matchups/${matchupId}/opponent`,
+        ],
       },
     );
   }

@@ -17,8 +17,16 @@ import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
 import { MenuComponent } from '@pdz/shared/menu/menu.component';
 import { MenuItemComponent } from '@pdz/shared/menu/menu-item.component';
 import { MenuTriggerDirective } from '@pdz/shared/menu/menu-trigger.directive';
+import { CountdownComponent } from '@pdz/shared/time/countdown/countdown.component';
+import { formatExactTime } from '@pdz/shared/time/timezone';
+import { TooltipDirective } from '@pdz/shared/tooltip/tooltip.directive';
 import { BehaviorSubject, catchError, forkJoin, of, take } from 'rxjs';
 import { DraftService, PokemonStat } from '../../draft-overview/draft.service';
+import {
+  MatchTimeDialogComponent,
+  MatchTimeDialogData,
+  MatchTimeDialogResult,
+} from '@pdz/shared/time/match-time-dialog/match-time-dialog.component';
 import { Opponent } from '../opponent.model';
 
 type Matchup = Opponent & {
@@ -48,6 +56,8 @@ type Matchup = Opponent & {
     MenuComponent,
     MenuItemComponent,
     MenuTriggerDirective,
+    CountdownComponent,
+    TooltipDirective,
   ],
 })
 export class OpponentTeamPreviewComponent implements OnInit {
@@ -153,6 +163,42 @@ export class OpponentTeamPreviewComponent implements OnInit {
     if (score[0] > score[1]) return 'success';
     if (score[0] < score[1]) return 'danger';
     return 'neutral';
+  }
+
+  scheduledExact(matchup: Matchup): string | null {
+    if (!matchup.scheduledDate) return null;
+    const date = new Date(matchup.scheduledDate);
+    if (Number.isNaN(date.getTime())) return null;
+    return formatExactTime(date);
+  }
+
+  async setMatchTime(matchup: Matchup) {
+    const result = await this.dialogs.open<
+      MatchTimeDialogComponent,
+      MatchTimeDialogResult,
+      MatchTimeDialogData
+    >(MatchTimeDialogComponent, {
+      heading: matchup.scheduledDate ? 'Edit Match Time' : 'Set Match Time',
+      subheading: `${matchup.stage} vs ${matchup.teamName}`,
+      size: 'lg',
+      data: {
+        opponentName: matchup.teamName,
+        scheduledDate: matchup.scheduledDate,
+        opponentTimezone: matchup.opponentTimezone,
+      },
+    }).closed;
+
+    if (!result) return;
+
+    this.draftService
+      .updateMatchupSchedule(matchup._id, this.teamId, result)
+      .subscribe({
+        next: () => {
+          matchup.scheduledDate = result.scheduledDate;
+          matchup.opponentTimezone = result.opponentTimezone ?? null;
+        },
+        error: (error) => console.error('Failed to save match time', error),
+      });
   }
 
   async deleteMatchup(matchupId: string) {

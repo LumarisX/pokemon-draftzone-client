@@ -1,0 +1,24 @@
+@use "pdz-theming" as pdz;
+
+.match-time__body {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(md);
+}
+
+.match-time__countdown {
+  @include pdz.text(body-sm);
+  color: pdz.color(on-surface-variant);
+  text-align: center;
+}
+
+.match-time__actions {
+  display: flex;
+  align-items: center;
+  gap: pdz.space(sm);
+  margin-top: pdz.space(lg);
+}
+
+.match-time__spacer {
+  flex: 1;
+}

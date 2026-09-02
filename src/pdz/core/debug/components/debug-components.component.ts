@@ -79,6 +79,9 @@ import {
   buildMatchEntry,
 } from '@pdz/shared/widgets/score-entry/score-entry.form';
 import { ScoreEntrySide } from '@pdz/shared/widgets/score-entry/score-entry.model';
+import { CountdownComponent } from '@pdz/shared/time/countdown/countdown.component';
+import { DiscordTimestampComponent } from '@pdz/shared/time/discord-timestamp/discord-timestamp.component';
+import { TimeConverterComponent } from '@pdz/shared/time/time-converter/time-converter.component';
 
 const THEME_ATTR = 'pdz-theme';
 const MODE_ATTR = 'pdz-theme-mode';
@@ -118,11 +121,26 @@ const MODE_ATTR = 'pdz-theme-mode';
     SpriteComponent,
     ScoreEntryGameComponent,
     ScoreEntryMatchComponent,
+    CountdownComponent,
+    DiscordTimestampComponent,
+    TimeConverterComponent,
   ],
   templateUrl: './debug-components.component.html',
   styleUrl: './debug-components.component.scss',
 })
 export class DebugComponentsComponent {
+  protected readonly countdownSamples = [
+    { label: 'Days out', target: isoIn(3 * 24 * 60 + 240) },
+    { label: 'Hours out', target: isoIn(5 * 60 + 20) },
+    { label: 'Inside the hour', target: isoIn(35) },
+    { label: 'Starting now', target: isoIn(-10) },
+    { label: 'Already played', target: isoIn(-5 * 24 * 60) },
+  ];
+
+  protected readonly converterValue = signal<string | null>(
+    this.countdownSamples[0].target,
+  );
+
   protected readonly spriteBasic = { id: 'charizard', name: 'Charizard' };
   protected readonly spriteShiny = {
     id: 'charizard',
@@ -594,3 +612,7 @@ const TOAST_SAMPLES: Record<string, string> = {
   warning: 'Two picks are over the point limit.',
   info: 'Standings refresh every five minutes.',
 };
+
+function isoIn(minutes: number): string {
+  return new Date(Date.now() + minutes * 60_000).toISOString();
+}

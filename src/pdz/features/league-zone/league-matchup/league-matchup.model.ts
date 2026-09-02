@@ -38,6 +38,7 @@ export type MatchupViewer = {
   canChat: boolean;
   canReport: boolean;
   canReview: boolean;
+  canSchedule: boolean;
 };
 
 export type MatchupReport = {
