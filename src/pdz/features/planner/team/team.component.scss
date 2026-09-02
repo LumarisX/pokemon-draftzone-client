@@ -94,9 +94,11 @@
 
     position: relative;
     display: flex;
+    flex-shrink: 0;
     align-items: center;
     flex-wrap: wrap;
     gap: pdz.space(xs);
+    min-height: var(--planner-row-control);
     padding: pdz.space(2xs) pdz.space(xs);
     border: 1px solid pdz.color(outline-variant);
     border-radius: pdz.shape(corner-sm);

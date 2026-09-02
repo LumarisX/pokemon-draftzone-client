@@ -128,7 +128,7 @@ export const NEWS: News[] = [
       {
         type: 'para',
         description:
-          "Its time to kick off our third season of PDBL and we'll now be running TWO leagues! Our discord members voted and Paldea Dex Singles and Reg H VGC will be the formats for this season!",
+          "It's time to kick off our third season of PDBL and we'll now be running TWO leagues! Our discord members voted and Paldea Dex Singles and Reg H VGC will be the formats for this season!",
       },
       {
         type: 'para',
