@@ -8,24 +8,65 @@
   <div class="speed">
     @if (modifiers().length > 0) {
       <div class="speed__filters" role="group" aria-label="Speed tier filters">
-        @for (modifier of modifiers(); track modifier) {
+        @for (modifier of spreads(); track modifier) {
           <pdz-chip
             size="sm"
             variant="outline"
             clickable
             tone="secondary"
-            [selected]="!isHidden(modifier)"
+            [selected]="isShown(modifier)"
             [actionLabel]="'Toggle ' + modifier + ' tiers'"
             (activated)="toggleModifier(modifier)"
           >
             {{ modifier }}
           </pdz-chip>
         }
+
+        @if (extras().length > 0) {
+          <button
+            pdz-button
+            variant="ghost"
+            color="neutral"
+            size="xs"
+            [attr.aria-expanded]="filtersOpen()"
+            (click)="filtersOpen.set(!filtersOpen())"
+          >
+            {{ filtersOpen() ? "Fewer modifiers" : "More modifiers" }}
+          </button>
+        }
       </div>
+
+      @if (filtersOpen() && extras().length > 0) {
+        <div class="speed__filters" role="group" aria-label="Speed modifiers">
+          @for (modifier of extras(); track modifier) {
+            <pdz-chip
+              size="sm"
+              variant="outline"
+              clickable
+              tone="secondary"
+              [selected]="isShown(modifier)"
+              [actionLabel]="'Toggle ' + modifier + ' tiers'"
+              (activated)="toggleModifier(modifier)"
+            >
+              {{ modifier }}
+            </pdz-chip>
+          }
+
+          <button
+            pdz-button
+            variant="ghost"
+            color="neutral"
+            size="xs"
+            (click)="toggleAll()"
+          >
+            {{ allShown() ? "Reset" : "Select all" }}
+          </button>
+        </div>
+      }
     }
 
     <p class="speed__hint">
-      Drag one of your Pokémon to reposition it — its spread updates to match.
+      Drag one of your Pokémon to reposition it and its spread updates to match.
     </p>
 
     <div class="speed__list" cdkDropList (cdkDropListDropped)="drop($event)">

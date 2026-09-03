@@ -77,21 +77,60 @@ describe('SpriteImageComponent', () => {
   it('walks the full fallback chain on repeated errors, then stops at unknown', () => {
     expect(src()).toContain('/home/magearna-original-mega.png');
     error();
-    expect(src()).toContain('/gen5/magearna-original-mega.png');
-    error();
     expect(src()).toContain('/home/magearna-original.png');
     error();
     expect(src()).toContain('/home/magearna.png');
+    error();
+    expect(src()).toContain('/gen5/magearna-original-mega.png');
+    error();
+    expect(src()).toContain('/gen5/magearna-original.png');
+    error();
+    expect(src()).toContain('/gen5/magearna.png');
     error();
     expect(src()).toBe(UNKNOWN);
     error();
     expect(src()).toBe(UNKNOWN);
   });
 
+  it('prefers the same set base forme over another set for a mega', () => {
+    host.pokemon.set({ id: 'dragonitemega', name: 'Mega Dragonite' });
+    fixture.detectChanges();
+    expect(src()).toContain('/home/dragonite-mega.png');
+    error();
+    expect(src()).toContain('/home/dragonite.png');
+  });
+
+  it('prefers another set over the base forme for a non mega forme', () => {
+    host.pokemon.set({ id: 'pikachurockstar', name: 'Pikachu-Rock-Star' });
+    fixture.detectChanges();
+    expect(src()).toContain('/home/pikachu-rockstar.png');
+    error();
+    expect(src()).toContain('/gen5/pikachu-rockstar.png');
+  });
+
+  it('keeps its place when the pokemon input is a new object with the same values', () => {
+    host.pokemon.set({ id: 'dragonitemega', name: 'Mega Dragonite' });
+    fixture.detectChanges();
+    error();
+    expect(src()).toContain('/home/dragonite.png');
+
+    host.pokemon.set({ id: 'dragonitemega', name: 'Mega Dragonite' });
+    fixture.detectChanges();
+    expect(src()).toContain('/home/dragonite.png');
+  });
+
+  it('resolves a pokemon passed by name instead of id', () => {
+    host.pokemon.set({ id: 'Mega Excadrill', name: 'Mega Excadrill' });
+    fixture.detectChanges();
+    expect(src()).toContain('/home/excadrill-mega.png');
+    error();
+    expect(src()).toContain('/home/excadrill.png');
+  });
+
   it('restarts the chain when the pokemon changes', () => {
     error();
     error();
-    expect(src()).toContain('/home/magearna-original.png');
+    expect(src()).toContain('/home/magearna.png');
 
     host.pokemon.set({ id: 'pikachu', name: 'Pikachu' });
     fixture.detectChanges();
@@ -102,7 +141,7 @@ describe('SpriteImageComponent', () => {
 
   it('restarts the chain and re-resolves when the sprite set changes', () => {
     error();
-    expect(src()).toContain('/gen5/magearna-original-mega.png');
+    expect(src()).toContain('/home/magearna-original.png');
 
     settings.next({ spriteSet: 'ani' });
     fixture.detectChanges();

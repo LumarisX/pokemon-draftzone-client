@@ -27,20 +27,21 @@
           }
         </button>
 
-        @if (entry.id) {
-          <button
-            pdz-button
-            iconOnly
-            variant="ghost"
-            color="danger"
-            size="xs"
-            class="moves__slot-clear"
-            [attr.aria-label]="'Clear move slot ' + (entry.index + 1)"
-            (click)="clear(entry.index)"
-          >
-            <pdz-icon name="close" size="sm" />
-          </button>
-        }
+        <button
+          pdz-button
+          iconOnly
+          variant="ghost"
+          color="danger"
+          size="xs"
+          class="moves__slot-clear"
+          [class.moves__slot-clear--hidden]="!entry.id"
+          [disabled]="!entry.id"
+          [attr.aria-hidden]="entry.id ? null : true"
+          [attr.aria-label]="'Clear move slot ' + (entry.index + 1)"
+          (click)="clear(entry.index)"
+        >
+          <pdz-icon name="close" size="sm" />
+        </button>
       }
     </div>
 
@@ -50,7 +51,7 @@
         type="search"
         size="sm"
         spellcheck="false"
-        placeholder="Filter moves — try “fire”, “priority”, “!status”"
+        placeholder="Filter moves: try “fire”, “priority”, “!status”"
         aria-label="Filter moves"
         [value]="query()"
         (input)="query.set($any($event.target).value)"
@@ -137,13 +138,12 @@
             [title]="move.desc"
             (click)="select(move)"
           >
-            <span class="learnset__name" role="cell">
+            <span
+              class="learnset__name"
+              role="cell"
+              [class.learnset__name--stab]="move.isStab"
+            >
               {{ move.name }}
-              @if (move.isStab) {
-                <span class="learnset__stab" title="Same type attack bonus">
-                  STAB
-                </span>
-              }
             </span>
             <span class="learnset__type" role="cell">
               <pdz-pokemon-type size="sm" [type]="move.type" />

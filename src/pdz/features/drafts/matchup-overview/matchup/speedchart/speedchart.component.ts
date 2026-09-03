@@ -36,6 +36,7 @@ const DEFAULT_MODIFIERS = [
   '32+',
   '32',
   '0',
+  '0-',
   '0- 0ivs',
   'Swift Swim',
   'Sand Rush',

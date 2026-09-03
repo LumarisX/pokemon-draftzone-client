@@ -22,6 +22,7 @@ import {
   withPoints,
   withTargetStat,
 } from '@pdz/sets';
+import { getNameByPid } from '@pdz/shared/data/namedex';
 import { firstValueFrom } from 'rxjs';
 import type {
   SaveTeamPayload,
@@ -75,7 +76,7 @@ export class TeamStore {
     }
 
     return {
-      species: (id) => species.get(id)?.name ?? id,
+      species: (id) => species.get(id)?.name || getNameByPid(id) || id,
       ability: (id) => abilities.get(id) ?? id,
       item: (id) => items.get(id) ?? id,
       move: (id) => moves.get(id) ?? id,
@@ -85,6 +86,10 @@ export class TeamStore {
   readonly activeSet = computed<PokemonSet | null>(
     () => this.sets()[this.activeIndex()] ?? null,
   );
+
+  displayName(set: PokemonSet): string {
+    return set.nickname || this.names().species(set.id);
+  }
 
   readonly activeSpecies = computed<SpeciesBuildData | null>(() => {
     const set = this.activeSet();

@@ -42,6 +42,10 @@
   color: pdz.color(on-surface-placeholder);
 }
 
+.moves__slot-clear--hidden {
+  visibility: hidden;
+}
+
 .moves__slot--empty {
   border-style: dashed;
 }
@@ -57,6 +61,7 @@
   flex-direction: column;
   border-radius: pdz.shape(corner-sm);
   border: 1px solid pdz.color(outline-variant);
+  overflow: clip;
 }
 
 .learnset__head,
@@ -127,13 +132,8 @@
   @include pdz.text(body-sm);
 }
 
-.learnset__stab {
-  flex: 0 0 auto;
-  padding: 0 pdz.space(3xs);
-  border-radius: pdz.shape(corner-xxs);
-  background: pdz.color(success-container);
-  color: pdz.color(on-success-container);
-  @include pdz.caps;
+.learnset__name--stab {
+  @include pdz.text(body-sm-strong);
 }
 
 .learnset__number {

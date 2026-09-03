@@ -94,7 +94,11 @@ export class SetMovesComponent {
   });
 
   protected readonly visible = computed<LearnsetMove[]>(() => {
-    const terms = this.query().toLowerCase().trim().split(/\s+/).filter(Boolean);
+    const terms = this.query()
+      .toLowerCase()
+      .trim()
+      .split(/\s+/)
+      .filter(Boolean);
     const filtered = terms.reduce(
       (moves, term) => filterByTerm(moves, term),
       this.learnset.value(),
@@ -129,11 +133,11 @@ export class SetMovesComponent {
   }
 
   protected accuracyLabel(move: LearnsetMove): string {
-    return move.accuracy === true ? '—' : `${move.accuracy}%`;
+    return move.accuracy === true ? '-' : `${move.accuracy}%`;
   }
 
   protected powerLabel(move: LearnsetMove): string {
-    return move.basePower > 0 ? `${move.basePower}` : '—';
+    return move.basePower > 0 ? `${move.basePower}` : '-';
   }
 
   private focusNextEmptySlot(): void {

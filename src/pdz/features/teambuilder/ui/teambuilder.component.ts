@@ -75,6 +75,14 @@ export class TeambuilderComponent {
     stream: ({ params }) => this.service.getSpecies(params.id, params.ruleset),
   });
 
+  protected readonly rosterSprites = computed(() =>
+    this.store.sets().map((set) => ({
+      id: set.id,
+      name: this.store.displayName(set),
+      shiny: set.shiny,
+    })),
+  );
+
   protected readonly opponent = computed(() => this.context().opponent ?? []);
 
   protected readonly roster = computed(() => {
@@ -98,7 +106,7 @@ export class TeambuilderComponent {
       case 'saved':
         return 'Saved';
       case 'error':
-        return 'Saved locally — will retry';
+        return 'Saved locally, will retry';
       default:
         return '';
     }
@@ -140,9 +148,5 @@ export class TeambuilderComponent {
     if (this.store.sets().length === 0) this.panel.set('add');
   }
 
-  protected spriteFor(index: number) {
-    const set = this.store.sets()[index];
-    return { id: set.id, name: set.nickname || set.id, shiny: set.shiny };
-  }
 
 }

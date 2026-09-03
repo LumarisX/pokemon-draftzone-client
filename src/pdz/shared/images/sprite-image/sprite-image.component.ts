@@ -48,11 +48,17 @@ export class SpriteImageComponent {
       },
   );
 
-  private readonly candidates = computed(() => [
-    this.spriteData().path,
-    ...this.spriteData().fallbackPaths,
-    this.UNKNOWN_SPRITE_PATH,
-  ]);
+  private readonly candidates = computed(
+    () => [
+      this.spriteData().path,
+      ...this.spriteData().fallbackPaths,
+      this.UNKNOWN_SPRITE_PATH,
+    ],
+    {
+      equal: (a, b) =>
+        a.length === b.length && a.every((path, index) => path === b[index]),
+    },
+  );
 
   private readonly candidateIndex = linkedSignal({
     source: this.candidates,

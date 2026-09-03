@@ -31,13 +31,13 @@
           panel() === 'set' && store.activeIndex() === $index
         "
         [attr.aria-current]="store.activeIndex() === $index"
-        [attr.aria-label]="'Edit ' + (set.nickname || set.id)"
+        [attr.aria-label]="'Edit ' + store.displayName(set)"
         (click)="selectSet($index)"
       >
         <pdz-sprite
           size="2.75rem"
           [interactive]="false"
-          [pokemon]="spriteFor($index)"
+          [pokemon]="rosterSprites()[$index]"
         />
       </button>
       <button
@@ -47,7 +47,7 @@
         variant="ghost"
         color="danger"
         class="tb__roster-remove"
-        [attr.aria-label]="'Remove ' + (set.nickname || set.id)"
+        [attr.aria-label]="'Remove ' + store.displayName(set)"
         (click)="removeSet($index, $event)"
       >
         <pdz-icon name="close" [size]="14" />
