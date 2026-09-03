@@ -944,6 +944,105 @@
 </section>
 
 <section class="section">
+  <h2 class="section__title">Slider</h2>
+  <p class="section__note">
+    Native <code>input[type=range]</code> behind a
+    <code>ControlValueAccessor</code>, so it takes <code>ngModel</code> or a
+    form control rather than a <code>value</code> input.
+  </p>
+
+  <h3 class="section__sub">Plain, with a value bubble on hover</h3>
+  <div class="row">
+    <pdz-slider
+      showValue
+      [min]="0"
+      [max]="252"
+      [step]="4"
+      [(ngModel)]="sliderPlain"
+    />
+  </div>
+  <p class="section__note">Value: {{ sliderPlain() }}</p>
+
+  <h3 class="section__sub">
+    <code>ticks</code> — one notch per step, so every stop is visible
+  </h3>
+  <div class="row">
+    <pdz-slider ticks [min]="0" [max]="12" [step]="1" [(ngModel)]="sliderTicked" />
+  </div>
+  <p class="section__note">
+    Value: {{ sliderTicked() }}. Drive the slider by index over a list of
+    allowed values when the stops are not evenly spaced in the underlying
+    units — the teambuilder&rsquo;s HP notches do exactly that.
+  </p>
+
+  <h3 class="section__sub">
+    Dense ticks — suppressed past <code>maxTicks</code> (default 96)
+  </h3>
+  <div class="row">
+    <pdz-slider ticks [min]="0" [max]="63" [step]="1" [(ngModel)]="sliderDense" />
+  </div>
+  <div class="row" style="margin-top: 1rem">
+    <pdz-slider ticks [min]="0" [max]="500" [step]="1" [(ngModel)]="sliderDense" />
+  </div>
+  <p class="section__note">
+    The second slider asks for 501 notches and renders none, rather than
+    filling the track with unreadable hairlines.
+  </p>
+
+  <h3 class="section__sub">
+    <code>tickTones</code> — one tone per notch
+  </h3>
+  <div class="row">
+    <pdz-slider
+      [min]="0"
+      [max]="8"
+      [step]="1"
+      [tickTones]="sliderTones"
+      [(ngModel)]="sliderToned"
+    />
+  </div>
+  <p class="section__note">
+    <code>'neutral' | 'good' | 'bad'</code>, aligned index-for-index with the
+    notches. Good and bad marks are drawn taller so they read at a glance.
+    Passing <code>tickTones</code> implies <code>ticks</code>.
+  </p>
+
+  <h3 class="section__sub">
+    <code>snapValues</code> — stops at real positions, not even ones
+  </h3>
+  <div class="row">
+    <pdz-slider
+      [min]="0"
+      [max]="252"
+      [step]="4"
+      [snapValues]="sliderSnaps"
+      [(ngModel)]="sliderSnapped"
+    />
+  </div>
+  <p class="section__note">
+    Stops: {{ sliderSnaps.join(", ") }} — current {{ sliderSnapped() }}. Each
+    notch sits where its value actually falls between min and max, so uneven
+    gaps read as uneven. Dragging cannot rest between stops, and arrow keys
+    move one stop at a time even when the gap is wider than
+    <code>step</code>.
+  </p>
+
+  <h3 class="section__sub">Colour and disabled</h3>
+  <div class="row">
+    <pdz-slider
+      color="var(--pdz-color-success)"
+      [min]="0"
+      [max]="252"
+      [step]="4"
+      [(ngModel)]="sliderPlain"
+    />
+  </div>
+  <div class="row" style="margin-top: 1rem">
+    <pdz-slider disabled ticks [min]="0" [max]="8" [step]="1" [ngModel]="3" />
+  </div>
+</section>
+
+<section class="section">
   <h2 class="section__title">Widget</h2>
   <p class="section__note">
     Card shell for a board panel: header label, projected

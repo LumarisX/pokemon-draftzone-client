@@ -1,0 +1,49 @@
+@use "pdz-theming" as pdz;
+
+.details {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(md);
+}
+
+.details__row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: pdz.space(sm);
+
+  > * {
+    flex: 1 1 12rem;
+    min-width: 0;
+  }
+}
+
+.details__row--toggles {
+  align-items: center;
+  justify-content: space-between;
+
+  > * {
+    flex: 0 0 auto;
+  }
+}
+
+.details__level,
+.details__gender,
+.details__happiness {
+  flex: 0 0 auto;
+}
+
+.details__level input {
+  width: 5rem;
+}
+
+.details__happiness input {
+  width: 5.5rem;
+}
+
+.details__empty {
+  margin: 0;
+  padding: pdz.space(lg);
+  color: pdz.color(on-surface-variant);
+  text-align: center;
+  @include pdz.text(body-sm);
+}

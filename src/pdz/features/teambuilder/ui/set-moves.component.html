@@ -1,0 +1,167 @@
+@if (store.activeSet()) {
+  <div class="moves">
+    <div class="moves__slots" role="group" aria-label="Selected moves">
+      @for (entry of slots(); track entry.index) {
+        <button
+          pdz-button
+          variant="outlined"
+          color="neutral"
+          class="moves__slot"
+          [class.moves__slot--active]="slot() === entry.index"
+          [class.moves__slot--empty]="!entry.id"
+          (click)="slot.set(entry.index)"
+        >
+          @if (entry.move) {
+            <pdz-pokemon-type
+              size="sm"
+              content="icon"
+              [type]="entry.move.type"
+            />
+            <span class="moves__slot-name">{{ entry.move.name }}</span>
+          } @else if (entry.id) {
+            <span class="moves__slot-name">{{ entry.id }}</span>
+          } @else {
+            <span class="moves__slot-name moves__slot-name--empty">
+              Slot {{ entry.index + 1 }}
+            </span>
+          }
+        </button>
+
+        @if (entry.id) {
+          <button
+            pdz-button
+            iconOnly
+            variant="ghost"
+            color="danger"
+            size="xs"
+            class="moves__slot-clear"
+            [attr.aria-label]="'Clear move slot ' + (entry.index + 1)"
+            (click)="clear(entry.index)"
+          >
+            <pdz-icon name="close" size="sm" />
+          </button>
+        }
+      }
+    </div>
+
+    <label pdz-field class="moves__search">
+      <input
+        pdz-input
+        type="search"
+        size="sm"
+        spellcheck="false"
+        placeholder="Filter moves — try “fire”, “priority”, “!status”"
+        aria-label="Filter moves"
+        [value]="query()"
+        (input)="query.set($any($event.target).value)"
+      />
+    </label>
+
+    @if (learnset.isLoading()) {
+      <div class="moves__loading">
+        <pdz-loading />
+      </div>
+    } @else if (learnset.error()) {
+      <pdz-empty-state
+        icon="cloud_off"
+        heading="Could not load moves"
+        message="The learnset request failed. Check your connection and try again."
+      />
+    } @else if (visible().length === 0) {
+      <pdz-empty-state
+        icon="search_off"
+        heading="No moves match"
+        message="Nothing in this learnset matches that filter."
+      />
+    } @else {
+      <div class="learnset" role="table" aria-label="Learnset">
+        <div class="learnset__head" role="row">
+          <button
+            pdz-button
+            variant="ghost"
+            size="xs"
+            role="columnheader"
+            [attr.aria-sort]="sort() === 'name' ? 'ascending' : 'none'"
+            (click)="sortBy('name')"
+          >
+            Move
+          </button>
+          <button
+            pdz-button
+            variant="ghost"
+            size="xs"
+            role="columnheader"
+            [attr.aria-sort]="sort() === 'type' ? 'ascending' : 'none'"
+            (click)="sortBy('type')"
+          >
+            Type
+          </button>
+          <button
+            pdz-button
+            variant="ghost"
+            size="xs"
+            role="columnheader"
+            [attr.aria-sort]="sort() === 'power' ? 'descending' : 'none'"
+            (click)="sortBy('power')"
+          >
+            Pow
+          </button>
+          <button
+            pdz-button
+            variant="ghost"
+            size="xs"
+            role="columnheader"
+            [attr.aria-sort]="sort() === 'accuracy' ? 'descending' : 'none'"
+            (click)="sortBy('accuracy')"
+          >
+            Acc
+          </button>
+          <button
+            pdz-button
+            variant="ghost"
+            size="xs"
+            role="columnheader"
+            [attr.aria-sort]="sort() === 'strength' ? 'descending' : 'none'"
+            (click)="sortBy('strength')"
+          >
+            Str
+          </button>
+        </div>
+
+        @for (move of visible(); track move.id) {
+          <button
+            class="learnset__row"
+            role="row"
+            [class.learnset__row--selected]="isSelected(move)"
+            [attr.aria-pressed]="isSelected(move)"
+            [title]="move.desc"
+            (click)="select(move)"
+          >
+            <span class="learnset__name" role="cell">
+              {{ move.name }}
+              @if (move.isStab) {
+                <span class="learnset__stab" title="Same type attack bonus">
+                  STAB
+                </span>
+              }
+            </span>
+            <span class="learnset__type" role="cell">
+              <pdz-pokemon-type size="sm" [type]="move.type" />
+            </span>
+            <span class="learnset__number" role="cell">
+              {{ powerLabel(move) }}
+            </span>
+            <span class="learnset__number" role="cell">
+              {{ accuracyLabel(move) }}
+            </span>
+            <span class="learnset__number" role="cell">
+              {{ move.strength }}
+            </span>
+          </button>
+        }
+      </div>
+    }
+  </div>
+} @else {
+  <p class="moves__empty">Select a Pokémon to edit its moves.</p>
+}

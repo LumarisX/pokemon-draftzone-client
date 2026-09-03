@@ -9,6 +9,7 @@ import {
 import {
   FormBuilder,
   FormControl,
+  FormsModule,
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
@@ -47,6 +48,10 @@ import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
 import { TooltipDirective } from '@pdz/shared/tooltip/tooltip.directive';
 import { WidgetComponent } from '@pdz/shared/layout/widget/widget.component';
 import { SlideToggleComponent } from '@pdz/shared/inputs/slide-toggle/slide-toggle.component';
+import {
+  SliderComponent,
+  SliderTickTone,
+} from '@pdz/shared/inputs/slider/slider.component';
 import { TooltipPosition } from '@pdz/shared/tooltip/tooltip-placement';
 import {
   ToastService,
@@ -93,6 +98,7 @@ const MODE_ATTR = 'pdz-theme-mode';
     IconComponent,
     FieldComponent,
     InputDirective,
+    FormsModule,
     ReactiveFormsModule,
     CheckComponent,
     ChoiceDirective,
@@ -112,6 +118,7 @@ const MODE_ATTR = 'pdz-theme-mode';
     DialogComponent,
     WidgetComponent,
     SlideToggleComponent,
+    SliderComponent,
     SortDirective,
     SortHeaderComponent,
     SelectComponent,
@@ -162,6 +169,23 @@ export class DebugComponentsComponent {
     name: 'Mega Magearna-Original',
   };
   protected readonly spriteUnknown = { id: 'notapokemon', name: 'Unknown' };
+  protected readonly sliderPlain = signal(48);
+  protected readonly sliderTicked = signal(6);
+  protected readonly sliderDense = signal(32);
+  protected readonly sliderToned = signal(4);
+  protected readonly sliderSnapped = signal(12);
+  protected readonly sliderSnaps = [0, 4, 12, 28, 60, 124, 252];
+  protected readonly sliderTones: SliderTickTone[] = [
+    'bad',
+    'bad',
+    'neutral',
+    'neutral',
+    'good',
+    'neutral',
+    'neutral',
+    'good',
+    'bad',
+  ];
   protected readonly spriteDisabled = signal(false);
   protected readonly spriteFormeIndex = signal(0);
 

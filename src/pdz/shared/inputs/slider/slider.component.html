@@ -7,15 +7,28 @@
   @if (showValue()) {
     <div class="slider__bubble" aria-hidden="true">{{ value }}</div>
   }
+  @if (tickMarks().length > 0) {
+    <div class="slider__ticks" aria-hidden="true">
+      @for (tick of tickMarks(); track $index) {
+        <span
+          class="slider__tick"
+          [attr.data-tone]="tick.tone"
+          [class.slider__tick--filled]="tick.position <= fillPercent"
+          [style.left.%]="tick.position"
+        ></span>
+      }
+    </div>
+  }
   <input
     class="slider__input"
     type="range"
     [min]="min()"
     [max]="max()"
-    [step]="step()"
+    [step]="effectiveStep()"
     [disabled]="isDisabled()"
     [value]="value"
     (input)="onInput($event)"
+    (keydown)="onKeydown($event)"
     (blur)="onBlur()"
   />
 </div>

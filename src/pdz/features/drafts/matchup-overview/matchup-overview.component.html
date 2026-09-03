@@ -84,11 +84,12 @@
         class="matchup__resize-handle"
         (mousedown)="startResize($event)"
       ></div>
-      <pdz-matchup-teambuilder
-        [matchupData]="matchupData"
-        [matchupId]="matchupId"
-        (closePanel)="teambuilderPanelOpen = false"
-      />
+      @if (teambuilderContext; as tbContext) {
+        <pdz-teambuilder
+          [context]="tbContext"
+          (closed)="teambuilderPanelOpen = false"
+        />
+      }
     </div>
 
     <button

@@ -1,7 +1,7 @@
 import { AsyncPipe } from '@angular/common';
 import { Component, EventEmitter, Output, inject, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { toPSString } from '../../../drafts/matchup-overview/widgets/teambuilder/teambuilder.utils';
+import { toPSString } from '../quick-draft.utils';
 import { DRAFT_OVERVIEW_PATH, TOOLS_PATH } from '@pdz/core/route-paths';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
 import { QDPokemon } from '../quick-draft-picks/quick-draft-picks.component';

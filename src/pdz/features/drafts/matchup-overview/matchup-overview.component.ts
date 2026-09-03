@@ -8,8 +8,7 @@ import { SkeletonComponent } from '@pdz/shared/data/skeleton/skeleton.component'
 import { DialogService } from '@pdz/shared/dialogs/dialog/dialog.service';
 import { CountdownComponent } from '@pdz/shared/time/countdown/countdown.component';
 import { Observable, combineLatest } from 'rxjs';
-import { DraftPokemon } from '../draft.model';
-import { MatchupData, Summary, TypeChartPokemon } from './matchup-interface';
+import { MatchupData, Summary } from './matchup-interface';
 import { DRAFT_MATCHUP_PAGE, MatchupPageConfig } from './matchup-page.config';
 import { matchupPath, MatchupService } from './matchup.service';
 import { MatchupComponent } from './matchup/matchup.component';
@@ -17,9 +16,8 @@ import {
   ShareDialogComponent,
   ShareDialogData,
 } from './share-dialog/share-dialog.component';
-import { PokemonBuilder } from './widgets/teambuilder/pokemon-builder/pokemon-builder.model';
-import { MatchupTeambuilderComponent } from './widgets/teambuilder/teambuilder.component';
-import { TeambuilderService } from './widgets/teambuilder/teambuilder.service';
+import { TeambuilderComponent } from '@pdz/features/teambuilder/ui/teambuilder.component';
+import type { TeambuilderContext } from '@pdz/features/teambuilder/teambuilder.context';
 
 const SITE_URL = 'https://pokemondraftzone.com';
 
@@ -31,7 +29,7 @@ const SITE_URL = 'https://pokemondraftzone.com';
     SkeletonComponent,
     MatchupComponent,
     RouterModule,
-    MatchupTeambuilderComponent,
+    TeambuilderComponent,
     ButtonComponent,
     CountdownComponent,
   ],
@@ -115,7 +113,6 @@ export class MatchupOverviewComponent implements OnInit {
         this.load(params);
       },
     );
-    this.loadTeam();
   }
 
   private resolveMatchupId(params: Params): string {
@@ -169,6 +166,7 @@ export class MatchupOverviewComponent implements OnInit {
     this.fetch(params).subscribe({
       next: (data) => {
         this.matchupData = data;
+        this.teambuilderContext = this.buildTeambuilderContext(data);
         this.updateMetaTags();
       },
       error: (error) => {
@@ -210,60 +208,34 @@ export class MatchupOverviewComponent implements OnInit {
     );
   }
 
-  team: PokemonBuilder[] = [];
-  private teambuilderService = inject(TeambuilderService);
+  teambuilderContext: TeambuilderContext | null = null;
 
-  loadTeam() {
-    if (!this.matchupData) return;
-    this.addPokemonToTeam(this.matchupData.summary[0].team[5]);
-    this.addPokemonToTeam(this.matchupData.summary[0].team[4]);
-    this.addPokemonToTeam(this.matchupData.summary[0].team[3]);
-    this.addPokemonToTeam(this.matchupData.summary[0].team[7]);
-    this.addPokemonToTeam(this.matchupData.summary[0].team[0]);
-    this.addPokemonToTeam(this.matchupData.summary[0].team[9]);
-  }
-
-  getTypechart() {
-    if (!this.matchupData) return [];
-    const typechart = this.matchupData.typechart[0];
-    return [
-      {
-        ...typechart,
-        team: typechart.team.map((t) => {
-          const p = this.team.find((p) => p.id === t.id);
-          return { ...t, ...p, disabled: !p };
-        }),
-      },
-    ];
-  }
-
-  onToggle(pokemon: TypeChartPokemon) {
-    if (!pokemon.disabled) {
-      this.addPokemonToTeam(pokemon);
-    } else {
-      this.removePokemonFromTeam(pokemon);
-    }
-  }
-
-  addPokemonToTeam(pokemon: DraftPokemon) {
-    if (!this.matchupData) return;
-    this.teambuilderService
-      .getPokemonData(pokemon.id, this.matchupData.details.ruleset)
-      .subscribe((pokemonData) => {
-        const pokemonSet = PokemonBuilder.fromTeambuilder(pokemonData, {
-          shiny: pokemon.shiny,
-          nickname: pokemon.nickname,
-          level: this.matchupData!.details.level,
-        });
-        this.team.push(pokemonSet);
-      });
+  private buildTeambuilderContext(data: MatchupData): TeambuilderContext {
+    return {
+      type: 'matchup',
+      id: this.matchupId,
+      ruleset: data.details.ruleset,
+      level: data.details.level,
+      roster: (data.summary[0]?.team ?? []).map((pokemon) => ({
+        id: pokemon.id,
+        name: pokemon.name,
+        shiny: pokemon.shiny,
+        nickname: pokemon.nickname,
+      })),
+      opponent: (data.speedchart.teams[1] ?? []).map((pokemon) => ({
+        id: pokemon.id,
+        name: pokemon.name,
+        shiny: pokemon.shiny,
+        weak: data.typechart[1]?.team.find(
+          (entry) => entry.id === pokemon.id,
+        )?.weak[0],
+        tiers: pokemon.tiers,
+      })),
+    };
   }
 
   private checkIfMobile(): void {
     this.isMobile = window.innerWidth < 768;
   }
 
-  removePokemonFromTeam(pokemon: DraftPokemon) {
-    this.team = this.team.filter((p) => p.id !== pokemon.id);
-  }
 }

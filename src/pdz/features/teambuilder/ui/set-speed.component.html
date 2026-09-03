@@ -1,0 +1,63 @@
+@if (tiers().length === 0) {
+  <pdz-empty-state
+    icon="speed"
+    heading="No speed tiers"
+    message="Add a Pokémon to your team to compare speed."
+  />
+} @else {
+  <div class="speed">
+    @if (modifiers().length > 0) {
+      <div class="speed__filters" role="group" aria-label="Speed tier filters">
+        @for (modifier of modifiers(); track modifier) {
+          <pdz-chip
+            size="sm"
+            variant="outline"
+            clickable
+            tone="secondary"
+            [selected]="!isHidden(modifier)"
+            [actionLabel]="'Toggle ' + modifier + ' tiers'"
+            (activated)="toggleModifier(modifier)"
+          >
+            {{ modifier }}
+          </pdz-chip>
+        }
+      </div>
+    }
+
+    <p class="speed__hint">
+      Drag one of your Pokémon to reposition it — its spread updates to match.
+    </p>
+
+    <div class="speed__list" cdkDropList (cdkDropListDropped)="drop($event)">
+      @for (tier of tiers(); track tier.key) {
+        <div
+          class="tier"
+          [class.tier--mine]="tier.mine"
+          [class.tier--draggable]="tier.mine"
+          cdkDrag
+          [cdkDragData]="tier"
+          [cdkDragDisabled]="!tier.mine"
+        >
+          <pdz-sprite
+            size="2.25rem"
+            [interactive]="false"
+            [pokemon]="tier.pokemon"
+          />
+          <span class="tier__name">{{ tier.pokemon.name }}</span>
+          <span class="tier__speed">{{ tier.speed }}</span>
+          <span class="tier__modifiers">
+            @for (modifier of tier.modifiers; track modifier) {
+              <pdz-chip
+                size="xs"
+                variant="outline"
+                [tone]="tier.mine ? 'primary' : 'secondary'"
+              >
+                {{ modifier }}
+              </pdz-chip>
+            }
+          </span>
+        </div>
+      }
+    </div>
+  </div>
+}

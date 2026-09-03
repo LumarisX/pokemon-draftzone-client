@@ -125,6 +125,25 @@ export class ApiService {
     return request$;
   }
 
+  put<T>(
+    path: string | string[],
+    data: Object,
+    options?: { invalidateCache?: (string | string[])[] },
+  ): Observable<T> {
+    const apiUrl = Array.isArray(path) ? path.join('/') : path;
+    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    const request$ = this.http
+      .put<T>(`${this.serverUrl}/${apiUrl}`, data, { headers })
+      .pipe(
+        tap(() => {
+          if (options?.invalidateCache)
+            this.invalidateCachePaths(options.invalidateCache);
+        }),
+        this.handleError(),
+      );
+    return request$;
+  }
+
   delete<T>(
     path: string | string[],
     options?: { invalidateCache?: (string | string[])[] },

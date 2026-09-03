@@ -1,7 +1,6 @@
 import { ExtendedType, StatsTable, Type } from '@pdz/shared/data';
 import { DraftPokemon } from '../draft.model';
 import { Pokemon } from '@pdz/core/utils/pokemon';
-import { PokemonData } from './widgets/teambuilder/pokemon-builder/pokemon-builder.model';
 
 export type Speedtier = {
   pokemon: DraftPokemon;

@@ -1,0 +1,83 @@
+@use "pdz-theming" as pdz;
+
+.speed {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(2xs);
+}
+
+.speed__filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: pdz.space(3xs);
+}
+
+.speed__hint {
+  margin: 0;
+  color: pdz.color(on-surface-variant);
+  @include pdz.text(body-sm);
+}
+
+.speed__list {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(3xs);
+}
+
+.tier {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) 3rem auto;
+  align-items: center;
+  gap: pdz.space(2xs);
+  padding: pdz.space(3xs) pdz.space(2xs);
+  border: 1px solid pdz.color(outline-variant);
+  border-radius: pdz.shape(corner-sm);
+  background: pdz.color(surface-container-lowest);
+}
+
+.tier--mine {
+  border-color: pdz.color(primary-border);
+  background: pdz.color(primary-container-low);
+}
+
+.tier--draggable {
+  cursor: grab;
+
+  &:active {
+    cursor: grabbing;
+  }
+}
+
+.tier__name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  @include pdz.text(body-sm);
+}
+
+.tier__speed {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+  @include pdz.text(body-sm-strong);
+}
+
+.tier__modifiers {
+  display: flex;
+  flex-wrap: wrap;
+  gap: pdz.space(3xs);
+  justify-content: flex-end;
+}
+
+.cdk-drag-preview {
+  border-radius: pdz.shape(corner-sm);
+  opacity: 0.9;
+}
+
+.cdk-drag-placeholder {
+  opacity: 0.4;
+  border-style: dashed;
+}
+
+.cdk-drop-list-dragging .tier:not(.cdk-drag-placeholder) {
+  transition: transform pdz.duration(base) pdz.easing(standard);
+}

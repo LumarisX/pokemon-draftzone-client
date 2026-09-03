@@ -1,0 +1,119 @@
+@if (store.activeSet(); as set) {
+  <div class="details">
+    <div class="details__row">
+      <label pdz-field label="Nickname" class="details__nickname">
+        <input
+          pdz-input
+          type="text"
+          maxlength="32"
+          spellcheck="false"
+          [value]="set.nickname ?? ''"
+          [placeholder]="store.activeSpecies()?.name ?? ''"
+          (change)="setNickname($any($event.target).value)"
+        />
+      </label>
+
+      <label pdz-field label="Level" class="details__level">
+        <input
+          pdz-input
+          type="number"
+          min="1"
+          max="100"
+          [value]="set.level"
+          (change)="setLevel($any($event.target).value)"
+        />
+      </label>
+    </div>
+
+    <div class="details__row">
+      <div pdz-field label="Ability" class="details__ability">
+        <pdz-select
+          aria-label="Ability"
+          [value]="set.ability ?? ''"
+          (valueChange)="setAbility($event)"
+        >
+          @for (ability of abilities(); track ability.id) {
+            <pdz-option [value]="ability.id" [label]="ability.name" />
+          }
+        </pdz-select>
+      </div>
+
+      <div pdz-field label="Item" class="details__item">
+        <pdz-select
+          searchable
+          placeholder="No item"
+          aria-label="Item"
+          [value]="set.item ?? ''"
+          (valueChange)="setItem($event)"
+        >
+          <pdz-option [value]="''" label="No item" />
+          @for (item of items(); track item.id) {
+            <pdz-option
+              [value]="item.id"
+              [label]="item.name"
+              [description]="item.desc"
+              [iconUrl]="item.pngId"
+            />
+          }
+        </pdz-select>
+      </div>
+    </div>
+
+    <div class="details__row">
+      <div pdz-field label="Tera Type" class="details__tera">
+        <pdz-select
+          aria-label="Tera type"
+          [value]="set.teraType ?? ''"
+          (valueChange)="setTeraType($event)"
+        >
+          @for (type of teraTypes(); track type) {
+            <pdz-option [value]="type" [label]="type" />
+          }
+        </pdz-select>
+      </div>
+
+      @if (genderOptions().length > 1) {
+        <div pdz-field label="Gender" class="details__gender">
+          <pdz-segmented
+            size="sm"
+            aria-label="Gender"
+            [value]="set.gender"
+            (valueChange)="setGender($event)"
+          >
+            <pdz-segmented-option [value]="''" icon="help" />
+            @for (option of genderOptions(); track option.value) {
+              <pdz-segmented-option
+                [value]="option.value"
+                [icon]="option.icon"
+              />
+            }
+          </pdz-segmented>
+        </div>
+      }
+    </div>
+
+    <div class="details__row details__row--toggles">
+      <pdz-slide-toggle
+        label="Shiny"
+        labelBefore
+        size="sm"
+        [checked]="set.shiny"
+        (checkedChange)="setShiny($event)"
+      />
+
+      <label pdz-field label="Happiness" inline class="details__happiness">
+        <input
+          pdz-input
+          type="number"
+          size="sm"
+          min="0"
+          max="255"
+          [value]="set.happiness"
+          (change)="setHappiness($any($event.target).value)"
+        />
+      </label>
+    </div>
+  </div>
+} @else {
+  <p class="details__empty">Select a Pokémon to edit its set.</p>
+}

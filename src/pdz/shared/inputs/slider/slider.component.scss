@@ -26,6 +26,41 @@
   }
 }
 
+.slider__ticks {
+  position: absolute;
+  inset-inline: calc(var(--pdz-slider-thumb) / 2);
+  top: 50%;
+  height: var(--pdz-slider-height);
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.slider__tick {
+  position: absolute;
+  top: 50%;
+  width: 2px;
+  height: calc(var(--pdz-slider-height) + 4px);
+  border-radius: 999px;
+  background: var(--pdz-slider-track);
+  transform: translate(-50%, -50%);
+}
+
+.slider__tick--filled {
+  background: var(--pdz-slider-thumb-ring);
+}
+
+.slider__tick[data-tone="good"] {
+  width: 3px;
+  height: calc(var(--pdz-slider-height) + 8px);
+  background: pdz.color(success);
+}
+
+.slider__tick[data-tone="bad"] {
+  width: 3px;
+  height: calc(var(--pdz-slider-height) + 8px);
+  background: pdz.color(danger);
+}
+
 .slider__input {
   -webkit-appearance: none;
   appearance: none;

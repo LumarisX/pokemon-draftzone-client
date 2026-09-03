@@ -1,0 +1,175 @@
+@if (rows().length > 0) {
+  <div class="stats">
+    <header class="stats__budget" [class.stats__budget--over]="overspent()">
+      <span class="stats__budget-label">
+        {{ store.statRules().pointLabel }}s
+      </span>
+      <span class="stats__budget-value">
+        {{ store.spent() }} / {{ store.statRules().total }}
+      </span>
+      @if (overspent()) {
+        <span class="stats__budget-note">
+          <pdz-icon name="error" size="sm" aria-hidden="true" />
+          {{ -store.remaining() }} over
+        </span>
+      } @else if (store.wasted() > 0) {
+        <span class="stats__budget-note stats__budget-note--warning">
+          <pdz-icon name="warning" size="sm" aria-hidden="true" />
+          {{ store.wasted() }} wasted
+        </span>
+      } @else {
+        <span class="stats__budget-note">{{ store.remaining() }} left</span>
+      }
+    </header>
+
+    @for (row of rows(); track row.stat) {
+      <section class="stat" [attr.data-tone]="row.tone">
+        <div class="stat__head">
+          <span class="stat__name">{{ row.full }}</span>
+          <span class="stat__base" [title]="'Base ' + row.full">
+            Base {{ row.base }}
+          </span>
+
+          @if (row.stat === "hp") {
+            <pdz-segmented
+              size="sm"
+              class="stat__residue"
+              aria-label="Match one below, exactly, or one above a multiple"
+              [value]="hpResidue()"
+              (valueChange)="setResidue($any($event))"
+            >
+              <pdz-segmented-option [value]="-1" label="−1" />
+              <pdz-segmented-option [value]="0" label="0" />
+              <pdz-segmented-option [value]="1" label="+1" />
+            </pdz-segmented>
+
+            <div
+              class="stat__milestones"
+              role="group"
+              aria-label="Constrain HP to a divisibility milestone"
+            >
+              @for (divisor of milestones; track divisor) {
+                <button
+                  type="button"
+                  class="stat__milestone"
+                  [class.stat__milestone--hit]="hasMilestone(row, divisor)"
+                  [class.stat__milestone--locked]="isConstrained(divisor)"
+                  [attr.aria-pressed]="isConstrained(divisor)"
+                  [title]="
+                    row.value +
+                    (hasMilestone(row, divisor) ? ' is ' : ' is not ') +
+                    residueLabel(divisor)
+                  "
+                  (click)="toggleConstraint(divisor)"
+                >
+                  {{ divisor }}
+                </button>
+              }
+            </div>
+          } @else {
+            <div class="stat__nature" role="group">
+              <button
+                pdz-button
+                size="xs"
+                [variant]="row.boosted ? 'tonal' : 'outlined'"
+                [color]="row.boosted ? 'success' : 'neutral'"
+                [attr.aria-pressed]="row.boosted"
+                [attr.aria-label]="'Boosting nature for ' + row.full"
+                (click)="boost(row.stat)"
+              >
+                +
+              </button>
+              <button
+                pdz-button
+                size="xs"
+                [variant]="row.dropped ? 'tonal' : 'outlined'"
+                [color]="row.dropped ? 'danger' : 'neutral'"
+                [attr.aria-pressed]="row.dropped"
+                [attr.aria-label]="'Hindering nature for ' + row.full"
+                (click)="drop(row.stat)"
+              >
+                −
+              </button>
+            </div>
+          }
+
+          @if (row.modified) {
+            <button
+              pdz-button
+              iconOnly
+              variant="ghost"
+              color="neutral"
+              size="xs"
+              [attr.aria-label]="'Reset ' + row.full"
+              (click)="reset(row.stat)"
+            >
+              <pdz-icon name="refresh" size="sm" />
+            </button>
+          }
+        </div>
+
+        <div class="stat__controls">
+          <pdz-slider
+            class="stat__slider"
+            [min]="0"
+            [max]="store.statRules().perStatMax"
+            [step]="store.statRules().granularity"
+            [snapValues]="row.notches"
+            [tickTones]="row.notchTones"
+            [ngModel]="row.points"
+            [attr.aria-label]="notchLabel(row)"
+            (valueChange)="setPoints(row.stat, $event)"
+          />
+
+          <label class="stat__field">
+            <span class="stat__field-label">
+              {{ store.statRules().pointLabel }}
+            </span>
+            <input
+              pdz-input
+              size="sm"
+              type="number"
+              min="0"
+              [max]="store.statRules().perStatMax"
+              [step]="store.statRules().granularity"
+              [value]="row.points"
+              [class.stat__input--wasted]="row.wasted > 0"
+              (change)="setPoints(row.stat, $any($event.target).valueAsNumber)"
+            />
+          </label>
+
+          @if (store.statRules().usesIvs) {
+            <label class="stat__field">
+              <span class="stat__field-label">IV</span>
+              <input
+                pdz-input
+                size="sm"
+                type="number"
+                min="0"
+                [max]="maxIv"
+                [value]="row.iv"
+                (change)="setIv(row.stat, $any($event.target).value)"
+              />
+            </label>
+          }
+
+          <label class="stat__field stat__field--total">
+            <span class="stat__field-label">Total</span>
+            <input
+              pdz-input
+              size="sm"
+              type="number"
+              [min]="row.floor"
+              [max]="row.ceiling"
+              [value]="row.value"
+              [class.stat__input--jump]="row.atJumpPoint"
+              (change)="setTarget(row.stat, $any($event.target).value)"
+            />
+          </label>
+        </div>
+      </section>
+    }
+  </div>
+} @else {
+  <p class="stats__empty">Select a Pokémon to edit its stats.</p>
+}

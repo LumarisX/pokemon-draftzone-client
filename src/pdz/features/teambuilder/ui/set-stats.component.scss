@@ -1,0 +1,193 @@
+@use "pdz-theming" as pdz;
+
+.stats {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(2xs);
+}
+
+.stats__budget {
+  display: flex;
+  align-items: center;
+  gap: pdz.space(sm);
+  padding: pdz.space(2xs) pdz.space(xs);
+  border-radius: pdz.shape(corner-sm);
+  background: pdz.color(surface-container-low);
+  color: pdz.color(on-surface-variant);
+  @include pdz.text(body-sm);
+}
+
+.stats__budget-label {
+  @include pdz.caps;
+}
+
+.stats__budget-value {
+  margin-inline-end: auto;
+  color: pdz.color(on-surface);
+  font-variant-numeric: tabular-nums;
+}
+
+.stats__budget-note {
+  display: inline-flex;
+  align-items: center;
+  gap: pdz.space(3xs);
+}
+
+.stats__budget-note--warning {
+  color: pdz.color(warning);
+}
+
+.stats__budget--over {
+  background: pdz.color(danger-container);
+  color: pdz.color(on-danger-container);
+
+  .stats__budget-value {
+    color: pdz.color(on-danger-container);
+  }
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(3xs);
+  padding: pdz.space(2xs);
+  border-radius: pdz.shape(corner-sm);
+  background: pdz.color(surface-container-lowest);
+}
+
+.stat__head {
+  display: flex;
+  align-items: center;
+  gap: pdz.space(2xs);
+}
+
+.stat__name {
+  @include pdz.caps;
+}
+
+.stat__base {
+  margin-inline-end: auto;
+  color: pdz.color(on-surface-variant);
+  font-variant-numeric: tabular-nums;
+  @include pdz.text(body-sm);
+}
+
+.stat__nature {
+  display: flex;
+  gap: pdz.space(3xs);
+}
+
+.stat__milestones {
+  display: flex;
+  align-items: center;
+  gap: pdz.space(3xs);
+}
+
+.stat__residue {
+  flex: 0 0 auto;
+}
+
+.stat__milestone {
+  display: grid;
+  place-items: center;
+  min-width: 1.5rem;
+  padding: 0 pdz.space(3xs);
+  border: 1px solid pdz.color(outline-variant);
+  border-radius: pdz.shape(corner-xxs);
+  background: transparent;
+  color: pdz.color(on-surface-placeholder);
+  cursor: pointer;
+  font: inherit;
+  font-variant-numeric: tabular-nums;
+  transition:
+    border-color pdz.duration(fast) pdz.easing(standard),
+    background pdz.duration(fast) pdz.easing(standard),
+    color pdz.duration(fast) pdz.easing(standard);
+  @include pdz.text(body-sm);
+
+  &:hover {
+    border-color: pdz.color(outline);
+    color: pdz.color(on-surface);
+  }
+
+  &:focus-visible {
+    outline: 2px solid pdz.color(primary-border);
+    outline-offset: 1px;
+  }
+}
+
+.stat__milestone--hit {
+  border-color: pdz.color(success);
+  background: pdz.color(success-container);
+  color: pdz.color(on-success-container);
+  font-weight: 700;
+}
+
+.stat__milestone--locked {
+  border-color: pdz.color(primary);
+  box-shadow: inset 0 0 0 1px pdz.color(primary);
+  color: pdz.color(on-surface);
+}
+
+.stat__controls {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: end;
+  gap: pdz.space(2xs);
+}
+
+.stat__slider {
+  grid-column: 1 / -1;
+  min-width: 0;
+}
+
+.stat__field {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(3xs);
+}
+
+.stat__field-label {
+  color: pdz.color(on-surface-variant);
+  @include pdz.caps;
+}
+
+.stat__field input {
+  width: 4.25rem;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+.stat[data-tone="high"] .stat__field--total input {
+  color: pdz.color(success);
+}
+
+.stat[data-tone="low"] .stat__field--total input {
+  color: pdz.color(danger);
+}
+
+.stat__input--jump {
+  font-weight: 700;
+}
+
+.stat__input--wasted {
+  color: pdz.color(warning);
+}
+
+.stats__empty {
+  margin: 0;
+  padding: pdz.space(lg);
+  color: pdz.color(on-surface-variant);
+  text-align: center;
+  @include pdz.text(body-sm);
+}
+
+@include pdz.respond-above(medium) {
+  .stat__controls {
+    grid-template-columns: minmax(0, 1fr) auto auto auto;
+  }
+
+  .stat__slider {
+    grid-column: auto;
+  }
+}

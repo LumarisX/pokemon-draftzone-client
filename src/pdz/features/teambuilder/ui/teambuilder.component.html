@@ -1,0 +1,198 @@
+<header class="tb__header">
+  <h2 class="tb__title">Teambuilder</h2>
+  @if (statusLabel()) {
+    <span
+      class="tb__status"
+      role="status"
+      [class.tb__status--error]="store.status() === 'error'"
+    >
+      {{ statusLabel() }}
+    </span>
+  }
+  <button
+    pdz-button
+    iconOnly
+    size="sm"
+    variant="ghost"
+    color="neutral"
+    aria-label="Close teambuilder"
+    (click)="closed.emit()"
+  >
+    <pdz-icon name="close" />
+  </button>
+</header>
+
+<nav class="tb__roster" aria-label="Team">
+  @for (set of store.sets(); track $index) {
+    <div class="tb__roster-slot">
+      <button
+        class="tb__roster-button"
+        [class.tb__roster-button--active]="
+          panel() === 'set' && store.activeIndex() === $index
+        "
+        [attr.aria-current]="store.activeIndex() === $index"
+        [attr.aria-label]="'Edit ' + (set.nickname || set.id)"
+        (click)="selectSet($index)"
+      >
+        <pdz-sprite
+          size="2.75rem"
+          [interactive]="false"
+          [pokemon]="spriteFor($index)"
+        />
+      </button>
+      <button
+        pdz-button
+        iconOnly
+        size="xs"
+        variant="ghost"
+        color="danger"
+        class="tb__roster-remove"
+        [attr.aria-label]="'Remove ' + (set.nickname || set.id)"
+        (click)="removeSet($index, $event)"
+      >
+        <pdz-icon name="close" [size]="14" />
+      </button>
+    </div>
+  }
+
+  <div class="tb__roster-actions">
+    <button
+      pdz-button
+      iconOnly
+      size="sm"
+      variant="tonal"
+      color="neutral"
+      aria-label="Add a Pokémon"
+      [disabled]="store.isFull()"
+      [class.tb__action--active]="panel() === 'add'"
+      (click)="panel.set('add')"
+    >
+      <pdz-icon name="add" />
+    </button>
+    <button
+      pdz-button
+      iconOnly
+      size="sm"
+      variant="tonal"
+      color="neutral"
+      aria-label="Export team"
+      [class.tb__action--active]="panel() === 'export'"
+      (click)="panel.set('export')"
+    >
+      <pdz-icon name="upload" />
+    </button>
+  </div>
+</nav>
+
+<div class="tb__body">
+  @switch (panel()) {
+    @case ("add") {
+      @if (roster().length === 0) {
+        <pdz-empty-state
+          icon="catching_pokemon"
+          heading="No roster available"
+          message="This context did not provide a roster to draw from."
+        />
+      } @else {
+        <div class="tb__picker">
+          @for (entry of roster(); track entry.id) {
+            <button
+              pdz-card
+              padding="sm"
+              class="tb__pick"
+              [disabled]="entry.added"
+              [attr.aria-label]="'Add ' + entry.name"
+              (click)="addFromRoster(entry.id, entry.nickname)"
+            >
+              <pdz-sprite
+                size="3rem"
+                [interactive]="false"
+                [pokemon]="entry"
+              />
+              <span class="tb__pick-name">{{ entry.name }}</span>
+              @if (entry.added) {
+                <pdz-icon
+                  name="check"
+                  size="sm"
+                  class="tb__pick-check"
+                  aria-hidden="true"
+                />
+              }
+            </button>
+          }
+        </div>
+      }
+    }
+
+    @case ("export") {
+      <label pdz-field label="Showdown export" class="tb__export">
+        <textarea
+          pdz-input
+          rows="16"
+          readonly
+          spellcheck="false"
+          [value]="exportText()"
+        ></textarea>
+      </label>
+    }
+
+    @default {
+      @if (store.activeSet()) {
+        <pdz-segmented
+          size="sm"
+          align="stretch"
+          aria-label="Set editor view"
+          class="tb__views"
+          [value]="view()"
+          (valueChange)="view.set($any($event))"
+        >
+          <pdz-segmented-option value="details" label="Details" />
+          <pdz-segmented-option value="moves" label="Moves" />
+          <pdz-segmented-option value="stats" label="Stats" />
+          <pdz-segmented-option value="speed" label="Speed" />
+        </pdz-segmented>
+
+        @if (store.activeIssues().length > 0) {
+          <ul class="tb__issues">
+            @for (issue of store.activeIssues(); track issue.message) {
+              <li
+                class="tb__issue"
+                [class.tb__issue--error]="issue.severity === 'error'"
+              >
+                <pdz-icon
+                  size="sm"
+                  aria-hidden="true"
+                  [name]="issue.severity === 'error' ? 'error' : 'warning'"
+                />
+                {{ issue.message }}
+              </li>
+            }
+          </ul>
+        }
+
+        <div class="tb__view">
+          @switch (view()) {
+            @case ("moves") {
+              <pdz-set-moves />
+            }
+            @case ("stats") {
+              <pdz-set-stats />
+            }
+            @case ("speed") {
+              <pdz-set-speed [opponent]="opponent()" />
+            }
+            @default {
+              <pdz-set-details />
+            }
+          }
+        </div>
+      } @else {
+        <pdz-empty-state
+          icon="add_circle"
+          heading="No Pokémon yet"
+          message="Add one from your roster to start building."
+        />
+      }
+    }
+  }
+</div>
