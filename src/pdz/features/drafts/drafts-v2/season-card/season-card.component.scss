@@ -1,0 +1,160 @@
+@use "pdz-theming" as pdz;
+
+:host {
+  position: relative;
+  display: block;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  border: 1px solid pdz.color(outline-variant);
+  border-radius: pdz.shape(corner-md);
+  background-color: pdz.color(surface-container-lowest);
+  color: pdz.color(on-surface);
+  font: inherit;
+  text-align: start;
+  cursor: pointer;
+  appearance: none;
+  overflow: hidden;
+  transition:
+    border-color pdz.duration(fast) pdz.easing(standard),
+    background-color pdz.duration(fast) pdz.easing(standard),
+    transform pdz.duration(fast) pdz.easing(standard);
+
+  &:hover {
+    border-color: pdz.color(primary-border);
+    background-color: pdz.color(surface-container-low);
+  }
+
+  &:focus-visible {
+    outline: 2px solid pdz.color(primary);
+    outline-offset: 2px;
+  }
+}
+
+:host(.dz-season-card--selected) {
+  border-color: pdz.color(primary);
+  background-color: pdz.color(primary-container-low);
+}
+
+.dz-season-card__rail {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: 0;
+  width: 3px;
+  background-color: pdz.color(outline-variant);
+}
+
+:host([data-status="active"]) .dz-season-card__rail {
+  background-color: pdz.color(primary);
+}
+
+:host([data-status="upcoming"]) .dz-season-card__rail {
+  background-color: pdz.color(info);
+}
+
+:host([data-status="complete"]) .dz-season-card__rail {
+  background-color: pdz.color(success);
+}
+
+:host([data-status="archived"]) {
+  opacity: 0.72;
+
+  .dz-season-card__rail {
+    background-color: pdz.color(outline);
+  }
+}
+
+.dz-season-card__main {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(2xs);
+  padding: pdz.space(md) pdz.space(md) pdz.space(md) pdz.space(lg);
+}
+
+.dz-season-card__top {
+  display: flex;
+  align-items: center;
+  gap: pdz.space(xs);
+  color: pdz.color(on-surface-variant);
+}
+
+.dz-season-card__kind {
+  color: pdz.color(primary);
+  flex: none;
+}
+
+.dz-season-card__league {
+  @include pdz.text(label);
+  @include pdz.caps;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dz-season-card__flag {
+  margin-inline-start: auto;
+  color: pdz.color(warning);
+  flex: none;
+}
+
+.dz-season-card__name {
+  @include pdz.text(card-title);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dz-season-card__team {
+  @include pdz.text(body-sm);
+  color: pdz.color(on-surface-variant);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dz-season-card__sprites {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: pdz.space(2xs);
+  margin-block: pdz.space(2xs);
+}
+
+.dz-season-card__meta {
+  display: flex;
+  align-items: center;
+  gap: pdz.space(sm);
+}
+
+.dz-season-card__record {
+  @include pdz.text(label-strong);
+  @include pdz.numeric;
+  padding: pdz.space(3xs) pdz.space(sm);
+  border-radius: pdz.shape(corner-full);
+  background-color: pdz.color(surface-container-high);
+  color: pdz.color(on-surface);
+
+  &[data-tone="positive"] {
+    background-color: pdz.color(success-container);
+    color: pdz.color(on-success-container);
+  }
+
+  &[data-tone="negative"] {
+    background-color: pdz.color(danger-container);
+    color: pdz.color(on-danger-container);
+  }
+}
+
+.dz-season-card__format {
+  @include pdz.text(label);
+  color: pdz.color(on-surface-variant);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :host {
+    transition: none;
+  }
+}

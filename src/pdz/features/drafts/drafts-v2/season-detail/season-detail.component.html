@@ -1,0 +1,315 @@
+<header class="dz-detail__hero">
+  <div class="dz-detail__eyebrow">
+    <pdz-icon
+      aria-hidden="true"
+      [name]="season().kind === 'tournament' ? 'trophy' : 'draft'"
+      [size]="16"
+    />
+    <span>{{ eyebrow() }}</span>
+    <span class="dz-detail__dot" aria-hidden="true">·</span>
+    <span>{{ kindLabel() }}</span>
+  </div>
+
+  <div class="dz-detail__headline">
+    <div class="dz-detail__identity">
+      <h2 class="dz-detail__title">{{ season().name }}</h2>
+      <p class="dz-detail__team">
+        @if (logoUrl(); as logo) {
+          <img class="dz-detail__logo" alt="" [src]="logo" />
+        } @else {
+          <span class="dz-detail__crest" aria-hidden="true">{{ crest() }}</span>
+        }
+        <span class="dz-detail__team-name">{{ season().teamName }}</span>
+        @if (season().coach; as coach) {
+          <span class="dz-detail__coach">{{ coach }}</span>
+        }
+      </p>
+    </div>
+
+    <div class="dz-detail__actions">
+      @if (addOpponentLink(); as link) {
+        <a
+          pdz-button
+          color="primary"
+          icon="add"
+          [routerLink]="link"
+          [queryParams]="addOpponentParams()"
+          >Add opponent</a
+        >
+      } @else if (season().homeLink; as link) {
+        <a pdz-button color="primary" icon="stadium" [routerLink]="link"
+          >Tournament hub</a
+        >
+      }
+
+      <pdz-menu aria-label="Season actions">
+        <button
+          pdz-button
+          iconOnly
+          variant="outlined"
+          color="primary"
+          pdz-menu-trigger
+          [attr.aria-label]="'Actions for ' + season().name"
+        >
+          <pdz-icon name="more_vert" />
+        </button>
+
+        @if (editParams(); as params) {
+          <a
+            pdz-menu-item
+            icon="edit_document"
+            [routerLink]="['/', draftPath, 'edit']"
+            [queryParams]="params"
+            >Edit team</a
+          >
+        }
+        <a
+          pdz-menu-item
+          icon="event_list"
+          [routerLink]="['/', plannerPath]"
+          [queryParams]="plannerParams()"
+          >Open in planner</a
+        >
+        @if (statsLink(); as link) {
+          <a pdz-menu-item icon="query_stats" [routerLink]="link"
+            >Full stats table</a
+          >
+        }
+        @if (addOpponentLink()) {
+          @if (season().homeLink; as link) {
+            <a pdz-menu-item icon="open_in_new" [routerLink]="link"
+              >Classic view</a
+            >
+          }
+        }
+        @if (season().source.type === "draft") {
+          <button
+            pdz-menu-item
+            icon="archive"
+            (click)="archiveRequested.emit(season())"
+          >
+            Archive
+          </button>
+          <button
+            pdz-menu-item
+            icon="delete_forever"
+            tone="danger"
+            (click)="deleteRequested.emit(season())"
+          >
+            Delete
+          </button>
+        }
+        @if (canRestore()) {
+          <button
+            pdz-menu-item
+            icon="unarchive"
+            (click)="restoreRequested.emit(season())"
+          >
+            Restore
+          </button>
+        }
+      </pdz-menu>
+    </div>
+  </div>
+
+  <div class="dz-detail__chips">
+    <pdz-chip size="sm" variant="soft" icon="flag" [tone]="statusTone()">{{
+      statusLabel()
+    }}</pdz-chip>
+    @if (season().format) {
+      <pdz-chip size="sm" variant="outline" icon="swords">{{
+        season().format
+      }}</pdz-chip>
+    }
+    @if (season().ruleset) {
+      <pdz-chip size="sm" variant="outline" icon="rule">{{
+        season().ruleset
+      }}</pdz-chip>
+    }
+    @if (season().unresolved) {
+      <pdz-chip size="sm" variant="soft" tone="warning" icon="warning"
+        >{{ season().unresolved }} to fix</pdz-chip
+      >
+    }
+    @if (season().discord) {
+      <pdz-chip size="sm" variant="outline" icon="discord">Discord</pdz-chip>
+    }
+  </div>
+
+  <dl class="dz-detail__stats">
+    <div class="dz-detail__stat">
+      <dt>Record</dt>
+      <dd class="dz-detail__stat-value">
+        {{ season().record.wins }}–{{ season().record.losses }}
+      </dd>
+    </div>
+    <div class="dz-detail__stat">
+      <dt>Differential</dt>
+      <dd
+        class="dz-detail__stat-value"
+        [attr.data-tone]="
+          season().record.diff > 0
+            ? 'positive'
+            : season().record.diff < 0
+              ? 'negative'
+              : null
+        "
+      >
+        {{ season().record.diff > 0 ? "+" : "" }}{{ season().record.diff }}
+      </dd>
+    </div>
+    <div class="dz-detail__stat">
+      <dt>Win rate</dt>
+      <dd class="dz-detail__stat-value">{{ winRateLabel() }}</dd>
+    </div>
+    <div class="dz-detail__stat">
+      <dt>Drafted</dt>
+      <dd class="dz-detail__stat-value">{{ season().roster.length }}</dd>
+    </div>
+  </dl>
+
+  @if (season().roster.length) {
+    <div class="dz-detail__draft">
+      <p class="dz-detail__draft-label">
+        Your draft
+        <span class="dz-detail__draft-count">{{ season().roster.length }}</span>
+      </p>
+      <div class="dz-detail__draft-strip">
+        @for (pokemon of season().roster; track $index) {
+          <pdz-sprite size="3rem" [pokemon]="pokemon" />
+        }
+      </div>
+    </div>
+  }
+
+  @if (upNext(); as match) {
+    <div class="dz-detail__next">
+      <pdz-icon aria-hidden="true" name="bolt" [size]="18" />
+      <span class="dz-detail__next-text">
+        <strong>{{ match.stage }}</strong> vs {{ match.teamName }}
+      </span>
+      <pdz-countdown
+        class="dz-detail__next-time"
+        [target]="match.scheduledDate ?? null"
+      />
+    </div>
+  }
+</header>
+
+@if (!detail()) {
+  <div class="dz-detail__loading" role="status" aria-label="Loading season">
+    @for (row of skeletonRows; track $index) {
+      <pdz-skeleton variant="block" width="100%" height="4rem" />
+    }
+  </div>
+} @else if (detail()?.failed) {
+  <pdz-empty-state
+    bordered
+    icon="error"
+    heading="Could not load this season"
+    message="The schedule and stats did not come back. Refresh and try again."
+  />
+} @else {
+  <pdz-tabs class="dz-detail__tabs" label="Season sections">
+    @if (detail()?.hasSchedule) {
+      <pdz-tab
+        label="Schedule"
+        icon="calendar_month"
+        [badge]="matches().length"
+      >
+        <div class="dz-detail__section">
+          @if (upcoming().length) {
+            <div class="dz-detail__group">
+              <p class="dz-detail__group-label">Upcoming</p>
+              <div class="dz-detail__matches">
+                @for (match of upcoming(); track match.id) {
+                  <pdz-match-row
+                    [match]="match"
+                    [next]="match.id === upNext()?.id"
+                    (scheduleRequested)="setMatchTime($event)"
+                    (deleteRequested)="deleteMatch($event)"
+                  />
+                }
+              </div>
+            </div>
+          }
+
+          @if (results().length) {
+            <div class="dz-detail__group">
+              <p class="dz-detail__group-label">Results</p>
+              <div class="dz-detail__matches">
+                @for (match of results(); track match.id) {
+                  <pdz-match-row
+                    [match]="match"
+                    (scheduleRequested)="setMatchTime($event)"
+                    (deleteRequested)="deleteMatch($event)"
+                  />
+                }
+              </div>
+            </div>
+          }
+
+          @if (!matches().length) {
+            <pdz-empty-state
+              bordered
+              icon="groups"
+              heading="No matches yet"
+              message="Add an opponent to start prepping for the season."
+            >
+              <div pdz-empty-state-actions>
+                @if (addOpponentLink(); as link) {
+                  <a
+                    pdz-button
+                    size="sm"
+                    icon="add"
+                    [routerLink]="link"
+                    [queryParams]="addOpponentParams()"
+                    >Add opponent</a
+                  >
+                }
+              </div>
+            </pdz-empty-state>
+          }
+        </div>
+      </pdz-tab>
+    }
+
+    <pdz-tab label="Stats" icon="query_stats">
+      <div class="dz-detail__section">
+        @if (leaders().length) {
+          <ol class="dz-detail__leaders">
+            @for (leader of leaders(); track leader.pokemon.id) {
+              <li class="dz-detail__leader">
+                <pdz-sprite
+                  size="2.5rem"
+                  [pokemon]="leader.pokemon"
+                  [interactive]="false"
+                />
+                <span class="dz-detail__leader-name">{{
+                  leader.pokemon.name
+                }}</span>
+                <span class="dz-detail__leader-bar" aria-hidden="true">
+                  <span
+                    class="dz-detail__leader-fill"
+                    [style.width.%]="(leader.kills / maxKills()) * 100"
+                  ></span>
+                </span>
+                <span class="dz-detail__leader-figures">
+                  <strong>{{ leader.kills }}</strong> KO ·
+                  {{ leader.deaths }} lost · {{ leader.brought }} brought
+                </span>
+              </li>
+            }
+          </ol>
+        } @else {
+          <pdz-empty-state
+            bordered
+            icon="query_stats"
+            heading="No stats yet"
+            message="Score a match to see who is carrying the season."
+          />
+        }
+      </div>
+    </pdz-tab>
+  </pdz-tabs>
+}

@@ -1,0 +1,57 @@
+<header class="notes__header">
+  <h2 class="notes__title">Notes</h2>
+  @if (statusLabel(); as label) {
+    <span
+      class="notes__status"
+      role="status"
+      [class.notes__status--error]="status() === 'error'"
+    >
+      {{ label }}
+    </span>
+  }
+  <button
+    pdz-button
+    iconOnly
+    size="sm"
+    variant="ghost"
+    color="neutral"
+    [attr.aria-label]="preview() ? 'Edit notes' : 'Preview notes'"
+    [pdzTooltip]="preview() ? 'Edit notes' : 'Preview notes'"
+    (click)="togglePreview()"
+  >
+    <pdz-icon [name]="preview() ? 'edit_note' : 'preview'" />
+  </button>
+  <button
+    pdz-button
+    iconOnly
+    size="sm"
+    variant="ghost"
+    color="neutral"
+    aria-label="Close notes"
+    (click)="close()"
+  >
+    <pdz-icon name="close" />
+  </button>
+</header>
+
+<div class="notes__body">
+  @if (preview()) {
+    @if (draft().trim()) {
+      <markdown class="notes__preview" [data]="draft()" />
+    } @else {
+      <pdz-empty-state
+        icon="edit_note"
+        heading="Nothing written yet"
+        message="Switch back to the editor to start taking notes."
+      />
+    }
+  } @else {
+    <textarea
+      class="notes__input"
+      aria-label="Match notes"
+      placeholder="Game plans, leads, calcs, opponent tendencies…"
+      [ngModel]="draft()"
+      (ngModelChange)="onInput($event)"
+    ></textarea>
+  }
+</div>

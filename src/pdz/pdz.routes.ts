@@ -3,6 +3,7 @@ import {
   ADMIN_PATH,
   DEBUG_PATH,
   DRAFT_OVERVIEW_PATH,
+  DRAFTS_V2_PATH,
   EXTERNAL_LINK_PATH,
   LEAGUE_ADS_PATH,
   LEAGUE_ZONE_PATH,
@@ -23,6 +24,13 @@ export const routes: Routes = [
     path: DRAFT_OVERVIEW_PATH,
     loadChildren: () =>
       import('@pdz/features/drafts/draft-overview/draft.routes').then(
+        (m) => m.routes,
+      ),
+  },
+  {
+    path: DRAFTS_V2_PATH,
+    loadChildren: () =>
+      import('@pdz/features/drafts/drafts-v2/drafts-v2.routes').then(
         (m) => m.routes,
       ),
   },

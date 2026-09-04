@@ -222,4 +222,5 @@ export type MatchupData = {
     scheduledDate?: string | null;
   };
   notes?: string;
+  canEditNotes?: boolean;
 };

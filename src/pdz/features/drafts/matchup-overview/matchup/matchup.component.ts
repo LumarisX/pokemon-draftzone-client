@@ -2,7 +2,6 @@ import { Component, input } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { MatchupData } from '../matchup-interface';
 import { MovechartComponent } from '../widgets/movechart/movechart.component';
-import { MatchupNotesComponent } from '../widgets/notes/notes.component';
 import { OverviewComponent } from '../widgets/overview/overview.component';
 import { SummaryComponent } from '../widgets/summary/summary.component';
 import { TypechartComponent } from '../widgets/typechart/typechart.component';
@@ -21,15 +20,8 @@ import { SpeedchartComponent } from './speedchart/speedchart.component';
     SpeedchartComponent,
     CoveragechartComponent,
     OverviewComponent,
-    MatchupNotesComponent,
   ],
 })
 export class MatchupComponent {
   readonly matchupData = input.required<MatchupData>();
-  readonly matchupId = input<string>();
-  readonly options = input<{
-    notes: 'view-only' | 'editable';
-  }>({
-    notes: 'editable',
-  });
 }

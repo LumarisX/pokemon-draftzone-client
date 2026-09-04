@@ -164,11 +164,25 @@ $panel-transition: pdz.duration(base) pdz.easing(standard);
   }
 }
 
-.matchup__fab {
+.matchup__tool {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  height: 100%;
+
+  &--hidden {
+    display: none;
+  }
+}
+
+.matchup__fabs {
   position: absolute;
   right: pdz.space(md);
   bottom: pdz.space(lg);
   z-index: pdz.z(fab);
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(sm);
   transition:
     opacity $panel-transition,
     transform $panel-transition;

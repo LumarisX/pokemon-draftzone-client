@@ -12,15 +12,6 @@
       [coverage]="matchupData().coveragechart"
       [typecharts]="matchupData().typechart"
     />
-    @let matchupNotes = matchupData().notes;
-    @let notesMatchupId = matchupId();
-    @if (matchupNotes !== undefined && notesMatchupId) {
-      <pdz-matchup-notes
-        [notes]="matchupNotes"
-        [mode]="options().notes"
-        [matchupId]="notesMatchupId"
-      />
-    }
   </div>
 }
 <!-- {{ matchupData.overview | json }} -->

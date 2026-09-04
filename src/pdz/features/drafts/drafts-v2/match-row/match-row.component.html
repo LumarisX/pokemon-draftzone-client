@@ -1,0 +1,168 @@
+<button
+  type="button"
+  class="dz-match__summary"
+  [attr.aria-expanded]="open()"
+  [attr.aria-controls]="panelId"
+  (click)="toggle()"
+>
+  <span class="dz-match__stage">
+    <span class="dz-match__stage-label">{{ match().stage }}</span>
+    @if (next()) {
+      <span class="dz-match__next-tag">Next up</span>
+    }
+  </span>
+
+  @if (logoUrl(); as logo) {
+    <img class="dz-match__logo" alt="" [src]="logo" />
+  } @else {
+    <span class="dz-match__crest" aria-hidden="true">{{ crest() }}</span>
+  }
+
+  <span class="dz-match__who">
+    <span class="dz-match__team">{{ match().teamName }}</span>
+    @if (match().coach; as coach) {
+      <span class="dz-match__coach">{{ coach }}</span>
+    }
+  </span>
+
+  <span class="dz-match__status">
+    @if (match().score; as score) {
+      <span class="dz-match__score" [attr.data-result]="result()">
+        {{ score[0] }}–{{ score[1] }}
+      </span>
+    } @else if (match().scheduledDate) {
+      <span class="dz-match__when" [pdzTooltip]="exactTime() ?? ''">
+        <pdz-icon name="schedule" aria-hidden="true" [size]="14" />
+        <pdz-countdown
+          [target]="match().scheduledDate ?? null"
+          [showTitle]="false"
+        />
+      </span>
+    } @else {
+      <span class="dz-match__when">Unscheduled</span>
+    }
+  </span>
+
+  <pdz-icon
+    class="dz-match__chevron"
+    aria-hidden="true"
+    name="keyboard_arrow_right"
+    [size]="18"
+  />
+</button>
+
+@if (match().roster.length) {
+  <div class="dz-match__roster">
+    @for (pokemon of match().roster; track $index) {
+      <pdz-sprite size="2.5rem" [pokemon]="pokemon" />
+    }
+  </div>
+}
+
+<div class="dz-match__panel" [id]="panelId" [attr.data-open]="open() || null">
+  <div class="dz-match__panel-inner" [attr.inert]="open() ? null : ''">
+    @if (!match().roster.length) {
+      <p class="dz-match__empty">No roster recorded for this opponent yet.</p>
+    }
+
+    @if (match().games.length) {
+      <div class="dz-match__block">
+        <p class="dz-match__block-label">Games</p>
+        <ul class="dz-match__games">
+          @for (game of match().games; track $index) {
+            <li class="dz-match__game" [attr.data-result]="game.result">
+              <pdz-icon
+                aria-hidden="true"
+                [size]="16"
+                [name]="
+                  game.result === 'win'
+                    ? 'check_circle'
+                    : game.result === 'loss'
+                      ? 'cancel'
+                      : 'pending'
+                "
+              />
+              <span class="dz-match__game-label">{{ game.label }}</span>
+              <span class="dz-match__game-detail">
+                {{ game.score[0] }}–{{ game.score[1] }}
+              </span>
+              @if (game.replay; as replay) {
+                <a
+                  pdz-button
+                  size="xs"
+                  variant="ghost"
+                  color="secondary"
+                  icon="play_circle"
+                  target="_blank"
+                  rel="noopener"
+                  [href]="replay"
+                  >Replay</a
+                >
+              }
+            </li>
+          }
+        </ul>
+      </div>
+    }
+
+    <div class="dz-match__actions">
+      @if (match().detailLink; as link) {
+        <a
+          pdz-button
+          size="sm"
+          variant="tonal"
+          color="primary"
+          icon="search_insights"
+          [routerLink]="link"
+          >Matchup sheet</a
+        >
+      }
+      @if (match().scoreLink; as link) {
+        <a
+          pdz-button
+          size="sm"
+          variant="ghost"
+          color="primary"
+          icon="scoreboard"
+          [routerLink]="link"
+          [queryParams]="match().actionParams"
+          >{{ match().score ? "Edit score" : "Add score" }}</a
+        >
+      }
+      @if (match().editLink; as link) {
+        <a
+          pdz-button
+          size="sm"
+          variant="ghost"
+          color="primary"
+          icon="edit_document"
+          [routerLink]="link"
+          [queryParams]="match().actionParams"
+          >Edit opponent</a
+        >
+      }
+      @if (match().manageable) {
+        <button
+          pdz-button
+          size="sm"
+          variant="ghost"
+          color="primary"
+          icon="schedule"
+          (click)="scheduleRequested.emit(match())"
+        >
+          {{ match().scheduledDate ? "Reschedule" : "Set time" }}
+        </button>
+        <button
+          pdz-button
+          size="sm"
+          variant="ghost"
+          color="danger"
+          icon="delete_forever"
+          (click)="deleteRequested.emit(match())"
+        >
+          Delete
+        </button>
+      }
+    </div>
+  </div>
+</div>

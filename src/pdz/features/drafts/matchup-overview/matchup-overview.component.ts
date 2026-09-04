@@ -10,7 +10,11 @@ import { CountdownComponent } from '@pdz/shared/time/countdown/countdown.compone
 import { Observable, combineLatest } from 'rxjs';
 import { MatchupData, Summary } from './matchup-interface';
 import { DRAFT_MATCHUP_PAGE, MatchupPageConfig } from './matchup-page.config';
-import { matchupPath, MatchupService } from './matchup.service';
+import {
+  MatchupNotesTarget,
+  matchupPath,
+  MatchupService,
+} from './matchup.service';
 import { MatchupComponent } from './matchup/matchup.component';
 import {
   ShareDialogComponent,
@@ -18,8 +22,11 @@ import {
 } from './share-dialog/share-dialog.component';
 import { TeambuilderComponent } from '@pdz/features/teambuilder/ui/teambuilder.component';
 import type { TeambuilderContext } from '@pdz/features/teambuilder/teambuilder.context';
+import { MatchupNotesComponent } from './notes/matchup-notes.component';
 
 const SITE_URL = 'https://pokemondraftzone.com';
+
+type PanelTool = 'teambuilder' | 'notes';
 
 @Component({
   selector: 'pdz-matchup-overview',
@@ -30,6 +37,7 @@ const SITE_URL = 'https://pokemondraftzone.com';
     MatchupComponent,
     RouterModule,
     TeambuilderComponent,
+    MatchupNotesComponent,
     ButtonComponent,
     CountdownComponent,
   ],
@@ -53,12 +61,34 @@ export class MatchupOverviewComponent implements OnInit {
   draftPath = DRAFT_OVERVIEW_PATH;
   backLink: unknown[] = ['/' + DRAFT_OVERVIEW_PATH];
 
-  teambuilderPanelOpen: boolean = false;
+  panelTool: PanelTool | null = null;
   isResizing: boolean = false;
   panelWidthPercent: number = 40;
   private readonly MIN_WIDTH_PERCENT = 15;
   private readonly MAX_WIDTH_PERCENT = 70;
   isMobile: boolean = false;
+
+  notesTarget: MatchupNotesTarget | null = null;
+
+  get notesEnabled(): boolean {
+    return (
+      this.config.notes &&
+      this.notesTarget !== null &&
+      this.matchupData?.canEditNotes === true
+    );
+  }
+
+  get panelEnabled(): boolean {
+    return this.config.teambuilder || this.notesEnabled;
+  }
+
+  openTool(tool: PanelTool): void {
+    this.panelTool = tool;
+  }
+
+  closePanel(): void {
+    this.panelTool = null;
+  }
 
   scheduledLabel(): string | null {
     const raw = this.matchupData?.details.scheduledDate;
@@ -109,6 +139,7 @@ export class MatchupOverviewComponent implements OnInit {
         this.matchupId = this.resolveMatchupId(params);
         this.tournamentId = params['teamId'];
         this.shareUrl = this.resolveShareUrl(params);
+        this.notesTarget = this.resolveNotesTarget(params);
         this.backLink = this.resolveBackLink(params);
         this.load(params);
       },
@@ -131,6 +162,22 @@ export class MatchupOverviewComponent implements OnInit {
       return `${SITE_URL}/${LEAGUE_ZONE_PATH}/${params['leagueSlug']}/tournaments/${params['tournamentSlug']}/matchups/${this.matchupId}`;
     }
     return `${SITE_URL}/matchup/${this.matchupId}`;
+  }
+
+  private resolveNotesTarget(params: Params): MatchupNotesTarget | null {
+    switch (this.config.source) {
+      case 'league':
+        return {
+          source: 'league',
+          leagueSlug: params['leagueSlug'],
+          tournamentSlug: params['tournamentSlug'],
+          matchupSlug: this.matchupId,
+        };
+      case 'draft':
+        return { source: 'draft', matchupId: this.matchupId };
+      default:
+        return null;
+    }
   }
 
   private resolveBackLink(params: Params): unknown[] {
@@ -226,9 +273,8 @@ export class MatchupOverviewComponent implements OnInit {
         id: pokemon.id,
         name: pokemon.name,
         shiny: pokemon.shiny,
-        weak: data.typechart[1]?.team.find(
-          (entry) => entry.id === pokemon.id,
-        )?.weak[0],
+        weak: data.typechart[1]?.team.find((entry) => entry.id === pokemon.id)
+          ?.weak[0],
         tiers: pokemon.tiers,
       })),
     };
@@ -237,5 +283,4 @@ export class MatchupOverviewComponent implements OnInit {
   private checkIfMobile(): void {
     this.isMobile = window.innerWidth < 768;
   }
-
 }

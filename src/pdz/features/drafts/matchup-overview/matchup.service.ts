@@ -1,10 +1,19 @@
 import { Injectable, inject } from '@angular/core';
 import { ApiService } from '@pdz/core/services/api.service';
 import { MatchupData } from '@pdz/features/drafts/matchup-overview/matchup-interface';
-import { Observable, of } from 'rxjs';
+import { Observable } from 'rxjs';
 import { QuickFormData } from '@pdz/features/tools/quick-matchup/form/quick-matchup-form.component';
 
 export const matchupPath = 'external/matchups';
+
+export type MatchupNotesTarget =
+  | { source: 'draft'; matchupId: string }
+  | {
+      source: 'league';
+      leagueSlug: string;
+      tournamentSlug: string;
+      matchupSlug: string;
+    };
 
 @Injectable({
   providedIn: 'root',
@@ -68,16 +77,19 @@ export class MatchupService {
     );
   }
 
-  updateNotes(matchupId: string, notes: string) {
-    const payload = notes.trim();
-    if (!payload) {
-      return of({ success: true, message: 'No notes to save' });
+  saveNotes(target: MatchupNotesTarget, notes: string) {
+    const payload = { notes: notes.trim() };
+    if (target.source === 'league') {
+      const path = `leagues/${target.leagueSlug}/tournaments/${target.tournamentSlug}/matchups/${target.matchupSlug}`;
+      return this.apiService.post(`${path}/notes`, payload, {
+        invalidateCache: [`${path}/analysis`],
+      });
     }
     return this.apiService.post(
-      `${matchupPath}/${matchupId}/update-notes`,
-      { notes: payload },
+      `${matchupPath}/${target.matchupId}/notes`,
+      payload,
       {
-        invalidateCache: [`${matchupPath}/${matchupId}`],
+        invalidateCache: [`${matchupPath}/${target.matchupId}`],
       },
     );
   }

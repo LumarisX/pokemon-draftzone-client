@@ -1,0 +1,48 @@
+<span class="dz-season-card__rail" aria-hidden="true"></span>
+
+<span class="dz-season-card__main">
+  <span class="dz-season-card__top">
+    <pdz-icon
+      class="dz-season-card__kind"
+      aria-hidden="true"
+      [name]="season().kind === 'tournament' ? 'trophy' : 'draft'"
+      [size]="14"
+    />
+    <span class="dz-season-card__league">{{ eyebrow() }}</span>
+    @if (season().unresolved) {
+      <pdz-icon
+        class="dz-season-card__flag"
+        name="warning"
+        [size]="14"
+        [attr.aria-label]="season().unresolved + ' Pokémon need attention'"
+      />
+    }
+  </span>
+
+  <span class="dz-season-card__name">{{ season().name }}</span>
+  <span class="dz-season-card__team">{{ season().teamName }}</span>
+
+  @if (preview().length) {
+    <span class="dz-season-card__sprites" aria-hidden="true">
+      @for (pokemon of preview(); track $index) {
+        <pdz-sprite
+          size="1.75rem"
+          [pokemon]="pokemon"
+          [interactive]="false"
+          [showFormes]="false"
+        />
+      }
+    </span>
+  }
+
+  <span class="dz-season-card__meta">
+    <span class="dz-season-card__record" [attr.data-tone]="recordTone()">
+      @if (played()) {
+        {{ season().record.wins }}–{{ season().record.losses }}
+      } @else {
+        Unplayed
+      }
+    </span>
+    <span class="dz-season-card__format">{{ season().format }}</span>
+  </span>
+</span>

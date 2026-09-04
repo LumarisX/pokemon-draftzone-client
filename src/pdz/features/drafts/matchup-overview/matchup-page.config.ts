@@ -3,7 +3,7 @@ export interface MatchupPageConfig {
   back: boolean;
   share: boolean;
   teambuilder: boolean;
-  notes: 'editable' | 'view-only';
+  notes: boolean;
 }
 
 export const DRAFT_MATCHUP_PAGE: MatchupPageConfig = {
@@ -11,7 +11,7 @@ export const DRAFT_MATCHUP_PAGE: MatchupPageConfig = {
   back: true,
   share: true,
   teambuilder: true,
-  notes: 'editable',
+  notes: true,
 };
 
 export const LEAGUE_MATCHUP_PAGE: MatchupPageConfig = {
@@ -19,7 +19,7 @@ export const LEAGUE_MATCHUP_PAGE: MatchupPageConfig = {
   back: true,
   share: true,
   teambuilder: true,
-  notes: 'editable',
+  notes: true,
 };
 
 export const SHARED_MATCHUP_PAGE: MatchupPageConfig = {
@@ -27,5 +27,5 @@ export const SHARED_MATCHUP_PAGE: MatchupPageConfig = {
   back: false,
   share: false,
   teambuilder: false,
-  notes: 'view-only',
+  notes: false,
 };

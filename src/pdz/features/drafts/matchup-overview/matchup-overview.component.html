@@ -63,45 +63,72 @@
     </div>
 
     <div class="matchup__body">
-      <pdz-matchup
-        [matchupId]="matchupId"
-        [matchupData]="matchupData"
-        [options]="{ notes: config.notes }"
-      ></pdz-matchup>
+      <pdz-matchup [matchupData]="matchupData"></pdz-matchup>
     </div>
   </div>
 
-  @if (config.teambuilder) {
+  @if (panelEnabled) {
     <div
       class="matchup__panel"
-      [class.matchup__panel--open]="teambuilderPanelOpen"
+      [class.matchup__panel--open]="panelTool !== null"
       [class.matchup__panel--resizing]="isResizing"
       [style.width.%]="
-        teambuilderPanelOpen ? (isMobile ? 100 : panelWidthPercent) : 0
+        panelTool !== null ? (isMobile ? 100 : panelWidthPercent) : 0
       "
     >
       <div
         class="matchup__resize-handle"
         (mousedown)="startResize($event)"
       ></div>
-      @if (teambuilderContext; as tbContext) {
-        <pdz-teambuilder
-          [context]="tbContext"
-          (closed)="teambuilderPanelOpen = false"
-        />
+      @if (config.teambuilder && teambuilderContext; as tbContext) {
+        <div
+          class="matchup__tool"
+          [class.matchup__tool--hidden]="panelTool !== 'teambuilder'"
+        >
+          <pdz-teambuilder [context]="tbContext" (closed)="closePanel()" />
+        </div>
+      }
+      @if (notesEnabled && notesTarget; as target) {
+        <div
+          class="matchup__tool"
+          [class.matchup__tool--hidden]="panelTool !== 'notes'"
+        >
+          <pdz-matchup-notes
+            [target]="target"
+            [notes]="matchupData.notes ?? ''"
+            (closed)="closePanel()"
+          />
+        </div>
       }
     </div>
 
-    <button
-      pdz-button
-      icon="build"
-      iconOnly
-      size="lg"
-      color="neutral"
-      class="matchup__fab"
-      [class.matchup__fab--hidden]="teambuilderPanelOpen"
-      (click)="teambuilderPanelOpen = !teambuilderPanelOpen"
-    ></button>
+    <div
+      class="matchup__fabs"
+      [class.matchup__fabs--hidden]="panelTool !== null"
+    >
+      @if (notesEnabled) {
+        <button
+          pdz-button
+          icon="edit_note"
+          iconOnly
+          size="lg"
+          color="neutral"
+          aria-label="Open notes"
+          (click)="openTool('notes')"
+        ></button>
+      }
+      @if (config.teambuilder) {
+        <button
+          pdz-button
+          icon="build"
+          iconOnly
+          size="lg"
+          color="neutral"
+          aria-label="Open teambuilder"
+          (click)="openTool('teambuilder')"
+        ></button>
+      }
+    </div>
   }
 } @else {
   <div class="matchup__main" role="status" aria-label="Loading matchup">

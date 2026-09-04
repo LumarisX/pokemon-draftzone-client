@@ -1,0 +1,179 @@
+<pdz-page width="wide">
+  <header class="dz-head">
+    <div class="dz-head__titles">
+      <p class="dz-head__eyebrow">Draft Zone</p>
+      <h1 class="dz-head__title">My Drafts</h1>
+      @if (seasons(); as list) {
+        <p class="dz-head__summary">
+          <span>{{ activeCount() }} in progress · {{ list.length }} total</span>
+          @if (lifetime().wins || lifetime().losses) {
+            <span class="dz-head__sep" aria-hidden="true">·</span>
+            <span
+              >{{ lifetime().wins }}–{{ lifetime().losses }} lifetime
+              record</span
+            >
+          }
+        </p>
+      }
+    </div>
+
+    <div class="dz-head__actions">
+      <a
+        pdz-button
+        variant="outlined"
+        color="primary"
+        icon="event_list"
+        [routerLink]="['/', plannerPath]"
+        >Planner</a
+      >
+      <a
+        pdz-button
+        color="primary"
+        icon="add"
+        [routerLink]="['/', draftPath, 'new']"
+        >New draft</a
+      >
+    </div>
+  </header>
+
+  @if (loadFailed()) {
+    <p class="dz-error" role="alert">
+      <pdz-icon name="error" aria-hidden="true" [size]="18" />
+      <span>Some of your drafts could not be loaded.</span>
+      <button
+        pdz-button
+        size="sm"
+        variant="ghost"
+        color="primary"
+        (click)="loadSeasons()"
+      >
+        Retry
+      </button>
+    </p>
+  }
+
+  <div class="dz-shell">
+    <aside class="dz-rail" aria-label="Your seasons">
+      <div class="dz-rail__controls">
+        <label pdz-field class="dz-rail__search">
+          <input
+            pdz-input
+            type="search"
+            placeholder="Search leagues, teams, rulesets"
+            aria-label="Search your seasons"
+            [value]="query()"
+            (input)="onQuery($event)"
+          />
+        </label>
+
+        <pdz-segmented
+          size="sm"
+          align="stretch"
+          variant="tonal"
+          aria-label="Filter by type"
+          [value]="kind()"
+          (valueChange)="setKind($event)"
+        >
+          <pdz-segmented-option value="all" label="All" />
+          <pdz-segmented-option value="draft" label="Drafts" />
+          <pdz-segmented-option value="tournament" label="Tournaments" />
+        </pdz-segmented>
+      </div>
+
+      @if (!seasons()) {
+        <div class="dz-rail__list" role="status" aria-label="Loading drafts">
+          @for (card of skeletonCards; track $index) {
+            <pdz-skeleton variant="block" width="100%" height="7.5rem" />
+          }
+        </div>
+      } @else {
+        <div
+          class="dz-rail__list"
+          role="tablist"
+          aria-orientation="vertical"
+          aria-label="Your seasons"
+          (keydown)="onRailKeydown($event)"
+        >
+          @for (group of groups(); track group.status) {
+            <p class="dz-rail__group">
+              <span>{{ group.label }}</span>
+              <span class="dz-rail__count">{{ group.seasons.length }}</span>
+            </p>
+
+            @for (season of group.seasons; track season.id) {
+              <button
+                #seasonCard
+                pdz-season-card
+                aria-controls="dz-detail-pane"
+                [id]="'dz-tab-' + season.id"
+                [season]="season"
+                [selected]="season.id === selectedId()"
+                (click)="select(season, true)"
+              ></button>
+            }
+          } @empty {
+            <pdz-empty-state
+              size="sm"
+              icon="search"
+              heading="Nothing here"
+              message="Try a different search or filter."
+            />
+          }
+        </div>
+
+        @if (archivedCount()) {
+          <button
+            pdz-button
+            size="sm"
+            variant="ghost"
+            color="neutral"
+            block
+            [icon]="showArchived() ? 'visibility_off' : 'archive'"
+            (click)="toggleArchived()"
+          >
+            {{ showArchived() ? "Hide" : "Show" }} archived ({{
+              archivedCount()
+            }})
+          </button>
+        }
+      }
+    </aside>
+
+    <section
+      #detailPane
+      id="dz-detail-pane"
+      class="dz-detail-pane"
+      role="tabpanel"
+      tabindex="0"
+      [attr.aria-labelledby]="selectedId() ? 'dz-tab-' + selectedId() : null"
+    >
+      @for (season of selection(); track season.id) {
+        <pdz-season-detail
+          [season]="season"
+          [detail]="selectedDetail()"
+          (archiveRequested)="archive($event)"
+          (restoreRequested)="restore($event)"
+          (deleteRequested)="remove($event)"
+          (changed)="refreshDetail($event)"
+        />
+      } @empty {
+        @if (seasons()) {
+          <pdz-empty-state
+            bordered
+            icon="note_stack_add"
+            heading="No drafts yet"
+            message="Add your first draft to start prepping against opponents and tracking your season."
+          >
+            <div pdz-empty-state-actions>
+              <a pdz-button icon="add" [routerLink]="['/', draftPath, 'new']"
+                >Add first draft</a
+              >
+            </div>
+          </pdz-empty-state>
+        } @else {
+          <pdz-skeleton variant="block" width="100%" height="20rem" />
+        }
+      }
+    </section>
+  </div>
+</pdz-page>
