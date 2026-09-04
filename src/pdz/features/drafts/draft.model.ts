@@ -13,6 +13,7 @@ export type Draft = {
     losses: number;
     diff: string;
   };
+  nextMatch?: string | null;
   owner: string;
   team: DraftPokemon[];
   unresolvedPokemon?: string[];

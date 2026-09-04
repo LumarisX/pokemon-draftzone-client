@@ -145,6 +145,16 @@
   }
 }
 
+.dz-season-card__next {
+  display: inline-flex;
+  align-items: center;
+  gap: pdz.space(2xs);
+  margin-inline-start: auto;
+  @include pdz.text(label);
+  color: pdz.color(primary-accent);
+  white-space: nowrap;
+}
+
 .dz-season-card__format {
   @include pdz.text(label);
   color: pdz.color(on-surface-variant);

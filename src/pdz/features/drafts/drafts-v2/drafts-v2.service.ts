@@ -122,16 +122,20 @@ export class DraftsV2Service {
         source.tournamentSlug,
       ];
 
-      return this.api
-        .get<TournamentTeamList>([...base, 'teams'])
+      const slug$ = source.teamSlug
+        ? of(source.teamSlug)
+        : this.api.get<TournamentTeamList>([...base, 'teams']).pipe(
+            take(1),
+            map(
+              (data) =>
+                data.teams.find((team) => team.id === source.teamId)?.slug ??
+                null,
+            ),
+            catchError(() => of(null)),
+          );
+
+      return slug$
         .pipe(
-          take(1),
-          map(
-            (data) =>
-              data.teams.find((team) => team.id === source.teamId)?.slug ??
-              null,
-          ),
-          catchError(() => of(null)),
           switchMap((teamSlug) => {
             if (!teamSlug) return of(FAILED);
 
@@ -196,6 +200,7 @@ function toDraftSeason(draft: Draft): Season {
       diff: Number(draft.score?.diff ?? 0) || 0,
     },
     unresolved: draft.unresolvedPokemon?.length ?? 0,
+    nextMatch: draft.nextMatch ?? null,
     roster: draft.team ?? [],
     source: { type: 'draft', slug: draft.slug },
     homeLink: ['/', DRAFT_OVERVIEW_PATH, draft.slug],
@@ -222,6 +227,7 @@ function toTournamentSeason(tournament: TournamentDetails): Season {
       diff: tournament.score?.diff ?? 0,
     },
     unresolved: 0,
+    nextMatch: tournament.nextMatch ?? null,
     discord: tournament.discord,
     roster: tournament.draft ?? [],
     source: {
@@ -229,6 +235,7 @@ function toTournamentSeason(tournament: TournamentDetails): Season {
       leagueSlug: tournament.leagueSlug,
       tournamentSlug: tournament.tournamentSlug,
       teamId: tournament.teamId,
+      teamSlug: tournament.teamSlug,
     },
     homeLink: [
       '/',

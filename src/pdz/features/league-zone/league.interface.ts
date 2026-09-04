@@ -118,7 +118,7 @@ export namespace League {
         winner: boolean;
       };
     }[];
-    scheduledDate?: Date;
+    scheduledDate?: string | null;
     notes?: string;
     winner?: MatchupWinner;
     /**

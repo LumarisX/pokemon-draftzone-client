@@ -7,11 +7,12 @@ import {
 } from '@angular/core';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
+import { CountdownComponent } from '@pdz/shared/time/countdown/countdown.component';
 import { Season, seasonPlayed } from '../drafts-v2.model';
 
 @Component({
   selector: 'button[pdz-season-card]',
-  imports: [IconComponent, SpriteComponent],
+  imports: [CountdownComponent, IconComponent, SpriteComponent],
   templateUrl: './season-card.component.html',
   styleUrl: './season-card.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,

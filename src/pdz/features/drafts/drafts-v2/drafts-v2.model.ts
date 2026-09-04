@@ -15,6 +15,7 @@ export type SeasonSource =
       leagueSlug: string;
       tournamentSlug: string;
       teamId: string;
+      teamSlug?: string;
     }
   | { type: 'archive'; archiveId: string; slug?: string };
 
@@ -31,6 +32,7 @@ export type Season = {
   ruleset: string;
   record: { wins: number; losses: number; diff: number };
   unresolved: number;
+  nextMatch?: string | null;
   discord?: string;
   roster: RosterMon[];
   source: SeasonSource;

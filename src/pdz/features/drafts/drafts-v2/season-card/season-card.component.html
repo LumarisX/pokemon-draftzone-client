@@ -44,5 +44,11 @@
       }
     </span>
     <span class="dz-season-card__format">{{ season().format }}</span>
+    @if (season().nextMatch; as scheduled) {
+      <span class="dz-season-card__next">
+        <pdz-icon name="schedule" aria-hidden="true" [size]="12" />
+        <pdz-countdown [target]="scheduled" [showTitle]="false" />
+      </span>
+    }
   </span>
 </span>
