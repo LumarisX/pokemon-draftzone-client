@@ -498,3 +498,207 @@
     overflow-wrap: anywhere;
   }
 }
+
+.ko-timeline {
+  --ko-timeline-columns: 1.75rem minmax(0, 1fr) minmax(3.25rem, 5rem)
+    minmax(0, 1fr);
+
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(xs);
+  min-width: 0;
+
+  @include pdz.respond-above(small) {
+    --ko-timeline-columns: 2.25rem minmax(0, 1fr) minmax(4.5rem, 7rem)
+      minmax(0, 1fr);
+  }
+
+  &__legend {
+    display: grid;
+    align-items: center;
+    gap: pdz.space(2xs);
+    grid-template-columns: var(--ko-timeline-columns);
+    padding: 0 pdz.space(2xs) pdz.space(2xs);
+    border-bottom: 1px solid pdz.color(outline-variant);
+    @include pdz.text(label, $family: false);
+    @include pdz.caps;
+
+    > :first-child {
+      grid-column: 2;
+      overflow: hidden;
+      color: pdz.color(primary-accent);
+      text-align: center;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    > :last-child {
+      grid-column: 4;
+      overflow: hidden;
+      color: pdz.color(secondary-accent);
+      text-align: center;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
+
+  &__rows {
+    display: flex;
+    flex-direction: column;
+    gap: pdz.space(3xs);
+    max-height: 26rem;
+    overflow-y: auto;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  &__row {
+    display: grid;
+    align-items: center;
+    gap: pdz.space(2xs);
+    grid-template-columns: var(--ko-timeline-columns);
+    padding: pdz.space(2xs);
+    border-radius: pdz.shape(corner-sm);
+
+    &:nth-child(odd) {
+      background-color: pdz.color(surface-container-low);
+    }
+  }
+
+  &__turn {
+    color: pdz.color(on-surface-variant);
+    text-align: center;
+    @include pdz.text(label, $family: false);
+    @include pdz.numeric;
+    white-space: nowrap;
+  }
+
+  &__lane {
+    display: flex;
+    align-items: flex-start;
+    gap: pdz.space(2xs);
+    min-width: 0;
+
+    &--a {
+      justify-content: flex-end;
+    }
+
+    &--b {
+      justify-content: flex-start;
+    }
+  }
+
+  &__mon {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: pdz.space(3xs);
+    min-width: 0;
+    max-width: 5.5rem;
+
+    &--victim {
+      .ko-timeline__sprite {
+        opacity: 0.55;
+        filter: grayscale(0.65);
+      }
+
+      .ko-timeline__mon-name {
+        color: pdz.color(danger);
+      }
+    }
+  }
+
+  &__sprite {
+    flex: none;
+  }
+
+  &__mon-name {
+    max-width: 100%;
+    overflow: hidden;
+    color: pdz.color(on-surface-variant);
+    text-align: center;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    @include pdz.text(label, $family: false);
+  }
+
+  &__link {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: pdz.space(3xs);
+    min-width: 0;
+    color: pdz.color(on-surface-variant);
+  }
+
+  &__label {
+    max-width: 100%;
+    padding: pdz.space(3xs) pdz.space(2xs);
+    overflow: hidden;
+    border-radius: pdz.shape(corner-xs);
+    background-color: pdz.color(surface-container-high);
+    color: pdz.color(on-surface);
+    text-align: center;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    @include pdz.text(label, $family: false);
+  }
+
+  &__arrow {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 0.65rem;
+
+    &--right {
+      color: pdz.color(primary-accent);
+    }
+
+    &--left {
+      color: pdz.color(secondary-accent);
+    }
+
+    &--same,
+    &--none {
+      color: pdz.color(outline);
+    }
+
+    &--right::after,
+    &--left::after {
+      position: absolute;
+      top: 50%;
+      width: 0;
+      height: 0;
+      border-block: 0.32rem solid transparent;
+      content: "";
+      transform: translateY(-50%);
+    }
+
+    &--right::after {
+      right: 0;
+      border-left: 0.42rem solid currentcolor;
+    }
+
+    &--left::after {
+      left: 0;
+      border-right: 0.42rem solid currentcolor;
+    }
+  }
+
+  &__arrow-line {
+    position: absolute;
+    top: 50%;
+    right: 0;
+    left: 0;
+    height: 0;
+    border-top: 2px solid currentcolor;
+    transform: translateY(-50%);
+  }
+
+  &__link--indirect &__arrow-line {
+    border-top-style: dashed;
+  }
+}

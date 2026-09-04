@@ -530,22 +530,171 @@
                   </pdz-widget>
 
                   <pdz-widget class="replay__panel" fill label="Events">
-                    <ol class="replay__events">
-                      @for (event of events(); track $index) {
-                        <li
-                          class="replay__event"
-                          [class.replay__event--team-a]="event.player === 1"
-                          [class.replay__event--team-b]="event.player === 2"
-                        >
-                          <span class="replay__event-turn"
-                            >Turn {{ event.turn }}</span
-                          >
-                          <span class="replay__event-message">{{
-                            event.message
+                    <pdz-segmented
+                      widget-options
+                      size="sm"
+                      variant="tonal"
+                      aria-label="Event view"
+                      [(value)]="timelineMode"
+                    >
+                      <pdz-segmented-option
+                        value="visual"
+                        icon="timeline"
+                        label="Visual"
+                      />
+                      <pdz-segmented-option
+                        value="text"
+                        icon="notes"
+                        label="Text"
+                      />
+                    </pdz-segmented>
+
+                    @if (timelineMode() === "visual" && hasKOTimeline()) {
+                      <div class="ko-timeline">
+                        <div class="ko-timeline__legend">
+                          <span class="ko-timeline__legend-team">{{
+                            timelineTeams().left
                           }}</span>
-                        </li>
-                      }
-                    </ol>
+                          <span class="ko-timeline__legend-team">{{
+                            timelineTeams().right
+                          }}</span>
+                        </div>
+
+                        <ol class="ko-timeline__rows">
+                          @for (row of koTimeline(); track $index) {
+                            <li
+                              class="ko-timeline__row"
+                              [attr.aria-label]="
+                                'Turn ' + row.turn + ': ' + row.summary
+                              "
+                            >
+                              <span class="ko-timeline__turn"
+                                >T{{ row.turn }}</span
+                              >
+
+                              <div
+                                class="ko-timeline__lane ko-timeline__lane--a"
+                              >
+                                @for (mon of row.left; track $index) {
+                                  <div
+                                    class="ko-timeline__mon"
+                                    [class.ko-timeline__mon--victim]="
+                                      mon.role === 'victim'
+                                    "
+                                  >
+                                    <pdz-sprite
+                                      class="ko-timeline__sprite"
+                                      size="3rem"
+                                      [pokemon]="mon.pokemon"
+                                      [showFormes]="false"
+                                      [interactive]="false"
+                                    />
+                                    <span class="ko-timeline__mon-name">{{
+                                      mon.pokemon.name
+                                    }}</span>
+                                  </div>
+                                }
+                              </div>
+
+                              <div
+                                class="ko-timeline__link"
+                                [class.ko-timeline__link--indirect]="
+                                  row.indirect
+                                "
+                              >
+                                @if (row.label) {
+                                  <span class="ko-timeline__label">{{
+                                    row.label
+                                  }}</span>
+                                }
+
+                                @switch (row.direction) {
+                                  @case ("right") {
+                                    <span
+                                      class="ko-timeline__arrow ko-timeline__arrow--right"
+                                    >
+                                      <span
+                                        class="ko-timeline__arrow-line"
+                                      ></span>
+                                    </span>
+                                  }
+                                  @case ("left") {
+                                    <span
+                                      class="ko-timeline__arrow ko-timeline__arrow--left"
+                                    >
+                                      <span
+                                        class="ko-timeline__arrow-line"
+                                      ></span>
+                                    </span>
+                                  }
+                                  @case ("same") {
+                                    <span
+                                      class="ko-timeline__arrow ko-timeline__arrow--same"
+                                    >
+                                      <pdz-icon name="swap_horiz" [size]="18" />
+                                    </span>
+                                  }
+                                  @default {
+                                    <span
+                                      class="ko-timeline__arrow ko-timeline__arrow--none"
+                                    >
+                                      <pdz-icon name="skull" [size]="18" />
+                                    </span>
+                                  }
+                                }
+                              </div>
+
+                              <div
+                                class="ko-timeline__lane ko-timeline__lane--b"
+                              >
+                                @for (mon of row.right; track $index) {
+                                  <div
+                                    class="ko-timeline__mon"
+                                    [class.ko-timeline__mon--victim]="
+                                      mon.role === 'victim'
+                                    "
+                                  >
+                                    <pdz-sprite
+                                      class="ko-timeline__sprite"
+                                      size="3rem"
+                                      [pokemon]="mon.pokemon"
+                                      [showFormes]="false"
+                                      [interactive]="false"
+                                    />
+                                    <span class="ko-timeline__mon-name">{{
+                                      mon.pokemon.name
+                                    }}</span>
+                                  </div>
+                                }
+                              </div>
+                            </li>
+                          }
+                        </ol>
+                      </div>
+                    } @else if (timelineMode() === "visual") {
+                      <pdz-empty-state
+                        icon="timeline"
+                        heading="No knockouts to plot"
+                        message="This replay has no recorded KOs. Switch to Text for the full event log."
+                      />
+                    } @else {
+                      <ol class="replay__events">
+                        @for (event of events(); track $index) {
+                          <li
+                            class="replay__event"
+                            [class.replay__event--team-a]="event.player === 1"
+                            [class.replay__event--team-b]="event.player === 2"
+                          >
+                            <span class="replay__event-turn"
+                              >Turn {{ event.turn }}</span
+                            >
+                            <span class="replay__event-message">{{
+                              event.message
+                            }}</span>
+                          </li>
+                        }
+                      </ol>
+                    }
                   </pdz-widget>
                 </div>
               </section>

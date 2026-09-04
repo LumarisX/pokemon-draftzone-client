@@ -22,6 +22,8 @@ import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
 import { FieldComponent } from '@pdz/shared/inputs/field/field.component';
 import { InputDirective } from '@pdz/shared/inputs/field/input.directive';
+import { SegmentedOptionComponent } from '@pdz/shared/inputs/segmented/segmented-option.component';
+import { SegmentedComponent } from '@pdz/shared/inputs/segmented/segmented.component';
 import { SlideToggleComponent } from '@pdz/shared/inputs/slide-toggle/slide-toggle.component';
 import { PageComponent } from '@pdz/shared/layout/page/page.component';
 import { WidgetComponent } from '@pdz/shared/layout/widget/widget.component';
@@ -35,6 +37,7 @@ import {
 import {
   ReplayAnalysis,
   ReplayAnalyzerVersion,
+  ReplayKOMon,
   ReplayPlayer,
 } from './replay.interface';
 import { ReplayService } from './replay.service';
@@ -46,6 +49,25 @@ type ReplayStatus = 'idle' | 'loading' | 'ready' | 'error';
 type PlayerView = ReplayPlayer & {
   killsMismatch: boolean;
   deathsMismatch: boolean;
+};
+
+type TimelineMode = 'visual' | 'text';
+
+type KODirection = 'left' | 'right' | 'same' | 'none';
+
+type KOMonView = {
+  pokemon: { id: string; name: string; shiny?: true };
+  role: 'attacker' | 'victim';
+};
+
+type KORow = {
+  turn: number;
+  left: KOMonView[];
+  right: KOMonView[];
+  direction: KODirection;
+  label: string;
+  indirect: boolean;
+  summary: string;
 };
 
 @Component({
@@ -67,6 +89,8 @@ type PlayerView = ReplayPlayer & {
     InputDirective,
     PageComponent,
     ReplayChartComponent,
+    SegmentedComponent,
+    SegmentedOptionComponent,
     SkeletonComponent,
     SlideToggleComponent,
     SpriteComponent,
@@ -150,6 +174,64 @@ export class ReplayComponent {
   });
 
   protected readonly events = computed(() => this.analysis()?.events ?? []);
+
+  protected readonly timelineMode = signal<TimelineMode>('visual');
+
+  protected readonly koTimeline = computed<KORow[]>(() =>
+    (this.analysis()?.kos ?? []).map((ko) => {
+      const left: KOMonView[] = [];
+      const right: KOMonView[] = [];
+      const place = (mon: ReplayKOMon, role: KOMonView['role']) => {
+        const lane = mon.player % 2 === 1 ? left : right;
+        lane.push({
+          pokemon: { id: mon.id, name: mon.name, shiny: mon.shiny },
+          role,
+        });
+      };
+
+      const attacker = ko.self ? undefined : ko.attacker;
+      if (attacker) {
+        place(attacker, 'attacker');
+      }
+      place(ko.victim, 'victim');
+
+      const label = ko.move ?? ko.cause ?? '';
+
+      let direction: KODirection = 'none';
+      if (attacker) {
+        direction =
+          attacker.player === ko.victim.player
+            ? 'same'
+            : ko.victim.player % 2 === 0
+              ? 'right'
+              : 'left';
+      }
+
+      return {
+        turn: ko.turn,
+        left,
+        right,
+        direction,
+        label,
+        indirect: ko.indirect,
+        summary: buildKOSummary(ko.victim, attacker, label, ko.indirect),
+      };
+    }),
+  );
+
+  protected readonly hasKOTimeline = computed(
+    () => this.koTimeline().length > 0,
+  );
+
+  protected readonly timelineTeams = computed(() => {
+    const roster = this.players();
+    const pick = (parity: number) =>
+      roster
+        .filter((_, index) => (index + 1) % 2 === parity)
+        .map((player) => player.username)
+        .join(' & ');
+    return { left: pick(1), right: pick(0) };
+  });
 
   protected readonly chartPlayers = computed(
     () => this.analysis()?.players ?? [],
@@ -249,6 +331,20 @@ export class ReplayComponent {
     this.showDetails.set(enabled);
     writeDetailsPreference(enabled);
   }
+}
+
+function buildKOSummary(
+  victim: ReplayKOMon,
+  attacker: ReplayKOMon | undefined,
+  label: string,
+  indirect: boolean,
+): string {
+  const cause = label ? ` from ${label}` : '';
+  if (!attacker) {
+    return `${victim.name} fainted${cause}`;
+  }
+  const kind = indirect ? 'indirectly' : 'directly';
+  return `${attacker.name} ${kind} KOed ${victim.name}${cause}`;
 }
 
 function readDetailsPreference(): boolean {

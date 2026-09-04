@@ -1,4 +1,3 @@
-
 export type ReplayData = {
   gametype: string;
   genNum: number;
@@ -125,6 +124,23 @@ export type ReplayPlayer = {
   team: ReplayPokemon[];
 };
 
+export type ReplayKOMon = {
+  player: number;
+  id: string;
+  name: string;
+  shiny?: true;
+};
+
+export type ReplayKO = {
+  turn: number;
+  victim: ReplayKOMon;
+  attacker?: ReplayKOMon;
+  move?: string;
+  cause?: string;
+  indirect: boolean;
+  self: boolean;
+};
+
 export type ReplayAnalysis = {
   gametype: string;
   genNum: number;
@@ -132,6 +148,7 @@ export type ReplayAnalysis = {
   gameTime: number;
   players: ReplayPlayer[];
   events: { player: number; turn: number; message: string }[];
+  kos?: ReplayKO[];
 };
 
 export type ReplayAnalyzerVersion = 'v1' | 'v2';
