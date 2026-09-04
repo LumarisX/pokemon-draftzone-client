@@ -73,7 +73,12 @@
   </figure>
 
   @if (tip; as t) {
-    <div class="charts__tip" [style.left.px]="t.x" [style.top.px]="t.y">
+    <div
+      class="charts__tip"
+      [class.charts__tip--flip]="t.flip"
+      [style.left.px]="t.x"
+      [style.top.px]="t.y"
+    >
       @for (line of t.lines; track $index) {
         <div>{{ line }}</div>
       }

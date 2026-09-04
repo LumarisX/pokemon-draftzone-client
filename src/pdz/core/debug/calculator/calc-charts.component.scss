@@ -1,10 +1,15 @@
 @use "pdz-theming" as pdz;
 
-.charts {
+:host {
   position: relative;
+  display: block;
+}
+
+.charts {
   display: flex;
   flex-direction: column;
   gap: pdz.space(lg);
+  max-width: 58rem;
 }
 
 .charts__figure {
@@ -12,6 +17,7 @@
   display: flex;
   flex-direction: column;
   gap: pdz.space(xs);
+  min-width: 0;
 }
 
 .charts__caption {
@@ -60,4 +66,8 @@
   color: pdz.color(on-surface);
   white-space: nowrap;
   @include pdz.text(body-sm);
+
+  &--flip {
+    transform: translate(calc(-100% - 12px), -50%);
+  }
 }

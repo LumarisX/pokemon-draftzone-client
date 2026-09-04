@@ -108,7 +108,7 @@ export class DebugCalculatorComponent {
 
   readonly rulesets = signal<{ name: string; id: string }[]>([]);
   readonly ruleset = signal('Gen9 NatDex');
-  readonly move = signal('Cross Chop');
+  readonly move = signal('Blaze Kick');
   readonly weather = signal('');
   readonly terrain = signal('');
   readonly turns = signal(10);
@@ -116,10 +116,10 @@ export class DebugCalculatorComponent {
   readonly forcedCrit = signal<ForcedOutcome>('roll');
 
   readonly attacker = signal<SideForm>(
-    this.blankSide('Lucario', 'adamant', 'atk 252'),
+    this.blankSide('Blaziken', 'Adamant', 'atk 252'),
   );
   readonly defender = signal<SideForm>(
-    this.blankSide('Clefable', '', 'hp 252, def 252'),
+    this.blankSide('Toxapex', '', 'hp 252, def 252'),
   );
 
   readonly result = signal<CalcResponse | undefined>(undefined);

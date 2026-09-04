@@ -5,6 +5,7 @@ import {
   OnChanges,
   OnDestroy,
   ViewChild,
+  inject,
   input,
 } from '@angular/core';
 import * as d3 from 'd3';
@@ -12,7 +13,7 @@ import { CalcResponse } from './calculator.model';
 
 const MARGIN = { top: 12, right: 16, bottom: 30, left: 46 };
 const WIDTH = 640;
-const HEIGHT = 200;
+const HEIGHT = 230;
 
 const INK = 'var(--pdz-color-on-surface)';
 const MUTED = 'var(--pdz-color-on-surface-variant)';
@@ -23,6 +24,7 @@ const LETHAL = 'var(--pdz-color-danger)';
 interface Tip {
   x: number;
   y: number;
+  flip: boolean;
   lines: string[];
 }
 
@@ -37,6 +39,8 @@ export class CalcChartsComponent implements AfterViewInit, OnChanges, OnDestroy 
   survivalRef!: ElementRef<SVGSVGElement>;
   @ViewChild('ko', { static: true }) koRef!: ElementRef<SVGSVGElement>;
   @ViewChild('turns', { static: true }) turnsRef!: ElementRef<SVGSVGElement>;
+
+  private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
 
   readonly result = input<CalcResponse | undefined>(undefined);
 
@@ -501,11 +505,12 @@ export class CalcChartsComponent implements AfterViewInit, OnChanges, OnDestroy 
   }
 
   private showTip(event: MouseEvent, lines: string[]): void {
-    const host = (event.currentTarget as SVGElement).ownerSVGElement;
-    const bounds = host?.getBoundingClientRect();
+    const bounds = this.host.nativeElement.getBoundingClientRect();
+    const x = event.clientX - bounds.left;
     this.tip = {
-      x: event.clientX - (bounds?.left ?? 0),
-      y: event.clientY - (bounds?.top ?? 0),
+      x,
+      y: event.clientY - bounds.top,
+      flip: x > bounds.width * 0.6,
       lines,
     };
   }
