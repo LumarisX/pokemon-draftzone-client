@@ -1,0 +1,423 @@
+<pdz-page>
+  <div class="calc">
+    <header class="calc__header">
+      <h2 class="calc__title">Calculator harness</h2>
+      <p class="calc__lede">
+        Sends a state to <code>POST /calc</code> and shows what the calculator
+        understood, what it branched on, and the resulting distribution over
+        battle states.
+      </p>
+    </header>
+
+    <section class="calc__form">
+      <div class="calc__row">
+        <label pdz-field label="Ruleset" class="calc__control">
+          <pdz-select
+            aria-label="Ruleset"
+            [ngModel]="ruleset()"
+            (ngModelChange)="ruleset.set($event)"
+          >
+            @for (option of rulesets(); track option.id) {
+              <pdz-option [value]="option.id" [label]="option.name" />
+            }
+          </pdz-select>
+        </label>
+
+        <label pdz-field label="Move" class="calc__control">
+          <input
+            pdz-input
+            type="text"
+            [ngModel]="move()"
+            (ngModelChange)="move.set($event)"
+          />
+        </label>
+
+        <label
+          pdz-field
+          label="Turns"
+          class="calc__control calc__control--narrow"
+        >
+          <input
+            pdz-input
+            type="number"
+            min="1"
+            max="8"
+            [ngModel]="turns()"
+            (ngModelChange)="turns.set(+$event)"
+          />
+        </label>
+      </div>
+
+      <div class="calc__row">
+        <label pdz-field label="Weather" class="calc__control">
+          <pdz-select
+            aria-label="Weather"
+            [ngModel]="weather()"
+            (ngModelChange)="weather.set($event)"
+          >
+            @for (option of weathers; track option) {
+              <pdz-option [value]="option" [label]="option || 'None'" />
+            }
+          </pdz-select>
+        </label>
+        <label pdz-field label="Terrain" class="calc__control">
+          <pdz-select
+            aria-label="Terrain"
+            [ngModel]="terrain()"
+            (ngModelChange)="terrain.set($event)"
+          >
+            @for (option of terrains; track option) {
+              <pdz-option [value]="option" [label]="option || 'None'" />
+            }
+          </pdz-select>
+        </label>
+      </div>
+
+      <div class="calc__row">
+        <div pdz-field label="Accuracy" hint="Force the hit/miss branch" class="calc__control">
+          <pdz-segmented
+            size="sm"
+            aria-label="Force accuracy outcome"
+            [value]="forcedHit()"
+            (valueChange)="forcedHit.set($any($event))"
+          >
+            <pdz-segmented-option value="roll" label="Roll" />
+            <pdz-segmented-option value="always" label="Always hit" />
+            <pdz-segmented-option value="never" label="Always miss" />
+          </pdz-segmented>
+        </div>
+
+        <div pdz-field label="Critical hit" hint="Force the crit branch" class="calc__control">
+          <pdz-segmented
+            size="sm"
+            aria-label="Force critical hit outcome"
+            [value]="forcedCrit()"
+            (valueChange)="forcedCrit.set($any($event))"
+          >
+            <pdz-segmented-option value="roll" label="Roll" />
+            <pdz-segmented-option value="always" label="Always crit" />
+            <pdz-segmented-option value="never" label="Never crit" />
+          </pdz-segmented>
+        </div>
+      </div>
+
+      <div class="calc__sides">
+        @for (
+          side of [
+            { key: "attacker", form: attacker() },
+            { key: "defender", form: defender() },
+          ];
+          track side.key
+        ) {
+          <fieldset class="calc__side">
+            <legend class="calc__side-title">{{ side.key }}</legend>
+
+            <label pdz-field label="Species">
+              <input
+                pdz-input
+                type="text"
+                [ngModel]="side.form.species"
+                (ngModelChange)="
+                  side.key === 'attacker'
+                    ? patchAttacker('species', $event)
+                    : patchDefender('species', $event)
+                "
+              />
+            </label>
+
+            <div class="calc__row">
+              <label pdz-field label="Level" class="calc__control--narrow">
+                <input
+                  pdz-input
+                  type="number"
+                  [ngModel]="side.form.level"
+                  (ngModelChange)="
+                    side.key === 'attacker'
+                      ? patchAttacker('level', +$event)
+                      : patchDefender('level', +$event)
+                  "
+                />
+              </label>
+              <label pdz-field label="Nature">
+                <pdz-select
+                  [attr.aria-label]="side.key + ' nature'"
+                  [ngModel]="side.form.nature"
+                  (ngModelChange)="
+                    side.key === 'attacker'
+                      ? patchAttacker('nature', $event)
+                      : patchDefender('nature', $event)
+                  "
+                >
+                  @for (option of natures; track option) {
+                    <pdz-option
+                      [value]="option"
+                      [label]="option || 'Neutral'"
+                    />
+                  }
+                </pdz-select>
+              </label>
+            </div>
+
+            <div class="calc__row">
+              <label pdz-field label="Ability">
+                <input
+                  pdz-input
+                  type="text"
+                  [ngModel]="side.form.ability"
+                  (ngModelChange)="
+                    side.key === 'attacker'
+                      ? patchAttacker('ability', $event)
+                      : patchDefender('ability', $event)
+                  "
+                />
+              </label>
+              <label pdz-field label="Item">
+                <input
+                  pdz-input
+                  type="text"
+                  [ngModel]="side.form.item"
+                  (ngModelChange)="
+                    side.key === 'attacker'
+                      ? patchAttacker('item', $event)
+                      : patchDefender('item', $event)
+                  "
+                />
+              </label>
+            </div>
+
+            <label pdz-field label="EVs" hint="e.g. spa 252, hp 4">
+              <input
+                pdz-input
+                type="text"
+                [ngModel]="side.form.evs"
+                (ngModelChange)="
+                  side.key === 'attacker'
+                    ? patchAttacker('evs', $event)
+                    : patchDefender('evs', $event)
+                "
+              />
+            </label>
+
+            <label pdz-field label="Boosts" hint="e.g. atk +2, def -1">
+              <input
+                pdz-input
+                type="text"
+                [ngModel]="side.form.boosts"
+                (ngModelChange)="
+                  side.key === 'attacker'
+                    ? patchAttacker('boosts', $event)
+                    : patchDefender('boosts', $event)
+                "
+              />
+            </label>
+
+            <div class="calc__row">
+              <label pdz-field label="Status">
+                <pdz-select
+                  [attr.aria-label]="side.key + ' status'"
+                  [ngModel]="side.form.status"
+                  (ngModelChange)="
+                    side.key === 'attacker'
+                      ? patchAttacker('status', $event)
+                      : patchDefender('status', $event)
+                  "
+                >
+                  @for (option of statuses; track option) {
+                    <pdz-option [value]="option" [label]="option || 'None'" />
+                  }
+                </pdz-select>
+              </label>
+              <label pdz-field label="Current HP" hint="blank = full">
+                <input
+                  pdz-input
+                  type="number"
+                  [ngModel]="side.form.hp"
+                  (ngModelChange)="
+                    side.key === 'attacker'
+                      ? patchAttacker('hp', $event)
+                      : patchDefender('hp', $event)
+                  "
+                />
+              </label>
+            </div>
+
+            <div class="calc__row calc__row--tera">
+              <label pdz-field label="Tera type">
+                <pdz-select
+                  [attr.aria-label]="side.key + ' tera type'"
+                  [ngModel]="side.form.teraType"
+                  (ngModelChange)="
+                    side.key === 'attacker'
+                      ? patchAttacker('teraType', $event)
+                      : patchDefender('teraType', $event)
+                  "
+                >
+                  @for (option of types; track option) {
+                    <pdz-option
+                      [value]="option"
+                      [label]="option || 'Default'"
+                    />
+                  }
+                </pdz-select>
+              </label>
+              <label pdz-check class="calc__check">
+                <input
+                  pdz-checkbox
+                  type="checkbox"
+                  [ngModel]="side.form.terastallized"
+                  (ngModelChange)="
+                    side.key === 'attacker'
+                      ? patchAttacker('terastallized', $event)
+                      : patchDefender('terastallized', $event)
+                  "
+                  [attr.aria-label]="side.key + ' terastallized'"
+                />
+                <span>Terastallized</span>
+              </label>
+            </div>
+          </fieldset>
+        }
+      </div>
+
+      <div class="calc__actions">
+        <button pdz-button (click)="run()" [disabled]="loading()">
+          {{ loading() ? "Calculating…" : "Calculate" }}
+        </button>
+        @if (result()) {
+          <button
+            pdz-button
+            color="neutral"
+            variant="outlined"
+            (click)="showRaw.set(!showRaw())"
+          >
+            {{ showRaw() ? "Hide" : "Show" }} raw JSON
+          </button>
+          <button
+            pdz-button
+            color="neutral"
+            variant="outlined"
+            (click)="copyRaw()"
+          >
+            Copy JSON
+          </button>
+        }
+      </div>
+    </section>
+
+    @if (error(); as message) {
+      <p class="calc__error">{{ message }}</p>
+    }
+
+    @if (result(); as res) {
+      @if (!res.supported) {
+        <section class="calc__panel calc__panel--refused">
+          <h3 class="calc__panel-title">Refused</h3>
+          <p>
+            The calculator declined this state rather than approximating it:
+          </p>
+          <ul class="calc__reasons">
+            @for (reason of res.reasons; track reason) {
+              <li>{{ reason }}</li>
+            }
+          </ul>
+        </section>
+      } @else {
+        <section class="calc__panel">
+          <h3 class="calc__panel-title">Damage</h3>
+          <p class="calc__summary">
+            {{ res.damage!.min }}–{{ res.damage!.max }} ({{
+              res.damage!.minPercent
+            }}%–{{ res.damage!.maxPercent }}%) · expected
+            {{ res.damage!.expected }}
+          </p>
+          <p class="calc__headline">{{ res.ko!.summary }}</p>
+          <pdz-calc-charts [result]="res" />
+        </section>
+
+        <section class="calc__panel">
+          <h3 class="calc__panel-title">Branches</h3>
+          <div class="calc__branches">
+            <div>
+              <h4>Accuracy</h4>
+              @for (b of res.branches!.accuracy; track $index) {
+                <div>
+                  {{ b.lands ? "lands" : "misses" }} · weight {{ b.weight }}
+                </div>
+              }
+            </div>
+            <div>
+              <h4>Crit</h4>
+              @for (b of res.branches!.crit; track $index) {
+                <div>
+                  {{ b.crit ? "crit" : "no crit" }} · weight {{ b.weight }}
+                </div>
+              }
+            </div>
+            <div>
+              <h4>Hits</h4>
+              @for (b of res.branches!.hits; track $index) {
+                <div>{{ b.hits }} hit(s) · weight {{ b.weight }}</div>
+              }
+            </div>
+            <div>
+              <h4>Secondaries</h4>
+              @for (b of res.branches!.secondaries; track $index) {
+                <div>
+                  {{ b.effects.length ? b.effects.join("; ") : "none" }} ·
+                  weight {{ b.weight }}
+                </div>
+              }
+            </div>
+          </div>
+        </section>
+
+        <section class="calc__panel">
+          <h3 class="calc__panel-title">
+            Resulting states ({{ res.meta!.distinctOutcomes }} distinct,
+            {{ res.meta!.elapsedMs }}ms)
+          </h3>
+          <table class="calc__table">
+            <thead>
+              <tr>
+                <th>Probability</th>
+                <th>Damage</th>
+                <th>HP left</th>
+                <th>Status</th>
+                <th>Target boosts</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (outcome of res.outcomes; track $index) {
+                <tr [class.calc__row--fainted]="outcome.fainted">
+                  <td>{{ percent(outcome.probability) }}</td>
+                  <td>{{ outcome.damage }}</td>
+                  <td>
+                    {{
+                      outcome.fainted
+                        ? "fainted"
+                        : outcome.hp + " (" + outcome.hpPercent + "%)"
+                    }}
+                  </td>
+                  <td>{{ outcome.status || "—" }}</td>
+                  <td>{{ outcome.boosts ? (outcome.boosts | json) : "—" }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </section>
+      }
+
+      <section class="calc__panel">
+        <h3 class="calc__panel-title">Normalized input</h3>
+        <pre class="calc__pre">{{ inputJson() }}</pre>
+      </section>
+
+      @if (showRaw()) {
+        <section class="calc__panel">
+          <h3 class="calc__panel-title">Raw response</h3>
+          <pre class="calc__pre">{{ rawJson() }}</pre>
+        </section>
+      }
+    }
+  </div>
+</pdz-page>

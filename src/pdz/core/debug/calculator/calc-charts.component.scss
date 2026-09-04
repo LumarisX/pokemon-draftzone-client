@@ -1,0 +1,63 @@
+@use "pdz-theming" as pdz;
+
+.charts {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(lg);
+}
+
+.charts__figure {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(xs);
+}
+
+.charts__caption {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.charts__title {
+  @include pdz.text(subtitle);
+  color: pdz.color(on-surface);
+}
+
+.charts__sub {
+  @include pdz.text(body-sm);
+  color: pdz.color(on-surface-variant);
+}
+
+.charts__thresholds {
+  margin: pdz.space(xs) 0 0;
+  padding-inline-start: pdz.space(lg);
+  color: pdz.color(on-surface-variant);
+  @include pdz.text(body-sm);
+}
+
+.charts__plot {
+  position: relative;
+
+  svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    overflow: visible;
+  }
+}
+
+.charts__tip {
+  position: absolute;
+  transform: translate(12px, -50%);
+  pointer-events: none;
+  z-index: 2;
+  padding: pdz.space(xs) pdz.space(sm);
+  border-radius: pdz.shape(corner-sm);
+  border: 1px solid pdz.color(outline-variant);
+  background: pdz.color(surface-container-high);
+  color: pdz.color(on-surface);
+  white-space: nowrap;
+  @include pdz.text(body-sm);
+}

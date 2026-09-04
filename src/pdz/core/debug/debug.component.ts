@@ -1,4 +1,5 @@
 import { Component, OnInit, inject } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { AuthService } from '../services/auth0.service';
 import { PageComponent } from '@pdz/shared/layout/page/page.component';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
@@ -7,6 +8,7 @@ import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
   selector: 'pdz-debug',
   imports: [PageComponent,
     ButtonComponent,
+    RouterLink,
   ],
   templateUrl: './debug.component.html',
   styleUrl: './debug.component.scss',

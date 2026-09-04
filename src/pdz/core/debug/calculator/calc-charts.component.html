@@ -1,0 +1,82 @@
+<div class="charts">
+  <figure class="charts__figure">
+    <figcaption class="charts__caption">
+      <span class="charts__title">Damage distribution</span>
+      <span class="charts__sub">
+        Probability mass per damage roll. Bars at or past
+        {{ startingHp }} HP are lethal.
+      </span>
+    </figcaption>
+    <div class="charts__plot">
+      <svg #pmf [attr.viewBox]="'0 0 ' + width + ' ' + height" role="img"
+        aria-label="Damage probability distribution"></svg>
+    </div>
+  </figure>
+
+  <figure class="charts__figure">
+    <figcaption class="charts__caption">
+      <span class="charts__title">Survival function</span>
+      <span class="charts__sub">
+        P(damage ≥ x).
+        @if (ohkoPossible) {
+          OHKO chance at {{ startingHp }} HP:
+          <strong>{{ (ohkoChance * 100).toFixed(2) }}%</strong>
+        } @else {
+          No OHKO possible — best roll is {{ maxDamage }} against {{ startingHp }} HP.
+          Dashed lines mark the per-hit damage each knockout speed needs.
+        }
+      </span>
+      @if (thresholds.length) {
+        <ul class="charts__thresholds">
+          @for (mark of thresholds; track mark.hits) {
+            <li>
+              <strong>{{ mark.hits }}HKO</strong> needs ≥ {{ mark.damage }} per hit —
+              {{ (mark.probability * 100).toFixed(2) }}% of rolls clear it
+            </li>
+          }
+        </ul>
+      }
+    </figcaption>
+    <div class="charts__plot">
+      <svg #survival [attr.viewBox]="'0 0 ' + width + ' ' + height" role="img"
+        aria-label="Probability that damage is at least x"></svg>
+    </div>
+  </figure>
+
+  <figure class="charts__figure">
+    <figcaption class="charts__caption">
+      <span class="charts__title">Turns to knock out</span>
+      <span class="charts__sub">
+        Probability the target faints on exactly that turn, repeating the same move.
+        @if (result()?.ko?.unresolved) {
+          The grey "none" bar is the mass still standing at the horizon.
+        }
+      </span>
+    </figcaption>
+    <div class="charts__plot">
+      <svg #turns [attr.viewBox]="'0 0 ' + width + ' ' + height" role="img"
+        aria-label="Probability of fainting on each turn"></svg>
+    </div>
+  </figure>
+
+  <figure class="charts__figure">
+    <figcaption class="charts__caption">
+      <span class="charts__title">Knockout chance by turn (cumulative)</span>
+      <span class="charts__sub">
+        Cumulative probability the target has fainted, repeating the same move.
+      </span>
+    </figcaption>
+    <div class="charts__plot">
+      <svg #ko [attr.viewBox]="'0 0 ' + width + ' ' + height" role="img"
+        aria-label="Cumulative knockout chance by turn"></svg>
+    </div>
+  </figure>
+
+  @if (tip; as t) {
+    <div class="charts__tip" [style.left.px]="t.x" [style.top.px]="t.y">
+      @for (line of t.lines; track $index) {
+        <div>{{ line }}</div>
+      }
+    </div>
+  }
+</div>

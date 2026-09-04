@@ -1,0 +1,161 @@
+@use "pdz-theming" as pdz;
+
+.calc {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(lg);
+  padding-block: pdz.space(lg);
+}
+
+.calc__title {
+  @include pdz.text(title);
+  margin: 0;
+}
+
+.calc__lede {
+  @include pdz.text(body-sm);
+  color: pdz.color(on-surface-variant);
+  margin: pdz.space(xs) 0 0;
+}
+
+.calc__form,
+.calc__panel {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(md);
+  padding: pdz.space(md);
+  border: 1px solid pdz.color(outline-variant);
+  border-radius: pdz.shape(corner-md);
+  background: pdz.color(surface-container-low);
+}
+
+.calc__panel--refused {
+  border-color: pdz.color(danger);
+}
+
+.calc__panel-title {
+  @include pdz.text(subtitle);
+  margin: 0;
+}
+
+.calc__row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: pdz.space(md);
+
+  > * {
+    flex: 1 1 12rem;
+    min-width: 0;
+  }
+}
+
+.calc__control--narrow {
+  flex: 0 1 7rem;
+}
+
+.calc__sides {
+  display: flex;
+  flex-wrap: wrap;
+  gap: pdz.space(md);
+}
+
+.calc__side {
+  flex: 1 1 22rem;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(sm);
+  margin: 0;
+  padding: pdz.space(md);
+  border: 1px solid pdz.color(outline-variant);
+  border-radius: pdz.shape(corner-sm);
+}
+
+.calc__side-title {
+  @include pdz.caps;
+  color: pdz.color(on-surface-variant);
+  padding-inline: pdz.space(xs);
+}
+
+.calc__row--tera {
+  align-items: end;
+}
+
+.calc__check {
+  display: flex;
+  align-items: center;
+  gap: pdz.space(xs);
+}
+
+.calc__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: pdz.space(sm);
+}
+
+.calc__error {
+  @include pdz.text(body-sm);
+  color: pdz.color(danger);
+  margin: 0;
+}
+
+.calc__summary {
+  @include pdz.text(body);
+  margin: 0;
+}
+
+.calc__headline {
+  @include pdz.text(subtitle);
+  color: pdz.color(on-surface);
+  margin: 0;
+}
+
+.calc__reasons {
+  margin: 0;
+  padding-inline-start: pdz.space(lg);
+}
+
+.calc__branches {
+  display: flex;
+  flex-wrap: wrap;
+  gap: pdz.space(lg);
+  @include pdz.text(body-sm);
+
+  h4 {
+    @include pdz.caps;
+    margin: 0 0 pdz.space(xs);
+    color: pdz.color(on-surface-variant);
+  }
+}
+
+.calc__table {
+  width: 100%;
+  border-collapse: collapse;
+  @include pdz.text(body-sm);
+
+  th {
+    text-align: left;
+    color: pdz.color(on-surface-variant);
+    border-bottom: 1px solid pdz.color(outline-variant);
+    padding: pdz.space(xs);
+  }
+
+  td {
+    padding: pdz.space(xs);
+    border-bottom: 1px solid pdz.color(outline-variant);
+  }
+}
+
+.calc__row--fainted {
+  color: pdz.color(danger);
+}
+
+.calc__pre {
+  margin: 0;
+  padding: pdz.space(sm);
+  border-radius: pdz.shape(corner-sm);
+  background: pdz.color(surface-container-high);
+  overflow-x: auto;
+  max-height: 28rem;
+  @include pdz.text(body-sm);
+}
