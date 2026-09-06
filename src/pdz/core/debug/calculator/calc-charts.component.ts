@@ -359,15 +359,22 @@ export class CalcChartsComponent implements AfterViewInit, OnChanges, OnDestroy 
     );
     if (!ko?.exactlyOnTurn?.length) return this.empty(this.turnsRef.nativeElement);
 
+    const turnCount = ko.exactlyOnTurn.length;
     const data = ko.exactlyOnTurn.map((probability, index) => ({
       turn: index + 1,
       probability,
     }));
-    if (ko.unresolved > 1e-9) {
-      data.push({ turn: 0, probability: ko.unresolved });
+    const unexpanded = ko.unexpanded ?? 0;
+    const surviving = ko.unresolved - unexpanded;
+    if (surviving > 1e-9) {
+      data.push({ turn: 0, probability: surviving });
+    }
+    if (unexpanded > 1e-9) {
+      data.push({ turn: -1, probability: unexpanded });
     }
 
-    const label = (turn: number) => (turn === 0 ? 'none' : `${turn}`);
+    const label = (turn: number) =>
+      turn === 0 ? 'none' : turn === -1 ? 'unresolved' : `${turn}`;
     const x = d3
       .scaleBand<number>()
       .domain(data.map((d) => d.turn))
@@ -424,10 +431,14 @@ export class CalcChartsComponent implements AfterViewInit, OnChanges, OnDestroy 
       .attr('width', x.bandwidth())
       .attr('height', (d) => innerHeight - y(d.probability))
       .attr('rx', 4)
-      .attr('fill', (d) => (d.turn === 0 ? MUTED : SERIES))
+      .attr('fill', (d) => (d.turn > 0 ? SERIES : MUTED))
       .on('mousemove', (event: MouseEvent, d) =>
         this.showTip(event, [
-          d.turn === 0 ? `still standing after ${data.length - 1} turns` : `faints on turn ${d.turn}`,
+          d.turn === -1
+            ? 'never advanced — the projection hit its compute budget'
+            : d.turn === 0
+              ? `still standing after ${turnCount} turns`
+              : `faints on turn ${d.turn}`,
           `${(d.probability * 100).toFixed(2)}%`,
         ]),
       )

@@ -49,7 +49,9 @@
       <span class="charts__sub">
         Probability the target faints on exactly that turn, repeating the same move.
         @if (result()?.ko?.unresolved) {
-          The grey "none" bar is the mass still standing at the horizon.
+          The grey "none" bar is the mass still standing at the horizon;
+          "unresolved" is mass the projection never advanced because it hit its
+          compute budget, not mass that survived.
         }
       </span>
     </figcaption>
