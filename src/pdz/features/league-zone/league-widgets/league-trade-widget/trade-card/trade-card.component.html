@@ -70,5 +70,20 @@
         }
       </div>
     </div>
+
+    @if (canWithdraw()) {
+      <div class="trade-actions">
+        <button
+          pdz-button
+          size="sm"
+          color="danger"
+          variant="outlined"
+          [disabled]="withdrawing()"
+          (click)="withdraw.emit()"
+        >
+          {{ withdrawing() ? "Withdrawing…" : "Withdraw" }}
+        </button>
+      </div>
+    }
   </div>
 </pdz-comparison-card>

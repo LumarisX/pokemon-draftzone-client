@@ -516,7 +516,7 @@ export class LeagueManageTradesComponent implements OnInit, OnDestroy {
     this.resolveErrorById[tradeId] = '';
 
     this.leagueService
-      .setTradeStatus(tradeId, status)
+      .updateTrade(tradeId, { status })
       .pipe(
         take(1),
         finalize(() => {

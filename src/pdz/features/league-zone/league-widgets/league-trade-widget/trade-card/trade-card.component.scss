@@ -130,3 +130,9 @@ $trade-sprite-size: 2rem;
   padding: 0;
   font-style: italic;
 }
+
+.trade-actions {
+  display: flex;
+  justify-content: flex-end;
+  padding-top: pdz.space(sm);
+}

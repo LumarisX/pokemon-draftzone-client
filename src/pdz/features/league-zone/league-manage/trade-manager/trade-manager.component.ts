@@ -411,6 +411,18 @@ export class TradeManagerComponent implements OnInit, OnDestroy {
   }
 
   resolveTrade(trade: TradeLog, status: Exclude<TradeStatus, 'PENDING'>): void {
+    this.patchTrade(trade, { status });
+  }
+
+  changeRound(trade: TradeLog, activeRound: number): void {
+    if (activeRound === trade.activeRound) return;
+    this.patchTrade(trade, { activeRound });
+  }
+
+  private patchTrade(
+    trade: TradeLog,
+    patch: { status?: Exclude<TradeStatus, 'PENDING'>; activeRound?: number },
+  ): void {
     if (!trade.id || this.resolvingTradeId) return;
 
     const tradeId = trade.id;
@@ -418,7 +430,7 @@ export class TradeManagerComponent implements OnInit, OnDestroy {
     this.resolveErrorById[tradeId] = '';
 
     this.leagueService
-      .setTradeStatus(tradeId, status)
+      .updateTrade(tradeId, patch)
       .pipe(
         take(1),
         finalize(() => {
@@ -430,7 +442,10 @@ export class TradeManagerComponent implements OnInit, OnDestroy {
         next: () => this.refreshTrades(),
         error: (err) => {
           this.resolveErrorById[tradeId] =
-            err?.message || `Could not ${status.toLowerCase()} the trade.`;
+            err?.message ||
+            (patch.status
+              ? `Could not ${patch.status.toLowerCase()} the trade.`
+              : 'Could not move the trade.');
         },
       });
   }

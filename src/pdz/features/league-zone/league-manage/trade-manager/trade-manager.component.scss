@@ -331,8 +331,13 @@
 
   &__actions {
     display: inline-flex;
+    align-items: center;
     gap: pdz.space(xs);
     margin-inline-start: auto;
+  }
+
+  &__round {
+    min-width: 9rem;
   }
   &__body {
     display: grid;

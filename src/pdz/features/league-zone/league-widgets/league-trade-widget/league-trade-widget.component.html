@@ -1,4 +1,7 @@
 @if (tradeRounds) {
+  @if (withdrawError) {
+    <p class="stage__error">{{ withdrawError }}</p>
+  }
   @for (stage of tradeRounds; track stage.name) {
     <div class="stage">
       <div class="stage-header">{{ stage.name }}</div>
@@ -7,6 +10,9 @@
           <pdz-trade-card
             [tradeLog]="tradeLog"
             [currentRoundIndex]="currentRoundIndex"
+            [canWithdraw]="canWithdraw(tradeLog)"
+            [withdrawing]="withdrawingTradeId === tradeLog.id"
+            (withdraw)="withdraw(tradeLog)"
           ></pdz-trade-card>
         }
       </div>

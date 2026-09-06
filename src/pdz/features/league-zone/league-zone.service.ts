@@ -194,11 +194,23 @@ export class LeagueZoneService {
     );
   }
 
-  /** Organizer resolution of a coach-submitted trade. */
-  setTradeStatus(tradeId: string, status: 'APPROVED' | 'REJECTED') {
-    return this.apiService.patch<{ message: string; status: TradeStatus }>(
+  updateTrade(
+    tradeId: string,
+    patch: { status?: 'APPROVED' | 'REJECTED'; activeRound?: number },
+  ) {
+    return this.apiService.patch<{
+      message: string;
+      status: TradeStatus;
+      activeRound: number;
+    }>(
       `${ROOTPATH}/${this.leagueSlug()}/tournaments/${this.tournamentSlug()}/trades/${tradeId}`,
-      { status },
+      patch,
+    );
+  }
+
+  withdrawTrade(tradeId: string) {
+    return this.apiService.delete<{ message: string }>(
+      `${ROOTPATH}/${this.leagueSlug()}/tournaments/${this.tournamentSlug()}/trades/${tradeId}`,
     );
   }
 

@@ -184,6 +184,7 @@
         @if (stageSlug) {
           <pdz-league-trade-widget
             [stageSlug]="stageSlug"
+            [withdrawableTeamId]="teamData.isCoach ? teamData.id : undefined"
           ></pdz-league-trade-widget>
         } @else {
           <p class="section-message">No trades yet.</p>

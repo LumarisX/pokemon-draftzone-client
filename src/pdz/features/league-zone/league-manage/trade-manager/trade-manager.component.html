@@ -213,6 +213,17 @@
 
                 @if (trade.status === "PENDING" && trade.id) {
                   <span class="trade__actions">
+                    <pdz-select
+                      class="trade__round"
+                      aria-label="Round this trade takes effect in"
+                      [value]="trade.activeRound"
+                      [disabled]="resolvingTradeId === trade.id"
+                      (valueChange)="changeRound(trade, +$any($event))"
+                    >
+                      @for (name of roundNames; track $index) {
+                        <pdz-option [value]="$index" [label]="name" />
+                      }
+                    </pdz-select>
                     <button
                       pdz-button
                       size="sm"

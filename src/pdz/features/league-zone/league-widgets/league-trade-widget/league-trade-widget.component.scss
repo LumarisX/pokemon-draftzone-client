@@ -19,4 +19,13 @@
   &__empty {
     @include pdz-league-section-message();
   }
+
+  &__error {
+    @include text(body-sm);
+    color: pdz.color(on-danger-container);
+    background: pdz.color(danger-container);
+    border-radius: pdz.shape(corner-sm);
+    padding: pdz.space(xs) pdz.space(sm);
+    margin-bottom: pdz.space(sm);
+  }
 }

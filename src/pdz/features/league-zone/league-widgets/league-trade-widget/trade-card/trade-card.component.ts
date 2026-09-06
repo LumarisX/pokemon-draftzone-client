@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnChanges, input } from '@angular/core';
+import { Component, OnChanges, input, output } from '@angular/core';
+import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
 import {
@@ -16,6 +17,7 @@ import { TradeLog } from '../../../league.interface';
     SpriteComponent,
     CommonModule,
     IconComponent,
+    ButtonComponent,
   ],
   templateUrl: './trade-card.component.html',
   styleUrls: ['./trade-card.component.scss'],
@@ -24,6 +26,12 @@ export class TradeCardComponent implements OnChanges {
   readonly tradeLog = input.required<TradeLog>();
 
   readonly currentRoundIndex = input(-1);
+
+  readonly canWithdraw = input(false);
+
+  readonly withdrawing = input(false);
+
+  readonly withdraw = output<void>();
 
   private readonly DRAFT_POOL_NAME = 'Draft Pool';
 
