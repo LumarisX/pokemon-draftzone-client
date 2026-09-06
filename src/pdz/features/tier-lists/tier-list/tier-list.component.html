@@ -64,7 +64,8 @@
       <div class="filter-panel__header">
         <div class="filter-type-option">
           <input
-            pdz-checkbox type="checkbox"
+            pdz-checkbox
+            type="checkbox"
             #allTypes
             id="filter-all-types"
             [checked]="selectedTypes().length === types.length"
@@ -82,7 +83,8 @@
         @for (type of types; track $index; let i = $index) {
           <div class="filter-type-option">
             <input
-              pdz-checkbox type="checkbox"
+              pdz-checkbox
+              type="checkbox"
               #typeBox
               [attr.id]="'filter-type-' + type"
               [checked]="selectedTypes().includes(type)"
@@ -130,26 +132,25 @@
       Drafted
     </button>
   }
+
+  <button
+    pdz-button
+    size="sm"
+    [color]="compact ? 'primary' : 'neutral'"
+    [variant]="compact ? 'tonal' : 'outlined'"
+    [icon]="compact ? 'grid_view' : 'view_list'"
+    [attr.aria-pressed]="compact"
+    pdzTooltip="{{ compact ? 'Show details' : 'Compact grid' }}"
+    (click)="compact = !compact"
+  >
+    Compact
+  </button>
 </div>
 
 <!-- Tier List Main -->
 <div class="tier-main">
   @if (!sortedTiers()) {
     <pdz-loading></pdz-loading>
-  } @else if (compact) {
-    <div class="compact-container">
-      @for (tier of sortedTiers()!; track $index) {
-        <div class="tier--compact" [class.tier--banned]="isBanTier(tier)">
-          <div class="tier__label">{{ tier.name }}</div>
-          @for (pokemon of tier.pokemon; track $index) {
-            <pdz-sprite
-              [pokemon]="spriteFor(pokemon)"
-              [tooltipPosition]="null"
-            ></pdz-sprite>
-          }
-        </div>
-      }
-    </div>
   } @else {
     <div class="tiers-container" #tiersContainer>
       @for (tier of displayedTiers()!; track $index) {
@@ -178,7 +179,9 @@
               size="xs"
               variant="ghost"
               class="tier__expand-button"
-              [icon]="isTierExpanded(tier) ? 'close_fullscreen' : 'open_in_full'"
+              [icon]="
+                isTierExpanded(tier) ? 'close_fullscreen' : 'open_in_full'
+              "
               [attr.aria-label]="
                 isTierExpanded(tier) ? 'Collapse tier' : 'Expand tier'
               "
@@ -188,6 +191,7 @@
 
           <div
             class="tier__pokemon-list"
+            [class.tier__pokemon-list--compact]="compact"
             [class.tier__pokemon-list--empty]="visiblePokemon.length === 0"
           >
             @if (visiblePokemon.length > 0) {
@@ -198,47 +202,63 @@
             @if (visiblePokemon.length === 0) {
               <span>No Pokémon match</span>
             }
-            @for (pokemon of visiblePokemon; track pokemon.id) {
-              <div
-                class="pokemon-entry"
-                [class.is-drafted]="isPokemonDrafted(pokemon)"
-                (click)="openPokemonDetails(pokemon, tier)"
-              >
-                <div class="pokemon-entry__sprite">
+            @if (compact) {
+              @for (pokemon of visiblePokemon; track pokemon.id) {
+                <div
+                  class="pokemon-tile"
+                  [class.is-drafted]="isPokemonDrafted(pokemon)"
+                  [pdzTooltip]="pokemon.name"
+                  (click)="openPokemonDetails(pokemon, tier)"
+                >
                   <pdz-sprite
                     [pokemon]="spriteFor(pokemon)"
                     [tooltipPosition]="null"
                   ></pdz-sprite>
                 </div>
-                <div class="pokemon-entry__info">
-                  <span class="pokemon-entry__name">{{ pokemon.name }}</span>
+              }
+            } @else {
+              @for (pokemon of visiblePokemon; track pokemon.id) {
+                <div
+                  class="pokemon-entry"
+                  [class.is-drafted]="isPokemonDrafted(pokemon)"
+                  (click)="openPokemonDetails(pokemon, tier)"
+                >
+                  <div class="pokemon-entry__sprite">
+                    <pdz-sprite
+                      [pokemon]="spriteFor(pokemon)"
+                      [tooltipPosition]="null"
+                    ></pdz-sprite>
+                  </div>
+                  <div class="pokemon-entry__info">
+                    <span class="pokemon-entry__name">{{ pokemon.name }}</span>
 
-                  <div class="pdz-types">
-                    @for (type of pokemon.types; track $index) {
-                      <pdz-pokemon-type
-                        [type]="type"
-                        content="icon"
-                      ></pdz-pokemon-type>
+                    <div class="pdz-types">
+                      @for (type of pokemon.types; track $index) {
+                        <pdz-pokemon-type
+                          [type]="type"
+                          content="icon"
+                        ></pdz-pokemon-type>
+                      }
+                    </div>
+                  </div>
+                  <div class="pokemon-entry__side">
+                    @if (pokemon.addons?.length) {
+                      <div class="pokemon-entry__tera">
+                        <span>{{ pokemon.addons![0].cost }}</span>
+                        <pdz-icon name="tera" [height]="16"></pdz-icon>
+                      </div>
+                    }
+                    @if (pokemon.banned || pokemon.notes) {
+                      <pdz-icon
+                        class="pokemon-entry__ban-icon"
+                        size="xs"
+                        [pdzTooltip]="makeWarningString(pokemon)"
+                        name="warning"
+                      ></pdz-icon>
                     }
                   </div>
                 </div>
-                <div class="pokemon-entry__side">
-                  @if (pokemon.addons?.length) {
-                    <div class="pokemon-entry__tera">
-                      <span>{{ pokemon.addons![0].cost }}</span>
-                      <pdz-icon name="tera" [height]="16"></pdz-icon>
-                    </div>
-                  }
-                  @if (pokemon.banned || pokemon.notes) {
-                    <pdz-icon
-                      class="pokemon-entry__ban-icon"
-                      size="xs"
-                      [pdzTooltip]="makeWarningString(pokemon)"
-                      name="warning"
-                    ></pdz-icon>
-                  }
-                </div>
-              </div>
+              }
             }
           </div>
         </div>

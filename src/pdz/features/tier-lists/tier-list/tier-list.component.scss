@@ -140,6 +140,12 @@
     grid-template-columns: repeat(auto-fill, minmax(12.5rem, 1fr));
     align-content: start;
 
+    &--compact {
+      grid-template-columns: repeat(auto-fill, minmax(3rem, 1fr));
+      gap: pdz.space(2xs);
+      padding: pdz.space(2xs);
+    }
+
     &--empty {
       display: flex;
       align-items: center;
@@ -249,44 +255,33 @@
 
 // ─── Compact view ─────────────────────────────────────────────────────────
 
-.compact-container {
+.pokemon-tile {
   display: flex;
-  flex-direction: column;
-  overflow-y: auto;
-  width: 100%;
-  padding: pdz.space(sm);
-  gap: pdz.space(xs);
-}
-
-.tier--compact {
-  display: flex;
-  flex-wrap: wrap;
   align-items: center;
-  gap: pdz.space(2xs);
-  background-color: pdz.color(surface-container-low);
-  border-radius: pdz.shape(corner-sm);
-  border: 1px solid pdz.color(outline-variant);
-  padding: pdz.space(2xs);
+  justify-content: center;
+  aspect-ratio: 1;
+  border-radius: pdz.shape(corner-xs);
+  cursor: pointer;
+  transition:
+    background-color pdz.duration(fast) pdz.easing(standard),
+    transform pdz.duration(fast) pdz.easing(standard);
 
-  &.tier--banned {
-    border-color: pdz.color(danger);
-
-    .tier__label {
-      background-color: pdz.color(danger);
-      color: pdz.color(on-danger);
-    }
+  &:hover:not(.is-drafted) {
+    background-color: pdz.color(primary-container-low);
+    transform: translateY(-1px);
   }
 
-  .tier__label {
-    background-color: pdz.color(primary);
-    color: pdz.color(on-primary);
-    font-family: var(--pdz-font-display);
-    font-weight: 700;
-    @include text(label);
-    padding: pdz.space(2xs) pdz.space(sm);
-    border-radius: pdz.shape(corner-xs);
-    min-width: 3.5rem;
-    text-align: center;
-    flex-shrink: 0;
+  &:active:not(.is-drafted) {
+    transform: scale(0.98);
+  }
+
+  &.is-drafted {
+    cursor: default;
+    opacity: 0.75;
+
+    pdz-sprite {
+      filter: grayscale(100%);
+      opacity: 0.65;
+    }
   }
 }

@@ -1,11 +1,25 @@
 import { inject, Injectable, signal } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
-import { filter, map, mergeMap, switchMap, throwError } from 'rxjs';
+import {
+  catchError,
+  filter,
+  map,
+  mergeMap,
+  Observable,
+  of,
+  switchMap,
+  throwError,
+} from 'rxjs';
 import { LeagueTier } from './tier-list.model';
 import { ApiService } from '@pdz/core/services/api.service';
 import { LeagueZoneService } from '../league-zone/league-zone.service';
 
 const ROOTPATH = 'tier-lists';
+
+export type DraftedDivisions = {
+  divisions: { [division: string]: { pokemonId: string; teamId: string }[] };
+  selected?: string;
+};
 
 @Injectable({
   providedIn: 'root',
@@ -66,6 +80,43 @@ export class TierListService {
           draftCount?: { min: number; max: number };
         }>(`${ROOTPATH}/${info.tierListId}`);
       }),
+    );
+  }
+
+  getDraftedByDivision(): Observable<DraftedDivisions> {
+    if (!this.leagueZoneService.tournamentSlug()) return of({ divisions: {} });
+
+    return this.leagueZoneService.getTeamsByDraft().pipe(
+      map((data) => {
+        const divisions: DraftedDivisions['divisions'] = {};
+        const routedDraftSlug = this.leagueZoneService.draftSlug();
+        let routed: string | undefined;
+        let coached: string | undefined;
+
+        // A draft-scoped route is bound to one pool, so it gets that pool's
+        // takings alone — there is nothing for the viewer to switch between.
+        const groups = routedDraftSlug
+          ? data.drafts.filter((group) => group.draftSlug === routedDraftSlug)
+          : data.drafts;
+
+        for (const group of groups) {
+          if (group.draftSlug === routedDraftSlug) routed = group.name;
+
+          const held = (divisions[group.name] ??= []);
+          for (const team of group.teams) {
+            if (team.isCoach) coached = group.name;
+            for (const pokemon of team.draft) {
+              held.push({ pokemonId: pokemon.id, teamId: team.id });
+            }
+          }
+        }
+
+        return {
+          divisions,
+          selected: routed ?? coached ?? Object.keys(divisions)[0],
+        };
+      }),
+      catchError(() => of({ divisions: {} })),
     );
   }
 

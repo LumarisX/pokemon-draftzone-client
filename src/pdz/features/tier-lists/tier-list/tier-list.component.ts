@@ -93,7 +93,9 @@ export class TierListComponent implements OnInit, OnDestroy {
   readonly header = input<string>();
 
   localDraftedIds = input<string[]>([]);
-  drafted = signal<{ [division: string]: { pokemonId: string }[] }>({});
+  drafted = signal<{
+    [division: string]: { pokemonId: string; teamId?: string }[];
+  }>({});
   tiers = signal<LeagueTier[] | undefined>(undefined);
   ruleset = signal<string | undefined>(undefined);
   tierListName = signal<string>('Tier List');
@@ -233,14 +235,17 @@ export class TierListComponent implements OnInit, OnDestroy {
       .getTierList()
       .pipe(first())
       .subscribe((data) => {
-        this.drafted.set(data.divisions);
         this.tiers.set(data.tierList);
         this.ruleset.set(data.ruleset);
         if (data.name) this.tierListName.set(data.name);
-        const divisionNames = Object.keys(data.divisions);
-        if (divisionNames.length > 0) {
-          this.selectedDivision.set(divisionNames[0]);
-        }
+      });
+
+    this.tierListService
+      .getDraftedByDivision()
+      .pipe(first())
+      .subscribe(({ divisions, selected }) => {
+        this.drafted.set(divisions);
+        if (selected) this.selectedDivision.set(selected);
       });
   }
 
@@ -248,8 +253,9 @@ export class TierListComponent implements OnInit, OnDestroy {
     this.wsService
       .on<{
         pick: {
-          division: string;
+          draft: string;
           pokemon: League.LeaguePokemon;
+          team: { id: string; name: string };
         };
         team: {
           id: string;
@@ -261,17 +267,15 @@ export class TierListComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe((data) => {
         const currentDrafted = this.drafted();
-        if (currentDrafted[data.pick.division]) {
-          const updatedDivisionDrafts = [
-            ...currentDrafted[data.pick.division],
-            { pokemonId: data.pick.pokemon.id },
-          ];
+        const division = data.pick.draft;
 
-          this.drafted.set({
-            ...currentDrafted,
-            [data.pick.division]: updatedDivisionDrafts,
-          });
-        }
+        this.drafted.set({
+          ...currentDrafted,
+          [division]: [
+            ...(currentDrafted[division] ?? []),
+            { pokemonId: data.pick.pokemon.id, teamId: data.pick.team.id },
+          ],
+        });
       });
   }
 
