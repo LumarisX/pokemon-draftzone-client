@@ -64,6 +64,7 @@ export interface CalcResponse {
     earliestTurn?: number;
     likeliestTurn?: number;
     unresolved: number;
+    unexpanded: number;
     summary: string;
   };
   meta?: {
