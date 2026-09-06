@@ -1,8 +1,8 @@
 <div class="dialog-body">
-  @if (loading) {
+  @if (loading()) {
     <div class="trade-form__loading"><pdz-loading></pdz-loading></div>
-  } @else if (loadError) {
-    <p class="trade-form__error">{{ loadError }}</p>
+  } @else if (loadError()) {
+    <p class="trade-form__error">{{ loadError() }}</p>
   } @else {
     <div class="trade-form">
       <section class="trade-side">

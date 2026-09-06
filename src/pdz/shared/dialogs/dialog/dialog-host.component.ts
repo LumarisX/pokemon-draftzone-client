@@ -1,6 +1,5 @@
 import { NgComponentOutlet } from '@angular/common';
 import {
-  ChangeDetectionStrategy,
   Component,
   Injector,
   Type,
@@ -27,7 +26,6 @@ import { DialogRef } from './dialog.service';
       <ng-container *ngComponentOutlet="component(); injector: injector" />
     </pdz-dialog>
   `,
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DialogHostComponent {
   component = input.required<Type<unknown>>();

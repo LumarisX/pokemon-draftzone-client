@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject, OnInit, signal } from '@angular/core';
 import { DraftPokemon } from '@pdz/features/drafts/draft.model';
 import {
   DIALOG_DATA,
@@ -56,8 +56,8 @@ export class TradeProposeDialogComponent implements OnInit {
   ) as DialogRef<TradeProposeDialogResult>;
   data = inject<TradeProposeDialogData>(DIALOG_DATA);
 
-  loading = true;
-  loadError = '';
+  loading = signal(true);
+  loadError = signal('');
 
   /** The coach's own roster, minus anything already staged to send. */
   sendOptions$ = new BehaviorSubject<DraftPokemon[]>([]);
@@ -84,8 +84,8 @@ export class TradeProposeDialogComponent implements OnInit {
       ),
     }).subscribe(({ tierList: data, teams }) => {
       if (!data) {
-        this.loadError = 'Could not load the tier list.';
-        this.loading = false;
+        this.loadError.set('Could not load the tier list.');
+        this.loading.set(false);
         return;
       }
 
@@ -118,7 +118,7 @@ export class TradeProposeDialogComponent implements OnInit {
       this.freeAgents = freeAgents.sort((a, b) => a.name.localeCompare(b.name));
 
       this.refreshOptions();
-      this.loading = false;
+      this.loading.set(false);
     });
   }
 
@@ -146,7 +146,7 @@ export class TradeProposeDialogComponent implements OnInit {
   }
 
   get canSubmit(): boolean {
-    return !this.loading && (this.send.length > 0 || this.receive.length > 0);
+    return !this.loading() && (this.send.length > 0 || this.receive.length > 0);
   }
 
   addSend(option: DraftPokemon): void {
