@@ -18,6 +18,7 @@ import {
   CalcSideInput,
   ForcedOutcome,
 } from './calculator.model';
+import { CALC_PRESETS, CalcPreset, CalcPresetSide } from './calculator.presets';
 import { CalculatorService } from './calculator.service';
 
 interface SideForm {
@@ -106,21 +107,20 @@ export class DebugCalculatorComponent {
     'Fairy',
   ];
 
-  readonly rulesets = signal<{ name: string; id: string }[]>([]);
-  readonly ruleset = signal('Gen9 NatDex');
-  readonly move = signal('Blaze Kick');
-  readonly weather = signal('');
-  readonly terrain = signal('');
-  readonly turns = signal(10);
-  readonly forcedHit = signal<ForcedOutcome>('roll');
-  readonly forcedCrit = signal<ForcedOutcome>('roll');
+  readonly presets = CALC_PRESETS;
 
-  readonly attacker = signal<SideForm>(
-    this.blankSide('Blaziken', 'Adamant', 'atk 252'),
-  );
-  readonly defender = signal<SideForm>(
-    this.blankSide('Toxapex', '', 'hp 252, def 252'),
-  );
+  readonly rulesets = signal<{ name: string; id: string }[]>([]);
+  readonly preset = signal(CALC_PRESETS[0].name);
+  readonly ruleset = signal(CALC_PRESETS[0].ruleset ?? 'Gen9 NatDex');
+  readonly move = signal(CALC_PRESETS[0].move);
+  readonly weather = signal(CALC_PRESETS[0].weather ?? '');
+  readonly terrain = signal(CALC_PRESETS[0].terrain ?? '');
+  readonly turns = signal(CALC_PRESETS[0].turns ?? 10);
+  readonly forcedHit = signal<ForcedOutcome>(CALC_PRESETS[0].hit ?? 'roll');
+  readonly forcedCrit = signal<ForcedOutcome>(CALC_PRESETS[0].crit ?? 'roll');
+
+  readonly attacker = signal<SideForm>(toSideForm(CALC_PRESETS[0].attacker));
+  readonly defender = signal<SideForm>(toSideForm(CALC_PRESETS[0].defender));
 
   readonly result = signal<CalcResponse | undefined>(undefined);
   readonly error = signal<string | undefined>(undefined);
@@ -134,20 +134,27 @@ export class DebugCalculatorComponent {
     });
   }
 
-  private blankSide(species: string, nature: string, evs: string): SideForm {
-    return {
-      species,
-      level: 100,
-      ability: '',
-      item: '',
-      nature,
-      evs,
-      boosts: '',
-      status: '',
-      hp: '',
-      teraType: '',
-      terastallized: false,
-    };
+  applyPreset(name: string) {
+    const preset = this.presets.find((entry) => entry.name === name);
+    if (!preset) return;
+
+    this.preset.set(preset.name);
+    this.ruleset.set(preset.ruleset ?? this.ruleset());
+    this.move.set(preset.move);
+    this.weather.set(preset.weather ?? '');
+    this.terrain.set(preset.terrain ?? '');
+    this.turns.set(preset.turns ?? 10);
+    this.forcedHit.set(preset.hit ?? 'roll');
+    this.forcedCrit.set(preset.crit ?? 'roll');
+    this.attacker.set(toSideForm(preset.attacker));
+    this.defender.set(toSideForm(preset.defender));
+    this.result.set(undefined);
+    this.error.set(undefined);
+  }
+
+  presetDescription(): string | undefined {
+    return this.presets.find((entry) => entry.name === this.preset())
+      ?.description;
   }
 
   patchAttacker<K extends keyof SideForm>(key: K, value: SideForm[K]) {
@@ -216,6 +223,22 @@ export class DebugCalculatorComponent {
   inputJson(): string {
     return JSON.stringify(this.result()?.input, null, 2);
   }
+}
+
+function toSideForm(side: CalcPresetSide): SideForm {
+  return {
+    species: side.species,
+    level: side.level ?? 100,
+    ability: side.ability ?? '',
+    item: side.item ?? '',
+    nature: side.nature ?? '',
+    evs: side.evs ?? '',
+    boosts: side.boosts ?? '',
+    status: side.status ?? '',
+    hp: side.hp ?? '',
+    teraType: side.teraType ?? '',
+    terastallized: side.terastallized ?? false,
+  };
 }
 
 function parseSpread(

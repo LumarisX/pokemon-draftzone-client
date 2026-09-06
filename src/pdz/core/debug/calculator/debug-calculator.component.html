@@ -10,6 +10,31 @@
     </header>
 
     <section class="calc__form">
+      <div class="calc__row calc__row--preset">
+        <label
+          pdz-field
+          label="Preset"
+          [hint]="presetDescription() ?? 'Loads a saved scenario'"
+          class="calc__control"
+        >
+          <pdz-select
+            aria-label="Preset"
+            searchable
+            [ngModel]="preset()"
+            (ngModelChange)="applyPreset($event)"
+          >
+            @for (option of presets; track option.name) {
+              <pdz-option
+                [value]="option.name"
+                [label]="option.name"
+                [group]="option.group"
+                [description]="option.description"
+              />
+            }
+          </pdz-select>
+        </label>
+      </div>
+
       <div class="calc__row">
         <label pdz-field label="Ruleset" class="calc__control">
           <pdz-select

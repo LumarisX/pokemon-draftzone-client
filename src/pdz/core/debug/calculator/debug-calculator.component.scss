@@ -49,6 +49,11 @@
   }
 }
 
+.calc__row--preset {
+  padding-block-end: pdz.space(md);
+  border-block-end: 1px solid pdz.color(outline-variant);
+}
+
 .calc__control--narrow {
   flex: 0 1 7rem;
 }
