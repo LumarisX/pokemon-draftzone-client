@@ -15,12 +15,10 @@ export const routes: Routes = [
   {
     path: 'replay-analyzer',
     component: ReplayComponent,
-    data: { version: 'v1' },
   },
   {
     path: 'replay-analyzer-v2',
-    component: ReplayComponent,
-    data: { version: 'v2' },
+    redirectTo: 'replay-analyzer',
   },
   {
     path: 'time-converter',

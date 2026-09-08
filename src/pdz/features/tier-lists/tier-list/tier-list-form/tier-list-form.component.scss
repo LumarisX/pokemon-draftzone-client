@@ -12,6 +12,18 @@
   gap: pdz.space(md);
 }
 
+.tier-main {
+  flex-direction: column;
+
+  @include respond-above(medium) {
+    flex-direction: row;
+  }
+}
+
+.tiers-container {
+  min-height: 0;
+}
+
 // ─── Toolbar (form-specific) ──────────────────────────────────────────────
 
 .toolbar {
@@ -37,14 +49,20 @@
   display: flex;
   flex-direction: column;
   gap: 0;
-  min-width: 280px;
-  max-width: 320px;
-  flex-shrink: 0;
-  padding: pdz.space(md);
-
+  min-width: 0;
+  flex: 0 0 40%;
+  padding: pdz.space(sm);
   border-radius: pdz.shape(corner-md);
   background-color: pdz.color(surface-container-low);
   box-shadow: var(--pdz-level-2);
+
+  @include respond-above(medium) {
+    flex: 0 0 auto;
+    min-width: 280px;
+    max-width: 320px;
+    padding: pdz.space(md);
+  }
+
   .tier--null {
     min-height: 0;
   }
@@ -87,7 +105,11 @@
 }
 
 .tier {
-  min-width: 280px;
+  min-width: min(280px, 72vw);
+
+  @include respond-above(medium) {
+    min-width: 280px;
+  }
 
   &__header {
     padding-block: pdz.space(2xs);
@@ -171,7 +193,11 @@
     border: 2px solid pdz.color(secondary-accent);
 
     .tier__pokemon-list {
-      min-height: 150px;
+      min-height: 0;
+
+      @include respond-above(medium) {
+        min-height: 150px;
+      }
     }
   }
 
@@ -179,7 +205,11 @@
     border: 2px solid pdz.color(danger);
 
     .tier__pokemon-list {
-      min-height: 80px;
+      min-height: 0;
+
+      @include respond-above(medium) {
+        min-height: 80px;
+      }
     }
   }
 }

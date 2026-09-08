@@ -43,6 +43,7 @@ import {
 import { ReplayService } from './replay.service';
 
 const DETAILS_STORAGE_KEY = 'pdz.replayAnalyzer.showAdvancedDetails';
+const VERSION_STORAGE_KEY = 'pdz.replayAnalyzer.version';
 
 type ReplayStatus = 'idle' | 'loading' | 'ready' | 'error';
 
@@ -121,8 +122,9 @@ export class ReplayComponent {
     );
   });
 
-  private readonly version: ReplayAnalyzerVersion =
-    this.route.snapshot.data['version'] === 'v2' ? 'v2' : 'v1';
+  protected readonly version = signal<ReplayAnalyzerVersion>(
+    readVersionPreference(),
+  );
 
   protected readonly replayURI = signal('');
   protected readonly analyzedURI = signal('');
@@ -300,7 +302,9 @@ export class ReplayComponent {
 
     this.analyzedURI.set(replayURI);
 
-    const cached = this.history.cached(replayURI);
+    const version = this.version();
+
+    const cached = this.history.cached(replayURI, version);
     if (cached) {
       this.analysis.set(cached);
       this.status.set('ready');
@@ -310,7 +314,7 @@ export class ReplayComponent {
     this.status.set('loading');
 
     const analysis$: Observable<{ analysis: ReplayAnalysis }> =
-      this.version === 'v2'
+      version === 'v2'
         ? this.replayService.analyzeReplayV2(replayURI)
         : this.replayService.analyzeReplay(replayURI);
 
@@ -318,7 +322,7 @@ export class ReplayComponent {
       next: ({ analysis }) => {
         this.analysis.set(analysis);
         this.status.set('ready');
-        this.history.record(replayURI, analysis);
+        this.history.record(replayURI, analysis, version);
       },
       error: () => {
         this.analysis.set(undefined);
@@ -330,6 +334,20 @@ export class ReplayComponent {
   protected setShowDetails(enabled: boolean): void {
     this.showDetails.set(enabled);
     writeDetailsPreference(enabled);
+  }
+
+  protected setVersion(version: ReplayAnalyzerVersion | undefined): void {
+    if (!version || version === this.version()) {
+      return;
+    }
+
+    this.version.set(version);
+    writeVersionPreference(version);
+
+    const analyzed = this.analyzedURI();
+    if (analyzed && this.status() !== 'idle') {
+      this.run(analyzed);
+    }
   }
 }
 
@@ -358,6 +376,22 @@ function readDetailsPreference(): boolean {
 function writeDetailsPreference(enabled: boolean): void {
   try {
     localStorage.setItem(DETAILS_STORAGE_KEY, String(enabled));
+  } catch {
+    return;
+  }
+}
+
+function readVersionPreference(): ReplayAnalyzerVersion {
+  try {
+    return localStorage.getItem(VERSION_STORAGE_KEY) === 'v1' ? 'v1' : 'v2';
+  } catch {
+    return 'v2';
+  }
+}
+
+function writeVersionPreference(version: ReplayAnalyzerVersion): void {
+  try {
+    localStorage.setItem(VERSION_STORAGE_KEY, version);
   } catch {
     return;
   }

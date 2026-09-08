@@ -29,81 +29,79 @@
   @include pdz.text(body-sm);
 }
 
+.tb__action--active {
+  --pdz-btn-accent: #{pdz.color(on-primary-container)};
+  background: pdz.color(primary-container-low);
+}
+
 .tb__status--error {
   color: pdz.color(warning);
 }
 
-.tb__roster {
+.tb__slots {
   display: flex;
   flex: 0 0 auto;
-  align-items: center;
+  align-items: stretch;
   gap: pdz.space(2xs);
-  min-height: 3.75rem;
+  margin: 0;
   padding: pdz.space(2xs) pdz.space(sm);
+  list-style: none;
   overflow-x: auto;
   overflow-y: hidden;
+  scroll-snap-type: x proximity;
   border-bottom: 1px solid pdz.color(outline-variant);
   background: pdz.color(surface-container-lowest);
 }
 
-.tb__roster-slot {
-  position: relative;
+.tb__slot {
+  width: 4.5rem;
+  flex-shrink: 0;
+  scroll-snap-align: start;
+}
+
+.tb__slot-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: pdz.space(3xs);
+  min-width: 0;
+}
+
+.tb__slot-name {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: pdz.color(on-surface-variant);
+  @include pdz.text(label);
+}
+
+.tb__slot.pdz-card--selected .tb__slot-name {
+  color: pdz.color(on-surface);
+}
+
+.tb__add {
   flex: 0 0 auto;
-
-  &:hover .tb__roster-remove,
-  &:focus-within .tb__roster-remove {
-    opacity: 1;
-  }
+  padding: pdz.space(2xs) pdz.space(sm);
+  border-bottom: 1px solid pdz.color(outline-variant);
 }
 
-.tb__roster-button {
-  display: grid;
-  place-items: center;
-  padding: pdz.space(3xs);
-  border: 1px solid transparent;
-  border-radius: pdz.shape(corner-sm);
-  background: transparent;
-  cursor: pointer;
-  transition:
-    border-color pdz.duration(fast) pdz.easing(standard),
-    background pdz.duration(fast) pdz.easing(standard);
-
-  &:hover {
-    background: pdz.color(surface-container-low);
-  }
-
-  &:focus-visible {
-    outline: 2px solid pdz.color(primary-border);
-    outline-offset: 1px;
-  }
-}
-
-.tb__roster-button--active {
-  border-color: pdz.color(primary-border);
-  background: pdz.color(primary-container-low);
-}
-
-.tb__roster-remove {
-  position: absolute;
-  inset-block-start: 0;
-  inset-inline-end: 0;
-  opacity: 0;
-  transition: opacity pdz.duration(fast) pdz.easing(standard);
-}
-
-.tb__roster-actions {
+.tb__active {
   display: flex;
   flex: 0 0 auto;
-  gap: pdz.space(3xs);
-  margin-inline-start: auto;
-  padding-inline-start: pdz.space(2xs);
-  position: sticky;
-  inset-inline-end: 0;
-  background: pdz.color(surface-container-lowest);
+  align-items: center;
+  gap: pdz.space(2xs);
+  padding-bottom: pdz.space(2xs);
+  border-bottom: 1px solid pdz.color(outline-variant);
 }
 
-.tb__action--active {
-  border-color: pdz.color(primary-border);
+.tb__active-name {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  @include pdz.text(card-title);
 }
 
 .tb__body {
@@ -125,36 +123,6 @@
   flex-direction: column;
   flex: 1 1 auto;
   min-height: 0;
-}
-
-.tb__picker {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(6.5rem, 1fr));
-  gap: pdz.space(2xs);
-}
-
-.tb__pick {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: pdz.space(3xs);
-  position: relative;
-}
-
-.tb__pick-name {
-  text-align: center;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  max-width: 100%;
-  @include pdz.text(body-sm);
-}
-
-.tb__pick-check {
-  position: absolute;
-  inset-block-start: pdz.space(3xs);
-  inset-inline-end: pdz.space(3xs);
-  color: pdz.color(success);
 }
 
 .tb__export textarea {

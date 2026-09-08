@@ -1,8 +1,6 @@
 @use "pdz-theming" as pdz;
 @use "mixins" as *;
 
-$navbar-height: 3.5rem;
-
 :host {
   display: block;
   padding: pdz.space(md);
@@ -28,7 +26,7 @@ $navbar-height: 3.5rem;
 
   &__nav {
     position: fixed;
-    inset-block: $navbar-height 0;
+    inset-block: var(--pdz-navbar-height) 0;
     inset-inline-start: 0;
     z-index: pdz.z(drawer);
     width: min(18rem, 85vw);
@@ -57,7 +55,7 @@ $navbar-height: 3.5rem;
 
   &__nav-close {
     position: fixed;
-    top: calc(#{$navbar-height} + #{pdz.space(xs)});
+    top: calc(var(--pdz-navbar-height) + #{pdz.space(xs)});
     inset-inline-start: calc(min(18rem, 85vw) - 3rem);
     z-index: pdz.z(drawer-control);
     display: none;

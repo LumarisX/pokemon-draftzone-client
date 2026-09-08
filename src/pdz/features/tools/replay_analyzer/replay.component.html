@@ -44,6 +44,22 @@
       </span>
     </p>
 
+    <div class="replay__version">
+      <span class="replay__version-label" id="replay-version-label">
+        Analyzer
+      </span>
+      <pdz-segmented
+        size="sm"
+        variant="tonal"
+        aria-labelledby="replay-version-label"
+        [value]="version()"
+        (valueChange)="setVersion($event)"
+      >
+        <pdz-segmented-option value="v2" label="Current" />
+        <pdz-segmented-option value="v1" label="Legacy" />
+      </pdz-segmented>
+    </div>
+
     <div
       class="replay__layout"
       [class.replay__layout--with-history]="historyEntries().length"
@@ -425,7 +441,11 @@
                                         : 'neutral'
                                   "
                                 >
-                                  {{ pokemon.status | titlecase }}
+                                  {{
+                                    pokemon.status === "brought"
+                                      ? "Benched"
+                                      : (pokemon.status | titlecase)
+                                  }}
                                 </pdz-chip>
 
                                 <dl class="replay__mon-score">

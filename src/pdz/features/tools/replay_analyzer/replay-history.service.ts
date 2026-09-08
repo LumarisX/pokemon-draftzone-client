@@ -1,9 +1,14 @@
 import { Injectable, signal } from '@angular/core';
-import { ReplayAnalysis } from './replay.interface';
+import { ReplayAnalysis, ReplayAnalyzerVersion } from './replay.interface';
 
 const STORAGE_KEY = 'pdz.replayAnalyzer.history';
 const MAX_ENTRIES = 500;
 const MAX_CACHED_ANALYSES = 10;
+
+type CachedAnalysis = {
+  version: ReplayAnalyzerVersion;
+  analysis: ReplayAnalysis;
+};
 
 export type ReplayHistoryEntry = {
   uri: string;
@@ -23,22 +28,29 @@ export function replayIdFromURI(uri: string): string {
 @Injectable({ providedIn: 'root' })
 export class ReplayHistoryService {
   private readonly store = signal<ReplayHistoryEntry[]>(read());
-  private readonly analyses = new Map<string, ReplayAnalysis>();
+  private readonly analyses = new Map<string, CachedAnalysis>();
 
   readonly entries = this.store.asReadonly();
 
-  cached(uri: string): ReplayAnalysis | undefined {
+  cached(
+    uri: string,
+    version: ReplayAnalyzerVersion = 'v2',
+  ): ReplayAnalysis | undefined {
     const key = uri.trim();
-    const analysis = this.analyses.get(key);
-    if (!analysis) {
+    const cached = this.analyses.get(key);
+    if (!cached || cached.version !== version) {
       return undefined;
     }
     this.analyses.delete(key);
-    this.analyses.set(key, analysis);
-    return analysis;
+    this.analyses.set(key, cached);
+    return cached.analysis;
   }
 
-  record(uri: string, analysis: ReplayAnalysis): void {
+  record(
+    uri: string,
+    analysis: ReplayAnalysis,
+    version: ReplayAnalyzerVersion = 'v2',
+  ): void {
     const entry: ReplayHistoryEntry = {
       uri: uri.trim(),
       id: replayIdFromURI(uri),
@@ -47,7 +59,7 @@ export class ReplayHistoryService {
       analyzedAt: Date.now(),
     };
 
-    this.analyses.set(entry.uri, analysis);
+    this.analyses.set(entry.uri, { version, analysis });
     while (this.analyses.size > MAX_CACHED_ANALYSES) {
       const oldest = this.analyses.keys().next();
       if (oldest.done) {

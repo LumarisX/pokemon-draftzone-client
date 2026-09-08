@@ -63,6 +63,19 @@
     font-weight: pdz.font-weight(bold);
   }
 
+  &__version {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: pdz.space(sm);
+    margin-inline: auto;
+  }
+
+  &__version-label {
+    color: pdz.color(on-surface-variant);
+    @include pdz.text(field-label);
+  }
+
   &__layout {
     display: grid;
     align-items: start;

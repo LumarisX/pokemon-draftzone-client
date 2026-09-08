@@ -2,6 +2,13 @@
 
 $panel-transition: pdz.duration(base) pdz.easing(standard);
 
+$fab-size: 2.75rem;
+$fab-gap: pdz.space(sm);
+$fab-inset: pdz.space(lg);
+$fab-stack-clearance: calc(
+  #{$fab-inset} * 2 + #{$fab-size} * 2 + #{$fab-gap}
+);
+
 :host {
   position: relative;
   display: flex;
@@ -84,17 +91,26 @@ $panel-transition: pdz.duration(base) pdz.easing(standard);
   @include pdz.respond-above(medium) {
     padding: pdz.space(lg);
   }
+
+  &--fabs {
+    padding-block-end: calc(
+      #{$fab-stack-clearance} + env(safe-area-inset-bottom)
+    );
+
+    @include pdz.respond-above(medium) {
+      padding-block-end: pdz.space(lg);
+    }
+  }
 }
 
 .matchup__panel {
-  position: absolute;
-  top: 0;
-  right: 0;
+  position: fixed;
+  inset-block: var(--pdz-navbar-height) 0;
+  inset-inline-end: 0;
   z-index: pdz.z(panel);
   display: flex;
   flex-direction: column;
   min-width: 0;
-  height: 100%;
   overflow: hidden;
   visibility: hidden;
   pointer-events: none;
@@ -106,6 +122,8 @@ $panel-transition: pdz.duration(base) pdz.easing(standard);
 
   @include pdz.respond-above(medium) {
     position: relative;
+    inset: auto;
+    height: 100%;
     z-index: auto;
     visibility: visible;
     pointer-events: auto;
@@ -176,21 +194,43 @@ $panel-transition: pdz.duration(base) pdz.easing(standard);
 }
 
 .matchup__fabs {
-  position: absolute;
-  right: pdz.space(md);
-  bottom: pdz.space(lg);
+  position: fixed;
+  inset-inline-end: calc(#{$fab-inset} + env(safe-area-inset-right));
+  inset-block-end: calc(#{$fab-inset} + env(safe-area-inset-bottom));
   z-index: pdz.z(fab);
   display: flex;
   flex-direction: column;
-  gap: pdz.space(sm);
+  gap: $fab-gap;
   transition:
     opacity $panel-transition,
     transform $panel-transition;
+
+  @include pdz.respond-above(medium) {
+    position: absolute;
+    inset-inline-end: $fab-inset;
+    inset-block-end: $fab-inset;
+  }
 
   &--hidden {
     opacity: 0;
     transform: scale(0.8);
     pointer-events: none;
+  }
+}
+
+.matchup__fab {
+  box-shadow: var(--pdz-level-3);
+  transition:
+    background-color pdz.duration(base) pdz.easing(standard),
+    color pdz.duration(base) pdz.easing(standard),
+    box-shadow pdz.duration(base) pdz.easing(standard);
+
+  &:hover:not(:disabled) {
+    box-shadow: var(--pdz-level-4);
+  }
+
+  &:active:not(:disabled) {
+    box-shadow: var(--pdz-level-1);
   }
 }
 

@@ -89,6 +89,7 @@ export type ReplayPlayer = {
   win: boolean;
   stats: {
     switches: number;
+    brought?: number;
   };
   total: {
     kills: number;

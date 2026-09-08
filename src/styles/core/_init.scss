@@ -17,6 +17,8 @@
     --pdz-screen-size-medium: #{bp-tokens.$screen-size-medium};
     --pdz-screen-size-large: #{bp-tokens.$screen-size-large};
 
+    --pdz-navbar-height: 3.5rem;
+
     // Core color palette
     @each $token-name, $token-value in color-tokens.$core-tokens {
       --pdz-color-#{$token-name}: #{$token-value};

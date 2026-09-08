@@ -62,7 +62,7 @@
       }
     </div>
 
-    <div class="matchup__body">
+    <div class="matchup__body" [class.matchup__body--fabs]="panelEnabled">
       <pdz-matchup [matchupData]="matchupData"></pdz-matchup>
     </div>
   </div>
@@ -109,8 +109,10 @@
       @if (notesEnabled) {
         <button
           pdz-button
+          class="matchup__fab"
           icon="edit_note"
           iconOnly
+          pill
           size="lg"
           color="neutral"
           aria-label="Open notes"
@@ -120,8 +122,10 @@
       @if (config.teambuilder) {
         <button
           pdz-button
+          class="matchup__fab"
           icon="build"
           iconOnly
+          pill
           size="lg"
           color="neutral"
           aria-label="Open teambuilder"

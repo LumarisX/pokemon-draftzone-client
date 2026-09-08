@@ -1,6 +1,7 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  ElementRef,
   computed,
   effect,
   inject,
@@ -8,11 +9,15 @@ import {
   output,
   signal,
   untracked,
+  viewChildren,
 } from '@angular/core';
 import { rxResource } from '@angular/core/rxjs-interop';
+import { BehaviorSubject } from 'rxjs';
 import { exportTeam } from '@pdz/sets';
+import type { DraftPokemon } from '@pdz/features/drafts/draft.model';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 import { CardComponent } from '@pdz/shared/data/card/card.component';
+import { PokemonSearchComponent } from '@pdz/shared/dropdowns/pokemon-search/pokemon-search.component';
 import { EmptyStateComponent } from '@pdz/shared/feedback/empty-state/empty-state.component';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
@@ -29,7 +34,7 @@ import { SetSpeedComponent } from './set-speed.component';
 import { SetStatsComponent } from './set-stats.component';
 
 type View = 'details' | 'moves' | 'stats' | 'speed';
-type Panel = 'set' | 'add' | 'export';
+type Panel = 'set' | 'export';
 
 @Component({
   selector: 'pdz-teambuilder',
@@ -44,6 +49,7 @@ type Panel = 'set' | 'add' | 'export';
     FieldComponent,
     IconComponent,
     InputDirective,
+    PokemonSearchComponent,
     SegmentedComponent,
     SegmentedOptionComponent,
     SetDetailsComponent,
@@ -61,7 +67,11 @@ export class TeambuilderComponent {
   private readonly service = inject(TeambuilderService);
 
   protected readonly view = signal<View>('details');
-  protected readonly panel = signal<Panel>('add');
+  protected readonly panel = signal<Panel>('set');
+
+  protected readonly rosterOptions$ = new BehaviorSubject<DraftPokemon[]>([]);
+
+  private readonly slotEls = viewChildren<ElementRef<HTMLElement>>('slot');
 
   private readonly speciesRequest = computed(() => {
     const set = this.store.activeSet();
@@ -85,13 +95,17 @@ export class TeambuilderComponent {
 
   protected readonly opponent = computed(() => this.context().opponent ?? []);
 
-  protected readonly roster = computed(() => {
-    const taken = new Set(this.store.sets().map((set) => set.id));
-    return this.context().roster.map((entry) => ({
-      ...entry,
-      added: taken.has(entry.id),
-    }));
-  });
+  protected readonly hasRoster = computed(
+    () => this.context().roster.length > 0,
+  );
+
+  protected readonly takenIds = computed(() =>
+    this.store.sets().map((set) => set.id),
+  );
+
+  protected readonly activeSprite = computed(
+    () => this.rosterSprites()[this.store.activeIndex()],
+  );
 
   protected readonly exportText = computed(() => {
     const sets = this.store.sets();
@@ -115,6 +129,7 @@ export class TeambuilderComponent {
   constructor() {
     effect(() => {
       const context = this.context();
+      this.rosterOptions$.next([...context.roster]);
       void untracked(() =>
         this.store.load(
           { type: context.type, id: context.id },
@@ -128,10 +143,21 @@ export class TeambuilderComponent {
       const data = this.species.value();
       if (data) untracked(() => this.store.rememberSpecies(data));
     });
+
+    effect(() => {
+      const slot = this.slotEls()[this.store.activeIndex()];
+      slot?.nativeElement.scrollIntoView({
+        block: 'nearest',
+        inline: 'nearest',
+      });
+    });
   }
 
-  protected addFromRoster(id: string, nickname?: string): void {
-    const index = this.store.addSet(id, nickname ? { nickname } : {});
+  protected addFromRoster(entry: DraftPokemon): void {
+    const index = this.store.addSet(
+      entry.id,
+      entry.nickname ? { nickname: entry.nickname } : {},
+    );
     this.store.activeIndex.set(index);
     this.panel.set('set');
     this.view.set('details');
@@ -142,11 +168,11 @@ export class TeambuilderComponent {
     this.panel.set('set');
   }
 
-  protected removeSet(index: number, event: Event): void {
-    event.stopPropagation();
-    this.store.removeSet(index);
-    if (this.store.sets().length === 0) this.panel.set('add');
+  protected removeActive(): void {
+    this.store.removeSet(this.store.activeIndex());
   }
 
-
+  protected toggleExport(): void {
+    this.panel.set(this.panel() === 'export' ? 'set' : 'export');
+  }
 }

@@ -67,7 +67,7 @@ export class ReplayChartComponent implements AfterViewInit, OnChanges {
     }
 
     const largestTeamSize = data.reduce(
-      (maxTeamSize, player) => Math.max(maxTeamSize, player.team.length),
+      (maxTeamSize, player) => Math.max(maxTeamSize, broughtCount(player)),
       0,
     );
 
@@ -153,7 +153,12 @@ export class ReplayChartComponent implements AfterViewInit, OnChanges {
       .append('g')
       .attr('class', 'replay-chart__x-axis')
       .attr('transform', 'translate(0,' + this.graphHeight + ')')
-      .call(d3.axisBottom(x));
+      .call(
+        d3
+          .axisBottom(x)
+          .tickValues(x.ticks(Math.min(maxTurn, 10)).filter(Number.isInteger))
+          .tickFormat(d3.format('d')),
+      );
 
     this.graph
       .append('text')
@@ -258,4 +263,12 @@ export class ReplayChartComponent implements AfterViewInit, OnChanges {
       .attr('font-size', '12px')
       .text((d: string | undefined) => d ?? 'Unknown');
   }
+}
+
+function broughtCount(player: ReplayPlayer): number {
+  if (player.stats.brought) {
+    return player.stats.brought;
+  }
+  const played = player.team.filter((mon) => mon.status !== 'brought').length;
+  return played || player.team.length;
 }
