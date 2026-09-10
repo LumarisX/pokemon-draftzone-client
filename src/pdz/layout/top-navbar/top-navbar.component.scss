@@ -40,6 +40,15 @@
   display: none;
 }
 
+.navbar .shop-link {
+  padding-inline: 0;
+  aspect-ratio: 1;
+}
+
+.shop-label {
+  display: none;
+}
+
 @include respond-above(medium) {
   .mobile-menu {
     display: none;
@@ -47,5 +56,14 @@
 
   .desktop-tabs {
     display: block;
+  }
+
+  .navbar .shop-link {
+    padding-inline: pdz.space(lg);
+    aspect-ratio: auto;
+  }
+
+  .shop-label {
+    display: inline;
   }
 }
