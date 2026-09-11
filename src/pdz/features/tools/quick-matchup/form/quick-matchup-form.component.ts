@@ -28,6 +28,7 @@ import { getNameByPid } from '@pdz/shared/data/namedex';
 import { FormatSelectComponent } from '@pdz/shared/dropdowns/format-select/format.component';
 import { RulesetSelectComponent } from '@pdz/shared/dropdowns/ruleset-select/ruleset.component';
 import { BehaviorSubject, filter, Subject, take, takeUntil } from 'rxjs';
+import { DEFAULT_RULESET } from '@pdz/core/rulesets';
 
 @Component({
   selector: 'pdz-quick-matchup-form',
@@ -192,7 +193,7 @@ export class QuickForm extends FormGroup<{
           nonNullable: true,
           validators: Validators.required,
         }),
-        ruleset: new FormControl(options.ruleset ?? 'Gen9 NatDex', {
+        ruleset: new FormControl(options.ruleset ?? DEFAULT_RULESET, {
           nonNullable: true,
           validators: Validators.required,
         }),

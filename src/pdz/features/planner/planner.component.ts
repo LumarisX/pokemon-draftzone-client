@@ -44,6 +44,7 @@ import { PlannerSettingsComponent } from './settings/settings.component';
 import { PlannerSummaryComponent } from './summary/summary.component';
 import { PlannerTeamComponent } from './team/team.component';
 import { PlannerTypechartComponent } from './typechart/typechart.component';
+import { DEFAULT_RULESET } from '@pdz/core/rulesets';
 
 interface LSTeamData {
   id: string;
@@ -758,7 +759,7 @@ export class DraftFormGroup extends FormGroup<{
         nonNullable: true,
         validators: [Validators.required],
       }),
-      ruleset: new FormControl(data?.ruleset ?? 'Gen9 NatDex', {
+      ruleset: new FormControl(data?.ruleset ?? DEFAULT_RULESET, {
         nonNullable: true,
         validators: [Validators.required],
       }),

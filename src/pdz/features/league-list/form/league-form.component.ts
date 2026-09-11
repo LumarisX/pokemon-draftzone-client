@@ -21,6 +21,7 @@ import { FieldErrorDirective } from '@pdz/shared/inputs/field/field-message.dire
 import { FieldComponent } from '@pdz/shared/inputs/field/field.component';
 import { InputDirective } from '@pdz/shared/inputs/field/input.directive';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
+import { DEFAULT_RULESET } from '@pdz/core/rulesets';
 
 @Component({
   selector: 'pdz-league-form',
@@ -62,7 +63,7 @@ export class LeagueFormComponent implements OnInit {
   readonly DEFAULT_PRIZE_VALUE = '0';
   readonly DEFAULT_PLATFORMS = ['Pokémon Showdown'];
   readonly DEFAULT_FORMATS = ['Singles'];
-  readonly DEFAULT_RULESETS = ['Gen9 NatDex'];
+  readonly DEFAULT_RULESETS = [DEFAULT_RULESET];
   readonly LEAGUE_NAME_MAX_LENGTH = 100;
   readonly DESCRIPTION_MAX_LENGTH = 1000;
 

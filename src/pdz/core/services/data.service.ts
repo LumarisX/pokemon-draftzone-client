@@ -4,6 +4,7 @@ import { tap } from 'rxjs/operators';
 import { Stat, StatsTable, Type } from '@pdz/shared/data';
 import { Pokemon } from '../utils/pokemon';
 import { ApiService } from './api.service';
+import { DEFAULT_RULESET } from '../rulesets';
 
 export type PokemonSearchMoveData = {
   id?: string;
@@ -132,7 +133,7 @@ export class DataService {
   }
 
   getPokemonList(ruleset?: string | null) {
-    if (!ruleset) ruleset = 'Gen9 NatDex';
+    if (!ruleset) ruleset = DEFAULT_RULESET;
     if (this.cache.pokemonList[ruleset])
       return of(this.cache.pokemonList[ruleset]);
     return this.apiService

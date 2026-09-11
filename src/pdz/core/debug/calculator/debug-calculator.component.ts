@@ -10,6 +10,7 @@ import { PageComponent } from '@pdz/shared/layout/page/page.component';
 import { SelectComponent } from '@pdz/shared/dropdowns/select/select.component';
 import { SelectOptionComponent } from '@pdz/shared/dropdowns/select/select-option.component';
 import { SegmentedComponent } from '@pdz/shared/inputs/segmented/segmented.component';
+import { DEFAULT_RULESET } from '@pdz/core/rulesets';
 import { SegmentedOptionComponent } from '@pdz/shared/inputs/segmented/segmented-option.component';
 import { CalcChartsComponent } from './calc-charts.component';
 import {
@@ -111,7 +112,7 @@ export class DebugCalculatorComponent {
 
   readonly rulesets = signal<{ name: string; id: string }[]>([]);
   readonly preset = signal(CALC_PRESETS[0].name);
-  readonly ruleset = signal(CALC_PRESETS[0].ruleset ?? 'Gen9 NatDex');
+  readonly ruleset = signal(CALC_PRESETS[0].ruleset ?? DEFAULT_RULESET);
   readonly move = signal(CALC_PRESETS[0].move);
   readonly weather = signal(CALC_PRESETS[0].weather ?? '');
   readonly terrain = signal(CALC_PRESETS[0].terrain ?? '');

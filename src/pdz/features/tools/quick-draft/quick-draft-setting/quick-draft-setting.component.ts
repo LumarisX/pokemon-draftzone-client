@@ -6,6 +6,7 @@ import { FormatSelectComponent } from '@pdz/shared/dropdowns/format-select/forma
 import { RulesetSelectComponent } from '@pdz/shared/dropdowns/ruleset-select/ruleset.component';
 import { SliderComponent } from '@pdz/shared/inputs/slider/slider.component';
 import { CardComponent } from '@pdz/shared/data/card/card.component';
+import { DEFAULT_RULESET } from '@pdz/core/rulesets';
 
 export type QDSettings = {
   rerolls: number;
@@ -37,7 +38,7 @@ type Template = {
   ],
 })
 export class QuickDraftSettingComponent {
-  ruleset = 'Gen9 NatDex';
+  ruleset = DEFAULT_RULESET;
   format = 'Singles';
   selectedTemplate: number | null = 1;
   templates: Template[] = [

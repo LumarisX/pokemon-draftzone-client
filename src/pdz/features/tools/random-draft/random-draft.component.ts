@@ -7,6 +7,7 @@ import { DataService } from '@pdz/core/services/data.service';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
 import { PageComponent } from '@pdz/shared/layout/page/page.component';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
+import { DEFAULT_RULESET } from '@pdz/core/rulesets';
 
 @Component({
   selector: 'pdz-random-draft',
@@ -18,7 +19,7 @@ export class RandomDraftComponent {
   private dataService = inject(DataService);
 
   draftPath = DRAFT_OVERVIEW_PATH;
-  ruleset = 'Gen9 NatDex';
+  ruleset = DEFAULT_RULESET;
   format = 'Singles';
   _count: number = 12;
   set count(value: number) {

@@ -56,6 +56,7 @@ import { MenuComponent } from '@pdz/shared/menu/menu.component';
 import { MenuItemComponent } from '@pdz/shared/menu/menu-item.component';
 import { MenuTriggerDirective } from '@pdz/shared/menu/menu-trigger.directive';
 import { ChipComponent } from '@pdz/shared/data/chip/chip.component';
+import { DEFAULT_RULESET } from '@pdz/core/rulesets';
 
 @Component({
   selector: 'pdz-pokemon-search-core',
@@ -107,7 +108,7 @@ export class PokemonSearchCoreComponent implements OnInit, OnDestroy {
   isBookmarked = false;
 
   selectedFormat = 'Singles';
-  selectedRuleset = 'Gen9 NatDex';
+  selectedRuleset = DEFAULT_RULESET;
   searchMode: 'quick' | 'advanced' = 'quick';
   quickName = '';
   mode: SearchLogicalMode = 'and';

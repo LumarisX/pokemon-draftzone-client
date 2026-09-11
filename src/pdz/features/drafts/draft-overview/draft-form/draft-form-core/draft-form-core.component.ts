@@ -33,6 +33,7 @@ import {
 } from '@pdz/shared/inputs/field/field-message.directive';
 import { FieldComponent } from '@pdz/shared/inputs/field/field.component';
 import { InputDirective } from '@pdz/shared/inputs/field/input.directive';
+import { DEFAULT_RULESET } from '@pdz/core/rulesets';
 
 @Component({
   selector: 'pdz-draft-form-core',
@@ -188,7 +189,7 @@ export class DraftForm extends FormGroup<{
           nonNullable: true,
           validators: Validators.required,
         }),
-        ruleset: new FormControl(params?.ruleset ?? 'Gen9 NatDex', {
+        ruleset: new FormControl(params?.ruleset ?? DEFAULT_RULESET, {
           nonNullable: true,
           validators: Validators.required,
         }),
