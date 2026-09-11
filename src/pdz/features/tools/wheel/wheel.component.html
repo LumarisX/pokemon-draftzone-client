@@ -152,6 +152,9 @@
             >
               {{ won.label }}
             </button>
+            <span class="result__weight">
+              {{ won.weight }} / {{ totalWeight() }}
+            </span>
             <span
               class="result__copied"
               [class.result__copied--visible]="winnerCopied()"

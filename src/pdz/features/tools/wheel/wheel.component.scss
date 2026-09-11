@@ -215,6 +215,15 @@
     }
   }
 
+  &__weight {
+    @include text(label);
+    font-size: pdz.font-size(3xs);
+    font-weight: 500;
+    color: pdz.color(on-surface-variant);
+    font-variant-numeric: tabular-nums;
+    opacity: 0.75;
+  }
+
   &__copied {
     @include text(label);
     position: absolute;
