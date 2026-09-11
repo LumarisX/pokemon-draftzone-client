@@ -15,6 +15,7 @@ import {
 } from '@angular/core';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { WheelOptionsComponent } from './wheel-options/wheel-options.component';
+import { WheelSoundService } from './wheel-sound.service';
 import { WheelStorageService } from './wheel-storage.service';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 import {
@@ -81,6 +82,10 @@ type DrumShape = {
 
 const MIN_BAND_LABEL_PERCENT = 2.5;
 const BAND_LABEL_LINE = 1.25;
+
+const MIN_TICK_GAP = 0.03;
+const MAX_TICKS = 600;
+const TICK_LEAD = 0.02;
 
 const MIN_LABEL_SWEEP = 10;
 const MAX_WHEEL_LABEL = 16;
@@ -165,9 +170,11 @@ function drumSqueeze(angle: number, shape: DrumShape): number {
     WheelOptionsComponent, ButtonComponent],
   templateUrl: './wheel.component.html',
   styleUrl: './wheel.component.scss',
+  providers: [WheelSoundService],
 })
 export class WheelComponent implements OnDestroy {
   private readonly storage = inject(WheelStorageService);
+  private readonly sound = inject(WheelSoundService);
 
   private nextId = 1;
   private nextHistoryId = 1;
@@ -493,6 +500,7 @@ export class WheelComponent implements OnDestroy {
     const duration = spinSeconds * 1000;
     const startedAt = performance.now();
 
+    this.scheduleTicks(from, to, spinSeconds);
     this.winnerId.set(null);
     this.spinning.set(true);
 
@@ -519,6 +527,50 @@ export class WheelComponent implements OnDestroy {
     };
 
     this.frame = requestAnimationFrame(step);
+  }
+
+  private scheduleTicks(from: number, to: number, seconds: number): void {
+    const { volume } = this.options();
+    if (volume <= 0 || !this.sound.prepare()) return;
+
+    this.sound.setLevel(volume / 100);
+    const base = this.sound.now + TICK_LEAD;
+    for (const at of this.tickTimes(from, to, seconds)) {
+      this.sound.tickAt(base + at);
+    }
+  }
+
+  private tickTimes(from: number, to: number, seconds: number): number[] {
+    const slices = this.slices();
+    if (slices.length < 2) return [];
+
+    const phases = slices
+      .map((slice) => normalizeAngle(POINTER_ANGLE - slice.start))
+      .sort((left, right) => left - right);
+
+    const span = to - from;
+    const times: number[] = [];
+    let last = -Infinity;
+
+    for (
+      let turn = Math.floor(from / 360) * 360 - 360;
+      turn <= to && times.length < MAX_TICKS;
+      turn += 360
+    ) {
+      for (const phase of phases) {
+        const edge = turn + phase;
+        if (edge <= from || edge > to) continue;
+
+        const reached = Math.min(1, Math.max(0, (edge - from) / span));
+        const at = (1 - Math.cbrt(1 - reached)) * seconds;
+        if (at - last < MIN_TICK_GAP) continue;
+
+        last = at;
+        times.push(at);
+      }
+    }
+
+    return times;
   }
 
   private record(label: string, color: string): void {

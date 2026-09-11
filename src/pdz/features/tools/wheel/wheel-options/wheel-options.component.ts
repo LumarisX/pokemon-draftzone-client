@@ -15,15 +15,21 @@ import {
   clampRimArc,
   clampSpinSeconds,
   clampTurns,
+  clampVolume,
   MAX_RIM_ARC,
   MAX_SPIN_SECONDS,
   MAX_TURNS,
+  MAX_VOLUME,
   MIN_RIM_ARC,
   MIN_SPIN_SECONDS,
   MIN_TURNS,
+  MIN_VOLUME,
   StoredWheelItem,
   WheelOptions,
 } from '../wheel.model';
+import { WheelSoundService } from '../wheel-sound.service';
+
+const PREVIEW_GAP_MS = 90;
 
 @Component({
   selector: 'pdz-wheel-options',
@@ -33,6 +39,8 @@ import {
 })
 export class WheelOptionsComponent {
   private readonly storage = inject(WheelStorageService);
+  private readonly sound = inject(WheelSoundService);
+  private lastPreview = 0;
 
   readonly options = input.required<WheelOptions>();
   readonly items = input<StoredWheelItem[]>([]);
@@ -48,6 +56,8 @@ export class WheelOptionsComponent {
   protected readonly maxTurns = MAX_TURNS;
   protected readonly minRimArc = MIN_RIM_ARC;
   protected readonly maxRimArc = MAX_RIM_ARC;
+  protected readonly minVolume = MIN_VOLUME;
+  protected readonly maxVolume = MAX_VOLUME;
 
   readonly json = signal('');
   readonly error = signal<string | null>(null);
@@ -93,6 +103,25 @@ export class WheelOptionsComponent {
       ...this.options(),
       rimArc: clampRimArc(parsed),
     });
+  }
+
+  setVolume(raw: string): void {
+    const parsed = Number.parseInt(raw, 10);
+    if (!Number.isFinite(parsed)) return;
+
+    const volume = clampVolume(parsed);
+    this.optionsChange.emit({ ...this.options(), volume });
+    this.preview(volume);
+  }
+
+  private preview(volume: number): void {
+    const now = performance.now();
+    if (volume <= 0 || now - this.lastPreview < PREVIEW_GAP_MS) return;
+    if (!this.sound.prepare()) return;
+
+    this.lastPreview = now;
+    this.sound.setLevel(volume / 100);
+    this.sound.tickAt(this.sound.now);
   }
 
   refreshJson(): void {

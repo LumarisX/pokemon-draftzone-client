@@ -3,6 +3,7 @@ import {
   clampRimArc,
   clampSpinSeconds,
   clampTurns,
+  clampVolume,
   clampWeight,
   DEFAULT_OPTIONS,
   MAX_HISTORY,
@@ -43,6 +44,7 @@ export class WheelStorageService {
     try {
       const parsed = JSON.parse(raw) as Partial<WheelOptions>;
       const rimArc = Number(parsed?.rimArc);
+      const volume = Number(parsed?.volume);
       return {
         spinSeconds: clampSpinSeconds(
           Number(parsed?.spinSeconds ?? DEFAULT_OPTIONS.spinSeconds) ||
@@ -54,6 +56,9 @@ export class WheelStorageService {
         ),
         rimArc: clampRimArc(
           Number.isFinite(rimArc) ? rimArc : DEFAULT_OPTIONS.rimArc,
+        ),
+        volume: clampVolume(
+          Number.isFinite(volume) ? volume : DEFAULT_OPTIONS.volume,
         ),
       };
     } catch {

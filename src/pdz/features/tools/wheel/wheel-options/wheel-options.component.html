@@ -66,6 +66,29 @@
           (input)="setRimArc($any($event.target).value)"
         />
       </div>
+
+      <div class="field">
+        <label class="field__label" for="wheel-volume">
+          Tick volume
+          <span class="field__value">
+            @if (options().volume) {
+              {{ options().volume }}%
+            } @else {
+              Off
+            }
+          </span>
+        </label>
+        <input
+          id="wheel-volume"
+          class="field__range"
+          type="range"
+          [min]="minVolume"
+          [max]="maxVolume"
+          step="5"
+          [value]="options().volume"
+          (input)="setVolume($any($event.target).value)"
+        />
+      </div>
     </section>
 
     <section class="options__group">

@@ -13,6 +13,7 @@ export type WheelOptions = {
   spinSeconds: number;
   minTurns: number;
   rimArc: number;
+  volume: number;
 };
 
 export type WheelHistoryEntry = {
@@ -34,11 +35,14 @@ export const MIN_TURNS = 1;
 export const MAX_TURNS = 20;
 export const MIN_RIM_ARC = 20;
 export const MAX_RIM_ARC = 360;
+export const MIN_VOLUME = 0;
+export const MAX_VOLUME = 100;
 
 export const DEFAULT_OPTIONS: WheelOptions = {
   spinSeconds: 4.5,
   minTurns: 5,
   rimArc: 90,
+  volume: 70,
 };
 
 export function defaultItems(): StoredWheelItem[] {
@@ -87,6 +91,10 @@ export function clampSpinSeconds(value: number): number {
 
 export function clampTurns(value: number): number {
   return Math.min(MAX_TURNS, Math.max(MIN_TURNS, Math.round(value)));
+}
+
+export function clampVolume(value: number): number {
+  return Math.min(MAX_VOLUME, Math.max(MIN_VOLUME, Math.round(value)));
 }
 
 export function clampRimArc(value: number): number {
