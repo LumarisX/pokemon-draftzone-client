@@ -328,6 +328,10 @@ export class WheelComponent implements OnDestroy {
     () => !this.spinning() && this.items().length > 1,
   );
 
+  readonly canShuffle = computed(
+    () => !this.spinning() && !this.filtering() && this.items().length > 1,
+  );
+
   readonly winner = computed<WheelSlice | null>(() => {
     const id = this.winnerId();
     return id === null
@@ -406,6 +410,19 @@ export class WheelComponent implements OnDestroy {
 
     this.items.update((items) => items.filter((item) => item.id !== id));
     if (this.winnerId() === id) this.winnerId.set(null);
+  }
+
+  shuffle(): void {
+    if (!this.canShuffle()) return;
+
+    this.items.update((items) => {
+      const next = [...items];
+      for (let i = next.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [next[i], next[j]] = [next[j], next[i]];
+      }
+      return next;
+    });
   }
 
   dropItem(event: CdkDragDrop<WheelItem[]>): void {

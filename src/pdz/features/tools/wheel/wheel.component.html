@@ -182,13 +182,29 @@
       <section class="item-editor">
         <header class="item-editor__header">
           <h2 class="item-editor__title">Items</h2>
-          <span class="item-editor__count">
-            @if (filtering()) {
-              {{ visibleSlices().length }} of {{ items().length }} match
-            } @else {
-              {{ items().length }} items · {{ totalWeight() }} weight
-            }
-          </span>
+          <div class="item-editor__meta">
+            <span class="item-editor__count">
+              @if (filtering()) {
+                {{ visibleSlices().length }} of {{ items().length }} match
+              } @else {
+                {{ items().length }} items · {{ totalWeight() }} weight
+              }
+            </span>
+            <button
+              pdz-button
+              iconOnly
+              size="sm"
+              variant="ghost"
+              color="neutral"
+              type="button"
+              [disabled]="!canShuffle()"
+              aria-label="Shuffle items"
+              title="Shuffle items"
+              (click)="shuffle()"
+            >
+              <pdz-icon name="shuffle" [size]="16"></pdz-icon>
+            </button>
+          </div>
         </header>
 
         <ul

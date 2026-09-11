@@ -320,6 +320,12 @@
     color: pdz.color(on-surface);
   }
 
+  &__meta {
+    display: flex;
+    align-items: center;
+    gap: pdz.space(xs);
+  }
+
   &__count {
     @include text(label);
     color: pdz.color(on-surface-variant);
@@ -619,6 +625,17 @@
     right: 0;
     overflow: hidden;
     will-change: top, height;
+
+    &::before {
+      content: "";
+      position: absolute;
+      z-index: 1;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: pdz.color(surface);
+    }
 
     &--active .drum__name {
       text-shadow: 0 0 6px rgb(255 255 255 / 55%);
