@@ -1,0 +1,264 @@
+<div class="graph">
+  <div class="graph__bar">
+    <p class="graph__hint">
+      Click a Pokémon to cycle benched → survived → fainted. Drag from the
+      attacker onto the Pokémon it knocked out. Click an arrow to mark the KO
+      indirect.
+    </p>
+    <button
+      pdz-button
+      size="xs"
+      variant="ghost"
+      color="neutral"
+      type="button"
+      (click)="clear()"
+    >
+      <pdz-icon name="restart_alt" [size]="14" />
+      <span>Reset</span>
+    </button>
+  </div>
+
+  <div
+    class="board"
+    #board
+    [class.board--dragging]="dragSource() !== null"
+    (pointermove)="onPointerMove($event)"
+    (pointerup)="onPointerUp($event)"
+    (pointercancel)="onPointerCancel()"
+  >
+    @for (side of sides; track side) {
+      <div class="column" [attr.data-side]="side">
+        <header class="column__head">
+          <span class="column__name">{{ sideNames()[side] }}</span>
+          <span class="column__tally"
+            >{{ tally()[side].played }} up ·
+            {{ tally()[side].fainted }} down</span
+          >
+          <button
+            pdz-button
+            size="xs"
+            variant="ghost"
+            color="neutral"
+            type="button"
+            (click)="fill(side)"
+          >
+            Mark all played
+          </button>
+        </header>
+
+        <div class="column__list">
+          @for (node of nodes()[side]; track node.key) {
+            <div
+              class="mon"
+              #monCard
+              role="button"
+              tabindex="0"
+              [attr.data-ko-key]="node.key"
+              [attr.data-ko-side]="side"
+              [attr.data-state]="node.state"
+              [attr.aria-label]="node.label + ': ' + stateLabels[node.state]"
+              [class.mon--source]="dragSource() === node.key"
+              [class.mon--target]="dragTarget() === node.key"
+              (pointerdown)="onPointerDown($event, node.key)"
+              (keydown)="onCardKey($event, node.key)"
+            >
+              <pdz-sprite
+                class="mon__sprite"
+                size="3.25rem"
+                [pokemon]="node.pokemon"
+                [flipped]="side === 'side1'"
+                [disabled]="
+                  node.state === 'benched' || node.state === 'preview'
+                "
+                [interactive]="false"
+                [showFormes]="false"
+              />
+
+              <div class="mon__body">
+                <span class="mon__name">{{ node.label }}</span>
+                <span class="mon__state">{{ stateLabels[node.state] }}</span>
+              </div>
+
+              @if (node.kos) {
+                <span class="mon__kos" [attr.aria-label]="node.kos + ' KOs'">{{
+                  node.kos
+                }}</span>
+              }
+
+              @if (node.state === "benched" || node.state === "preview") {
+                <button
+                  pdz-button
+                  class="mon__preview"
+                  iconOnly
+                  size="xs"
+                  variant="ghost"
+                  color="neutral"
+                  type="button"
+                  [pdzTooltip]="
+                    node.state === 'preview'
+                      ? 'Clear team preview'
+                      : 'Team preview only'
+                  "
+                  [attr.aria-label]="'Team preview only: ' + node.label"
+                  (pointerdown)="$event.stopPropagation()"
+                  (click)="onPreview($event, node.key)"
+                >
+                  <pdz-icon name="visibility" [size]="14" />
+                </button>
+              }
+            </div>
+          }
+        </div>
+      </div>
+    }
+
+    <svg class="wires" aria-hidden="true">
+      <defs>
+        @for (tone of tones; track tone) {
+          <marker
+            [attr.id]="markerSuffix + '-' + tone"
+            viewBox="0 0 10 10"
+            refX="9"
+            refY="5"
+            markerWidth="6"
+            markerHeight="6"
+            orient="auto"
+          >
+            <path
+              class="wires__head"
+              [attr.data-tone]="tone"
+              d="M0,0 L10,5 L0,10 z"
+            />
+          </marker>
+        }
+      </defs>
+
+      @for (wire of wires(); track wire.to) {
+        <path
+          class="wires__hit"
+          [attr.d]="wire.d"
+          (pointerenter)="hovered.set(wire.to)"
+          (pointerleave)="hovered.set(null)"
+          (click)="onWireClick(wire.to)"
+        ></path>
+        <path
+          class="wires__line"
+          [attr.d]="wire.d"
+          [attr.data-tone]="wire.tone"
+          [attr.marker-end]="markerFor(wire)"
+          [class.wires__line--indirect]="wire.indirect"
+          [class.wires__line--active]="
+            hovered() === wire.to || editing() === wire.to
+          "
+        ></path>
+      }
+
+      @if (dragLine(); as line) {
+        <path
+          class="wires__drag"
+          [attr.d]="line"
+          [attr.marker-end]="'url(#' + markerSuffix + '-self)'"
+        ></path>
+      }
+    </svg>
+
+    <div class="chips">
+      @for (wire of wires(); track wire.to) {
+        <div
+          class="chip"
+          [class.chip--active]="hovered() === wire.to || editing() === wire.to"
+          [class.chip--empty]="!wire.note"
+          [attr.data-tone]="wire.tone"
+          [style.left.px]="wire.label.x"
+          [style.top.px]="wire.label.y"
+          (pointerenter)="hovered.set(wire.to)"
+          (pointerleave)="hovered.set(null)"
+        >
+          @if (editing() === wire.to) {
+            <input
+              pdz-input
+              #note
+              size="xs"
+              class="chip__input"
+              placeholder="Move or cause"
+              [value]="wire.note"
+              (keydown)="onNoteKey($event, wire.to, wire.note)"
+              (blur)="onNoteCommit(wire.to, $any($event.target).value)"
+            />
+          } @else {
+            <button
+              pdz-button
+              size="xs"
+              variant="ghost"
+              color="neutral"
+              type="button"
+              class="chip__note"
+              [attr.aria-label]="wire.note ? 'Edit note' : 'Add a note'"
+              (click)="editing.set(wire.to)"
+            >
+              @if (wire.note) {
+                <span>{{ wire.note }}</span>
+              } @else {
+                <pdz-icon name="edit_note" [size]="14" />
+              }
+            </button>
+            <button
+              pdz-button
+              iconOnly
+              size="xs"
+              variant="ghost"
+              color="neutral"
+              type="button"
+              class="chip__action"
+              [pdzTooltip]="wire.indirect ? 'Mark direct' : 'Mark indirect'"
+              [attr.aria-label]="
+                wire.indirect ? 'Mark direct' : 'Mark indirect'
+              "
+              (click)="onWireClick(wire.to)"
+            >
+              <pdz-icon
+                [name]="wire.indirect ? 'linear_scale' : 'horizontal_rule'"
+                [size]="14"
+              />
+            </button>
+            <button
+              pdz-button
+              iconOnly
+              size="xs"
+              variant="ghost"
+              color="danger"
+              type="button"
+              class="chip__action"
+              pdzTooltip="Remove KO"
+              aria-label="Remove KO"
+              (click)="onWireRemove(wire.to)"
+            >
+              <pdz-icon name="close" [size]="14" />
+            </button>
+          }
+        </div>
+      }
+    </div>
+  </div>
+
+  <ul class="legend">
+    <li class="legend__item">
+      <span class="legend__key legend__key--side1"></span
+      >{{ sideNames().side1 }} KO
+    </li>
+    <li class="legend__item">
+      <span class="legend__key legend__key--side2"></span
+      >{{ sideNames().side2 }} KO
+    </li>
+    <li class="legend__item">
+      <span class="legend__key legend__key--team"></span>Teammate KO
+    </li>
+    <li class="legend__item">
+      <span class="legend__key legend__key--self"></span>Self KO (drag onto
+      itself)
+    </li>
+    <li class="legend__item">
+      <span class="legend__key legend__key--indirect"></span>Dashed = indirect
+    </li>
+  </ul>
+</div>

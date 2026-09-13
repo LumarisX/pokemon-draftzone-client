@@ -1,0 +1,108 @@
+@use "pdz-theming" as pdz;
+
+:host {
+  display: block;
+  padding: pdz.space(md);
+  box-sizing: border-box;
+}
+
+.score {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(md);
+  max-width: 90rem;
+  margin: 0 auto;
+}
+
+.score__bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: pdz.space(sm);
+}
+
+.score__title {
+  flex: 1 1 100%;
+  order: -1;
+  min-width: 0;
+  margin: 0;
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  @include pdz.text(title, $family: false);
+
+  @include pdz.respond-above(medium) {
+    flex: 1;
+    order: 0;
+  }
+}
+
+.score__series {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: pdz.space(sm);
+}
+
+.score__series-value {
+  color: pdz.color(on-surface);
+  @include pdz.text(subtitle);
+  @include pdz.numeric;
+}
+
+.score__series-label {
+  flex: 1;
+  color: pdz.color(on-surface-variant);
+  @include pdz.text(label);
+}
+
+.game__options {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: pdz.space(xs);
+}
+
+.game__score {
+  color: pdz.color(on-surface);
+  @include pdz.text(body-sm-strong);
+  @include pdz.numeric;
+}
+
+.game__winner {
+  color: pdz.color(on-surface-variant);
+  @include pdz.text(label);
+
+  &--none {
+    color: pdz.color(on-surface-placeholder);
+  }
+}
+
+.game__link {
+  width: 12rem;
+}
+
+.score__note {
+  margin: 0;
+  color: pdz.color(on-surface-variant);
+  @include pdz.text(body-sm);
+}
+
+.score__error {
+  margin: 0;
+  color: pdz.color(danger);
+  @include pdz.text(label);
+}
+
+.score__footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: pdz.space(sm);
+  padding-top: pdz.space(md);
+  border-top: 1px solid pdz.color(outline-variant);
+}

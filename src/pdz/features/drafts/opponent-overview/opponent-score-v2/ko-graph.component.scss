@@ -1,0 +1,422 @@
+@use "pdz-theming" as pdz;
+
+:host {
+  display: block;
+}
+
+.graph {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(sm);
+}
+
+.graph__bar {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: pdz.space(sm);
+}
+
+.graph__hint {
+  margin: 0;
+  color: pdz.color(on-surface-variant);
+  @include pdz.text(body-sm);
+}
+
+.board {
+  position: relative;
+  display: grid;
+  grid-template-columns:
+    minmax(6rem, 1fr)
+    minmax(pdz.space(2xl), 4rem)
+    minmax(6rem, 1fr);
+  column-gap: pdz.space(sm);
+  max-width: 64rem;
+  margin-inline: auto;
+  padding: pdz.space(md) pdz.space(lg);
+  border-radius: pdz.shape(corner-md);
+  background-color: pdz.color(surface-container-lowest);
+  touch-action: pan-y;
+
+  @include pdz.respond-above(medium) {
+    grid-template-columns:
+      minmax(6rem, 1fr)
+      minmax(pdz.space(3xl), 12rem)
+      minmax(6rem, 1fr);
+    column-gap: pdz.space(lg);
+    padding: pdz.space(lg) pdz.space(3xl);
+  }
+
+  @include pdz.respond-above(large) {
+    grid-template-columns:
+      minmax(6rem, 1fr)
+      minmax(pdz.space(3xl), 22rem)
+      minmax(6rem, 1fr);
+  }
+
+  &--dragging {
+    cursor: grabbing;
+
+    .wires__hit,
+    .chip {
+      pointer-events: none;
+    }
+  }
+}
+
+.column {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(xs);
+  min-width: 0;
+
+  &[data-side="side1"] {
+    grid-column: 1;
+    align-items: flex-end;
+  }
+
+  &[data-side="side1"] .column__head {
+    justify-content: flex-end;
+  }
+
+  &[data-side="side1"] .mon {
+    flex-direction: row-reverse;
+    text-align: end;
+  }
+
+  &[data-side="side2"] {
+    grid-column: 3;
+    align-items: flex-start;
+  }
+}
+
+.column__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: pdz.space(xs);
+  width: 100%;
+}
+
+.column__name {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: pdz.color(on-surface);
+  @include pdz.text(card-title);
+}
+
+.column__tally {
+  color: pdz.color(on-surface-variant);
+  @include pdz.text(label);
+}
+
+.column__list {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(md);
+  width: 100%;
+  max-width: 15rem;
+
+  @include pdz.respond-above(medium) {
+    gap: pdz.space(lg);
+  }
+}
+
+.mon {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  gap: pdz.space(xs);
+  padding: pdz.space(2xs) pdz.space(xs);
+  border: 1px solid pdz.color(outline-variant);
+  border-radius: pdz.shape(corner-sm);
+  background-color: pdz.color(surface-container-low);
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+  transition:
+    border-color pdz.duration(fast) pdz.easing(standard),
+    background-color pdz.duration(fast) pdz.easing(standard);
+
+  &:focus-visible {
+    outline: 2px solid pdz.color(primary-accent);
+    outline-offset: 2px;
+  }
+
+  &[data-state="benched"] {
+    border-style: dashed;
+    background-color: transparent;
+    opacity: 0.6;
+  }
+
+  &[data-state="preview"] {
+    border-style: dashed;
+    border-color: pdz.color(outline);
+    opacity: 0.85;
+  }
+
+  &[data-state="played"] {
+    border-color: pdz.color(primary-border);
+    background-color: pdz.color(surface-container);
+  }
+
+  &[data-state="fainted"] {
+    border-color: pdz.color(danger);
+    background-color: pdz.color(surface-container);
+
+    .mon__sprite {
+      opacity: 0.65;
+    }
+
+    .mon__state {
+      color: pdz.color(danger);
+    }
+  }
+
+  &--source {
+    border-color: pdz.color(primary-accent);
+  }
+
+  &--target {
+    border-color: pdz.color(primary-accent);
+    background-color: pdz.color(primary-container-low);
+    box-shadow: 0 0 0 2px pdz.color(primary-accent);
+  }
+}
+
+.column[data-side="side2"] .mon[data-state="played"] {
+  border-color: pdz.color(secondary-border);
+}
+
+.mon__sprite {
+  flex: 0 0 auto;
+  pointer-events: none;
+}
+
+.mon__body {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  pointer-events: none;
+}
+
+.mon__name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: pdz.color(on-surface);
+  @include pdz.text(body-sm-strong);
+}
+
+.mon__state {
+  color: pdz.color(on-surface-variant);
+  @include pdz.text(label);
+  @include pdz.caps;
+}
+
+.mon__kos {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.25rem;
+  height: 1.25rem;
+  margin-inline-start: auto;
+  padding-inline: pdz.space(xs);
+  border-radius: pdz.shape(corner-full);
+  background-color: pdz.color(primary-accent);
+  color: pdz.color(on-primary);
+  pointer-events: none;
+  @include pdz.text(label-strong);
+}
+
+.mon__preview {
+  position: absolute;
+  top: pdz.space(3xs);
+  inset-inline-end: pdz.space(3xs);
+  opacity: 0;
+  transition: opacity pdz.duration(fast) pdz.easing(standard);
+
+  .mon:hover &,
+  .mon:focus-within &,
+  .mon[data-state="preview"] & {
+    opacity: 1;
+  }
+}
+
+.wires {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.wires__head {
+  &[data-tone="side1"] {
+    fill: pdz.color(primary-accent);
+  }
+
+  &[data-tone="side2"] {
+    fill: pdz.color(secondary-accent);
+  }
+
+  &[data-tone="team"] {
+    fill: pdz.color(warning);
+  }
+
+  &[data-tone="self"] {
+    fill: pdz.color(on-surface-variant);
+  }
+}
+
+.wires__hit {
+  fill: none;
+  stroke: transparent;
+  stroke-width: 14;
+  pointer-events: stroke;
+  cursor: pointer;
+}
+
+.wires__line {
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  pointer-events: none;
+  transition: stroke-width pdz.duration(fast) pdz.easing(standard);
+
+  &[data-tone="side1"] {
+    stroke: pdz.color(primary-accent);
+  }
+
+  &[data-tone="side2"] {
+    stroke: pdz.color(secondary-accent);
+  }
+
+  &[data-tone="team"] {
+    stroke: pdz.color(warning);
+  }
+
+  &[data-tone="self"] {
+    stroke: pdz.color(on-surface-variant);
+  }
+
+  &--indirect {
+    stroke-dasharray: 7 5;
+  }
+
+  &--active {
+    stroke-width: 3.5;
+  }
+}
+
+.wires__drag {
+  fill: none;
+  stroke: pdz.color(on-surface-variant);
+  stroke-width: 2;
+  stroke-dasharray: 4 6;
+  stroke-linecap: round;
+}
+
+.chips {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.chip {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  gap: pdz.space(3xs);
+  padding: pdz.space(3xs) pdz.space(2xs);
+  border: 1px solid pdz.color(outline-variant);
+  border-radius: pdz.shape(corner-full);
+  background-color: pdz.color(surface-container-high);
+  transform: translate(-50%, -50%);
+  pointer-events: auto;
+  white-space: nowrap;
+  transition: opacity pdz.duration(fast) pdz.easing(standard);
+
+  &[data-tone="side1"] {
+    border-color: pdz.color(primary-accent);
+    color: pdz.color(primary-accent);
+  }
+
+  &[data-tone="side2"] {
+    border-color: pdz.color(secondary-accent);
+    color: pdz.color(secondary-accent);
+  }
+
+  &[data-tone="team"] {
+    border-color: pdz.color(warning);
+    color: pdz.color(warning);
+  }
+
+  &--active {
+    border-color: pdz.color(outline);
+    box-shadow: var(--pdz-level-2);
+  }
+
+  &--empty:not(.chip--active) {
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  &:not(.chip--active) .chip__action {
+    display: none;
+  }
+}
+
+.chip__note {
+  max-width: 8rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: inherit;
+}
+
+.chip__input {
+  width: 9rem;
+}
+
+.legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: pdz.space(xs) pdz.space(md);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  color: pdz.color(on-surface-variant);
+  @include pdz.text(label);
+}
+
+.legend__item {
+  display: flex;
+  align-items: center;
+  gap: pdz.space(2xs);
+}
+
+.legend__key {
+  width: 1.25rem;
+  height: 0;
+  border-top: 2px solid pdz.color(on-surface-variant);
+
+  &--side1 {
+    border-color: pdz.color(primary-accent);
+  }
+
+  &--side2 {
+    border-color: pdz.color(secondary-accent);
+  }
+
+  &--team {
+    border-color: pdz.color(warning);
+  }
+
+  &--indirect {
+    border-style: dashed;
+  }
+}

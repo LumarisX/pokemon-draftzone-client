@@ -1,0 +1,146 @@
+@if (matchup()) {
+  <div class="score">
+    <header class="score__bar">
+      <button
+        pdz-button
+        size="sm"
+        color="neutral"
+        variant="outlined"
+        type="button"
+        [routerLink]="['/', draftPath, teamId]"
+      >
+        Cancel
+      </button>
+      <h1 class="score__title">
+        {{ sideNames().side1 }} vs {{ sideNames().side2 }}
+      </h1>
+      <button pdz-button size="sm" [loading]="saving()" (click)="submit()">
+        {{ saving() ? "Saving…" : "Submit" }}
+      </button>
+    </header>
+
+    <div class="score__series">
+      <span class="score__series-value"
+        >{{ seriesScore().side1 }} – {{ seriesScore().side2 }}</span
+      >
+      <span class="score__series-label">Series score from survivors</span>
+      <a
+        class="score__classic"
+        pdz-button
+        size="xs"
+        variant="ghost"
+        color="neutral"
+        [routerLink]="['/', draftPath, teamId, 'score']"
+        [queryParams]="{ matchup: matchupId }"
+      >
+        Classic entry
+      </a>
+    </div>
+
+    @for (game of games(); track $index) {
+      <pdz-widget fill [label]="'Game ' + ($index + 1)">
+        <div widget-options class="game__options">
+          <span class="game__score"
+            >{{ gameScore(game, "side1") }} –
+            {{ gameScore(game, "side2") }}</span
+          >
+          @if (gameWinner(game); as winner) {
+            <span class="game__winner">{{ sideNames()[winner] }} wins</span>
+          } @else {
+            <span class="game__winner game__winner--none">Undecided</span>
+          }
+          <input
+            pdz-input
+            size="sm"
+            class="game__link"
+            type="url"
+            spellcheck="false"
+            placeholder="Replay link"
+            aria-label="Replay link"
+            [value]="game.link"
+            (input)="setLink($index, $any($event.target).value)"
+          />
+          @if (canAnalyze(game)) {
+            <button
+              pdz-button
+              iconOnly
+              size="xs"
+              color="secondary"
+              variant="ghost"
+              type="button"
+              aria-label="Fill the KO map from this replay"
+              [disabled]="analyzingIndex() !== null"
+              (click)="analyze($index)"
+            >
+              <pdz-icon
+                [name]="
+                  analyzingIndex() === $index
+                    ? 'hourglass_top'
+                    : 'auto_fix_high'
+                "
+                [size]="16"
+              />
+            </button>
+          }
+          @if (games().length > 1) {
+            <button
+              pdz-button
+              iconOnly
+              size="xs"
+              color="danger"
+              variant="ghost"
+              type="button"
+              aria-label="Remove game"
+              (click)="removeGame($index)"
+            >
+              <pdz-icon name="close" [size]="16" />
+            </button>
+          }
+        </div>
+
+        <pdz-ko-graph
+          [rosters]="rosters()"
+          [sideNames]="sideNames()"
+          [graph]="game.graph"
+          (graphChange)="setGraph($index, $event)"
+        />
+      </pdz-widget>
+    }
+
+    @if (analysisNote()) {
+      <p class="score__note">{{ analysisNote() }}</p>
+    }
+    @if (analysisError()) {
+      <p class="score__error">{{ analysisError() }}</p>
+    }
+    @if (saveError()) {
+      <p class="score__error">{{ saveError() }}</p>
+    }
+
+    <p class="score__note">
+      Saving records the same numbers as the classic page — statuses and
+      direct/indirect/teammate KO counts. Who KO'd whom and the arrow notes stay
+      in this page for now; the API has nowhere to keep them.
+    </p>
+
+    <div class="score__footer">
+      <button
+        pdz-button
+        size="sm"
+        color="neutral"
+        variant="outlined"
+        type="button"
+        (click)="addGame()"
+      >
+        <pdz-icon name="add" [size]="16" />
+        <span>Add game</span>
+      </button>
+
+      <button pdz-button [loading]="saving()" (click)="submit()">
+        {{ saving() ? "Saving…" : "Submit" }}
+      </button>
+    </div>
+  </div>
+} @else {
+  <pdz-loading />
+}

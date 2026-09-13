@@ -4,6 +4,7 @@ import { OpponentFormComponent } from './opponent-form/opponent-form.component';
 import { OpponentOverviewComponent } from './opponent-overview.component';
 import { OpponentTeamPreviewComponent } from './opponent-preview/opponent-preview.component';
 import { OpponentScoreComponent } from './opponent-score/opponent-score.component';
+import { OpponentScoreV2Component } from './opponent-score-v2/opponent-score-v2.component';
 
 export const routes: Routes = [
   {
@@ -23,6 +24,11 @@ export const routes: Routes = [
       {
         path: 'score',
         component: OpponentScoreComponent,
+        canActivate: [AuthGuard],
+      },
+      {
+        path: 'score-v2',
+        component: OpponentScoreV2Component,
         canActivate: [AuthGuard],
       },
     ],

@@ -90,8 +90,13 @@ export class TradeProposeDialogComponent implements OnInit {
       }
 
       const costById = new Map<string, { cost: number; tier: string }>();
+      const ownDraftSlug =
+        teams.teams.find((team) => team.id === this.data.teamId)?.draft
+          ?.draftSlug ?? null;
       const drafted = new Set(
-        teams.teams.flatMap((team) => team.roster.map((p) => p.id)),
+        teams.teams
+          .filter((team) => (team.draft?.draftSlug ?? null) === ownDraftSlug)
+          .flatMap((team) => team.roster.map((p) => p.id)),
       );
 
       const freeAgents: TradeOption[] = [];
