@@ -4,6 +4,7 @@ export interface MatchupCardSlot {
   name: string;
   coach: string | null;
   logo?: string;
+  slug: string | null;
   pending: boolean;
   status: MatchupCardSlotStatus;
   score: number | null;

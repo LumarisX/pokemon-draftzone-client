@@ -19,6 +19,7 @@ function slotFor(
     name: side.name,
     coach: side.coach || null,
     logo: side.logo,
+    slug: side.slug ?? null,
     pending: !side.slug,
     status: winnerIs(index)
       ? 'winner'

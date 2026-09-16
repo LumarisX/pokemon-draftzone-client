@@ -11,12 +11,10 @@
     aria-label="Close navigation"
     (click)="closeNav()"
   >
-    <pdz-icon name="close" [size]="22" aria-hidden="true"></pdz-icon>
+    <pdz-icon name="chevron_left" [size]="22" aria-hidden="true"></pdz-icon>
   </button>
 
   <pdz-tournament-nav class="layout__nav"></pdz-tournament-nav>
-
-  <div class="layout__divider"></div>
 
   <main class="layout__main">
     <router-outlet pdzRouteEnter></router-outlet>

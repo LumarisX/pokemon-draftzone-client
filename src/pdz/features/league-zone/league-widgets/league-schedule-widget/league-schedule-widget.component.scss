@@ -17,6 +17,19 @@
     @include text(subtitle);
   }
 
+  &__group {
+    @include text(label);
+    grid-column: 1 / -1;
+    margin: 0;
+    color: pdz.color(on-surface-variant);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+
+    &:not(:first-child) {
+      margin-top: pdz.space(sm);
+    }
+  }
+
   &__cards {
     border-left: 2px solid pdz.color(primary-accent);
     padding: pdz.space(md) 0 pdz.space(md) pdz.space(md);
@@ -38,5 +51,11 @@
       width: 100%;
       max-width: 32rem;
     }
+  }
+
+  &__card--mine {
+    border-radius: pdz.shape(corner-lg);
+    outline: 2px solid pdz.color(primary-accent);
+    outline-offset: 2px;
   }
 }

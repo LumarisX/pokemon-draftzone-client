@@ -118,6 +118,7 @@ export class MatchCardComponent {
       name: team?.teamName ?? placeholder ?? 'TBD',
       coach: team?.coachName ?? null,
       logo: team?.logo,
+      slug: team?.teamSlug ?? null,
       pending: !team,
       status:
         this.advancing === null

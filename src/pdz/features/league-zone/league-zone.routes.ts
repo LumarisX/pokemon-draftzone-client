@@ -23,7 +23,7 @@ import { LeagueTeamsComponent } from './league-teams/league-teams.component';
 import { LeagueTradesComponent } from './league-trades/league-trades.component';
 import { TournamentDraftComponent } from './tournaments/tournament-draft/tournament-draft.component';
 import { TournamentDraftsComponent } from './tournaments/tournament-drafts/tournament-drafts.component';
-import { TournamentHomeComponent } from './tournaments/tournament-home/tournament-home.component';
+import { TournamentLandingComponent } from './tournaments/tournament-landing/tournament-landing.component';
 import { TournamentLayoutComponent } from './tournaments/tournament-layout/tournament-layout.component';
 
 export const routes: Routes = [
@@ -41,7 +41,7 @@ export const routes: Routes = [
     children: [
       {
         path: '',
-        component: TournamentHomeComponent,
+        component: TournamentLandingComponent,
       },
       {
         path: LEAGUE_ZONE_MANAGE_PATH,

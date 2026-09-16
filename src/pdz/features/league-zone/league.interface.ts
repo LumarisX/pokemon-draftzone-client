@@ -243,9 +243,9 @@ export namespace League {
     gameDiff: number;
     pokemonDiff: number;
     logo?: string;
-    teamId: string;
-    /** URL identifier for the team's page. */
-    teamSlug: string;
+    id: string;
+    /** URL identifier for the team's page. Absent on older payloads. */
+    teamSlug?: string;
   };
 
   export type TeamStandingsTable = {

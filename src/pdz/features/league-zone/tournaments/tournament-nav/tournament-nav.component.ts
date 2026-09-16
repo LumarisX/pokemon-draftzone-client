@@ -3,6 +3,8 @@ import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { catchError, of, Subject, switchMap, takeUntil } from 'rxjs';
 import { AuthService } from '@pdz/core/services/auth0.service';
+import { SkeletonComponent } from '@pdz/shared/data/skeleton/skeleton.component';
+import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { LeagueZoneService } from '../../league-zone.service';
 import { LeagueManageService } from '../../league-manage/league-manage.service';
 import { League } from '../../league.interface';
@@ -12,7 +14,7 @@ import { getLeagueLogoUrl } from '../../league.util';
   selector: 'pdz-tournament-nav',
   templateUrl: './tournament-nav.component.html',
   styleUrl: './tournament-nav.component.scss',
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, IconComponent, SkeletonComponent],
 })
 export class TournamentNavComponent implements OnInit, OnDestroy {
   readonly leagueService = inject(LeagueZoneService);
@@ -41,11 +43,11 @@ export class TournamentNavComponent implements OnInit, OnDestroy {
 
     this.leagueService
       .getLeague()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (league) => (this.leagueName = league.name),
-        error: (error) => console.error('Error fetching league:', error),
-      });
+      .pipe(
+        takeUntil(this.destroy$),
+        catchError(() => of(null)),
+      )
+      .subscribe((league) => (this.leagueName = league?.name ?? null));
 
     this.authService.isAuthenticated$
       .pipe(

@@ -1,0 +1,203 @@
+@if (infoFailed()) {
+  <p class="section-message section-message--error">
+    Could not load this tournament.
+  </p>
+} @else {
+  @if (info(); as tournament) {
+  <header class="landing-header">
+    <div class="landing-header__identity">
+      @if (getTournamentLogoUrl(tournament.logo); as logo) {
+        <div class="landing-header__logo">
+          <img [src]="logo" [alt]="tournament.name + ' logo'" />
+        </div>
+      }
+      <div class="landing-header__text">
+        @if (leagueName(); as league) {
+          <a class="landing-header__league" [routerLink]="leagueLink()">
+            <pdz-icon name="arrow_back" [size]="14" aria-hidden="true" />
+            <span>{{ league }}</span>
+          </a>
+        }
+        <h1 class="landing-header__title">{{ tournament.name }}</h1>
+        <div class="landing-header__meta">
+          <span>{{ tournament.format }}</span>
+          <span class="landing-header__dot" aria-hidden="true">·</span>
+          <span>{{ tournament.ruleset }}</span>
+          @if (tournament.seasonStart) {
+            <span class="landing-header__dot" aria-hidden="true">·</span>
+            <span>
+              {{ tournament.seasonStart | date: "MMM d, y" }}
+              @if (tournament.seasonEnd) {
+                &ndash; {{ tournament.seasonEnd | date: "MMM d, y" }}
+              }
+            </span>
+          }
+        </div>
+        @if (tournament.description) {
+          <p class="landing-header__description">{{ tournament.description }}</p>
+        }
+      </div>
+    </div>
+
+    <div class="landing-header__actions">
+      @if (phaseView(); as phase) {
+        <pdz-chip [tone]="phase.tone" [icon]="phase.icon">
+          {{ phase.label }}
+          @if (phase.countdown) {
+            <span class="landing-header__countdown">{{ phase.countdown }}</span>
+          }
+        </pdz-chip>
+      }
+      @if (facts().length) {
+        <dl class="landing-header__facts">
+          @for (fact of facts(); track fact.label) {
+            <div class="fact">
+              <dt class="fact__label">{{ fact.label }}</dt>
+              <dd class="fact__value">{{ fact.value }}</dd>
+            </div>
+          }
+        </dl>
+      }
+
+      @if (!profile() && signUpOpen()) {
+        <a pdz-button [routerLink]="[...tournamentBase(), 'sign-up']">
+          Sign Up
+        </a>
+      }
+    </div>
+  </header>
+  } @else {
+    <header class="landing-header" aria-hidden="true">
+      <div class="landing-header__identity">
+        <pdz-skeleton variant="circle" width="4.5rem" height="4.5rem" />
+        <div class="landing-header__text">
+          <pdz-skeleton variant="text" width="9rem" height="0.75rem" />
+          <pdz-skeleton variant="text" width="13rem" height="2rem" />
+          <pdz-skeleton variant="text" width="17rem" height="0.875rem" />
+        </div>
+      </div>
+      <div class="landing-header__actions">
+        <pdz-skeleton variant="block" width="8rem" height="1.75rem" radius="999px" />
+        <div class="landing-header__facts">
+          @for (row of [0, 1, 2]; track row) {
+            <pdz-skeleton variant="block" width="3rem" height="2.75rem" radius="0.5rem" />
+          }
+        </div>
+      </div>
+    </header>
+  }
+
+  <div class="landing-body">
+    <section class="section section--round">
+      <div class="section-header">
+        <span class="section-header__title">
+          {{ roundName() ?? "This Round" }}
+          @if (roundDeadline(); as deadline) {
+            <span class="section-header__note">
+              due {{ deadline | date: "MMM d, h:mm a" }}
+            </span>
+          }
+        </span>
+        <a
+          pdz-button
+          variant="link"
+          size="sm"
+          [routerLink]="[...tournamentBase(), 'schedule']"
+        >
+          Full schedule
+        </a>
+      </div>
+      <div class="section-body">
+        @if (!roundLoaded()) {
+          <div class="section-skeletons">
+            @for (row of skeletonRows; track row) {
+              <pdz-skeleton variant="block" height="4.5rem" radius="0.5rem" />
+            }
+          </div>
+        }
+
+        <pdz-league-schedule-widget
+          roundFilter="current"
+          [showRoundTitle]="false"
+          [highlightTeamSlug]="profile()?.teamSlug ?? null"
+          (roundsLoaded)="onRoundsLoaded($event)"
+        />
+      </div>
+    </section>
+
+    <section class="section section--standings">
+      <div class="section-header">
+        <span class="section-header__title">Standings</span>
+        <a
+          pdz-button
+          variant="link"
+          size="sm"
+          [routerLink]="[...tournamentBase(), 'standings']"
+        >
+          Full standings
+        </a>
+      </div>
+      <div class="section-body">
+        @if (standings(); as rows) {
+          @if (rows.length) {
+            <ol class="standings-preview">
+              @for (row of rows; track row.teamId) {
+                <li class="standings-preview__row">
+                  <span class="standings-preview__rank">{{ row.rank }}</span>
+                  <img
+                    class="standings-preview__logo"
+                    [src]="getTeamLogoUrl(row.logo)"
+                    alt=""
+                  />
+                  <ng-template #teamText>
+                    <span class="standings-preview__name">{{ row.name }}</span>
+                    <span class="standings-preview__coach">{{ row.coach }}</span>
+                  </ng-template>
+                  @if (row.teamSlug; as slug) {
+                    <a
+                      class="standings-preview__team"
+                      [routerLink]="[...tournamentBase(), 'teams', slug]"
+                    >
+                      <ng-container [ngTemplateOutlet]="teamText" />
+                    </a>
+                  } @else {
+                    <span class="standings-preview__team">
+                      <ng-container [ngTemplateOutlet]="teamText" />
+                    </span>
+                  }
+                  <span
+                    class="record-box record-box--wide"
+                    [class.positive]="row.wins > row.losses"
+                    [class.negative]="row.wins < row.losses"
+                    [class.neutral]="row.wins === row.losses"
+                    >{{ row.wins }}-{{ row.losses }}</span
+                  >
+                  <span
+                    class="record-box"
+                    [class.positive]="row.diff > 0"
+                    [class.negative]="row.diff < 0"
+                    [class.neutral]="row.diff === 0"
+                    >{{ row.diff | plusSign }}</span
+                  >
+                </li>
+              }
+            </ol>
+            @if (standingsTotal() > rows.length) {
+              <p class="standings-preview__footer">
+                Showing {{ rows.length }} of {{ standingsTotal() }} teams.
+              </p>
+            }
+          } @else {
+            <p class="section-message">No results recorded yet.</p>
+          }
+        } @else {
+          <div class="section-skeletons">
+            @for (row of skeletonRows; track row) {
+              <pdz-skeleton variant="block" height="2.5rem" radius="0.5rem" />
+            }
+          </div>
+        }
+      </div>
+    </section>
+  </div>
+}

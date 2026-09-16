@@ -1,4 +1,13 @@
-import { Component, inject, OnDestroy, OnInit, input } from '@angular/core';
+import {
+  Component,
+  computed,
+  inject,
+  OnDestroy,
+  OnInit,
+  input,
+  output,
+  signal,
+} from '@angular/core';
 import { Subject, takeUntil } from 'rxjs';
 import { LeagueZoneService } from '../../league-zone.service';
 import { MatchupCardComponent } from '../../matchup-card/matchup-card.component';
@@ -11,10 +20,36 @@ interface ScheduleStageView {
   cards: MatchupCard[];
 }
 
-interface ScheduleRoundView {
+export interface ScheduleRoundView {
   id: string;
   name: string;
+  matchDeadline: string | null;
   stages: ScheduleStageView[];
+}
+
+function cardHasTeam(card: MatchupCard, teamSlug: string): boolean {
+  return card.slots.some((slot) => slot.slug === teamSlug);
+}
+
+function promoteTeam(
+  round: ScheduleRoundView,
+  teamSlug: string,
+): ScheduleRoundView {
+  const stages = [...round.stages];
+  const stageIndex = stages.findIndex((stage) =>
+    stage.cards.some((card) => cardHasTeam(card, teamSlug)),
+  );
+  if (stageIndex < 0) return round;
+
+  const [stage] = stages.splice(stageIndex, 1);
+  const cards = [...stage.cards];
+  const cardIndex = cards.findIndex((card) => cardHasTeam(card, teamSlug));
+  const [card] = cards.splice(cardIndex, 1);
+
+  return {
+    ...round,
+    stages: [{ ...stage, cards: [card, ...cards] }, ...stages],
+  };
 }
 
 @Component({
@@ -27,9 +62,36 @@ export class LeagueScheduleWidgetComponent implements OnInit, OnDestroy {
   leagueService = inject(LeagueZoneService);
   private readonly destroy$ = new Subject<void>();
 
-  scheduleRounds?: ScheduleRoundView[];
+  private readonly loadedRounds = signal<ScheduleRoundView[] | undefined>(
+    undefined,
+  );
 
   readonly roundFilter = input<'current' | 'past'>();
+
+  readonly showRoundTitle = input(true);
+
+  readonly highlightTeamSlug = input<string | null>(null);
+
+  readonly roundsLoaded = output<ScheduleRoundView[]>();
+
+  readonly scheduleRounds = computed(() => {
+    const rounds = this.loadedRounds();
+    const teamSlug = this.highlightTeamSlug();
+    if (!rounds || !teamSlug) return rounds;
+    return rounds.map((round) => promoteTeam(round, teamSlug));
+  });
+
+  readonly highlightedCardId = computed(() => {
+    const teamSlug = this.highlightTeamSlug();
+    if (!teamSlug) return null;
+    for (const round of this.loadedRounds() ?? []) {
+      for (const stage of round.stages) {
+        const card = stage.cards.find((entry) => cardHasTeam(entry, teamSlug));
+        if (card) return card.id;
+      }
+    }
+    return null;
+  });
 
   ngOnInit(): void {
     this.leagueService
@@ -43,9 +105,10 @@ export class LeagueScheduleWidgetComponent implements OnInit, OnDestroy {
             'tournaments',
             this.leagueService.tournamentSlug() ?? '',
           ];
-          this.scheduleRounds = data.rounds.map((round) => ({
+          const rounds = data.rounds.map((round) => ({
             id: round._id,
             name: round.name,
+            matchDeadline: round.matchDeadline ?? null,
             stages: round.stages.map((stage) => ({
               id: stage._id,
               name: stage.name,
@@ -54,7 +117,10 @@ export class LeagueScheduleWidgetComponent implements OnInit, OnDestroy {
               ),
             })),
           }));
+          this.loadedRounds.set(rounds);
+          this.roundsLoaded.emit(rounds);
         },
+        error: () => this.roundsLoaded.emit([]),
       });
   }
 

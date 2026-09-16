@@ -1,8 +1,10 @@
-@if (scheduleRounds?.length) {
+@if (scheduleRounds()?.length) {
   <div class="matchup-stage-list">
-    @for (round of scheduleRounds; track round.id) {
+    @for (round of scheduleRounds(); track round.id) {
       <div class="matchup-stage">
-        <h4 class="matchup-stage__title">{{ round.name }}</h4>
+        @if (showRoundTitle()) {
+          <h4 class="matchup-stage__title">{{ round.name }}</h4>
+        }
         <div class="matchup-stage__cards">
           @if (!round.stages.length) {
             <p class="section-message">No matchups in this round.</p>
@@ -12,7 +14,12 @@
                 <h5 class="matchup-stage__group">{{ stage.name }}</h5>
               }
               @for (card of stage.cards; track card.id) {
-                <pdz-matchup-card [card]="card"></pdz-matchup-card>
+                <pdz-matchup-card
+                  [card]="card"
+                  [class.matchup-stage__card--mine]="
+                    card.id === highlightedCardId()
+                  "
+                ></pdz-matchup-card>
               }
             }
           }
