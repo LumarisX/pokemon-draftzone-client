@@ -1185,6 +1185,7 @@ export const BINDER_ROSTER: readonly BinderEntry[] = [
   ["zamazenta", "Zamazenta", 889, "base", "Fighting"],
   ["zamazentacrowned", "Zamazenta-Crowned", 889, "forme", "Fighting/Steel"],
   ["eternatus", "Eternatus", 890, "base", "Poison/Dragon"],
+  ["eternatuseternamax", "Eternatus-Eternamax", 890, "forme", "Poison/Dragon"],
   ["kubfu", "Kubfu", 891, "base", "Fighting"],
   ["urshifu", "Urshifu", 892, "base", "Fighting/Dark"],
   ["urshifurapidstrike", "Urshifu-Rapid-Strike", 892, "forme", "Fighting/Water"],

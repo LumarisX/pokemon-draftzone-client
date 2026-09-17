@@ -64,6 +64,7 @@ export type BinderCard = {
 export type LayoutEntry = {
   key: string;
   id: string | null;
+  label?: string;
 };
 
 export type BinderSlot = {
@@ -74,6 +75,7 @@ export type BinderSlot = {
   gridRow: number;
   gridColumn: number;
   card: BinderCard | null;
+  label: string | null;
   copy: number;
   copies: number;
 };
@@ -215,6 +217,7 @@ export class BinderStore {
         gridRow: Math.floor(within / cols) + 1,
         gridColumn: pageIndex * (cols + 1) + (within % cols) + 1,
         card,
+        label: entry.label ?? null,
         copy,
         copies: entry.id ? (totals.get(entry.id) ?? 0) : 0,
       };
@@ -386,6 +389,9 @@ export class BinderStore {
               typeof entry.id === 'string' && ROSTER_INDEX.has(entry.id)
                 ? entry.id
                 : null,
+            ...(typeof entry.label === 'string' && entry.label.trim()
+              ? { label: entry.label.trim() }
+              : {}),
           }))
       : base.layout;
 
@@ -694,18 +700,76 @@ export class BinderStore {
     });
   }
 
-  setRangeOwned(from: number, to: number, owned: boolean): void {
-    const start = Math.min(from, to);
-    const end = Math.max(from, to);
+  setOwnedKeys(keys: ReadonlySet<string>, owned: boolean): void {
+    if (!keys.size) return;
+    const cardKeys = this.slots()
+      .filter((slot) => slot.card && keys.has(slot.key))
+      .map((slot) => slot.key);
+    const current = this.owned();
+    if (!cardKeys.some((key) => current.has(key) !== owned)) return;
+
     this.commit(() => {
-      const next = new Set(this.owned());
-      for (const slot of this.slots()) {
-        if (slot.index < start || slot.index > end || !slot.card) continue;
-        if (owned) next.add(slot.key);
-        else next.delete(slot.key);
+      const next = new Set(current);
+      for (const key of cardKeys) {
+        if (owned) next.add(key);
+        else next.delete(key);
       }
       this.owned.set(next);
     });
+  }
+
+  removeKeys(keys: ReadonlySet<string>): void {
+    if (!keys.size) return;
+    const layout = this.layout();
+    if (!layout.some((entry) => keys.has(entry.key))) return;
+
+    this.commit(() => {
+      const next = layout.filter((entry) => !keys.has(entry.key));
+      this.layout.set(next);
+
+      const owned = new Set(this.owned());
+      let ownedChanged = false;
+      for (const key of keys) if (owned.delete(key)) ownedChanged = true;
+      if (ownedChanged) this.owned.set(owned);
+
+      const stillPresent = new Set(
+        next.flatMap((entry) => (entry.id ? [entry.id] : [])),
+      );
+      const hidden = new Set(this.hidden());
+      let hiddenChanged = false;
+      for (const entry of layout) {
+        if (!keys.has(entry.key) || !entry.id) continue;
+        if (stillPresent.has(entry.id) || hidden.has(entry.id)) continue;
+        hidden.add(entry.id);
+        hiddenChanged = true;
+      }
+      if (hiddenChanged) this.hidden.set(hidden);
+    });
+  }
+
+  moveKeys(keys: ReadonlySet<string>, delta: number): boolean {
+    if (!keys.size || !delta) return false;
+    const layout = this.layout();
+    const indices: number[] = [];
+    for (let i = 0; i < layout.length; i++) {
+      if (keys.has(layout[i].key)) indices.push(i);
+    }
+    if (!indices.length) return false;
+
+    const items = indices.map((i) => layout[i]);
+    const rest = layout.filter((entry) => !keys.has(entry.key));
+    const target = Math.max(
+      0,
+      Math.min(indices[0] + delta, layout.length - items.length),
+    );
+    const next = [...rest.slice(0, target), ...items, ...rest.slice(target)];
+    if (next.every((entry, i) => entry.key === layout[i].key)) return false;
+
+    this.commit(() => {
+      this.layout.set(next);
+      this.sort.set('custom');
+    });
+    return true;
   }
 
   setPageOwned(page: number, owned: boolean): void {
@@ -834,10 +898,6 @@ export class BinderStore {
     });
   }
 
-  appendBlank(): void {
-    this.insertBlank(this.layout().length);
-  }
-
   addCard(id: string, index?: number): string | null {
     if (!ROSTER_INDEX.has(id)) return null;
     const key = this.nextKey();
@@ -893,10 +953,29 @@ export class BinderStore {
     });
   }
 
+  /** Labelled blanks are dividers you meant to keep, so they survive. */
   removeBlanks(): void {
-    if (!this.layout().some((entry) => entry.id === null)) return;
+    const isLoose = (entry: LayoutEntry) => entry.id === null && !entry.label;
+    if (!this.layout().some(isLoose)) return;
     this.commit(() => {
-      this.layout.set(this.layout().filter((entry) => entry.id !== null));
+      this.layout.set(this.layout().filter((entry) => !isLoose(entry)));
+    });
+  }
+
+  setSlotLabel(key: string, label: string): void {
+    const trimmed = label.trim();
+    const entry = this.layout().find((item) => item.key === key);
+    if (!entry || entry.id !== null) return;
+    if ((entry.label ?? '') === trimmed) return;
+
+    this.commit(() => {
+      this.layout.set(
+        this.layout().map((item) =>
+          item.key === key
+            ? { key: item.key, id: item.id, ...(trimmed ? { label: trimmed } : {}) }
+            : item,
+        ),
+      );
     });
   }
 
@@ -939,12 +1018,35 @@ export class BinderStore {
 
   exportJson(): string {
     return JSON.stringify(
-      { version: 2, activeId: this.activeId(), binders: this.allDocs() },
+      { version: 3, binder: this.serializeActive() },
       null,
       2,
     );
   }
 
+  private docFromImport(parsed: unknown): BinderDoc | null {
+    const record = parsed as {
+      binder?: Partial<BinderDoc>;
+      binders?: Partial<BinderDoc>[];
+      activeId?: string;
+    } & LegacyPersisted;
+
+    if (record.binder && typeof record.binder === 'object') {
+      return this.normalizeDoc(record.binder);
+    }
+    if (Array.isArray(record.binders) && record.binders.length) {
+      const picked =
+        record.binders.find((doc) => doc.id === record.activeId) ??
+        record.binders[0];
+      return this.normalizeDoc(picked);
+    }
+    if (Array.isArray(record.layout)) {
+      return this.migrateLegacy(record);
+    }
+    return null;
+  }
+
+  /** Replaces the binder you are looking at; the others are left alone. */
   importJson(raw: string): boolean {
     let parsed: unknown;
     try {
@@ -953,30 +1055,37 @@ export class BinderStore {
       return false;
     }
 
-    const record = parsed as Partial<Persisted> & LegacyPersisted;
-    let docs: BinderDoc[];
-    if (Array.isArray(record.binders) && record.binders.length) {
-      docs = record.binders.map((doc) => this.normalizeDoc(doc));
-    } else if (Array.isArray(record.layout)) {
-      docs = [this.migrateLegacy(record)];
-    } else {
-      return false;
-    }
+    const doc = this.docFromImport(parsed);
+    if (!doc) return false;
 
-    this.inactive.clear();
-    for (const doc of docs) this.inactive.set(doc.id, doc);
-    this.binders.set(
-      docs.map((doc) => ({
-        id: doc.id,
-        name: doc.name,
-        cards: doc.layout.filter((entry) => entry.id).length,
-      })),
+    const keyMap = new Map<string, string>();
+    const layout = doc.layout.map((entry) => {
+      const key = this.nextKey();
+      keyMap.set(entry.key, key);
+      return { key, id: entry.id, ...(entry.label ? { label: entry.label } : {}) };
+    });
+    const owned = new Set(
+      doc.owned.flatMap((key) => {
+        const mapped = keyMap.get(key);
+        return mapped ? [mapped] : [];
+      }),
     );
+    const hidden = new Set(doc.hidden);
 
-    const activeId = docs.some((doc) => doc.id === record.activeId)
-      ? record.activeId!
-      : docs[0].id;
-    this.loadDoc(activeId);
+    this.activeName.set(doc.name);
+    this.sort.set(doc.sort);
+    this.showCosmetic.set(doc.showCosmetic);
+    this.hidden.set(hidden);
+    this.layout.set(
+      this.reconcile(layout, hidden, doc.sort, doc.showCosmetic),
+    );
+    this.owned.set(owned);
+    this.cols.set(doc.cols);
+    this.rows.set(doc.rows);
+
+    this.undoStack = [];
+    this.redoStack = [];
+    this.syncHistory();
     this.syncSummaries();
     this.persist();
     return true;
@@ -994,8 +1103,12 @@ export class BinderStore {
       if (byNum.length) return byNum.map((slot) => slot.index);
     }
 
+    const labelled = this.slots().filter(
+      (slot) => !slot.card && slot.label?.toLowerCase().includes(needle),
+    );
+
     const exact: number[] = [];
-    const partial: number[] = [];
+    const partial: number[] = [...labelled.map((slot) => slot.index)];
     for (const slot of slots) {
       const card = slot.card!;
       const name = card.name.toLowerCase();

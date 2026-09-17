@@ -171,6 +171,72 @@ describe('BinderStore', () => {
     expect(store.stats().blanks).toBe(0);
   });
 
+  it('labels a blank and keeps it through a reload', () => {
+    const first = makeStore();
+    first.insertBlank(4);
+    const key = first.slots()[4].key;
+
+    first.setSlotLabel(key, '  Gen 4 — Sinnoh  ');
+    expect(first.slots()[4].label).toBe('Gen 4 — Sinnoh');
+
+    TestBed.resetTestingModule();
+    const second = makeStore();
+    expect(second.slots()[4].label).toBe('Gen 4 — Sinnoh');
+  });
+
+  it('clears a label when set to empty', () => {
+    const store = makeStore();
+    store.insertBlank(4);
+    const key = store.slots()[4].key;
+
+    store.setSlotLabel(key, 'Trades');
+    store.setSlotLabel(key, '   ');
+
+    expect(store.slots()[4].label).toBeNull();
+  });
+
+  it('refuses to label a card slot', () => {
+    const store = makeStore();
+    const key = store.slots()[0].key;
+    store.setSlotLabel(key, 'Nope');
+    expect(store.slots()[0].label).toBeNull();
+    expect(store.canUndo()).toBe(false);
+  });
+
+  it('undoes a label change', () => {
+    const store = makeStore();
+    store.insertBlank(4);
+    const key = store.slots()[4].key;
+    store.setSlotLabel(key, 'Dividers');
+
+    store.undo();
+    expect(store.slots()[4].label).toBeNull();
+  });
+
+  it('finds a divider by its label', () => {
+    const store = makeStore();
+    store.insertBlank(30);
+    const key = store.slots()[30].key;
+    store.setSlotLabel(key, 'Johto starts here');
+
+    const matches = store.findMatches('johto starts');
+    expect(matches).toContain(30);
+  });
+
+  it('spares labelled dividers when blanks are cleared', () => {
+    const store = makeStore();
+    store.insertBlank(3);
+    store.insertBlank(20);
+    store.setSlotLabel(store.slots()[20].key, 'Keep me');
+    expect(store.stats().blanks).toBe(2);
+
+    store.removeBlanks();
+
+    expect(store.stats().blanks).toBe(1);
+    const kept = store.slots().find((slot) => slot.label === 'Keep me');
+    expect(kept).toBeTruthy();
+  });
+
   it('clears every blank at once', () => {
     const store = makeStore();
     store.insertBlank(3);
@@ -218,26 +284,140 @@ describe('BinderStore', () => {
     expect(store.pageProgress().get(2)?.owned).toBe(0);
   });
 
-  it('marks a range of slots in one go', () => {
+  it('marks a set of slots owned in one step', () => {
     const store = makeStore();
-    const keys = store
-      .slots()
-      .slice(3, 9)
-      .map((slot) => slot.key);
+    const keys = new Set(
+      store
+        .slots()
+        .slice(3, 9)
+        .map((slot) => slot.key),
+    );
 
-    store.setRangeOwned(3, 8, true);
+    store.setOwnedKeys(keys, true);
     for (const key of keys) expect(store.isOwned(key)).toBe(true);
     expect(store.stats().owned).toBe(6);
 
-    store.setRangeOwned(8, 3, false);
+    store.undo();
+    expect(store.stats().owned).toBe(0);
+
+    store.redo();
+    store.setOwnedKeys(keys, false);
     expect(store.stats().owned).toBe(0);
   });
 
-  it('skips blanks when marking a range', () => {
+  it('skips blanks when marking a set owned', () => {
     const store = makeStore();
     store.insertBlank(4);
-    store.setRangeOwned(3, 6, true);
+    const keys = new Set(
+      store
+        .slots()
+        .slice(3, 7)
+        .map((slot) => slot.key),
+    );
+
+    store.setOwnedKeys(keys, true);
     expect(store.stats().owned).toBe(3);
+  });
+
+  it('records no history when a set is already owned', () => {
+    const store = makeStore();
+    const keys = new Set([store.slots()[0].key]);
+    store.setOwnedKeys(keys, false);
+    expect(store.canUndo()).toBe(false);
+  });
+
+  it('deletes a set of slots in one step', () => {
+    const store = makeStore();
+    const doomed = store.slots().slice(2, 5);
+    const keys = new Set(doomed.map((slot) => slot.key));
+    store.setOwnedKeys(keys, true);
+
+    store.removeKeys(keys);
+
+    expect(store.stats().cards).toBe(ACTIVE.length - 3);
+    expect(store.stats().owned).toBe(0);
+    expect(store.removed().map((card) => card.id)).toEqual(
+      doomed.map((slot) => slot.card!.id),
+    );
+
+    store.undo();
+    expect(store.stats().cards).toBe(ACTIVE.length);
+    expect(store.stats().owned).toBe(3);
+  });
+
+  it('keeps a species out of the removed tray while a copy survives', () => {
+    const store = makeStore();
+    const original = store.slots()[3];
+    store.duplicateAt(3);
+
+    store.removeKeys(new Set([original.key]));
+
+    expect(store.removed()).toEqual([]);
+    expect(cardIds(store)).toContain(original.card!.id);
+  });
+
+  it('moves a contiguous selection sideways', () => {
+    const store = makeStore();
+    const before = store.slots().map((slot) => slot.card!.name);
+    const keys = new Set(
+      store
+        .slots()
+        .slice(2, 4)
+        .map((slot) => slot.key),
+    );
+
+    expect(store.moveKeys(keys, 1)).toBe(true);
+
+    const after = store.slots().map((slot) => slot.card!.name);
+    expect(after[2]).toBe(before[4]);
+    expect(after[3]).toBe(before[2]);
+    expect(after[4]).toBe(before[3]);
+    expect(store.sort()).toBe('custom');
+  });
+
+  it('moves a selection a whole row at a time', () => {
+    const store = makeStore();
+    const target = store.slots()[20];
+    const keys = new Set([target.key]);
+
+    store.moveKeys(keys, -store.cols());
+
+    const moved = store.slots().find((slot) => slot.key === target.key)!;
+    expect(moved.index).toBe(16);
+    expect(moved.page).toBe(2);
+    expect(moved.pocket).toBe(1);
+  });
+
+  it('clamps a move at the ends instead of losing cards', () => {
+    const store = makeStore();
+    const keys = new Set([store.slots()[1].key]);
+
+    store.moveKeys(keys, -50);
+    expect(store.slots()[0].key).toBe([...keys][0]);
+    expect(store.stats().cards).toBe(ACTIVE.length);
+
+    expect(store.moveKeys(keys, -5)).toBe(false);
+  });
+
+  it('gathers a scattered selection into one block when moved', () => {
+    const store = makeStore();
+    const picked = [store.slots()[4], store.slots()[9]];
+    const keys = new Set(picked.map((slot) => slot.key));
+
+    store.moveKeys(keys, 1);
+
+    const positions = store
+      .slots()
+      .flatMap((slot, index) => (keys.has(slot.key) ? [index] : []));
+    expect(positions[1]).toBe(positions[0] + 1);
+    expect(store.stats().cards).toBe(ACTIVE.length);
+  });
+
+  it('ignores a move with no selection or no delta', () => {
+    const store = makeStore();
+    expect(store.moveKeys(new Set(), 1)).toBe(false);
+    expect(store.moveKeys(new Set([store.slots()[0].key]), 0)).toBe(false);
+    expect(store.canUndo()).toBe(false);
   });
 
   it('marks a card by exact name, id or dex number', () => {
@@ -435,9 +615,15 @@ describe('BinderStore', () => {
     expect(store.sort()).toBe('custom');
   });
 
-  it('undoes a bulk range mark in one step', () => {
+  it('undoes a bulk mark in one step', () => {
     const store = makeStore();
-    store.setRangeOwned(0, 20, true);
+    const keys = new Set(
+      store
+        .slots()
+        .slice(0, 21)
+        .map((slot) => slot.key),
+    );
+    store.setOwnedKeys(keys, true);
     expect(store.stats().owned).toBe(21);
 
     store.undo();
@@ -738,21 +924,83 @@ describe('BinderStore', () => {
 
   it('round-trips through export and import', () => {
     const first = makeStore();
-    const owned = first.slots()[4].key;
-    first.toggleOwned(owned);
+    const ownedCard = first.slots()[4].card!.id;
+    first.toggleOwned(first.slots()[4].key);
     first.insertBlank(2);
     first.setPageGrid(2, 2);
+    first.renameBinder('Master set');
     const exported = first.exportJson();
 
     first.clearOwned();
     first.removeBlanks();
     first.setPageGrid(4, 4);
+    first.renameBinder('Scratch');
 
     expect(first.importJson(exported)).toBe(true);
-    expect(first.isOwned(owned)).toBe(true);
+    expect(first.stats().owned).toBe(1);
     expect(first.stats().blanks).toBe(1);
     expect(first.cols()).toBe(2);
     expect(first.rows()).toBe(2);
+    expect(first.activeName()).toBe('Master set');
+
+    const owned = first.slots().find((slot) => first.isOwned(slot.key))!;
+    expect(owned.card!.id).toBe(ownedCard);
+  });
+
+  it('exports only the binder you are looking at', () => {
+    const store = makeStore();
+    store.renameBinder('First');
+    store.createBinder('Second');
+
+    const payload = JSON.parse(store.exportJson());
+
+    expect(payload.binders).toBeUndefined();
+    expect(payload.binder.name).toBe('Second');
+  });
+
+  it('imports into the current binder and leaves the others alone', () => {
+    const store = makeStore();
+    const firstId = store.activeId();
+    store.renameBinder('Keep me');
+    store.toggleOwned(store.slots()[0].key);
+    const exported = store.exportJson();
+
+    store.createBinder('Scratch');
+    const scratchId = store.activeId();
+    expect(store.stats().owned).toBe(0);
+
+    expect(store.importJson(exported)).toBe(true);
+
+    expect(store.binders().length).toBe(2);
+    expect(store.activeId()).toBe(scratchId);
+    expect(store.stats().owned).toBe(1);
+
+    store.switchTo(firstId);
+    expect(store.activeName()).toBe('Keep me');
+    expect(store.stats().owned).toBe(1);
+  });
+
+  it('still accepts an older multi-binder export file', () => {
+    const store = makeStore();
+    const legacy = JSON.stringify({
+      version: 2,
+      activeId: 'b2',
+      binders: [
+        { id: 'b1', name: 'One', layout: [], owned: [], hidden: [] },
+        {
+          id: 'b2',
+          name: 'Two',
+          layout: [{ key: 'k1', id: ACTIVE_IDS[0] }],
+          owned: ['k1'],
+          hidden: [],
+        },
+      ],
+    });
+
+    expect(store.importJson(legacy)).toBe(true);
+    expect(store.activeName()).toBe('Two');
+    expect(store.binders().length).toBe(1);
+    expect(store.stats().owned).toBe(1);
   });
 
   it('rejects an import that is not a binder export', () => {

@@ -170,8 +170,9 @@ export class BinderComponent {
 
   protected readonly jumpStatus = signal('');
 
-  private readonly anchor = signal<number | null>(null);
-  private anchorState = false;
+  protected readonly selected = signal<ReadonlySet<string>>(new Set());
+
+  private selectionAnchor: number | null = null;
   private logSeq = 0;
   private jumpTerm = '';
   private jumpCursor = -1;
@@ -262,7 +263,8 @@ export class BinderComponent {
     this.highlighted.set(null);
     this.candidates.set([]);
     this.entryLog.set([]);
-    this.anchor.set(null);
+    this.selected.set(new Set());
+    this.selectionAnchor = null;
     this.notFound.set(false);
     this.resetJumpCursor();
   }
@@ -286,47 +288,167 @@ export class BinderComponent {
       if (!confirm(`Re-sorting discards ${loses}. You can undo this.`)) return;
     }
     this.store.setSort(mode);
-    this.anchor.set(null);
+    this.clearSelection();
     this.resetJumpCursor();
   }
 
   protected onKeydown(event: KeyboardEvent): void {
-    if (!event.ctrlKey && !event.metaKey) return;
     const target = event.target as HTMLElement | null;
     const tag = target?.tagName;
-    if (tag === 'INPUT' || tag === 'TEXTAREA' || target?.isContentEditable) {
+    const typing =
+      tag === 'INPUT' || tag === 'TEXTAREA' || !!target?.isContentEditable;
+
+    if (event.ctrlKey || event.metaKey) {
+      if (typing) return;
+      const key = event.key.toLowerCase();
+      if (key === 'z' && !event.shiftKey) {
+        event.preventDefault();
+        this.store.undo();
+      } else if ((key === 'z' && event.shiftKey) || key === 'y') {
+        event.preventDefault();
+        this.store.redo();
+      } else if (key === 'a') {
+        event.preventDefault();
+        this.selectAll();
+      }
       return;
     }
 
-    const key = event.key.toLowerCase();
-    if (key === 'z' && !event.shiftKey) {
-      event.preventDefault();
-      this.store.undo();
-    } else if ((key === 'z' && event.shiftKey) || key === 'y') {
-      event.preventDefault();
-      this.store.redo();
+    if (typing) return;
+    if (event.key === 'Escape') {
+      this.clearSelection();
+      return;
     }
+    if (!this.selected().size) return;
+
+    switch (event.key) {
+      case 'Delete':
+      case 'Backspace':
+        event.preventDefault();
+        this.deleteSelected();
+        break;
+      case 'Enter':
+        event.preventDefault();
+        this.addSelected();
+        break;
+      case 'ArrowLeft':
+        event.preventDefault();
+        this.moveSelected(-1);
+        break;
+      case 'ArrowRight':
+        event.preventDefault();
+        this.moveSelected(1);
+        break;
+      case 'ArrowUp':
+        event.preventDefault();
+        this.moveSelected(-this.store.cols());
+        break;
+      case 'ArrowDown':
+        event.preventDefault();
+        this.moveSelected(this.store.cols());
+        break;
+      default:
+        break;
+    }
+  }
+
+  protected editLabel(slot: BinderSlot, event: Event): void {
+    event.stopPropagation();
+    if (slot.card) return;
+    const label = prompt(
+      'Label this divider (leave empty for a plain blank):',
+      slot.label ?? '',
+    );
+    if (label === null) return;
+    this.store.setSlotLabel(slot.key, label);
+  }
+
+  protected onWheel(event: WheelEvent): void {
+    if (event.ctrlKey || event.shiftKey) return;
+    if (Math.abs(event.deltaY) <= Math.abs(event.deltaX)) return;
+
+    const scroller = event.currentTarget as HTMLElement;
+    if (scroller.scrollWidth <= scroller.clientWidth) return;
+
+    const atStart = scroller.scrollLeft <= 0;
+    const atEnd =
+      scroller.scrollLeft + scroller.clientWidth >= scroller.scrollWidth - 1;
+    if ((event.deltaY < 0 && atStart) || (event.deltaY > 0 && atEnd)) return;
+
+    const step =
+      event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? scroller.clientWidth : 1;
+    event.preventDefault();
+    scroller.scrollLeft += event.deltaY * step;
   }
 
   protected drop(event: CdkDragDrop<unknown>): void {
     if (event.previousIndex === event.currentIndex) return;
     this.store.move(event.previousIndex, event.currentIndex);
-    this.anchor.set(null);
+    this.selectionAnchor = null;
   }
 
-  protected onCardClick(slot: BinderSlot, event: MouseEvent): void {
-    const card = slot.card;
-    if (!card) return;
+  protected isSelected(key: string): boolean {
+    return this.selected().has(key);
+  }
 
-    const anchor = this.anchor();
-    if (event.shiftKey && anchor !== null && anchor !== slot.index) {
-      this.store.setRangeOwned(anchor, slot.index, this.anchorState);
+  protected onSlotClick(slot: BinderSlot, event: MouseEvent): void {
+    if (event.shiftKey && this.selectionAnchor !== null) {
+      const from = Math.min(this.selectionAnchor, slot.index);
+      const to = Math.max(this.selectionAnchor, slot.index);
+      const next = new Set(this.selected());
+      for (const entry of this.store.slots()) {
+        if (entry.index >= from && entry.index <= to) next.add(entry.key);
+      }
+      this.selected.set(next);
       return;
     }
 
+    if (event.ctrlKey || event.metaKey) {
+      const next = new Set(this.selected());
+      if (!next.delete(slot.key)) next.add(slot.key);
+      this.selected.set(next);
+      this.selectionAnchor = slot.index;
+      return;
+    }
+
+    const onlyThis = this.selected().size === 1 && this.isSelected(slot.key);
+    this.selected.set(onlyThis ? new Set() : new Set([slot.key]));
+    this.selectionAnchor = onlyThis ? null : slot.index;
+  }
+
+  protected toggleOwnedAt(slot: BinderSlot, event: Event): void {
+    event.stopPropagation();
+    if (!slot.card) return;
     this.store.toggleOwned(slot.key);
-    this.anchor.set(slot.index);
-    this.anchorState = this.store.isOwned(slot.key);
+  }
+
+  protected addSelected(): void {
+    this.store.setOwnedKeys(this.selected(), true);
+  }
+
+  protected deleteSelected(): void {
+    const keys = this.selected();
+    if (!keys.size) return;
+    this.store.removeKeys(keys);
+    this.clearSelection();
+  }
+
+  protected moveSelected(delta: number): void {
+    if (!this.store.moveKeys(this.selected(), delta)) return;
+    const first = this.store
+      .slots()
+      .find((slot) => this.isSelected(slot.key));
+    this.selectionAnchor = first?.index ?? null;
+  }
+
+  protected clearSelection(): void {
+    this.selected.set(new Set());
+    this.selectionAnchor = null;
+  }
+
+  protected selectAll(): void {
+    this.selected.set(new Set(this.store.slots().map((slot) => slot.key)));
+    this.selectionAnchor = 0;
   }
 
   protected submit(): void {
@@ -542,7 +664,13 @@ export class BinderComponent {
     const url = URL.createObjectURL(blob);
     const link = document.createElement('a');
     link.href = url;
-    link.download = `binder-${new Date().toISOString().slice(0, 10)}.json`;
+    const slug =
+      this.store
+        .activeName()
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, '-')
+        .replace(/^-|-$/g, '') || 'binder';
+    link.download = `${slug}-${new Date().toISOString().slice(0, 10)}.json`;
     link.click();
     URL.revokeObjectURL(url);
   }
@@ -554,7 +682,7 @@ export class BinderComponent {
     if (!file) return;
     if (
       !confirm(
-        `Replace the current binder with “${file.name}”? Everything saved here is overwritten.`,
+        `Replace “${this.store.activeName()}” with the binder in “${file.name}”? Your other binders are untouched.`,
       )
     ) {
       return;

@@ -22,16 +22,6 @@
       <button
         pdz-page-header-actions
         pdz-button
-        variant="outlined"
-        color="neutral"
-        icon="add_box"
-        (click)="store.appendBlank()"
-      >
-        Add blank
-      </button>
-      <button
-        pdz-page-header-actions
-        pdz-button
         icon="print"
         (click)="openPrintOptions()"
       >
@@ -324,7 +314,7 @@
       }
     </div>
 
-    <div class="binder__scroller">
+    <div class="binder__scroller" (wheel)="onWheel($event)">
       <div
         class="binder__grid"
         [style.gridAutoColumns]="autoColumns()"
@@ -342,7 +332,10 @@
             [style.gridRow]="slot.gridRow"
             [style.gridColumn]="slot.gridColumn"
             [class.binder__slot--owned]="slot.card && store.isOwned(slot.key)"
-            [class.binder__slot--blank]="!slot.card"
+            [class.binder__slot--page-start]="slot.pocket === 1"
+            [class.binder__slot--blank]="!slot.card && !slot.label"
+            [class.binder__slot--divider]="!slot.card && slot.label"
+            [class.binder__slot--selected]="isSelected(slot.key)"
             [class.binder__slot--target]="highlighted() === slot.index"
           >
             @if (slot.pocket === 1) {
@@ -400,6 +393,15 @@
                 >
                   <pdz-icon name="content_copy" [size]="14" />
                 </button>
+              } @else {
+                <button
+                  type="button"
+                  class="binder__tool"
+                  aria-label="Label this divider"
+                  (click)="editLabel(slot, $event)"
+                >
+                  <pdz-icon name="label" [size]="14" />
+                </button>
               }
               @if (slot.pocket > 1) {
                 <button
@@ -424,9 +426,29 @@
             @if (slot.card; as card) {
               <button
                 type="button"
-                class="binder__card"
+                class="binder__own"
                 [attr.aria-pressed]="store.isOwned(slot.key)"
-                (click)="onCardClick(slot, $event)"
+                [attr.aria-label]="
+                  (store.isOwned(slot.key) ? 'Remove ' : 'Add ') + card.name
+                "
+                (click)="toggleOwnedAt(slot, $event)"
+              >
+                <pdz-icon
+                  [name]="
+                    store.isOwned(slot.key)
+                      ? 'check_circle'
+                      : 'radio_button_unchecked'
+                  "
+                  [size]="18"
+                  [fill]="store.isOwned(slot.key)"
+                />
+              </button>
+
+              <button
+                type="button"
+                class="binder__card"
+                [attr.aria-selected]="isSelected(slot.key)"
+                (click)="onSlotClick(slot, $event)"
               >
                 <pdz-sprite-image [pokemon]="card" size="3.25rem" />
                 <span class="binder__name">{{ card.name }}</span>
@@ -442,21 +464,23 @@
                     #{{ card.num }}
                   }
                 </span>
-                @if (store.isOwned(slot.key)) {
-                  <pdz-icon
-                    class="binder__check"
-                    name="check_circle"
-                    [size]="18"
-                    fill
-                    aria-hidden="true"
-                  />
-                }
               </button>
             } @else {
-              <div class="binder__gap">
-                <pdz-icon name="crop_free" [size]="20" aria-hidden="true" />
-                <span>Blank</span>
-              </div>
+              <button
+                type="button"
+                class="binder__card binder__gap"
+                [class.binder__gap--labelled]="slot.label"
+                [attr.aria-selected]="isSelected(slot.key)"
+                (click)="onSlotClick(slot, $event)"
+              >
+                @if (slot.label; as label) {
+                  <pdz-icon name="bookmark" [size]="20" aria-hidden="true" />
+                  <span class="binder__divider-label">{{ label }}</span>
+                } @else {
+                  <pdz-icon name="crop_free" [size]="20" aria-hidden="true" />
+                  <span>Blank</span>
+                }
+              </button>
             }
           </div>
         }
@@ -490,6 +514,90 @@
           Restore all
         </button>
       </pdz-disclosure>
+    }
+
+    @if (selected().size; as count) {
+      <div class="binder__selection">
+        <span class="binder__selection-count">{{ count }} selected</span>
+
+        <button
+          pdz-button
+          size="sm"
+          variant="outlined"
+          color="neutral"
+          icon="check_circle"
+          (click)="addSelected()"
+        >
+          Add
+        </button>
+        <button
+          pdz-button
+          size="sm"
+          variant="outlined"
+          color="danger"
+          icon="delete"
+          (click)="deleteSelected()"
+        >
+          Delete
+        </button>
+
+        <span class="binder__selection-label">Move</span>
+        <button
+          pdz-button
+          size="sm"
+          variant="outlined"
+          color="neutral"
+          icon="arrow_back"
+          iconOnly
+          aria-label="Move selection left"
+          (click)="moveSelected(-1)"
+        ></button>
+        <button
+          pdz-button
+          size="sm"
+          variant="outlined"
+          color="neutral"
+          icon="arrow_forward"
+          iconOnly
+          aria-label="Move selection right"
+          (click)="moveSelected(1)"
+        ></button>
+        <button
+          pdz-button
+          size="sm"
+          variant="outlined"
+          color="neutral"
+          icon="arrow_upward"
+          iconOnly
+          aria-label="Move selection up a row"
+          (click)="moveSelected(-store.cols())"
+        ></button>
+        <button
+          pdz-button
+          size="sm"
+          variant="outlined"
+          color="neutral"
+          icon="arrow_downward"
+          iconOnly
+          aria-label="Move selection down a row"
+          (click)="moveSelected(store.cols())"
+        ></button>
+
+        <span class="binder__toolbar-spacer"></span>
+
+        <span class="binder__selection-hint">
+          Enter adds · Del removes · arrows move · Esc clears
+        </span>
+        <button
+          pdz-button
+          size="sm"
+          variant="ghost"
+          color="neutral"
+          (click)="clearSelection()"
+        >
+          Clear
+        </button>
+      </div>
     }
 
     <iframe
