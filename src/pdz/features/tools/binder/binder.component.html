@@ -1,0 +1,501 @@
+<pdz-page width="full">
+  <div class="binder">
+    <pdz-page-header title="Card Binder">
+      <div pdz-page-header-meta class="binder__stats">
+        <pdz-chip size="sm" variant="outline">
+          <strong>{{ store.stats().owned }}</strong> / {{ store.stats().cards }}
+          owned
+        </pdz-chip>
+        <pdz-chip size="sm" variant="outline">
+          {{ store.stats().percent }}%
+        </pdz-chip>
+        <pdz-chip size="sm" variant="outline">
+          {{ store.stats().pages }} pages
+        </pdz-chip>
+        @if (store.stats().blanks) {
+          <pdz-chip size="sm" variant="outline">
+            {{ store.stats().blanks }} blanks
+          </pdz-chip>
+        }
+      </div>
+
+      <button
+        pdz-page-header-actions
+        pdz-button
+        variant="outlined"
+        color="neutral"
+        icon="add_box"
+        (click)="store.appendBlank()"
+      >
+        Add blank
+      </button>
+      <button
+        pdz-page-header-actions
+        pdz-button
+        icon="print"
+        (click)="openPrintOptions()"
+      >
+        Print
+      </button>
+
+      <div class="binder__toolbar">
+        <label pdz-field label="Binder" inline>
+          <pdz-select
+            aria-label="Which binder"
+            [ngModel]="store.activeId()"
+            (ngModelChange)="switchBinder($event)"
+          >
+            @for (option of store.binders(); track option.id) {
+              <pdz-option
+                [value]="option.id"
+                [label]="option.name + ' (' + option.cards + ')'"
+              />
+            }
+          </pdz-select>
+        </label>
+        <button
+          pdz-button
+          variant="outlined"
+          color="neutral"
+          size="sm"
+          icon="library_add"
+          iconOnly
+          aria-label="New binder"
+          (click)="newBinder()"
+        ></button>
+        <button
+          pdz-button
+          variant="outlined"
+          color="neutral"
+          size="sm"
+          icon="edit"
+          iconOnly
+          aria-label="Rename this binder"
+          (click)="renameBinder()"
+        ></button>
+        <button
+          pdz-button
+          variant="outlined"
+          color="danger"
+          size="sm"
+          icon="delete"
+          iconOnly
+          aria-label="Delete this binder"
+          [disabled]="store.binders().length < 2"
+          (click)="deleteBinder()"
+        ></button>
+
+        <label pdz-field label="Sort by" inline>
+          <pdz-select
+            aria-label="Sort by"
+            [ngModel]="store.sort()"
+            (ngModelChange)="setSort($event)"
+          >
+            @for (option of sortModes; track option.id) {
+              <pdz-option
+                [value]="option.id"
+                [label]="option.label"
+                [disabled]="option.id === 'custom' && store.sort() !== 'custom'"
+              />
+            }
+          </pdz-select>
+        </label>
+
+        <label pdz-field label="Columns" inline>
+          <input
+            #cols
+            pdz-input
+            class="binder__axis"
+            type="number"
+            [min]="minAxis"
+            [max]="maxAxis"
+            [value]="store.cols()"
+            (change)="store.setPageGrid(cols.value, rows.value)"
+          />
+        </label>
+
+        <label pdz-field label="Rows" inline>
+          <input
+            #rows
+            pdz-input
+            class="binder__axis"
+            type="number"
+            [min]="minAxis"
+            [max]="maxAxis"
+            [value]="store.rows()"
+            (change)="store.setPageGrid(cols.value, rows.value)"
+          />
+        </label>
+
+        <label
+          pdz-check
+          [label]="'Show cosmetic variants (' + cosmeticCount + ')'"
+        >
+          <input
+            pdz-checkbox
+            type="checkbox"
+            [ngModel]="store.showCosmetic()"
+            (ngModelChange)="store.setShowCosmetic($event)"
+          />
+        </label>
+
+        <span class="binder__toolbar-spacer"></span>
+
+        <button
+          pdz-button
+          variant="ghost"
+          color="neutral"
+          size="sm"
+          (click)="exportJson()"
+        >
+          Export
+        </button>
+        <label pdz-button variant="ghost" color="neutral" size="sm">
+          Import
+          <input
+            type="file"
+            accept="application/json,.json"
+            class="binder__file"
+            (change)="importJson($event)"
+          />
+        </label>
+        <button
+          pdz-button
+          variant="ghost"
+          color="neutral"
+          size="sm"
+          [disabled]="!store.stats().blanks"
+          (click)="removeBlanks()"
+        >
+          Clear blanks
+        </button>
+        <button
+          pdz-button
+          variant="ghost"
+          color="neutral"
+          size="sm"
+          (click)="clearOwned()"
+        >
+          Clear owned
+        </button>
+        <button
+          pdz-button
+          variant="ghost"
+          color="neutral"
+          size="sm"
+          (click)="resetLayout()"
+        >
+          Reset order
+        </button>
+      </div>
+    </pdz-page-header>
+
+    <div class="binder__findbar">
+      <div class="binder__findbar-row">
+        <pdz-segmented
+          [value]="mode()"
+          (valueChange)="setMode($any($event))"
+          aria-label="What the box below does"
+        >
+          <pdz-segmented-option value="jump" label="Jump to" />
+          <pdz-segmented-option value="mark" label="Mark owned" />
+          <pdz-segmented-option value="add" label="Add card" />
+        </pdz-segmented>
+
+        <label
+          pdz-field
+          [label]="entryLabel()"
+          [hint]="entryHint()"
+          inline
+          class="binder__entry"
+        >
+          <input
+            #entry
+            pdz-input
+            placeholder="Charizard-Mega-X or 6"
+            [ngModel]="search()"
+            (ngModelChange)="search.set($event)"
+            (keydown.enter)="submit()"
+          />
+        </label>
+        <button
+          pdz-button
+          variant="outlined"
+          color="neutral"
+          size="sm"
+          [icon]="entryIcon()"
+          (click)="submit()"
+        >
+          {{ entryAction() }}
+        </button>
+
+        <label pdz-field label="Go to page" inline>
+          <input
+            pdz-input
+            type="number"
+            min="1"
+            [max]="store.stats().pages"
+            placeholder="1"
+            (keydown.enter)="jumpToPage($any($event.target).value)"
+          />
+        </label>
+
+        <span class="binder__toolbar-spacer"></span>
+
+        <span class="binder__progress">
+          <strong>{{ store.stats().owned }}</strong> / {{ store.stats().cards }}
+        </span>
+
+        <button
+          pdz-button
+          variant="outlined"
+          color="neutral"
+          size="sm"
+          icon="undo"
+          iconOnly
+          aria-label="Undo (Ctrl+Z)"
+          [disabled]="!store.canUndo()"
+          (click)="store.undo()"
+        ></button>
+        <button
+          pdz-button
+          variant="outlined"
+          color="neutral"
+          size="sm"
+          icon="redo"
+          iconOnly
+          aria-label="Redo (Ctrl+Shift+Z)"
+          [disabled]="!store.canRedo()"
+          (click)="store.redo()"
+        ></button>
+      </div>
+
+      @if (notFound()) {
+        <p class="binder__miss">No slot matches “{{ search() }}”.</p>
+      }
+
+      @if (candidates().length) {
+        <div class="binder__candidates">
+          <span class="binder__candidates-label">Which one?</span>
+          @for (card of candidates(); track card.id) {
+            <button
+              type="button"
+              class="binder__candidate"
+              (click)="chooseCandidate(card)"
+            >
+              <pdz-sprite-image [pokemon]="card" size="1.5rem" />
+              <span>{{ card.name }}</span>
+            </button>
+          }
+        </div>
+      }
+
+      @if (entryLog().length) {
+        <div class="binder__log-wrap">
+          <ul class="binder__log">
+            @for (entry of entryLog(); track entry.seq) {
+              <li class="binder__log-row" [attr.data-tone]="entry.tone">
+                <span>{{ entry.text }}</span>
+                @if (entry.undoId) {
+                  <button
+                    pdz-button
+                    size="xs"
+                    variant="ghost"
+                    color="neutral"
+                    (click)="undo(entry)"
+                  >
+                    Undo
+                  </button>
+                }
+              </li>
+            }
+          </ul>
+          <button
+            pdz-button
+            size="xs"
+            variant="ghost"
+            color="neutral"
+            icon="close"
+            iconOnly
+            aria-label="Clear the entry log"
+            (click)="entryLog.set([])"
+          ></button>
+        </div>
+      }
+    </div>
+
+    <div class="binder__scroller">
+      <div
+        class="binder__grid"
+        [style.gridAutoColumns]="autoColumns()"
+        [style.gridTemplateRows]="templateRows()"
+        cdkDropList
+        cdkDropListOrientation="mixed"
+        (cdkDropListDropped)="drop($event)"
+      >
+        @for (slot of store.slots(); track slot.key) {
+          <div
+            class="binder__slot"
+            cdkDrag
+            [attr.data-slot-index]="slot.index"
+            [attr.data-kind]="slot.card?.kind ?? 'blank'"
+            [style.gridRow]="slot.gridRow"
+            [style.gridColumn]="slot.gridColumn"
+            [class.binder__slot--owned]="slot.card && store.isOwned(slot.key)"
+            [class.binder__slot--blank]="!slot.card"
+            [class.binder__slot--target]="highlighted() === slot.index"
+          >
+            @if (slot.pocket === 1) {
+              <div class="binder__page-tab">
+                <span class="binder__page-name">Page {{ slot.page }}</span>
+                @if (store.pageProgress().get(slot.page); as progress) {
+                  <span class="binder__page-count">
+                    {{ progress.owned }}/{{ progress.cards }}
+                  </span>
+                }
+                <button
+                  pdz-button
+                  size="xs"
+                  variant="ghost"
+                  color="neutral"
+                  (click)="store.setPageOwned(slot.page, true)"
+                >
+                  All
+                </button>
+                <button
+                  pdz-button
+                  size="xs"
+                  variant="ghost"
+                  color="neutral"
+                  (click)="store.setPageOwned(slot.page, false)"
+                >
+                  None
+                </button>
+              </div>
+            }
+
+            <div class="binder__tools">
+              <button
+                type="button"
+                class="binder__tool binder__tool--handle"
+                cdkDragHandle
+                aria-label="Drag to reorder"
+              >
+                <pdz-icon name="drag_indicator" [size]="14" />
+              </button>
+              <button
+                type="button"
+                class="binder__tool"
+                aria-label="Insert blank pocket before this one"
+                (click)="store.insertBlank(slot.index)"
+              >
+                <pdz-icon name="add" [size]="14" />
+              </button>
+              @if (slot.card) {
+                <button
+                  type="button"
+                  class="binder__tool"
+                  aria-label="Add another copy of this card"
+                  (click)="store.duplicateAt(slot.index)"
+                >
+                  <pdz-icon name="content_copy" [size]="14" />
+                </button>
+              }
+              @if (slot.pocket > 1) {
+                <button
+                  type="button"
+                  class="binder__tool"
+                  aria-label="Pad with blanks so this card starts a new page"
+                  (click)="store.padToPageEnd(slot.index)"
+                >
+                  <pdz-icon name="move_down" [size]="14" />
+                </button>
+              }
+              <button
+                type="button"
+                class="binder__tool"
+                aria-label="Remove this pocket"
+                (click)="store.removeAt(slot.index)"
+              >
+                <pdz-icon name="close" [size]="14" />
+              </button>
+            </div>
+
+            @if (slot.card; as card) {
+              <button
+                type="button"
+                class="binder__card"
+                [attr.aria-pressed]="store.isOwned(slot.key)"
+                (click)="onCardClick(slot, $event)"
+              >
+                <pdz-sprite-image [pokemon]="card" size="3.25rem" />
+                <span class="binder__name">{{ card.name }}</span>
+                @if (slot.copies > 1) {
+                  <span class="binder__copy"
+                    >{{ slot.copy }}/{{ slot.copies }}</span
+                  >
+                }
+                <span class="binder__num">
+                  @if (store.sort() === "type") {
+                    {{ card.types.join(" / ") }}
+                  } @else {
+                    #{{ card.num }}
+                  }
+                </span>
+                @if (store.isOwned(slot.key)) {
+                  <pdz-icon
+                    class="binder__check"
+                    name="check_circle"
+                    [size]="18"
+                    fill
+                    aria-hidden="true"
+                  />
+                }
+              </button>
+            } @else {
+              <div class="binder__gap">
+                <pdz-icon name="crop_free" [size]="20" aria-hidden="true" />
+                <span>Blank</span>
+              </div>
+            }
+          </div>
+        }
+      </div>
+    </div>
+
+    @if (store.removed().length) {
+      <pdz-disclosure
+        [heading]="'Removed cards (' + store.removed().length + ')'"
+      >
+        <div class="binder__removed">
+          @for (card of store.removed(); track card.id) {
+            <button
+              type="button"
+              class="binder__restore"
+              (click)="store.restore(card.id)"
+            >
+              <pdz-sprite-image [pokemon]="card" size="2rem" />
+              <span>{{ card.name }}</span>
+              <pdz-icon name="undo" [size]="14" aria-hidden="true" />
+            </button>
+          }
+        </div>
+        <button
+          pdz-button
+          variant="outlined"
+          color="neutral"
+          size="sm"
+          (click)="store.restoreAll()"
+        >
+          Restore all
+        </button>
+      </pdz-disclosure>
+    }
+
+    <iframe
+      #printFrame
+      class="binder__print-frame"
+      title="Print preview"
+    ></iframe>
+  </div>
+</pdz-page>

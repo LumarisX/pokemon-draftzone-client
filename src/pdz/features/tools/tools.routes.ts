@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { BinderComponent } from './binder/binder.component';
 import { PokemonSearchComponent } from './pokemon-search/pokemon-search.component';
 import { QuickMatchupBaseComponent } from './quick-matchup/quick-matchup-base.component';
 import { RandomDraftComponent } from './random-draft/random-draft.component';
@@ -48,5 +49,9 @@ export const routes: Routes = [
   {
     path: 'wheel',
     component: WheelComponent,
+  },
+  {
+    path: 'binder',
+    component: BinderComponent,
   },
 ];
