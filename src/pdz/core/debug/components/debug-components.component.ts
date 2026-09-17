@@ -46,6 +46,7 @@ import {
 import { DialogService } from '@pdz/shared/dialogs/dialog/dialog.service';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
 import { TooltipDirective } from '@pdz/shared/tooltip/tooltip.directive';
+import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
 import { WidgetComponent } from '@pdz/shared/layout/widget/widget.component';
 import { SlideToggleComponent } from '@pdz/shared/inputs/slide-toggle/slide-toggle.component';
 import {
@@ -117,6 +118,7 @@ const MODE_ATTR = 'pdz-theme-mode';
     TooltipDirective,
     DialogComponent,
     WidgetComponent,
+    PageHeaderComponent,
     SlideToggleComponent,
     SliderComponent,
     SortDirective,

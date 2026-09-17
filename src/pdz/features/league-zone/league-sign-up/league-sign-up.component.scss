@@ -3,7 +3,6 @@
 
 :host {
   position: relative;
-  padding: pdz.space(md);
   display: block;
 }
 
@@ -14,37 +13,6 @@
     display: flex;
     flex-direction: column;
     gap: pdz.space(md);
-  }
-}
-
-// ─── Toolbar (matches tier-list toolbar) ──────────────────────────────────
-.toolbar {
-  display: flex;
-  gap: pdz.space(sm);
-  align-items: center;
-  flex-wrap: wrap;
-  padding: pdz.space(sm) pdz.space(md);
-  border-radius: pdz.shape(corner-md);
-
-  &__title {
-    @include text(title);
-    font-family: var(--pdz-font-display);
-    color: pdz.color(on-surface);
-    margin: 0;
-    flex: 1;
-    min-width: 12rem;
-  }
-
-  &__spacer {
-    flex: 1;
-  }
-
-  &__logo {
-    max-height: 4rem;
-    height: auto;
-    width: auto;
-    max-width: 10rem;
-    object-fit: contain;
   }
 }
 

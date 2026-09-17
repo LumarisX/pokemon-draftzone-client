@@ -7,6 +7,7 @@ import { DialogService } from '@pdz/shared/dialogs/dialog/dialog.service';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
+import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
 import { interval, Observable, of, Subject, switchMap } from 'rxjs';
 import {
   distinctUntilChanged,
@@ -24,12 +25,12 @@ import {
   CoachEditDialogComponent,
   CoachEditDialogData,
   CoachEditDialogResult,
-} from '../tournaments/tournament-home/coach-edit-dialog/coach-edit-dialog.component';
+} from '../dialogs/coach-edit-dialog/coach-edit-dialog.component';
 import {
   TeamEditDialogComponent,
   TeamEditDialogData,
   TeamEditDialogResult,
-} from '../tournaments/tournament-home/team-edit-dialog/team-edit-dialog.component';
+} from '../dialogs/team-edit-dialog/team-edit-dialog.component';
 import {
   TradeProposeDialogComponent,
   TradeProposeDialogData,
@@ -56,6 +57,7 @@ const ALLOWED_LOGO_TYPES = [
     SpriteComponent,
     LeagueTradeWidgetComponent,
     LeagueScheduleWidgetComponent,
+    PageHeaderComponent,
   ],
   templateUrl: './league-team.component.html',
   styleUrls: ['./league-team.component.scss'],

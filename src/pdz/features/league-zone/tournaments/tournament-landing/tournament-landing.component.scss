@@ -9,80 +9,8 @@
 }
 
 .landing-header {
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  gap: pdz.space(lg);
-  padding: pdz.space(lg);
-  border: 1px solid pdz.color(outline-variant);
-  border-radius: pdz.shape(corner-lg);
-  background: pdz.color(surface-container-low);
-
-  @include respond-above(medium) {
-    flex-direction: row;
-    align-items: flex-start;
-    justify-content: space-between;
-  }
-
-  &__identity {
-    display: flex;
-    align-items: center;
-    gap: pdz.space(md);
-    min-width: 0;
-    flex: 1 1 auto;
-  }
-
-  &__logo {
-    @include pdz-league-logo(4.5rem);
-  }
-
-  &__text {
-    display: flex;
-    flex-direction: column;
-    gap: pdz.space(2xs);
-    min-width: 0;
-  }
-
-  &__league {
-    @include pdz.text(label);
-    display: inline-flex;
-    align-items: center;
-    gap: pdz.space(2xs);
-    width: fit-content;
-    color: pdz.color(on-surface-variant);
-    text-decoration: none;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    transition: color pdz.duration(fast) pdz.easing(standard);
-
-    &:hover,
-    &:focus-visible {
-      color: pdz.color(primary-accent);
-    }
-  }
-
-  &__title {
-    @include pdz-league-page-title();
-  }
-
-  &__meta {
-    @include pdz.text(body-sm);
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: pdz.space(xs);
-    color: pdz.color(on-surface-variant);
-  }
-
   &__dot {
     color: pdz.color(outline-variant);
-  }
-
-  &__description {
-    @include pdz.text(body-sm);
-    margin: pdz.space(2xs) 0 0;
-    max-width: 60ch;
-    color: pdz.color(on-surface-variant);
   }
 
   &__actions {
@@ -108,6 +36,25 @@
     flex-wrap: wrap;
     gap: pdz.space(lg);
     margin: 0;
+  }
+}
+
+.landing-header-skeleton {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: pdz.space(md);
+  padding: pdz.space(md) pdz.space(lg);
+  border: 1px solid pdz.color(outline-variant);
+  border-radius: pdz.shape(corner-lg);
+  background: pdz.color(surface-container-low);
+
+  &__text {
+    display: flex;
+    flex: 1 1 12rem;
+    flex-direction: column;
+    gap: pdz.space(2xs);
+    min-width: 0;
   }
 }
 

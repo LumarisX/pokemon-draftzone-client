@@ -132,8 +132,20 @@ $gutter-width: var(--gutter-width, 11rem);
     }
   }
 
+  &__best-of {
+    @include text(label);
+    color: inherit;
+    opacity: 0.75;
+    background: none;
+    border: 1px solid transparent;
+    border-radius: pdz.shape("corner-xs");
+    padding: pdz.space(3xs) pdz.space(2xs);
+    width: 4rem;
+  }
+
   input#{&}__name,
-  input#{&}__deadline {
+  input#{&}__deadline,
+  input#{&}__best-of {
     &:hover,
     &:focus {
       border-color: pdz.color("outline-variant");

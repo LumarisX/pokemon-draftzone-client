@@ -1,0 +1,127 @@
+@if (loading()) {
+  <pdz-loading></pdz-loading>
+} @else {
+  <div class="organizers">
+    <pdz-page-header
+      title="Organizers"
+      eyebrow="Manage"
+      subtitle="Organizers can manage every part of this tournament. Only the owner can change this list."
+    />
+
+    <section class="panel">
+      <h2 class="panel__title">Current</h2>
+      <ul class="people">
+        @for (organizer of organizers(); track organizer.sub) {
+          <li class="person">
+            <span class="person__icon">
+              <pdz-icon
+                [name]="organizer.isOwner ? 'shield_person' : 'person'"
+                [size]="20"
+              />
+            </span>
+            <span class="person__body">
+              <span class="person__name">{{ label(organizer) }}</span>
+              @if (organizer.isOwner) {
+                <span class="person__note">Owner</span>
+              }
+            </span>
+            @if (canEdit() && !organizer.isOwner) {
+              <button
+                pdz-button
+                size="sm"
+                color="danger"
+                variant="outlined"
+                [disabled]="busySub() === organizer.sub"
+                (click)="remove(organizer)"
+              >
+                Remove
+              </button>
+            }
+          </li>
+        }
+      </ul>
+    </section>
+
+    @if (canEdit()) {
+      <section class="panel">
+        <h2 class="panel__title">Add by username</h2>
+        <label pdz-field class="panel__field">
+          <input
+            pdz-input
+            type="search"
+            placeholder="Search usernames"
+            [ngModel]="query"
+            (ngModelChange)="onQueryChange($event)"
+            aria-label="Search usernames"
+          />
+        </label>
+
+        @if (searching()) {
+          <p class="panel__hint">Searching…</p>
+        } @else if (candidates().length) {
+          <ul class="people">
+            @for (candidate of candidates(); track candidate.sub) {
+              <li class="person">
+                <span class="person__icon">
+                  <pdz-icon name="person_add" [size]="20" />
+                </span>
+                <span class="person__body">
+                  <span class="person__name">
+                    {{ candidate.username ?? candidate.sub }}
+                  </span>
+                  <span class="person__note">
+                    Joined {{ candidate.joined | date: "MMM y" }}
+                  </span>
+                </span>
+                <button
+                  pdz-button
+                  size="sm"
+                  [disabled]="busySub() === candidate.sub"
+                  (click)="addBySub(candidate)"
+                >
+                  Add
+                </button>
+              </li>
+            }
+          </ul>
+        } @else if (query.trim().length >= 2) {
+          <p class="panel__hint">No users match that name.</p>
+        }
+      </section>
+
+      <section class="panel">
+        <h2 class="panel__title">Promote a participant</h2>
+        @if (promotableCoaches().length) {
+          <ul class="people">
+            @for (coach of promotableCoaches(); track coach.id) {
+              <li class="person">
+                <span class="person__icon">
+                  <pdz-icon name="person" [size]="20" />
+                </span>
+                <span class="person__body">
+                  <span class="person__name">{{ coach.name }}</span>
+                  <span class="person__note">{{ coach.teamName }}</span>
+                </span>
+                <button
+                  pdz-button
+                  size="sm"
+                  variant="outlined"
+                  [disabled]="busySub() === coach.id"
+                  (click)="addByCoach(coach)"
+                >
+                  Add
+                </button>
+              </li>
+            }
+          </ul>
+        } @else {
+          <pdz-empty-state
+            icon="group_off"
+            heading="No participants yet"
+            message="Coaches appear here once they sign up."
+          ></pdz-empty-state>
+        }
+      </section>
+    }
+  </div>
+}

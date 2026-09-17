@@ -1,17 +1,19 @@
 import { CommonModule } from '@angular/common';
 import { Component, input } from '@angular/core';
-import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { RouterLink } from '@angular/router';
+import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
+import { CardComponent } from '@pdz/shared/data/card/card.component';
+import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
 import { League } from '../../league.interface';
 import { getLogoUrl } from '../../league.util';
-import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 
 @Component({
   selector: 'pdz-league-team-card',
   imports: [
     CommonModule,
     ButtonComponent,
+    CardComponent,
     SpriteComponent,
     IconComponent,
     RouterLink,

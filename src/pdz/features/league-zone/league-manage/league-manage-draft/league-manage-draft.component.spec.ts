@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
 import { of, EMPTY } from 'rxjs';
 import { By } from '@angular/platform-browser';
 
@@ -60,6 +61,7 @@ describe('LeagueManageDraftComponent', () => {
     await TestBed.configureTestingModule({
       imports: [LeagueManageDraftComponent],
       providers: [
+        provideRouter([]),
         {
           provide: LeagueZoneService,
           useValue: {

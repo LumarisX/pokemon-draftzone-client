@@ -2,49 +2,15 @@
 @use "mixins" as *;
 
 :host {
-  display: block;
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(lg);
   min-width: 0;
-  padding: pdz.space(lg);
   max-width: 90rem;
   margin: 0 auto;
-
-  @include respond-above(medium) {
-    padding: pdz.space(xl);
-  }
 }
 
-// ── Page header ───────────────────────────────────────────────────────────────
-
 .page-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: pdz.space(md);
-  flex-wrap: wrap;
-  margin-bottom: pdz.space(xl);
-
-  &__heading {
-    display: flex;
-    flex-direction: column;
-    row-gap: pdz.space(2xs);
-    min-width: 0;
-  }
-
-  &__title {
-    @include text(subtitle);
-    font-family: var(--pdz-font-display);
-    color: pdz.color(on-surface);
-    margin: 0;
-  }
-
-  &__status {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    column-gap: pdz.space(xs);
-    margin: 0;
-  }
-
   &__status-badge {
     @include text(label);
     display: inline-flex;
@@ -72,13 +38,7 @@
   }
 
   &__status-detail {
-    @include text(body-sm);
     color: pdz.color(on-surface-variant);
-  }
-
-  &__actions {
-    display: flex;
-    gap: pdz.space(sm);
   }
 }
 
@@ -111,10 +71,9 @@
   flex-direction: column;
   row-gap: pdz.space(md);
   padding: pdz.space(sm) pdz.space(md);
-  border: 2px solid pdz.color(outline-variant);
-  border-radius: pdz.shape(corner-sm);
-  background: pdz.color(surface);
-  box-shadow: var(--pdz-level-1);
+  border: 1px solid pdz.color(outline-variant);
+  border-radius: pdz.shape(corner-lg);
+  background: pdz.color(surface-container-low);
 
   &__header {
     display: flex;
@@ -225,10 +184,9 @@
   flex-direction: column;
   row-gap: pdz.space(sm);
   padding: pdz.space(sm) pdz.space(md);
-  border: 2px solid pdz.color(outline-variant);
-  border-radius: pdz.shape(corner-sm);
-  background: pdz.color(surface);
-  box-shadow: var(--pdz-level-1);
+  border: 1px solid pdz.color(outline-variant);
+  border-radius: pdz.shape(corner-lg);
+  background: pdz.color(surface-container-low);
 
   &__header {
     display: flex;

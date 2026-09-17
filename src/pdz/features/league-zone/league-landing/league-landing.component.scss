@@ -107,18 +107,19 @@
 }
 
 .tournament-card {
+  position: relative;
   display: block;
   background: pdz.color(surface-container);
   border-radius: pdz.shape(corner-lg);
   padding: pdz.space(lg);
-  text-decoration: none;
   color: inherit;
   transition:
     box-shadow pdz.duration(base) pdz.easing(standard),
     transform pdz.duration(base) pdz.easing(standard);
   border-left: 4px solid transparent;
 
-  &:hover {
+  &:hover,
+  &:focus-within {
     box-shadow: var(--pdz-level-3);
     transform: translateY(-2px);
   }
@@ -158,6 +159,23 @@
     color: pdz.color(on-surface);
     margin: 0;
     font-weight: 600;
+  }
+
+  &__link {
+    color: inherit;
+    text-decoration: none;
+
+    &::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+    }
+
+    &:hover,
+    &:focus-visible {
+      text-decoration: underline;
+    }
   }
 
   &__status {
@@ -240,6 +258,7 @@
 
   &__discord {
     @include text(label);
+    position: relative;
     font-weight: 700;
     color: #5865f2;
     background: rgba(88, 101, 242, 0.12);

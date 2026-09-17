@@ -20,6 +20,7 @@ import {
   tap,
 } from 'rxjs';
 import { DialogService } from '@pdz/shared/dialogs/dialog/dialog.service';
+import { ToastService } from '@pdz/shared/feedback/toast/toast.service';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { LeagueZoneService } from '../../league-zone.service';
 import { League } from '../../league.interface';
@@ -29,17 +30,18 @@ import {
   CoachEditDialogComponent,
   CoachEditDialogData,
   CoachEditDialogResult,
-} from '../../tournaments/tournament-home/coach-edit-dialog/coach-edit-dialog.component';
+} from '../../dialogs/coach-edit-dialog/coach-edit-dialog.component';
 import {
   TeamEditDialogComponent,
   TeamEditDialogData,
   TeamEditDialogResult,
-} from '../../tournaments/tournament-home/team-edit-dialog/team-edit-dialog.component';
+} from '../../dialogs/team-edit-dialog/team-edit-dialog.component';
 import { SelectOptionComponent } from '@pdz/shared/dropdowns/select/select-option.component';
 import { SelectComponent } from '@pdz/shared/dropdowns/select/select.component';
 import { ChoiceDirective } from '@pdz/shared/inputs/choice/choice.directive';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 import { DisclosureComponent } from '@pdz/shared/layout/disclosure/disclosure.component';
+import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
 
 type SignUpEntry = League.LeagueSignUp & {
   selected?: boolean;
@@ -60,6 +62,7 @@ type SignUpEntry = League.LeagueSignUp & {
     ChoiceDirective,
     ButtonComponent,
     DisclosureComponent,
+    PageHeaderComponent,
   ],
 })
 export class LeagueManageSignupsComponent implements OnInit, OnDestroy {
@@ -69,6 +72,7 @@ export class LeagueManageSignupsComponent implements OnInit, OnDestroy {
   drafts: ({ name: string; draftSlug: string } | undefined)[] = [];
   modified = false;
   deniedCollapsed = true;
+  droppedCollapsed = true;
 
   readonly statusOptions: {
     value: League.SignUpStatus;
@@ -77,12 +81,14 @@ export class LeagueManageSignupsComponent implements OnInit, OnDestroy {
     { value: 'approved', label: 'Approved' },
     { value: 'pending', label: 'Pending' },
     { value: 'denied', label: 'Denied' },
+    { value: 'dropped', label: 'Dropped' },
   ];
 
   private readonly statusOrder: Record<League.SignUpStatus, number> = {
     approved: 0,
     pending: 1,
-    denied: 2,
+    dropped: 2,
+    denied: 3,
   };
 
   @ViewChild('logoFileInput') logoFileInput!: ElementRef<HTMLInputElement>;
@@ -91,8 +97,10 @@ export class LeagueManageSignupsComponent implements OnInit, OnDestroy {
   leagueService = inject(LeagueZoneService);
   uploadService = inject(UploadService);
   private dialogs = inject(DialogService);
+  private toast = inject(ToastService);
 
   uploadingForId: string | null = null;
+  removingId: string | null = null;
   uploadErrorById: Record<string, string> = {};
   private selectedSignup: SignUpEntry | null = null;
   private destroy$ = new Subject<void>();
@@ -244,7 +252,12 @@ export class LeagueManageSignupsComponent implements OnInit, OnDestroy {
 
   signUpInDraft(draftSlug?: string): SignUpEntry[] {
     return this.signUps
-      .filter((s) => s.draft == draftSlug && s.status !== 'denied')
+      .filter(
+        (s) =>
+          s.draft == draftSlug &&
+          s.status !== 'denied' &&
+          s.status !== 'dropped',
+      )
       .sort(
         (a, b) =>
           (this.statusOrder[a.status] ?? 1) - (this.statusOrder[b.status] ?? 1),
@@ -253,6 +266,43 @@ export class LeagueManageSignupsComponent implements OnInit, OnDestroy {
 
   deniedSignUps(): SignUpEntry[] {
     return this.signUps.filter((s) => s.status === 'denied');
+  }
+
+  droppedSignUps(): SignUpEntry[] {
+    return this.signUps.filter((s) => s.status === 'dropped');
+  }
+
+  async removeParticipant(signUp: SignUpEntry): Promise<void> {
+    const confirmed = await this.dialogs.confirm(
+      `Remove ${signUp.teamName}?`,
+      {
+        message:
+          'This deletes the coach and their team for good. Teams that have already played a match cannot be removed — leave those dropped instead.',
+        confirmLabel: 'Remove',
+        cancelLabel: 'Cancel',
+        confirmColor: 'danger',
+      },
+    );
+    if (!confirmed) return;
+
+    this.removingId = signUp.id;
+    this.leagueService
+      .removeParticipant(signUp.id)
+      .pipe(
+        finalize(() => (this.removingId = null)),
+        takeUntil(this.destroy$),
+      )
+      .subscribe({
+        next: () => {
+          this.signUps = this.signUps.filter((s) => s.id !== signUp.id);
+          this.toast.success(`${signUp.teamName} removed.`);
+        },
+        error: (error) => {
+          this.toast.error(
+            error?.error?.message ?? 'Could not remove that participant.',
+          );
+        },
+      });
   }
 
   setStatus(signUp: SignUpEntry, status: League.SignUpStatus): void {

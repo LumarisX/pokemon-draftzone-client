@@ -22,6 +22,7 @@ import { LeagueZoneService } from '../league-zone.service';
 import { League } from '../league.interface';
 import { formatCountdown } from '../league.util';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
+import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
 import { MenuComponent } from '@pdz/shared/menu/menu.component';
 import { MenuItemComponent } from '@pdz/shared/menu/menu-item.component';
 import { MenuTriggerDirective } from '@pdz/shared/menu/menu-trigger.directive';
@@ -101,6 +102,7 @@ type DraftDetailsResponse =
     MenuComponent,
     MenuItemComponent,
     MenuTriggerDirective,
+    PageHeaderComponent,
   ],
   templateUrl: './league-drafting.component.html',
   styleUrls: ['./league-drafting.component.scss', '../league.scss'],

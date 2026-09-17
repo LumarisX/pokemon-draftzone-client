@@ -2,8 +2,9 @@
 @use "mixins" as *;
 
 :host {
-  display: block;
-  padding: pdz.space(lg);
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(md);
 }
 
 .division-header {

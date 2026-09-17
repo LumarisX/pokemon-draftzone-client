@@ -11,26 +11,9 @@
 .schedule {
   display: flex;
   flex-direction: column;
+  gap: pdz.space(md);
   height: 100%;
   min-height: 0;
-
-  &__header {
-    @include pdz-league-page-header();
-    flex-wrap: wrap;
-    flex: none;
-  }
-
-  &__title {
-    @include pdz-league-page-title();
-    margin-inline-end: auto;
-  }
-
-  &__meta {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: pdz.space(xs);
-  }
 
   &__body {
     display: flex;

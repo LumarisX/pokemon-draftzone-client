@@ -1,27 +1,21 @@
 @use "pdz-theming" as pdz;
-@use "mixins" as *;
-@use "../league.mixins" as *;
+
+:host {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
 
 .trades {
   display: flex;
   flex-direction: column;
-  width: 100%;
-  box-sizing: border-box;
+  gap: pdz.space(md);
+  height: 100%;
+  overflow: auto;
 
   &__body {
-    padding: pdz.space(lg);
     display: flex;
     flex-direction: column;
-    gap: pdz.space(md);
-  }
-
-  &__back {
-  }
-
-  &__title {
-    @include pdz-league-page-title();
-  }
-  &__header {
-    @include pdz-league-page-header();
+    gap: pdz.space(lg);
   }
 }

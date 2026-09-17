@@ -1,6 +1,6 @@
 @if (leagueInfo) {
   <div class="drafts-container">
-    <h1 class="drafts-container__title">{{ leagueInfo.name }} Drafts</h1>
+    <pdz-page-header title="Drafts" [eyebrow]="leagueInfo.name" />
 
     @if (leagueInfo.drafts.length) {
       <div class="drafts-container__grid">

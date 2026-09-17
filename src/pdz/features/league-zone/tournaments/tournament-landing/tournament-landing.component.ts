@@ -13,7 +13,7 @@ import { RouterLink } from '@angular/router';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 import { ChipComponent, ChipTone } from '@pdz/shared/data/chip/chip.component';
 import { SkeletonComponent } from '@pdz/shared/data/skeleton/skeleton.component';
-import { IconComponent } from '@pdz/shared/images/icon/icon.component';
+import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
 import { PlusSignPipe } from '@pdz/shared/pipes/plus-sign.pipe';
 import { catchError, of, switchMap } from 'rxjs';
 import { AuthService } from '@pdz/core/services/auth0.service';
@@ -70,7 +70,7 @@ const STANDINGS_PREVIEW_ROWS = 8;
     RouterLink,
     ButtonComponent,
     ChipComponent,
-    IconComponent,
+    PageHeaderComponent,
     LeagueScheduleWidgetComponent,
     PlusSignPipe,
     SkeletonComponent,

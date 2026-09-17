@@ -6,9 +6,9 @@ import {
   RawBracketResponse,
 } from '@pdz/features/league-zone/league-bracket/bracket-mapping';
 import { defenseData } from '@pdz/features/league-zone/league-ghost';
-import { TradeData } from '@pdz/features/league-zone/league-manage/league-manage-trades/league-manage-trades.component';
 import {
   League,
+  TradeData,
   TradeLog,
   TradeStatus,
 } from '@pdz/features/league-zone/league.interface';
@@ -393,7 +393,7 @@ export class LeagueZoneService {
   }
 
   signUp(signupData: object) {
-    return this.apiService.post(
+    return this.apiService.post<League.SignUpResult>(
       `${ROOTPATH}/${this.leagueSlug()}/tournaments/${this.tournamentSlug()}/signup`,
       signupData,
     );
@@ -432,6 +432,48 @@ export class LeagueZoneService {
   }> {
     return this.apiService.get(
       `${ROOTPATH}/${this.leagueSlug()}/tournaments/${this.tournamentSlug()}/coaches`,
+    );
+  }
+
+  private organizersPath(): string {
+    return `${ROOTPATH}/${this.leagueSlug()}/tournaments/${this.tournamentSlug()}/organizers`;
+  }
+
+  getOrganizers(): Observable<League.TournamentOrganizers> {
+    return this.apiService.get(this.organizersPath());
+  }
+
+  searchOrganizerCandidates(
+    query: string,
+  ): Observable<League.OrganizerCandidate[]> {
+    return this.apiService.get(`${this.organizersPath()}/search`, {
+      params: { q: query },
+    });
+  }
+
+  addOrganizer(
+    body: { coachId: string } | { sub: string },
+  ): Observable<League.TournamentOrganizers> {
+    return this.apiService.post(this.organizersPath(), body, {
+      invalidateCache: [this.organizersPath()],
+    });
+  }
+
+  removeOrganizer(sub: string): Observable<League.TournamentOrganizers> {
+    return this.apiService.delete(
+      `${this.organizersPath()}/${encodeURIComponent(sub)}`,
+      { invalidateCache: [this.organizersPath()] },
+    );
+  }
+
+  removeParticipant(coachId: string): Observable<{ message: string }> {
+    return this.apiService.delete(
+      `${ROOTPATH}/${this.leagueSlug()}/tournaments/${this.tournamentSlug()}/coaches/${coachId}`,
+      {
+        invalidateCache: [
+          `${ROOTPATH}/${this.leagueSlug()}/tournaments/${this.tournamentSlug()}/coaches`,
+        ],
+      },
     );
   }
 

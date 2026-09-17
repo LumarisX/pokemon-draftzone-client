@@ -1,24 +1,25 @@
-<div class="team-container">
-  <div class="team-header">
-    <div class="logo">
-      <img [src]="getLogoUrl(teamDetails().logo)" />
-    </div>
-    <div class="team-info">
-      <h2 class="team-name">
-        {{ teamDetails().name }}
-      </h2>
-      <div class="team-coaches">
-        <h4 class="team-coach">{{ teamDetails().coach }}</h4>
+<pdz-card padding="sm">
+  <div class="team-container">
+    <div class="team-header">
+      <div class="logo">
+        <img [src]="getLogoUrl(teamDetails().logo)" />
       </div>
-      <div class="team-info-bar">
-        <span class="team-timezone">
-          {{ getCurrentTimeInTimezone(teamDetails().timezone) }}
-        </span>
-        @if (teamDetails().record; as record) {
-          <span class="team-record">
-            <span class="team-record__wins">{{ record.wins }}</span>
-            <span class="team-record__losses">{{ record.losses }}</span>
-            <!-- <span
+      <div class="team-info">
+        <h2 class="team-name">
+          {{ teamDetails().name }}
+        </h2>
+        <div class="team-coaches">
+          <h4 class="team-coach">{{ teamDetails().coach }}</h4>
+        </div>
+        <div class="team-info-bar">
+          <span class="team-timezone">
+            {{ getCurrentTimeInTimezone(teamDetails().timezone) }}
+          </span>
+          @if (teamDetails().record; as record) {
+            <span class="team-record">
+              <span class="team-record__wins">{{ record.wins }}</span>
+              <span class="team-record__losses">{{ record.losses }}</span>
+              <!-- <span
               class="team-record__diff"
               [ngClass]="{
                 'team-record__diff--positive': recordDiff() > 0,
@@ -27,150 +28,153 @@
             >
               {{ recordDiff() | plusSign }}
             </span> -->
-          </span>
-        }
+            </span>
+          }
+        </div>
+      </div>
+      <div class="view-container">
+        <button
+          pdz-button
+          iconOnly
+          size="sm"
+          [variant]="data === 'overview' ? 'tonal' : 'ghost'"
+          [color]="data === 'overview' ? 'primary' : 'neutral'"
+          aria-label="Show roster overview"
+          [attr.aria-pressed]="data === 'overview'"
+          (click)="data = 'overview'"
+        >
+          <pdz-icon name="list" aria-hidden="true"></pdz-icon>
+        </button>
+        <button
+          pdz-button
+          iconOnly
+          size="sm"
+          [variant]="data === 'stats' ? 'tonal' : 'ghost'"
+          [color]="data === 'stats' ? 'primary' : 'neutral'"
+          aria-label="Show team stats"
+          [attr.aria-pressed]="data === 'stats'"
+          (click)="data = 'stats'"
+        >
+          <pdz-icon name="show_chart" aria-hidden="true"></pdz-icon>
+        </button>
+        <a
+          pdz-button
+          iconOnly
+          variant="ghost"
+          size="sm"
+          aria-label="Open full team page"
+          [routerLink]="'../teams/' + teamDetails().slug"
+        >
+          <pdz-icon name="open_in_new" aria-hidden="true"></pdz-icon>
+        </a>
       </div>
     </div>
-    <div class="view-container">
-      <button
-        pdz-button
-        iconOnly
-        variant="ghost"
-        size="sm"
-        aria-label="Show roster overview"
-        [attr.aria-pressed]="data === 'overview'"
-        (click)="data = 'overview'"
-      >
-        <pdz-icon name="list" aria-hidden="true"></pdz-icon>
-      </button>
-      <button
-        pdz-button
-        iconOnly
-        variant="ghost"
-        size="sm"
-        aria-label="Show team stats"
-        [attr.aria-pressed]="data === 'stats'"
-        (click)="data = 'stats'"
-      >
-        <pdz-icon name="show_chart" aria-hidden="true"></pdz-icon>
-      </button>
-      <a
-        pdz-button
-        iconOnly
-        variant="ghost"
-        size="sm"
-        aria-label="Open full team page"
-        [routerLink]="'../teams/' + teamDetails().slug"
-      >
-        <pdz-icon name="open_in_new" aria-hidden="true"></pdz-icon>
-      </a>
-    </div>
-  </div>
 
-  <div class="team-body">
-    @if (data === "overview") {
-      <div class="table-wrapper">
-        <table
-          class="pdz-table roster-table"
-          data-header="primary"
-          data-density="compact"
-        >
-          <thead>
-            <tr>
-              <th class="col-sprite pdz-table__center"></th>
-              <th class="col-name">Name</th>
-              @if (hasCapt()) {
-                <th class="col-capt pdz-table__center">Capt</th>
-              }
-              <th class="col-tier pdz-table__num">Tier</th>
-            </tr>
-          </thead>
-          <tbody>
-            @for (pokemon of teamDetails().draft; track pokemon) {
+    <div class="team-body">
+      @if (data === "overview") {
+        <div class="table-wrapper">
+          <table
+            class="pdz-table roster-table"
+            data-header="primary"
+            data-density="compact"
+          >
+            <thead>
               <tr>
-                <td class="cell-sprite pdz-table__center">
-                  <div class="sprite-wrapper">
-                    <pdz-sprite [pokemon]="pokemon" flipped></pdz-sprite>
-                  </div>
-                </td>
-                <td class="cell-name">
-                  {{ pokemon.name }}
-                </td>
+                <th class="col-sprite pdz-table__center"></th>
+                <th class="col-name">Name</th>
                 @if (hasCapt()) {
-                  <td class="cell-capt pdz-table__center">
-                    @if (pokemon.capt?.tera) {
-                      <pdz-icon svgIcon="tera" name=""></pdz-icon>
-                    }
-                    @if (pokemon.capt?.z) {
-                      <pdz-icon svgIcon="z" name=""></pdz-icon>
-                    }
-                    @if (pokemon.capt?.dmax) {
-                      <pdz-icon svgIcon="dmax" name=""></pdz-icon>
-                    }
-                  </td>
+                  <th class="col-capt pdz-table__center">Capt</th>
                 }
-                <td class="cell-tier pdz-table__num">
-                  {{ pokemon.cost }}
-                </td>
+                <th class="col-tier pdz-table__num">Tier</th>
               </tr>
-            }
-          </tbody>
-          <tfoot>
-            <tr>
-              <th class="col-sprite pdz-table__center"></th>
-              <th class="col-name"></th>
-              @if (hasCapt()) {
-                <th class="col-capt pdz-table__center">
-                  {{ totalCaptCount() }}
-                </th>
+            </thead>
+            <tbody>
+              @for (pokemon of teamDetails().draft; track pokemon) {
+                <tr>
+                  <td class="cell-sprite pdz-table__center">
+                    <div class="sprite-wrapper">
+                      <pdz-sprite [pokemon]="pokemon" flipped></pdz-sprite>
+                    </div>
+                  </td>
+                  <td class="cell-name">
+                    {{ pokemon.name }}
+                  </td>
+                  @if (hasCapt()) {
+                    <td class="cell-capt pdz-table__center">
+                      @if (pokemon.capt?.tera) {
+                        <pdz-icon svgIcon="tera" name=""></pdz-icon>
+                      }
+                      @if (pokemon.capt?.z) {
+                        <pdz-icon svgIcon="z" name=""></pdz-icon>
+                      }
+                      @if (pokemon.capt?.dmax) {
+                        <pdz-icon svgIcon="dmax" name=""></pdz-icon>
+                      }
+                    </td>
+                  }
+                  <td class="cell-tier pdz-table__num">
+                    {{ pokemon.cost }}
+                  </td>
+                </tr>
               }
-              <th class="col-tier pdz-table__num">{{ totalCost() }}</th>
-            </tr>
-          </tfoot>
-        </table>
-      </div>
-    }
-    @if (data === "stats") {
-      <div class="table-wrapper">
-        <table
-          class="pdz-table roster-table"
-          data-header="primary"
-          data-density="compact"
-        >
-          <thead>
-            <tr>
-              <th class="col-sprite pdz-table__center"></th>
-              <th class="col-name">Name</th>
-              <th class="col-record pdz-table__num">Games</th>
-              <th class="col-record pdz-table__num">Wins</th>
-              <th class="col-record pdz-table__num">Loses</th>
-            </tr>
-          </thead>
-          <tbody>
-            @for (pokemon of teamDetails().draft; track pokemon) {
+            </tbody>
+            <tfoot>
               <tr>
-                <td class="cell-sprite pdz-table__center">
-                  <div class="sprite-wrapper">
-                    <pdz-sprite flipped [pokemon]="pokemon"></pdz-sprite>
-                  </div>
-                </td>
-                <td class="cell-name">
-                  {{ pokemon.name }}
-                </td>
-                <td class="cell-record pdz-table__num">
-                  {{ pokemon.record?.brought ?? 0 }}
-                </td>
-                <td class="cell-record pdz-table__num">
-                  {{ pokemon.record?.kills ?? 0 }}
-                </td>
-                <td class="cell-record pdz-table__num">
-                  {{ pokemon.record?.deaths ?? 0 }}
-                </td>
+                <th class="col-sprite pdz-table__center"></th>
+                <th class="col-name"></th>
+                @if (hasCapt()) {
+                  <th class="col-capt pdz-table__center">
+                    {{ totalCaptCount() }}
+                  </th>
+                }
+                <th class="col-tier pdz-table__num">{{ totalCost() }}</th>
               </tr>
-            }
-          </tbody>
-        </table>
-      </div>
-    }
+            </tfoot>
+          </table>
+        </div>
+      }
+      @if (data === "stats") {
+        <div class="table-wrapper">
+          <table
+            class="pdz-table roster-table"
+            data-header="primary"
+            data-density="compact"
+          >
+            <thead>
+              <tr>
+                <th class="col-sprite pdz-table__center"></th>
+                <th class="col-name">Name</th>
+                <th class="col-record pdz-table__num">Games</th>
+                <th class="col-record pdz-table__num">Wins</th>
+                <th class="col-record pdz-table__num">Loses</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (pokemon of teamDetails().draft; track pokemon) {
+                <tr>
+                  <td class="cell-sprite pdz-table__center">
+                    <div class="sprite-wrapper">
+                      <pdz-sprite flipped [pokemon]="pokemon"></pdz-sprite>
+                    </div>
+                  </td>
+                  <td class="cell-name">
+                    {{ pokemon.name }}
+                  </td>
+                  <td class="cell-record pdz-table__num">
+                    {{ pokemon.record?.brought ?? 0 }}
+                  </td>
+                  <td class="cell-record pdz-table__num">
+                    {{ pokemon.record?.kills ?? 0 }}
+                  </td>
+                  <td class="cell-record pdz-table__num">
+                    {{ pokemon.record?.deaths ?? 0 }}
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      }
+    </div>
   </div>
-</div>
+</pdz-card>

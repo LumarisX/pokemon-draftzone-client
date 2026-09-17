@@ -7,11 +7,16 @@ import { BuilderDraft } from '../league-stage-builder/stage-builder.model';
 import { LeagueZoneService } from '../league-zone.service';
 import { BracketTeamFlex } from './bracket.model';
 import { ChipComponent } from '@pdz/shared/data/chip/chip.component';
+import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
 
 @Component({
   selector: 'pdz-league-bracket',
-  imports: [CommonModule, LoadingComponent, StageBuilderComponent,
+  imports: [
+    CommonModule,
+    LoadingComponent,
+    StageBuilderComponent,
     ChipComponent,
+    PageHeaderComponent,
   ],
   templateUrl: './league-bracket.component.html',
   styleUrl: './league-bracket.component.scss',

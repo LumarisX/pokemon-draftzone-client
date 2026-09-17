@@ -16,6 +16,7 @@ import { PlannerTypechartComponent } from '../../../planner/typechart/typechart.
 import { LeagueZoneService } from '../../league-zone.service';
 import { League } from '../../league.interface';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
+import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
 import { MenuComponent } from '@pdz/shared/menu/menu.component';
 import { MenuItemComponent } from '@pdz/shared/menu/menu-item.component';
 import { MenuTriggerDirective } from '@pdz/shared/menu/menu-trigger.directive';
@@ -41,6 +42,7 @@ import { MenuTriggerDirective } from '@pdz/shared/menu/menu-trigger.directive';
     MenuItemComponent,
     MenuTriggerDirective,
     ButtonComponent,
+    PageHeaderComponent,
   ],
   templateUrl: './power-rankings.component.html',
   styleUrls: ['./power-rankings.component.scss'],

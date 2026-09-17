@@ -1,28 +1,26 @@
 import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
-import { Subject, takeUntil } from 'rxjs';
-import { IconComponent } from '@pdz/shared/images/icon/icon.component';
-import { TabNavComponent } from '@pdz/shared/layout/tab-nav/tab-nav.component';
+import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
 import { TabNavLinkComponent } from '@pdz/shared/layout/tab-nav/tab-nav-link.component';
+import { TabNavComponent } from '@pdz/shared/layout/tab-nav/tab-nav.component';
+import { Subject, takeUntil } from 'rxjs';
 import { LeagueZoneService } from '../../league-zone.service';
 import { LeagueScheduleWidgetComponent } from '../../league-widgets/league-schedule-widget/league-schedule-widget.component';
 import { LeagueTradeWidgetComponent } from '../../league-widgets/league-trade-widget/league-trade-widget.component';
 import { StageSwitcherComponent } from '../../league-widgets/stage-switcher/stage-switcher.component';
 import { League } from '../../league.interface';
 import { getLeagueLogoUrl } from '../../league.util';
-import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 
 @Component({
   selector: 'pdz-division-dashboard',
   imports: [
     RouterModule,
-    IconComponent,
     TabNavComponent,
     TabNavLinkComponent,
     LeagueTradeWidgetComponent,
     LeagueScheduleWidgetComponent,
     StageSwitcherComponent,
-    ButtonComponent,
+    PageHeaderComponent,
   ],
   templateUrl: './division-dashboard.component.html',
   styleUrls: ['./division-dashboard.component.scss'],

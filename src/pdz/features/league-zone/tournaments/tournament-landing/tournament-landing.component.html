@@ -4,87 +4,65 @@
   </p>
 } @else {
   @if (info(); as tournament) {
-  <header class="landing-header">
-    <div class="landing-header__identity">
-      @if (getTournamentLogoUrl(tournament.logo); as logo) {
-        <div class="landing-header__logo">
-          <img [src]="logo" [alt]="tournament.name + ' logo'" />
-        </div>
-      }
-      <div class="landing-header__text">
-        @if (leagueName(); as league) {
-          <a class="landing-header__league" [routerLink]="leagueLink()">
-            <pdz-icon name="arrow_back" [size]="14" aria-hidden="true" />
-            <span>{{ league }}</span>
+    <pdz-page-header
+      [title]="tournament.name"
+      [subtitle]="tournament.description ?? ''"
+      [logo]="getTournamentLogoUrl(tournament.logo)"
+      [backLink]="leagueName() ? leagueLink() : undefined"
+      [backLabel]="leagueName() ?? ''"
+    >
+      <div pdz-page-header-detail>
+        <span>{{ tournament.format }}</span>
+        <span class="landing-header__dot" aria-hidden="true">·</span>
+        <span>{{ tournament.ruleset }}</span>
+        @if (tournament.seasonStart) {
+          <span class="landing-header__dot" aria-hidden="true">·</span>
+          <span>
+            {{ tournament.seasonStart | date: "MMM d, y" }}
+            @if (tournament.seasonEnd) {
+              &ndash; {{ tournament.seasonEnd | date: "MMM d, y" }}
+            }
+          </span>
+        }
+      </div>
+
+      <div pdz-page-header-actions class="landing-header__actions">
+        @if (phaseView(); as phase) {
+          <pdz-chip [tone]="phase.tone" [icon]="phase.icon">
+            {{ phase.label }}
+            @if (phase.countdown) {
+              <span class="landing-header__countdown">{{ phase.countdown }}</span>
+            }
+          </pdz-chip>
+        }
+        @if (facts().length) {
+          <dl class="landing-header__facts">
+            @for (fact of facts(); track fact.label) {
+              <div class="fact">
+                <dt class="fact__label">{{ fact.label }}</dt>
+                <dd class="fact__value">{{ fact.value }}</dd>
+              </div>
+            }
+          </dl>
+        }
+
+        @if (!profile() && signUpOpen()) {
+          <a pdz-button [routerLink]="[...tournamentBase(), 'sign-up']">
+            Sign Up
           </a>
         }
-        <h1 class="landing-header__title">{{ tournament.name }}</h1>
-        <div class="landing-header__meta">
-          <span>{{ tournament.format }}</span>
-          <span class="landing-header__dot" aria-hidden="true">·</span>
-          <span>{{ tournament.ruleset }}</span>
-          @if (tournament.seasonStart) {
-            <span class="landing-header__dot" aria-hidden="true">·</span>
-            <span>
-              {{ tournament.seasonStart | date: "MMM d, y" }}
-              @if (tournament.seasonEnd) {
-                &ndash; {{ tournament.seasonEnd | date: "MMM d, y" }}
-              }
-            </span>
-          }
-        </div>
-        @if (tournament.description) {
-          <p class="landing-header__description">{{ tournament.description }}</p>
-        }
       </div>
-    </div>
-
-    <div class="landing-header__actions">
-      @if (phaseView(); as phase) {
-        <pdz-chip [tone]="phase.tone" [icon]="phase.icon">
-          {{ phase.label }}
-          @if (phase.countdown) {
-            <span class="landing-header__countdown">{{ phase.countdown }}</span>
-          }
-        </pdz-chip>
-      }
-      @if (facts().length) {
-        <dl class="landing-header__facts">
-          @for (fact of facts(); track fact.label) {
-            <div class="fact">
-              <dt class="fact__label">{{ fact.label }}</dt>
-              <dd class="fact__value">{{ fact.value }}</dd>
-            </div>
-          }
-        </dl>
-      }
-
-      @if (!profile() && signUpOpen()) {
-        <a pdz-button [routerLink]="[...tournamentBase(), 'sign-up']">
-          Sign Up
-        </a>
-      }
-    </div>
-  </header>
+    </pdz-page-header>
   } @else {
-    <header class="landing-header" aria-hidden="true">
-      <div class="landing-header__identity">
-        <pdz-skeleton variant="circle" width="4.5rem" height="4.5rem" />
-        <div class="landing-header__text">
-          <pdz-skeleton variant="text" width="9rem" height="0.75rem" />
-          <pdz-skeleton variant="text" width="13rem" height="2rem" />
-          <pdz-skeleton variant="text" width="17rem" height="0.875rem" />
-        </div>
+    <div class="landing-header-skeleton" aria-hidden="true">
+      <pdz-skeleton variant="circle" width="3rem" height="3rem" />
+      <div class="landing-header-skeleton__text">
+        <pdz-skeleton variant="text" width="9rem" height="0.75rem" />
+        <pdz-skeleton variant="text" width="13rem" height="1.75rem" />
+        <pdz-skeleton variant="text" width="17rem" height="0.875rem" />
       </div>
-      <div class="landing-header__actions">
-        <pdz-skeleton variant="block" width="8rem" height="1.75rem" radius="999px" />
-        <div class="landing-header__facts">
-          @for (row of [0, 1, 2]; track row) {
-            <pdz-skeleton variant="block" width="3rem" height="2.75rem" radius="0.5rem" />
-          }
-        </div>
-      </div>
-    </header>
+      <pdz-skeleton variant="block" width="8rem" height="1.75rem" radius="999px" />
+    </div>
   }
 
   <div class="landing-body">

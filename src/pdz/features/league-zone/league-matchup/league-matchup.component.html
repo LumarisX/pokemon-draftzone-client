@@ -44,7 +44,7 @@
 
 @if (loading()) {
   <div class="matchup" role="status" aria-label="Loading matchup">
-    <header class="matchup__header">
+    <div class="matchup__header-skeleton">
       <pdz-skeleton variant="block" width="5.5rem" height="1rem"></pdz-skeleton>
       <pdz-skeleton
         class="matchup-skeleton__title"
@@ -57,7 +57,7 @@
         height="1.25rem"
         radius="999px"
       ></pdz-skeleton>
-    </header>
+    </div>
 
     <pdz-skeleton
       class="matchup-skeleton__cta"
@@ -111,26 +111,16 @@
   <p class="matchup__message matchup__message--error">{{ loadError() }}</p>
 } @else if (matchup(); as m) {
   <div class="matchup">
-    <header class="matchup__header">
-      <a
-        pdz-button
-        size="sm"
-        color="neutral"
-        variant="ghost"
-        [routerLink]="schedulePath()"
-      >
-        <pdz-icon name="arrow_back" [size]="16"></pdz-icon>
-        <span>Schedule</span>
-      </a>
-      <h1 class="matchup__title">{{ headline(m) }}</h1>
+    <pdz-page-header [title]="headline(m)">
       <span
+        pdz-page-header-meta
         class="matchup__status"
         [class.matchup__status--final]="!!m.winner"
         [class.matchup__status--pending]="!m.winner && m.status === 'pending'"
         [class.matchup__status--forfeit]="m.forfeit"
         >{{ statusLabel(m) }}</span
       >
-    </header>
+    </pdz-page-header>
 
     <a class="breakdown-cta" [routerLink]="['breakdown']">
       <span class="breakdown-cta__icon">

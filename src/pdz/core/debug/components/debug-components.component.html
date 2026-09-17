@@ -1043,6 +1043,52 @@
 </section>
 
 <section class="section">
+  <h2 class="section__title">Page header</h2>
+  <p class="section__note">
+    The banner every routed page opens with: optional logo, an eyebrow that
+    <code>backLink</code> turns into a link out of the section, the title, then
+    projected <code>[pdz-page-header-detail]</code>,
+    <code>[pdz-page-header-meta]</code> and
+    <code>[pdz-page-header-actions]</code>. Default content lands below the bar
+    for tab navs and switchers.
+  </p>
+  <div class="stack">
+    <pdz-page-header title="Standings" />
+
+    <pdz-page-header title="Trades">
+      <div pdz-page-header-meta>
+        <pdz-chip tone="primary" icon="play_arrow">Week 4</pdz-chip>
+        <pdz-chip icon="sync_alt">12 trades</pdz-chip>
+      </div>
+    </pdz-page-header>
+
+    <pdz-page-header
+      title="Thunderbolt Premier League"
+      subtitle="Season 12 · 16 teams · single round robin into a top-eight bracket."
+      [backLink]="['.']"
+      backLabel="Thunderbolt League"
+    >
+      <div pdz-page-header-detail>
+        <span>VGC 2026 Reg H</span>
+        <span aria-hidden="true">·</span>
+        <span>Sep 1 – Dec 14</span>
+      </div>
+      <button pdz-page-header-actions pdz-button size="sm" icon="edit">
+        Edit
+      </button>
+    </pdz-page-header>
+
+    <pdz-page-header title="Division A" eyebrow="TBPL" compact>
+      <pdz-tab-nav align="stretch" label="Division sections">
+        <a pdz-tab-link routerLink="." routerLinkActive>Teams</a>
+        <a pdz-tab-link routerLink="." routerLinkActive>Tier List</a>
+        <a pdz-tab-link routerLink="." routerLinkActive>Draft</a>
+      </pdz-tab-nav>
+    </pdz-page-header>
+  </div>
+</section>
+
+<section class="section">
   <h2 class="section__title">Widget</h2>
   <p class="section__note">
     Card shell for a board panel: header label, projected

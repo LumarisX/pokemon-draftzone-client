@@ -1,6 +1,5 @@
 @use "pdz-theming" as pdz;
 @use "mixins" as *;
-@use "../league.mixins" as *;
 
 :host {
   display: block;
@@ -11,23 +10,15 @@
 .standings {
   display: flex;
   flex-direction: column;
+  gap: pdz.space(md);
   height: 100%;
   overflow: auto;
-
-  &__header {
-    @include pdz-league-page-header();
-  }
-
-  &__title {
-    @include pdz-league-page-title();
-  }
 
   &__body {
     display: flex;
     flex: 1 1 auto;
     flex-wrap: wrap;
     min-height: 0;
-    padding: pdz.space(lg);
     gap: 1rem;
   }
 

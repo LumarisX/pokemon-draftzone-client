@@ -1,7 +1,9 @@
 import { Routes } from '@angular/router';
 import { AuthGuard } from '@auth0/auth0-angular';
-import { LEAGUE_ZONE_MANAGE_PATH } from '@pdz/core/route-paths';
-import { DraftPreviewComponent } from '../drafts/draft-overview/draft-preview/draft-preview.component';
+import {
+  DRAFT_OVERVIEW_PATH,
+  LEAGUE_ZONE_MANAGE_PATH,
+} from '@pdz/core/route-paths';
 import { MatchupOverviewComponent } from '../drafts/matchup-overview/matchup-overview.component';
 import { LEAGUE_MATCHUP_PAGE } from '../drafts/matchup-overview/matchup-page.config';
 import { TierListFormComponent } from '../tier-lists/tier-list/tier-list-form/tier-list-form.component';
@@ -10,7 +12,6 @@ import { TierListComponent } from '../tier-lists/tier-list/tier-list.component';
 import { DivisionDashboardComponent } from './divisions/division-dashboard/division-dashboard.component';
 import { PowerRankingsComponent } from './divisions/power-rankings/power-rankings.component';
 import { LeagueBracketComponent } from './league-bracket/league-bracket.component';
-import { LeagueCoachComponent } from './league-coach/league-coach.component';
 import { LeagueDraftComponent } from './league-drafting/league-drafting.component';
 import { LeagueLandingComponent } from './league-landing/league-landing.component';
 import { LeagueMatchupComponent } from './league-matchup/league-matchup.component';
@@ -29,7 +30,8 @@ import { TournamentLayoutComponent } from './tournaments/tournament-layout/tourn
 export const routes: Routes = [
   {
     path: '',
-    component: DraftPreviewComponent,
+    redirectTo: `/${DRAFT_OVERVIEW_PATH}`,
+    pathMatch: 'full',
   },
   {
     path: `:leagueSlug`,
@@ -74,11 +76,6 @@ export const routes: Routes = [
       {
         path: 'sign-up',
         component: LeagueSignUpComponent,
-        canActivate: [AuthGuard],
-      },
-      {
-        path: 'coach',
-        component: LeagueCoachComponent,
         canActivate: [AuthGuard],
       },
       {
@@ -143,10 +140,4 @@ export const routes: Routes = [
       },
     ],
   },
-  // {
-  //   path: 'view/:tournamentId/auction',
-  //   component: LeagueAuctionComponent,
-  //   canActivate: [leagueRoleGuard],
-  //   data: { role: 'coach' },
-  // },
 ];

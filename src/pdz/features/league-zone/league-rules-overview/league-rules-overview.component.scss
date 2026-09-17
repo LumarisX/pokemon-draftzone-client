@@ -2,22 +2,15 @@
 @use "mixins" as *;
 
 :host {
-  display: block;
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(md);
   position: relative;
-  min-height: 100vh;
-  background: pdz.color(background);
 }
 
 .rules-page {
   display: flex;
-  max-width: 80rem;
-  margin: 0 auto;
-  padding: pdz.space(xl) pdz.space(md);
   gap: pdz.space(xl);
-
-  @include respond-above(medium) {
-    padding: pdz.space(xl) pdz.space(lg);
-  }
 }
 
 // Side Navigation
@@ -27,9 +20,9 @@
   @include respond-above(medium) {
     display: block;
     flex-shrink: 0;
-    width: 16rem;
+    width: 14rem;
     position: sticky;
-    top: pdz.space(xl);
+    top: 0;
     align-self: flex-start;
     max-height: calc(100vh - 2 * pdz.space(xl));
     overflow-y: auto;
@@ -76,16 +69,6 @@
 .rules-content {
   flex: 1;
   min-width: 0;
-}
-
-.rules-header {
-  margin-bottom: pdz.space(xl);
-
-  &__title {
-    @include text(headline);
-    color: pdz.color(on-surface);
-    margin: 0;
-  }
 }
 
 .rules-section {

@@ -1,0 +1,78 @@
+<pdz-card class="trade-card" padding="sm">
+  <div pdz-card-header class="trade-card__meta">
+    <pdz-badge variant="soft" size="sm" [tone]="status().tone">
+      {{ status().label }}
+    </pdz-badge>
+    @if (tradePoints()) {
+      <span class="trade-card__points" [title]="tradePointsBreakdown()">
+        {{ tradePoints() }} TP
+      </span>
+    }
+    @if (showTime()) {
+      <time
+        class="trade-card__time"
+        [attr.datetime]="trade().timestamp | date: 'yyyy-MM-dd'"
+        [title]="trade().timestamp | date: 'medium'"
+      >
+        {{ trade().timestamp | date: "MMM d, y" }}
+      </time>
+    }
+    <div class="trade-card__actions">
+      <ng-content select="[tradeActions]"></ng-content>
+    </div>
+  </div>
+
+  <div class="trade-card__body">
+    @for (side of sides(); track $index; let sideIndex = $index) {
+      <section class="trade-side">
+        <div class="trade-side__team">
+          @if (side.team) {
+            <img class="trade-side__logo" [src]="logo(side)" alt="" />
+          } @else {
+            <span class="trade-side__logo trade-side__logo--free">
+              <pdz-icon name="public" [size]="18" aria-hidden="true"></pdz-icon>
+            </span>
+          }
+          <span class="trade-side__identity">
+            <span class="trade-side__name">{{
+              side.team?.name ?? "Free Agency"
+            }}</span>
+            <span class="trade-side__coach">{{
+              side.team?.coach ?? "Draft pool"
+            }}</span>
+          </span>
+        </div>
+
+        <ul class="pick-list">
+          @for (pokemon of side.pokemon; track pokemon.id) {
+            <li class="pick">
+              @if (pickValue(pokemon); as value) {
+                <span class="pick__value" [title]="value">{{ value }}</span>
+              }
+              <pdz-sprite
+                class="pick__sprite"
+                [pokemon]="pokemon"
+                [flipped]="sideIndex === 0"
+              ></pdz-sprite>
+              <span class="pick__name">{{ pokemon.name }}</span>
+              @if (pokemon.tera) {
+                <pdz-icon
+                  class="pick__tera"
+                  name="tera"
+                  [size]="14"
+                  aria-hidden="true"
+                ></pdz-icon>
+              }
+            </li>
+          } @empty {
+            <li class="pick-list__empty">Nothing</li>
+          }
+        </ul>
+      </section>
+    }
+
+    <div class="trade-card__swap" aria-hidden="true">
+      <pdz-icon name="sync_alt" [size]="16"></pdz-icon>
+    </div>
+  </div>
+</pdz-card>

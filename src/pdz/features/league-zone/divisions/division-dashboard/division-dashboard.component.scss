@@ -1,104 +1,13 @@
 @use "pdz-theming" as pdz;
 @use "mixins" as *;
-@use "../../league.mixins" as *;
 
-.widget {
+:host {
   display: flex;
   flex-direction: column;
-  box-shadow: var(--pdz-level-2);
-  border-radius: pdz.shape(corner-lg);
-  overflow: hidden;
-
-  &__title {
-    padding: pdz.space(xs);
-    font-family: var(--pdz-font-display);
-    background-color: pdz.color(primary);
-    color: pdz.color(on-primary);
-    text-align: center;
-  }
-
-  &__body {
-    overflow: auto;
-    padding: pdz.space(sm);
-  }
-}
-
-.division-header {
-  @include pdz-league-page-header-large();
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-
-  &__meta {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: pdz.space(xs);
-    flex: 1 1 auto;
-    min-width: 0;
-    height: 100%;
-
-    @include respond-above(medium) {
-      flex-direction: row;
-      align-items: center;
-      gap: pdz.space(md);
-    }
-  }
-
-  &__back {
-  }
-
-  &__info {
-    display: flex;
-    flex-direction: column;
-    gap: pdz.space(xs);
-    text-align: left;
-  }
-
-  &__league-name {
-    @include text(title);
-    color: pdz.color(primary-accent);
-    margin: 0;
-
-    @include respond-above(medium) {
-      @include text(headline);
-    }
-  }
-
-  &__division-name {
-    @include text(title);
-    color: pdz.color(on-surface);
-    margin: 0;
-
-    @include respond-above(medium) {
-      @include text(headline);
-    }
-  }
-
-  &__image {
-    max-width: 12rem;
-    height: 100%;
-    max-height: 8rem;
-    object-fit: contain;
-    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
-
-    @include respond-above(medium) {
-      max-width: 20rem;
-      max-height: 10rem;
-    }
-  }
-}
-
-pdz-tab-nav {
-  padding-inline: pdz.space(sm);
-
-  @include respond-above(medium) {
-    padding-inline: pdz.space(lg);
-  }
+  gap: pdz.space(md);
 }
 
 .division-body {
-  padding: pdz.space(md);
   display: flex;
   flex-wrap: wrap;
   gap: pdz.space(md);
@@ -108,7 +17,8 @@ pdz-tab-nav {
 .section {
   padding: pdz.space(md) pdz.space(xs);
   background-color: pdz.color(surface-container-low);
-  border-radius: pdz.shape(corner-md);
+  border: 1px solid pdz.color(outline-variant);
+  border-radius: pdz.shape(corner-lg);
   display: flex;
   flex-direction: column;
   gap: pdz.space(sm);
@@ -145,31 +55,3 @@ pdz-tab-nav {
   }
 }
 
-.matchup-stage-list {
-  display: flex;
-  flex-direction: column;
-  gap: pdz.space(sm);
-}
-
-.matchup-stage {
-  &__title {
-    @include text(subtitle);
-  }
-
-  &__cards {
-    border-left: 2px solid pdz.color(primary-accent);
-    padding: pdz.space(md) 0 pdz.space(md) pdz.space(md);
-    display: flex;
-    flex-direction: column;
-
-    gap: pdz.space(sm);
-  }
-}
-
-.widget--span-2 {
-  grid-row: span 2 / span 2;
-}
-
-.widget--span-3 {
-  grid-row: span 3 / span 3;
-}

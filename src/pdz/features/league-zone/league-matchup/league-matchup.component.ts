@@ -19,6 +19,7 @@ import { LeagueChatComponent } from '../league-chat/league-chat.component';
 import { MatchupReportComponent } from './matchup-report/matchup-report.component';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 import { SegmentedComponent } from '@pdz/shared/inputs/segmented/segmented.component';
+import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
 import { SegmentedOptionComponent } from '@pdz/shared/inputs/segmented/segmented-option.component';
 import { DialogService } from '@pdz/shared/dialogs/dialog/dialog.service';
 import { CountdownComponent } from '@pdz/shared/time/countdown/countdown.component';
@@ -52,6 +53,7 @@ type GameSlot = {
     SegmentedOptionComponent,
     CountdownComponent,
     TooltipDirective,
+    PageHeaderComponent,
   ],
   templateUrl: './league-matchup.component.html',
   styleUrl: './league-matchup.component.scss',
@@ -93,14 +95,6 @@ export class LeagueMatchupComponent implements OnDestroy {
     this.destroy$.complete();
     if (this.clockTimer) clearInterval(this.clockTimer);
   }
-
-  schedulePath = computed(() => [
-    '/leagues',
-    this.leagueService.leagueSlug() ?? '',
-    'tournaments',
-    this.leagueService.tournamentSlug() ?? '',
-    'schedule',
-  ]);
 
   teamPath(teamSlug: string): string[] {
     return [

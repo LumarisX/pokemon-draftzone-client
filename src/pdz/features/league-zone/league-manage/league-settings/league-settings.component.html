@@ -4,13 +4,7 @@
   </div>
 } @else {
   <div class="settings-page">
-    <div class="settings-page__header">
-      <a [routerLink]="managePath" class="settings-page__back">
-        <pdz-icon name="arrow_back" [size]="20"></pdz-icon>
-        Back to Hub
-      </a>
-      <h1 class="settings-page__title">Tournament Settings</h1>
-    </div>
+    <pdz-page-header title="Settings" eyebrow="Manage" />
 
     <form [formGroup]="form" (ngSubmit)="save()" class="settings-form">
       <!-- Tournament Info -->
@@ -129,6 +123,17 @@
               placeholder="https://discord.gg/..."
             />
           </label>
+
+          <div class="form-field">
+            <label class="checkbox-option">
+              <input pdz-checkbox type="checkbox" formControlName="archived" />
+              <span class="checkbox-option__label">Archive this tournament</span>
+            </label>
+            <span pdz-hint
+              >Hides it from coaches' tournament lists and from the league
+              directory. Its pages stay reachable by link.</span
+            >
+          </div>
         </div>
       </section>
 
@@ -312,6 +317,7 @@
               can always submit results.</span
             >
           </div>
+
         </div>
       </section>
 

@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { SkeletonComponent } from '@pdz/shared/data/skeleton/skeleton.component';
+import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
 import { LeagueZoneService } from '../league-zone.service';
 import { StageSwitcherComponent } from '../league-widgets/stage-switcher/stage-switcher.component';
 import { League } from '../league.interface';
@@ -17,6 +18,7 @@ import { TeamStandingsComponent } from './team-standings/team-standings.componen
     RouterModule,
     SkeletonComponent,
     StageSwitcherComponent,
+    PageHeaderComponent,
   ],
   templateUrl: './league-standings.component.html',
   styleUrls: ['./league-standings.component.scss'],

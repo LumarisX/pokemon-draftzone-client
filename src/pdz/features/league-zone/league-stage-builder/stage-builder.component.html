@@ -41,9 +41,33 @@
             <input
               class="gutter__deadline"
               type="datetime-local"
-              [value]="deadlineValue(round)"
+              [value]="deadlineValue(round, 'matchDeadline')"
               aria-label="Match deadline"
-              (change)="onRoundDeadline($index, $any($event.target).value)"
+              title="Match deadline"
+              (change)="
+                onRoundDeadline($index, 'matchDeadline', $any($event.target).value)
+              "
+            />
+            <input
+              class="gutter__deadline"
+              type="datetime-local"
+              [value]="deadlineValue(round, 'tradeDeadline')"
+              aria-label="Trade deadline"
+              title="Trade deadline — coaches cannot file trades for this round after it"
+              (change)="
+                onRoundDeadline($index, 'tradeDeadline', $any($event.target).value)
+              "
+            />
+            <input
+              class="gutter__best-of"
+              type="number"
+              min="1"
+              step="2"
+              placeholder="Bo"
+              [value]="round.bestOf ?? ''"
+              aria-label="Best of"
+              title="Games per match"
+              (change)="onRoundBestOf($index, $any($event.target).value)"
             />
 
             <div class="gutter__actions">
@@ -113,6 +137,20 @@
               <span class="gutter__deadline gutter__deadline--static">
                 <pdz-icon name="schedule" [size]="14"></pdz-icon>
                 {{ round.matchDeadline | date: "MMM d, h:mm a" }}
+              </span>
+            }
+            @if (round.tradeDeadline) {
+              <span
+                class="gutter__deadline gutter__deadline--static"
+                title="Trade deadline"
+              >
+                <pdz-icon name="swap_horiz" [size]="14"></pdz-icon>
+                {{ round.tradeDeadline | date: "MMM d, h:mm a" }}
+              </span>
+            }
+            @if (round.bestOf) {
+              <span class="gutter__deadline gutter__deadline--static">
+                Bo{{ round.bestOf }}
               </span>
             }
           }

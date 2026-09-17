@@ -5,10 +5,11 @@ import { League } from '../../league.interface';
 import { LeagueZoneService } from '../../league-zone.service';
 import { Subject, takeUntil } from 'rxjs';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
+import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
 
 @Component({
   selector: 'pdz-league-rules-form',
-  imports: [CommonModule, FormsModule, ButtonComponent],
+  imports: [CommonModule, FormsModule, ButtonComponent, PageHeaderComponent],
   templateUrl: './league-rules-form.component.html',
   styleUrls: ['./league-rules-form.component.scss'],
 })

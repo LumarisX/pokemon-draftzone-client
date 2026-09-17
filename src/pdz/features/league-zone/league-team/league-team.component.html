@@ -1,77 +1,53 @@
 @if (teamData) {
-  <div class="team-header">
-    <div class="team-header__content">
-      <div class="team-header__meta">
-        <div class="team-header__info">
-          <div class="team-header__identity">
-            <div class="team-header__titled">
-              <h1 class="team-header__team-name">{{ teamData.name }}</h1>
-              @if (teamData.isCoach) {
-                <button
-                  pdz-button
-                  iconOnly
-                  variant="ghost"
-                  size="sm"
-                  color="neutral"
-                  [disabled]="saving"
-                  aria-label="Edit team info"
-                  (click)="openTeamEdit()"
-                >
-                  <pdz-icon
-                    name="edit"
-                    [size]="16"
-                    aria-hidden="true"
-                  ></pdz-icon>
-                </button>
-              }
-            </div>
-            <div class="team-header__titled">
-              <h2 class="team-header__coach-name">{{ teamData.coach }}</h2>
-              @if (teamData.isCoach) {
-                <button
-                  pdz-button
-                  iconOnly
-                  variant="ghost"
-                  size="sm"
-                  color="neutral"
-                  [disabled]="saving"
-                  aria-label="Edit coach info"
-                  (click)="openCoachEdit()"
-                >
-                  <pdz-icon
-                    name="edit"
-                    [size]="16"
-                    aria-hidden="true"
-                  ></pdz-icon>
-                </button>
-              }
-            </div>
-            @if (saveError) {
-              <p class="team-header__error">{{ saveError }}</p>
-            }
-          </div>
-          <div class="team-header__details">
-            <p class="team-header__record">
-              <span class="team-header__wins">{{
-                teamData.record?.wins ?? 0
-              }}</span>
-              <span class="team-header__losses">{{
-                teamData.record?.losses ?? 0
-              }}</span>
-            </p>
-            @if (coachCurrentTime) {
-              <p class="team-header__time">{{ coachCurrentTime }}</p>
-            }
-          </div>
-        </div>
-      </div>
-      <img
-        class="team-header__image"
-        [src]="getLogoUrl(teamData.logo)"
-        alt="Team logo"
-      />
+  <pdz-page-header
+    [title]="teamData.name"
+    [logo]="getLogoUrl(teamData.logo)"
+    logoAlt="Team logo"
+  >
+    <div pdz-page-header-detail class="team-header__coach">
+      <span class="team-header__coach-name">{{ teamData.coach }}</span>
+      @if (teamData.isCoach) {
+        <button
+          pdz-button
+          iconOnly
+          variant="ghost"
+          size="xs"
+          color="neutral"
+          [disabled]="saving"
+          aria-label="Edit coach info"
+          (click)="openCoachEdit()"
+        >
+          <pdz-icon name="edit" [size]="14" aria-hidden="true"></pdz-icon>
+        </button>
+      }
+      @if (coachCurrentTime) {
+        <span class="team-header__time">{{ coachCurrentTime }}</span>
+      }
+      @if (saveError) {
+        <span class="team-header__error">{{ saveError }}</span>
+      }
     </div>
-  </div>
+
+    <p pdz-page-header-meta class="team-header__record">
+      <span class="team-header__wins">{{ teamData.record?.wins ?? 0 }}</span>
+      <span class="team-header__losses">{{ teamData.record?.losses ?? 0 }}</span>
+    </p>
+
+    @if (teamData.isCoach) {
+      <button
+        pdz-page-header-actions
+        pdz-button
+        variant="outlined"
+        size="sm"
+        color="neutral"
+        [disabled]="saving"
+        (click)="openTeamEdit()"
+      >
+        <pdz-icon name="edit" [size]="16" aria-hidden="true"></pdz-icon>
+        Edit team
+      </button>
+    }
+  </pdz-page-header>
   <div class="team-body">
     <div class="section section--matchups">
       <div class="section-header">

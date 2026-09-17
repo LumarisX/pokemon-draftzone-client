@@ -31,6 +31,7 @@ import {
 import { SelectOptionComponent } from '@pdz/shared/dropdowns/select/select-option.component';
 import { SelectComponent } from '@pdz/shared/dropdowns/select/select.component';
 import { ChoiceDirective } from '@pdz/shared/inputs/choice/choice.directive';
+import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
 
 type StageFormat = 'single-elim' | 'double-elim' | 'round-robin' | 'blank';
 
@@ -67,6 +68,7 @@ interface TeamOption {
     SelectComponent,
     SelectOptionComponent,
     ChoiceDirective,
+    PageHeaderComponent,
   ],
   templateUrl: './stage-builder-page.component.html',
   styleUrl: './stage-builder-page.component.scss',

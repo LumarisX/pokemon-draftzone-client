@@ -5,7 +5,20 @@
   [color]="teamClass === 'team-a' ? 'primary' : 'secondary'"
 >
   <div class="card-header" pdz-card-header>
-    <h2 class="card-title">{{ league().leagueName }}</h2>
+    <div class="card-heading">
+      <h2 class="card-title">
+        @if (tournamentLink(); as link) {
+          <a class="card-title__link" [routerLink]="link">
+            {{ league().leagueName }}
+          </a>
+        } @else {
+          {{ league().leagueName }}
+        }
+      </h2>
+      @if (hostLeague(); as host) {
+        <a class="card-host" [routerLink]="host.link">{{ host.name }}</a>
+      }
+    </div>
     <div class="header-right">
       @if (mode() === "manage") {
         <div class="status-badge" [ngClass]="getStatusClass(league().status)">

@@ -10,22 +10,6 @@
   display: flex;
   flex-direction: column;
   gap: pdz.space(lg);
-  padding: pdz.space(lg);
-  background: pdz.color(surface);
-  border-radius: pdz.shape(corner-lg);
-}
-
-.rules-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: pdz.space(md);
-
-  h2 {
-    @include text(headline);
-    color: pdz.color(on-surface);
-    margin: 0;
-  }
 }
 
 .save-message {

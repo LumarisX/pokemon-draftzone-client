@@ -17,51 +17,6 @@
   }
 }
 
-@mixin pdz-league-page-header(
-  $gap: pdz.space(md),
-  $padding: pdz.space(md) pdz.space(lg),
-  $border-bottom: 2px solid pdz.color(primary),
-  $background: pdz.color(surface)
-) {
-  display: flex;
-  align-items: center;
-  gap: $gap;
-  padding: $padding;
-  border-bottom: $border-bottom;
-  background: $background;
-}
-
-@mixin pdz-league-page-header-large(
-  $gap: pdz.space(md),
-  $padding: pdz.space(md) pdz.space(lg),
-  $border-bottom: 2px solid pdz.color(primary),
-  $background: pdz.color(surface),
-  $height: 8rem
-) {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: $gap;
-  padding: $padding;
-  border-bottom: $border-bottom;
-  background: $background;
-  height: auto;
-  min-height: $height;
-
-  @include respond-above(medium) {
-    flex-direction: row;
-    justify-content: space-between;
-    height: $height;
-  }
-}
-
-@mixin pdz-league-page-title($color: pdz.color(primary), $weight: 700) {
-  @include text(headline);
-  color: $color;
-  margin: 0;
-  font-weight: $weight;
-}
-
 /**
  * Placeholder copy for a section with nothing to show. Gives the section body
  * enough height that an empty panel reads as deliberate rather than clipped.
@@ -92,30 +47,25 @@
   &.primary {
     background-color: pdz.color(primary);
     color: pdz.color(on-primary);
-    box-shadow: var(--pdz-level-1);
   }
 
   &.secondary {
     background-color: pdz.color(secondary);
     color: pdz.color(on-secondary);
-    box-shadow: var(--pdz-level-1);
   }
 
   &.neutral {
     background-color: pdz.color(menu-container-high);
     color: pdz.color(on-menu-container);
-    box-shadow: var(--pdz-level-1);
   }
 
   &.positive {
     background-color: pdz.color(positive);
     color: pdz.color(on-menu);
-    box-shadow: var(--pdz-level-1);
   }
 
   &.negative {
     background-color: pdz.color(negative);
     color: pdz.color(on-menu);
-    box-shadow: var(--pdz-level-1);
   }
 }

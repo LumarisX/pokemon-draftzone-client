@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { HttpResponse } from '@angular/common/http';
-import { Component, inject, OnDestroy, OnInit, input } from '@angular/core';
+import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import {
   FormBuilder,
   FormGroup,
@@ -36,6 +36,7 @@ import {
 } from '@pdz/shared/inputs/field/field-message.directive';
 import { FieldComponent } from '@pdz/shared/inputs/field/field.component';
 import { InputDirective } from '@pdz/shared/inputs/field/input.directive';
+import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
 
 @Component({
   selector: 'pdz-league-sign-up',
@@ -55,6 +56,7 @@ import { InputDirective } from '@pdz/shared/inputs/field/input.directive';
     InputDirective,
     FieldErrorDirective,
     FieldHintDirective,
+    PageHeaderComponent,
   ],
 })
 export class LeagueSignUpComponent implements OnInit, OnDestroy {
@@ -64,8 +66,6 @@ export class LeagueSignUpComponent implements OnInit, OnDestroy {
   private uploadService = inject(UploadService);
   private authService = inject(AuthService);
   private destroy$ = new Subject<void>();
-
-  readonly embedded = input(false);
 
   signupForm!: FormGroup;
   added = false;
@@ -91,7 +91,7 @@ export class LeagueSignUpComponent implements OnInit, OnDestroy {
       )
       .subscribe((coachData) => {
         if (coachData) {
-          this.navigateToTournamentHome();
+          this.navigateToTeam(coachData.teamSlug);
         } else {
           this.isCheckingSignUp = false;
         }
@@ -193,15 +193,14 @@ export class LeagueSignUpComponent implements OnInit, OnDestroy {
         ? { ...this.signupForm.value, logo: logoFileKey }
         : this.signupForm.value;
 
-      const response: any = await firstValueFrom(
+      const response = await firstValueFrom(
         this.leagueService
           .signUp(signupPayload)
           .pipe(takeUntil(this.destroy$), take(1)),
       );
 
       this.added = true;
-      console.log('Sign up successful:', response);
-      this.navigateToTournamentHome();
+      this.navigateToTeam(response?.teamSlug);
     } catch (error: any) {
       console.error('Sign up failed:', error);
       if (this.logoFile && !this.uploadError) {
@@ -213,15 +212,11 @@ export class LeagueSignUpComponent implements OnInit, OnDestroy {
     }
   }
 
-  private navigateToTournamentHome(): void {
+  private navigateToTeam(teamSlug?: string): void {
     const leagueSlug = this.leagueService.leagueSlug();
     const tournamentSlug = this.leagueService.tournamentSlug();
-    this.router.navigate([
-      '/leagues',
-      leagueSlug,
-      'tournaments',
-      tournamentSlug,
-    ]);
+    const base = ['/leagues', leagueSlug, 'tournaments', tournamentSlug];
+    this.router.navigate(teamSlug ? [...base, 'teams', teamSlug] : base);
   }
 
   confirmSignUpAsSub(): void {

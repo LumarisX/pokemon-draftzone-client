@@ -1,12 +1,11 @@
-import { Component, inject, OnInit } from '@angular/core';
-import { RouterModule } from '@angular/router';
-import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
-import { IconComponent } from '@pdz/shared/images/icon/icon.component';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
+import { SegmentedOptionComponent } from '@pdz/shared/inputs/segmented/segmented-option.component';
+import { SegmentedComponent } from '@pdz/shared/inputs/segmented/segmented.component';
+import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
 import { LeagueZoneService } from '../league-zone.service';
 import { League } from '../league.interface';
 import { LeagueTeamCardComponent } from './league-team-card/league-team-card.component';
-import { DisclosureComponent } from '@pdz/shared/layout/disclosure/disclosure.component';
 
 type DraftGroup = {
   draftSlug: string | null;
@@ -19,38 +18,36 @@ type DraftGroup = {
   imports: [
     LeagueTeamCardComponent,
     LoadingComponent,
-    RouterModule,
-    ButtonComponent,
-    IconComponent,
-    DisclosureComponent,
+    PageHeaderComponent,
+    SegmentedComponent,
+    SegmentedOptionComponent,
   ],
   templateUrl: './league-teams.component.html',
   styleUrls: ['./league-teams.component.scss'],
 })
 export class LeagueTeamsComponent implements OnInit {
   leagueService = inject(LeagueZoneService);
-  drafts?: DraftGroup[];
 
-  /** Pools the viewer has collapsed; every pool starts open. */
-  private collapsed = new Set<string>();
+  readonly drafts = signal<DraftGroup[] | undefined>(undefined);
+  readonly selected = signal<string | null>(null);
+
+  readonly activeGroup = computed(() => {
+    const groups = this.drafts();
+    if (!groups?.length) return undefined;
+    const key = this.selected();
+    return groups.find((group) => this.groupKey(group) === key) ?? groups[0];
+  });
 
   ngOnInit(): void {
     this.leagueService.getTeamsByDraft().subscribe((data) => {
-      this.drafts = data.drafts;
+      this.drafts.set(data.drafts);
+      this.selected.set(
+        data.drafts.length ? this.groupKey(data.drafts[0]) : null,
+      );
     });
   }
 
   groupKey(group: DraftGroup): string {
     return group.draftSlug ?? '';
-  }
-
-  isOpen(group: DraftGroup): boolean {
-    return !this.collapsed.has(this.groupKey(group));
-  }
-
-  toggle(group: DraftGroup): void {
-    const key = this.groupKey(group);
-    if (this.collapsed.has(key)) this.collapsed.delete(key);
-    else this.collapsed.add(key);
   }
 }

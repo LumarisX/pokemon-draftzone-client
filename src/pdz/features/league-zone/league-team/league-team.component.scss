@@ -2,146 +2,29 @@
 @use "mixins" as *;
 @use "../league.mixins" as *;
 
-.team-header {
-  @include pdz-league-page-header();
-  align-items: stretch;
+:host {
+  display: flex;
   flex-direction: column;
-  gap: pdz.space(sm);
+  gap: pdz.space(md);
+}
 
-  @include respond-above(medium) {
-    flex-direction: row;
-    align-items: center;
-    gap: pdz.space(md);
-  }
-
-  &__content {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: pdz.space(sm);
-    width: 100%;
-
-    @include respond-above(medium) {
-      align-items: center;
-      gap: pdz.space(md);
-      flex: 1 1 auto;
-      min-width: 0;
-    }
-  }
-
-  &__meta {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: pdz.space(xs);
-    flex: 1 1 auto;
+.team-header {
+  &__coach {
     min-width: 0;
-
-    @include respond-above(medium) {
-      align-items: flex-start;
-      gap: pdz.space(md);
-    }
-  }
-
-  &__info {
-    display: flex;
-    flex-direction: column;
-    gap: pdz.space(xs);
-    text-align: left;
-    min-width: 0;
-
-    @include respond-above(medium) {
-      flex-direction: row;
-      align-items: center;
-      gap: pdz.space(md);
-    }
-  }
-
-  &__identity {
-    display: flex;
-    flex-direction: column;
-    gap: pdz.space(xs);
-    min-width: 0;
-  }
-
-  &__details {
-    display: flex;
-    flex-direction: column;
-    gap: pdz.space(sm);
-
-    @include respond-above(medium) {
-      align-items: flex-start;
-      text-align: left;
-    }
-  }
-
-  // Pairs a heading with its edit affordance, shown only to the team's coach.
-  &__titled {
-    display: flex;
-    align-items: center;
-    gap: pdz.space(xs);
-    min-width: 0;
-  }
-
-  &__edit {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: pdz.space(2xs);
-    border: none;
-    border-radius: pdz.shape(corner-full);
-    background: transparent;
-    color: pdz.color(on-surface-variant);
-    opacity: 0.5;
-    cursor: pointer;
-    flex-shrink: 0;
-    transition:
-      opacity pdz.duration(base) pdz.easing(standard),
-      background pdz.duration(base) pdz.easing(standard),
-      color pdz.duration(base) pdz.easing(standard);
-
-    &:hover:not(:disabled),
-    &:focus-visible {
-      opacity: 1;
-      color: pdz.color(on-surface);
-      background: pdz.color(surface-container-high);
-    }
-
-    &:disabled {
-      cursor: progress;
-    }
-  }
-
-  &__error {
-    @include text(body-sm);
-    color: pdz.color(danger);
-    margin: 0;
-  }
-
-  &__team-name {
-    @include text(title);
-    color: pdz.color(primary-accent);
-    margin: 0;
-
-    @include respond-above(medium) {
-      @include text(headline);
-    }
   }
 
   &__coach-name {
-    @include text(title);
+    @include text(body-sm-strong);
     color: pdz.color(on-surface);
-    margin: 0;
-
-    @include respond-above(medium) {
-      @include text(headline);
-    }
   }
 
   &__time {
-    @include text(title);
+    @include pdz.numeric;
     color: pdz.color(secondary-accent);
-    margin: 0;
+  }
+
+  &__error {
+    color: pdz.color(danger);
   }
 
   &__record {
@@ -171,28 +54,9 @@
     width: 2rem;
     height: 2rem;
   }
-
-  &__image {
-    width: clamp(4rem, 22vw, 6rem);
-    height: clamp(4rem, 22vw, 6rem);
-    object-fit: contain;
-    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
-    flex-shrink: 0;
-    align-self: center;
-
-    @include respond-above(medium) {
-      margin-left: auto;
-      width: auto;
-      height: 100%;
-      max-width: 14rem;
-      max-height: 7rem;
-      align-self: auto;
-    }
-  }
 }
 
 .team-body {
-  padding: pdz.space(md);
   display: flex;
   flex-wrap: wrap;
   gap: pdz.space(md);
@@ -202,7 +66,8 @@
 .section {
   padding: pdz.space(md) pdz.space(xs);
   background-color: pdz.color(surface-container-low);
-  border-radius: pdz.shape(corner-md);
+  border: 1px solid pdz.color(outline-variant);
+  border-radius: pdz.shape(corner-lg);
   display: flex;
   flex-direction: column;
   gap: pdz.space(sm);

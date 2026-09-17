@@ -1,31 +1,43 @@
 @use "pdz-theming" as pdz;
-@use "mixins" as *;
 @use "../../league.mixins" as *;
 
-.stage {
-  &-header {
-    @include text(subtitle);
+:host {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(md);
+}
+
+.round {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(xs);
+
+  &__name {
+    @include pdz.text(label-strong);
+    @include pdz.caps;
+    color: pdz.color(on-surface-variant);
+    margin: 0;
   }
 
-  &-body {
-    border-left: 2px solid pdz.color(primary-accent);
-    padding: pdz.space(md) 0 pdz.space(md) pdz.space(md);
-    display: flex;
-    flex-direction: column;
-    width: 100%;
-    gap: pdz.space(sm);
+  &__trades {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(24rem, 1fr));
+    align-items: start;
+    gap: pdz.space(md);
   }
+}
 
+.trades {
   &__empty {
     @include pdz-league-section-message();
   }
 
   &__error {
-    @include text(body-sm);
+    @include pdz.text(body-sm);
     color: pdz.color(on-danger-container);
     background: pdz.color(danger-container);
     border-radius: pdz.shape(corner-sm);
     padding: pdz.space(xs) pdz.space(sm);
-    margin-bottom: pdz.space(sm);
+    margin: 0;
   }
 }

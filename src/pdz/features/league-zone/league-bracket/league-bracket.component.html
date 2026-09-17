@@ -1,9 +1,7 @@
 <div class="schedule">
-  <div class="schedule__header">
-    <h1 class="schedule__title">Schedule</h1>
-
-    @if (!isLoading && hasBracket) {
-      <div class="schedule__meta">
+  <pdz-page-header title="Schedule">
+    <div pdz-page-header-meta>
+      @if (!isLoading && hasBracket) {
         @if (currentRoundName; as roundName) {
           <pdz-chip tone="primary" icon="play_arrow">{{ roundName }}</pdz-chip>
         }
@@ -13,9 +11,9 @@
         <pdz-chip icon="scoreboard">
           {{ playedCount }} / {{ draft.matches.length }} played
         </pdz-chip>
-      </div>
-    }
-  </div>
+      }
+    </div>
+  </pdz-page-header>
 
   <div class="schedule__body">
     @if (isLoading) {

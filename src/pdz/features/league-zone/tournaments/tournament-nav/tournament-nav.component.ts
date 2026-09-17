@@ -1,5 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import {
+  Component,
+  computed,
+  inject,
+  OnDestroy,
+  OnInit,
+  signal,
+} from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { catchError, of, Subject, switchMap, takeUntil } from 'rxjs';
 import { AuthService } from '@pdz/core/services/auth0.service';
@@ -9,6 +16,7 @@ import { LeagueZoneService } from '../../league-zone.service';
 import { LeagueManageService } from '../../league-manage/league-manage.service';
 import { League } from '../../league.interface';
 import { getLeagueLogoUrl } from '../../league.util';
+import { tournamentLinkGroups } from '../tournament-links';
 
 @Component({
   selector: 'pdz-tournament-nav',
@@ -24,11 +32,20 @@ export class TournamentNavComponent implements OnInit, OnDestroy {
 
   leagueInfo: League.LeagueInfo | null = null;
   leagueName: string | null = null;
-  profile: League.CoachProfile | null = null;
   profileLoaded = false;
-  canManage = false;
 
-  draftStatus: string | null = null;
+  readonly profile = signal<League.CoachProfile | null>(null);
+  readonly canManage = signal(false);
+  readonly draftStatus = signal<string | null>(null);
+
+  readonly linkGroups = computed(() =>
+    tournamentLinkGroups({
+      base: this.tournamentBase(),
+      profile: this.profile(),
+      draftStatus: this.draftStatus(),
+      canManage: this.canManage(),
+    }),
+  );
 
   getTournamentLogoUrl = getLeagueLogoUrl;
 
@@ -54,7 +71,7 @@ export class TournamentNavComponent implements OnInit, OnDestroy {
         takeUntil(this.destroy$),
         switchMap((isAuthenticated) => {
           if (!isAuthenticated) {
-            this.canManage = false;
+            this.canManage.set(false);
             return of(null);
           }
           this.loadManageRoles();
@@ -64,7 +81,7 @@ export class TournamentNavComponent implements OnInit, OnDestroy {
         }),
       )
       .subscribe((profile) => {
-        this.profile = profile;
+        this.profile.set(profile);
         this.profileLoaded = true;
         if (profile?.draft) {
           this.loadDraftStatus(profile.draft.draftSlug);
@@ -82,7 +99,7 @@ export class TournamentNavComponent implements OnInit, OnDestroy {
         takeUntil(this.destroy$),
         catchError(() => of([] as string[])),
       )
-      .subscribe((roles) => (this.canManage = roles.includes('organizer')));
+      .subscribe((roles) => this.canManage.set(roles.includes('organizer')));
   }
 
   ngOnDestroy(): void {
@@ -96,8 +113,8 @@ export class TournamentNavComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (details) =>
-          (this.draftStatus = this.ongoingDraftLabel(details.status)),
-        error: () => (this.draftStatus = null),
+          this.draftStatus.set(this.ongoingDraftLabel(details.status)),
+        error: () => this.draftStatus.set(null),
       });
   }
 
@@ -115,9 +132,8 @@ export class TournamentNavComponent implements OnInit, OnDestroy {
   }
 
   get notJoinedDiscord(): boolean {
-    return (
-      this.profileLoaded && !!this.profile && !this.profile.inDiscordServer
-    );
+    const profile = this.profile();
+    return this.profileLoaded && !!profile && !profile.inDiscordServer;
   }
 
   private get leagueSlug() {
@@ -132,35 +148,5 @@ export class TournamentNavComponent implements OnInit, OnDestroy {
     const { leagueSlug, tournamentSlug } = this;
     if (!leagueSlug || !tournamentSlug) return [];
     return ['/leagues', leagueSlug, 'tournaments', tournamentSlug];
-  }
-
-  get manageLink(): string[] {
-    const base = this.tournamentBase();
-    if (!base.length) return [];
-    return [...base, 'manage'];
-  }
-
-  get draftBase(): string[] {
-    const draftSlug = this.profile?.draft?.draftSlug;
-    const base = this.tournamentBase();
-    if (!base.length || !draftSlug) return [];
-    return [...base, 'drafts', draftSlug];
-  }
-
-  get teamLink(): string[] {
-    return [...this.tournamentBase(), 'teams', this.profile?.teamSlug ?? ''];
-  }
-
-  /** Public: every pool's teams on one page, no sign-up needed. */
-  get teamsLink(): string[] {
-    return [...this.tournamentBase(), 'teams'];
-  }
-
-  get scheduleLink(): string[] {
-    return [...this.tournamentBase(), 'schedule'];
-  }
-
-  get standingsLink(): string[] {
-    return [...this.tournamentBase(), 'standings'];
   }
 }

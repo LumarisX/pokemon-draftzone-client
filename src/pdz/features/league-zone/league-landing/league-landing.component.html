@@ -27,8 +27,7 @@
       } @else {
         <div class="tournaments__list">
           @for (tournament of league.tournaments; track tournament.tournamentSlug) {
-            <a
-              [routerLink]="['tournaments', tournament.tournamentSlug]"
+            <div
               class="tournament-card"
               [class.tournament-card--active]="getTournamentStatus(tournament) === 'active'"
               [class.tournament-card--completed]="getTournamentStatus(tournament) === 'completed'"
@@ -42,7 +41,14 @@
                   />
                 }
                 <div class="tournament-card__title-group">
-                  <h3 class="tournament-card__name">{{ tournament.name }}</h3>
+                  <h3 class="tournament-card__name">
+                    <a
+                      class="tournament-card__link"
+                      [routerLink]="['tournaments', tournament.tournamentSlug]"
+                    >
+                      {{ tournament.name }}
+                    </a>
+                  </h3>
                   <span
                     class="tournament-card__status"
                     [class.tournament-card__status--active]="getTournamentStatus(tournament) === 'active'"
@@ -100,13 +106,12 @@
                     target="_blank"
                     rel="noopener noreferrer"
                     class="tournament-card__discord"
-                    (click)="$event.stopPropagation()"
                   >
                     Discord
                   </a>
                 }
               </div>
-            </a>
+            </div>
           }
         </div>
       }

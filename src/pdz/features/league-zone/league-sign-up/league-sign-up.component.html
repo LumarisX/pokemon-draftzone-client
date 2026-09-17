@@ -6,47 +6,44 @@
     (ngSubmit)="onSubmit()"
     class="sign-up__container"
   >
-    @if (!embedded()) {
-      <!-- Toolbar header (matches tier-list toolbar) -->
-      <div class="toolbar">
-        <h1 class="toolbar__title">{{ leagueInfo.name }}</h1>
-        <div class="toolbar__spacer"></div>
-        <img class="toolbar__logo" [src]="getLogoUrl(leagueInfo.logo)" />
-      </div>
+    <pdz-page-header
+      title="Sign Up"
+      [eyebrow]="leagueInfo.name"
+      [logo]="getLogoUrl(leagueInfo.logo)"
+      [logoAlt]="leagueInfo.name + ' logo'"
+    />
 
-      <!-- League details -->
-      <section class="form-section">
-        <div class="form-section__header">
-          <h2 class="form-section__title">Details</h2>
-        </div>
-        <div class="form-section__body">
-          <table class="details-table">
-            <tr>
-              <th>Format:</th>
-              <td>{{ leagueInfo.format }}</td>
-              @if (leagueInfo.draftStart && leagueInfo.draftEnd) {
-                <th>Draft Period:</th>
-                <td>
-                  {{ leagueInfo.draftStart | date }} -
-                  {{ leagueInfo.draftEnd | date }}
-                </td>
-              }
-            </tr>
-            <tr>
-              <th>Ruleset:</th>
-              <td>{{ leagueInfo.ruleset }}</td>
-              @if (leagueInfo.draftStart && leagueInfo.draftEnd) {
-                <th>Season:</th>
-                <td>
-                  {{ leagueInfo.seasonStart | date }} -
-                  {{ leagueInfo.seasonEnd | date }}
-                </td>
-              }
-            </tr>
-          </table>
-        </div>
-      </section>
-    }
+    <section class="form-section">
+      <div class="form-section__header">
+        <h2 class="form-section__title">Details</h2>
+      </div>
+      <div class="form-section__body">
+        <table class="details-table">
+          <tr>
+            <th>Format:</th>
+            <td>{{ leagueInfo.format }}</td>
+            @if (leagueInfo.draftStart && leagueInfo.draftEnd) {
+              <th>Draft Period:</th>
+              <td>
+                {{ leagueInfo.draftStart | date }} -
+                {{ leagueInfo.draftEnd | date }}
+              </td>
+            }
+          </tr>
+          <tr>
+            <th>Ruleset:</th>
+            <td>{{ leagueInfo.ruleset }}</td>
+            @if (leagueInfo.draftStart && leagueInfo.draftEnd) {
+              <th>Season:</th>
+              <td>
+                {{ leagueInfo.seasonStart | date }} -
+                {{ leagueInfo.seasonEnd | date }}
+              </td>
+            }
+          </tr>
+        </table>
+      </div>
+    </section>
 
     @if (closed && !wantsToSignUpAsSub) {
       <div class="message-card">

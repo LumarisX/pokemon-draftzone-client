@@ -1,31 +1,33 @@
 @if (isLoading) {
   <pdz-loading></pdz-loading>
 } @else {
+  <pdz-page-header
+    compact
+    [title]="draftName"
+    [eyebrow]="leagueName"
+  >
+    <div
+      pdz-page-header-meta
+      class="draft-status"
+      [ngClass]="{
+        'in-progress': draftDetails.status === 'IN_PROGRESS',
+        paused: draftDetails.status === 'PAUSED',
+        'pre-draft': isPreDraft,
+        completed: draftDetails.status === 'COMPLETED',
+      }"
+    >
+      @if (draftStartDisplay) {
+        Starting in {{ draftStartDisplay }}
+      } @else if (isPreDraft && draftStartOverdue) {
+        Awaiting organizer to start the draft
+      } @else {
+        {{ draftDetails.status.replace("_", " ") | titlecase }}
+      }
+    </div>
+  </pdz-page-header>
+
   <div class="main-league-container">
     <div class="draft-panel">
-      <div class="info-container">
-        <div class="league-name">{{ leagueName }}</div>
-        <div class="info-details-container">
-          <div class="division-name">Draft: {{ draftName }}</div>
-          <div
-            class="draft-status"
-            [ngClass]="{
-              'in-progress': draftDetails.status === 'IN_PROGRESS',
-              paused: draftDetails.status === 'PAUSED',
-              'pre-draft': isPreDraft,
-              completed: draftDetails.status === 'COMPLETED',
-            }"
-          >
-            @if (draftStartDisplay) {
-              Starting in {{ draftStartDisplay }}
-            } @else if (isPreDraft && draftStartOverdue) {
-              Awaiting organizer to start the draft
-            } @else {
-              {{ draftDetails.status.replace("_", " ") | titlecase }}
-            }
-          </div>
-        </div>
-      </div>
       <a class="planner-link fancy-font" target="_blank" routerLink="/planner">
         Planner
         <pdz-icon name="open_in_new" size="sm"></pdz-icon>
@@ -331,7 +333,7 @@
           [altButtonText]="altButtonText()"
           [localDraftedIds]="draftedIds"
           (pokemonSelected)="pokemonSelected($event)"
-          header="Tier List"
+          [showHeader]="false"
         ></pdz-tier-list>
       </div>
     </div>

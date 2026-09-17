@@ -1,4 +1,3 @@
-import { CommonModule } from '@angular/common';
 import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { PokemonSearchComponent } from '@pdz/shared/dropdowns/pokemon-search/pokemon-search.component';
@@ -9,6 +8,7 @@ import { TierListService } from '@pdz/features/tier-lists/tier-list.service';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
+import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
 import {
   BehaviorSubject,
   Subject,
@@ -25,6 +25,7 @@ import {
 import { LeagueZoneService } from '../../league-zone.service';
 import { DraftSwitcherComponent } from '../../league-widgets/draft-switcher/draft-switcher.component';
 import { TradeLog, TradeStatus } from '../../league.interface';
+import { TradeCardComponent } from '../../trade-card/trade-card.component';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 
 const FREE_AGENCY = 'free-agency';
@@ -56,7 +57,6 @@ interface ManagedTeam {
 @Component({
   selector: 'pdz-trade-manager',
   imports: [
-    CommonModule,
     RouterModule,
     LoadingComponent,
     IconComponent,
@@ -66,6 +66,8 @@ interface ManagedTeam {
     SelectComponent,
     SelectOptionComponent,
     ButtonComponent,
+    TradeCardComponent,
+    PageHeaderComponent,
   ],
   templateUrl: './trade-manager.component.html',
   styleUrl: './trade-manager.component.scss',

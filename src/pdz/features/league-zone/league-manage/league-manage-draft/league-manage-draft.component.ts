@@ -22,6 +22,7 @@ import { TooltipDirective } from '@pdz/shared/tooltip/tooltip.directive';
 import { League } from '../../league.interface';
 import { formatCountdown } from '../../league.util';
 import { ChoiceDirective } from '@pdz/shared/inputs/choice/choice.directive';
+import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
 
 interface DraftCounterEvent {
   draftSlug: string;
@@ -71,6 +72,7 @@ export interface DraftTurnRound {
     CdkDrag,
     CdkDragHandle,
     ChoiceDirective,
+    PageHeaderComponent,
   ],
   templateUrl: './league-manage-draft.component.html',
   styleUrl: './league-manage-draft.component.scss',

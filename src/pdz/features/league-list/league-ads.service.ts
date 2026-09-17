@@ -66,4 +66,9 @@ export interface LeagueAd {
   createdAt: string;
   tags: string[];
   hosted?: boolean;
+  hostedLinks?: {
+    leagueSlug: string;
+    leagueName: string;
+    tournamentSlug: string;
+  };
 }

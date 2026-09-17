@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import {
   afterRenderEffect,
+  booleanAttribute,
   Component,
   computed,
   effect,
@@ -38,6 +39,7 @@ import { FieldComponent } from '@pdz/shared/inputs/field/field.component';
 import { InputDirective } from '@pdz/shared/inputs/field/input.directive';
 import { SelectComponent } from '@pdz/shared/dropdowns/select/select.component';
 import { SelectOptionComponent } from '@pdz/shared/dropdowns/select/select-option.component';
+import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
 import { MenuComponent } from '@pdz/shared/menu/menu.component';
 import { MenuTriggerDirective } from '@pdz/shared/menu/menu-trigger.directive';
 import { Subject } from 'rxjs';
@@ -81,6 +83,7 @@ interface DraftPokemonAction {
     SelectOptionComponent,
     MenuComponent,
     MenuTriggerDirective,
+    PageHeaderComponent,
   ],
   styleUrls: ['./tier-list.component.scss'],
 })
@@ -91,6 +94,7 @@ export class TierListComponent implements OnInit, OnDestroy {
   private destroy$ = new Subject<void>();
 
   readonly header = input<string>();
+  readonly showHeader = input(true, { transform: booleanAttribute });
 
   localDraftedIds = input<string[]>([]);
   drafted = signal<{

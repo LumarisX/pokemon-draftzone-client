@@ -4,15 +4,27 @@ import { RouterModule } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
+import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
 import { LeagueZoneService } from '../league-zone.service';
 import { League } from '../league.interface';
 import { getLeagueLogoUrl } from '../league.util';
 import { ChipComponent } from '@pdz/shared/data/chip/chip.component';
+import {
+  TournamentLink,
+  TournamentLinkGroup,
+  manageDraftLinks,
+  manageLinkGroups,
+} from '../tournaments/tournament-links';
 
 @Component({
   selector: 'pdz-league-manage-hub',
-  imports: [CommonModule, RouterModule, IconComponent, LoadingComponent,
+  imports: [
+    CommonModule,
+    RouterModule,
+    IconComponent,
+    LoadingComponent,
     ChipComponent,
+    PageHeaderComponent,
   ],
   templateUrl: './league-manage-hub.component.html',
   styleUrls: ['./league-manage-hub.component.scss'],
@@ -34,12 +46,21 @@ export class LeagueManageHubComponent implements OnInit, OnDestroy {
     return this.leagueService.tournamentSlug();
   }
 
-  get managePath() {
-    return `/leagues/${this.leagueSlug}/tournaments/${this.tournamentSlug}/manage`;
+  get tournamentBase(): string[] {
+    const { leagueSlug, tournamentSlug } = this;
+    if (!leagueSlug || !tournamentSlug) return [];
+    return ['/leagues', leagueSlug, 'tournaments', tournamentSlug];
   }
 
-  get tournamentBasePath() {
-    return `/leagues/${this.leagueSlug}/tournaments/${this.tournamentSlug}`;
+  get linkGroups(): TournamentLinkGroup[] {
+    return manageLinkGroups(this.tournamentBase).map((group) => ({
+      ...group,
+      links: group.links.filter((link) => link.id !== 'manage-hub'),
+    }));
+  }
+
+  draftLinks(draft: { name: string; draftSlug: string }): TournamentLink[] {
+    return manageDraftLinks(this.tournamentBase, draft);
   }
 
   ngOnInit(): void {

@@ -30,124 +30,24 @@
 }
 
 <nav class="links">
-  @if (profile && profile.draft && profile.teamSlug) {
+  @for (group of linkGroups(); track group.id) {
     <div class="group">
       <span class="group__title">
-        <span class="group__label">{{ profile.teamName || "Your Team" }}</span>
+        <span class="group__label">{{ group.label }}</span>
       </span>
-      <a [routerLink]="teamLink" routerLinkActive="active" class="link-button">
-        <span class="link-button__label">Overview</span>
-      </a>
-      <a
-        [routerLink]="[...draftBase, 'draft']"
-        routerLinkActive="active"
-        class="link-button"
-      >
-        <span class="link-button__label">Draft</span>
-        @if (draftStatus) {
-          <span class="link-button__status">{{ draftStatus }}</span>
-        }
-      </a>
-    </div>
-  }
-
-  <div class="group">
-    <span class="group__title">Tournament</span>
-    <a
-      [routerLink]="standingsLink"
-      routerLinkActive="active"
-      class="link-button"
-    >
-      <span class="link-button__label">Standings</span>
-    </a>
-    <a
-      [routerLink]="teamsLink"
-      routerLinkActive="active"
-      [routerLinkActiveOptions]="{ exact: true }"
-      class="link-button"
-    >
-      <span class="link-button__label">Teams</span>
-    </a>
-    <a
-      [routerLink]="scheduleLink"
-      routerLinkActive="active"
-      class="link-button"
-    >
-      <span class="link-button__label">Schedule</span>
-    </a>
-    <a
-      [routerLink]="[...tournamentBase(), 'trades']"
-      routerLinkActive="active"
-      class="link-button"
-    >
-      <span class="link-button__label">Trades</span>
-    </a>
-  </div>
-
-  <div class="group">
-    <span class="group__title">Reference</span>
-    <a
-      [routerLink]="[...tournamentBase(), 'rules']"
-      routerLinkActive="active"
-      class="link-button"
-    >
-      <span class="link-button__label">Rules</span>
-    </a>
-    <a
-      [routerLink]="[...tournamentBase(), 'tier-list']"
-      routerLinkActive="active"
-      class="link-button"
-    >
-      <span class="link-button__label">Tier List</span>
-    </a>
-  </div>
-
-  @if (canManage) {
-    <div class="group">
-      <span class="group__title">Manage</span>
-      <a
-        [routerLink]="manageLink"
-        routerLinkActive="active"
-        [routerLinkActiveOptions]="{ exact: true }"
-        class="link-button"
-      >
-        <span class="link-button__label">Dashboard</span>
-      </a>
-      <a
-        [routerLink]="[...manageLink, 'settings']"
-        routerLinkActive="active"
-        class="link-button"
-      >
-        <span class="link-button__label">Settings</span>
-      </a>
-      <a
-        [routerLink]="[...manageLink, 'sign-ups']"
-        routerLinkActive="active"
-        class="link-button"
-      >
-        <span class="link-button__label">Sign-Ups</span>
-      </a>
-      <a
-        [routerLink]="[...manageLink, 'rules']"
-        routerLinkActive="active"
-        class="link-button"
-      >
-        <span class="link-button__label">Rules</span>
-      </a>
-      <a
-        [routerLink]="[...tournamentBase(), 'tier-list', 'edit']"
-        routerLinkActive="active"
-        class="link-button"
-      >
-        <span class="link-button__label">Tier List</span>
-      </a>
-      <a
-        [routerLink]="[...manageLink, 'trades']"
-        routerLinkActive="active"
-        class="link-button"
-      >
-        <span class="link-button__label">Trades</span>
-      </a>
+      @for (link of group.links; track link.id) {
+        <a
+          [routerLink]="link.route"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: !!link.exact }"
+          class="link-button"
+        >
+          <span class="link-button__label">{{ link.label }}</span>
+          @if (link.status) {
+            <span class="link-button__status">{{ link.status }}</span>
+          }
+        </a>
+      }
     </div>
   }
 </nav>

@@ -1,3 +1,5 @@
+<pdz-page-header title="Rules" />
+
 <div class="rules-page">
   <aside class="rules-nav">
     <h2 class="rules-nav__title">Jump to Section</h2>
@@ -15,10 +17,6 @@
   </aside>
 
   <main class="rules-content">
-    <div class="rules-header">
-      <h1 class="rules-header__title">League Rules</h1>
-    </div>
-
     @for (rule of rules; track rule.title; let i = $index) {
       <section
         class="rules-section"

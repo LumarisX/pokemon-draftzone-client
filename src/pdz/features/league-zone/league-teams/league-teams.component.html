@@ -1,43 +1,38 @@
 <div class="teams">
-  <div class="teams__header">
-    <a
-      pdz-button
-      variant="ghost"
-      color="neutral"
-      size="sm"
-      pdz-button
-      size="sm"
-      color="neutral"
-      variant="ghost"
-      [routerLink]="['../']"
-    >
-      <pdz-icon name="arrow_back" size="sm" aria-hidden="true"></pdz-icon>
-      Back
-    </a>
-    <h1 class="teams__title">League Teams</h1>
-  </div>
+  <pdz-page-header title="Teams">
+    @if (drafts()?.length === 1) {
+      <span pdz-page-header-detail>{{ activeGroup()?.name }}</span>
+    }
+
+    @if (drafts() && drafts()!.length > 1) {
+      <pdz-segmented
+        class="teams__divisions"
+        size="sm"
+        aria-label="Division"
+        [value]="selected()"
+        (valueChange)="selected.set($any($event))"
+      >
+        @for (group of drafts()!; track groupKey(group)) {
+          <pdz-segmented-option
+            [value]="groupKey(group)"
+            [label]="group.name"
+          />
+        }
+      </pdz-segmented>
+    }
+  </pdz-page-header>
+
   <div class="teams__body">
-    @if (drafts) {
-      @for (group of drafts; track groupKey(group)) {
-        <section class="draft">
-          <pdz-disclosure
-            [heading]="group.name"
-            [open]="isOpen(group)"
-            (openChange)="toggle(group)"
-          >
-            <span pdz-disclosure-trailing class="draft__count">
-              {{ group.teams.length }}
-            </span>
-            <div class="draft__teams">
-              @for (team of group.teams; track team.id) {
-                <pdz-league-team-card [teamDetails]="team"></pdz-league-team-card>
-              } @empty {
-                <div class="teams__empty">No teams added to this division</div>
-              }
-            </div>
-          </pdz-disclosure>
-        </section>
-      } @empty {
+    @if (drafts()) {
+      @if (activeGroup(); as group) {
+        <div class="teams__grid">
+          @for (team of group.teams; track team.id) {
+            <pdz-league-team-card [teamDetails]="team"></pdz-league-team-card>
+          } @empty {
+            <div class="teams__empty">No teams added to this division</div>
+          }
+        </div>
+      } @else {
         <div class="teams__empty">No teams have been added yet</div>
       }
     } @else {

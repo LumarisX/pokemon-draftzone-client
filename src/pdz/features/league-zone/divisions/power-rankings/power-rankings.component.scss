@@ -195,8 +195,8 @@ input {
 }
 
 .widget-wrapper {
-  background-color: pdz.color(surface);
-  border-radius: 1rem;
-  padding: 0.5rem;
-  box-shadow: var(--pdz-level-2);
+  background-color: pdz.color(surface-container-low);
+  border: 1px solid pdz.color(outline-variant);
+  border-radius: pdz.shape(corner-lg);
+  padding: pdz.space(sm);
 }

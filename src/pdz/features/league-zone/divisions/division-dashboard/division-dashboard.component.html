@@ -1,36 +1,18 @@
-<div class="division-header">
-  <div class="division-header__meta">
-    <button
-      pdz-button
-      size="sm"
-      color="neutral"
-      variant="ghost"
-      [routerLink]="['../../']"
-    >
-      <pdz-icon name="arrow_back" size="sm"></pdz-icon> Back
-    </button>
-    <div class="division-header__info">
-      <h1 class="division-header__league-name">{{ leagueName }}</h1>
-      <h2 class="division-header__division-name">{{ divisionName }}</h2>
-    </div>
-  </div>
-
-  <img
-    class="division-header__image"
-    [src]="getLogoUrl(logo)"
-    alt="League logo"
-  />
-</div>
-
-<pdz-tab-nav align="stretch" label="Division sections">
-  <a pdz-tab-link [routerLink]="['../../teams']" routerLinkActive>Teams</a>
-  <a pdz-tab-link routerLink="./tier-list" routerLinkActive>Tier List</a>
-  <a pdz-tab-link routerLink="./draft" routerLinkActive>Draft</a>
-</pdz-tab-nav>
-<pdz-stage-switcher
-  [currentStageSlug]="stageSlug"
-  (stageSelected)="onStageSelected($event)"
-></pdz-stage-switcher>
+<pdz-page-header
+  [title]="divisionName"
+  [eyebrow]="leagueName"
+  [logo]="getLogoUrl(logo)"
+>
+  <pdz-tab-nav align="stretch" label="Division sections">
+    <a pdz-tab-link [routerLink]="['../../teams']" routerLinkActive>Teams</a>
+    <a pdz-tab-link routerLink="./tier-list" routerLinkActive>Tier List</a>
+    <a pdz-tab-link routerLink="./draft" routerLinkActive>Draft</a>
+  </pdz-tab-nav>
+  <pdz-stage-switcher
+    [currentStageSlug]="stageSlug"
+    (stageSelected)="onStageSelected($event)"
+  ></pdz-stage-switcher>
+</pdz-page-header>
 <div class="division-body">
   <div class="section section--matchups">
     <div class="section-header">
@@ -55,38 +37,4 @@
     </div>
   </div>
 
-  <!-- @if(team){
-  <div class="widget widget--span-2">
-    <div class="widget-title">Deimos Deoxys</div>
-    <div class="widget-body">
-      <pdz-league-team-card [teamDetails]="team"></pdz-league-team-card>
-    </div>
-  </div>
-}
-  <div class="widget">
-    <div class="widget-title">Upcoming Matches</div>
-    <div class="widget-body"></div>
-  </div>
-  <div class="widget widget--span-3">
-    <div class="widget-title">Standings</div>
-    <div class="widget-body">
-      <pdz-coach-standings></pdz-coach-standings>
-    </div>
-  </div>
-  <div class="widget">
-    <div class="widget-title">Recent Activity</div>
-    <div class="widget-body"></div>
-  </div>
-  <div class="widget">
-    <div class="widget-title">Matches</div>
-    <div class="widget-body"></div>
-  </div>
-  <div class="widget">
-    <div class="widget-title">League Chat</div>
-    <div class="widget-body">
-      @if (tournamentSlug) {
-        <pdz-chat [roomId]="tournamentSlug"></pdz-chat>
-      }
-    </div>
-  </div> -->
 </div>

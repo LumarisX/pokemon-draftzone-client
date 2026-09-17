@@ -1,10 +1,15 @@
 <div class="rules-editor">
-  <div class="rules-header">
-    <h2>League Rule Sections</h2>
-    <button pdz-button (click)="addSection()" [disabled]="isSaving()">
-      + Add Section
+  <pdz-page-header title="Rules" eyebrow="Manage">
+    <button
+      pdz-page-header-actions
+      pdz-button
+      icon="add"
+      (click)="addSection()"
+      [disabled]="isSaving()"
+    >
+      Add Section
     </button>
-  </div>
+  </pdz-page-header>
 
   @if (saveMessage(); as message) {
     <div

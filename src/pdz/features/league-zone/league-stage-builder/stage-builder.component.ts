@@ -388,21 +388,38 @@ export class StageBuilderComponent implements OnChanges, OnDestroy {
     this.commit({ ...this.draft(), rounds });
   }
 
-  protected onRoundDeadline(index: number, value: string): void {
+  protected onRoundDeadline(
+    index: number,
+    field: 'matchDeadline' | 'tradeDeadline',
+    value: string,
+  ): void {
     const rounds = this.rounds.map((round, i) =>
       i === index
         ? {
             ...claimRound(round),
-            matchDeadline: value ? new Date(value).toISOString() : null,
+            [field]: value ? new Date(value).toISOString() : null,
           }
         : round,
     );
     this.commit({ ...this.draft(), rounds });
   }
 
-  protected deadlineValue(round: BuilderRound): string {
-    if (!round.matchDeadline) return '';
-    const date = new Date(round.matchDeadline);
+  protected onRoundBestOf(index: number, value: string): void {
+    const parsed = Number(value);
+    const bestOf = value.trim() && Number.isFinite(parsed) ? parsed : null;
+    const rounds = this.rounds.map((round, i) =>
+      i === index ? { ...claimRound(round), bestOf } : round,
+    );
+    this.commit({ ...this.draft(), rounds });
+  }
+
+  protected deadlineValue(
+    round: BuilderRound,
+    field: 'matchDeadline' | 'tradeDeadline' = 'matchDeadline',
+  ): string {
+    const raw = round[field];
+    if (!raw) return '';
+    const date = new Date(raw);
     if (Number.isNaN(date.getTime())) return '';
     const pad = (n: number) => `${n}`.padStart(2, '0');
     return (

@@ -1,18 +1,17 @@
-import { Component } from '@angular/core';
-import { RouterModule } from '@angular/router';
-import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
-import { IconComponent } from '@pdz/shared/images/icon/icon.component';
-import { LeagueTradeWidgetComponent } from '../league-widgets/league-trade-widget/league-trade-widget.component';
+import { Component, signal } from '@angular/core';
+import { ChipComponent } from '@pdz/shared/data/chip/chip.component';
+import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
+import {
+  LeagueTradeWidgetComponent,
+  TradeSummary,
+} from '../league-widgets/league-trade-widget/league-trade-widget.component';
 
 @Component({
   selector: 'pdz-league-trades',
-  imports: [
-    RouterModule,
-    ButtonComponent,
-    IconComponent,
-    LeagueTradeWidgetComponent,
-  ],
+  imports: [ChipComponent, LeagueTradeWidgetComponent, PageHeaderComponent],
   templateUrl: './league-trades.component.html',
   styleUrls: ['./league-trades.component.scss'],
 })
-export class LeagueTradesComponent {}
+export class LeagueTradesComponent {
+  readonly summary = signal<TradeSummary | undefined>(undefined);
+}

@@ -6,18 +6,6 @@
   display: flex;
   flex-direction: column;
   gap: pdz.space(md);
-  padding: pdz.space(md);
-
-  &__header {
-    @include pdz-league-page-header();
-    justify-content: space-between;
-    flex-wrap: wrap;
-    border-radius: pdz.shape(corner-md);
-  }
-
-  &__title {
-    @include pdz-league-page-title();
-  }
 
   &__loading {
     display: flex;
@@ -33,8 +21,8 @@
 
 .panel {
   background: pdz.color(surface-container-low);
-  border-radius: pdz.shape(corner-md);
-  box-shadow: var(--pdz-level-1);
+  border: 1px solid pdz.color(outline-variant);
+  border-radius: pdz.shape(corner-lg);
   padding: pdz.space(md);
   display: flex;
   flex-direction: column;
@@ -273,124 +261,27 @@
   gap: pdz.space(sm);
 
   &__name {
-    @include text(subtitle);
+    @include text(label-strong);
+    @include pdz.caps;
+    color: pdz.color(on-surface-variant);
     margin: 0;
   }
-}
 
-.trade {
-  border: 1px solid pdz.color(outline-variant);
-  border-radius: pdz.shape(corner-sm);
-  background: pdz.color(surface);
-  padding: pdz.space(sm);
-  display: flex;
-  flex-direction: column;
-  gap: pdz.space(sm);
-
-  &--pending {
-    border-color: pdz.color(warning);
-  }
-
-  &__header {
-    display: flex;
-    align-items: center;
-    gap: pdz.space(sm);
-    flex-wrap: wrap;
-  }
-
-  &__status {
-    @include text(label);
-    border-radius: pdz.shape(corner-sm);
-    padding: pdz.space(2xs) pdz.space(xs);
-    font-weight: 700;
-    border: 1px solid transparent;
-
-    &--pending {
-      background: pdz.color(warning-container);
-      color: pdz.color(on-warning-container);
-      border-color: pdz.color(warning);
-    }
-
-    &--approved {
-      background: pdz.color(success-container);
-      color: pdz.color(on-success-container);
-      border-color: pdz.color(success);
-    }
-
-    &--rejected {
-      background: pdz.color(danger-container);
-      color: pdz.color(on-danger-container);
-      border-color: pdz.color(danger);
-    }
-  }
-
-  &__time {
-    @include text(body-sm);
-    color: pdz.color(on-surface-variant);
-  }
-
-  &__actions {
-    display: inline-flex;
-    align-items: center;
-    gap: pdz.space(xs);
-    margin-inline-start: auto;
-  }
-
-  &__round {
-    min-width: 9rem;
-  }
-  &__body {
+  &__trades {
     display: grid;
-    grid-template-columns: minmax(0, 1fr);
+    grid-template-columns: repeat(auto-fill, minmax(24rem, 1fr));
+    align-items: start;
     gap: pdz.space(sm);
-
-    @include respond-above(medium) {
-      grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
   }
 
-  &__side {
-    min-width: 0;
-  }
-
-  &__team {
-    @include text(label);
-    font-weight: 600;
-    margin: 0 0 pdz.space(2xs);
+  &__trade {
     display: flex;
-    align-items: center;
-    gap: pdz.space(xs);
-  }
-
-  &__points {
-    @include text(label);
-    padding: 0 pdz.space(2xs);
-    border-radius: pdz.shape(corner-xs);
-    background: pdz.color(primary-subtle);
-    color: pdz.color(on-primary-container);
-    font-weight: 700;
-  }
-
-  &__mons {
-    display: flex;
-    flex-wrap: wrap;
-    gap: pdz.space(xs);
-  }
-
-  &__mon {
-    @include text(body-sm);
-    display: inline-flex;
-    align-items: center;
+    flex-direction: column;
     gap: pdz.space(2xs);
   }
 
-  &__mon-sprite {
-    width: 1.75rem;
-    height: 1.75rem;
-  }
-
-  &__mons-empty {
-    color: pdz.color(on-surface-variant);
+  &__trade-round {
+    min-width: 8rem;
   }
 }
 

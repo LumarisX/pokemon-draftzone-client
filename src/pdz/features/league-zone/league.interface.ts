@@ -193,7 +193,24 @@ export namespace League {
     pokemon?: Pokemon;
   }[];
 
-  export type SignUpStatus = 'approved' | 'pending' | 'denied';
+  export type SignUpStatus = 'approved' | 'pending' | 'denied' | 'dropped';
+
+  export type TournamentOrganizer = {
+    sub: string;
+    username: string | null;
+    isOwner: boolean;
+  };
+
+  export type TournamentOrganizers = {
+    canEdit: boolean;
+    organizers: TournamentOrganizer[];
+  };
+
+  export type OrganizerCandidate = {
+    sub: string;
+    username: string | null;
+    joined: string;
+  };
 
   export type LeagueSignUp = {
     id: string;
@@ -330,6 +347,14 @@ export namespace League {
     inDiscordServer: boolean;
   };
 
+  export type SignUpResult = {
+    message: string;
+    userId: string;
+    tournamentId: string;
+    teamId?: string;
+    teamSlug?: string;
+  };
+
   /** Mirrors the server's STAGE_TYPES enum. */
   export type StageType =
     | 'round-robin'
@@ -351,14 +376,34 @@ export namespace League {
   };
 }
 
-type TradeParticipant = {
+export type TradePokemon = Pokemon & {
+  cost?: number;
+  tier?: string;
+  tera?: boolean;
+};
+
+export type TradeParticipant = {
   team?: League.Team;
-  pokemon: League.TieredPokemon[];
+  pokemon: TradePokemon[];
   /** Trade points charged to this side's team; 0 for free agency. */
   tradePoints?: number;
 };
 
 export type TradeStatus = 'PENDING' | 'APPROVED' | 'REJECTED';
+
+export type SelectedTradePokemon = { id: string; tera: boolean };
+
+export type TradeSide = {
+  team?: string;
+  pokemon: SelectedTradePokemon[];
+  tradePoints?: number;
+};
+
+export type TradeData = {
+  side1: TradeSide;
+  side2: TradeSide;
+  roundIndex: number;
+};
 
 export type TradeLog = {
   /** Absent on trades predating the trade-id backfill. */

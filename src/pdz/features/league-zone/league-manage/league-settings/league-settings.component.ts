@@ -16,7 +16,7 @@ import {
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { Router, RouterModule } from '@angular/router';
+import { Router } from '@angular/router';
 import {
   catchError,
   forkJoin,
@@ -43,6 +43,7 @@ import {
 } from '@pdz/shared/inputs/field/field-message.directive';
 import { FieldComponent } from '@pdz/shared/inputs/field/field.component';
 import { InputDirective } from '@pdz/shared/inputs/field/input.directive';
+import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
 
 const NON_DRAFTABLE_TIER_NAMES = new Set(['untiered', 'ban', 'banned']);
 
@@ -59,7 +60,6 @@ const ALLOWED_LOGO_TYPES = [
   imports: [
     CommonModule,
     ReactiveFormsModule,
-    RouterModule,
     IconComponent,
     LoadingComponent,
     ButtonComponent,
@@ -70,6 +70,7 @@ const ALLOWED_LOGO_TYPES = [
     InputDirective,
     FieldErrorDirective,
     FieldHintDirective,
+    PageHeaderComponent,
   ],
   templateUrl: './league-settings.component.html',
   styleUrl: './league-settings.component.scss',
@@ -147,6 +148,7 @@ export class LeagueSettingsComponent implements OnInit, OnDestroy {
       forfeitPokemonDiff: [0, [Validators.required, Validators.min(0)]],
       matchupChat: [true],
       coachReporting: [true],
+      archived: [false],
       draftCountMin: [1, [Validators.required, Validators.min(1)]],
       draftCountMax: [1, [Validators.required, Validators.min(1)]],
       pointTotalEnabled: [false],
@@ -214,6 +216,7 @@ export class LeagueSettingsComponent implements OnInit, OnDestroy {
             forfeitPokemonDiff: settings.forfeit?.pokemonDiff ?? 0,
             matchupChat: settings.matchSettings?.chat !== false,
             coachReporting: settings.matchSettings?.coachReporting !== false,
+            archived: settings.archived ?? false,
             draftCountMin: settings.draftCount?.min ?? 1,
             draftCountMax: settings.draftCount?.max ?? 1,
             pointTotalEnabled: settings.pointTotal != null,
@@ -334,6 +337,7 @@ export class LeagueSettingsComponent implements OnInit, OnDestroy {
           chat: v.matchupChat,
           coachReporting: v.coachReporting,
         },
+        archived: v.archived,
       })
       .pipe(takeUntil(this.destroy$))
       .subscribe({

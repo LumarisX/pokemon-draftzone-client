@@ -1,12 +1,26 @@
-import { Component, inject, OnDestroy, OnInit, input } from '@angular/core';
+import {
+  Component,
+  inject,
+  OnDestroy,
+  OnInit,
+  input,
+  output,
+} from '@angular/core';
+import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 import { finalize, Subject, take, takeUntil } from 'rxjs';
 import { LeagueZoneService } from '../../league-zone.service';
 import { TradeLog } from '../../league.interface';
-import { TradeCardComponent } from './trade-card/trade-card.component';
+import { TradeCardComponent } from '../../trade-card/trade-card.component';
+
+export type TradeSummary = {
+  total: number;
+  pending: number;
+  currentRoundName?: string;
+};
 
 @Component({
   selector: 'pdz-league-trade-widget',
-  imports: [TradeCardComponent],
+  imports: [ButtonComponent, TradeCardComponent],
   templateUrl: './league-trade-widget.component.html',
   styleUrl: './league-trade-widget.component.scss',
 })
@@ -17,6 +31,8 @@ export class LeagueTradeWidgetComponent implements OnInit, OnDestroy {
   readonly stageSlug = input<string>();
 
   readonly withdrawableTeamId = input<string>();
+
+  readonly summaryChange = output<TradeSummary>();
 
   tradeRounds?: { name: string; trades: TradeLog[] }[];
   currentRoundIndex = -1;
@@ -66,6 +82,13 @@ export class LeagueTradeWidgetComponent implements OnInit, OnDestroy {
           this.tradeRounds = [...data.rounds]
             .filter((round) => round.trades.length)
             .reverse();
+
+          const trades = this.tradeRounds.flatMap((round) => round.trades);
+          this.summaryChange.emit({
+            total: trades.length,
+            pending: trades.filter((trade) => trade.status === 'PENDING').length,
+            currentRoundName: data.rounds[this.currentRoundIndex]?.name,
+          });
         },
       });
   }

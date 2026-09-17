@@ -1,13 +1,19 @@
 @use "pdz-theming" as pdz;
 @use "mixins" as *;
 
+:host {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(md);
+  height: 100%;
+  min-height: 0;
+}
+
 .main-league-container {
   display: flex;
-  width: fit-content;
-  height: 100%;
+  flex: 1 1 auto;
   width: 100%;
-  max-height: 100%;
-  padding: pdz.space(md);
+  min-height: 0;
   gap: pdz.space(md);
 }
 .tier-wrapper {
@@ -162,14 +168,8 @@
     flex-shrink: 0;
     background-color: pdz.color(primary);
     color: pdz.color(on-primary);
-    box-shadow: var(--pdz-level-2);
     height: 1.5rem;
     cursor: pointer;
-    &:active {
-      box-shadow: var(--pdz-level-0);
-      margin-top: 1px;
-      margin-bottom: -1px;
-    }
     @include pdz.text(title, $family: false);
     display: flex;
     align-items: center;
@@ -216,7 +216,6 @@
           padding: 0 0.25rem;
           @include pdz.text(body-sm-strong, $family: false);
           border-radius: pdz.shape(corner-sm);
-          box-shadow: var(--pdz-level-1);
           pdz-icon {
             font-size: 0.8rem;
             width: fit-content;
@@ -236,7 +235,6 @@
           padding: 0 0.25rem;
           @include pdz.text(body-sm-strong, $family: false);
           border-radius: pdz.shape(corner-sm);
-          box-shadow: var(--pdz-level-1);
           pdz-icon {
             font-size: 0.8rem;
             width: fit-content;
@@ -251,9 +249,9 @@
     display: flex;
     flex-direction: column;
     padding: pdz.space(sm);
-    border-radius: pdz.shape(corner-sm);
+    border: 1px solid pdz.color(outline-variant);
+    border-radius: pdz.shape(corner-lg);
     background-color: pdz.color(surface-container-low);
-    box-shadow: var(--pdz-level-2);
     .my-draft-title {
       display: flex;
       justify-content: space-between;
@@ -295,7 +293,6 @@
         &.selected-pick {
           background-color: pdz.color(primary-container);
           border-color: pdz.color(primary-accent);
-          box-shadow: var(--pdz-level-2);
         }
         &.pending-pick {
           border-style: dashed;
@@ -395,7 +392,6 @@
           margin: 0.125rem 0;
           column-gap: 0.25rem;
           border-radius: pdz.shape(corner-sm);
-          box-shadow: var(--pdz-level-1);
           border: 2px solid pdz.color(primary-accent);
           color: pdz.color(on-primary);
 
@@ -530,35 +526,6 @@
     width: 3rem !important;
     line-height: 1 !important;
   }
-}
-
-.league-name {
-  @include pdz.text(card-title, $family: false);
-  font-family: var(--pdz-font-display);
-  overflow: hidden;
-}
-.division-name {
-  font-size: pdz.font-size(sm);
-  font-family: var(--pdz-font-display);
-  overflow: hidden;
-  display: flex;
-  align-items: center;
-}
-
-.info-container {
-  display: flex;
-  flex-direction: column;
-  padding: pdz.space(sm);
-  border-radius: pdz.shape(corner-sm);
-  background-color: pdz.color(surface-container-low);
-  box-shadow: var(--pdz-level-2);
-}
-
-.info-details-container {
-  display: flex;
-  align-self: stretch;
-  column-gap: 0.5rem;
-  justify-content: space-between;
 }
 
 .draft-status {

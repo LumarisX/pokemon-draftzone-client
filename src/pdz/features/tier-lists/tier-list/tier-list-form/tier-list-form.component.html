@@ -1,6 +1,14 @@
 <div class="tier-form">
-  <div class="toolbar">
+  <pdz-page-header [title]="tierListName()" eyebrow="Editing">
+    @if (hasUnsavedChanges()) {
+      <div pdz-page-header-meta class="unsaved-indicator">
+        <pdz-icon size="xs" name="edit"></pdz-icon>
+        Unsaved changes
+      </div>
+    }
+
     <button
+      pdz-page-header-actions
       pdz-button
       iconOnly
       pill
@@ -11,18 +19,9 @@
       aria-label="Settings"
       (click)="openSettings()"
     ></button>
+  </pdz-page-header>
 
-    <h2 class="toolbar__title">{{ tierListName() }}</h2>
-
-    @if (hasUnsavedChanges()) {
-      <div class="unsaved-indicator">
-        <pdz-icon size="xs" name="edit"></pdz-icon>
-        Unsaved changes
-      </div>
-    }
-
-    <div class="toolbar__spacer"></div>
-
+  <div class="toolbar">
     <div class="toolbar__history">
       <button
         pdz-button

@@ -1,0 +1,77 @@
+@use "pdz-theming" as pdz;
+
+:host {
+  display: block;
+}
+
+.organizers {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(lg);
+  max-width: 48rem;
+}
+
+.panel {
+  background: pdz.color(surface-container-low);
+  border: 1px solid pdz.color(outline-variant);
+  border-radius: pdz.shape(corner-lg);
+  padding: pdz.space(lg);
+
+  &__title {
+    @include pdz.caps;
+    color: pdz.color(on-surface-variant);
+    margin: 0 0 pdz.space(md);
+  }
+
+  &__field {
+    width: 100%;
+  }
+
+  &__hint {
+    @include pdz.text(body-sm);
+    color: pdz.color(on-surface-variant);
+    margin: pdz.space(sm) 0 0;
+  }
+}
+
+.people {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(xs);
+}
+
+.person {
+  display: flex;
+  align-items: center;
+  gap: pdz.space(sm);
+  padding: pdz.space(sm);
+  border-radius: pdz.shape(corner-sm);
+  background: pdz.color(surface-container);
+
+  &__icon {
+    display: flex;
+    color: pdz.color(on-surface-variant);
+  }
+
+  &__body {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    flex: 1 1 auto;
+  }
+
+  &__name {
+    @include pdz.text(body-sm-strong);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__note {
+    @include pdz.text(body-sm);
+    color: pdz.color(on-surface-variant);
+  }
+}

@@ -1,23 +1,39 @@
 @if (tradeRounds) {
   @if (withdrawError) {
-    <p class="stage__error">{{ withdrawError }}</p>
+    <p class="trades__error">{{ withdrawError }}</p>
   }
-  @for (stage of tradeRounds; track stage.name) {
-    <div class="stage">
-      <div class="stage-header">{{ stage.name }}</div>
-      <div class="stage-body">
-        @for (tradeLog of stage.trades; track tradeLog) {
+  @for (round of tradeRounds; track round.name) {
+    <section class="round">
+      <h4 class="round__name">{{ round.name }}</h4>
+      <div class="round__trades">
+        @for (tradeLog of round.trades; track tradeLog) {
           <pdz-trade-card
-            [tradeLog]="tradeLog"
+            [trade]="tradeLog"
             [currentRoundIndex]="currentRoundIndex"
-            [canWithdraw]="canWithdraw(tradeLog)"
-            [withdrawing]="withdrawingTradeId === tradeLog.id"
-            (withdraw)="withdraw(tradeLog)"
-          ></pdz-trade-card>
+          >
+            <div tradeActions>
+              @if (canWithdraw(tradeLog)) {
+                <button
+                  pdz-button
+                  size="xs"
+                  color="danger"
+                  variant="outlined"
+                  [disabled]="withdrawingTradeId === tradeLog.id"
+                  (click)="withdraw(tradeLog)"
+                >
+                  {{
+                    withdrawingTradeId === tradeLog.id
+                      ? "Withdrawing…"
+                      : "Withdraw"
+                  }}
+                </button>
+              }
+            </div>
+          </pdz-trade-card>
         }
       </div>
-    </div>
+    </section>
   } @empty {
-    <p class="stage__empty">No trades made.</p>
+    <p class="trades__empty">No trades made.</p>
   }
 }

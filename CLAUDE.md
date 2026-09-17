@@ -26,9 +26,18 @@ npm run test:safe            # --runInBand --silent, whole suite
 npx jest --runInBand src/pdz/shared/menu    # targeted, preferred
 ```
 
-Roughly 10 scaffolded suites fail with NG0201 on a clean tree, plus
-`chat.component.spec.ts` (an `ngx-markdown` ESM transform error). That is the
-baseline, not a regression you introduced.
+Six suites fail on a clean tree — that is the baseline, not a regression you
+introduced:
+
+```
+tools/quick-draft/quick-draft-picks, tools/quick-draft/quick-draft-final,
+layout/top-navbar, layout/top-navbar/login-button,
+features/pages/homepage/news-core, league-zone/divisions/power-rankings
+```
+
+It used to be roughly ten NG0201 scaffolds plus `chat.component.spec.ts`; the
+orphaned components those covered were deleted, so re-check this list against
+`npm run test:safe` rather than trusting a stale count.
 
 ## Layout
 
@@ -50,11 +59,22 @@ Import via path aliases, never deep relative paths:
 ## The pdz design system
 
 `src/pdz/shared/` holds the primitives. **Prefer an existing primitive over
-hand-rolled markup.** Current inventory: buttons, chat, data (badge, card, score,
+hand-rolled markup.** Current inventory: buttons, data (badge, card, score,
 skeleton, sort), dialogs, dropdowns (select, pokemon-search, format, ruleset),
 feedback (empty-state, toast), images (icon, sprite, loading), inputs (field,
-choice, segmented, slide-toggle, slider), layout (page, tabs, tab-nav, widget,
-disclosure, masonry), menu, pipes, tooltip, widgets.
+choice, segmented, slide-toggle, slider), layout (page, page-header, tabs,
+tab-nav, widget, disclosure, masonry), menu, pipes, tooltip, widgets.
+
+Every routed page opens with `<pdz-page-header>` — never a hand-rolled title bar.
+It carries `title`/`eyebrow`/`subtitle`/`logo`, and projects
+`[pdz-page-header-detail]` (meta line under the title),
+`[pdz-page-header-meta]` (status chips), `[pdz-page-header-actions]` (buttons),
+and default content below the bar (tab navs, switchers). The page root then owns
+its own vertical rhythm with `gap`, not per-section padding.
+
+Pages inside the tournament shell get **no back button** — the nav does that. The
+one exception is the tournament landing page, whose `backLink`/`backLabel` render
+the eyebrow as a link up to the league.
 
 ### Hard rules
 
@@ -106,6 +126,11 @@ transition: color pdz.duration(fast) pdz.easing(standard);
   are roles, not lightness levels).
 - SCSS `font-size` on `pdz-icon` does nothing — size it via the `size`/`width`/`height` inputs.
 - Selection and active states use theme colors, not hardcoded highlights.
+- **Panels and cards are defined by a border, not a shadow**: `surface-container-low`
+  (`-lowest` when nested), `1px solid outline-variant`, `corner-lg`, no resting
+  `box-shadow`. `var(--pdz-level-*)` is for things that genuinely float —
+  drawers, popovers, dialogs — and for hover lifts on interactive cards. A card
+  should use `<pdz-card>` rather than restating those values.
 
 ## Verification
 

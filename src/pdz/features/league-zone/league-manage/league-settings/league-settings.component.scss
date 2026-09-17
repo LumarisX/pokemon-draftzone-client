@@ -13,33 +13,11 @@
 }
 
 .settings-page {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(lg);
   max-width: 760px;
   margin: 0 auto;
-  padding: pdz.space(xl) pdz.space(lg);
-
-  &__header {
-    margin-bottom: pdz.space(xl);
-  }
-
-  &__back {
-    display: inline-flex;
-    align-items: center;
-    gap: pdz.space(xs);
-    color: pdz.color(primary-accent);
-    text-decoration: none;
-    @include text(label);
-    margin-bottom: pdz.space(sm);
-
-    &:hover {
-      text-decoration: underline;
-    }
-  }
-
-  &__title {
-    @include text(title);
-    color: pdz.color(on-surface);
-    margin: 0;
-  }
 }
 
 .settings-form {

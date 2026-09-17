@@ -3,6 +3,7 @@ import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
 import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
+import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
 import { LeagueZoneService } from '../../league-zone.service';
 import { League } from '../../league.interface';
 
@@ -10,7 +11,7 @@ import { League } from '../../league.interface';
   selector: 'pdz-tournament-drafts',
   templateUrl: './tournament-drafts.component.html',
   styleUrl: './tournament-drafts.component.scss',
-  imports: [CommonModule, RouterModule, LoadingComponent],
+  imports: [CommonModule, RouterModule, LoadingComponent, PageHeaderComponent],
 })
 export class TournamentDraftsComponent implements OnInit, OnDestroy {
   private leagueService = inject(LeagueZoneService);

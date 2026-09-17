@@ -2,38 +2,12 @@
 @use "mixins" as *;
 
 :host {
-  display: block;
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(lg);
   min-width: 0;
-  padding: pdz.space(lg);
   max-width: 90rem;
   margin: 0 auto;
-
-  @include respond-above(medium) {
-    padding: pdz.space(xl);
-  }
-}
-
-// ── Page header ───────────────────────────────────────────────────────────────
-
-.page-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: pdz.space(md);
-  flex-wrap: wrap;
-  margin-bottom: pdz.space(xl);
-
-  &__title {
-    @include text(subtitle);
-    font-family: var(--pdz-font-display);
-    color: pdz.color(on-surface);
-    margin: 0;
-  }
-
-  &__actions {
-    display: flex;
-    gap: pdz.space(sm);
-  }
 }
 // ── Pool (draft division) ─────────────────────────────────────────────────────
 
@@ -101,9 +75,7 @@
 
   &--selected {
     border-color: pdz.color(primary-accent);
-    box-shadow:
-      0 0 0 2px pdz.color(primary),
-      var(--pdz-level-1);
+    box-shadow: 0 0 0 2px pdz.color(primary);
   }
 
   &--denied {

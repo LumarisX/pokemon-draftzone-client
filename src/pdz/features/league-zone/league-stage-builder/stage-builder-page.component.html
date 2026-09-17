@@ -2,10 +2,8 @@
   <div class="loading-state"><pdz-loading></pdz-loading></div>
 } @else {
   <div class="page">
-    <header class="page__header">
-      <h1 class="page__title">Matches</h1>
-
-      <div class="page__actions">
+    <pdz-page-header title="Matches" eyebrow="Manage">
+      <div pdz-page-header-actions class="page__actions">
         <button pdz-button type="button" [loading]="isSaving" (click)="save()">
           {{ isSaving ? "Saving…" : "Save" }}
         </button>
@@ -21,7 +19,7 @@
           </button>
         }
       </div>
-    </header>
+    </pdz-page-header>
 
     @if (errorMessage) {
       <p class="page__error">{{ errorMessage }}</p>

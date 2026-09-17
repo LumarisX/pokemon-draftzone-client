@@ -1,5 +1,12 @@
 import { CommonModule } from '@angular/common';
-import { Component, EventEmitter, OnInit, Output, input } from '@angular/core';
+import {
+  Component,
+  EventEmitter,
+  OnInit,
+  Output,
+  computed,
+  input,
+} from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { MarkdownModule } from 'ngx-markdown';
 import { EXTERNAL_LINK_PATH } from '@pdz/core/route-paths';
@@ -28,6 +35,18 @@ export class LeagueAdComponent implements OnInit {
   readonly mode = input<LeagueAdMode>('public');
 
   @Output() delete = new EventEmitter<string>();
+
+  readonly tournamentLink = computed(() => {
+    const links = this.league().hostedLinks;
+    if (!links) return null;
+    return ['/leagues', links.leagueSlug, 'tournaments', links.tournamentSlug];
+  });
+
+  readonly hostLeague = computed(() => {
+    const links = this.league().hostedLinks;
+    if (!links) return null;
+    return { name: links.leagueName, link: ['/leagues', links.leagueSlug] };
+  });
 
   weeks?: number;
   teamClass: TeamType = 'team-a';

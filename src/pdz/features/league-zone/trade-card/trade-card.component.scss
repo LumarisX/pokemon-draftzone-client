@@ -1,0 +1,228 @@
+@use "pdz-theming" as pdz;
+
+:host {
+  display: block;
+  max-width: 30rem;
+  container-type: inline-size;
+  container-name: trade-card;
+}
+
+.trade-card__meta {
+  flex-wrap: wrap;
+  gap: pdz.space(xs);
+  color: pdz.color(on-surface-variant);
+}
+
+.trade-card__points {
+  @include pdz.text(label-strong);
+  @include pdz.numeric;
+  flex-shrink: 0;
+  padding: pdz.space(2xs) pdz.space(xs);
+  border-radius: pdz.shape(corner-full);
+  background: pdz.color(surface-container-high);
+  color: pdz.color(on-surface);
+}
+
+.trade-card__time {
+  @include pdz.text(label);
+  @include pdz.numeric;
+  color: inherit;
+  margin-inline-start: auto;
+}
+
+.trade-card__actions {
+  display: flex;
+  align-items: center;
+  gap: pdz.space(xs);
+  flex-wrap: wrap;
+
+  &:empty {
+    display: none;
+  }
+}
+
+.trade-card__body {
+  display: grid;
+  gap: pdz.space(sm);
+  grid-template-areas:
+    "left"
+    "swap"
+    "right";
+
+  @container trade-card (min-width: 24rem) {
+    grid-template-columns: minmax(0, max-content) auto minmax(0, max-content);
+    grid-template-areas: "left swap right";
+    justify-content: center;
+    gap: pdz.space(sm);
+  }
+}
+
+.trade-card__swap {
+  grid-area: swap;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  align-self: center;
+  justify-self: center;
+  width: 1.5rem;
+  height: 1.5rem;
+  border-radius: pdz.shape(corner-full);
+  background: pdz.color(surface-container-high);
+  color: pdz.color(on-surface-variant);
+
+  pdz-icon {
+    transform: rotate(90deg);
+  }
+
+  @container trade-card (min-width: 24rem) {
+    pdz-icon {
+      transform: none;
+    }
+  }
+}
+
+.trade-side {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(2xs);
+  min-width: 0;
+
+  &:first-of-type {
+    grid-area: left;
+  }
+
+  &:last-of-type {
+    grid-area: right;
+  }
+}
+
+.trade-side__team {
+  display: flex;
+  align-items: center;
+  gap: pdz.space(2xs);
+  min-width: 0;
+  padding-bottom: pdz.space(2xs);
+  border-bottom: 1px solid pdz.color(outline-variant);
+}
+
+.trade-side__logo {
+  width: 1.75rem;
+  height: 1.75rem;
+  flex-shrink: 0;
+  border-radius: pdz.shape(corner-full);
+  object-fit: contain;
+}
+
+.trade-side__logo--free {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: pdz.color(surface-container-high);
+  color: pdz.color(on-surface-variant);
+}
+
+.trade-side__identity {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.trade-side__name {
+  @include pdz.text(body-sm-strong);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.trade-side__coach {
+  @include pdz.text(label);
+  color: pdz.color(on-surface-variant);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pick-list {
+  display: flex;
+  flex-direction: column;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.pick {
+  display: flex;
+  align-items: center;
+  align-self: flex-start;
+  gap: pdz.space(xs);
+  max-width: 100%;
+  min-width: 0;
+  padding-block: pdz.space(2xs);
+}
+
+.pick__value {
+  @include pdz.text(label-strong, $family: false);
+  display: inline-block;
+  flex-shrink: 0;
+  min-width: 1.5rem;
+  max-width: 6rem;
+  height: 1.5rem;
+  line-height: 1.5rem;
+  padding-inline: pdz.space(2xs);
+  border-radius: pdz.shape(corner-xs);
+  background: pdz.color(primary);
+  color: pdz.color(on-primary);
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.trade-side:last-of-type .pick__value {
+  background: pdz.color(secondary);
+  color: pdz.color(on-secondary);
+}
+
+.pick__sprite {
+  width: 1.75rem;
+  height: 1.75rem;
+  flex-shrink: 0;
+}
+
+.pick__name {
+  @include pdz.text(body-sm);
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pick__tera {
+  flex-shrink: 0;
+  color: pdz.color(secondary-accent);
+}
+
+.pick-list__empty {
+  @include pdz.text(body-sm);
+  padding-block: pdz.space(2xs);
+  color: pdz.color(on-surface-variant);
+  font-style: italic;
+}
+
+@container trade-card (min-width: 24rem) {
+  .trade-side:last-of-type {
+    .trade-side__team {
+      flex-direction: row-reverse;
+    }
+
+    .trade-side__identity {
+      align-items: flex-end;
+    }
+
+    .pick {
+      flex-direction: row-reverse;
+      align-self: flex-end;
+    }
+  }
+}

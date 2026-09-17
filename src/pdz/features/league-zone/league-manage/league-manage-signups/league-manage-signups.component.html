@@ -1,24 +1,25 @@
-<div class="page-header">
-  <h2 class="page-header__title">League Sign-Ups</h2>
-  <div class="page-header__actions">
-    <button pdz-button
+<pdz-page-header title="Sign-Ups" eyebrow="Manage">
+  <div pdz-page-header-actions>
+    <button
+      pdz-button
       type="button"
-      
       (click)="saveChanges()"
       [disabled]="!modified"
     >
       Save
     </button>
-    <button pdz-button color="neutral" variant="ghost"
+    <button
+      pdz-button
+      color="neutral"
+      variant="ghost"
       type="button"
-      
       (click)="revertChanges()"
       [disabled]="!modified"
     >
       Revert
     </button>
   </div>
-</div>
+</pdz-page-header>
 
 @if (signUps.length > 0) {
   <input
@@ -186,6 +187,18 @@
               <pdz-icon name="open_in_new" [size]="14"></pdz-icon>
             </a>
           }
+          @if (signup.status === "denied" || signup.status === "dropped") {
+            <button
+              pdz-button
+              size="sm"
+              color="danger"
+              variant="ghost"
+              [disabled]="removingId === signup.id"
+              (click)="removeParticipant(signup)"
+            >
+              Remove
+            </button>
+          }
         </div>
       </footer>
     </article>
@@ -214,6 +227,27 @@
           ></ng-container>
         }
       </div>
+    </section>
+  }
+
+  @if (droppedSignUps().length > 0) {
+    <section class="pool pool--dropped">
+      <pdz-disclosure
+        heading="Dropped"
+        [open]="!droppedCollapsed"
+        (openChange)="droppedCollapsed = !droppedCollapsed"
+      >
+        <span pdz-disclosure-trailing class="pool__count">
+          {{ droppedSignUps().length }}
+        </span>
+        <div class="pool__cards">
+          @for (signup of droppedSignUps(); track signup.id) {
+            <ng-container
+              *ngTemplateOutlet="signupCard; context: { signup }"
+            ></ng-container>
+          }
+        </div>
+      </pdz-disclosure>
     </section>
   }
 

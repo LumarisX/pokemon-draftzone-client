@@ -5,15 +5,15 @@ import {
   inject,
   HostListener,
 } from '@angular/core';
-import { RouterModule } from '@angular/router';
-import { Subject, takeUntil } from 'rxjs';
+import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
 import { MarkdownModule } from 'ngx-markdown';
+import { Subject, takeUntil } from 'rxjs';
 import { LeagueZoneService } from '../league-zone.service';
 import { League } from '../league.interface';
 
 @Component({
   selector: 'pdz-league-rules-overview',
-  imports: [MarkdownModule, RouterModule],
+  imports: [MarkdownModule, PageHeaderComponent],
   templateUrl: './league-rules-overview.component.html',
   styleUrls: ['./league-rules-overview.component.scss'],
 })
