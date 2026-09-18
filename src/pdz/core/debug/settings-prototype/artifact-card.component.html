@@ -1,0 +1,46 @@
+<div class="artifact" [class.artifact--empty]="!present()">
+  <span class="artifact__icon">
+    <pdz-icon [name]="icon()" [size]="24" aria-hidden="true" />
+  </span>
+
+  <div class="artifact__body">
+    <p class="artifact__headline">{{ headline() }}</p>
+
+    @if (present()) {
+      <dl class="artifact__facts">
+        @for (fact of facts(); track fact.label) {
+          <div class="artifact__fact">
+            <dt>{{ fact.label }}</dt>
+            <dd>{{ fact.value }}</dd>
+          </div>
+        }
+      </dl>
+    } @else {
+      <p class="artifact__blurb">{{ blurb() }}</p>
+    }
+  </div>
+
+  <div class="artifact__actions">
+    @if (secondaryLabel(); as label) {
+      <a
+        pdz-button
+        size="sm"
+        variant="outlined"
+        color="neutral"
+        [routerLink]="route()"
+      >
+        {{ label }}
+      </a>
+    }
+    <a
+      pdz-button
+      size="sm"
+      [variant]="present() ? 'outlined' : 'filled'"
+      [color]="present() ? 'neutral' : 'primary'"
+      [routerLink]="route()"
+    >
+      {{ primaryLabel() }}
+      <pdz-icon name="arrow_forward" [size]="16" aria-hidden="true" />
+    </a>
+  </div>
+</div>

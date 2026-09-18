@@ -1,0 +1,166 @@
+@switch (slot()) {
+  @case ('logo') {
+    <div pdz-field label="Tournament logo">
+      <div class="slot-logo">
+        <div class="slot-logo__preview">
+          @if (logo()) {
+            <img class="slot-logo__image" [src]="logo()" alt="Tournament logo" />
+          } @else {
+            <pdz-icon name="image" [size]="32" aria-hidden="true" />
+          }
+        </div>
+        <button pdz-button type="button" color="neutral" [disabled]="disabled()">
+          <pdz-icon name="upload" [size]="18" aria-hidden="true" />
+          Upload logo
+        </button>
+      </div>
+    </div>
+  }
+
+  @case ('format-ruleset') {
+    <div class="slot-row">
+      <div pdz-field label="Format" required>
+        <pdz-select
+          aria-label="Format"
+          placeholder="Choose a format…"
+          [disabled]="disabled()"
+          [ngModel]="format()"
+          (ngModelChange)="setFormat($event)"
+          [ngModelOptions]="{ standalone: true }"
+        >
+          @for (option of formats; track option) {
+            <pdz-option [value]="option" [label]="option" />
+          }
+        </pdz-select>
+      </div>
+      <div pdz-field label="Ruleset" required>
+        <pdz-select
+          aria-label="Ruleset"
+          placeholder="Choose a ruleset…"
+          [disabled]="disabled()"
+          [ngModel]="ruleset()"
+          (ngModelChange)="setRuleset($event)"
+          [ngModelOptions]="{ standalone: true }"
+        >
+          @for (option of rulesets; track option) {
+            <pdz-option [value]="option" [label]="option" />
+          }
+        </pdz-select>
+      </div>
+    </div>
+  }
+
+  @case ('tier-rules') {
+    @if (tierRules().length) {
+      <div class="slot-tiers">
+        <div class="slot-tiers__head">
+          <span>Tier</span>
+          <span>Cost</span>
+          <span>Must draft</span>
+          <span>At most</span>
+        </div>
+        @for (tier of tierRules(); track tier.tierName; let i = $index) {
+          <div class="slot-tiers__row">
+            <span class="slot-tiers__name">{{ tier.tierName }}</span>
+            <span class="slot-tiers__cost">{{ cost(tier.tierName) }}</span>
+            <input
+              pdz-input
+              size="sm"
+              type="number"
+              min="0"
+              [attr.aria-label]="tier.tierName + ' minimum picks'"
+              [disabled]="disabled()"
+              [ngModel]="tier.required"
+              (ngModelChange)="setRequired(i, $event)"
+              [ngModelOptions]="{ standalone: true }"
+            />
+            <input
+              pdz-input
+              size="sm"
+              type="number"
+              min="0"
+              placeholder="No limit"
+              [attr.aria-label]="tier.tierName + ' maximum picks'"
+              [disabled]="disabled()"
+              [ngModel]="tier.max"
+              (ngModelChange)="setMax(i, $event)"
+              [ngModelOptions]="{ standalone: true }"
+            />
+          </div>
+        }
+        <p class="slot-tiers__total">
+          {{ requiredTotal() }} of {{ rosterMax() }} roster slots are spoken for.
+        </p>
+      </div>
+    } @else {
+      <p class="slot-empty">
+        Tier rules appear once this tournament has a tier list.
+      </p>
+    }
+  }
+
+  @case ('prize-split') {
+    <div class="slot-prizes">
+      @for (share of prizeSplit(); track share.place; let i = $index) {
+        <div class="slot-prizes__row">
+          <span class="slot-prizes__place">Place {{ share.place }}</span>
+          <input
+            pdz-input
+            size="sm"
+            type="number"
+            min="0"
+            max="100"
+            [attr.aria-label]="'Place ' + share.place + ' percentage'"
+            [disabled]="disabled()"
+            [ngModel]="share.percent"
+            (ngModelChange)="setPercent(i, $event)"
+            [ngModelOptions]="{ standalone: true }"
+          />
+          <span class="slot-prizes__unit">%</span>
+          <button
+            pdz-button
+            type="button"
+            variant="ghost"
+            color="neutral"
+            size="sm"
+            iconOnly
+            aria-label="Remove share"
+            [disabled]="disabled()"
+            (click)="removeShare(i)"
+          >
+            <pdz-icon name="close" [size]="16" aria-hidden="true" />
+          </button>
+        </div>
+      }
+      <div class="slot-prizes__footer">
+        <button
+          pdz-button
+          type="button"
+          variant="outlined"
+          color="neutral"
+          size="sm"
+          [disabled]="disabled()"
+          (click)="addShare()"
+        >
+          <pdz-icon name="add" [size]="16" aria-hidden="true" />
+          Add place
+        </button>
+        <span class="slot-prizes__total">{{ prizeTotal() }}% allocated</span>
+      </div>
+    </div>
+  }
+
+  @case ('discord-channels') {
+    <label pdz-field label="Sign-up channel ID">
+      <input
+        pdz-input
+        type="text"
+        placeholder="1234567890"
+        [disabled]="disabled()"
+        [ngModel]="channelId()"
+        (ngModelChange)="setChannel($event)"
+        [ngModelOptions]="{ standalone: true }"
+      />
+    </label>
+  }
+}

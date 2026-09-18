@@ -391,7 +391,7 @@
             }
           </div>
 
-          @if (availableTierNames.length) {
+          @if (availableTiers.length) {
             <label pdz-field class="form-field" formArrayName="tierRequirements" label="Required Tier Picks">
               <span pdz-hint
                 >Minimum picks a team must draft from each tier</span
@@ -399,7 +399,7 @@
               <div class="form-row">
                 @for (
                   tierReq of tierRequirementsArray.controls;
-                  track tierReq.value.tierName;
+                  track tierReq.value.tierId;
                   let i = $index
                 ) {
                   <label

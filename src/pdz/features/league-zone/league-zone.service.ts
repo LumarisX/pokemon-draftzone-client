@@ -136,7 +136,7 @@ export class LeagueZoneService {
       channelId?: string;
       rounds: number;
       minDraftCount: number;
-      tierRequirements: { tierName: string; required: number }[];
+      tierRequirements: { tierId: string; tierName: string; required: number }[];
       points: number;
       teams: League.LeagueTeam[];
       orderProgression: 'snake' | 'linear';

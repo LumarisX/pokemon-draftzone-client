@@ -242,7 +242,7 @@ export class LeagueManageService {
       draftCount: { min: number; max: number };
       pointTotal?: number;
       tradePointLimit?: number;
-      tierRequirements: { tierName: string; required: number }[];
+      tierRequirements: { tierId: string; required: number }[];
       adSettings?: {
         advertise: boolean;
         skillLevelRange?: { from: string; to: string };
@@ -280,7 +280,7 @@ export class LeagueManageService {
     /** `null` clears an existing point cap; `undefined` leaves it untouched. */
     pointTotal?: number | null;
     tradePointLimit?: number | null;
-    tierRequirements?: { tierName: string; required: number }[];
+    tierRequirements?: { tierId: string; required: number }[];
     adSettings?: {
       advertise: boolean;
       skillLevelRange?: { from: string; to: string };

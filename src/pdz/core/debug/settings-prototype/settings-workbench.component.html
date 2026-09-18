@@ -1,0 +1,152 @@
+<pdz-page width="default">
+  <div class="wb">
+    <pdz-page-header
+      title="Settings"
+      eyebrow="Manage"
+      subtitle="Prototype — nothing here is saved to the server."
+    >
+      <div pdz-page-header-actions>
+        <button pdz-button type="button" variant="outlined" color="neutral" size="sm" (click)="seedBlank()">
+          New tournament
+        </button>
+        <button pdz-button type="button" variant="outlined" color="neutral" size="sm" (click)="seedFilled()">
+          TBPL S12
+        </button>
+      </div>
+    </pdz-page-header>
+
+    <pdz-card padding="md" tone="lowest">
+      <div class="wb__stage">
+        <span class="wb__stage-label">Tournament phase</span>
+        <pdz-segmented
+          size="sm"
+          aria-label="Tournament phase"
+          [ngModel]="store.phase()"
+          (ngModelChange)="store.phase.set($event)"
+          [ngModelOptions]="{ standalone: true }"
+        >
+          @for (phase of phases; track phase) {
+            <pdz-segmented-option [value]="phase" [label]="phaseLabels[phase]" />
+          }
+        </pdz-segmented>
+        <span class="wb__stage-hint">
+          Changes which settings warn or lock.
+        </span>
+      </div>
+    </pdz-card>
+
+    @if (store.phase() === "setup" || store.phase() === "signups") {
+      <pdz-launch-checklist />
+    }
+
+    <div class="wb__toolbar">
+      <div class="wb__search">
+        <pdz-icon name="search" [size]="18" aria-hidden="true" />
+        <input
+          pdz-input
+          size="sm"
+          type="search"
+          placeholder="Search settings…"
+          aria-label="Search settings"
+          [ngModel]="store.query()"
+          (ngModelChange)="store.query.set($event)"
+          [ngModelOptions]="{ standalone: true }"
+        />
+      </div>
+    </div>
+
+    <div class="wb__body">
+      <aside class="wb__rail">
+        <nav class="wb__rail-nav" aria-label="Settings sections">
+          @for (section of sections(); track section.id) {
+            <a class="wb__rail-link" [href]="'#section-' + section.id">
+              <span>{{ section.label }}</span>
+              @if (dirtyCount(section.id)) {
+                <span
+                  class="wb__rail-dot"
+                  [attr.aria-label]="dirtyCount(section.id) + ' unsaved'"
+                ></span>
+              }
+            </a>
+          }
+        </nav>
+      </aside>
+
+      <div class="wb__sections">
+        @for (section of sections(); track section.id) {
+          <pdz-card padding="lg" [id]="'section-' + section.id" class="wb__section">
+            <div class="wb__section-head">
+              <div class="wb__section-heading">
+                <h2 class="wb__section-title">{{ section.label }}</h2>
+                <p class="wb__section-blurb">{{ section.blurb }}</p>
+              </div>
+              @if (section.risk) {
+                <button
+                  pdz-button
+                  type="button"
+                  size="sm"
+                  variant="outlined"
+                  [color]="
+                    section.locked && section.risk.effect === 'block'
+                      ? 'danger'
+                      : 'neutral'
+                  "
+                  (click)="toggleLock(section)"
+                >
+                  <pdz-icon
+                    [name]="section.locked ? 'lock' : 'lock_open'"
+                    [size]="16"
+                    aria-hidden="true"
+                  />
+                  {{ section.locked ? "Locked" : "Unlocked" }}
+                </button>
+              }
+            </div>
+
+            @for (node of section.nodes; track node.id) {
+              <pdz-settings-node [node]="node" [locked]="section.locked" />
+            }
+
+            @if (dirtyCount(section.id)) {
+              <div class="wb__section-bar">
+                <span class="wb__section-status">
+                  <pdz-icon name="edit" [size]="16" aria-hidden="true" />
+                  {{ dirtyCount(section.id) }} unsaved in {{ section.label }}
+                </span>
+                <div class="wb__section-actions">
+                  <button
+                    pdz-button
+                    type="button"
+                    size="sm"
+                    variant="ghost"
+                    color="neutral"
+                    (click)="store.revertSection(section.id)"
+                  >
+                    Revert
+                  </button>
+                  <button
+                    pdz-button
+                    type="button"
+                    size="sm"
+                    [disabled]="
+                      store.sectionHasErrors(section.id) || section.locked
+                    "
+                    (click)="store.saveSection(section.id)"
+                  >
+                    Save {{ section.label }}
+                  </button>
+                </div>
+              </div>
+            }
+          </pdz-card>
+        }
+
+        @if (!sections().length) {
+          <pdz-card padding="lg">
+            <p class="wb__empty">No settings match “{{ store.query() }}”.</p>
+          </pdz-card>
+        }
+      </div>
+    </div>
+  </div>
+</pdz-page>

@@ -63,6 +63,7 @@ interface HistoryEntry {
 }
 
 interface EditableTier {
+  id?: string;
   name: string;
   cost?: number;
   pokemon: EditTierPokemon[];
@@ -1141,6 +1142,7 @@ export class TierListFormComponent implements OnInit, OnDestroy {
 
     // Convert to server format
     const tierData = allTiers.map((tier) => ({
+      id: tier.id,
       name: tier.name,
       cost: tier.cost ?? 0,
       pokemon: tier.pokemon.map((p) => ({
@@ -1170,6 +1172,7 @@ export class TierListFormComponent implements OnInit, OnDestroy {
         untieredEntry.pokemon.push(...bannedPayload);
       } else {
         tierData.push({
+          id: undefined,
           name: this.UNTIERED_TIER_NAME,
           cost: 0,
           pokemon: bannedPayload,

@@ -21,4 +21,11 @@ export const routes: Routes = [
     path: 'calculator',
     component: DebugCalculatorComponent,
   },
+  {
+    path: 'settings',
+    loadComponent: () =>
+      import('./settings-prototype/settings-workbench.component').then(
+        (m) => m.SettingsWorkbenchComponent,
+      ),
+  },
 ];

@@ -1,0 +1,79 @@
+@use "pdz-theming" as pdz;
+
+:host {
+  display: block;
+}
+
+.artifact {
+  display: flex;
+  align-items: center;
+  gap: pdz.space(md);
+  padding: pdz.space(md);
+  border: 1px solid pdz.color(outline-variant);
+  border-radius: pdz.shape(corner-lg);
+  background: pdz.color(surface-container-lowest);
+  flex-wrap: wrap;
+}
+
+.artifact--empty {
+  border-style: dashed;
+}
+
+.artifact__icon {
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  flex: none;
+  border-radius: pdz.shape(corner-md);
+  background: pdz.color(surface-container-high);
+  color: pdz.color(on-surface-variant);
+}
+
+.artifact__body {
+  flex: 1 1 12rem;
+  min-width: 0;
+}
+
+.artifact__headline {
+  @include pdz.text(body-sm-strong);
+  margin: 0;
+  color: pdz.color(on-surface);
+}
+
+.artifact__blurb {
+  @include pdz.text(body-sm);
+  margin: pdz.space(xs) 0 0;
+  color: pdz.color(on-surface-variant);
+}
+
+.artifact__facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: pdz.space(lg);
+  margin: pdz.space(xs) 0 0;
+}
+
+.artifact__fact {
+  display: flex;
+  align-items: baseline;
+  gap: pdz.space(xs);
+
+  dt {
+    @include pdz.caps;
+    color: pdz.color(on-surface-variant);
+  }
+
+  dd {
+    @include pdz.text(body-sm);
+    margin: 0;
+    color: pdz.color(on-surface);
+  }
+}
+
+.artifact__actions {
+  display: flex;
+  align-items: center;
+  gap: pdz.space(sm);
+  flex-wrap: wrap;
+}

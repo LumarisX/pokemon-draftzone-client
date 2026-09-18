@@ -32,6 +32,7 @@ import { UploadService } from '@pdz/core/services/upload.service';
 import { LeagueManageService } from '../league-manage.service';
 import { LeagueZoneService } from '../../league-zone.service';
 import { getLeagueLogoUrl } from '../../league.util';
+import { LeagueTier } from '@pdz/features/tier-lists/tier-list.model';
 import { TierListService } from '@pdz/features/tier-lists/tier-list.service';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 import { SelectOptionComponent } from '@pdz/shared/dropdowns/select/select-option.component';
@@ -87,7 +88,7 @@ export class LeagueSettingsComponent implements OnInit, OnDestroy {
 
   form!: FormGroup;
   isLoading = true;
-  availableTierNames: string[] = [];
+  availableTiers: { id: string; name: string }[] = [];
 
   /** Currently persisted logo key, `null` if none is set. */
   currentLogoKey: string | null = null;
@@ -157,6 +158,7 @@ export class LeagueSettingsComponent implements OnInit, OnDestroy {
       tradePointLimit: [0, Validators.min(0)],
       tierRequirements: this.fb.array<
         FormGroup<{
+          tierId: FormControl<string>;
           tierName: FormControl<string>;
           required: FormControl<number>;
         }>
@@ -179,7 +181,7 @@ export class LeagueSettingsComponent implements OnInit, OnDestroy {
       settings: this.manageService.getTournamentSettings(),
       tierList: this.tierListService
         .getTierList()
-        .pipe(catchError(() => of({ tierList: [] as { name: string }[] }))),
+        .pipe(catchError(() => of({ tierList: [] as LeagueTier[] }))),
     })
       .pipe(takeUntil(this.destroy$))
       .subscribe({
@@ -237,24 +239,22 @@ export class LeagueSettingsComponent implements OnInit, OnDestroy {
           }
 
           const requirementByTier = new Map(
-            settings.tierRequirements.map((req) => [
-              req.tierName,
-              req.required,
-            ]),
+            settings.tierRequirements.map((req) => [req.tierId, req.required]),
           );
-          this.availableTierNames = tierList.tierList
-            .map((tier) => tier.name)
-            .filter(
-              (name) =>
-                !NON_DRAFTABLE_TIER_NAMES.has(name.trim().toLowerCase()),
-            );
+          this.availableTiers = tierList.tierList.flatMap((tier) =>
+            tier.id &&
+            !NON_DRAFTABLE_TIER_NAMES.has(tier.name.trim().toLowerCase())
+              ? [{ id: tier.id, name: tier.name }]
+              : [],
+          );
           this.tierRequirementsArray.clear();
-          for (const tierName of this.availableTierNames) {
+          for (const tier of this.availableTiers) {
             this.tierRequirementsArray.push(
               this.fb.group({
-                tierName: this.fb.nonNullable.control(tierName),
+                tierId: this.fb.nonNullable.control(tier.id),
+                tierName: this.fb.nonNullable.control(tier.name),
                 required: this.fb.nonNullable.control(
-                  requirementByTier.get(tierName) ?? 0,
+                  requirementByTier.get(tier.id) ?? 0,
                   [Validators.required, Validators.min(0)],
                 ),
               }),
@@ -297,8 +297,14 @@ export class LeagueSettingsComponent implements OnInit, OnDestroy {
     this.saveError = null;
 
     const tierRequirements = (
-      v.tierRequirements as { tierName: string; required: number }[]
-    ).filter((req) => req.required > 0);
+      v.tierRequirements as {
+        tierId: string;
+        tierName: string;
+        required: number;
+      }[]
+    )
+      .filter((req) => req.required > 0)
+      .map((req) => ({ tierId: req.tierId, required: req.required }));
 
     this.manageService
       .updateTournamentSettings({

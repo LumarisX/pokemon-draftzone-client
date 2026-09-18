@@ -199,6 +199,7 @@ export class TierListService {
 
   saveTierListEdit(
     tiers: Array<{
+      id?: string;
       name: string;
       cost: number;
       pokemon: Array<{

@@ -32,6 +32,8 @@ export type TierPokemon = {
 };
 
 export type LeagueTier = {
+  /** Absent for the synthetic Untiered/Banned buckets and newly added tiers. */
+  id?: string;
   name: string;
   cost?: number;
   pokemon: TierPokemon[];

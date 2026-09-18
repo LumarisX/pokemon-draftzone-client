@@ -1,0 +1,63 @@
+@use "pdz-theming" as pdz;
+
+:host {
+  display: block;
+}
+
+.node {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(sm);
+  padding: pdz.space(lg) 0;
+  border-bottom: 1px solid pdz.color(outline-variant);
+  scroll-margin-top: 5rem;
+}
+
+:host(:last-of-type) .node {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.node__head {
+  display: flex;
+  align-items: center;
+  gap: pdz.space(sm);
+}
+
+.node__title {
+  @include pdz.text(card-title);
+  margin: 0;
+  color: pdz.color(on-surface);
+}
+
+.node__dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: pdz.color(primary);
+}
+
+.node__help {
+  @include pdz.text(body-sm);
+  margin: 0;
+  color: pdz.color(on-surface-variant);
+}
+
+.node__controls {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(md);
+}
+
+.node__error {
+  @include pdz.text(body-sm);
+  display: flex;
+  align-items: center;
+  gap: pdz.space(xs);
+  margin: 0;
+  color: pdz.color(danger);
+}
+
+.node--locked .node__controls {
+  opacity: 0.6;
+}

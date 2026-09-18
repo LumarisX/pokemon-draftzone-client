@@ -136,7 +136,8 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
   draftName: string = '';
   points: number = 0;
   minDraftCount: number = 0;
-  tierRequirements: { tierName: string; required: number }[] = [];
+  tierRequirements: { tierId: string; tierName: string; required: number }[] =
+    [];
 
   isLoading: boolean = true;
 
