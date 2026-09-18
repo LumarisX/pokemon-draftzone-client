@@ -190,3 +190,15 @@
     }
   }
 }
+
+.off-list {
+  @include pdz.text(body-sm);
+  display: inline-flex;
+  align-items: center;
+  gap: pdz.space(3xs);
+  padding: 0 pdz.space(xs);
+  border: 1px solid pdz.color(danger);
+  border-radius: pdz.shape(corner-full);
+  color: pdz.color(danger);
+  white-space: nowrap;
+}

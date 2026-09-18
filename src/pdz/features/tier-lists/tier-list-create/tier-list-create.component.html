@@ -1,0 +1,83 @@
+<pdz-page width="default">
+  <div class="create">
+    <pdz-page-header
+      title="New Tier List"
+      eyebrow="Tier Lists"
+      subtitle="Name it and pick a format. You'll price the Pokémon next."
+      [backLink]="['/', tierListPath]"
+      backLabel="Back to tier lists"
+    />
+
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      <pdz-card padding="lg">
+        <div class="create__stack">
+          <label pdz-field label="Name" required>
+            <input
+              pdz-input
+              type="text"
+              maxlength="100"
+              placeholder="TBPL S12 Tiers"
+              formControlName="name"
+            />
+          </label>
+
+          <label pdz-field label="Description">
+            <textarea
+              pdz-input
+              rows="3"
+              maxlength="500"
+              formControlName="description"
+            ></textarea>
+            <span pdz-hint>
+              Shown to anyone browsing public tier lists.
+            </span>
+          </label>
+
+          <div class="create__row">
+            <div pdz-field label="Format" required>
+              <pdz-select
+                aria-label="Format"
+                placeholder="Choose a format…"
+                searchable
+                formControlName="format"
+              >
+                @for (option of formats(); track option) {
+                  <pdz-option [value]="option" [label]="option" />
+                }
+              </pdz-select>
+            </div>
+
+            <div pdz-field label="Ruleset" required>
+              <pdz-select
+                aria-label="Ruleset"
+                placeholder="Choose a ruleset…"
+                searchable
+                formControlName="ruleset"
+              >
+                @for (option of rulesets(); track option) {
+                  <pdz-option [value]="option" [label]="option" />
+                }
+              </pdz-select>
+            </div>
+          </div>
+
+          <p class="create__note">
+            Format and ruleset decide which Pokémon are legal, and can't be
+            changed once tournaments are drafting from this list.
+          </p>
+        </div>
+      </pdz-card>
+
+      <div class="create__actions">
+        <button
+          pdz-button
+          type="submit"
+          [loading]="saving()"
+          [disabled]="form.invalid || saving()"
+        >
+          {{ saving() ? "Creating…" : "Create tier list" }}
+        </button>
+      </div>
+    </form>
+  </div>
+</pdz-page>

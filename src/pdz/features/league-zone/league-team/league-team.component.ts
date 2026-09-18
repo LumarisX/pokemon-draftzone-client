@@ -5,6 +5,7 @@ import { ActivatedRoute, RouterModule } from '@angular/router';
 import { UploadService } from '@pdz/core/services/upload.service';
 import { DialogService } from '@pdz/shared/dialogs/dialog/dialog.service';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
+import { TooltipDirective } from '@pdz/shared/tooltip/tooltip.directive';
 import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
 import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
@@ -54,6 +55,7 @@ const ALLOWED_LOGO_TYPES = [
     RouterModule,
     LoadingComponent,
     IconComponent,
+    TooltipDirective,
     SpriteComponent,
     LeagueTradeWidgetComponent,
     LeagueScheduleWidgetComponent,

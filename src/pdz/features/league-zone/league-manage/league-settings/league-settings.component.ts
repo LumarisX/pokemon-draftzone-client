@@ -160,6 +160,7 @@ export class LeagueSettingsComponent implements OnInit, OnDestroy {
         FormGroup<{
           tierId: FormControl<string>;
           tierName: FormControl<string>;
+          orphaned: FormControl<boolean>;
           required: FormControl<number>;
         }>
       >([]),
@@ -250,14 +251,29 @@ export class LeagueSettingsComponent implements OnInit, OnDestroy {
           this.tierRequirementsArray.clear();
           for (const tier of this.availableTiers) {
             this.tierRequirementsArray.push(
-              this.fb.group({
-                tierId: this.fb.nonNullable.control(tier.id),
-                tierName: this.fb.nonNullable.control(tier.name),
-                required: this.fb.nonNullable.control(
-                  requirementByTier.get(tier.id) ?? 0,
-                  [Validators.required, Validators.min(0)],
-                ),
-              }),
+              this.buildTierRequirement(
+                tier.id,
+                tier.name,
+                requirementByTier.get(tier.id) ?? 0,
+                false,
+              ),
+            );
+          }
+
+          // A requirement whose tier was deleted from the tier list still
+          // persists on the tournament. Rebuilding the form from the current
+          // tiers alone would hide it while leaving it in the document, so it
+          // is listed explicitly for the organizer to clear.
+          const liveTierIds = new Set(this.availableTiers.map((t) => t.id));
+          for (const requirement of settings.tierRequirements) {
+            if (liveTierIds.has(requirement.tierId)) continue;
+            this.tierRequirementsArray.push(
+              this.buildTierRequirement(
+                requirement.tierId,
+                'Deleted tier',
+                requirement.required,
+                true,
+              ),
             );
           }
 
@@ -275,6 +291,34 @@ export class LeagueSettingsComponent implements OnInit, OnDestroy {
   }
 
   /** Sum of required picks across all tiers. */
+  private buildTierRequirement(
+    tierId: string,
+    tierName: string,
+    required: number,
+    orphaned: boolean,
+  ) {
+    return this.fb.group({
+      tierId: this.fb.nonNullable.control(tierId),
+      tierName: this.fb.nonNullable.control(tierName),
+      orphaned: this.fb.nonNullable.control(orphaned),
+      required: this.fb.nonNullable.control(required, [
+        Validators.required,
+        Validators.min(0),
+      ]),
+    });
+  }
+
+  removeTierRequirement(index: number): void {
+    this.tierRequirementsArray.removeAt(index);
+    this.form.markAsDirty();
+  }
+
+  get hasOrphanedTierRequirements(): boolean {
+    return this.tierRequirementsArray.controls.some(
+      (control) => control.value.orphaned,
+    );
+  }
+
   get tierRequirementsTotal(): number {
     return this.tierRequirementsArray.controls.reduce(
       (sum, ctrl) => sum + (Number(ctrl.get('required')?.value) || 0),
@@ -300,6 +344,7 @@ export class LeagueSettingsComponent implements OnInit, OnDestroy {
       v.tierRequirements as {
         tierId: string;
         tierName: string;
+        orphaned: boolean;
         required: number;
       }[]
     )

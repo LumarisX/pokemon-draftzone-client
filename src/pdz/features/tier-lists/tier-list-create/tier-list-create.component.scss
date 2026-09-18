@@ -1,0 +1,38 @@
+@use "pdz-theming" as pdz;
+
+:host {
+  display: block;
+}
+
+.create {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(lg);
+}
+
+.create__stack {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(md);
+}
+
+.create__row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: pdz.space(md);
+
+  > * {
+    flex: 1 1 14rem;
+  }
+}
+
+.create__note {
+  @include pdz.text(body-sm);
+  margin: 0;
+  color: pdz.color(on-surface-variant);
+}
+
+.create__actions {
+  display: flex;
+  justify-content: flex-end;
+}

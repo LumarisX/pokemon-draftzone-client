@@ -77,3 +77,11 @@
   gap: pdz.space(sm);
   flex-wrap: wrap;
 }
+
+.artifact__locked {
+  @include pdz.text(body-sm);
+  display: inline-flex;
+  align-items: center;
+  gap: pdz.space(xs);
+  color: pdz.color(on-surface-variant);
+}

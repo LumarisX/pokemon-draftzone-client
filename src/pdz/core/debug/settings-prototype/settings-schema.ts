@@ -60,7 +60,7 @@ export const SETTINGS_SECTIONS: readonly SettingsSection[] = [
       from: 'draft',
       effect: 'block',
       because:
-        'The draft is under way. Changing these can invalidate picks and rosters that were legal when they were made.',
+        'Changes apply immediately to teams that have already drafted. Costs, tiers and legality are recalculated from the current list, so rosters that were legal may no longer be. Review every team after saving.',
     },
   },
   {
@@ -71,7 +71,7 @@ export const SETTINGS_SECTIONS: readonly SettingsSection[] = [
       from: 'season',
       effect: 'warn',
       because:
-        'The season is live and standings are published. Changes here apply to results already recorded.',
+        'The season is live and standings are published. Changes apply to results already recorded, so review the standings after saving.',
     },
   },
   {

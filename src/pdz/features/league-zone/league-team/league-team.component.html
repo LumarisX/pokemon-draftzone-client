@@ -93,6 +93,15 @@
                           @if (pokemon.capt && pokemon.capt.tera) {
                             <pdz-icon name="tera" [size]="16"></pdz-icon>
                           }
+                          @if (pokemon.missingFromTierList) {
+                            <span
+                              class="off-list"
+                              pdzTooltip="Drafted, but no longer on the tier list. It is not priced, so this roster may be illegal."
+                            >
+                              <pdz-icon name="warning" [size]="14"></pdz-icon>
+                              Off list
+                            </span>
+                          }
                         </div>
                       </div>
                     </td>

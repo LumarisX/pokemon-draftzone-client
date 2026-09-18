@@ -391,7 +391,7 @@
             }
           </div>
 
-          @if (availableTiers.length) {
+          @if (availableTiers.length || hasOrphanedTierRequirements) {
             <label pdz-field class="form-field" formArrayName="tierRequirements" label="Required Tier Picks">
               <span pdz-hint
                 >Minimum picks a team must draft from each tier</span
@@ -402,20 +402,40 @@
                   track tierReq.value.tierId;
                   let i = $index
                 ) {
-                  <label
-                    pdz-field
-                    class="form-field"
-                    [formGroupName]="i"
-                    [label]="tierReq.value.tierName"
-                  >
-                    <input
-                      pdz-input
-                      class="form-field__input--number"
-                      type="number"
-                      formControlName="required"
-                      min="0"
-                    />
-                  </label>
+                  @if (tierReq.value.orphaned) {
+                    <div class="form-field orphaned-tier" [formGroupName]="i">
+                      <span class="orphaned-tier__label">
+                        <pdz-icon name="warning" [size]="16" aria-hidden="true" />
+                        Requires {{ tierReq.value.required }} from a tier that no
+                        longer exists
+                      </span>
+                      <button
+                        pdz-button
+                        type="button"
+                        size="sm"
+                        variant="outlined"
+                        color="danger"
+                        (click)="removeTierRequirement(i)"
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  } @else {
+                    <label
+                      pdz-field
+                      class="form-field"
+                      [formGroupName]="i"
+                      [label]="tierReq.value.tierName"
+                    >
+                      <input
+                        pdz-input
+                        class="form-field__input--number"
+                        type="number"
+                        formControlName="required"
+                        min="0"
+                      />
+                    </label>
+                  }
                 }
               </div>
               <span

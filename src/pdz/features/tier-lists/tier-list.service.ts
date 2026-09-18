@@ -7,6 +7,7 @@ import {
   mergeMap,
   Observable,
   of,
+  startWith,
   switchMap,
   throwError,
 } from 'rxjs';
@@ -15,6 +16,38 @@ import { ApiService } from '@pdz/core/services/api.service';
 import { LeagueZoneService } from '../league-zone/league-zone.service';
 
 const ROOTPATH = 'tier-lists';
+
+export type TierListSummary = {
+  id: string;
+  name: string;
+  description?: string;
+  format: string;
+  ruleset: string;
+  tierCount: number;
+  pokemonCount: number;
+  isPublic: boolean;
+  forkCount: number;
+  copiedFrom?: string;
+  isOwner: boolean;
+  canEdit: boolean;
+  updatedAt?: string;
+};
+
+export type TierListBrowseResult = {
+  tierLists: TierListSummary[];
+  total: number;
+  limit: number;
+  skip: number;
+};
+
+export type TierListBrowseQuery = {
+  scope?: 'mine' | 'public';
+  q?: string;
+  format?: string;
+  ruleset?: string;
+  limit?: number;
+  skip?: number;
+};
 
 export type DraftedDivisions = {
   divisions: { [division: string]: { pokemonId: string; teamId: string }[] };
@@ -35,6 +68,10 @@ export class TierListService {
     this.router.events
       .pipe(
         filter((event) => event instanceof NavigationEnd),
+        // On a cold load the component is constructed before NavigationEnd
+        // fires, so without this the id is still null when it asks for its
+        // tier list and the request falls through to the league context.
+        startWith(null),
         map(() => {
           let route = this.router.routerState.root;
           while (route.firstChild) {
@@ -51,35 +88,72 @@ export class TierListService {
       });
   }
 
-  getTierList() {
-    const tierListId = this.tierListId();
-    if (tierListId) {
-      return this.apiService.get<{
-        tierList: LeagueTier[];
-        divisions: { [key: string]: { pokemonId: string; teamId: string }[] };
-        ruleset?: string;
-        name?: string;
-        description?: string;
-        draftCount?: { min: number; max: number };
-      }>(`${ROOTPATH}/${tierListId}`);
+  browse(query: TierListBrowseQuery) {
+    const params: Record<string, string> = {};
+    for (const [key, value] of Object.entries(query)) {
+      if (value !== undefined && value !== null && value !== '') {
+        params[key] = String(value);
+      }
     }
-    // Tournament context: resolve tierListId from the tournament's info
+    return this.apiService.get<TierListBrowseResult>(ROOTPATH, { params });
+  }
+
+  create(payload: {
+    name: string;
+    description?: string;
+    format: string;
+    ruleset: string;
+  }) {
+    return this.apiService.post<{ id: string; name: string }>(
+      ROOTPATH,
+      payload,
+    );
+  }
+
+  fork(tierListId: string, payload: { name?: string } = {}) {
+    return this.apiService.post<{
+      id: string;
+      name: string;
+      copiedFrom: string;
+    }>(`${ROOTPATH}/${tierListId}/fork`, payload);
+  }
+
+  /**
+   * The routed `:tierListId` when there is one, else the tier list attached to
+   * the tournament in context. Errors rather than requesting with null slugs
+   * when neither is available.
+   */
+  private resolveTierListId(): Observable<string> {
+    const routed = this.tierListId();
+    if (routed) return of(routed);
+
+    if (!this.leagueZoneService.tournamentSlug()) {
+      return throwError(() => new Error('No tier list selected'));
+    }
+
     return this.leagueZoneService.getLeagueInfo().pipe(
-      switchMap((info) => {
-        if (!info.tierListId) {
-          return throwError(
-            () => new Error('No tier list connected to this tournament'),
-          );
-        }
-        return this.apiService.get<{
-          tierList: LeagueTier[];
-          divisions: { [key: string]: { pokemonId: string; teamId: string }[] };
-          ruleset?: string;
-          name?: string;
-          description?: string;
-          draftCount?: { min: number; max: number };
-        }>(`${ROOTPATH}/${info.tierListId}`);
-      }),
+      switchMap((info) =>
+        info.tierListId
+          ? of(info.tierListId)
+          : throwError(
+              () => new Error('No tier list connected to this tournament'),
+            ),
+      ),
+    );
+  }
+
+  getTierList() {
+    return this.resolveTierListId().pipe(
+      switchMap((tierListId) =>
+        this.apiService.get<{
+      tierList: LeagueTier[];
+      divisions: { [key: string]: { pokemonId: string; teamId: string }[] };
+      ruleset?: string;
+      name?: string;
+      description?: string;
+      draftCount?: { min: number; max: number };
+    }>(`${ROOTPATH}/${tierListId}`),
+      ),
     );
   }
 
@@ -121,79 +195,37 @@ export class TierListService {
   }
 
   getSettings() {
-    const tierListId = this.tierListId();
-    if (tierListId) {
-      return this.apiService.get<{
-        name: string;
-        description?: string;
-      }>(`${ROOTPATH}/${tierListId}/settings`);
-    }
-    return this.leagueZoneService.getLeagueInfo().pipe(
-      switchMap((info) => {
-        if (!info.tierListId) {
-          return throwError(
-            () => new Error('No tier list connected to this tournament'),
-          );
-        }
-        return this.apiService.get<{
+    return this.resolveTierListId().pipe(
+      switchMap((tierListId) =>
+        this.apiService.get<{
           name: string;
           description?: string;
-        }>(`${ROOTPATH}/${info.tierListId}/settings`);
-      }),
+        }>(`${ROOTPATH}/${tierListId}/settings`),
+      ),
     );
   }
 
   updateSettings(settings: { name?: string; description?: string }) {
-    const tierListId = this.tierListId();
-    if (tierListId) {
-      return this.apiService.patch<{ success: boolean }>(
-        `${ROOTPATH}/${tierListId}/settings`,
-        settings,
-      );
-    }
-    return this.leagueZoneService.getLeagueInfo().pipe(
-      switchMap((info) => {
-        if (!info.tierListId) {
-          return throwError(
-            () => new Error('No tier list connected to this tournament'),
-          );
-        }
-        return this.apiService.patch<{ success: boolean }>(
-          `${ROOTPATH}/${info.tierListId}/settings`,
+    return this.resolveTierListId().pipe(
+      switchMap((tierListId) =>
+        this.apiService.patch<{ success: boolean }>(
+          `${ROOTPATH}/${tierListId}/settings`,
           settings,
-        );
-      }),
+        ),
+      ),
     );
   }
 
   getTierListEdit() {
-    const tierListId = this.tierListId();
-    if (tierListId) {
-      return this.apiService.get<{
-        tierList: LeagueTier[];
-        divisions: { [key: string]: { pokemonId: string; teamId: string }[] };
-        name?: string;
-        ruleset?: string;
-      }>(`${ROOTPATH}/${tierListId}`, {
-        params: { edit: true },
-      });
-    }
-    return this.leagueZoneService.getLeagueInfo().pipe(
-      switchMap((info) => {
-        if (!info.tierListId) {
-          return throwError(
-            () => new Error('No tier list connected to this tournament'),
-          );
-        }
-        return this.apiService.get<{
+    return this.resolveTierListId().pipe(
+      switchMap((tierListId) =>
+        this.apiService.get<{
           tierList: LeagueTier[];
           divisions: { [key: string]: { pokemonId: string; teamId: string }[] };
           name?: string;
           ruleset?: string;
-        }>(`${ROOTPATH}/${info.tierListId}`, {
-          params: { edit: true },
-        });
-      }),
+        }>(`${ROOTPATH}/${tierListId}`, { params: { edit: true } }),
+      ),
     );
   }
 
@@ -212,25 +244,13 @@ export class TierListService {
       }>;
     }>,
   ) {
-    const tierListId = this.tierListId();
-    if (tierListId) {
-      return this.apiService.patch<{ success: boolean; message: string }>(
-        `${ROOTPATH}/${tierListId}`,
-        { tiers },
-      );
-    }
-    return this.leagueZoneService.getLeagueInfo().pipe(
-      switchMap((info) => {
-        if (!info.tierListId) {
-          return throwError(
-            () => new Error('No tier list connected to this tournament'),
-          );
-        }
-        return this.apiService.patch<{ success: boolean; message: string }>(
-          `${ROOTPATH}/${info.tierListId}`,
+    return this.resolveTierListId().pipe(
+      switchMap((tierListId) =>
+        this.apiService.patch<{ success: boolean; message: string }>(
+          `${ROOTPATH}/${tierListId}`,
           { tiers },
-        );
-      }),
+        ),
+      ),
     );
   }
 }

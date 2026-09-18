@@ -46,6 +46,11 @@ export namespace League {
   export type LeaguePokemon = DraftPokemon & {
     tier: string;
     cost: number;
+    /**
+     * Drafted, but no longer on the tournament's tier list. Its cost reads as
+     * 0 because nothing prices it — not because it was free.
+     */
+    missingFromTierList?: boolean;
     types?: Type[];
     addons?: string[];
     /** Coach who made the pick; absent on legacy picks with an unresolvable picker. */
@@ -62,6 +67,7 @@ export namespace League {
     tier: string;
     cost: number;
     tera?: boolean;
+    missingFromTierList?: boolean;
   };
 
   export type MatchPokemonStats = {
@@ -380,6 +386,7 @@ export type TradePokemon = Pokemon & {
   cost?: number;
   tier?: string;
   tera?: boolean;
+  missingFromTierList?: boolean;
 };
 
 export type TradeParticipant = {

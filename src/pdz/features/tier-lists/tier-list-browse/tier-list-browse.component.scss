@@ -1,0 +1,130 @@
+@use "pdz-theming" as pdz;
+
+:host {
+  display: block;
+}
+
+.browse {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(lg);
+}
+
+.browse__controls {
+  display: flex;
+  align-items: flex-end;
+  gap: pdz.space(md);
+  flex-wrap: wrap;
+}
+
+.browse__search {
+  flex: 1 1 14rem;
+  max-width: 22rem;
+}
+
+.browse__filter {
+  flex: 0 1 12rem;
+}
+
+.browse__count {
+  @include pdz.text(body-sm);
+  margin: 0;
+  color: pdz.color(on-surface-variant);
+}
+
+.browse__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(20rem, 1fr));
+  gap: pdz.space(lg);
+}
+
+.browse__loading {
+  display: grid;
+  place-items: center;
+  padding: pdz.space(3xl) 0;
+}
+
+.browse__empty {
+  @include pdz.text(body-sm);
+  margin: 0;
+  color: pdz.color(on-surface-variant);
+}
+
+.list-card__inner {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+}
+
+.list-card__top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: pdz.space(sm);
+}
+
+.list-card__name {
+  @include pdz.text(card-title);
+  color: pdz.color(on-surface);
+  text-decoration: none;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.list-card__meta {
+  @include pdz.text(body-sm);
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: pdz.space(xs);
+  margin: pdz.space(xs) 0 0;
+  color: pdz.color(on-surface-variant);
+}
+
+.list-card__private {
+  display: inline-flex;
+  align-items: center;
+  gap: pdz.space(3xs);
+}
+
+.list-card__desc {
+  @include pdz.text(body-sm);
+  margin: pdz.space(sm) 0 0;
+  color: pdz.color(on-surface-variant);
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.list-card__stats {
+  @include pdz.text(body-sm);
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: pdz.space(xs);
+  margin: pdz.space(md) 0 0;
+  color: pdz.color(on-surface-variant);
+
+  strong {
+    color: pdz.color(on-surface);
+    font-weight: 600;
+  }
+}
+
+.list-card__actions {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: pdz.space(sm);
+  flex-wrap: wrap;
+  // Pins the footer so cards in a row line up regardless of description length.
+  margin-top: auto;
+  padding-top: pdz.space(md);
+}

@@ -86,8 +86,12 @@ export class ArtifactCardComponent {
     return this.slot() === 'tier-list' ? 'Build a tier list' : 'Build the schedule';
   });
 
+  protected readonly lockedLabel = computed(() =>
+    this.slot() === 'tier-list' ? 'View tier list' : 'View schedule',
+  );
+
   protected readonly secondaryLabel = computed(() =>
-    this.slot() === 'tier-list' && !this.present()
+    this.slot() === 'tier-list' && !this.present() && !this.locked()
       ? 'Start from a template'
       : null,
   );

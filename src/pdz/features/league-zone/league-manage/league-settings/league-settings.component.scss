@@ -198,3 +198,23 @@
   }
 }
 
+
+.orphaned-tier {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: pdz.space(sm);
+  flex: 1 1 100%;
+  padding: pdz.space(sm) pdz.space(md);
+  border: 1px solid pdz.color(danger);
+  border-radius: pdz.shape(corner-md);
+  background: pdz.color(surface-container-lowest);
+}
+
+.orphaned-tier__label {
+  @include pdz.text(body-sm);
+  display: flex;
+  align-items: center;
+  gap: pdz.space(xs);
+  color: pdz.color(danger);
+}

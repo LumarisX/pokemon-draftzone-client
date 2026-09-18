@@ -21,6 +21,12 @@
   </div>
 
   <div class="artifact__actions">
+    @if (locked()) {
+      <span class="artifact__locked">
+        <pdz-icon name="lock" [size]="16" aria-hidden="true" />
+        Locked
+      </span>
+    }
     @if (secondaryLabel(); as label) {
       <a
         pdz-button
@@ -39,7 +45,7 @@
       [color]="present() ? 'neutral' : 'primary'"
       [routerLink]="route()"
     >
-      {{ primaryLabel() }}
+      {{ locked() ? lockedLabel() : primaryLabel() }}
       <pdz-icon name="arrow_forward" [size]="16" aria-hidden="true" />
     </a>
   </div>
