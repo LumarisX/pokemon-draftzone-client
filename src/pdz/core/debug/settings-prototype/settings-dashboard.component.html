@@ -1,0 +1,98 @@
+<pdz-page width="default">
+  <div class="dash">
+    <pdz-page-header
+      title="Manage"
+      [eyebrow]="store.draft().name || 'New tournament'"
+      subtitle="Prototype — nothing here is saved to the server."
+    >
+      <div pdz-page-header-actions>
+        <button
+          pdz-button
+          type="button"
+          variant="outlined"
+          color="neutral"
+          size="sm"
+          (click)="seedBlank()"
+        >
+          New tournament
+        </button>
+        <button
+          pdz-button
+          type="button"
+          variant="outlined"
+          color="neutral"
+          size="sm"
+          (click)="seedFilled()"
+        >
+          TBPL S12
+        </button>
+      </div>
+    </pdz-page-header>
+
+    <pdz-card padding="md" tone="lowest">
+      <div class="dash__phase">
+        <span class="dash__phase-label">Tournament phase</span>
+        <pdz-segmented
+          size="sm"
+          aria-label="Tournament phase"
+          [ngModel]="store.phase()"
+          (ngModelChange)="store.phase.set($event)"
+          [ngModelOptions]="{ standalone: true }"
+        >
+          @for (phase of phases; track phase) {
+            <pdz-segmented-option [value]="phase" [label]="phaseLabels[phase]" />
+          }
+        </pdz-segmented>
+        <span class="dash__phase-hint">Changes which sections warn.</span>
+      </div>
+    </pdz-card>
+
+    @if (showChecklist()) {
+      <pdz-launch-checklist />
+    }
+
+    <section class="dash__sections">
+      <h2 class="dash__heading">Settings</h2>
+      <div class="dash__grid">
+        @for (section of sections(); track section.id) {
+          <a class="dash-card" [routerLink]="section.path">
+            <span class="dash-card__icon">
+              <pdz-icon [name]="section.icon" [size]="24" aria-hidden="true" />
+            </span>
+            <span class="dash-card__body">
+              <span class="dash-card__title">
+                {{ section.label }}
+                @if (section.dirty) {
+                  <span
+                    class="dash-card__dot"
+                    [attr.aria-label]="section.dirty + ' unsaved'"
+                  ></span>
+                }
+              </span>
+              <span class="dash-card__blurb">{{ section.blurb }}</span>
+              <span class="dash-card__summary">{{ section.summary }}</span>
+            </span>
+            @if (section.risk) {
+              <pdz-icon
+                class="dash-card__risk"
+                [name]="section.risk.effect === 'block' ? 'warning' : 'info'"
+                [size]="18"
+                [attr.aria-label]="
+                  section.risk.effect === 'block'
+                    ? 'Live — changes affect drafted teams'
+                    : 'Changes affect a running tournament'
+                "
+              />
+            }
+            <pdz-icon
+              class="dash-card__arrow"
+              name="chevron_right"
+              [size]="20"
+              aria-hidden="true"
+            />
+          </a>
+        }
+      </div>
+    </section>
+  </div>
+</pdz-page>

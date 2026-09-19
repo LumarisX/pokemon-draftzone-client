@@ -1,0 +1,34 @@
+@use "pdz-theming" as pdz;
+
+.signup-page {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(lg);
+  padding-bottom: pdz.space(lg);
+}
+
+.applicants {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(sm);
+  scroll-margin-top: 5rem;
+}
+
+.applicants__head {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(2xs);
+}
+
+.applicants__title {
+  margin: 0;
+  color: pdz.color(on-surface);
+  @include pdz.text(subtitle);
+}
+
+.applicants__blurb {
+  margin: 0;
+  max-width: 60ch;
+  color: pdz.color(on-surface-variant);
+  @include pdz.text(body-sm);
+}

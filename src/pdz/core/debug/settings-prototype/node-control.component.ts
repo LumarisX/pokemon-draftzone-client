@@ -13,7 +13,7 @@ import { ChoiceDirective } from '@pdz/shared/inputs/choice/choice.directive';
 import { FieldComponent } from '@pdz/shared/inputs/field/field.component';
 import { InputDirective } from '@pdz/shared/inputs/field/input.directive';
 import { CustomSlotComponent } from './custom-slot.component';
-import { ControlSpec } from './settings-schema';
+import { AnyControlSpec } from './settings-schema';
 import { SettingsWorkbenchStore } from './settings-workbench.store';
 
 @Component({
@@ -154,7 +154,11 @@ import { SettingsWorkbenchStore } from './settings-workbench.store';
         </div>
       }
       @case ('custom') {
-        <pdz-custom-slot [control]="control" [disabled]="disabled()" />
+        <pdz-custom-slot
+          [control]="control"
+          [disabled]="disabled()"
+          [poolId]="poolId()"
+        />
       }
     }
   `,
@@ -175,39 +179,40 @@ import { SettingsWorkbenchStore } from './settings-workbench.store';
   ],
 })
 export class NodeControlComponent {
-  readonly spec = input.required<ControlSpec>();
+  readonly spec = input.required<AnyControlSpec>();
   readonly disabled = input(false);
+  readonly poolId = input<string | null>(null);
 
   private readonly store = inject(SettingsWorkbenchStore);
 
   private readonly key = computed(() => {
     const control = this.spec();
-    return control.kind === 'custom' ? null : control.key;
+    return control.kind === 'custom' ? null : (control.key as string);
   });
 
   protected readonly text = computed(() => {
     const key = this.key();
-    return key ? (this.store.read<string>(key) ?? '') : '';
+    return key ? (this.store.read<string>(key, this.poolId()) ?? '') : '';
   });
 
   protected readonly number = computed(() => {
     const key = this.key();
-    return key ? (this.store.read<number>(key) ?? 0) : 0;
+    return key ? (this.store.read<number>(key, this.poolId()) ?? 0) : 0;
   });
 
   protected readonly boolean = computed(() => {
     const key = this.key();
-    return key ? !!this.store.read<boolean>(key) : false;
+    return key ? !!this.store.read<boolean>(key, this.poolId()) : false;
   });
 
   protected readonly tags = computed(() => {
     const key = this.key();
-    return key ? (this.store.read<string[]>(key) ?? []) : [];
+    return key ? (this.store.read<string[]>(key, this.poolId()) ?? []) : [];
   });
 
   protected set(value: unknown): void {
     const key = this.key();
-    if (key) this.store.write(key, value);
+    if (key) this.store.write(key, value, this.poolId());
   }
 
   protected toggleTag(value: string): void {

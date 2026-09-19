@@ -15,6 +15,7 @@ import { TIER_LIST_PATH } from '@pdz/core/route-paths';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 import { CardComponent } from '@pdz/shared/data/card/card.component';
 import { ChipComponent } from '@pdz/shared/data/chip/chip.component';
+import { DialogService } from '@pdz/shared/dialogs/dialog/dialog.service';
 import { ToastService } from '@pdz/shared/feedback/toast/toast.service';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
@@ -59,6 +60,7 @@ export class TierListBrowseComponent {
   private readonly authService = inject(AuthService);
   private readonly toasts = inject(ToastService);
   private readonly router = inject(Router);
+  private readonly dialog = inject(DialogService);
 
   protected readonly tierListPath = TIER_LIST_PATH;
 
@@ -67,6 +69,8 @@ export class TierListBrowseComponent {
   protected readonly format = signal('');
   protected readonly ruleset = signal('');
   protected readonly forking = signal<string | null>(null);
+  protected readonly deleting = signal<string | null>(null);
+  private readonly refresh = signal(0);
 
   protected readonly isAuthenticated = toSignal(
     this.authService.isAuthenticated$,
@@ -84,6 +88,7 @@ export class TierListBrowseComponent {
   );
 
   private readonly criteria = computed(() => ({
+    refresh: this.refresh(),
     scope: this.scope(),
     query: this.query(),
     format: this.format(),
@@ -95,6 +100,7 @@ export class TierListBrowseComponent {
       debounceTime(250),
       distinctUntilChanged(
         (a, b) =>
+          a.refresh === b.refresh &&
           a.scope === b.scope &&
           a.query === b.query &&
           a.format === b.format &&
@@ -133,15 +139,42 @@ export class TierListBrowseComponent {
     this.ruleset.set('');
   }
 
+  protected async deleteList(list: TierListSummary): Promise<void> {
+    const confirmed = await this.dialog.confirm(`Delete "${list.name}"?`, {
+      message:
+        'This cannot be undone. A tier list in use by a tournament cannot be deleted.',
+      confirmLabel: 'Delete',
+      confirmColor: 'danger',
+    });
+    if (!confirmed) return;
+
+    this.deleting.set(list.slug);
+    this.tierListService.remove(list.slug).subscribe({
+      next: () => {
+        this.deleting.set(null);
+        this.toasts.success(`Deleted "${list.name}".`);
+        this.refresh.update((value) => value + 1);
+      },
+      error: (err) => {
+        this.deleting.set(null);
+        this.toasts.error(
+          err?.error?.details?.reason ??
+            err?.error?.message ??
+            'Could not delete that tier list.',
+        );
+      },
+    });
+  }
+
   protected forkList(list: TierListSummary): void {
     if (this.forking()) return;
-    this.forking.set(list.id);
+    this.forking.set(list.slug);
 
-    this.tierListService.fork(list.id).subscribe({
+    this.tierListService.fork(list.slug).subscribe({
       next: (created) => {
         this.forking.set(null);
         this.toasts.success(`Created "${created.name}".`);
-        this.router.navigate(['/', TIER_LIST_PATH, created.id, 'edit']);
+        this.router.navigate(['/', TIER_LIST_PATH, created.slug, 'edit']);
       },
       error: (err) => {
         this.forking.set(null);

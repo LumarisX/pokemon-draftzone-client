@@ -19,6 +19,7 @@ const ROOTPATH = 'tier-lists';
 
 export type TierListSummary = {
   id: string;
+  slug: string;
   name: string;
   description?: string;
   format: string;
@@ -83,7 +84,10 @@ export class TierListService {
         mergeMap((route) => route.paramMap),
       )
       .subscribe((paramMap) => {
-        const tierListId = paramMap.get('tierListId');
+        // `tierListSlug` is what /tier-lists routes carry; `tierListId` is
+        // still used by the planner's own route.
+        const tierListId =
+          paramMap.get('tierListSlug') ?? paramMap.get('tierListId');
         this.tierListId.set(tierListId);
       });
   }
@@ -104,18 +108,25 @@ export class TierListService {
     format: string;
     ruleset: string;
   }) {
-    return this.apiService.post<{ id: string; name: string }>(
+    return this.apiService.post<{ id: string; slug: string; name: string }>(
       ROOTPATH,
       payload,
     );
   }
 
-  fork(tierListId: string, payload: { name?: string } = {}) {
+  fork(tierListSlug: string, payload: { name?: string } = {}) {
     return this.apiService.post<{
       id: string;
+      slug: string;
       name: string;
       copiedFrom: string;
-    }>(`${ROOTPATH}/${tierListId}/fork`, payload);
+    }>(`${ROOTPATH}/${tierListSlug}/fork`, payload);
+  }
+
+  remove(tierListSlug: string) {
+    return this.apiService.delete<{ success: boolean }>(
+      `${ROOTPATH}/${tierListSlug}`,
+    );
   }
 
   /**

@@ -101,7 +101,7 @@
                 <div class="list-card__top">
                   <a
                     class="list-card__name"
-                    [routerLink]="['/', tierListPath, list.id]"
+                    [routerLink]="['/', tierListPath, list.slug]"
                   >
                     {{ list.name }}
                   </a>
@@ -137,11 +137,6 @@
                   <strong>{{ list.pokemonCount }}</strong> Pokémon
                   <span aria-hidden="true">·</span>
                   <strong>{{ list.tierCount }}</strong> tiers
-                  @if (list.forkCount) {
-                    <span aria-hidden="true">·</span>
-                    <strong>{{ list.forkCount }}</strong>
-                    {{ list.forkCount === 1 ? "copy" : "copies" }}
-                  }
                 </p>
 
                 <div class="list-card__actions">
@@ -150,24 +145,42 @@
                       pdz-button
                       type="button"
                       size="sm"
-                      [loading]="forking() === list.id"
+                      [loading]="forking() === list.slug"
                       [disabled]="!!forking()"
                       (click)="forkList(list)"
                     >
                       Use as template
                     </button>
                   }
-                  @if (list.canEdit) {
-                    <a
-                      pdz-button
-                      size="sm"
-                      variant="ghost"
-                      color="neutral"
-                      [routerLink]="['/', tierListPath, list.id, 'edit']"
-                    >
-                      Edit
-                    </a>
-                  }
+                  <span class="list-card__owner-actions">
+                    @if (list.canEdit) {
+                      <a
+                        pdz-button
+                        size="sm"
+                        variant="ghost"
+                        color="neutral"
+                        [routerLink]="['/', tierListPath, list.slug, 'edit']"
+                      >
+                        Edit
+                      </a>
+                    }
+                    @if (list.isOwner) {
+                      <button
+                        pdz-button
+                        type="button"
+                        size="sm"
+                        variant="ghost"
+                        color="danger"
+                        iconOnly
+                        [attr.aria-label]="'Delete ' + list.name"
+                        [loading]="deleting() === list.slug"
+                        [disabled]="!!deleting()"
+                        (click)="deleteList(list)"
+                      >
+                        <pdz-icon name="delete" [size]="18" aria-hidden="true" />
+                      </button>
+                    }
+                  </span>
                 </div>
               </div>
             </pdz-card>

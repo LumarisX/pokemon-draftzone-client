@@ -17,86 +17,8 @@
     </div>
   }
 
-  @case ('format-ruleset') {
-    <div class="slot-row">
-      <div pdz-field label="Format" required>
-        <pdz-select
-          aria-label="Format"
-          placeholder="Choose a format…"
-          [disabled]="disabled()"
-          [ngModel]="format()"
-          (ngModelChange)="setFormat($event)"
-          [ngModelOptions]="{ standalone: true }"
-        >
-          @for (option of formats; track option) {
-            <pdz-option [value]="option" [label]="option" />
-          }
-        </pdz-select>
-      </div>
-      <div pdz-field label="Ruleset" required>
-        <pdz-select
-          aria-label="Ruleset"
-          placeholder="Choose a ruleset…"
-          [disabled]="disabled()"
-          [ngModel]="ruleset()"
-          (ngModelChange)="setRuleset($event)"
-          [ngModelOptions]="{ standalone: true }"
-        >
-          @for (option of rulesets; track option) {
-            <pdz-option [value]="option" [label]="option" />
-          }
-        </pdz-select>
-      </div>
-    </div>
-  }
-
-  @case ('tier-rules') {
-    @if (tierRules().length) {
-      <div class="slot-tiers">
-        <div class="slot-tiers__head">
-          <span>Tier</span>
-          <span>Cost</span>
-          <span>Must draft</span>
-          <span>At most</span>
-        </div>
-        @for (tier of tierRules(); track tier.tierName; let i = $index) {
-          <div class="slot-tiers__row">
-            <span class="slot-tiers__name">{{ tier.tierName }}</span>
-            <span class="slot-tiers__cost">{{ cost(tier.tierName) }}</span>
-            <input
-              pdz-input
-              size="sm"
-              type="number"
-              min="0"
-              [attr.aria-label]="tier.tierName + ' minimum picks'"
-              [disabled]="disabled()"
-              [ngModel]="tier.required"
-              (ngModelChange)="setRequired(i, $event)"
-              [ngModelOptions]="{ standalone: true }"
-            />
-            <input
-              pdz-input
-              size="sm"
-              type="number"
-              min="0"
-              placeholder="No limit"
-              [attr.aria-label]="tier.tierName + ' maximum picks'"
-              [disabled]="disabled()"
-              [ngModel]="tier.max"
-              (ngModelChange)="setMax(i, $event)"
-              [ngModelOptions]="{ standalone: true }"
-            />
-          </div>
-        }
-        <p class="slot-tiers__total">
-          {{ requiredTotal() }} of {{ rosterMax() }} roster slots are spoken for.
-        </p>
-      </div>
-    } @else {
-      <p class="slot-empty">
-        Tier rules appear once this tournament has a tier list.
-      </p>
-    }
+  @case ('tier-requirements') {
+    <pdz-tier-list-panel />
   }
 
   @case ('prize-split') {
@@ -157,10 +79,82 @@
         type="text"
         placeholder="1234567890"
         [disabled]="disabled()"
-        [ngModel]="channelId()"
-        (ngModelChange)="setChannel($event)"
+        [ngModel]="signUpChannelId()"
+        (ngModelChange)="setSignUpChannel($event)"
         [ngModelOptions]="{ standalone: true }"
       />
     </label>
+  }
+
+  @case ('pool-channel') {
+    <div class="slot-channel">
+      <label pdz-field label="Channel ID" class="slot-channel__field">
+        <input
+          pdz-input
+          type="text"
+          placeholder="e.g. 123456789012345678"
+          [disabled]="disabled()"
+          [ngModel]="poolChannelId()"
+          (ngModelChange)="setPoolValue('channelId', $event)"
+          [ngModelOptions]="{ standalone: true }"
+        />
+      </label>
+      <button
+        pdz-button
+        type="button"
+        size="sm"
+        variant="outlined"
+        color="neutral"
+        [disabled]="disabled() || !poolChannelId()"
+      >
+        Send test message
+      </button>
+    </div>
+  }
+
+  @case ('pool-window') {
+    <div class="slot-window">
+      <label pdz-field label="Draft opens">
+        <input
+          pdz-input
+          type="datetime-local"
+          [disabled]="disabled()"
+          [ngModel]="draftStart()"
+          (ngModelChange)="setPoolValue('draftStart', $event)"
+          [ngModelOptions]="{ standalone: true }"
+        />
+      </label>
+      <label pdz-field label="Draft closes">
+        <input
+          pdz-input
+          type="datetime-local"
+          [disabled]="disabled()"
+          [ngModel]="draftEnd()"
+          (ngModelChange)="setPoolValue('draftEnd', $event)"
+          [ngModelOptions]="{ standalone: true }"
+        />
+      </label>
+      @if (multiPool()) {
+        <button
+          pdz-button
+          type="button"
+          size="sm"
+          variant="ghost"
+          color="neutral"
+          class="slot-window__apply"
+          [disabled]="disabled()"
+          (click)="applyWindowToAll()"
+        >
+          <pdz-icon name="content_copy" [size]="16" aria-hidden="true" />
+          Apply to all pools
+        </button>
+      }
+    </div>
+  }
+
+  @case ('pool-order') {
+    @if (poolId(); as id) {
+      <pdz-pool-order [poolId]="id" [disabled]="disabled()" />
+    }
   }
 }

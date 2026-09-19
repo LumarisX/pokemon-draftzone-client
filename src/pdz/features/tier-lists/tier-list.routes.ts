@@ -23,11 +23,11 @@ export const routes: Routes = [
     component: TierListShellComponent,
     children: [
       {
-        path: ':tierListId',
+        path: ':tierListSlug',
         component: TierListComponent,
       },
       {
-        path: ':tierListId/edit',
+        path: ':tierListSlug/edit',
         component: TierListFormComponent,
         canDeactivate: [unsavedChangesGuard],
       },

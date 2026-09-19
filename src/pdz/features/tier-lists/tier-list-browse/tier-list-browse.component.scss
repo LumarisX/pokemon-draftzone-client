@@ -128,3 +128,9 @@
   margin-top: auto;
   padding-top: pdz.space(md);
 }
+
+.list-card__owner-actions {
+  display: inline-flex;
+  align-items: center;
+  gap: pdz.space(xs);
+}

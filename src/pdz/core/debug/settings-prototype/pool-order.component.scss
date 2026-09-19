@@ -1,0 +1,128 @@
+@use "pdz-theming" as pdz;
+
+:host {
+  display: block;
+}
+
+.order {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(sm);
+}
+
+.order__bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: pdz.space(sm);
+}
+
+.order__count {
+  color: pdz.color(on-surface-variant);
+  @include pdz.caps;
+}
+
+.order__list {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(2xs);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.order__row {
+  display: flex;
+  align-items: center;
+  gap: pdz.space(sm);
+  padding: pdz.space(xs) pdz.space(sm);
+  background: pdz.color(surface-container-lowest);
+  border: 1px solid pdz.color(outline-variant);
+  border-radius: pdz.shape(corner-md);
+}
+
+.order__row.cdk-drag-preview {
+  box-shadow: var(--pdz-level-2);
+}
+
+.order__row.cdk-drag-placeholder {
+  opacity: 0.4;
+}
+
+.order__handle {
+  display: inline-flex;
+  color: pdz.color(on-surface-variant);
+  cursor: grab;
+}
+
+.order__position {
+  min-width: 1.5rem;
+  color: pdz.color(on-surface-variant);
+  text-align: right;
+  @include pdz.text(body-sm);
+}
+
+.order__who {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.order__team {
+  color: pdz.color(on-surface);
+  @include pdz.text(body-sm-strong);
+}
+
+.order__coach {
+  color: pdz.color(on-surface-variant);
+  @include pdz.text(label);
+}
+
+.order__move {
+  flex: 0 0 auto;
+}
+
+.order__empty,
+.order__note {
+  display: flex;
+  align-items: center;
+  gap: pdz.space(xs);
+  margin: 0;
+  color: pdz.color(on-surface-variant);
+  @include pdz.text(body-sm);
+}
+
+.order__bench {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(xs);
+  padding-top: pdz.space(sm);
+  border-top: 1px solid pdz.color(outline-variant);
+}
+
+.order__bench-title {
+  margin: 0;
+  color: pdz.color(on-surface-variant);
+  @include pdz.caps;
+}
+
+.order__bench-list {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(2xs);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.order__bench-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: pdz.space(sm);
+  padding: pdz.space(xs) pdz.space(sm);
+  border: 1px dashed pdz.color(outline-variant);
+  border-radius: pdz.shape(corner-md);
+}

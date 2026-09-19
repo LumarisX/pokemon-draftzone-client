@@ -1,0 +1,133 @@
+<pdz-page width="default">
+  <div class="draft-page">
+    <pdz-page-header
+      title="The Draft"
+      subtitle="Roster rules apply to every pool. Everything below the divider is per pool."
+      backLink=".."
+      backLabel="Manage"
+    />
+
+    <pdz-risk-banner [risk]="risk()" />
+
+    <pdz-card padding="lg">
+      @for (node of rules(); track node.id) {
+        <pdz-settings-node [node]="node" [artifact]="node.artifact ?? null" />
+      }
+    </pdz-card>
+
+    <section class="pools" id="pools">
+      <div class="pools__head">
+        <div class="pools__heading">
+          <h2 class="pools__title">
+            {{ store.collapsed() ? "Draft pool" : "Draft pools" }}
+          </h2>
+          <p class="pools__blurb">
+            Turn order, timing and membership are set per pool. Pools normally
+            open together — set one window and apply it to the rest.
+          </p>
+          @if (store.unassigned().length; as waiting) {
+            <p class="pools__waiting">
+              <pdz-icon name="group_add" [size]="16" aria-hidden="true" />
+              {{ waiting }} approved
+              {{ waiting === 1 ? "team is" : "teams are" }} not in a pool yet.
+            </p>
+          }
+        </div>
+        @if (store.collapsed()) {
+          <button
+            pdz-button
+            type="button"
+            size="sm"
+            variant="outlined"
+            color="neutral"
+            (click)="store.addPool()"
+          >
+            <pdz-icon name="call_split" [size]="16" aria-hidden="true" />
+            Split into pools
+          </button>
+        }
+      </div>
+
+      @if (!store.collapsed()) {
+        <pdz-tab-nav label="Draft pools">
+          @for (pool of store.pools(); track pool.id) {
+            <button
+              pdz-tab-link
+              type="button"
+              [active]="pool.id === store.selectedPool()?.id"
+              (click)="select(pool.id)"
+            >
+              {{ pool.name }}
+              @if (store.poolHasErrors(pool.id)) {
+                <pdz-icon
+                  name="error"
+                  [size]="16"
+                  aria-label="Has problems"
+                />
+              } @else if (store.poolDirty(pool.id)) {
+                <span class="pools__dot" aria-label="Unsaved"></span>
+              }
+            </button>
+          }
+          <button pdz-tab-link type="button" (click)="store.addPool()">
+            <pdz-icon name="add" [size]="16" aria-hidden="true" />
+            Add pool
+          </button>
+        </pdz-tab-nav>
+      }
+
+      @if (store.selectedPool(); as pool) {
+        <pdz-card padding="lg">
+          <div class="pools__pool-bar">
+            <span class="pools__pool-name">
+              {{ store.collapsed() ? "Settings" : pool.name }}
+            </span>
+            <div class="pools__pool-actions">
+              <button
+                pdz-button
+                type="button"
+                size="sm"
+                variant="outlined"
+                color="neutral"
+              >
+                Open Draft Control
+                <pdz-icon name="arrow_forward" [size]="16" aria-hidden="true" />
+              </button>
+              @if (!store.collapsed()) {
+                <button
+                  pdz-button
+                  type="button"
+                  size="sm"
+                  variant="ghost"
+                  color="danger"
+                  (click)="removePool(pool.id)"
+                >
+                  Delete pool
+                </button>
+              }
+            </div>
+          </div>
+
+          <div class="pools__nodes">
+            @for (node of poolNodes(); track node.id) {
+              <div
+                class="pools__node"
+                [class.pools__node--full]="node.span === 'full'"
+              >
+                <pdz-settings-node [node]="node" [poolId]="pool.id" />
+              </div>
+            }
+          </div>
+        </pdz-card>
+      }
+    </section>
+
+    <pdz-save-bar
+      [count]="dirty()"
+      [blocked]="blocked()"
+      label="Save draft settings"
+      (save)="save()"
+      (revert)="revert()"
+    />
+  </div>
+</pdz-page>

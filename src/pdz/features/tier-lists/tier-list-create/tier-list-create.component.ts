@@ -80,7 +80,7 @@ export class TierListCreateComponent {
       .subscribe({
         next: (created) => {
           this.toasts.success(`${created.name} created.`);
-          this.router.navigate(['/', TIER_LIST_PATH, created.id, 'edit']);
+          this.router.navigate(['/', TIER_LIST_PATH, created.slug, 'edit']);
         },
         error: (err) => {
           this.saving.set(false);

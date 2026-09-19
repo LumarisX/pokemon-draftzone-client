@@ -31,21 +31,27 @@ export interface RiskSpec {
 
 export interface SettingsSection {
   id: SettingsSectionId;
+  path: string;
   label: string;
   blurb: string;
+  icon: string;
   risk?: RiskSpec;
 }
 
 export const SETTINGS_SECTIONS: readonly SettingsSection[] = [
   {
     id: 'identity',
+    path: 'identity',
     label: 'Identity',
-    blurb: 'What this tournament is called and where coaches gather.',
+    blurb: 'What this tournament is called and how it looks.',
+    icon: 'badge',
   },
   {
     id: 'signup',
+    path: 'sign-ups',
     label: 'Sign-Ups',
     blurb: 'Who can join, and by when.',
+    icon: 'how_to_reg',
     risk: {
       from: 'draft',
       effect: 'warn',
@@ -54,8 +60,10 @@ export const SETTINGS_SECTIONS: readonly SettingsSection[] = [
   },
   {
     id: 'draft',
+    path: 'draft',
     label: 'The Draft',
-    blurb: 'How teams get their Pokémon.',
+    blurb: 'Roster rules, the tier list, and every draft pool.',
+    icon: 'format_list_numbered',
     risk: {
       from: 'draft',
       effect: 'block',
@@ -65,8 +73,10 @@ export const SETTINGS_SECTIONS: readonly SettingsSection[] = [
   },
   {
     id: 'season',
+    path: 'season',
     label: 'The Season',
     blurb: 'How matches are played, scored and recorded.',
+    icon: 'calendar_month',
     risk: {
       from: 'season',
       effect: 'warn',
@@ -76,13 +86,19 @@ export const SETTINGS_SECTIONS: readonly SettingsSection[] = [
   },
   {
     id: 'integrations',
+    path: 'integrations',
     label: 'Integrations',
-    blurb: 'Discord wiring. Nothing here changes how the tournament plays.',
+    blurb: 'Your Discord server and the bot that posts to it.',
+    icon: 'hub',
   },
 ];
 
-export interface TierRule {
-  tierName: string;
+export function sectionById(id: SettingsSectionId): SettingsSection {
+  return SETTINGS_SECTIONS.find((section) => section.id === id)!;
+}
+
+export interface TierRequirement {
+  tierId: string;
   required: number;
   max: number | null;
 }
@@ -100,18 +116,11 @@ export interface SettingsValue {
 
   signUpDeadline: string;
 
-  format: string;
-  ruleset: string;
-  draftOrder: 'snake' | 'linear' | 'manual';
-  draftPickTimerEnabled: boolean;
-  draftPickTimerMinutes: number;
-  draftStart: string;
-  draftEnd: string;
   draftCountMin: number;
   draftCountMax: number;
   pointTotalEnabled: boolean;
   pointTotal: number;
-  tierRules: TierRule[];
+  tierRequirements: TierRequirement[];
   tradePointLimitEnabled: boolean;
   tradePointLimit: number;
 
@@ -137,26 +146,77 @@ export interface SettingsValue {
   archived: boolean;
 }
 
-type KeysOfType<T> = {
-  [K in keyof SettingsValue]: SettingsValue[K] extends T ? K : never;
-}[keyof SettingsValue];
+export type OrderProgression = 'snake' | 'linear';
+
+export type PoolVisibility = 'ALL' | 'SELF';
+
+export type SignUpStatus = 'approved' | 'pending' | 'denied' | 'dropped';
+
+export const SIGNUP_STATUSES: readonly SignUpStatus[] = [
+  'pending',
+  'approved',
+  'denied',
+  'dropped',
+];
+
+export const SIGNUP_STATUS_LABELS: Record<SignUpStatus, string> = {
+  pending: 'Pending',
+  approved: 'Approved',
+  denied: 'Denied',
+  dropped: 'Dropped',
+};
+
+export interface SignUpValue {
+  id: string;
+  status: SignUpStatus;
+  teamName: string;
+  coach: string;
+  showdownName: string;
+  discordName: string;
+  timezone: string;
+  experience: string;
+  signedUpAt: string;
+  inDiscordServer: boolean;
+  hasDiscordRole: boolean;
+}
+
+export interface DraftPoolValue {
+  id: string;
+  name: string;
+  channelId: string;
+  draftStart: string;
+  draftEnd: string;
+  orderProgression: OrderProgression;
+  sequentialTurns: boolean;
+  pickTimerEnabled: boolean;
+  pickTimerMinutes: number;
+  useRandomSeeding: boolean;
+  visibility: PoolVisibility;
+  allowRemovals: boolean;
+  teams: string[];
+}
+
+export type ValueBag = SettingsValue | DraftPoolValue;
+
+type KeysOfType<V, T> = {
+  [K in keyof V]: V[K] extends T ? K : never;
+}[keyof V];
 
 export type ChoiceOption = { value: string; label: string };
 
 export type CustomSlot =
   | 'logo'
-  | 'format-ruleset'
-  | 'tier-rules'
+  | 'tier-requirements'
   | 'prize-split'
-  | 'discord-channels';
+  | 'discord-channels'
+  | 'pool-channel'
+  | 'pool-window'
+  | 'pool-order';
 
-type ControlBase = { showWhen?: (value: SettingsValue) => boolean };
-
-export type ControlSpec = ControlBase &
-  (
-    | {
+export type ControlSpecFor<V> = { showWhen?: (value: V) => boolean } & (
+  | {
       kind: 'text';
-      key: KeysOfType<string>;
+      key: KeysOfType<V, string>;
       label: string;
       placeholder?: string;
       maxLength?: number;
@@ -164,70 +224,116 @@ export type ControlSpec = ControlBase &
     }
   | {
       kind: 'textarea';
-      key: KeysOfType<string>;
+      key: KeysOfType<V, string>;
       label: string;
       rows?: number;
     }
   | {
       kind: 'number';
-      key: KeysOfType<number>;
+      key: KeysOfType<V, number>;
       label: string;
       min?: number;
       max?: number;
       unit?: string;
     }
-  | { kind: 'toggle'; key: KeysOfType<boolean>; label: string }
+  | { kind: 'toggle'; key: KeysOfType<V, boolean>; label: string }
   | {
       kind: 'choice';
-      key: KeysOfType<string>;
+      key: KeysOfType<V, string>;
       label: string;
       options: readonly ChoiceOption[];
       as: 'radio' | 'select';
     }
   | {
       kind: 'datetime';
-      key: KeysOfType<string>;
+      key: KeysOfType<V, string>;
       label: string;
       required?: boolean;
     }
   | {
       kind: 'tags';
-      key: KeysOfType<string[]>;
+      key: KeysOfType<V, string[]>;
       label: string;
       options: readonly ChoiceOption[];
     }
-    | {
-        kind: 'custom';
-        slot: CustomSlot;
-        label?: string;
-        keys: readonly (keyof SettingsValue)[];
-      }
-  );
+  | {
+      kind: 'custom';
+      slot: CustomSlot;
+      label?: string;
+      keys: readonly (keyof V)[];
+    }
+);
 
-export function controlKeys(
-  control: ControlSpec,
-): readonly (keyof SettingsValue)[] {
-  return control.kind === 'custom' ? control.keys : [control.key];
+export type ControlSpec = ControlSpecFor<SettingsValue>;
+export type PoolControlSpec = ControlSpecFor<DraftPoolValue>;
+export type AnyControlSpec = ControlSpecFor<SettingsValue & DraftPoolValue>;
+
+export function controlVisible(
+  control: AnyControlSpec,
+  bag: ValueBag,
+): boolean {
+  if (!control.showWhen) return true;
+  return control.showWhen(bag as SettingsValue & DraftPoolValue);
 }
 
-export function nodeKeys(node: SettingsNode): (keyof SettingsValue)[] {
-  return node.controls.flatMap((control) => [...controlKeys(control)]);
+export function controlKeys(control: AnyControlSpec): readonly string[] {
+  return control.kind === 'custom'
+    ? (control.keys as readonly string[])
+    : [control.key as string];
 }
 
-export function sectionKeys(
-  section: SettingsSectionId,
-): (keyof SettingsValue)[] {
-  return SETTINGS_NODES.filter((node) => node.section === section).flatMap(
-    nodeKeys,
-  );
+export interface NodeFor<V> {
+  id: string;
+  title: string;
+  help?: string;
+  controls: readonly ControlSpecFor<V>[];
+  showWhen?: (value: V) => boolean;
+  validate?: (value: V) => string | null;
 }
 
 export type ArtifactSlot = 'tier-list' | 'schedule';
 
+export interface SettingsNode extends NodeFor<SettingsValue> {
+  section: SettingsSectionId;
+  artifact?: ArtifactSlot;
+}
+
+export interface PoolNode extends NodeFor<DraftPoolValue> {
+  span?: 'full';
+}
+
+export type AnyNode = NodeFor<SettingsValue & DraftPoolValue>;
+
+export function nodeVisible(node: AnyNode, bag: ValueBag): boolean {
+  if (!node.showWhen) return true;
+  return node.showWhen(bag as SettingsValue & DraftPoolValue);
+}
+
+export function nodeError(node: AnyNode, bag: ValueBag): string | null {
+  if (!node.validate) return null;
+  return node.validate(bag as SettingsValue & DraftPoolValue);
+}
+
+export function nodeKeys(node: AnyNode): string[] {
+  return node.controls.flatMap((control) => [
+    ...controlKeys(control as AnyControlSpec),
+  ]);
+}
+
+export interface TierSummary {
+  id: string;
+  name: string;
+  cost: number;
+  color: string;
+}
+
 export interface TierListState {
   name: string | null;
+  slug: string | null;
+  format: string;
+  ruleset: string;
   pokemonCount: number;
-  tierCount: number;
+  tiers: TierSummary[];
   source: 'template' | 'custom' | null;
 }
 
@@ -244,31 +350,20 @@ export interface ArtifactState {
 
 export interface SettingsContext {
   value: SettingsValue;
+  pools: DraftPoolValue[];
+  signUps: SignUpValue[];
+  unassigned: SignUpValue[];
   artifacts: ArtifactState;
-}
-
-export interface LaunchStep {
-  milestone: Milestone;
-  label: string;
-  done: (context: SettingsContext) => boolean;
-}
-
-export interface SettingsNode {
-  id: string;
-  section: SettingsSectionId;
-  title: string;
-  help?: string;
-  artifact?: ArtifactSlot;
-  controls: readonly ControlSpec[];
-  showWhen?: (value: SettingsValue) => boolean;
-  validate?: (value: SettingsValue) => string | null;
-  launchStep?: LaunchStep;
 }
 
 const DRAFT_ORDERS: readonly ChoiceOption[] = [
   { value: 'snake', label: 'Snake' },
   { value: 'linear', label: 'Linear' },
-  { value: 'manual', label: 'Set by organizers' },
+];
+
+const VISIBILITIES: readonly ChoiceOption[] = [
+  { value: 'ALL', label: 'Everyone' },
+  { value: 'SELF', label: 'Coach only' },
 ];
 
 const DIFF_MODES: readonly ChoiceOption[] = [
@@ -311,38 +406,15 @@ export const SETTINGS_NODES: readonly SettingsNode[] = [
       },
       { kind: 'textarea', key: 'description', label: 'Description', rows: 3 },
     ],
-    launchStep: {
-      milestone: 'signups',
-      label: 'Name your tournament',
-      done: (c) => c.value.name.trim().length > 0,
-    },
   },
   {
     id: 'identity.logo',
     section: 'identity',
     title: 'Logo',
-    controls: [{ kind: 'custom', slot: 'logo', label: 'Tournament logo', keys: ['logo'] }],
-  },
-  {
-    id: 'identity.discord',
-    section: 'identity',
-    title: 'Discord server',
-    help: 'Coaches see this as a join link.',
     controls: [
-      {
-        kind: 'text',
-        key: 'discord',
-        label: 'Invite link',
-        placeholder: 'https://discord.gg/…',
-      },
+      { kind: 'custom', slot: 'logo', label: 'Tournament logo', keys: ['logo'] },
     ],
-    launchStep: {
-      milestone: 'signups',
-      label: 'Add a Discord invite',
-      done: (c) => c.value.discord.trim().length > 0,
-    },
   },
-
   {
     id: 'signup.deadline',
     section: 'signup',
@@ -355,20 +427,18 @@ export const SETTINGS_NODES: readonly SettingsNode[] = [
         required: true,
       },
     ],
-    launchStep: {
-      milestone: 'signups',
-      label: 'Set a sign-up deadline',
-      done: (c) => c.value.signUpDeadline.trim().length > 0,
-    },
   },
-
   {
     id: 'signup.listing',
     section: 'signup',
     title: 'Find a League listing',
     help: 'Advertises this tournament publicly until the sign-up deadline passes.',
     controls: [
-      { kind: 'toggle', key: 'adAdvertise', label: 'List this tournament publicly' },
+      {
+        kind: 'toggle',
+        key: 'adAdvertise',
+        label: 'List this tournament publicly',
+      },
       {
         kind: 'choice',
         key: 'adSkillFrom',
@@ -402,28 +472,12 @@ export const SETTINGS_NODES: readonly SettingsNode[] = [
       },
     ],
   },
-  {
-    id: 'draft.format',
-    section: 'draft',
-    title: 'Format & ruleset',
-    help: 'Drives which Pokémon are legal to draft.',
-    controls: [
-      {
-        kind: 'custom',
-        slot: 'format-ruleset',
-        keys: ['format', 'ruleset'],
-      },
-    ],
-    launchStep: {
-      milestone: 'signups',
-      label: 'Choose a format',
-      done: (c) => c.value.format.trim().length > 0 && c.value.ruleset.trim().length > 0,
-    },
-  },
+
   {
     id: 'draft.roster',
     section: 'draft',
     title: 'Roster size & budget',
+    help: 'Applies to every pool.',
     controls: [
       { kind: 'number', key: 'draftCountMin', label: 'Minimum roster', min: 1 },
       { kind: 'number', key: 'draftCountMax', label: 'Maximum roster', min: 1 },
@@ -445,87 +499,15 @@ export const SETTINGS_NODES: readonly SettingsNode[] = [
       v.draftCountMin > v.draftCountMax
         ? 'Minimum roster size cannot exceed the maximum.'
         : null,
-    launchStep: {
-      milestone: 'signups',
-      label: 'Set roster size and budget',
-      done: (c) => c.value.draftCountMax > 0,
-    },
   },
   {
     id: 'draft.tiers',
     section: 'draft',
     title: 'Tier list',
-    help: 'What each Pokémon costs, and the minimums and caps per tier.',
-    artifact: 'tier-list',
-    controls: [{ kind: 'custom', slot: 'tier-rules', keys: ['tierRules'] }],
-    validate: (v) => {
-      const required = v.tierRules.reduce((sum, tier) => sum + tier.required, 0);
-      if (required > v.draftCountMax) {
-        return `Required tier picks (${required}) exceed the maximum roster size (${v.draftCountMax}).`;
-      }
-      const overCapped = v.tierRules.find(
-        (tier) => tier.max !== null && tier.required > tier.max,
-      );
-      return overCapped
-        ? `${overCapped.tierName} requires more picks than its own limit allows.`
-        : null;
-    },
-    launchStep: {
-      milestone: 'signups',
-      label: 'Choose or build a tier list',
-      done: (c) => c.artifacts.tierList.name !== null,
-    },
-  },
-  {
-    id: 'draft.order',
-    section: 'draft',
-    title: 'Draft order',
+    help: 'Sets the format, what each Pokémon costs, and which are legal. Attaching one copies it, so later edits by its author never reprice a draft in progress.',
     controls: [
-      {
-        kind: 'choice',
-        key: 'draftOrder',
-        label: 'Pick order',
-        options: DRAFT_ORDERS,
-        as: 'radio',
-      },
+      { kind: 'custom', slot: 'tier-requirements', keys: ['tierRequirements'] },
     ],
-    launchStep: {
-      milestone: 'draft',
-      label: 'Choose a draft order',
-      done: (c) => c.value.draftOrder.length > 0,
-    },
-  },
-  {
-    id: 'draft.timer',
-    section: 'draft',
-    title: 'Pick timer',
-    help: 'A missed pick moves to the end of the round rather than stacking.',
-    controls: [
-      { kind: 'toggle', key: 'draftPickTimerEnabled', label: 'Time each pick' },
-      {
-        kind: 'number',
-        key: 'draftPickTimerMinutes',
-        label: 'Minutes per pick',
-        min: 1,
-        unit: 'min',
-        showWhen: (v) => v.draftPickTimerEnabled,
-      },
-    ],
-    showWhen: (v) => v.draftOrder !== 'manual',
-  },
-  {
-    id: 'draft.window',
-    section: 'draft',
-    title: 'Draft window',
-    controls: [
-      { kind: 'datetime', key: 'draftStart', label: 'Draft opens' },
-      { kind: 'datetime', key: 'draftEnd', label: 'Draft closes' },
-    ],
-    launchStep: {
-      milestone: 'draft',
-      label: 'Schedule the draft',
-      done: (c) => c.value.draftStart.trim().length > 0,
-    },
   },
   {
     id: 'draft.trades',
@@ -555,11 +537,6 @@ export const SETTINGS_NODES: readonly SettingsNode[] = [
     help: 'The stages, rounds and matchups teams actually play.',
     artifact: 'schedule',
     controls: [],
-    launchStep: {
-      milestone: 'season',
-      label: 'Build the schedule',
-      done: (c) => c.artifacts.schedule.matchupCount > 0,
-    },
   },
   {
     id: 'season.window',
@@ -569,11 +546,10 @@ export const SETTINGS_NODES: readonly SettingsNode[] = [
       { kind: 'datetime', key: 'seasonStart', label: 'Season starts' },
       { kind: 'datetime', key: 'seasonEnd', label: 'Season ends' },
     ],
-    launchStep: {
-      milestone: 'season',
-      label: 'Set the season window',
-      done: (c) => c.value.seasonStart.trim().length > 0,
-    },
+    validate: (v) =>
+      v.seasonStart && v.seasonEnd && v.seasonEnd < v.seasonStart
+        ? 'The season ends before it starts.'
+        : null,
   },
   {
     id: 'season.scoring',
@@ -588,11 +564,6 @@ export const SETTINGS_NODES: readonly SettingsNode[] = [
         as: 'radio',
       },
     ],
-    launchStep: {
-      milestone: 'season',
-      label: 'Choose how ties are broken',
-      done: (c) => c.value.diffMode.length > 0,
-    },
   },
   {
     id: 'season.forfeits',
@@ -600,7 +571,12 @@ export const SETTINGS_NODES: readonly SettingsNode[] = [
     title: 'Forfeits',
     help: 'The score recorded when a match is not played.',
     controls: [
-      { kind: 'number', key: 'forfeitGameDiff', label: 'Game differential', min: 0 },
+      {
+        kind: 'number',
+        key: 'forfeitGameDiff',
+        label: 'Game differential',
+        min: 0,
+      },
       {
         kind: 'number',
         key: 'forfeitPokemonDiff',
@@ -635,9 +611,24 @@ export const SETTINGS_NODES: readonly SettingsNode[] = [
   },
 
   {
+    id: 'integrations.invite',
+    section: 'integrations',
+    title: 'Discord server',
+    help: 'Coaches see this as a join link on the tournament page. It works whether or not the bot is connected.',
+    controls: [
+      {
+        kind: 'text',
+        key: 'discord',
+        label: 'Invite link',
+        placeholder: 'https://discord.gg/…',
+      },
+    ],
+  },
+  {
     id: 'integrations.discord',
     section: 'integrations',
     title: 'Discord bot',
+    help: 'Lets DraftZone post picks, assign the coach role and mirror sign-ups.',
     controls: [
       { kind: 'text', key: 'discordGuildId', label: 'Server ID' },
       { kind: 'text', key: 'discordCoachRoleId', label: 'Coach role ID' },
@@ -648,11 +639,107 @@ export const SETTINGS_NODES: readonly SettingsNode[] = [
       },
     ],
   },
+];
 
+export const POOL_NODES: readonly PoolNode[] = [
+  {
+    id: 'pool.name',
+    title: 'Pool name',
+    controls: [{ kind: 'text', key: 'name', label: 'Name', maxLength: 60 }],
+  },
+  {
+    id: 'pool.channel',
+    title: 'Discord channel',
+    help: 'Picks and turn notifications post here.',
+    controls: [{ kind: 'custom', slot: 'pool-channel', keys: ['channelId'] }],
+  },
+  {
+    id: 'pool.window',
+    title: 'Draft window',
+    controls: [
+      {
+        kind: 'custom',
+        slot: 'pool-window',
+        keys: ['draftStart', 'draftEnd'],
+      },
+    ],
+    validate: (pool) =>
+      pool.draftStart && pool.draftEnd && pool.draftEnd < pool.draftStart
+        ? 'This pool closes before it opens.'
+        : null,
+  },
+  {
+    id: 'pool.order',
+    title: 'Turn order',
+    controls: [
+      {
+        kind: 'choice',
+        key: 'orderProgression',
+        label: 'Progression',
+        options: DRAFT_ORDERS,
+        as: 'radio',
+      },
+      {
+        kind: 'toggle',
+        key: 'sequentialTurns',
+        label: 'Sequential turns',
+      },
+    ],
+  },
+  {
+    id: 'pool.timer',
+    title: 'Pick timer',
+    help: 'A missed pick moves to the end of the round rather than stacking.',
+    controls: [
+      { kind: 'toggle', key: 'pickTimerEnabled', label: 'Time each pick' },
+      {
+        kind: 'number',
+        key: 'pickTimerMinutes',
+        label: 'Minutes per pick',
+        min: 1,
+        unit: 'min',
+        showWhen: (pool) => pool.pickTimerEnabled,
+      },
+    ],
+  },
+  {
+    id: 'pool.access',
+    title: 'Coach access',
+    controls: [
+      {
+        kind: 'choice',
+        key: 'visibility',
+        label: 'Who sees the board',
+        options: VISIBILITIES,
+        as: 'radio',
+      },
+      {
+        kind: 'toggle',
+        key: 'allowRemovals',
+        label: 'Allow pick removals',
+      },
+    ],
+  },
+  {
+    id: 'pool.teams',
+    title: 'Draft order',
+    span: 'full',
+    controls: [
+      {
+        kind: 'custom',
+        slot: 'pool-order',
+        keys: ['teams', 'useRandomSeeding'],
+      },
+    ],
+  },
 ];
 
 export function nodesForSection(section: SettingsSectionId): SettingsNode[] {
   return SETTINGS_NODES.filter((node) => node.section === section);
+}
+
+export function sectionKeys(section: SettingsSectionId): string[] {
+  return nodesForSection(section).flatMap((node) => nodeKeys(node as AnyNode));
 }
 
 export function lifecycleReached(current: Lifecycle, from: Lifecycle): boolean {
@@ -667,11 +754,116 @@ export function sectionRisk(
   return lifecycleReached(phase, section.risk.from) ? section.risk : null;
 }
 
+export interface LaunchStep {
+  id: string;
+  milestone: Milestone;
+  label: string;
+  section: SettingsSectionId;
+  fragment: string;
+  done: (context: SettingsContext) => boolean;
+}
+
+export const LAUNCH_STEPS: readonly LaunchStep[] = [
+  {
+    id: 'name',
+    milestone: 'signups',
+    label: 'Name your tournament',
+    section: 'identity',
+    fragment: 'identity.name',
+    done: (c) => c.value.name.trim().length > 0,
+  },
+  {
+    id: 'discord',
+    milestone: 'signups',
+    label: 'Add a Discord invite',
+    section: 'integrations',
+    fragment: 'integrations.invite',
+    done: (c) => c.value.discord.trim().length > 0,
+  },
+  {
+    id: 'deadline',
+    milestone: 'signups',
+    label: 'Set a sign-up deadline',
+    section: 'signup',
+    fragment: 'signup.deadline',
+    done: (c) => c.value.signUpDeadline.trim().length > 0,
+  },
+  {
+    id: 'roster',
+    milestone: 'signups',
+    label: 'Set roster size and budget',
+    section: 'draft',
+    fragment: 'draft.roster',
+    done: (c) => c.value.draftCountMax > 0,
+  },
+  {
+    id: 'tier-list',
+    milestone: 'signups',
+    label: 'Attach a tier list',
+    section: 'draft',
+    fragment: 'draft.tiers',
+    done: (c) => c.artifacts.tierList.name !== null,
+  },
+  {
+    id: 'review-signups',
+    milestone: 'draft',
+    label: 'Review every sign-up',
+    section: 'signup',
+    fragment: 'applicants',
+    done: (c) => c.signUps.every((entry) => entry.status !== 'pending'),
+  },
+  {
+    id: 'pool-teams',
+    milestone: 'draft',
+    label: 'Put every team in a pool',
+    section: 'draft',
+    fragment: 'pools',
+    done: (c) =>
+      c.unassigned.length === 0 && c.pools.every((pool) => pool.teams.length > 1),
+  },
+  {
+    id: 'pool-window',
+    milestone: 'draft',
+    label: 'Schedule every pool',
+    section: 'draft',
+    fragment: 'pools',
+    done: (c) =>
+      c.pools.length > 0 &&
+      c.pools.every((pool) => pool.draftStart.trim().length > 0),
+  },
+  {
+    id: 'schedule',
+    milestone: 'season',
+    label: 'Build the schedule',
+    section: 'season',
+    fragment: 'season.schedule',
+    done: (c) => c.artifacts.schedule.matchupCount > 0,
+  },
+  {
+    id: 'season-window',
+    milestone: 'season',
+    label: 'Set the season window',
+    section: 'season',
+    fragment: 'season.window',
+    done: (c) => c.value.seasonStart.trim().length > 0,
+  },
+  {
+    id: 'scoring',
+    milestone: 'season',
+    label: 'Choose how ties are broken',
+    section: 'season',
+    fragment: 'season.scoring',
+    done: (c) => c.value.diffMode.length > 0,
+  },
+];
+
 export interface ChecklistItem {
+  id: string;
   label: string;
   done: boolean;
-  nodeId: string;
   section: SettingsSectionId;
+  path: string;
+  fragment: string;
 }
 
 export interface ChecklistGroup {
@@ -684,31 +876,45 @@ export interface ChecklistGroup {
 export function launchChecklist(context: SettingsContext): ChecklistGroup[] {
   const milestones: Milestone[] = ['signups', 'draft', 'season'];
 
-  return milestones
-    .map((milestone) => {
-      const items: ChecklistItem[] = SETTINGS_NODES.filter(
-        (node) => node.launchStep?.milestone === milestone,
-      ).map((node) => ({
-        label: node.launchStep!.label,
-        done: node.launchStep!.done(context),
-        nodeId: node.id,
-        section: node.section,
-      }));
+  return milestones.map((milestone) => {
+    const items: ChecklistItem[] = LAUNCH_STEPS.filter(
+      (step) => step.milestone === milestone,
+    ).map((step) => ({
+      id: step.id,
+      label: step.label,
+      done: step.done(context),
+      section: step.section,
+      path: sectionById(step.section).path,
+      fragment: step.fragment,
+    }));
 
-      return {
-        milestone,
-        label: MILESTONE_LABELS[milestone],
-        items,
-        complete: items.every((item) => item.done),
-      };
-    })
-    .filter((group) => group.items.length > 0);
+    return {
+      milestone,
+      label: MILESTONE_LABELS[milestone],
+      items,
+      complete: items.every((item) => item.done),
+    };
+  });
 }
 
-export function settingsErrors(value: SettingsValue) {
+export interface NodeIssue {
+  nodeId: string;
+  poolId: string | null;
+  message: string;
+}
+
+export function settingsErrors(value: SettingsValue): NodeIssue[] {
   return SETTINGS_NODES.flatMap((node) => {
-    if (node.showWhen && !node.showWhen(value)) return [];
-    const message = node.validate?.(value);
-    return message ? [{ nodeId: node.id, message }] : [];
+    if (!nodeVisible(node as AnyNode, value)) return [];
+    const message = nodeError(node as AnyNode, value);
+    return message ? [{ nodeId: node.id, poolId: null, message }] : [];
+  });
+}
+
+export function poolErrors(pool: DraftPoolValue): NodeIssue[] {
+  return POOL_NODES.flatMap((node) => {
+    if (!nodeVisible(node as AnyNode, pool)) return [];
+    const message = nodeError(node as AnyNode, pool);
+    return message ? [{ nodeId: node.id, poolId: pool.id, message }] : [];
   });
 }

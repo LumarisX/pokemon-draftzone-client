@@ -1,0 +1,38 @@
+@use "pdz-theming" as pdz;
+
+:host {
+  display: block;
+}
+
+.risk {
+  display: flex;
+  align-items: flex-start;
+  gap: pdz.space(sm);
+  padding: pdz.space(md);
+  background: pdz.color(surface-container-low);
+  border: 1px solid pdz.color(outline-variant);
+  border-left: 3px solid pdz.color(warning-border);
+  border-radius: pdz.shape(corner-lg);
+  color: pdz.color(on-surface-variant);
+}
+
+.risk--block {
+  border-left-color: pdz.color(danger-border);
+}
+
+.risk__body {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(2xs);
+}
+
+.risk__title {
+  margin: 0;
+  color: pdz.color(on-surface);
+  @include pdz.text(body-sm-strong);
+}
+
+.risk__because {
+  margin: 0;
+  @include pdz.text(body-sm);
+}

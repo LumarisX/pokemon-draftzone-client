@@ -1,0 +1,99 @@
+@if (attached()) {
+  <div class="tlp">
+    <div class="tlp__head">
+      <div class="tlp__identity">
+        <span class="tlp__name">{{ tierList().name }}</span>
+        <span class="tlp__meta">
+          {{ tierList().format }} · {{ tierList().ruleset }} ·
+          {{ tierList().pokemonCount }} Pokémon
+        </span>
+      </div>
+      <div class="tlp__actions">
+        <button pdz-button type="button" size="sm" variant="ghost" color="neutral">
+          Replace
+        </button>
+        <a
+          pdz-button
+          size="sm"
+          variant="outlined"
+          color="neutral"
+          routerLink="tier-list"
+        >
+          Edit costs
+          <pdz-icon name="arrow_forward" [size]="16" aria-hidden="true" />
+        </a>
+      </div>
+    </div>
+
+    <table class="tlp__table">
+      <thead>
+        <tr>
+          <th scope="col">Tier</th>
+          <th scope="col">Cost</th>
+          <th scope="col">Required</th>
+          <th scope="col">Limit</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (row of rows(); track row.tierId) {
+          <tr>
+            <th scope="row" class="tlp__tier">{{ row.name }}</th>
+            <td class="tlp__cost">{{ row.cost }} pts</td>
+            <td>
+              <input
+                pdz-input
+                size="sm"
+                class="tlp__number"
+                type="number"
+                min="0"
+                [attr.aria-label]="row.name + ' required picks'"
+                [ngModel]="row.required"
+                (ngModelChange)="setRequired(row.tierId, $event)"
+                [ngModelOptions]="{ standalone: true }"
+              />
+            </td>
+            <td>
+              <input
+                pdz-input
+                size="sm"
+                class="tlp__number"
+                type="number"
+                min="0"
+                placeholder="∞"
+                [attr.aria-label]="row.name + ' pick limit'"
+                [ngModel]="row.max"
+                (ngModelChange)="setMax(row.tierId, $event)"
+                [ngModelOptions]="{ standalone: true }"
+              />
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+
+    <p class="tlp__total" [class.tlp__total--over]="overBudget()">
+      {{ requiredTotal() }} of {{ rosterMax() }} roster slots are spoken for by
+      tier requirements.
+    </p>
+  </div>
+} @else {
+  <div class="tlp tlp--empty">
+    <pdz-icon name="format_list_numbered" [size]="24" aria-hidden="true" />
+    <div class="tlp__empty-body">
+      <p class="tlp__empty-title">No tier list attached</p>
+      <p class="tlp__empty-blurb">
+        The format, ruleset, every Pokémon's cost and its legality all come from
+        here. Tier requirements appear once one is attached.
+      </p>
+    </div>
+    <div class="tlp__actions">
+      <button pdz-button type="button" size="sm" variant="outlined" color="neutral">
+        Start from a template
+      </button>
+      <a pdz-button size="sm" routerLink="tier-list">
+        Build one
+        <pdz-icon name="arrow_forward" [size]="16" aria-hidden="true" />
+      </a>
+    </div>
+  </div>
+}

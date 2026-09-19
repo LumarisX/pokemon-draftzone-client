@@ -1,0 +1,130 @@
+@use "pdz-theming" as pdz;
+
+:host {
+  display: block;
+}
+
+.tlp {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(md);
+  padding: pdz.space(md);
+  background: pdz.color(surface-container-lowest);
+  border: 1px solid pdz.color(outline-variant);
+  border-radius: pdz.shape(corner-lg);
+}
+
+.tlp--empty {
+  flex-direction: row;
+  align-items: flex-start;
+  gap: pdz.space(md);
+  color: pdz.color(on-surface-variant);
+}
+
+.tlp__empty-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(xs);
+}
+
+.tlp__empty-title {
+  margin: 0;
+  color: pdz.color(on-surface);
+  @include pdz.text(body);
+}
+
+.tlp__empty-blurb {
+  margin: 0;
+  @include pdz.text(body-sm);
+}
+
+.tlp__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: pdz.space(sm);
+}
+
+.tlp__identity {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(2xs);
+}
+
+.tlp__name {
+  color: pdz.color(on-surface);
+  @include pdz.text(card-title);
+}
+
+.tlp__meta {
+  color: pdz.color(on-surface-variant);
+  @include pdz.text(body-sm);
+}
+
+.tlp__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: pdz.space(xs);
+}
+
+.tlp__table {
+  width: 100%;
+  border-collapse: collapse;
+
+  th,
+  td {
+    padding: pdz.space(2xs) pdz.space(xs);
+    text-align: left;
+  }
+
+  thead th {
+    color: pdz.color(on-surface-variant);
+    border-bottom: 1px solid pdz.color(outline-variant);
+    @include pdz.caps;
+  }
+
+  tbody tr + tr th,
+  tbody tr + tr td {
+    border-top: 1px solid pdz.color(outline-variant);
+  }
+}
+
+.tlp__tier {
+  color: pdz.color(on-surface);
+  font-weight: 500;
+  @include pdz.text(body-sm);
+}
+
+.tlp__cost {
+  color: pdz.color(on-surface-variant);
+  @include pdz.text(body-sm);
+}
+
+.tlp__number {
+  max-width: 5rem;
+}
+
+.tlp__total {
+  margin: 0;
+  color: pdz.color(on-surface-variant);
+  @include pdz.text(body-sm);
+}
+
+.tlp__total--over {
+  color: pdz.color(danger);
+}
+
+@media (max-width: 600px) {
+  .tlp__table {
+    th,
+    td {
+      padding: pdz.space(2xs) pdz.space(3xs);
+    }
+  }
+
+  .tlp__number {
+    max-width: 4rem;
+  }
+}

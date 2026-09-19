@@ -1,0 +1,119 @@
+<div class="order">
+  <div class="order__bar">
+    <label pdz-check>
+      <input
+        pdz-checkbox
+        type="checkbox"
+        [disabled]="disabled() || started()"
+        [checked]="randomSeeding()"
+        (change)="toggleSeeding()"
+      />
+      <span>Randomize seeding when the draft opens</span>
+    </label>
+    <span class="order__count">{{ teams().length }} teams</span>
+  </div>
+
+  @if (teams().length) {
+    <ol
+      class="order__list"
+      cdkDropList
+      [cdkDropListDisabled]="!canReorder()"
+      (cdkDropListDropped)="drop($event)"
+    >
+      @for (team of teams(); track team.id) {
+        <li
+          class="order__row"
+          cdkDrag
+          cdkDragLockAxis="y"
+          cdkDragBoundary=".order__list"
+        >
+          @if (canReorder()) {
+            <span class="order__handle" cdkDragHandle aria-label="Reorder">
+              <pdz-icon name="drag_indicator" [size]="18" aria-hidden="true" />
+            </span>
+          }
+          <span class="order__position">{{ $index + 1 }}</span>
+          <span class="order__who">
+            <span class="order__team">{{ team.teamName }}</span>
+            <span class="order__coach">{{ team.coach }}</span>
+          </span>
+          <pdz-menu
+            class="order__move"
+            [attr.aria-label]="'Move ' + team.teamName"
+          >
+            <button
+              pdz-button
+              iconOnly
+              size="sm"
+              variant="ghost"
+              color="neutral"
+              pdz-menu-trigger
+              [disabled]="disabled() || started()"
+              [attr.aria-label]="'Move ' + team.teamName"
+            >
+              <pdz-icon name="more_vert" [size]="18" />
+            </button>
+            @for (other of otherPools(); track other.id) {
+              <button
+                pdz-menu-item
+                icon="move_down"
+                (click)="move(team.id, other.id)"
+              >
+                Move to {{ other.name }}
+              </button>
+            }
+            <button
+              pdz-menu-item
+              icon="person_remove"
+              tone="danger"
+              (click)="move(team.id, 'unassigned')"
+            >
+              Remove from pool
+            </button>
+          </pdz-menu>
+        </li>
+      }
+    </ol>
+  } @else {
+    <p class="order__empty">
+      No teams in this pool yet. Assign them from the unassigned list below.
+    </p>
+  }
+
+  @if (randomSeeding() && !started()) {
+    <p class="order__note">
+      <pdz-icon name="casino" [size]="16" aria-hidden="true" />
+      The server draws this order once when the draft opens. It cannot be
+      re-rolled, and the drawn order is recorded.
+    </p>
+  }
+
+  @if (unassigned().length) {
+    <div class="order__bench">
+      <h4 class="order__bench-title">
+        Unassigned · {{ unassigned().length }}
+      </h4>
+      <ul class="order__bench-list">
+        @for (team of unassigned(); track team.id) {
+          <li class="order__bench-row">
+            <span class="order__who">
+              <span class="order__team">{{ team.teamName }}</span>
+              <span class="order__coach">{{ team.coach }}</span>
+            </span>
+            <button
+              pdz-button
+              type="button"
+              size="sm"
+              variant="outlined"
+              color="neutral"
+              [disabled]="disabled() || started()"
+              (click)="claim(team.id)"
+            >
+              Add to this pool
+            </button>
+          </li>
+        }
+      </ul>
+    </div>
+  }
+</div>

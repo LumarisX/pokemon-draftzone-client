@@ -1,4 +1,10 @@
-import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+} from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { CardComponent } from '@pdz/shared/data/card/card.component';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { SettingsWorkbenchStore } from './settings-workbench.store';
@@ -6,7 +12,7 @@ import { SettingsWorkbenchStore } from './settings-workbench.store';
 @Component({
   selector: 'pdz-launch-checklist',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CardComponent, IconComponent],
+  imports: [CardComponent, IconComponent, RouterLink],
   template: `
     <pdz-card padding="lg" tone="lowest">
       <div class="checklist__head">
@@ -16,13 +22,19 @@ import { SettingsWorkbenchStore } from './settings-workbench.store';
             {{ doneCount() }} of {{ totalCount() }} done
           </p>
         </div>
-        <div class="checklist__meter" [attr.aria-label]="doneCount() + ' of ' + totalCount() + ' complete'">
+        <div
+          class="checklist__meter"
+          [attr.aria-label]="doneCount() + ' of ' + totalCount() + ' complete'"
+        >
           <span class="checklist__meter-fill" [style.width.%]="percent()"></span>
         </div>
       </div>
 
       @for (group of groups(); track group.milestone) {
-        <section class="checklist__group" [class.checklist__group--done]="group.complete">
+        <section
+          class="checklist__group"
+          [class.checklist__group--done]="group.complete"
+        >
           <h3 class="checklist__group-title">
             @if (group.complete) {
               <pdz-icon name="check_circle" [size]="18" aria-hidden="true" />
@@ -30,18 +42,19 @@ import { SettingsWorkbenchStore } from './settings-workbench.store';
             {{ group.label }}
           </h3>
           <ul class="checklist__items">
-            @for (item of group.items; track item.label) {
-              <li class="checklist__item" [class.checklist__item--done]="item.done">
+            @for (item of group.items; track item.id) {
+              <li
+                class="checklist__item"
+                [class.checklist__item--done]="item.done"
+              >
                 <pdz-icon
                   [name]="item.done ? 'check_circle' : 'radio_button_unchecked'"
                   [size]="18"
                   aria-hidden="true"
                 />
-                @if (item.nodeId) {
-                  <a [href]="'#' + item.nodeId">{{ item.label }}</a>
-                } @else {
-                  <span>{{ item.label }}</span>
-                }
+                <a [routerLink]="item.path" [fragment]="item.fragment">
+                  {{ item.label }}
+                </a>
               </li>
             }
           </ul>

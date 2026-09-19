@@ -1,22 +1,23 @@
-<div class="node" [class.node--locked]="locked()" [id]="node().id">
+<div class="node" [class.node--disabled]="disabled()" [id]="node().id">
   <div class="node__head">
     <h3 class="node__title">{{ node().title }}</h3>
-    @if (dirty()) {
-      <span class="node__dot" aria-label="Unsaved"></span>
-    }
   </div>
 
   @if (node().help; as help) {
     <p class="node__help">{{ help }}</p>
   }
 
-  @if (node().artifact; as artifact) {
-    <pdz-artifact-card [slot]="artifact" [locked]="locked()" />
+  @if (artifact(); as slot) {
+    <pdz-artifact-card [slot]="slot" [locked]="disabled()" />
   }
 
   <div class="node__controls">
     @for (control of controls(); track $index) {
-      <pdz-node-control [spec]="control" [disabled]="locked()" />
+      <pdz-node-control
+        [spec]="control"
+        [disabled]="disabled()"
+        [poolId]="poolId()"
+      />
     }
   </div>
 

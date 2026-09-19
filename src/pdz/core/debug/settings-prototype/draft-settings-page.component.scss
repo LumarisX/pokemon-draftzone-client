@@ -1,0 +1,89 @@
+@use "pdz-theming" as pdz;
+
+.draft-page {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(lg);
+  padding-bottom: pdz.space(lg);
+}
+
+.pools {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(sm);
+  scroll-margin-top: 5rem;
+}
+
+.pools__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: pdz.space(sm);
+}
+
+.pools__heading {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(2xs);
+}
+
+.pools__title {
+  margin: 0;
+  color: pdz.color(on-surface);
+  @include pdz.text(subtitle);
+}
+
+.pools__blurb {
+  margin: 0;
+  max-width: 48ch;
+  color: pdz.color(on-surface-variant);
+  @include pdz.text(body-sm);
+}
+
+.pools__waiting {
+  display: flex;
+  align-items: center;
+  gap: pdz.space(xs);
+  margin: 0;
+  color: pdz.color(warning-border);
+  @include pdz.text(body-sm);
+}
+
+.pools__dot {
+  width: 0.4rem;
+  height: 0.4rem;
+  border-radius: 50%;
+  background: pdz.color(primary);
+}
+
+.pools__pool-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: pdz.space(sm);
+  padding-bottom: pdz.space(md);
+  border-bottom: 1px solid pdz.color(outline-variant);
+}
+
+.pools__pool-name {
+  color: pdz.color(on-surface);
+  @include pdz.text(card-title);
+}
+
+.pools__pool-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: pdz.space(xs);
+}
+
+.pools__nodes {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
+  gap: 0 pdz.space(xl);
+}
+
+.pools__node--full {
+  grid-column: 1 / -1;
+}

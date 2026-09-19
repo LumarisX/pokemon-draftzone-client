@@ -1,0 +1,127 @@
+<div class="apps">
+  <div class="apps__bar">
+    <pdz-segmented
+      size="sm"
+      aria-label="Filter sign-ups"
+      [ngModel]="filter()"
+      (ngModelChange)="filter.set($event)"
+      [ngModelOptions]="{ standalone: true }"
+    >
+      @for (option of filters; track option) {
+        <pdz-segmented-option [value]="option" [label]="filterLabel(option)" />
+      }
+    </pdz-segmented>
+  </div>
+
+  @if (selectedIds().length) {
+    <div class="apps__bulk">
+      <span class="apps__bulk-count">
+        {{ selectedIds().length }} selected
+      </span>
+      <div class="apps__bulk-actions">
+        @for (status of statuses; track status) {
+          <button
+            pdz-button
+            type="button"
+            size="sm"
+            variant="outlined"
+            [color]="status === 'denied' ? 'danger' : 'neutral'"
+            (click)="bulk(status)"
+          >
+            {{ statusLabels[status] }}
+          </button>
+        }
+      </div>
+    </div>
+  }
+
+  @if (visible().length) {
+    <div class="apps__head">
+      <label pdz-check>
+        <input
+          pdz-checkbox
+          type="checkbox"
+          [checked]="allVisibleSelected()"
+          (change)="toggleAllVisible()"
+        />
+        <span>Select all {{ visible().length }} shown</span>
+      </label>
+    </div>
+
+    <ul class="apps__list">
+      @for (entry of visible(); track entry.id) {
+        <li class="app" [class.app--selected]="isSelected(entry.id)">
+          <div class="app__row">
+            <label pdz-check [attr.aria-label]="'Select ' + entry.teamName">
+              <input
+                pdz-checkbox
+                type="checkbox"
+                [checked]="isSelected(entry.id)"
+                (change)="toggle(entry.id)"
+              />
+            </label>
+
+            <div class="app__who">
+              <span class="app__team">{{ entry.teamName }}</span>
+              <span class="app__coach">
+                {{ entry.coach }} · {{ entry.timezone }}
+              </span>
+            </div>
+
+            <div class="app__controls">
+              <pdz-select
+                [attr.aria-label]="entry.teamName + ' status'"
+                [ngModel]="entry.status"
+                (ngModelChange)="setStatus(entry.id, $event)"
+                [ngModelOptions]="{ standalone: true }"
+              >
+                @for (status of statuses; track status) {
+                  <pdz-option
+                    [value]="status"
+                    [label]="statusLabels[status]"
+                  />
+                }
+              </pdz-select>
+            </div>
+          </div>
+
+          @for (issue of readiness(entry); track issue) {
+            <p class="app__issue">
+              <pdz-icon name="warning" [size]="14" aria-hidden="true" />
+              {{ issue }}
+            </p>
+          }
+
+          <pdz-disclosure heading="Details" tone="plain">
+            <dl class="app__details">
+              <div>
+                <dt>Showdown</dt>
+                <dd>{{ entry.showdownName }}</dd>
+              </div>
+              <div>
+                <dt>Discord</dt>
+                <dd>{{ entry.discordName }}</dd>
+              </div>
+              <div>
+                <dt>Signed up</dt>
+                <dd>{{ entry.signedUpAt.replace("T", " ") }}</dd>
+              </div>
+              <div class="app__details-wide">
+                <dt>Experience</dt>
+                <dd>{{ entry.experience }}</dd>
+              </div>
+            </dl>
+          </pdz-disclosure>
+        </li>
+      }
+    </ul>
+  } @else {
+    <p class="apps__empty">
+      @if (store.signUps().length) {
+        No sign-ups with that status.
+      } @else {
+        No one has signed up yet. Applications appear here as they arrive.
+      }
+    </p>
+  }
+</div>

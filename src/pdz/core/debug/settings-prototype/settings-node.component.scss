@@ -30,13 +30,6 @@
   color: pdz.color(on-surface);
 }
 
-.node__dot {
-  width: 0.5rem;
-  height: 0.5rem;
-  border-radius: 50%;
-  background: pdz.color(primary);
-}
-
 .node__help {
   @include pdz.text(body-sm);
   margin: 0;
@@ -58,6 +51,6 @@
   color: pdz.color(danger);
 }
 
-.node--locked .node__controls {
+.node--disabled .node__controls {
   opacity: 0.6;
 }

@@ -1,12 +1,15 @@
-import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+  input,
+} from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { ArtifactSlot } from './settings-schema';
 import { SettingsWorkbenchStore } from './settings-workbench.store';
-
-const TIER_LIST_ROUTE = ['/leagues', 'tbpl', 'tournaments', 's12', 'tier-list', 'edit'];
-const SCHEDULE_ROUTE = ['/leagues', 'tbpl', 'tournaments', 's12', 'manage', 'schedule'];
 
 interface Fact {
   label: string;
@@ -27,7 +30,7 @@ export class ArtifactCardComponent {
   private readonly store = inject(SettingsWorkbenchStore);
 
   protected readonly route = computed(() =>
-    this.slot() === 'tier-list' ? TIER_LIST_ROUTE : SCHEDULE_ROUTE,
+    this.slot() === 'tier-list' ? ['tier-list'] : ['schedule'],
   );
 
   protected readonly icon = computed(() =>
@@ -53,7 +56,7 @@ export class ArtifactCardComponent {
 
   protected readonly blurb = computed(() =>
     this.slot() === 'tier-list'
-      ? 'Start from a published list or build your own. Costs and tiers come from here.'
+      ? 'Attach a published list or build your own. The format, ruleset and every cost come from here.'
       : 'Stages, rounds and matchups. Teams cannot play until this exists.',
   );
 
@@ -63,12 +66,10 @@ export class ArtifactCardComponent {
 
     if (this.slot() === 'tier-list') {
       return [
+        { label: 'Format', value: artifacts.tierList.format },
+        { label: 'Ruleset', value: artifacts.tierList.ruleset },
         { label: 'Pokémon', value: `${artifacts.tierList.pokemonCount}` },
-        { label: 'Tiers', value: `${artifacts.tierList.tierCount}` },
-        {
-          label: 'Source',
-          value: artifacts.tierList.source === 'custom' ? 'Custom' : 'Template',
-        },
+        { label: 'Tiers', value: `${artifacts.tierList.tiers.length}` },
       ];
     }
 
@@ -81,18 +82,16 @@ export class ArtifactCardComponent {
 
   protected readonly primaryLabel = computed(() => {
     if (this.present()) {
-      return this.slot() === 'tier-list' ? 'Edit tier list' : 'Open schedule builder';
+      return this.slot() === 'tier-list'
+        ? 'Edit tier list'
+        : 'Open schedule builder';
     }
-    return this.slot() === 'tier-list' ? 'Build a tier list' : 'Build the schedule';
+    return this.slot() === 'tier-list'
+      ? 'Build a tier list'
+      : 'Build the schedule';
   });
 
   protected readonly lockedLabel = computed(() =>
     this.slot() === 'tier-list' ? 'View tier list' : 'View schedule',
-  );
-
-  protected readonly secondaryLabel = computed(() =>
-    this.slot() === 'tier-list' && !this.present() && !this.locked()
-      ? 'Start from a template'
-      : null,
   );
 }

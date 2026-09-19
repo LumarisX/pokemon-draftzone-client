@@ -23,9 +23,7 @@ export const routes: Routes = [
   },
   {
     path: 'settings',
-    loadComponent: () =>
-      import('./settings-prototype/settings-workbench.component').then(
-        (m) => m.SettingsWorkbenchComponent,
-      ),
+    loadChildren: () =>
+      import('./settings-prototype/settings.routes').then((m) => m.routes),
   },
 ];

@@ -8,7 +8,13 @@ import {
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { ArtifactCardComponent } from './artifact-card.component';
 import { NodeControlComponent } from './node-control.component';
-import { SettingsNode, nodeKeys } from './settings-schema';
+import {
+  AnyControlSpec,
+  AnyNode,
+  ArtifactSlot,
+  ValueBag,
+  controlVisible,
+} from './settings-schema';
 import { SettingsWorkbenchStore } from './settings-workbench.store';
 
 @Component({
@@ -19,22 +25,27 @@ import { SettingsWorkbenchStore } from './settings-workbench.store';
   styleUrl: './settings-node.component.scss',
 })
 export class SettingsNodeComponent {
-  readonly node = input.required<SettingsNode>();
-  readonly locked = input(false);
+  readonly node = input.required<AnyNode>();
+  readonly disabled = input(false);
+  readonly poolId = input<string | null>(null);
+  readonly artifact = input<ArtifactSlot | null>(null);
 
   protected readonly store = inject(SettingsWorkbenchStore);
 
-  protected readonly dirty = computed(() => {
-    const keys = new Set(nodeKeys(this.node()));
-    return this.store.dirtyKeys().some((key) => keys.has(key));
+  private readonly bag = computed<ValueBag>(() => {
+    const id = this.poolId();
+    if (!id) return this.store.draft();
+    return this.store.pools().find((pool) => pool.id === id)!;
   });
 
   protected readonly controls = computed(() => {
-    const value = this.store.draft();
-    return this.node().controls.filter(
-      (control) => !control.showWhen || control.showWhen(value),
+    const bag = this.bag();
+    return this.node().controls.filter((control) =>
+      controlVisible(control as AnyControlSpec, bag),
     );
   });
 
-  protected readonly error = computed(() => this.store.errorFor(this.node().id));
+  protected readonly error = computed(() =>
+    this.store.errorFor(this.node().id, this.poolId()),
+  );
 }
