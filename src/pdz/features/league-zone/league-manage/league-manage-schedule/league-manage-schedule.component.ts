@@ -242,7 +242,7 @@ export class LeagueManageScheduleComponent {
 
   getPokemonLabel(pokemonId: string): string {
     if (!pokemonId) return '';
-    return getNameByPid(pokemonId) || pokemonId;
+    return getNameByPid(pokemonId);
   }
 
   addMatch(matchup: League.Matchup): void {

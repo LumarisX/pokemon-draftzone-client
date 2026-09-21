@@ -76,7 +76,7 @@ export class TeamStore {
     }
 
     return {
-      species: (id) => species.get(id)?.name || getNameByPid(id) || id,
+      species: (id) => species.get(id)?.name || getNameByPid(id),
       ability: (id) => abilities.get(id) ?? id,
       item: (id) => items.get(id) ?? id,
       move: (id) => moves.get(id) ?? id,

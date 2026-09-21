@@ -11,7 +11,7 @@ import {
 } from '@angular/core';
 import { DraftOptions, Pokemon } from '@pdz/core/utils/pokemon';
 import { TooltipDirective } from '@pdz/shared/tooltip/tooltip.directive';
-import { SpriteData, SpriteService } from '../../../core/services/sprite.service';
+import { SpriteData, SpriteService } from '@pdz/core/services/sprite.service';
 
 type SpritePokemon = Pokemon<DraftOptions>;
 

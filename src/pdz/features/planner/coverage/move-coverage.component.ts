@@ -28,6 +28,6 @@ export class PlannerMoveCoverageComponent {
   selected: CoveragePokemon | null = null;
 
   nameOf(pokemon: CoveragePokemon): string {
-    return getNameByPid(pokemon.id) || pokemon.id;
+    return getNameByPid(pokemon.id);
   }
 }

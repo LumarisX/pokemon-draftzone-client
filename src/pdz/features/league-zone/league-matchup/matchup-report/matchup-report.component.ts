@@ -178,7 +178,7 @@ export class MatchupReportComponent implements OnInit, OnDestroy {
   }
 
   nameOf(id: string): string {
-    return getNameByPid(id) || id;
+    return getNameByPid(id);
   }
 
   teamName(side: ScoreEntrySide): string {

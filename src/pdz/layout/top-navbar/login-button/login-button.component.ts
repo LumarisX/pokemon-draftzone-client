@@ -6,7 +6,6 @@ import { DialogService } from '@pdz/shared/dialogs/dialog/dialog.service';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { of } from 'rxjs';
 import { switchMap, take } from 'rxjs/operators';
-import { SettingsDialogComponent } from '../settings-dialog/settings-dialog.component';
 import { SettingsService } from '../settings.service';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 import { MenuComponent } from '@pdz/shared/menu/menu.component';
@@ -73,7 +72,10 @@ export class LoginButtonComponent implements OnInit {
       });
   }
 
-  openSettings(): void {
+  async openSettings(): Promise<void> {
+    const { SettingsDialogComponent } = await import(
+      '../settings-dialog/settings-dialog.component'
+    );
     this.dialogs.open(SettingsDialogComponent, {
       heading: 'Settings',
       size: 'md',

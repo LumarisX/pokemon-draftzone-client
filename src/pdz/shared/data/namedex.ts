@@ -1,34 +1,27 @@
 import { DraftPokemon } from '@pdz/features/drafts/draft.model';
 
-export type SpriteProperties = {
+type SpriteProperties = {
   id?: string;
   flip?: true;
 };
 
-export type NamedexEntry = {
+type NamedexEntry = {
   name: string[];
   sources: { [key in SourceKey]?: SpriteProperties };
   default?: SpriteSetKey;
 };
 
-export type PokemonId = keyof typeof NamedexData;
+type PokemonId = keyof typeof NamedexData;
 
 export function isPokemonId(value: string): value is PokemonId {
-  return value in Namedex;
-}
-
-export function getSpriteProperties(
-  pokemonId: PokemonId,
-  source: string,
-): SpriteProperties | undefined {
-  return Namedex[pokemonId]?.sources[source as SourceKey];
+  return Object.hasOwn(Namedex, value);
 }
 
 export function getPokemonData(pokemonId: string): NamedexEntry | undefined {
   return isPokemonId(pokemonId) ? Namedex[pokemonId] : undefined;
 }
 
-export function toPokemonId(value: string): string {
+function toPokemonId(value: string): string {
   return value
     .normalize('NFD')
     .replace(/\p{M}/gu, '')
@@ -55,10 +48,10 @@ export function getPidByName(name: string): PokemonId | undefined {
 }
 
 export function getNameByPid(id: string): string {
-  return getPokemonData(id)?.name[0] ?? '';
+  return getPokemonData(id)?.name[0] ?? id;
 }
 
-export function pokemonIds(): PokemonId[] {
+function pokemonIds(): PokemonId[] {
   return Object.keys(Namedex) as PokemonId[];
 }
 
@@ -83,11 +76,10 @@ export function nameList(): DraftPokemon[] {
     }));
 }
 
-export type SourceKey = 'ps' | 'pd' | 'serebii' | 'pmd' | 'rr' | 'pokeapi';
+type SourceKey = 'ps' | 'serebii' | 'pmd' | 'rr' | 'pokeapi';
 
-export const Sources: { [key in SourceKey]: string } = {
+const Sources: { [key in SourceKey]: string } = {
   ps: 'play.pokemonshowdown.com/sprites',
-  pd: '',
   serebii: 'serebii.net',
   pmd: 'raw.githubusercontent.com/PMDCollab/SpriteCollab/master/portrait',
   rr: 'play.radicalred.net/sprites',
@@ -118,7 +110,7 @@ export type SpriteSetKey =
   | 'rr'
   | 'pokeapi';
 
-export type SpriteSetConfig = {
+type SpriteSetConfig = {
   getPath: (id: string, shiny?: boolean) => string;
   classes: string[];
   flip?: boolean;
@@ -713,7 +705,7 @@ const NamedexData = {
     },
   },
   raichumegax: {
-    name: ['Mega Raichu X', 'Raichu-Mega-X'],
+    name: ['Raichu-Mega-X', 'Mega Raichu X'],
     sources: {
       ps: { id: 'raichu-megax' },
       serebii: { id: '026' },
@@ -722,7 +714,7 @@ const NamedexData = {
     },
   },
   raichumegay: {
-    name: ['Mega Raichu Y', 'Raichu-Mega-Y'],
+    name: ['Raichu-Mega-Y', 'Mega Raichu Y'],
     sources: {
       ps: { id: 'raichu-megay' },
       serebii: { id: '026' },
@@ -803,7 +795,7 @@ const NamedexData = {
     },
   },
   nidoranm: {
-    name: ['Nidoran-M'],
+    name: ['Nidoran-M', 'Nidoran-Male'],
     sources: {
       ps: {},
       serebii: { id: '032' },
@@ -2027,7 +2019,7 @@ const NamedexData = {
     },
   },
   taurospaldeacombat: {
-    name: ['Paldean Tauros Combat', 'Tauros-Paldea-Combat', 'Tauros-P'],
+    name: ['Tauros-Paldea-Combat', 'Paldean Tauros Combat', 'Tauros-P'],
     sources: {
       ps: { id: 'tauros-paldeacombat' },
       serebii: { id: '128-p' },
@@ -2036,7 +2028,7 @@ const NamedexData = {
     },
   },
   taurospaldeablaze: {
-    name: ['Paldean Tauros Blaze', 'Tauros-Paldea-Blaze', 'Tauros-P-B'],
+    name: ['Tauros-Paldea-Blaze', 'Paldean Tauros Blaze', 'Tauros-P-B'],
     sources: {
       ps: { id: 'tauros-paldeablaze', flip: true },
       serebii: { id: '128-b' },
@@ -2045,7 +2037,7 @@ const NamedexData = {
     },
   },
   taurospaldeaaqua: {
-    name: ['Paldean Tauros Aqua', 'Tauros-Paldea-Aqua', 'Tauros-P-A'],
+    name: ['Tauros-Paldea-Aqua', 'Paldean Tauros Aqua', 'Tauros-P-A'],
     sources: {
       ps: { id: 'tauros-paldeaaqua' },
       serebii: { id: '128-a' },
@@ -2595,7 +2587,7 @@ const NamedexData = {
     },
   },
   pichu: {
-    name: ['Pichu'],
+    name: ['Pichu', 'Pichu-Spiky-eared'],
     sources: {
       ps: {},
       serebii: { id: '172' },
@@ -2883,7 +2875,37 @@ const NamedexData = {
     },
   },
   unown: {
-    name: ['Unown'],
+    name: [
+      'Unown',
+      'Unown-A',
+      'Unown-B',
+      'Unown-C',
+      'Unown-D',
+      'Unown-E',
+      'Unown-F',
+      'Unown-G',
+      'Unown-H',
+      'Unown-I',
+      'Unown-J',
+      'Unown-K',
+      'Unown-L',
+      'Unown-M',
+      'Unown-N',
+      'Unown-O',
+      'Unown-P',
+      'Unown-Q',
+      'Unown-R',
+      'Unown-S',
+      'Unown-T',
+      'Unown-U',
+      'Unown-V',
+      'Unown-W',
+      'Unown-X',
+      'Unown-Y',
+      'Unown-Z',
+      'Unown-Exclamation',
+      'Unown-Question',
+    ],
     sources: {
       ps: {},
       serebii: { id: '201' },
@@ -4575,7 +4597,7 @@ const NamedexData = {
     },
   },
   absolmegaz: {
-    name: ['Mega Absol Z', 'Absol-Mega-Z'],
+    name: ['Absol-Mega-Z', 'Mega Absol Z'],
     sources: {
       ps: { id: 'absol-megaz' },
       serebii: { id: '359-mz' },
@@ -4890,7 +4912,7 @@ const NamedexData = {
     },
   },
   deoxys: {
-    name: ['Deoxys'],
+    name: ['Deoxys', 'Deoxys-Normal'],
     sources: {
       ps: {},
       serebii: { id: '386' },
@@ -5160,7 +5182,7 @@ const NamedexData = {
     },
   },
   burmy: {
-    name: ['Burmy'],
+    name: ['Burmy', 'Burmy-Plant', 'Burmy-Sandy', 'Burmy-Trash'],
     sources: {
       ps: {},
       serebii: { id: '412' },
@@ -5169,7 +5191,7 @@ const NamedexData = {
     },
   },
   wormadam: {
-    name: ['Wormadam'],
+    name: ['Wormadam', 'Wormadam-Plant'],
     sources: {
       ps: {},
       serebii: { id: '413' },
@@ -5259,7 +5281,7 @@ const NamedexData = {
     },
   },
   cherrim: {
-    name: ['Cherrim'],
+    name: ['Cherrim', 'Cherrim-Overcast'],
     sources: {
       ps: {},
       serebii: { id: '421' },
@@ -5277,7 +5299,7 @@ const NamedexData = {
     },
   },
   shellos: {
-    name: ['Shellos'],
+    name: ['Shellos', 'Shellos-West', 'Shellos-East'],
     sources: {
       ps: {},
       serebii: { id: '422' },
@@ -5286,7 +5308,7 @@ const NamedexData = {
     },
   },
   gastrodon: {
-    name: ['Gastrodon'],
+    name: ['Gastrodon', 'Gastrodon-West', 'Gastrodon-East'],
     sources: {
       ps: {},
       serebii: { id: '423' },
@@ -5511,7 +5533,7 @@ const NamedexData = {
     },
   },
   garchompmegaz: {
-    name: ['Mega Garchomp Z', 'Garchomp-Mega-Z'],
+    name: ['Garchomp-Mega-Z', 'Mega Garchomp Z'],
     sources: {
       ps: { id: 'garchomp-megaz' },
       serebii: { id: '445-m' },
@@ -5556,7 +5578,7 @@ const NamedexData = {
     },
   },
   lucariomegaz: {
-    name: ['Mega Lucario Z', 'Lucario-Mega-Z'],
+    name: ['Lucario-Mega-Z', 'Mega Lucario Z'],
     sources: {
       ps: { id: 'lucario-megaz', flip: true },
       serebii: { id: '448-m' },
@@ -6015,7 +6037,7 @@ const NamedexData = {
     },
   },
   giratina: {
-    name: ['Giratina'],
+    name: ['Giratina', 'Giratina-Altered'],
     sources: {
       ps: {},
       serebii: { id: '487' },
@@ -6078,7 +6100,7 @@ const NamedexData = {
     },
   },
   shaymin: {
-    name: ['Shaymin'],
+    name: ['Shaymin', 'Shaymin-Land'],
     sources: {
       ps: {},
       serebii: { id: '492' },
@@ -6096,7 +6118,7 @@ const NamedexData = {
     },
   },
   arceus: {
-    name: ['Arceus'],
+    name: ['Arceus', 'Arceus-Normal'],
     sources: {
       ps: {},
       serebii: { id: '493' },
@@ -6816,7 +6838,7 @@ const NamedexData = {
     },
   },
   basculin: {
-    name: ['Basculin'],
+    name: ['Basculin', 'Basculin-Red-Striped'],
     sources: {
       ps: {},
       serebii: { id: '550' },
@@ -6888,7 +6910,7 @@ const NamedexData = {
     },
   },
   darmanitan: {
-    name: ['Darmanitan'],
+    name: ['Darmanitan', 'Darmanitan-Standard'],
     sources: {
       ps: {},
       serebii: { id: '555' },
@@ -6915,7 +6937,7 @@ const NamedexData = {
     },
   },
   darmanitangalarzen: {
-    name: ['Galarian Zen Darmanitan', 'Darmanitan-Galar-Zen', 'Darmanitan-G-Zen'],
+    name: ['Darmanitan-Galar-Zen', 'Galarian Zen Darmanitan', 'Darmanitan-G-Zen'],
     sources: {
       ps: { id: 'darmanitan-galarzen' },
       serebii: { id: '555-gz' },
@@ -7239,7 +7261,13 @@ const NamedexData = {
     },
   },
   deerling: {
-    name: ['Deerling'],
+    name: [
+      'Deerling',
+      'Deerling-Spring',
+      'Deerling-Summer',
+      'Deerling-Autumn',
+      'Deerling-Winter',
+    ],
     sources: {
       ps: {},
       serebii: { id: '585' },
@@ -7248,7 +7276,13 @@ const NamedexData = {
     },
   },
   sawsbuck: {
-    name: ['Sawsbuck'],
+    name: [
+      'Sawsbuck',
+      'Sawsbuck-Spring',
+      'Sawsbuck-Summer',
+      'Sawsbuck-Autumn',
+      'Sawsbuck-Winter',
+    ],
     sources: {
       ps: {},
       serebii: { id: '586' },
@@ -7887,7 +7921,7 @@ const NamedexData = {
     },
   },
   keldeo: {
-    name: ['Keldeo'],
+    name: ['Keldeo', 'Keldeo-Ordinary'],
     sources: {
       ps: {},
       serebii: { id: '647' },
@@ -7905,7 +7939,7 @@ const NamedexData = {
     },
   },
   meloetta: {
-    name: ['Meloetta'],
+    name: ['Meloetta', 'Meloetta-Aria'],
     sources: {
       ps: {},
       serebii: { id: '648' },
@@ -8159,7 +8193,27 @@ const NamedexData = {
     },
   },
   vivillon: {
-    name: ['Vivillon'],
+    name: [
+      'Vivillon',
+      'Vivillon-Meadow',
+      'Vivillon-Archipelago',
+      'Vivillon-Continental',
+      'Vivillon-Elegant',
+      'Vivillon-Garden',
+      'Vivillon-High Plains',
+      'Vivillon-Icy Snow',
+      'Vivillon-Jungle',
+      'Vivillon-Marine',
+      'Vivillon-Modern',
+      'Vivillon-Monsoon',
+      'Vivillon-Ocean',
+      'Vivillon-Polar',
+      'Vivillon-River',
+      'Vivillon-Sandstorm',
+      'Vivillon-Savanna',
+      'Vivillon-Sun',
+      'Vivillon-Tundra',
+    ],
     sources: {
       ps: {},
       serebii: { id: '666' },
@@ -8213,7 +8267,14 @@ const NamedexData = {
     },
   },
   flabebe: {
-    name: ['Flabébé'],
+    name: [
+      'Flabébé',
+      'Flabébé-Red',
+      'Flabébé-Blue',
+      'Flabébé-Orange',
+      'Flabébé-White',
+      'Flabébé-Yellow',
+    ],
     sources: {
       ps: {},
       serebii: { id: '669' },
@@ -8222,7 +8283,14 @@ const NamedexData = {
     },
   },
   floette: {
-    name: ['Floette'],
+    name: [
+      'Floette',
+      'Floette-Red',
+      'Floette-Blue',
+      'Floette-Orange',
+      'Floette-White',
+      'Floette-Yellow',
+    ],
     sources: {
       ps: { flip: true },
       serebii: { id: '670' },
@@ -8255,6 +8323,7 @@ const NamedexData = {
       'Florges-White',
       'Florges-Yellow',
       'Florges-Red',
+      'Florges-Orange',
     ],
     sources: {
       ps: {},
@@ -8300,7 +8369,19 @@ const NamedexData = {
     },
   },
   furfrou: {
-    name: ['Furfrou'],
+    name: [
+      'Furfrou',
+      'Furfrou-Natural',
+      'Furfrou-Dandy',
+      'Furfrou-Debutante',
+      'Furfrou-Diamond',
+      'Furfrou-Heart',
+      'Furfrou-Kabuki',
+      'Furfrou-La Reine',
+      'Furfrou-Matron',
+      'Furfrou-Pharaoh',
+      'Furfrou-Star',
+    ],
     sources: {
       ps: {},
       serebii: { id: '676' },
@@ -8318,7 +8399,7 @@ const NamedexData = {
     },
   },
   meowstic: {
-    name: ['Meowstic'],
+    name: ['Meowstic-M', 'Meowstic', 'Meowstic-Male'],
     sources: {
       ps: {},
       serebii: { id: '678' },
@@ -8327,7 +8408,7 @@ const NamedexData = {
     },
   },
   meowsticf: {
-    name: ['Meowstic-Female', 'Meowstic-F'],
+    name: ['Meowstic-F', 'Meowstic-Female'],
     sources: {
       ps: { id: 'meowstic-f' },
       serebii: { id: '678-f' },
@@ -8337,10 +8418,10 @@ const NamedexData = {
   },
   meowsticmmega: {
     name: [
+      'Meowstic-M-Mega',
       'Mega Meowstic-Male',
       'Mega Meowstic-M',
       'Meowstic-Male-Mega',
-      'Meowstic-M-Mega',
       'Mega Meowstic',
       'Meowstic-Mega',
     ],
@@ -8353,10 +8434,10 @@ const NamedexData = {
   },
   meowsticfmega: {
     name: [
+      'Meowstic-F-Mega',
       'Mega Meowstic-Female',
       'Mega Meowstic-F',
       'Meowstic-Female-Mega',
-      'Meowstic-F-Mega',
     ],
     sources: {
       ps: { id: 'meowstic-f-mega' },
@@ -8384,7 +8465,7 @@ const NamedexData = {
     },
   },
   aegislash: {
-    name: ['Aegislash'],
+    name: ['Aegislash', 'Aegislash-Shield'],
     sources: {
       ps: {},
       serebii: { id: '681' },
@@ -8708,7 +8789,7 @@ const NamedexData = {
     },
   },
   pumpkaboo: {
-    name: ['Pumpkaboo'],
+    name: ['Pumpkaboo', 'Pumpkaboo-Average'],
     sources: {
       ps: {},
       serebii: { id: '710' },
@@ -8744,7 +8825,7 @@ const NamedexData = {
     },
   },
   gourgeist: {
-    name: ['Gourgeist'],
+    name: ['Gourgeist', 'Gourgeist-Average'],
     sources: {
       ps: {},
       serebii: { id: '711' },
@@ -8852,7 +8933,7 @@ const NamedexData = {
     },
   },
   zygarde: {
-    name: ['Zygarde'],
+    name: ['Zygarde', 'Zygarde-50%'],
     sources: {
       ps: {},
       serebii: { id: '718' },
@@ -8906,7 +8987,7 @@ const NamedexData = {
     },
   },
   hoopa: {
-    name: ['Hoopa'],
+    name: ['Hoopa', 'Hoopa-Confined'],
     sources: {
       ps: {},
       serebii: { id: '720' },
@@ -9122,7 +9203,7 @@ const NamedexData = {
     },
   },
   oricorio: {
-    name: ['Oricorio'],
+    name: ['Oricorio', 'Oricorio-Baile'],
     sources: {
       ps: {},
       serebii: { id: '741' },
@@ -9176,7 +9257,7 @@ const NamedexData = {
     },
   },
   rockruff: {
-    name: ['Rockruff'],
+    name: ['Rockruff', 'Rockruff-Midday', 'Rockruff-Dusk'],
     sources: {
       ps: { flip: true },
       serebii: { id: '744' },
@@ -9185,7 +9266,7 @@ const NamedexData = {
     },
   },
   lycanroc: {
-    name: ['Lycanroc'],
+    name: ['Lycanroc', 'Lycanroc-Midday'],
     sources: {
       ps: {},
       serebii: { id: '745' },
@@ -9473,7 +9554,7 @@ const NamedexData = {
     },
   },
   silvally: {
-    name: ['Silvally'],
+    name: ['Silvally', 'Silvally-Normal'],
     sources: {
       ps: {},
       serebii: { id: '773' },
@@ -9635,7 +9716,16 @@ const NamedexData = {
     },
   },
   minior: {
-    name: ['Minior'],
+    name: [
+      'Minior',
+      'Minior-Red',
+      'Minior-Orange',
+      'Minior-Yellow',
+      'Minior-Green',
+      'Minior-Blue',
+      'Minior-Indigo',
+      'Minior-Violet',
+    ],
     sources: {
       ps: {},
       serebii: { id: '774-b' },
@@ -10571,7 +10661,7 @@ const NamedexData = {
     },
   },
   toxtricity: {
-    name: ['Toxtricity'],
+    name: ['Toxtricity', 'Toxtricity-Amped'],
     sources: {
       ps: {},
       serebii: { id: '849' },
@@ -10679,7 +10769,7 @@ const NamedexData = {
     },
   },
   sinistea: {
-    name: ['Sinistea'],
+    name: ['Sinistea', 'Sinistea-Phony', 'Sinistea-Antique'],
     sources: {
       ps: { flip: true },
       serebii: { id: '854' },
@@ -10688,7 +10778,7 @@ const NamedexData = {
     },
   },
   polteageist: {
-    name: ['Polteageist'],
+    name: ['Polteageist', 'Polteageist-Phony', 'Polteageist-Antique'],
     sources: {
       ps: {},
       serebii: { id: '855' },
@@ -10832,7 +10922,18 @@ const NamedexData = {
     },
   },
   alcremie: {
-    name: ['Alcremie'],
+    name: [
+      'Alcremie',
+      'Alcremie-Vanilla-Cream',
+      'Alcremie-Ruby-Cream',
+      'Alcremie-Matcha-Cream',
+      'Alcremie-Mint-Cream',
+      'Alcremie-Lemon-Cream',
+      'Alcremie-Salted-Cream',
+      'Alcremie-Ruby-Swirl',
+      'Alcremie-Caramel-Swirl',
+      'Alcremie-Rainbow-Swirl',
+    ],
     sources: {
       ps: { flip: true },
       serebii: { id: '869' },
@@ -10931,7 +11032,7 @@ const NamedexData = {
     },
   },
   indeedee: {
-    name: ['Indeedee'],
+    name: ['Indeedee-M', 'Indeedee', 'Indeedee-Male'],
     sources: {
       ps: { flip: true },
       serebii: { id: '876' },
@@ -10940,7 +11041,7 @@ const NamedexData = {
     },
   },
   indeedeef: {
-    name: ['Indeedee-Female', 'Indeedee-F'],
+    name: ['Indeedee-F', 'Indeedee-Female'],
     sources: {
       ps: { id: 'indeedee-f' },
       serebii: { id: '876-f' },
@@ -11156,7 +11257,7 @@ const NamedexData = {
     },
   },
   urshifu: {
-    name: ['Urshifu'],
+    name: ['Urshifu', 'Urshifu-Single-Strike'],
     sources: {
       ps: {},
       serebii: { id: '892' },
@@ -11309,7 +11410,7 @@ const NamedexData = {
     },
   },
   basculegion: {
-    name: ['Basculegion'],
+    name: ['Basculegion-M', 'Basculegion', 'Basculegion-Male'],
     sources: {
       ps: {},
       serebii: { id: '902' },
@@ -11318,7 +11419,7 @@ const NamedexData = {
     },
   },
   basculegionf: {
-    name: ['Basculegion-Female', 'Basculegion-F'],
+    name: ['Basculegion-F', 'Basculegion-Female'],
     sources: {
       ps: { id: 'basculegion-f' },
       serebii: { id: '902-f' },
@@ -11453,7 +11554,7 @@ const NamedexData = {
     },
   },
   oinkologne: {
-    name: ['Oinkologne'],
+    name: ['Oinkologne-M', 'Oinkologne', 'Oinkologne-Male'],
     sources: {
       ps: { flip: true },
       serebii: { id: '916' },
@@ -11462,7 +11563,7 @@ const NamedexData = {
     },
   },
   oinkolognef: {
-    name: ['Oinkologne-Female', 'Oinkologne-F'],
+    name: ['Oinkologne-F', 'Oinkologne-Female'],
     sources: {
       ps: { id: 'oinkologne-f' },
       serebii: { id: '916-f' },
@@ -11543,7 +11644,7 @@ const NamedexData = {
     },
   },
   maushold: {
-    name: ['Maushold'],
+    name: ['Maushold', 'Maushold-Three', 'Maushold-Four'],
     sources: {
       ps: {},
       serebii: { id: '925' },
@@ -11597,7 +11698,7 @@ const NamedexData = {
     },
   },
   squawkabilly: {
-    name: ['Squawkabilly'],
+    name: ['Squawkabilly', 'Squawkabilly-Green'],
     sources: {
       ps: {},
       serebii: { id: '931' },
@@ -12074,7 +12175,7 @@ const NamedexData = {
     },
   },
   tatsugiri: {
-    name: ['Tatsugiri'],
+    name: ['Tatsugiri', 'Tatsugiri-Curly'],
     sources: {
       ps: { flip: true },
       serebii: { id: '978' },
@@ -12101,7 +12202,13 @@ const NamedexData = {
     },
   },
   tatsugiricurlymega: {
-    name: ['Mega Tatsugiri', 'Tatsugiri-Mega'],
+    name: [
+      'Tatsugiri-Curly-Mega',
+      'Mega Tatsugiri',
+      'Tatsugiri-Mega',
+      'Tatsugiri-Droopy-Mega',
+      'Tatsugiri-Stretchy-Mega',
+    ],
     sources: {
       ps: { id: 'tatsugiri-mega', flip: true },
       serebii: { id: '978' },
@@ -12308,7 +12415,7 @@ const NamedexData = {
     },
   },
   gimmighoul: {
-    name: ['Gimmighoul'],
+    name: ['Gimmighoul', 'Gimmighoul-Chest'],
     sources: {
       ps: {},
       serebii: { id: '999' },
@@ -12434,7 +12541,7 @@ const NamedexData = {
     },
   },
   poltchageist: {
-    name: ['Poltchageist'],
+    name: ['Poltchageist', 'Poltchageist-Counterfeit', 'Poltchageist-Artisan'],
     sources: {
       ps: {},
       serebii: { id: '1012' },
@@ -12443,7 +12550,7 @@ const NamedexData = {
     },
   },
   sinistcha: {
-    name: ['Sinistcha'],
+    name: ['Sinistcha', 'Sinistcha-Unremarkable', 'Sinistcha-Masterpiece'],
     sources: {
       ps: {},
       serebii: { id: '1013' },
@@ -12479,7 +12586,7 @@ const NamedexData = {
     },
   },
   ogerpon: {
-    name: ['Ogerpon'],
+    name: ['Ogerpon', 'Ogerpon-Teal'],
     sources: {
       ps: {},
       serebii: { id: '1017' },
@@ -12715,7 +12822,11 @@ const NamedexData = {
   duohm: { name: ['Duohm'], sources: { ps: {} }, default: 'bw' },
   dorsoil: { name: ['Dorsoil'], sources: { ps: {} }, default: 'bw' },
   protowatt: { name: ['Protowatt'], sources: { ps: {} }, default: 'bw' },
-  venomicon: { name: ['Venomicon'], sources: { ps: {} }, default: 'bw' },
+  venomicon: {
+    name: ['Venomicon', 'Venomicon-Prologue'],
+    sources: { ps: {} },
+    default: 'bw',
+  },
   venomiconepilogue: {
     name: ['Venomicon-Epilogue'],
     sources: { ps: { id: 'venomicon-epilogue' } },
@@ -12736,7 +12847,11 @@ const NamedexData = {
     sources: { ps: { id: 'ramnarok-radiant' } },
     default: 'bw',
   },
-  ramnarok: { name: ['Ramnarok'], sources: { ps: {} }, default: 'bw' },
+  ramnarok: {
+    name: ['Ramnarok', 'Ramnarok-Dormant'],
+    sources: { ps: {} },
+    default: 'bw',
+  },
   doduosevii: {
     name: ['Doduo-Sevii'],
     sources: { rr: { id: 'doduo-sevii' } },
@@ -12844,4 +12959,4 @@ const NamedexData = {
   },
 } satisfies Record<string, NamedexEntry>;
 
-export const Namedex: Record<PokemonId, NamedexEntry> = NamedexData;
+const Namedex: Record<PokemonId, NamedexEntry> = NamedexData;

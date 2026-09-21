@@ -37,11 +37,6 @@ export class SpriteService {
 
   private readonly DEFAULT: SpriteSetKey = 'home';
 
-  /**
-   * Gets all the necessary data to display a Pokemon sprite.
-   * @param pokemon The Pokemon object, requires at least an 'id'.
-   * @returns An object containing the primary path, an ordered list of fallback paths, CSS classes, and flip status.
-   */
   public getSpriteData(
     pokemon: Pick<DraftPokemon, 'id' | 'shiny'>,
   ): SpriteData | null {

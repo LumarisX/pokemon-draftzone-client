@@ -68,7 +68,7 @@ export class ScoreEntryRosterComponent {
 
   protected spriteFor(entry: ScoreEntryPokemonForm): ScoreEntryPokemon {
     const id = entry.controls.id.value;
-    return this.pokedex()[id] ?? { id, name: getNameByPid(id) || id };
+    return this.pokedex()[id] ?? { id, name: getNameByPid(id) };
   }
 
   protected nameOf(entry: ScoreEntryPokemonForm): string {
