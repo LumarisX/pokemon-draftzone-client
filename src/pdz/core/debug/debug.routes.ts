@@ -21,9 +21,4 @@ export const routes: Routes = [
     path: 'calculator',
     component: DebugCalculatorComponent,
   },
-  {
-    path: 'settings',
-    loadChildren: () =>
-      import('./settings-prototype/settings.routes').then((m) => m.routes),
-  },
 ];

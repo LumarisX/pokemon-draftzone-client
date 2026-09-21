@@ -1,0 +1,166 @@
+<pdz-page width="default">
+  @if (store.loading()) {
+    <div class="dash__loading"><pdz-loading /></div>
+  } @else if (store.loadError(); as message) {
+    <div class="dash__error">
+      <pdz-icon name="error" [size]="20" aria-hidden="true" />
+      {{ message }}
+    </div>
+  } @else {
+    <div class="dash">
+      <pdz-page-header
+        [title]="store.draft().name || 'New tournament'"
+        eyebrow="Manage"
+        [logo]="logoUrl()"
+        [logoAlt]="store.draft().name + ' logo'"
+      >
+        <div pdz-page-header-detail>
+          <span>{{ store.artifacts().tierList.format || "No format" }}</span>
+          <span class="dash__sep" aria-hidden="true">·</span>
+          <span>{{ store.artifacts().tierList.ruleset || "No ruleset" }}</span>
+        </div>
+
+        <div pdz-page-header-meta>
+          @if (signUpsOpen()) {
+            <pdz-chip tone="success">Sign-ups Open</pdz-chip>
+          } @else {
+            <pdz-chip>Sign-ups Closed</pdz-chip>
+          }
+          @if (store.phase() === "draft") {
+            <pdz-chip tone="warning">Draft Active</pdz-chip>
+          }
+          @if (store.phase() === "season") {
+            <pdz-chip tone="primary">Season Active</pdz-chip>
+          }
+          @if (store.draft().archived) {
+            <pdz-chip>Archived</pdz-chip>
+          }
+        </div>
+      </pdz-page-header>
+
+      @if (attention().length) {
+        <section class="attention">
+          <h2 class="dash__heading">Needs you</h2>
+          <ul class="attention__list">
+            @for (item of attention(); track item.id) {
+              <li>
+                <a
+                  class="attention__item"
+                  [class.attention__item--urgent]="item.tone === 'urgent'"
+                  [routerLink]="item.route"
+                >
+                  <pdz-icon [name]="item.icon" [size]="20" aria-hidden="true" />
+                  <span class="attention__label">{{ item.label }}</span>
+                  <pdz-icon
+                    class="attention__arrow"
+                    name="chevron_right"
+                    [size]="20"
+                    aria-hidden="true"
+                  />
+                </a>
+              </li>
+            }
+          </ul>
+        </section>
+      }
+
+      @if (showChecklist()) {
+        <pdz-launch-checklist />
+      }
+
+      @for (group of runGroups(); track group.id) {
+        <section class="dash__sections">
+          <h2 class="dash__heading">{{ group.label }}</h2>
+          <div class="dash__grid">
+            @for (link of group.links; track link.id) {
+              <a class="dash-card" [routerLink]="link.route">
+                <span class="dash-card__icon">
+                  <pdz-icon [name]="link.icon" [size]="24" aria-hidden="true" />
+                </span>
+                <span class="dash-card__title">{{ link.label }}</span>
+                <pdz-icon
+                  class="dash-card__arrow"
+                  name="chevron_right"
+                  [size]="20"
+                  aria-hidden="true"
+                />
+              </a>
+            }
+          </div>
+        </section>
+      }
+
+      <section class="dash__sections">
+        <h2 class="dash__heading">Settings</h2>
+        <div class="dash__grid">
+          @for (section of sections(); track section.id) {
+            <a class="dash-card" [routerLink]="section.path">
+              <span class="dash-card__icon">
+                <pdz-icon
+                  [name]="section.icon"
+                  [size]="24"
+                  aria-hidden="true"
+                />
+              </span>
+              <span class="dash-card__body">
+                <span class="dash-card__title">
+                  {{ section.label }}
+                  @if (section.dirty) {
+                    <span
+                      class="dash-card__dot"
+                      [attr.aria-label]="section.dirty + ' unsaved'"
+                    ></span>
+                  }
+                </span>
+                <span class="dash-card__summary">{{ section.summary }}</span>
+              </span>
+              @if (section.risk; as risk) {
+                <pdz-icon
+                  class="dash-card__risk"
+                  [name]="risk.effect === 'block' ? 'warning' : 'info'"
+                  [size]="18"
+                  [attr.aria-label]="
+                    risk.effect === 'block'
+                      ? 'Live — changes affect drafted teams'
+                      : 'Changes affect a running tournament'
+                  "
+                />
+              }
+              <pdz-icon
+                class="dash-card__arrow"
+                name="chevron_right"
+                [size]="20"
+                aria-hidden="true"
+              />
+            </a>
+          }
+
+          @if (accessLink(); as link) {
+            <a class="dash-card" [routerLink]="link.route">
+              <span class="dash-card__icon">
+                <pdz-icon [name]="link.icon" [size]="24" aria-hidden="true" />
+              </span>
+              <span class="dash-card__title">{{ link.label }}</span>
+              <pdz-icon
+                class="dash-card__arrow"
+                name="chevron_right"
+                [size]="20"
+                aria-hidden="true"
+              />
+            </a>
+          }
+        </div>
+      </section>
+
+      @if (coachViewLinks().length) {
+        <p class="dash__coach-view">
+          See what coaches see:
+          @for (pool of coachViewLinks(); track pool.route; let last = $last) {
+            <a [routerLink]="pool.route">{{ pool.name }}</a
+            >{{ last ? "" : ", " }}
+          }
+        </p>
+      }
+    </div>
+  }
+</pdz-page>

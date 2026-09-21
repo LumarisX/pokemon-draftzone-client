@@ -1,0 +1,151 @@
+@use "pdz-theming" as pdz;
+
+:host {
+  display: block;
+}
+
+.apps {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(sm);
+}
+
+.apps__bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: pdz.space(sm);
+}
+
+.apps__bulk {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: pdz.space(sm);
+  padding: pdz.space(xs) pdz.space(sm);
+  background: pdz.color(primary-subtle);
+  border: 1px solid pdz.color(primary-border);
+  border-radius: pdz.shape(corner-md);
+}
+
+.apps__bulk-count {
+  color: pdz.color(on-surface);
+  @include pdz.text(body-sm-strong);
+}
+
+.apps__bulk-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: pdz.space(xs);
+}
+
+.apps__head {
+  padding-bottom: pdz.space(2xs);
+  border-bottom: 1px solid pdz.color(outline-variant);
+}
+
+.apps__list {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(xs);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.apps__empty {
+  margin: 0;
+  color: pdz.color(on-surface-variant);
+  @include pdz.text(body-sm);
+}
+
+.app {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(xs);
+  padding: pdz.space(sm);
+  background: pdz.color(surface-container-lowest);
+  border: 1px solid pdz.color(outline-variant);
+  border-radius: pdz.shape(corner-md);
+}
+
+.app--selected {
+  border-color: pdz.color(primary-border);
+}
+
+.app__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: pdz.space(sm);
+}
+
+.app__who {
+  flex: 1 1 12rem;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.app__team {
+  color: pdz.color(on-surface);
+  @include pdz.text(body-sm-strong);
+}
+
+.app__coach {
+  color: pdz.color(on-surface-variant);
+  @include pdz.text(label);
+}
+
+.app__controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: pdz.space(xs);
+
+  > * {
+    min-width: 9rem;
+  }
+}
+
+.app__issue {
+  display: flex;
+  align-items: center;
+  gap: pdz.space(2xs);
+  margin: 0;
+  color: pdz.color(warning-border);
+  @include pdz.text(label);
+}
+
+.app__details {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+  gap: pdz.space(sm);
+  margin: 0;
+
+  dt {
+    color: pdz.color(on-surface-variant);
+    @include pdz.caps;
+  }
+
+  dd {
+    margin: 0;
+    color: pdz.color(on-surface);
+    @include pdz.text(body-sm);
+  }
+}
+
+.app__details-wide {
+  grid-column: 1 / -1;
+}
+
+.app__file {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}

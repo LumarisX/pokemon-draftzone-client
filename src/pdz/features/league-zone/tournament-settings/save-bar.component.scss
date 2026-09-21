@@ -1,0 +1,42 @@
+@use "pdz-theming" as pdz;
+
+:host {
+  position: sticky;
+  bottom: 0;
+  z-index: 1;
+  display: block;
+}
+
+.bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: pdz.space(sm);
+  padding: pdz.space(sm) pdz.space(md);
+  background: pdz.color(surface-container-low);
+  border: 1px solid pdz.color(outline-variant);
+  border-radius: pdz.shape(corner-lg);
+  box-shadow: var(--pdz-level-2);
+}
+
+.bar__status {
+  display: inline-flex;
+  align-items: center;
+  gap: pdz.space(xs);
+  color: pdz.color(on-surface-variant);
+  @include pdz.text(body-sm);
+}
+
+.bar__actions {
+  display: flex;
+  gap: pdz.space(xs);
+}
+
+.bar__error {
+  display: inline-flex;
+  align-items: center;
+  gap: pdz.space(2xs);
+  color: pdz.color(danger);
+  @include pdz.text(body-sm);
+}

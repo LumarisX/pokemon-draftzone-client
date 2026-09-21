@@ -2,27 +2,11 @@ import { Routes } from '@angular/router';
 import { LeagueRulesFormComponent } from '../league-rules-overview/league-rules-form/league-rules-form.component';
 import { LeagueScheduleComponent } from '../league-stage-builder/stage-builder-page.component';
 import { LeagueManageDraftComponent } from './league-manage-draft/league-manage-draft.component';
-import { LeagueManageHubComponent } from './league-manage-hub.component';
 import { LeagueManageScheduleComponent } from './league-manage-schedule/league-manage-schedule.component';
-import { LeagueManageSignupsComponent } from './league-manage-signups/league-manage-signups.component';
 import { LeagueOrganizersComponent } from './league-organizers/league-organizers.component';
-import { LeagueSettingsComponent } from './league-settings/league-settings.component';
 import { TradeManagerComponent } from './trade-manager/trade-manager.component';
 
 export const routes: Routes = [
-  {
-    path: '',
-    component: LeagueManageHubComponent,
-    pathMatch: 'full',
-  },
-  {
-    path: 'settings',
-    component: LeagueSettingsComponent,
-  },
-  {
-    path: 'sign-ups',
-    component: LeagueManageSignupsComponent,
-  },
   {
     path: 'organizers',
     component: LeagueOrganizersComponent,
@@ -70,5 +54,17 @@ export const routes: Routes = [
     // routes above and append their segments onto the builder's path.
     pathMatch: 'full',
     redirectTo: 'schedule',
+  },
+  {
+    path: 'settings',
+    pathMatch: 'full',
+    redirectTo: '',
+  },
+  {
+    path: '',
+    loadChildren: () =>
+      import('../tournament-settings/tournament-settings.routes').then(
+        (m) => m.routes,
+      ),
   },
 ];

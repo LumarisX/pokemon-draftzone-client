@@ -110,19 +110,19 @@ export function manageLinkGroups(base: string[]): TournamentLinkGroup[] {
           label: 'Dashboard',
           route: manage,
           icon: 'dashboard',
-          description: 'Everything an organizer can change',
+          description: 'Settings, setup checklist and everything else',
           exact: true,
         },
         {
           id: 'manage-matches',
-          label: 'Matches',
+          label: 'Schedule',
           route: [...manage, 'schedule'],
           icon: 'emoji_events',
           description: 'Add stages, rounds & matchups',
         },
         {
           id: 'manage-results',
-          label: 'Match Results',
+          label: 'Results',
           route: [...manage, 'results'],
           icon: 'scoreboard',
           description: 'Record scores & review reports',
@@ -132,7 +132,7 @@ export function manageLinkGroups(base: string[]): TournamentLinkGroup[] {
           label: 'Sign-Ups',
           route: [...manage, 'sign-ups'],
           icon: 'people',
-          description: 'Registrations & division assignment',
+          description: 'Registrations, review & pool assignment',
         },
         {
           id: 'manage-trades',
@@ -147,13 +147,6 @@ export function manageLinkGroups(base: string[]): TournamentLinkGroup[] {
       id: 'setup',
       label: 'Setup',
       links: [
-        {
-          id: 'manage-settings',
-          label: 'Settings',
-          route: [...manage, 'settings'],
-          icon: 'settings',
-          description: 'Name, dates & scoring rules',
-        },
         {
           id: 'manage-organizers',
           label: 'Organizers',
@@ -178,6 +171,52 @@ export function manageLinkGroups(base: string[]): TournamentLinkGroup[] {
       ],
     },
   ];
+}
+
+export function manageDashboardGroups(base: string[]): TournamentLinkGroup[] {
+  if (!base.length) return [];
+  const manage = [...base, 'manage'];
+
+  return [
+    {
+      id: 'run',
+      label: 'Run',
+      links: [
+        {
+          id: 'manage-matches',
+          label: 'Schedule',
+          route: [...manage, 'schedule'],
+          icon: 'emoji_events',
+          description: 'Add stages, rounds & matchups',
+        },
+        {
+          id: 'manage-results',
+          label: 'Results',
+          route: [...manage, 'results'],
+          icon: 'scoreboard',
+          description: 'Record scores & review reports',
+        },
+        {
+          id: 'manage-trades',
+          label: 'Trades',
+          route: [...manage, 'trades'],
+          icon: 'swap_horiz',
+          description: 'Approve and reverse trades',
+        },
+      ],
+    },
+  ];
+}
+
+export function manageAccessLink(base: string[]): TournamentLink | null {
+  if (!base.length) return null;
+  return {
+    id: 'manage-organizers',
+    label: 'Organizers',
+    route: [...base, 'manage', 'organizers'],
+    icon: 'shield_person',
+    description: 'Who can manage this tournament',
+  };
 }
 
 export function manageDraftLinks(

@@ -1,0 +1,174 @@
+@use "pdz-theming" as pdz;
+
+.dash {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(lg);
+}
+
+.dash__loading {
+  display: flex;
+  justify-content: center;
+  padding: pdz.space(2xl) 0;
+}
+
+.dash__error {
+  display: flex;
+  align-items: center;
+  gap: pdz.space(xs);
+  padding: pdz.space(md);
+  background: pdz.color(surface-container-low);
+  border: 1px solid pdz.color(danger-border);
+  border-radius: pdz.shape(corner-lg);
+  color: pdz.color(danger);
+  @include pdz.text(body-sm);
+}
+
+.dash__sep {
+  color: pdz.color(on-surface-variant);
+}
+
+
+.dash__sections {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(sm);
+}
+
+.dash__heading {
+  margin: 0;
+  color: pdz.color(on-surface);
+  @include pdz.text(subtitle);
+}
+
+.dash__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(13rem, 1fr));
+  gap: pdz.space(sm);
+}
+
+.dash-card {
+  display: flex;
+  align-items: center;
+  gap: pdz.space(sm);
+  padding: pdz.space(sm) pdz.space(md);
+  background: pdz.color(surface-container-low);
+  border: 1px solid pdz.color(outline-variant);
+  border-radius: pdz.shape(corner-lg);
+  color: inherit;
+  text-decoration: none;
+  transition:
+    border-color pdz.duration(fast) pdz.easing(standard),
+    box-shadow pdz.duration(fast) pdz.easing(standard);
+
+  &:hover,
+  &:focus-visible {
+    border-color: pdz.color(primary-border);
+    box-shadow: var(--pdz-level-1);
+  }
+}
+
+.dash-card__icon {
+  display: inline-flex;
+  color: pdz.color(on-surface-variant);
+}
+
+.dash-card__body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(2xs);
+  min-width: 0;
+}
+
+.dash-card__title {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  gap: pdz.space(xs);
+  min-width: 0;
+  color: pdz.color(on-surface);
+  @include pdz.text(card-title);
+}
+
+.dash-card__dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 50%;
+  background: pdz.color(primary);
+}
+
+.dash-card__summary {
+  color: pdz.color(on-surface-variant);
+  @include pdz.text(label);
+}
+
+.dash-card__risk {
+  color: pdz.color(warning);
+}
+
+.dash-card__arrow {
+  color: pdz.color(on-surface-variant);
+}
+
+.attention {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(sm);
+}
+
+.attention__list {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(2xs);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.attention__item {
+  display: flex;
+  align-items: center;
+  gap: pdz.space(sm);
+  padding: pdz.space(sm) pdz.space(md);
+  background: pdz.color(surface-container-low);
+  border: 1px solid pdz.color(outline-variant);
+  border-radius: pdz.shape(corner-lg);
+  color: inherit;
+  text-decoration: none;
+  transition: border-color pdz.duration(fast) pdz.easing(standard);
+
+  &:hover,
+  &:focus-visible {
+    border-color: pdz.color(primary-border);
+  }
+}
+
+.attention__item--urgent {
+  border-color: pdz.color(warning-border);
+
+  .attention__label {
+    color: pdz.color(warning);
+  }
+}
+
+.attention__label {
+  flex: 1;
+  min-width: 0;
+  color: pdz.color(on-surface);
+  @include pdz.text(body);
+}
+
+.attention__arrow {
+  color: pdz.color(on-surface-variant);
+}
+
+.dash__coach-view {
+  margin: 0;
+  color: pdz.color(on-surface-variant);
+  @include pdz.text(body-sm);
+
+  a {
+    color: pdz.color(primary);
+  }
+}

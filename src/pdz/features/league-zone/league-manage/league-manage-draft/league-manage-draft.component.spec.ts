@@ -67,6 +67,10 @@ describe('LeagueManageDraftComponent', () => {
           useValue: {
             getDraftDetails: () => of(details),
             draftSlug: () => 'draft-1',
+            leagueSlug: () => 'league-1',
+            tournamentSlug: () => 'tournament-1',
+            getLeagueInfo: () =>
+              of({ drafts: [{ name: 'Draft', draftSlug: 'draft-1' }] }),
           },
         },
         {

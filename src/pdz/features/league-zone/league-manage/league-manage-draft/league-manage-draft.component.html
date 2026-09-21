@@ -1,5 +1,5 @@
 
-<pdz-page-header title="Draft Control" eyebrow="Manage">
+<pdz-page-header [title]="draftName || 'Draft Control'" eyebrow="Draft Control">
   <span pdz-page-header-detail>
     <span
       class="page-header__status-badge"
@@ -87,6 +87,10 @@
       </button>
     }
   </div>
+  <pdz-draft-switcher
+    [currentDraftSlug]="draftSlug"
+    (draftSelected)="onDraftSelected($event)"
+  ></pdz-draft-switcher>
 </pdz-page-header>
 
 <div class="control-panels">

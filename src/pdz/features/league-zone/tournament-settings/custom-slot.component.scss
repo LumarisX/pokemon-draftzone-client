@@ -1,0 +1,93 @@
+@use "pdz-theming" as pdz;
+
+:host {
+  display: block;
+}
+
+.slot-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: pdz.space(md);
+
+  > * {
+    flex: 1 1 14rem;
+  }
+}
+
+.slot-window {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: pdz.space(sm);
+
+  > label {
+    flex: 1 1 12rem;
+  }
+}
+
+.slot-window__apply {
+  flex: 0 0 auto;
+}
+
+.slot-channel {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: pdz.space(sm);
+}
+
+.slot-channel__field {
+  flex: 1 1 16rem;
+}
+
+.slot-empty {
+  @include pdz.text(body-sm);
+  margin: 0;
+  color: pdz.color(on-surface-variant);
+}
+
+.slot-prizes {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(xs);
+}
+
+.slot-prizes__row {
+  display: flex;
+  align-items: center;
+  gap: pdz.space(sm);
+}
+
+.slot-prizes__place {
+  @include pdz.text(body-sm);
+  min-width: 5rem;
+  color: pdz.color(on-surface);
+}
+
+.slot-prizes__row input {
+  max-width: 5rem;
+}
+
+.slot-prizes__unit {
+  @include pdz.text(body-sm);
+  color: pdz.color(on-surface-variant);
+}
+
+.slot-prizes__footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: pdz.space(sm);
+  margin-top: pdz.space(xs);
+}
+
+.slot-prizes__total {
+  @include pdz.text(body-sm);
+  color: pdz.color(on-surface-variant);
+}
+
+@media (max-width: 40rem) {
+  .slot-window__apply {
+    flex: 1 1 100%;
+  }
+}

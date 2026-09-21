@@ -6,8 +6,9 @@ import {
   moveItemInArray,
 } from '@angular/cdk/drag-drop';
 import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject, interval, Subject, takeUntil } from 'rxjs';
-import { finalize } from 'rxjs/operators';
+import { distinctUntilChanged, finalize, map, switchMap, tap } from 'rxjs/operators';
 import { DraftPokemon } from '../../../drafts/draft.model';
 import { PokemonSearchComponent } from '@pdz/shared/dropdowns/pokemon-search/pokemon-search.component';
 import { TierListService } from '../../../tier-lists/tier-list.service';
@@ -23,6 +24,7 @@ import { League } from '../../league.interface';
 import { formatCountdown } from '../../league.util';
 import { ChoiceDirective } from '@pdz/shared/inputs/choice/choice.directive';
 import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
+import { DraftSwitcherComponent } from '../../league-widgets/draft-switcher/draft-switcher.component';
 
 interface DraftCounterEvent {
   draftSlug: string;
@@ -72,6 +74,7 @@ export interface DraftTurnRound {
     CdkDrag,
     CdkDragHandle,
     ChoiceDirective,
+    DraftSwitcherComponent,
     PageHeaderComponent,
   ],
   templateUrl: './league-manage-draft.component.html',
@@ -83,6 +86,8 @@ export class LeagueManageDraftComponent implements OnInit, OnDestroy {
   webSocketService = inject(WebSocketService);
   private notificationService = inject(LeagueNotificationService);
   private tierListService = inject(TierListService);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
 
   private destroy$ = new Subject<void>();
   private countdownTick$ = new Subject<void>();
@@ -275,9 +280,16 @@ export class LeagueManageDraftComponent implements OnInit, OnDestroy {
           ),
       });
 
-    this.leagueZoneService
-      .getDraftDetails()
-      .pipe(takeUntil(this.destroy$))
+    this.route.paramMap
+      .pipe(
+        map((params) => params.get('draftSlug')),
+        distinctUntilChanged(),
+        tap(() => this.resetPendingEdits()),
+        switchMap((draftSlug) =>
+          this.leagueZoneService.getDraftDetails(draftSlug ?? undefined),
+        ),
+        takeUntil(this.destroy$),
+      )
       .subscribe((data) => {
         this.applyDraftDetails(data);
         this.startCountdown();
@@ -368,6 +380,31 @@ export class LeagueManageDraftComponent implements OnInit, OnDestroy {
     }
     const diffMs = new Date(skipTime).getTime() - Date.now();
     this.pickTimeDisplay = diffMs > 0 ? formatCountdown(diffMs) : '0s';
+  }
+
+  get draftSlug(): string | null {
+    return this.leagueZoneService.draftSlug();
+  }
+
+  onDraftSelected(draftSlug: string): void {
+    this.router.navigate([
+      '/leagues',
+      this.leagueZoneService.leagueSlug(),
+      'tournaments',
+      this.leagueZoneService.tournamentSlug(),
+      'manage',
+      'drafts',
+      draftSlug,
+      'draft',
+    ]);
+  }
+
+  private resetPendingEdits(): void {
+    this.editingKey = null;
+    this.pendingKey = null;
+    this.orderSaving = false;
+    this.settingsSaving = false;
+    this.testingMessage = false;
   }
 
   private applyDraftDetails(data: DraftDetails): void {

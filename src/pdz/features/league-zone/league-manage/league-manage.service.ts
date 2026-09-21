@@ -12,6 +12,18 @@ import { League, TradeLog } from '@pdz/features/league-zone/league.interface';
 import { ApiService } from '@pdz/core/services/api.service';
 import { LeagueZoneService } from '../league-zone.service';
 
+export type DraftSettingsPayload = {
+  name?: string;
+  channelId?: string | null;
+  orderProgression?: 'snake' | 'linear';
+  sequentialTurns?: boolean;
+  visibility?: 'ALL' | 'SELF';
+  allowRemovals?: boolean;
+  timerLength?: number;
+  draftStart?: string | null;
+  draftEnd?: string | null;
+};
+
 /** Payload every draft-mutating organizer endpoint echoes back. */
 export type DraftDetails =
   ReturnType<LeagueZoneService['getDraftDetails']> extends Observable<infer T>
@@ -140,23 +152,71 @@ export class LeagueManageService {
     );
   }
 
-  /**
-   * Organizer-only. `channelId: null` clears it; omitted fields are left
-   * untouched. `orderProgression`/`sequentialTurns` are PRE_DRAFT-only
-   * server-side, same restriction as `setDraftOrder`.
-   */
-  updateDraftSettings(payload: {
-    name?: string;
-    channelId?: string | null;
-    orderProgression?: 'snake' | 'linear';
-    sequentialTurns?: boolean;
-    visibility?: 'ALL' | 'SELF';
-    allowRemovals?: boolean;
+  setDraftOrderFor(
+    draftSlug: string,
+    payload: { useRandomSeeding: boolean; order?: string[] },
+  ) {
+    return this.apiService.post<DraftDetails>(
+      `${this.draftPath(draftSlug)}/order`,
+      payload,
+    );
+  }
+
+  createDraftPool(payload: {
+    name: string;
+    draftStart?: string;
+    draftEnd?: string;
   }) {
+    return this.apiService.post<{ draftSlug: string; name: string }>(
+      this.poolsPath(),
+      payload,
+    );
+  }
+
+  deleteDraftPool(draftSlug: string) {
+    return this.apiService.delete<{ success: boolean; unassigned: number }>(
+      `${this.poolsPath()}/${draftSlug}`,
+    );
+  }
+
+  private poolsPath(): string {
+    return `leagues/${this.leagueZoneService.leagueSlug()}/tournaments/${this.leagueZoneService.tournamentSlug()}/drafts`;
+  }
+
+  updateCoachDetails(
+    coachId: string,
+    payload: {
+      name?: string;
+      gameName?: string;
+      discordName?: string;
+      timezone?: string;
+      teamName?: string;
+    },
+  ) {
+    return this.apiService.patch<{ message: string }>(
+      `leagues/${this.leagueZoneService.leagueSlug()}/tournaments/${this.leagueZoneService.tournamentSlug()}/coaches/${coachId}`,
+      payload,
+    );
+  }
+
+  updateDraftSettings(payload: DraftSettingsPayload) {
     return this.apiService.post<DraftDetails>(
       `${this.draftPath()}/settings`,
       payload,
     );
+  }
+
+  updateDraftSettingsFor(draftSlug: string, payload: DraftSettingsPayload) {
+    return this.apiService.post<DraftDetails>(
+      `${this.draftPath(draftSlug)}/settings`,
+      payload,
+    );
+  }
+
+  setNoTimerFor(draftSlug: string, noTimer: boolean) {
+    return this.apiService.post(`${this.draftPath(draftSlug)}/timer`, {
+      noTimer,
+    });
   }
 
   /** Organizer-only: sends a test message to the draft's saved channelId. */
@@ -167,8 +227,8 @@ export class LeagueManageService {
     );
   }
 
-  private draftPath(): string {
-    return `leagues/${this.leagueZoneService.leagueSlug()}/tournaments/${this.leagueZoneService.tournamentSlug()}/drafts/${this.leagueZoneService.draftSlug()}`;
+  private draftPath(draftSlug?: string): string {
+    return `leagues/${this.leagueZoneService.leagueSlug()}/tournaments/${this.leagueZoneService.tournamentSlug()}/drafts/${draftSlug ?? this.leagueZoneService.draftSlug()}`;
   }
 
   canManage(leagueSlug: string, tournamentSlug: string) {
@@ -242,7 +302,8 @@ export class LeagueManageService {
       draftCount: { min: number; max: number };
       pointTotal?: number;
       tradePointLimit?: number;
-      tierRequirements: { tierId: string; required: number }[];
+      tierRequirements: { tierId: string; required: number; max?: number }[];
+      prizeSplit?: { place: number; percent: number }[];
       adSettings?: {
         advertise: boolean;
         skillLevelRange?: { from: string; to: string };
@@ -257,11 +318,11 @@ export class LeagueManageService {
   }
 
   updateTournamentSettings(settings: {
-    name: string;
+    name?: string;
     description?: string;
-    format: string;
-    ruleset: string;
-    signUpDeadline: Date;
+    format?: string;
+    ruleset?: string;
+    signUpDeadline?: Date;
     draftStart?: Date;
     draftEnd?: Date;
     seasonStart?: Date;
@@ -280,7 +341,8 @@ export class LeagueManageService {
     /** `null` clears an existing point cap; `undefined` leaves it untouched. */
     pointTotal?: number | null;
     tradePointLimit?: number | null;
-    tierRequirements?: { tierId: string; required: number }[];
+    tierRequirements?: { tierId: string; required: number; max?: number }[];
+    prizeSplit?: { place: number; percent: number }[];
     adSettings?: {
       advertise: boolean;
       skillLevelRange?: { from: string; to: string };

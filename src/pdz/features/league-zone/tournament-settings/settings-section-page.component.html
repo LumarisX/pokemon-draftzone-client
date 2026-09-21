@@ -1,0 +1,32 @@
+<pdz-page width="default">
+  @if (store.loading()) {
+    <div class="section-page__loading"><pdz-loading /></div>
+  } @else {
+  <div class="section-page">
+    <pdz-page-header
+      [title]="section().label"
+      [subtitle]="section().blurb"
+      backLink=".."
+      backLabel="Manage"
+    />
+
+    <pdz-risk-banner [risk]="risk()" />
+
+    <pdz-card padding="lg">
+      @for (node of nodes(); track node.id) {
+        <pdz-settings-node [node]="node" [artifact]="node.artifact ?? null" />
+      }
+    </pdz-card>
+
+    <pdz-save-bar
+      [count]="dirty()"
+      [blocked]="blocked()"
+      [pending]="store.saving()"
+      [error]="store.saveError()"
+      [label]="'Save ' + section().label"
+      (save)="save()"
+      (revert)="revert()"
+    />
+  </div>
+  }
+</pdz-page>
