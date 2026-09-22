@@ -16,7 +16,9 @@ import { SaveBarComponent } from './save-bar.component';
 import { SettingsNodeComponent } from './settings-node.component';
 import {
   AnyNode,
+  SettingsNode,
   SettingsSectionId,
+  TIER_LIST_GATE_REASON,
   nodeVisible,
   nodesForSection,
   sectionById,
@@ -52,12 +54,26 @@ export class SettingsSectionPageComponent {
     sectionRisk(this.section(), this.store.phase()),
   );
 
+  private readonly tierListAttached = computed(
+    () => this.store.artifacts().tierList.name !== null,
+  );
+
   protected readonly nodes = computed(() => {
     const value = this.store.draft();
-    return nodesForSection(this.section().id).filter((node) =>
-      nodeVisible(node as AnyNode, value),
-    );
+    const attached = this.tierListAttached();
+    return nodesForSection(this.section().id)
+      .filter((node) => nodeVisible(node as AnyNode, value))
+      .map((node) => ({
+        node,
+        locked: this.isGated(node, attached),
+      }));
   });
+
+  private isGated(node: SettingsNode, tierListAttached: boolean): boolean {
+    return node.requiresTierList === true && !tierListAttached;
+  }
+
+  protected readonly gateReason = TIER_LIST_GATE_REASON;
 
   protected readonly dirty = computed(() =>
     this.store.sectionDirtyCount(this.section().id),

@@ -1,0 +1,264 @@
+<pdz-page-header title="Results" eyebrow="Manage">
+  <span pdz-page-header-detail>
+    Record scores and review the results coaches send in.
+  </span>
+
+  <div pdz-page-header-meta class="results__counts">
+    @if (pendingTotal(); as pending) {
+      <pdz-chip
+        clickable
+        icon="pending_actions"
+        tone="warning"
+        size="sm"
+        [variant]="reviewOnly() ? 'solid' : 'soft'"
+        [selected]="reviewOnly()"
+        [actionLabel]="
+          reviewOnly()
+            ? 'Stop showing only reports awaiting review'
+            : 'Show only reports awaiting review'
+        "
+        (activated)="toggleReviewOnly()"
+      >
+        {{ pending }} awaiting review
+      </pdz-chip>
+    }
+    @if (openTotal(); as open) {
+      <pdz-chip tone="neutral" variant="soft" size="sm" icon="edit_note">
+        {{ open }} without a result
+      </pdz-chip>
+    }
+    @if (!loading() && !pendingTotal() && !openTotal()) {
+      <pdz-chip tone="success" variant="soft" size="sm" icon="task_alt">
+        All caught up
+      </pdz-chip>
+    }
+  </div>
+
+  <pdz-segmented
+    class="results__filter"
+    size="sm"
+    aria-label="Which matches to show"
+    [value]="scope()"
+    [disabled]="reviewOnly()"
+    (valueChange)="scope.set($any($event))"
+  >
+    <pdz-segmented-option value="attention" label="Needs attention" />
+    <pdz-segmented-option value="all" label="All matches" />
+  </pdz-segmented>
+</pdz-page-header>
+
+@if (loading()) {
+  <pdz-loading />
+} @else if (loadError(); as error) {
+  <pdz-empty-state
+    bordered
+    icon="error"
+    heading="Could not load the schedule"
+    [message]="error"
+  />
+} @else if (isEmpty()) {
+  <pdz-empty-state
+    bordered
+    icon="task_alt"
+    [heading]="emptyHeading()"
+    [message]="emptyMessage()"
+  />
+} @else {
+  <div class="results__rounds">
+    @for (round of visibleRounds(); track round.id) {
+      <pdz-disclosure
+        tone="panel"
+        trailingGrow
+        [heading]="round.name"
+        [open]="isRoundOpen(round)"
+        (openChange)="toggleRound(round)"
+      >
+        <div pdz-disclosure-trailing class="round__tags">
+          @if (round.matchDeadline) {
+            <span class="round__deadline">
+              <pdz-icon name="schedule" [size]="14" />
+              {{ round.matchDeadline | date: "MMM d" }}
+            </span>
+          }
+          @if (round.live) {
+            <pdz-chip tone="primary" variant="soft" size="xs">Live</pdz-chip>
+          }
+          @if (round.pendingCount; as pending) {
+            <pdz-chip tone="warning" variant="soft" size="xs">
+              {{ pending }} to review
+            </pdz-chip>
+          }
+          @if (round.openCount; as open) {
+            <pdz-chip tone="neutral" variant="soft" size="xs">
+              {{ open }} to record
+            </pdz-chip>
+          }
+        </div>
+
+        @if (isRoundOpen(round)) {
+          <div class="round__rows">
+            @for (row of round.rows; track row.matchup.id) {
+              <pdz-card class="row" tone="lowest" padding="md">
+                <div class="row__main">
+                  <div class="row__info">
+                    <p class="row__teams">
+                      <span class="row__name">{{ row.matchup.team1.name }}</span>
+                      <span class="row__coach"
+                        >{{ row.matchup.team1.coach }}</span
+                      >
+                      <span class="row__vs">vs</span>
+                      <span class="row__name">{{ row.matchup.team2.name }}</span>
+                      <span class="row__coach"
+                        >{{ row.matchup.team2.coach }}</span
+                      >
+                    </p>
+
+                    <p class="row__meta">
+                      @if (row.stageName) {
+                        <span>{{ row.stageName }}</span>
+                      }
+                      @if (row.matchup.label) {
+                        <span>{{ row.matchup.label }}</span>
+                      }
+                      @if (outcomeLabel(row); as outcome) {
+                        <span>{{ outcome }}</span>
+                      }
+                    </p>
+                  </div>
+
+                  <div class="row__aside">
+                    @if (scoreLine(row); as score) {
+                      <pdz-score>{{ score }}</pdz-score>
+                    }
+                    @if (row.pending) {
+                      <pdz-chip tone="warning" variant="soft" size="xs">
+                        Awaiting review
+                      </pdz-chip>
+                    } @else if (!row.recorded) {
+                      <pdz-chip tone="neutral" variant="soft" size="xs">
+                        No result
+                      </pdz-chip>
+                    }
+                    @if (row.blocked) {
+                      <pdz-chip tone="danger" variant="soft" size="xs">
+                        Bracket stuck
+                      </pdz-chip>
+                    }
+
+                    <button
+                      pdz-button
+                      size="sm"
+                      class="row__action"
+                      [variant]="isRowOpen(row) ? 'outlined' : 'tonal'"
+                      [color]="isRowOpen(row) ? 'neutral' : 'primary'"
+                      [icon]="isRowOpen(row) ? 'close' : 'edit_note'"
+                      [attr.aria-expanded]="isRowOpen(row)"
+                      (click)="toggleRow(row)"
+                    >
+                      {{
+                        isRowOpen(row)
+                          ? "Close"
+                          : row.recorded || row.pending
+                            ? "Edit"
+                            : "Record"
+                      }}
+                    </button>
+                  </div>
+                </div>
+
+                @if (row.pending) {
+                  <div class="review">
+                    <div class="review__text">
+                      <pdz-icon name="pending_actions" [size]="18" />
+                      <span>
+                        <span class="review__summary">{{
+                          reportSummary(row)
+                        }}</span>
+                        @if (row.matchup.report?.notes; as notes) {
+                          <span class="review__note">&ldquo;{{ notes }}&rdquo;</span>
+                        }
+                      </span>
+                    </div>
+                    <div class="review__actions">
+                      <button
+                        pdz-button
+                        size="sm"
+                        [disabled]="reviewingSlug() === row.matchup.slug"
+                        (click)="review(row, 'approve')"
+                      >
+                        Approve
+                      </button>
+                      <button
+                        pdz-button
+                        size="sm"
+                        color="neutral"
+                        variant="outlined"
+                        [disabled]="reviewingSlug() === row.matchup.slug"
+                        (click)="review(row, 'reject')"
+                      >
+                        Reject
+                      </button>
+                    </div>
+                  </div>
+                }
+
+                @if (row.blocked) {
+                  <div class="advance">
+                    <p class="advance__hint">
+                      Nothing left this match, so the bracket below it is
+                      waiting. Say who moves on.
+                    </p>
+                    <label pdz-field class="advance__field" label="Advances">
+                      <pdz-select
+                        size="sm"
+                        aria-label="Which side advances"
+                        [value]="advancementValue(row)"
+                        [disabled]="advancingSlug() === row.matchup.slug"
+                        (valueChange)="setAdvancement(row, $any($event))"
+                      >
+                        <pdz-option value="" label="Undecided" />
+                        @if (row.matchup.team1.id) {
+                          <pdz-option
+                            value="side1"
+                            [label]="row.matchup.team1.name"
+                          />
+                        }
+                        @if (row.matchup.team2.id) {
+                          <pdz-option
+                            value="side2"
+                            [label]="row.matchup.team2.name"
+                          />
+                        }
+                        <pdz-option value="none" label="Nobody" />
+                      </pdz-select>
+                    </label>
+                  </div>
+                }
+
+                @if (errorFor(row); as error) {
+                  <p class="row__error">{{ error }}</p>
+                }
+
+                @if (isRowOpen(row)) {
+                  <div class="row__editor">
+                    @if (detailLoading()) {
+                      <pdz-loading />
+                    } @else if (detailError(); as error) {
+                      <p class="row__error">{{ error }}</p>
+                    } @else if (detail(); as matchup) {
+                      <pdz-matchup-report
+                        [matchup]="matchup"
+                        [matchupSlug]="row.matchup.slug"
+                        (submitted)="onRecorded()"
+                      />
+                    }
+                  </div>
+                }
+              </pdz-card>
+            }
+          </div>
+        }
+      </pdz-disclosure>
+    }
+  </div>
+}

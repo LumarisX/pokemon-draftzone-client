@@ -27,6 +27,7 @@ import { TournamentSettingsStore } from './tournament-settings.store';
 export class SettingsNodeComponent {
   readonly node = input.required<AnyNode>();
   readonly disabled = input(false);
+  readonly lockedReason = input<string | null>(null);
   readonly poolId = input<string | null>(null);
   readonly artifact = input<ArtifactSlot | null>(null);
 

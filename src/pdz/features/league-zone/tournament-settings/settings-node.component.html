@@ -7,6 +7,13 @@
     <p class="node__help">{{ help }}</p>
   }
 
+  @if (lockedReason(); as reason) {
+    <p class="node__locked">
+      <pdz-icon name="lock" [size]="16" aria-hidden="true" />
+      {{ reason }}
+    </p>
+  }
+
   @if (artifact(); as slot) {
     <pdz-artifact-card [slot]="slot" [locked]="disabled()" />
   }

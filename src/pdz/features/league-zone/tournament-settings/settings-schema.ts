@@ -310,7 +310,11 @@ export type ArtifactSlot = 'tier-list' | 'schedule' | 'rules';
 export interface SettingsNode extends NodeFor<SettingsValue> {
   section: SettingsSectionId;
   artifact?: ArtifactSlot;
+  requiresTierList?: boolean;
 }
+
+export const TIER_LIST_GATE_REASON =
+  'Attach a tier list first — it sets the format, the ruleset and the tiers.';
 
 export interface PoolNode extends NodeFor<DraftPoolValue> {
   span?: 'full';
@@ -550,6 +554,7 @@ export const SETTINGS_NODES: readonly SettingsNode[] = [
     id: 'draft.trades',
     section: 'draft',
     title: 'Trades',
+    requiresTierList: true,
     controls: [
       {
         kind: 'toggle',
@@ -573,6 +578,7 @@ export const SETTINGS_NODES: readonly SettingsNode[] = [
     title: 'Stages & schedule',
     help: 'The stages, rounds and matchups teams actually play.',
     artifact: 'schedule',
+    requiresTierList: true,
     controls: [],
   },
   {

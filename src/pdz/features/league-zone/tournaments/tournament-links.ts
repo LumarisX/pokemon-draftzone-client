@@ -118,7 +118,7 @@ export function manageLinkGroups(base: string[]): TournamentLinkGroup[] {
           label: 'Schedule',
           route: [...manage, 'schedule'],
           icon: 'emoji_events',
-          description: 'Add stages, rounds & matchups',
+          description: 'Stages, rounds, matchups & which round is live',
         },
         {
           id: 'manage-results',
@@ -187,7 +187,7 @@ export function manageDashboardGroups(base: string[]): TournamentLinkGroup[] {
           label: 'Schedule',
           route: [...manage, 'schedule'],
           icon: 'emoji_events',
-          description: 'Add stages, rounds & matchups',
+          description: 'Stages, rounds, matchups & which round is live',
         },
         {
           id: 'manage-results',

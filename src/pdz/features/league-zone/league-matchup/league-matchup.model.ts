@@ -71,7 +71,7 @@ export type MatchupDetail = {
   notes?: string;
   scheduledDate?: string;
   stage: { id: string; slug: string; name: string };
-  round: { name: string; matchDeadline?: string; bestOf?: number } | null;
+  round: { name: string; matchDeadline?: string } | null;
   viewer: MatchupViewer;
   report?: MatchupReport;
 };

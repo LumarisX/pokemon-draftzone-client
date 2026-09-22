@@ -388,9 +388,9 @@ export class TournamentSettingsStore {
     this.artifactState.set({
       tierList: {
         name: tierList?.name ?? null,
-        slug: settings.tierListId ?? null,
-        format: settings.format ?? '',
-        ruleset: settings.ruleset ?? tierList?.ruleset ?? '',
+        slug: settings.tierListId || null,
+        format: tierList?.format ?? settings.format ?? '',
+        ruleset: tierList?.ruleset ?? settings.ruleset ?? '',
         pokemonCount: countPokemon(tierList?.tierList ?? []),
         tiers,
         source: tierList ? 'custom' : null,
@@ -965,6 +965,7 @@ type SignUpAssignment = {
 
 type TierListResponse = {
   tierList: LeagueTier[];
+  format?: string;
   ruleset?: string;
   name?: string;
 };

@@ -85,6 +85,14 @@ export class LeagueScheduleComponent implements OnInit {
   errorMessage: string | null = null;
   statusMessage: string | null = null;
 
+  currentRoundIndex = -1;
+  isSavingRound = false;
+  private isDirty = false;
+
+  get canSetCurrentRound(): boolean {
+    return !this.isDirty && !this.isSaving && !this.isSavingRound;
+  }
+
   bracket: TournamentBracket | null = null;
   draft: BuilderDraft = { rounds: [], stages: [], matches: [] };
   teams: TeamOption[] = [];
@@ -180,6 +188,8 @@ export class LeagueScheduleComponent implements OnInit {
         this.bracket = bracket;
         this.saved = savedMatchIds(bracket);
         this.draft = toBuilderDraft(bracket);
+        this.currentRoundIndex = bracket.currentRoundIndex ?? -1;
+        this.isDirty = false;
         this.isLoading = false;
       },
       error: () => {
@@ -191,6 +201,31 @@ export class LeagueScheduleComponent implements OnInit {
   onDraftChange(draft: BuilderDraft): void {
     this.draft = draft;
     this.statusMessage = null;
+    this.isDirty = true;
+  }
+
+  onSetCurrentRound(roundIndex: number): void {
+    if (!this.canSetCurrentRound || roundIndex === this.currentRoundIndex)
+      return;
+
+    this.isSavingRound = true;
+    this.errorMessage = null;
+
+    this.manageService.setTournamentCurrentRound(roundIndex).subscribe({
+      next: (result) => {
+        this.currentRoundIndex = result.currentRoundIndex;
+        this.isSavingRound = false;
+        this.statusMessage =
+          result.currentRoundIndex < 0
+            ? 'The tournament is back to not started.'
+            : `${this.draft.rounds[result.currentRoundIndex]?.name ?? 'That round'} is now live.`;
+      },
+      error: (err) => {
+        this.isSavingRound = false;
+        this.errorMessage =
+          err?.error?.message ?? 'Failed to set the live round.';
+      },
+    });
   }
 
   get stageCountByTeam(): Map<string, number> {

@@ -164,8 +164,11 @@
       [draft]="draft"
       [teamsByStage]="teamsByStage"
       [editable]="true"
+      [currentRoundIndex]="currentRoundIndex"
+      [canSetCurrentRound]="canSetCurrentRound"
       (draftChange)="onDraftChange($event)"
       (addStage)="openForm($event)"
+      (setCurrentRound)="onSetCurrentRound($event)"
     ></pdz-stage-builder>
   </div>
 }

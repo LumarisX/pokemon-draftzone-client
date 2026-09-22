@@ -11,7 +11,6 @@ export interface TournamentBracketRound {
   name: string;
   matchDeadline?: string | null;
   tradeDeadline?: string | null;
-  bestOf?: number | null;
 }
 
 export interface TournamentBracketSeedingGroup {
@@ -101,7 +100,6 @@ export interface UpdateTournamentBracketPayload {
     name: string;
     matchDeadline?: string | null;
     tradeDeadline?: string | null;
-    bestOf?: number;
   }[];
   stages: {
     _id?: string;

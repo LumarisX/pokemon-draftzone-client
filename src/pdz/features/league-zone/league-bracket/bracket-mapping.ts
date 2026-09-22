@@ -35,7 +35,6 @@ export type RawBracketRound = {
   name: string;
   matchDeadline: string | null;
   tradeDeadline?: string | null;
-  bestOf?: number | null;
 };
 
 /** Seeding of one bracket section. Whole-stage seedings report a single group. */
@@ -98,7 +97,6 @@ export function mapRawBracket(raw: RawBracketResponse): BracketWithSeeding {
     name: r.name,
     matchDeadline: r.matchDeadline,
     tradeDeadline: r.tradeDeadline ?? null,
-    bestOf: r.bestOf ?? null,
   }));
 
   if (!raw.format || !raw.matches?.length) {

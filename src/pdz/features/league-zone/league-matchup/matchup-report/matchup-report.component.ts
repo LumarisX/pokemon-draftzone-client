@@ -1,5 +1,6 @@
 import {
   Component,
+  computed,
   EventEmitter,
   inject,
   OnDestroy,
@@ -106,6 +107,16 @@ export class MatchupReportComponent implements OnInit, OnDestroy {
   readonly sides = SCORE_ENTRY_SIDES;
   readonly rosterSize = ROSTER_SIZE;
 
+  readonly recordsDirectly = computed(() => this.matchup().viewer.isOrganizer);
+
+  readonly submitLabel = computed(() =>
+    this.recordsDirectly() ? 'Record result' : 'Submit for review',
+  );
+
+  readonly savingLabel = computed(() =>
+    this.recordsDirectly() ? 'Saving…' : 'Sending…',
+  );
+
   toggleSummary(): void {
     this.summaryOpen.update((open) => !open);
   }
@@ -175,6 +186,10 @@ export class MatchupReportComponent implements OnInit, OnDestroy {
 
   get notesControl(): FormControl<string> {
     return this.form.controls.notes;
+  }
+
+  get reportNotes(): FormControl<string> | null {
+    return this.recordsDirectly() ? null : this.notesControl;
   }
 
   nameOf(id: string): string {
@@ -259,7 +274,7 @@ export class MatchupReportComponent implements OnInit, OnDestroy {
   }
 
   get needsForfeitReason(): boolean {
-    return forfeitNeedsReason(this.match, this.notesControl);
+    return forfeitNeedsReason(this.match, this.reportNotes);
   }
 
   get canSubmit(): boolean {
@@ -359,7 +374,7 @@ export class MatchupReportComponent implements OnInit, OnDestroy {
       winner: winner ?? 'draw',
       ...(forfeit ? { forfeit: true } : {}),
       matches,
-      notes: this.notesControl.value.trim() || undefined,
+      notes: this.reportNotes?.value.trim() || undefined,
       side1Paste: this.match.controls.side1Paste.value.trim() || undefined,
       side2Paste: this.match.controls.side2Paste.value.trim() || undefined,
     };

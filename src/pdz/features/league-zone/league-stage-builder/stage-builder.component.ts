@@ -20,6 +20,7 @@ import {
   inject,
   input,
   model,
+  signal,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
@@ -50,6 +51,8 @@ import {
   trimAutoRounds,
 } from './stage-builder.model';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
+import { DialogService } from '@pdz/shared/dialogs/dialog/dialog.service';
+import { editRoundSettings } from './round-settings-dialog.component';
 
 function assignColumns(spans: StageSpan[]): Map<string, number> {
   const columns = new Map<string, number>();
@@ -90,6 +93,19 @@ interface StageBox {
   cells: BuilderCell[];
 }
 
+interface ListGroup {
+  stage: StageBox;
+  cell: BuilderCell;
+}
+
+interface ListRound {
+  index: number;
+  round: BuilderRound;
+  groups: ListGroup[];
+}
+
+const COMPACT_QUERY = '(max-width: 47.99rem)';
+
 const FOCUS_FLASH_MS = 1300;
 const FOCUS_SETTLE_FRAMES = 3;
 const FOCUS_SETTLE_TIMEOUT_MS = 2000;
@@ -122,25 +138,40 @@ const STAGE_TYPES: Record<string, { label: string; icon: string }> = {
 })
 export class StageBuilderComponent implements OnChanges, OnDestroy {
   private readonly zone = inject(NgZone);
+  private readonly dialogs = inject(DialogService);
 
   readonly draft = model.required<BuilderDraft>();
   readonly teamsByStage = input(new Map<string, BracketTeamFlex[]>());
   readonly editable = input(false);
   readonly matchupLinkBase = input<string[] | null>();
   readonly currentRoundIndex = input(-1);
+  readonly canSetCurrentRound = input(false);
 
   @Output() editMatch = new EventEmitter<string>();
   @Output() addStage = new EventEmitter<number>();
+  @Output() setCurrentRound = new EventEmitter<number>();
 
   @ViewChild('grid') private gridRef?: ElementRef<HTMLElement>;
 
   protected stages: StageBox[] = [];
   protected columnCount = 1;
+  protected listRounds: ListRound[] = [];
+  protected readonly compact = signal(false);
 
   private emptyStageRounds = new Map<string, number>();
   private focusTimer?: ReturnType<typeof setTimeout>;
   private focusFrame?: number;
   private focusedNode?: HTMLElement;
+  private compactQuery?: MediaQueryList;
+  private readonly onCompactChange = (event: MediaQueryListEvent) =>
+    this.zone.run(() => this.compact.set(event.matches));
+
+  constructor() {
+    if (typeof window === 'undefined' || !window.matchMedia) return;
+    this.compactQuery = window.matchMedia(COMPACT_QUERY);
+    this.compact.set(this.compactQuery.matches);
+    this.compactQuery.addEventListener('change', this.onCompactChange);
+  }
 
   ngOnChanges(): void {
     this.rebuild();
@@ -148,6 +179,7 @@ export class StageBuilderComponent implements OnChanges, OnDestroy {
 
   ngOnDestroy(): void {
     this.cancelFocus();
+    this.compactQuery?.removeEventListener('change', this.onCompactChange);
   }
 
   protected onFocusMatch(matchId: string): void {
@@ -277,6 +309,44 @@ export class StageBuilderComponent implements OnChanges, OnDestroy {
 
     this.labels = this.buildLabels();
     this.cellIds = this.stages.flatMap((s) => s.cells.map((c) => c.id));
+    this.listRounds = this.buildListRounds();
+  }
+
+  private buildListRounds(): ListRound[] {
+    return this.rounds.map((round, index) => ({
+      index,
+      round,
+      groups: this.stages
+        .map((stage) => ({
+          stage,
+          cell: stage.cells.find((cell) => cell.round === index),
+        }))
+        .filter(
+          (group): group is ListGroup =>
+            !!group.cell &&
+            (group.cell.matches.length > 0 ||
+              (this.editable() && group.cell.inSpan)),
+        ),
+    }));
+  }
+
+  protected canMoveMatchRound(match: FlexBracketMatch, delta: -1 | 1): boolean {
+    const target = match.round + delta;
+    return target >= 0 && target < this.rounds.length;
+  }
+
+  protected onMoveMatchRound(match: FlexBracketMatch, delta: -1 | 1): void {
+    if (!this.canMoveMatchRound(match, delta)) return;
+    this.commit({
+      ...this.draft(),
+      matches: moveMatch(
+        this.draft().matches,
+        match.id,
+        stageKeyOf(match),
+        match.round + delta,
+        Number.MAX_SAFE_INTEGER,
+      ),
+    });
   }
 
   private reachableRounds(
@@ -377,43 +447,44 @@ export class StageBuilderComponent implements OnChanges, OnDestroy {
     return this.rounds.length > 1 && roundIsEmpty(this.draft(), index);
   }
 
+  protected async onEditRound(index: number): Promise<void> {
+    const round = this.rounds[index];
+    if (!round) return;
+
+    const result = await editRoundSettings(this.dialogs, round.name, {
+      name: round.name,
+      matchDeadline: this.deadlineValue(round, 'matchDeadline'),
+      tradeDeadline: this.deadlineValue(round, 'tradeDeadline'),
+    });
+    if (!result) return;
+
+    const rounds = this.rounds.map((current, i) =>
+      i === index
+        ? {
+            ...claimRound(current),
+            name: result.name,
+            matchDeadline: result.matchDeadline
+              ? new Date(result.matchDeadline).toISOString()
+              : null,
+            tradeDeadline: result.tradeDeadline
+              ? new Date(result.tradeDeadline).toISOString()
+              : null,
+          }
+        : current,
+    );
+    this.commit({ ...this.draft(), rounds });
+  }
+
+  protected onToggleCurrentRound(index: number): void {
+    if (!this.canSetCurrentRound()) return;
+    this.setCurrentRound.emit(index === this.currentRoundIndex() ? -1 : index);
+  }
+
   protected onMoveRound(index: number, delta: -1 | 1): void {
     this.commit(reorderRounds(this.draft(), index, index + delta));
   }
 
-  protected onRenameRound(index: number, name: string): void {
-    const rounds = this.rounds.map((round, i) =>
-      i === index ? { ...claimRound(round), name } : round,
-    );
-    this.commit({ ...this.draft(), rounds });
-  }
-
-  protected onRoundDeadline(
-    index: number,
-    field: 'matchDeadline' | 'tradeDeadline',
-    value: string,
-  ): void {
-    const rounds = this.rounds.map((round, i) =>
-      i === index
-        ? {
-            ...claimRound(round),
-            [field]: value ? new Date(value).toISOString() : null,
-          }
-        : round,
-    );
-    this.commit({ ...this.draft(), rounds });
-  }
-
-  protected onRoundBestOf(index: number, value: string): void {
-    const parsed = Number(value);
-    const bestOf = value.trim() && Number.isFinite(parsed) ? parsed : null;
-    const rounds = this.rounds.map((round, i) =>
-      i === index ? { ...claimRound(round), bestOf } : round,
-    );
-    this.commit({ ...this.draft(), rounds });
-  }
-
-  protected deadlineValue(
+  private deadlineValue(
     round: BuilderRound,
     field: 'matchDeadline' | 'tradeDeadline' = 'matchDeadline',
   ): string {

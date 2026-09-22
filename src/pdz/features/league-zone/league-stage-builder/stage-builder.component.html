@@ -1,3 +1,236 @@
+@if (compact()) {
+  <div class="list">
+    @for (listRound of listRounds; track listRound.round.key) {
+      <section
+        class="list__round"
+        [class.list__round--current]="listRound.index === currentRoundIndex()"
+      >
+        <header class="list__round-head">
+          <h3 class="list__round-name">{{ listRound.round.name }}</h3>
+          <div class="list__round-chips">
+            @if (listRound.index === currentRoundIndex()) {
+              <span class="list__chip list__chip--live">Live</span>
+            }
+            @if (listRound.round.matchDeadline) {
+              <span class="list__chip">
+                <pdz-icon name="schedule" [size]="12"></pdz-icon>
+                {{ listRound.round.matchDeadline | date: "MMM d, h:mm a" }}
+              </span>
+            }
+          </div>
+        </header>
+
+        @if (editable()) {
+          <div class="list__settings-actions">
+            <button
+              pdz-button
+              size="sm"
+              variant="outlined"
+              color="neutral"
+              (click)="onEditRound(listRound.index)"
+            >
+              <pdz-icon name="tune" size="sm"></pdz-icon>
+              <span>Settings</span>
+            </button>
+            <button
+              pdz-button
+              size="sm"
+              [variant]="
+                listRound.index === currentRoundIndex() ? 'tonal' : 'outlined'
+              "
+              [color]="
+                listRound.index === currentRoundIndex() ? 'primary' : 'neutral'
+              "
+              [disabled]="!canSetCurrentRound()"
+              [attr.aria-pressed]="listRound.index === currentRoundIndex()"
+              [title]="
+                canSetCurrentRound()
+                  ? 'The round coaches see as current'
+                  : 'Save the schedule before changing the live round'
+              "
+              (click)="onToggleCurrentRound(listRound.index)"
+            >
+              <pdz-icon
+                [name]="
+                  listRound.index === currentRoundIndex()
+                    ? 'radio_button_checked'
+                    : 'radio_button_unchecked'
+                "
+                size="sm"
+              ></pdz-icon>
+              <span>{{
+                listRound.index === currentRoundIndex()
+                  ? "Live round"
+                  : "Make live"
+              }}</span>
+            </button>
+            <button
+              pdz-button
+              size="sm"
+              variant="outlined"
+              color="neutral"
+              [disabled]="listRound.index === 0"
+              (click)="onMoveRound(listRound.index, -1)"
+            >
+              <pdz-icon name="arrow_upward" size="sm"></pdz-icon>
+              <span>Move up</span>
+            </button>
+            <button
+              pdz-button
+              size="sm"
+              variant="outlined"
+              color="neutral"
+              [disabled]="listRound.index === listRounds.length - 1"
+              (click)="onMoveRound(listRound.index, 1)"
+            >
+              <pdz-icon name="arrow_downward" size="sm"></pdz-icon>
+              <span>Move down</span>
+            </button>
+            <button
+              pdz-button
+              size="sm"
+              variant="outlined"
+              color="neutral"
+              (click)="onInsertRound(listRound.index + 1)"
+            >
+              <pdz-icon name="add" size="sm"></pdz-icon>
+              <span>Round below</span>
+            </button>
+            <button
+              pdz-button
+              size="sm"
+              variant="outlined"
+              color="neutral"
+              (click)="addStage.emit(listRound.index)"
+            >
+              <pdz-icon name="add" size="sm"></pdz-icon>
+              <span>Add stage</span>
+            </button>
+            <button
+              pdz-button
+              size="sm"
+              variant="outlined"
+              color="danger"
+              [disabled]="!canRemoveRound(listRound.index)"
+              [title]="
+                canRemoveRound(listRound.index)
+                  ? 'Delete this round'
+                  : 'Only an empty round can be deleted'
+              "
+              (click)="onRemoveRound(listRound.index)"
+            >
+              <pdz-icon name="delete" size="sm"></pdz-icon>
+              <span>Delete</span>
+            </button>
+          </div>
+        }
+
+        @for (group of listRound.groups; track group.stage.key) {
+          <div class="list__stage">
+            <div class="list__stage-head">
+              <pdz-icon [name]="group.stage.typeIcon" size="sm"></pdz-icon>
+              <span class="list__stage-title">{{ group.stage.title }}</span>
+              @if (group.stage.typeLabel) {
+                <span class="list__stage-type">{{ group.stage.typeLabel }}</span>
+              }
+              @if (editable()) {
+                <button
+                  pdz-button
+                  size="xs"
+                  class="list__stage-visibility"
+                  [variant]="group.stage.public ? 'tonal' : 'outlined'"
+                  [color]="group.stage.public ? 'primary' : 'neutral'"
+                  [attr.aria-pressed]="group.stage.public"
+                  [attr.aria-label]="
+                    group.stage.public
+                      ? 'Hide this stage'
+                      : 'Publish this stage'
+                  "
+                  (click)="onToggleStageVisibility(group.stage.key)"
+                >
+                  <pdz-icon
+                    [name]="
+                      group.stage.public ? 'visibility' : 'visibility_off'
+                    "
+                    size="sm"
+                  ></pdz-icon>
+                  @if (!group.stage.public) {
+                    <span>Hidden</span>
+                  }
+                </button>
+              }
+            </div>
+
+            @for (match of group.cell.matches; track trackMatch($index, match)) {
+              <div class="list__match">
+                <pdz-match-card
+                  [match]="match"
+                  [allMatches]="draft().matches"
+                  [teams]="teamsFor(group.stage.key)"
+                  [labels]="labels"
+                  [editable]="editable()"
+                  [matchupLinkBase]="matchupLinkBase()"
+                  (edit)="editMatch.emit($event)"
+                  (remove)="onRemoveMatch($event)"
+                ></pdz-match-card>
+
+                @if (editable()) {
+                  <div class="list__match-move">
+                    <button
+                      pdz-button
+                      iconOnly
+                      size="xs"
+                      variant="ghost"
+                      color="neutral"
+                      aria-label="Move this match a round earlier"
+                      [disabled]="!canMoveMatchRound(match, -1)"
+                      (click)="onMoveMatchRound(match, -1)"
+                    >
+                      <pdz-icon name="arrow_upward" size="sm"></pdz-icon>
+                    </button>
+                    <button
+                      pdz-button
+                      iconOnly
+                      size="xs"
+                      variant="ghost"
+                      color="neutral"
+                      aria-label="Move this match a round later"
+                      [disabled]="!canMoveMatchRound(match, 1)"
+                      (click)="onMoveMatchRound(match, 1)"
+                    >
+                      <pdz-icon name="arrow_downward" size="sm"></pdz-icon>
+                    </button>
+                  </div>
+                }
+              </div>
+            } @empty {
+              @if (!editable()) {
+                <p class="list__empty">No matches yet.</p>
+              }
+            }
+
+            @if (editable()) {
+              <button
+                pdz-button
+                size="xs"
+                variant="ghost"
+                color="neutral"
+                (click)="onAddMatch(group.cell)"
+              >
+                <pdz-icon name="add" size="sm"></pdz-icon>
+                <span>Match</span>
+              </button>
+            }
+          </div>
+        } @empty {
+          <p class="list__empty">Nothing scheduled this round.</p>
+        }
+      </section>
+    } @empty {
+      <p class="list__empty">No rounds yet.</p>
+    }
+  </div>
+} @else {
 <div
   class="builder pdz-scrollbar-visible"
   [class.builder--readonly]="!editable()"
@@ -31,46 +264,71 @@
       >
         <div class="gutter__row">
           @if (editable()) {
-            <input
-              class="gutter__name"
-              type="text"
-              [value]="round.name"
-              aria-label="Round name"
-              (change)="onRenameRound($index, $any($event.target).value)"
-            />
-            <input
-              class="gutter__deadline"
-              type="datetime-local"
-              [value]="deadlineValue(round, 'matchDeadline')"
-              aria-label="Match deadline"
-              title="Match deadline"
-              (change)="
-                onRoundDeadline($index, 'matchDeadline', $any($event.target).value)
+            <span class="gutter__heading">
+              <span class="gutter__name">
+                {{ round.name }}
+              </span>
+            </span>
+
+            @if (round.matchDeadline || round.tradeDeadline) {
+              <span class="gutter__meta">
+                @if (round.matchDeadline) {
+                  <span class="gutter__deadline">
+                    <pdz-icon name="schedule" [size]="14"></pdz-icon>
+                    Matches {{ round.matchDeadline | date: "MMM d, h:mm a" }}
+                  </span>
+                }
+                @if (round.tradeDeadline) {
+                  <span class="gutter__deadline">
+                    <pdz-icon name="swap_horiz" [size]="14"></pdz-icon>
+                    Trades {{ round.tradeDeadline | date: "MMM d, h:mm a" }}
+                  </span>
+                }
+              </span>
+            }
+            <button
+              pdz-button
+              size="xs"
+              class="gutter__live"
+              [variant]="$index === currentRoundIndex() ? 'tonal' : 'outlined'"
+              [color]="$index === currentRoundIndex() ? 'primary' : 'neutral'"
+              [disabled]="!canSetCurrentRound()"
+              [attr.aria-pressed]="$index === currentRoundIndex()"
+              [title]="
+                !canSetCurrentRound()
+                  ? 'Save the schedule before changing the live round'
+                  : $index === currentRoundIndex()
+                    ? 'Coaches see this as the current round — click to go back to not started'
+                    : 'Make this the round coaches see as current'
               "
-            />
-            <input
-              class="gutter__deadline"
-              type="datetime-local"
-              [value]="deadlineValue(round, 'tradeDeadline')"
-              aria-label="Trade deadline"
-              title="Trade deadline — coaches cannot file trades for this round after it"
-              (change)="
-                onRoundDeadline($index, 'tradeDeadline', $any($event.target).value)
-              "
-            />
-            <input
-              class="gutter__best-of"
-              type="number"
-              min="1"
-              step="2"
-              placeholder="Bo"
-              [value]="round.bestOf ?? ''"
-              aria-label="Best of"
-              title="Games per match"
-              (change)="onRoundBestOf($index, $any($event.target).value)"
-            />
+              (click)="onToggleCurrentRound($index)"
+            >
+              <pdz-icon
+                [name]="
+                  $index === currentRoundIndex()
+                    ? 'radio_button_checked'
+                    : 'radio_button_unchecked'
+                "
+                size="sm"
+              ></pdz-icon>
+              <span>{{
+                $index === currentRoundIndex() ? "Live round" : "Make live"
+              }}</span>
+            </button>
 
             <div class="gutter__actions">
+              <button
+                pdz-button
+                iconOnly
+                size="xs"
+                variant="ghost"
+                color="neutral"
+                aria-label="Round settings"
+                title="Name, match deadline and trade deadline"
+                (click)="onEditRound($index)"
+              >
+                <pdz-icon name="tune" size="sm"></pdz-icon>
+              </button>
               <button
                 pdz-button
                 iconOnly
@@ -126,7 +384,7 @@
             </div>
           } @else {
             <span class="gutter__heading">
-              <span class="gutter__name gutter__name--static">{{
+              <span class="gutter__name">{{
                 round.name
               }}</span>
               @if ($index === currentRoundIndex()) {
@@ -134,23 +392,18 @@
               }
             </span>
             @if (round.matchDeadline) {
-              <span class="gutter__deadline gutter__deadline--static">
+              <span class="gutter__deadline">
                 <pdz-icon name="schedule" [size]="14"></pdz-icon>
                 {{ round.matchDeadline | date: "MMM d, h:mm a" }}
               </span>
             }
             @if (round.tradeDeadline) {
               <span
-                class="gutter__deadline gutter__deadline--static"
+                class="gutter__deadline"
                 title="Trade deadline"
               >
                 <pdz-icon name="swap_horiz" [size]="14"></pdz-icon>
                 {{ round.tradeDeadline | date: "MMM d, h:mm a" }}
-              </span>
-            }
-            @if (round.bestOf) {
-              <span class="gutter__deadline gutter__deadline--static">
-                Bo{{ round.bestOf }}
               </span>
             }
           }
@@ -291,7 +544,6 @@
       @for (round of rounds; track trackRound($index, round)) {
         <button
           pdz-button
-          iconOnly
           size="xs"
           variant="ghost"
           color="neutral"
@@ -308,3 +560,4 @@
     }
   </div>
 </div>
+}

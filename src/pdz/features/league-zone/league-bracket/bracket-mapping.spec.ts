@@ -67,7 +67,7 @@ describe('mapRawBracket round axis', () => {
   it('exposes the round axis with names and deadlines', () => {
     const raw = response({
       rounds: [
-        { ...round('r0', 'Week 1', '2026-08-07T00:00:00.000Z'), bestOf: 3 },
+        round('r0', 'Week 1', '2026-08-07T00:00:00.000Z'),
         round('r1', 'Week 2'),
       ],
       matches: [match('m1', 'r0')],
@@ -76,8 +76,6 @@ describe('mapRawBracket round axis', () => {
     const { rounds } = mapRawBracket(raw);
     expect(rounds?.map((r) => r.name)).toEqual(['Week 1', 'Week 2']);
     expect(rounds?.[0].matchDeadline).toBe('2026-08-07T00:00:00.000Z');
-    expect(rounds?.[0].bestOf).toBe(3);
-    expect(rounds?.[1].bestOf).toBe(null);
   });
 
   it('returns the round axis even when the stage has no matches yet', () => {

@@ -3,7 +3,10 @@
 
 :host {
   display: block;
-  height: 100%;
+
+  @include respond-above(medium) {
+    height: 100%;
+  }
 }
 
 .loading-state {
@@ -17,12 +20,15 @@
   display: flex;
   flex-direction: column;
   gap: pdz.space(md);
-  height: 100%;
-  min-height: 0;
 
-  > pdz-stage-builder {
-    flex: 1 1 auto;
-    min-height: 14rem;
+  @include respond-above(medium) {
+    height: 100%;
+    min-height: 0;
+
+    > pdz-stage-builder {
+      flex: 1 1 auto;
+      min-height: 14rem;
+    }
   }
 
   &__actions {

@@ -13,8 +13,13 @@
     <pdz-risk-banner [risk]="risk()" />
 
     <pdz-card padding="lg">
-      @for (node of nodes(); track node.id) {
-        <pdz-settings-node [node]="node" [artifact]="node.artifact ?? null" />
+      @for (entry of nodes(); track entry.node.id) {
+        <pdz-settings-node
+          [node]="entry.node"
+          [artifact]="entry.node.artifact ?? null"
+          [disabled]="entry.locked"
+          [lockedReason]="entry.locked ? gateReason : null"
+        />
       }
     </pdz-card>
 

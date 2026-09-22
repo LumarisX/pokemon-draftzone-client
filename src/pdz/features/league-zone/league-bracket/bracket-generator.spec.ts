@@ -642,7 +642,7 @@ describe('toBracketPayload with composed sections', () => {
   it('keeps organizer-authored round names and deadlines', () => {
     const authored = [
       { name: 'Week 1', matchDeadline: '2026-08-07T00:00:00.000Z' },
-      { name: 'Week 2', matchDeadline: null, bestOf: 3 },
+      { name: 'Week 2', matchDeadline: null },
       { name: 'Championship', matchDeadline: null },
     ];
     const payload = toBracketPayload(composed(), authored);

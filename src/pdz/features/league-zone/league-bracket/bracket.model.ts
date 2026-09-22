@@ -30,7 +30,6 @@ export interface BracketRoundMeta {
   name: string;
   matchDeadline?: string | null;
   tradeDeadline?: string | null;
-  bestOf?: number | null;
 }
 
 export interface FlexBracketMatch {

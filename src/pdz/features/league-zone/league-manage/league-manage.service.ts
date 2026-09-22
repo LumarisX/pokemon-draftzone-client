@@ -38,45 +38,6 @@ export class LeagueManageService {
   leagueZoneService = inject(LeagueZoneService);
 
   /**
-   * A matchup is addressed at tournament level: its slug is unique, so the
-   * stage it belongs to is not part of the route. This matters for the results
-   * editor in particular, which is tournament-scoped and shows a round holding
-   * matchups from several stages at once.
-   */
-  updateMatchupSchedule(
-    matchupSlug: string,
-    payload: {
-      score?: { team1: number; team2: number };
-      winner?:
-        | 'side1'
-        | 'side2'
-        | 'draw'
-        | 'side1ffw'
-        | 'side2ffw'
-        | 'dffl'
-        | null;
-
-      matches: Array<{
-        link?: string;
-        winner: 'side1' | 'side2' | 'draw';
-        team1: {
-          score: number;
-          pokemon: Record<string, League.MatchPokemonStats | { status: null }>;
-        };
-        team2: {
-          score: number;
-          pokemon: Record<string, League.MatchPokemonStats | { status: null }>;
-        };
-      }>;
-    },
-  ) {
-    return this.apiService.post(
-      `leagues/${this.leagueZoneService.leagueSlug()}/tournaments/${this.leagueZoneService.tournamentSlug()}/matchups/${matchupSlug}`,
-      payload,
-    );
-  }
-
-  /**
    * Names the side that leaves a match whose result cannot say so itself.
    *
    * The fix for a bracket stalled by a double forfeit: it decides nothing, so
@@ -282,8 +243,8 @@ export class LeagueManageService {
     return this.apiService.get<{
       name: string;
       description?: string;
-      format: string;
-      ruleset: string;
+      format: string | null;
+      ruleset: string | null;
       signUpDeadline: string;
       draftStart?: string;
       draftEnd?: string;
@@ -320,8 +281,7 @@ export class LeagueManageService {
   updateTournamentSettings(settings: {
     name?: string;
     description?: string;
-    format?: string;
-    ruleset?: string;
+    tierListId?: string;
     signUpDeadline?: Date;
     draftStart?: Date;
     draftEnd?: Date;

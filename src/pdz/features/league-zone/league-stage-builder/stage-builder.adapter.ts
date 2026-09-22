@@ -18,7 +18,6 @@ export function toBuilderDraft(bracket: TournamentBracket): BuilderDraft {
     name: round.name,
     matchDeadline: round.matchDeadline ?? null,
     tradeDeadline: round.tradeDeadline ?? null,
-    bestOf: round.bestOf ?? null,
     key: round._id ?? nextRoundKey(),
   }));
 
@@ -85,7 +84,6 @@ export function toUpdatePayload(
       name: round.name,
       ...(round.matchDeadline ? { matchDeadline: round.matchDeadline } : {}),
       ...(round.tradeDeadline ? { tradeDeadline: round.tradeDeadline } : {}),
-      ...(round.bestOf != null ? { bestOf: round.bestOf } : {}),
     })),
     stages: draft.stages.map((stage) => ({
       ...(stage.stageId ? { _id: stage.stageId } : {}),

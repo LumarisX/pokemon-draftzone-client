@@ -3,7 +3,7 @@
     [match]="match"
     [games]="games"
     [sideNames]="sideNames"
-    [notes]="notesControl"
+    [notes]="reportNotes"
     notesLabel="Notes for the organizers (optional)"
     notesPlaceholder="Anything the organizers should know…"
   />
@@ -95,7 +95,7 @@
       [loading]="saving()"
       [disabled]="!canSubmit"
     >
-      {{ saving() ? "Sending…" : "Submit for review" }}
+      {{ saving() ? savingLabel() : submitLabel() }}
     </button>
   </div>
 </form>

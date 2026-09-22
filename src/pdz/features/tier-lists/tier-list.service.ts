@@ -159,6 +159,7 @@ export class TierListService {
         this.apiService.get<{
       tierList: LeagueTier[];
       divisions: { [key: string]: { pokemonId: string; teamId: string }[] };
+      format?: string;
       ruleset?: string;
       name?: string;
       description?: string;

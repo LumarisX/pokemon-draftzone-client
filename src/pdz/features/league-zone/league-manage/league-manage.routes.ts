@@ -2,7 +2,7 @@ import { Routes } from '@angular/router';
 import { LeagueRulesFormComponent } from '../league-rules-overview/league-rules-form/league-rules-form.component';
 import { LeagueScheduleComponent } from '../league-stage-builder/stage-builder-page.component';
 import { LeagueManageDraftComponent } from './league-manage-draft/league-manage-draft.component';
-import { LeagueManageScheduleComponent } from './league-manage-schedule/league-manage-schedule.component';
+import { LeagueManageResultsComponent } from './league-manage-results/league-manage-results.component';
 import { LeagueOrganizersComponent } from './league-organizers/league-organizers.component';
 import { TradeManagerComponent } from './trade-manager/trade-manager.component';
 
@@ -37,7 +37,7 @@ export const routes: Routes = [
   // getSchedule() and groups matches by stage itself.
   {
     path: 'results',
-    component: LeagueManageScheduleComponent,
+    component: LeagueManageResultsComponent,
   },
   {
     // Where the per-stage results editor used to live. Kept as a redirect so the
