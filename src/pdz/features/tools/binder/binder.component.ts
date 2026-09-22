@@ -619,7 +619,7 @@ export class BinderComponent {
     const page = Number(value);
     if (!Number.isFinite(page) || page < 1) return;
     const index = Math.min(
-      (page - 1) * 16,
+      (page - 1) * this.store.pageSize(),
       Math.max(this.store.slots().length - 1, 0),
     );
     this.highlighted.set(null);

@@ -332,7 +332,6 @@
             [style.gridRow]="slot.gridRow"
             [style.gridColumn]="slot.gridColumn"
             [class.binder__slot--owned]="slot.card && store.isOwned(slot.key)"
-            [class.binder__slot--page-start]="slot.pocket === 1"
             [class.binder__slot--blank]="!slot.card && !slot.label"
             [class.binder__slot--divider]="!slot.card && slot.label"
             [class.binder__slot--selected]="isSelected(slot.key)"

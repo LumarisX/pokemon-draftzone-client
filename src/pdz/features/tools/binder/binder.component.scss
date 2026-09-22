@@ -38,9 +38,6 @@
 }
 
 .binder__findbar {
-  position: sticky;
-  inset-block-start: pdz.space(sm);
-  z-index: pdz.z(sticky);
   display: flex;
   flex-direction: column;
   gap: pdz.space(xs);
@@ -50,9 +47,8 @@
     padding: pdz.space(sm);
   }
   border: 1px solid pdz.color(outline-variant);
-  border-radius: pdz.shape(corner-sm);
-  background: pdz.color(surface-container);
-  box-shadow: var(--pdz-level-1);
+  border-radius: pdz.shape(corner-lg);
+  background: pdz.color(surface-container-low);
 }
 
 .binder__findbar-row {
@@ -160,10 +156,10 @@
   --binder-card-w: 6.5rem;
   --binder-gutter: #{pdz.space(lg)};
 
+  min-width: 0;
   overflow-x: auto;
+  overflow-y: hidden;
   overscroll-behavior-x: contain;
-  scroll-snap-type: x proximity;
-  scroll-padding-inline-start: pdz.space(sm);
   padding-block-start: pdz.space(xl);
   -webkit-overflow-scrolling: touch;
 
@@ -191,10 +187,6 @@
     border-color pdz.duration(fast) pdz.easing(standard),
     background-color pdz.duration(fast) pdz.easing(standard),
     box-shadow pdz.duration(fast) pdz.easing(standard);
-
-  &.binder__slot--page-start {
-    scroll-snap-align: start;
-  }
 
   &.binder__slot--owned {
     border-color: pdz.color(success);
