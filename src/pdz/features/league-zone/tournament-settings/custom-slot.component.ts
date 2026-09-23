@@ -4,6 +4,7 @@ import {
   computed,
   inject,
   input,
+  signal,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { apiErrorMessage } from '@pdz/core/services/api.service';
@@ -25,6 +26,12 @@ import {
 } from './settings-schema';
 import { TournamentSettingsStore } from './tournament-settings.store';
 import { LeagueZoneService } from '../league-zone.service';
+import {
+  DiscordLinkCode,
+  LeagueManageService,
+} from '../league-manage/league-manage.service';
+import { BadgeComponent } from '@pdz/shared/data/badge/badge.component';
+import { DatePipe } from '@angular/common';
 import { DialogService } from '@pdz/shared/dialogs/dialog/dialog.service';
 import { ToastService } from '@pdz/shared/feedback/toast/toast.service';
 import { TierListPanelComponent } from './tier-list-panel.component';
@@ -34,6 +41,8 @@ import { TierListPanelComponent } from './tier-list-panel.component';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     FormsModule,
+    BadgeComponent,
+    DatePipe,
     ButtonComponent,
     CheckComponent,
     ChoiceDirective,
@@ -67,6 +76,81 @@ export class CustomSlotComponent {
   protected readonly signUpChannelId = computed(() =>
     this.store.read<string>('discordSignUpChannelId'),
   );
+
+  private readonly manage = inject(LeagueManageService);
+  protected readonly discordLink = this.store.discordLink;
+  protected readonly linkCode = signal<DiscordLinkCode | null>(null);
+  protected readonly linkBusy = signal(false);
+
+  protected createLinkCode(): void {
+    this.linkBusy.set(true);
+    this.manage.createDiscordLinkCode().subscribe({
+      next: (code) => {
+        this.linkCode.set(code);
+        this.linkBusy.set(false);
+      },
+      error: (err) => {
+        this.toast.error(apiErrorMessage(err, 'Could not create a link code.'));
+        this.linkBusy.set(false);
+      },
+    });
+  }
+
+  protected async copyLinkCommand(command: string): Promise<void> {
+    try {
+      await navigator.clipboard.writeText(command);
+      this.toast.success('Command copied.');
+    } catch {
+      this.toast.error('Could not copy the command.');
+    }
+  }
+
+  protected checkLink(): void {
+    const before = this.discordLink();
+    this.linkBusy.set(true);
+    this.store.refreshDiscordLink().subscribe({
+      next: (link) => {
+        this.linkBusy.set(false);
+        const changed =
+          !!link && (link.guildId !== before?.guildId || !before?.verified);
+        if (changed) {
+          this.linkCode.set(null);
+          this.toast.success(`Linked to ${link.guildName ?? link.guildId}.`);
+        } else {
+          this.toast.info(
+            'Not linked yet. Run the command in your Discord server first.',
+          );
+        }
+      },
+      error: (err) => {
+        this.linkBusy.set(false);
+        this.toast.error(apiErrorMessage(err, 'Could not check the link.'));
+      },
+    });
+  }
+
+  protected async unlinkDiscord(): Promise<void> {
+    const confirmed = await this.dialogs.confirm('Unlink this Discord server?', {
+      message:
+        'DraftZone stops posting sign-ups and picks and granting the coach role there. The coach role and every channel are cleared, so you will pick them again after relinking.',
+      confirmLabel: 'Unlink',
+      confirmColor: 'danger',
+    });
+    if (!confirmed) return;
+
+    this.linkBusy.set(true);
+    this.store.unlinkDiscord().subscribe({
+      next: () => {
+        this.linkBusy.set(false);
+        this.linkCode.set(null);
+        this.toast.success('Discord server unlinked.');
+      },
+      error: (err) => {
+        this.linkBusy.set(false);
+        this.toast.error(apiErrorMessage(err, 'Could not unlink the server.'));
+      },
+    });
+  }
 
   protected readonly questionTypes = SIGNUP_QUESTION_TYPE_OPTIONS;
 

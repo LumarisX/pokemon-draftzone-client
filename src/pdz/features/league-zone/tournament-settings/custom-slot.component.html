@@ -58,6 +58,83 @@
     </div>
   }
 
+  @case ('discord-link') {
+    <div class="slot-discord">
+      @if (discordLink(); as link) {
+        <div class="slot-discord__linked">
+          <pdz-icon name="link" [size]="18" aria-hidden="true" />
+          <span class="slot-discord__server">{{ link.guildName ?? link.guildId }}</span>
+          @if (link.verified) {
+            <pdz-badge tone="success" variant="soft" size="sm">Linked</pdz-badge>
+          } @else {
+            <pdz-badge tone="warning" variant="soft" size="sm">Unverified</pdz-badge>
+          }
+        </div>
+        @if (!link.verified) {
+          <p class="slot-discord__note">
+            This server was entered by ID before server linking existed. Link it
+            with a code to confirm you manage it.
+          </p>
+        }
+      } @else {
+        <p class="slot-discord__note">
+          Link the Discord server DraftZone should post to and assign roles in.
+          The DraftZone bot has to be in that server.
+        </p>
+      }
+
+      @if (linkCode(); as code) {
+        <label pdz-field label="Run this in your Discord server">
+          <input
+            pdz-input
+            type="text"
+            readonly
+            [ngModel]="code.command"
+            [ngModelOptions]="{ standalone: true }"
+          />
+        </label>
+        <p class="slot-discord__note">
+          Someone with the Manage Server permission has to run it. The code
+          works once and expires at {{ code.expiresAt | date: 'shortTime' }}.
+        </p>
+        <div class="slot-discord__actions">
+          <button pdz-button type="button" size="sm" variant="outlined" (click)="copyLinkCommand(code.command)">
+            Copy command
+          </button>
+          <button pdz-button type="button" size="sm" [disabled]="linkBusy()" (click)="checkLink()">
+            I've run it
+          </button>
+        </div>
+      } @else {
+        <div class="slot-discord__actions">
+          <button
+            pdz-button
+            type="button"
+            size="sm"
+            [variant]="discordLink() ? 'outlined' : 'filled'"
+            [disabled]="disabled() || linkBusy()"
+            (click)="createLinkCode()"
+          >
+            {{ discordLink() ? 'Link a different server' : 'Link a Discord server' }}
+          </button>
+          @if (discordLink()) {
+            <button
+              pdz-button
+              type="button"
+              size="sm"
+              variant="outlined"
+              color="danger"
+              [disabled]="disabled() || linkBusy()"
+              (click)="unlinkDiscord()"
+            >
+              Unlink
+            </button>
+          }
+        </div>
+      }
+    </div>
+  }
+
   @case ('discord-channels') {
     <label pdz-field label="Sign-up channel ID">
       <input

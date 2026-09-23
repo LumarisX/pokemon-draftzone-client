@@ -493,26 +493,14 @@ export class LeagueZoneService {
     );
   }
 
-  /**
-   * Self-service team rename. The API authorises the team's own coach and
-   * organizers.
-   *
-   * Takes both identifiers: the CRUD endpoint is keyed by ObjectId, while the
-   * team page it invalidates is addressed by slug.
-   */
-  updateTeamInfo(
-    teamId: string,
-    teamSlug: string,
-    changes: { teamName?: string; logo?: string },
-  ) {
-    return this.apiService.patch<{ _id: string; teamName: string }>(
-      `teams/${teamId}`,
-      changes,
+  renameTeam(coachId: string, teamSlug: string, teamName: string) {
+    return this.apiService.patch<{ message: string }>(
+      this.coachPath(coachId),
+      { teamName },
       { invalidateCache: [this.teamPath(teamSlug)] },
     );
   }
 
-  /** Self-service coach-profile edit. The API authorises the coach themself and organizers. */
   updateCoachProfile(
     coachId: string,
     changes: {
@@ -522,8 +510,8 @@ export class LeagueZoneService {
       timezone?: string;
     },
   ) {
-    return this.apiService.patch<{ _id: string }>(
-      `coaches/${coachId}`,
+    return this.apiService.patch<{ message: string }>(
+      this.coachPath(coachId),
       changes,
       {
         invalidateCache: [
@@ -531,6 +519,10 @@ export class LeagueZoneService {
         ],
       },
     );
+  }
+
+  private coachPath(coachId: string): string {
+    return `${ROOTPATH}/${this.leagueSlug()}/tournaments/${this.tournamentSlug()}/coaches/${coachId}`;
   }
 
   /**

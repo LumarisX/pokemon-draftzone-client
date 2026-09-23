@@ -239,6 +239,7 @@ export interface SignUpValue {
   teamSlug: string | null;
   logo: string | null;
   status: SignUpStatus;
+  departed: boolean;
   teamName: string;
   coach: string;
   showdownName: string;
@@ -280,6 +281,7 @@ export type CustomSlot =
   | 'logo'
   | 'tier-requirements'
   | 'prize-split'
+  | 'discord-link'
   | 'discord-channels'
   | 'invite-link'
   | 'signup-questions'
@@ -780,18 +782,24 @@ export const SETTINGS_NODES: readonly SettingsNode[] = [
     title: 'Discord bot',
     help: 'Lets DraftZone post picks, assign the coach role and mirror sign-ups.',
     controls: [
-      { kind: 'text', key: 'discordGuildId', label: 'Server ID' },
-      { kind: 'text', key: 'discordCoachRoleId', label: 'Coach role ID' },
+      { kind: 'custom', slot: 'discord-link', keys: ['discordGuildId'] },
+      {
+        kind: 'text',
+        key: 'discordCoachRoleId',
+        label: 'Coach role ID',
+        showWhen: (v) => !!v.discordGuildId,
+      },
       {
         kind: 'toggle',
         key: 'discordAutoGrantCoachRole',
         label: 'Grant the coach role on approval',
-        showWhen: (v) => !!v.discordCoachRoleId,
+        showWhen: (v) => !!v.discordGuildId && !!v.discordCoachRoleId,
       },
       {
         kind: 'custom',
         slot: 'discord-channels',
         keys: ['discordSignUpChannelId'],
+        showWhen: (v) => !!v.discordGuildId,
       },
     ],
   },

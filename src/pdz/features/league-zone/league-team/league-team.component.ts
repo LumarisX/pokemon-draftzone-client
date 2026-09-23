@@ -272,7 +272,8 @@ export class LeagueTeamComponent implements OnInit, OnDestroy {
 
   private saveTeamEdit(result: TeamEditDialogResult): void {
     const team = this.teamData;
-    if (!team) return;
+    const coachId = team?.coachId;
+    if (!team || !coachId) return;
 
     const renamed = result.teamName !== team.name;
     if (!renamed && !result.logoFile) return;
@@ -289,9 +290,7 @@ export class LeagueTeamComponent implements OnInit, OnDestroy {
     this.saveError = '';
 
     const rename$: Observable<unknown> = renamed
-      ? this.leagueService.updateTeamInfo(team.id, team.slug, {
-          teamName: result.teamName,
-        })
+      ? this.leagueService.renameTeam(coachId, team.slug, result.teamName)
       : of(null);
 
     rename$

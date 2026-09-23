@@ -262,6 +262,7 @@ export namespace League {
     experience: string;
     dropped?: string;
     status: SignUpStatus;
+    departed?: boolean;
     teamName: string;
     logo?: string;
     signedUpAt: Date;

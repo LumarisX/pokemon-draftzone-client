@@ -22,7 +22,7 @@ the reasoning behind the step.
 | 8 | Smaller fixes: `tradeDeadline` enforcement, deadline editors, ~~nested anchor~~, N+1s, `archived` | **done** |
 | 9 | Participation model, sign-up flexibility, invite-only sign-ups — see §11 | **mostly done** — §11.10 steps 1–10b landed 2026-09-22; step 11 and the multi-coach flows remain (§11.14) |
 | 10 | Create leagues and tournaments through the product — see §12 | **not started** |
-| 11 | Bug sweep from the 2026-09-23 review — see §13 | **done**; §13.7 script written, not yet run |
+| 11 | Bug sweep from the 2026-09-23 review — see §13 | **done** — legacy data repaired, `TEAM_STATUSES` narrowed; step 11 applied (backup kept) |
 | 12 | Security, data-integrity and structure review — see §14 | **not started** — **priority**: §14.1 (P0) goes ahead of every other open step, then §14.2–14.3 |
 
 ---
@@ -1433,6 +1433,12 @@ who finds it can sign up.
     `leagueteams`. See below — this is the only irreversible act in the
     migration and there is no schedule pressure to perform it.
 
+    **Brought forward 2026-09-23 by decision**, one day after 10b, and made
+    reversible: `scripts/unset-team-coach-field.ts` copies every `coach` value
+    into `legacyteamcoachrefs` (keyed by team id) before unsetting it, and
+    `--rollback --apply` writes them back. The act only becomes irreversible
+    when that collection is dropped. See §13.8.
+
 Every existing team has exactly one coach whose `teamId` already points back
 correctly, so steps 1-2 were pure backfill with no ambiguity — confirmed against
 production, not assumed.
@@ -1709,7 +1715,7 @@ The same fix then went into `tier-list-browse` (whose `details.reason` read had
 the same wrong nesting), `tier-list-create`, `upload-image` and
 `pokemon-search-core`. The debug calculator was left alone as a dev-only page.
 
-### 13.7 Legacy teams and their applications disagree — script written, not yet run
+### 13.7 Legacy teams and their applications disagree — resolved 2026-09-23
 
 The step-6a backfill gave every pre-existing team an application with
 `resultingTeamId` set, and carried the team's status onto it. From then on, the
@@ -1775,8 +1781,90 @@ npx ts-node scripts/reconcile-legacy-team-applications.ts --rollback            
 npx ts-node scripts/reconcile-legacy-team-applications.ts --rollback --apply    # rollback
 ```
 
-Typechecked against the project's compiler flags. It has not been run, even as
-a dry run.
+**Applied to prod 2026-09-23** (straight to `--apply`, no dry run): 58 retired
+(47 pending, 11 denied), 0 promoted, 0 synced, no missing teams, no shared
+applications, no names over 64 characters. 10 skipped:
+
+- 2 **pending with picks**: Deimos Deoxys `6a5a8d79…`, Sturdy Shedinjas
+  `6a682279…`.
+- 8 whose **coach document is the picker in another team's pick log**: The
+  Trick Room Rascals, Null City Silvally ×2, Starry Swamperts, Scottish Scotch
+  Drinking Scolipedes, The Kabuto Crawlers, London Vespiquens, Mallorca
+  Mudkips. All carry the `6a3f3b…` id prefix (created together on
+  2026-06-27), which points at the legacy-to-Nest import. The working theory
+  is that the import resolved `pickLog.picker` by person rather than by team,
+  so a real team's picks point at a coach document that lives on an unrelated
+  pending team. Deleting that document would blank the picker names on the
+  team that actually drafted.
+
+`scripts/diagnose-skipped-legacy-teams.ts` is a read-only report on every
+remaining pending/denied team: its tournament, application, draft, matchups,
+coaches, and for each coach which other teams log it as picker and whether
+those teams have a coach for the same `auth0Id`.
+
+**What it showed (2026-09-23).** The theory was wrong about the cause and right
+about the risk:
+
+- All 8 are in PDBL S3 (VGC and Singles). Each ghost's coach made the picks for
+  exactly one team in the same tournament, and that team's current coach is a
+  **different person**. These are original coaches who were **replaced**. In
+  the legacy data a replacement repointed `team.coach` and orphaned the old
+  coach, and `migrate-coach-team-division-to-nest.ts` then created a new team
+  for every coach no team pointed at, taking its status from the coach
+  (`coach.status ?? "pending"`). The picks are credited correctly; the ghost
+  team is the artifact.
+- **Bigger finding: legacy teams with no `status` field read as pending.** That
+  migration never set a status on the teams it *reused*, and `TeamEntity.status`
+  defaults to `"pending"`, which Mongoose fills in on load. Every status-less
+  legacy team has therefore been reading as pending: missing from standings,
+  drafts, the public coach list and now `listTeams`. The application backfill
+  had already treated a missing status as `approved`, so the two disagree.
+- The 2 with picks are test sign-ups (Lumaris, LumarisTest) in "VGC Season 2":
+  one logged pick each, no draft, no matchups.
+
+`scripts/repair-legacy-team-links.ts` handles all three, backing up to its own
+`legacyteamrepairs` collection:
+
+1. **Fill missing statuses** with `approved`. A team that never played (no
+   picks, no matchups) and whose coach's leftover legacy `status` is not
+   `approved` is skipped and reported rather than guessed at. A team that
+   played is approved whatever its coach's legacy status says, with a note.
+2. **Re-home departed coaches.** For a pending/denied team with no picks,
+   exactly one coach, and that coach logged as picker on exactly one other team
+   in the same tournament: the coach becomes a member of the drafting team with
+   `leftAt` set to the later of the successor coach's creation time and this
+   coach's last logged pick (the successor's sign-up alone can predate the
+   draft), the application becomes
+   `approved` and points at the drafting team, and the ghost team is deleted.
+   This is the same end state `replace-coach` produces today.
+3. **`--retire <teamId>`**, repeatable, for teams named explicitly. It retires
+   despite logged picks (meant for the two test teams), but still refuses any
+   team with outside references or whose coach picks for another team.
+
+```
+npx ts-node scripts/repair-legacy-team-links.ts --retire 6a5a8d799f6ce0f766ee08b7 --retire 6a682279aa5baa47b9659e3b
+npx ts-node scripts/repair-legacy-team-links.ts ... --apply
+npx ts-node scripts/repair-legacy-team-links.ts --rollback [--apply]
+```
+
+**Applied to prod 2026-09-23**, after a dry run: 96 statuses filled (48 in
+PDBL S3: Singles, 48 in PDBL S3: VGC, all of which had played; every one
+of their coaches' legacy statuses was `pending`, so that field carried no
+signal), 8 coaches re-homed, the 2 test teams retired.
+`diagnose-skipped-legacy-teams.ts` afterwards reported **0** pending/denied
+teams. PDBL S3's standings, team lists and draft pages now include those 96
+teams for the first time since the migration.
+
+**Departed coaches, fixed 2026-09-23.** An outgoing coach's application stays
+`approved` with a team (from `replace-coach` and from the re-homing above), and
+`getCoaches` ignored `leftAt`. So the panel listed them under *On a roster*, and
+worse, the Draft section counted them as a **second member of their old
+team's pool**, because pool membership is built from each sign-up's `draft`.
+`getCoaches` now emits `departed`. The panel moves those rows to *Not
+participating* with a "Replaced" badge in place of the status select, keeps
+only *Edit coach info* in their menu (status, replace and remove all act on the
+whole team, and remove deletes it), and the store leaves them out of pool
+membership.
 
 Two code changes stop the drift from coming back:
 
@@ -1807,17 +1895,48 @@ Removed, all verified to have no callers anywhere including specs:
   so that module and its spec are deleted too. The service's re-export of its
   types had no importers.
 
-Deliberately **not** done yet:
+**`TEAM_STATUSES` narrowed to `approved | dropped`**, once both §13.7 scripts
+had run and the diagnostic reported zero pending/denied teams. The schema
+default and `teamRepo.create`'s default are now `approved`, so a status-less
+document can never again read as pending. `listTeams` lost its
+approved-or-dropped filter, which the enum now makes a no-op. The draft spec
+that tested excluding pending/denied teams now tests excluding dropped ones,
+which is the case that can still happen. This closes the deferral from §11.10
+step 6f.
 
-- **Narrowing `TEAM_STATUSES` to `approved | dropped`.** It becomes possible
-  once the §13.7 script has run, but has to wait for the dry-run output: every
-  team the script *skips* keeps a `pending`/`denied` status, and a narrowed
-  enum would make any `save()` on such a document fail validation. Deploy order
-  matters too: the script must run before any narrowed build ships.
-  `teamRepo.create`'s `"pending"` default goes in the same change.
-- **Step 11, `$unset` of `leagueteams.coach`.** Step 10b landed 2026-09-22;
-  §11.10 asks for weeks of it running live first, and this is the one
-  irreversible act in the migration.
+**Step 11, `$unset` of `leagueteams.coach` — applied 2026-09-23.** Dry run
+then apply: 173 of 173 teams carried the field (241 at backfill, less 58
+retired, 8 ghosts and 2 test teams), none differed from `primaryCoach`, none
+dangled, none lacked `primaryCoach`, no index covered it. 173 backed up to
+`legacyteamcoachrefs`, 173 unset, 0 remaining.
+Brought forward by decision rather than waiting weeks. Before writing the
+script, `src` was audited for any remaining reader:
+
+- the populate-path grep from 10b finds only `coaches`, `primaryCoach`,
+  `pickLog.picker`, `teams.pickLog.picker`, `side1.team`, `side2.team`,
+  `league`, `matchups`, `aTeam._id`;
+- no `$lookup`, raw `leagueteams` access or `{ coach: … }` team filter exists
+  outside the schema. The one `team.coach` in `standings.ts` is the standings
+  DTO's own name label, built from `primaryCoach.name`.
+
+`scripts/unset-team-coach-field.ts`:
+
+- refuses to apply while any index on `leagueteams` still covers `coach`;
+- reports how many teams' `coach` differs from `primaryCoach` (replaced
+  coaches, expected) and how many point at a deleted coach document;
+- **refuses to unset any team that has `coach` but no `primaryCoach`**, since
+  that would erase its only coach reference, and lists them;
+- backs each value up to `legacyteamcoachrefs` before unsetting, in batches of
+  500, idempotently.
+
+```
+npx ts-node scripts/unset-team-coach-field.ts                     # dry run
+npx ts-node scripts/unset-team-coach-field.ts --apply
+npx ts-node scripts/unset-team-coach-field.ts --rollback --apply
+```
+
+Drop `legacyteamcoachrefs` only once nothing has needed it for a while; that
+drop, not the unset, is the irreversible act.
 
 ### Verification
 
@@ -1853,11 +1972,11 @@ Paths below are in `pokemon-draftzone-server/src/modules/` unless stated.
 
 | ID | Item | Priority | Status |
 | --- | --- | --- | --- |
-| S1 | Anyone can join any team as a coach | **P0** | open |
-| S2 | Generic `/teams` and `/coaches` routes bypass the tournament | **P0** | open |
-| S3 | Discord settings drive the shared bot in other servers | **P0** | open |
-| S4 | Legacy stage-scoped writes aren't tied to the URL's tournament | **P0** | open |
-| S5 | Replaced and dropped coaches keep chat access | **P0** | open |
+| S1 | Anyone can join any team as a coach | **P0** | **done** 2026-09-23 |
+| S2 | Generic `/teams` and `/coaches` routes bypass the tournament | **P0** | **done** 2026-09-23 |
+| S3 | Discord settings drive the shared bot in other servers | **P0** | **done** 2026-09-23 — `/draftzone link`; run the diagnose script for grandfathered servers |
+| S4 | Legacy stage-scoped writes aren't tied to the URL's tournament | **P0** | **done** 2026-09-23 |
+| S5 | Replaced and dropped coaches keep chat access | **P0** | **done** 2026-09-23 |
 | D1 | Multi-document writes without transactions | P1 | open |
 | D2 | Trades: lost updates and check-then-act | P1 | open |
 | D3 | Trades and name changes reference rounds by index | P1 | open |
@@ -2339,3 +2458,107 @@ Recorded so these aren't re-audited:
    scripts are written and reviewed, and the user runs them.
 4. **A1**, which absorbs H5 and H6, then **A2**.
 5. **D5–D7**, **H1–H4**, then the rest of §14.4–14.5.
+
+### 14.8 Landed — 2026-09-23
+
+**S1 + S2.** The `TeamController`, `CoachController`, `TeamService`,
+`CoachService`, their DTOs and specs, and `tournament/tournament-access.ts`
+(with its global `mongoose.model()` lookups) are deleted. `TeamModule` and
+`CoachModule` are now schema + repository only. Coach records are created only
+by `decideApplication` and `replaceCoach`.
+
+- Client: `renameTeam` and `updateCoachProfile` in `league-zone.service.ts` now
+  call `PATCH …/tournaments/:slug/coaches/:coachId`, which already accepted
+  `teamName`. `renameTeam` is keyed by the team's primary coach id.
+- `loadCoachForEdit` now also refuses a coach with `leftAt` set. Before, a
+  retired coach could still rename their old team through the tournament route.
+
+**S4.** `StageController` is `GET /` only. `StageService` lost every method
+behind the deleted routes (bracket generate/update/delete, schedule,
+stage-scoped trades, pools, current round, visibility, create); it keeps
+`listStages` and the matchup methods. The dead DTOs and the repository's
+`setPools`, `setPublic` and `setCurrentRoundIndex` went with them.
+`UpdateBracketRoundDto` stays, because the tournament-level bracket uses it.
+This reverses §6's "intentional legacy" row. A spec asserts the controller
+exposes nothing but `listStages`.
+
+**S5.** `ChatService.findViewerSeat` takes only active coaches on approved
+teams, and signs messages with the poster's own name. There's a new
+`chat.service.spec.ts`. `getInfo` now shows private pools only to organizers and
+coaches on approved teams, with new specs.
+
+**S3 (interim).**
+
+- `DiscordService.findTargetProblems` checks, on every save of
+  `discordSettings` or a pool's `channelId`, that:
+  - the bot is in the server;
+  - the role belongs to it, isn't `@everyone` or managed, carries no
+    moderator/admin permission, and sits below the bot's role;
+  - every channel belongs to that server.
+
+  Problems come back as `TRN-003` with a readable `reason`.
+- A pool channel now requires the tournament's server to be set first.
+- `grantRole` re-checks the role when it acts, so settings saved before this
+  change can't grant a privileged role either.
+- Discord ids must be snowflakes.
+- Fixed in passing: `TournamentDiscordSettingsDto` had no `autoGrantCoachRole`,
+  so the whitelist stripped it and organizers could never turn auto-grant off.
+
+**S3 (server linking).** Decided 2026-09-23: a slash command, not an admin
+allowlist or Discord OAuth. An organizer can no longer type a server ID.
+
+- **Getting a code.** `POST …/discord/link-code` (organizers only) returns a
+  12-character base62 code, about 71 bits. It's single-use, expires after 15
+  minutes, and is stored as a SHA-256 hash on
+  `leaguetournaments.discordLinkCode`, reusing `hashInviteToken`.
+- **Linking.** Someone runs `/draftzone link code:…` in the server. The command
+  is registered globally at startup with `ManageGuild` as its default member
+  permission and `contexts: [Guild]`. The handler checks `ManageGuild` again,
+  because a server can override command permissions.
+- **What the link does.** It consumes the code atomically and writes
+  `discordSettings.guildId`, `guildName`, `linkedAt` and `linkedBy` (the Discord
+  user id). Linking a *different* server clears the coach role, the sign-up
+  channel and every pool's channel, since those belonged to the old server.
+- **Unlinking.** `DELETE …/discord/link` clears the link, the role, the channel
+  and every pool channel.
+- **Settings saves.** `TournamentDiscordSettingsDto` no longer accepts
+  `guildId`, so the whitelist strips it. `updateSettings` writes only
+  `discordSettings.coachRoleId`, `signUpChannelId` and `autoGrantCoachRole`, by
+  dotted path so the link fields are never overwritten, and validates role and
+  channel against the *linked* server.
+- **Code.**
+  - `DiscordService.registerCommand` is the new command registry, sharing one
+    `interactionCreate` listener with the button handlers.
+  - `TournamentDiscordService` and `TournamentDiscordController` live in the
+    hosted-tournament module.
+  - Specs cover every command branch, the code hash and expiry, and the DTO
+    whitelist.
+- **Client.** The "Server ID" box is now a `discord-link` custom slot. It shows
+  the linked server with a *Linked* or *Unverified* badge, a "Link a Discord
+  server" button that shows the command with Copy and "I've run it" buttons,
+  and Unlink. The role and channel controls only appear once a server is
+  linked. `TournamentSettingsStore.refreshDiscordLink` patches the saved and
+  draft values in place, so a link check never discards unsaved edits
+  elsewhere. `tournament-settings.store.spec.ts` covers it.
+
+**Grandfathered servers.** Tournaments whose `guildId` was typed in before this
+keep working and show as *Unverified*. Run the read-only
+`npx ts-node scripts/diagnose-unverified-discord-links.ts` to list them. It
+also groups them by server, which is where cross-community pointing would show
+up, and lists pools that post to a channel while their tournament has no
+server. Any that look wrong can be cleared from the settings page (Unlink) or
+with a follow-up script.
+
+**Deploy notes.**
+
+- The command registers when the server starts. If `/draftzone` doesn't appear
+  in a server, the bot was probably invited without the `applications.commands`
+  scope and needs re-inviting with it.
+- Not checked against a live Discord server: no Playwright or bot session was
+  available, so the command's appearance and permission gating are verified
+  by spec only.
+
+Verification: server `tsc --noEmit` clean; the tournament, stage, draft, chat,
+team, coach, matchup and discord suites pass 829/830, and the one failure is
+the `external-tournament.controller.spec` baseline. Client
+`ng build --configuration development` is clean.

@@ -12,7 +12,10 @@ import {
 import { apiErrorMessage } from '@pdz/core/services/api.service';
 import { LeagueTier } from '@pdz/features/tier-lists/tier-list.model';
 import { TierListService } from '@pdz/features/tier-lists/tier-list.service';
-import { LeagueManageService } from '../league-manage/league-manage.service';
+import {
+  DiscordSettingsResponse,
+  LeagueManageService,
+} from '../league-manage/league-manage.service';
 import { LeagueZoneService } from '../league-zone.service';
 import { League } from '../league.interface';
 import {
@@ -143,6 +146,42 @@ export class TournamentSettingsStore {
 
   setSignUpToken(token: string): void {
     this.signUpTokenValue.set(token);
+  }
+
+  private readonly discordLinkValue = signal<DiscordLink | null>(null);
+  readonly discordLink = this.discordLinkValue.asReadonly();
+
+  refreshDiscordLink(): Observable<DiscordLink | null> {
+    return this.manage.getTournamentSettings().pipe(
+      map((settings) => {
+        this.applyDiscordSettings(settings.discordSettings);
+        return this.discordLinkValue();
+      }),
+    );
+  }
+
+  unlinkDiscord(): Observable<unknown> {
+    return this.manage
+      .unlinkDiscord()
+      .pipe(map(() => this.applyDiscordSettings(undefined)));
+  }
+
+  private applyDiscordSettings(discord: DiscordSettingsResponse | undefined) {
+    this.discordLinkValue.set(discordLinkFrom(discord));
+
+    const guildId = discord?.guildId ?? '';
+    if (guildId === this.savedValue().discordGuildId) return;
+
+    const patch = {
+      discordGuildId: guildId,
+      discordCoachRoleId: discord?.coachRoleId ?? '',
+      discordSignUpChannelId: discord?.signUpChannelId ?? '',
+    };
+    this.savedValue.update((value) => ({ ...value, ...patch }));
+    this.draftValue.update((value) => ({ ...value, ...patch }));
+    const clearChannel = (pool: DraftPoolValue) => ({ ...pool, channelId: '' });
+    this.savedPools.update((pools) => pools.map(clearChannel));
+    this.draftPools.update((pools) => pools.map(clearChannel));
   }
 
   readonly pendingReports = signal(0);
@@ -357,6 +396,7 @@ export class TournamentSettingsStore {
     };
 
     this.signUpTokenValue.set(settings.signUpToken ?? null);
+    this.discordLinkValue.set(discordLinkFrom(settings.discordSettings));
 
     const signUps: SignUpValue[] = (coaches?.signups ?? []).map((entry) => ({
       id: entry.id ?? null,
@@ -371,6 +411,7 @@ export class TournamentSettingsStore {
       teamSlug: entry.teamSlug ?? null,
       logo: entry.logo ?? null,
       status: entry.status,
+      departed: entry.departed ?? false,
       teamName: entry.teamName,
       coach: entry.name,
       showdownName: entry.gameName,
@@ -393,6 +434,7 @@ export class TournamentSettingsStore {
       const detail = detailBySlug.get(entry.draftSlug) ?? null;
       const members = signUps.filter(
         (signUp) =>
+          !signUp.departed &&
           (coaches?.signups ?? []).find(
             (raw) => raw.applicationId === signUp.applicationId,
           )?.draft === entry.draftSlug,
@@ -710,14 +752,12 @@ export class TournamentSettingsStore {
         : {}),
       ...(touched('discord') ? { discord: v.discord || undefined } : {}),
       ...(touched(
-        'discordGuildId',
         'discordCoachRoleId',
         'discordAutoGrantCoachRole',
         'discordSignUpChannelId',
       )
         ? {
             discordSettings: {
-              guildId: v.discordGuildId || undefined,
               coachRoleId: v.discordCoachRoleId || undefined,
               autoGrantCoachRole: v.discordAutoGrantCoachRole,
               signUpChannelId: v.discordSignUpChannelId || undefined,
@@ -1201,6 +1241,23 @@ function summariseSchedule(
 
 function optional<T>(source: Observable<T>): Observable<T | null> {
   return source.pipe(catchError(() => of(null)));
+}
+
+export type DiscordLink = {
+  guildId: string;
+  guildName: string | null;
+  verified: boolean;
+};
+
+function discordLinkFrom(
+  discord: DiscordSettingsResponse | undefined,
+): DiscordLink | null {
+  if (!discord?.guildId) return null;
+  return {
+    guildId: discord.guildId,
+    guildName: discord.guildName ?? null,
+    verified: !!discord.linkedAt,
+  };
 }
 
 export type { PrizeShare, TierRequirement };

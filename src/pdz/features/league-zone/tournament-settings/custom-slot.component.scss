@@ -109,6 +109,36 @@
   @include pdz.text(body-sm);
 }
 
+.slot-discord {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(sm);
+}
+
+.slot-discord__linked {
+  display: flex;
+  align-items: center;
+  gap: pdz.space(sm);
+  color: pdz.color(on-surface);
+}
+
+.slot-discord__server {
+  @include pdz.text(label-strong);
+  overflow-wrap: anywhere;
+}
+
+.slot-discord__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: pdz.space(sm);
+}
+
+.slot-discord__note {
+  margin: 0;
+  color: pdz.color(on-surface-variant);
+  @include pdz.text(body-sm);
+}
+
 .slot-questions {
   display: flex;
   flex-direction: column;

@@ -8,6 +8,7 @@ import {
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 import { SelectOptionComponent } from '@pdz/shared/dropdowns/select/select-option.component';
 import { SelectComponent } from '@pdz/shared/dropdowns/select/select.component';
+import { BadgeComponent } from '@pdz/shared/data/badge/badge.component';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { CheckComponent } from '@pdz/shared/inputs/choice/check.component';
 import { ChoiceDirective } from '@pdz/shared/inputs/choice/choice.directive';
@@ -63,6 +64,7 @@ type ApplicantGroup = {
   selector: 'pdz-applicants-panel',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    BadgeComponent,
     FormsModule,
     RouterLink,
     ButtonComponent,
@@ -120,7 +122,8 @@ export class ApplicantsPanelComponent {
         hint: 'Approved, with a team.',
         selectable: false,
         entries: entries.filter(
-          (entry) => !!entry.teamId && entry.status === 'approved',
+          (entry) =>
+            !!entry.teamId && entry.status === 'approved' && !entry.departed,
         ),
       },
       {
@@ -133,10 +136,13 @@ export class ApplicantsPanelComponent {
       {
         id: 'out',
         label: 'Not participating',
-        hint: 'Denied, or dropped after being approved.',
+        hint: 'Denied, dropped, or replaced by another coach.',
         selectable: false,
         entries: entries.filter(
-          (entry) => entry.status === 'denied' || entry.status === 'dropped',
+          (entry) =>
+            entry.departed ||
+            entry.status === 'denied' ||
+            entry.status === 'dropped',
         ),
       },
     ];

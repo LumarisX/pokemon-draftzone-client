@@ -10,6 +10,21 @@ import { League, TradeLog } from '@pdz/features/league-zone/league.interface';
 import { ApiService } from '@pdz/core/services/api.service';
 import { LeagueZoneService } from '../league-zone.service';
 
+export type DiscordSettingsResponse = {
+  guildId?: string;
+  guildName?: string;
+  linkedAt?: string;
+  coachRoleId?: string;
+  autoGrantCoachRole?: boolean;
+  signUpChannelId?: string;
+};
+
+export type DiscordLinkCode = {
+  code: string;
+  expiresAt: string;
+  command: string;
+};
+
 export type DraftSettingsPayload = {
   name?: string;
   channelId?: string | null;
@@ -224,6 +239,23 @@ export class LeagueManageService {
     );
   }
 
+  createDiscordLinkCode(): Observable<DiscordLinkCode> {
+    return this.apiService.post<DiscordLinkCode>(
+      `${this.discordPath()}/link-code`,
+      {},
+    );
+  }
+
+  unlinkDiscord(): Observable<{ success: boolean }> {
+    return this.apiService.delete<{ success: boolean }>(
+      `${this.discordPath()}/link`,
+    );
+  }
+
+  private discordPath(): string {
+    return `leagues/${this.leagueZoneService.leagueSlug()}/tournaments/${this.leagueZoneService.tournamentSlug()}/discord`;
+  }
+
   getTournamentSettings() {
     return this.apiService.get<{
       name: string;
@@ -237,12 +269,7 @@ export class LeagueManageService {
       seasonEnd?: string;
       logo?: string;
       discord?: string;
-      discordSettings?: {
-        guildId?: string;
-        coachRoleId?: string;
-        autoGrantCoachRole?: boolean;
-        signUpChannelId?: string;
-      };
+      discordSettings?: DiscordSettingsResponse;
       forfeit: { gameDiff: number; pokemonDiff: number };
       diffMode: 'pokemon' | 'game';
       tierListId: string;
@@ -291,7 +318,6 @@ export class LeagueManageService {
     /** `null` clears the existing logo; `undefined` leaves it untouched. */
     logo?: string | null;
     discordSettings?: {
-      guildId?: string;
       coachRoleId?: string;
       autoGrantCoachRole?: boolean;
       signUpChannelId?: string;
