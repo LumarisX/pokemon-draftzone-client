@@ -57,6 +57,7 @@ import { MenuItemComponent } from '@pdz/shared/menu/menu-item.component';
 import { MenuTriggerDirective } from '@pdz/shared/menu/menu-trigger.directive';
 import { ChipComponent } from '@pdz/shared/data/chip/chip.component';
 import { DEFAULT_RULESET } from '@pdz/core/rulesets';
+import { apiErrorMessage } from '@pdz/core/services/api.service';
 
 @Component({
   selector: 'pdz-pokemon-search-core',
@@ -517,7 +518,7 @@ export class PokemonSearchCoreComponent implements OnInit, OnDestroy {
           this.activeFilterCriteria = searches;
           this.allResults = [];
           this.results = [];
-          this.errorMessage = error?.error?.message || 'Search request failed.';
+          this.errorMessage = apiErrorMessage(error, 'Search request failed.');
         },
       });
   }

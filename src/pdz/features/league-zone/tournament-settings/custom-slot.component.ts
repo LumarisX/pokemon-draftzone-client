@@ -6,6 +6,7 @@ import {
   input,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { apiErrorMessage } from '@pdz/core/services/api.service';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 import { SelectOptionComponent } from '@pdz/shared/dropdowns/select/select-option.component';
 import { SelectComponent } from '@pdz/shared/dropdowns/select/select.component';
@@ -200,7 +201,7 @@ export class CustomSlotComponent {
         this.toast.success('Invite link rotated.');
       },
       error: (err) => {
-        this.toast.error(err?.error?.message ?? 'Could not rotate the link.');
+        this.toast.error(apiErrorMessage(err, 'Could not rotate the link.'));
       },
     });
   }

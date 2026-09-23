@@ -9,6 +9,7 @@ import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { catchError, debounceTime, distinctUntilChanged, of, switchMap } from 'rxjs';
+import { apiErrorMessage } from '@pdz/core/services/api.service';
 import { AuthService } from '@pdz/core/services/auth0.service';
 import { DataService } from '@pdz/core/services/data.service';
 import { TIER_LIST_PATH } from '@pdz/core/route-paths';
@@ -158,9 +159,8 @@ export class TierListBrowseComponent {
       error: (err) => {
         this.deleting.set(null);
         this.toasts.error(
-          err?.error?.details?.reason ??
-            err?.error?.message ??
-            'Could not delete that tier list.',
+          err?.error?.error?.details?.reason ??
+            apiErrorMessage(err, 'Could not delete that tier list.'),
         );
       },
     });
@@ -179,7 +179,7 @@ export class TierListBrowseComponent {
       error: (err) => {
         this.forking.set(null);
         this.toasts.error(
-          err?.error?.message ?? 'Could not copy that tier list.',
+          apiErrorMessage(err, 'Could not copy that tier list.'),
         );
       },
     });

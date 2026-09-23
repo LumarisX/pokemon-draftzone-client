@@ -90,6 +90,7 @@
               type="text"
               pdz-input
               placeholder="Deoxys"
+              [attr.maxlength]="limits.name"
               formControlName="name"
             />
             @if (
@@ -106,6 +107,7 @@
               type="text"
               pdz-input
               placeholder="Deoxys-II"
+              [attr.maxlength]="limits.gameName"
               formControlName="gameName"
             />
             @if (
@@ -124,6 +126,7 @@
               type="text"
               pdz-input
               placeholder="Deoxys#0386"
+              [attr.maxlength]="limits.discordName"
               formControlName="discordName"
             />
             @if (
@@ -211,7 +214,7 @@
                   <textarea
                     pdz-input
                     rows="4"
-                    [attr.maxlength]="question.maxLength"
+                    [attr.maxlength]="question.maxLength ?? limits.answer"
                     [formControlName]="question.id"
                   ></textarea>
                 </label>
@@ -225,7 +228,7 @@
                 >
                   <input
                     pdz-input
-                    [attr.maxlength]="question.maxLength"
+                    [attr.maxlength]="question.maxLength ?? limits.answer"
                     [formControlName]="question.id"
                   />
                 </label>
@@ -252,6 +255,7 @@
               type="text"
               pdz-input
               placeholder="The Double Helixes"
+              [attr.maxlength]="limits.teamName"
               formControlName="teamName"
             />
             @if (

@@ -1,12 +1,6 @@
 import { effect, inject, Injectable, signal } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import {
-  BracketWithSeeding,
-  mapRawBracket,
-  RawBracketResponse,
-} from '@pdz/features/league-zone/league-bracket/bracket-mapping';
-import { defenseData } from '@pdz/features/league-zone/league-ghost';
-import {
   League,
   TradeData,
   TradeLog,
@@ -23,22 +17,13 @@ import {
   MatchupReportPayload,
 } from '@pdz/features/league-zone/league-matchup/league-matchup.model';
 import { TournamentDetails } from '@pdz/features/league-zone/league.model';
-import { getRandomPokemon } from '@pdz/shared/data/namedex';
-import { Observable, of, throwError } from 'rxjs';
+import { Observable, throwError } from 'rxjs';
 import { filter, map, mergeMap } from 'rxjs/operators';
 import { ApiService } from '@pdz/core/services/api.service';
 import { WebSocketService } from '@pdz/core/services/ws.service';
 import { UploadService } from '@pdz/core/services/upload.service';
 
 const ROOTPATH = 'leagues';
-
-// The bracket wire format and its mapping live beside the bracket model;
-// re-exported here because callers reach for them through this service.
-export type {
-  BracketSeedingGroup,
-  BracketSeedingInfo,
-  BracketWithSeeding,
-} from '@pdz/features/league-zone/league-bracket/bracket-mapping';
 
 @Injectable({
   providedIn: 'root',
@@ -214,47 +199,6 @@ export class LeagueZoneService {
     );
   }
 
-  // getTierList() {
-  //   const params: { [key: string]: string } = {};
-  //   const divisionKey = this.divisionKey();
-  //   if (divisionKey) params['division'] = divisionKey;
-  //   return this.apiService.get<{
-  //     tierList: LeagueTier[];
-  //     divisions: { [key: string]: { pokemonId: string; teamId: string }[] };
-  //     ruleset?: string;
-  //   }>(`${ROOTPATH}/${this.leagueSlug()}/tournaments/${this.tournamentSlug()}/tier-list`, {
-  //     params,
-  //   });
-  // }
-
-  // getTierListEdit() {
-  //   const params: { [key: string]: string } = {};
-  //   const divisionKey = this.divisionKey();
-  //   if (divisionKey) params['division'] = divisionKey;
-  //   return this.apiService.get<{
-  //     tierList: LeagueTier[];
-  //     divisions: { [key: string]: { pokemonId: string; teamId: string }[] };
-  //   }>(
-  //     `${ROOTPATH}/${this.leagueSlug()}/tournaments/${this.tournamentSlug()}/tier-list/edit`,
-
-  //     { params },
-  //   );
-  // }
-
-  // saveTierListEdit(
-  //   tiers: Array<{
-  //     name: string;
-  //     cost: number;
-  //     pokemon: Array<{ id: string; name: string; banned?: boolean }>;
-  //   }>,
-  // ) {
-  //   return this.apiService.post<{ success: boolean; message: string }>(
-  //     `${ROOTPATH}/${this.leagueSlug()}/tournaments/${this.tournamentSlug()}/tier-list/edit`,
-  //     { tiers },
-  //     { authenticated: true },
-  //   );
-  // }
-
   /**
    * The whole tournament's schedule, each round's matches grouped by stage.
    *
@@ -274,22 +218,6 @@ export class LeagueZoneService {
           ...(teamSlug ? { teamSlug } : undefined),
         },
       },
-    );
-  }
-
-  getPicks() {
-    return this.apiService.get<League.DraftTeam[]>(
-      `${ROOTPATH}/${this.leagueSlug()}/tournaments/${this.tournamentSlug()}/drafts/${this.draftSlug()}/picks`,
-    );
-  }
-
-  setPicks(
-    teamId: string,
-    picks: { pokemonId: string; addons?: string[] }[][],
-  ) {
-    return this.apiService.post(
-      `${ROOTPATH}/${this.leagueSlug()}/tournaments/${this.tournamentSlug()}/drafts/${this.draftSlug()}/teams/${teamId}/picks`,
-      { picks },
     );
   }
 
@@ -313,12 +241,6 @@ export class LeagueZoneService {
     );
   }
 
-  removeDraftPokemon(teamId: string, pokemonId: string) {
-    return this.apiService.delete(
-      `${ROOTPATH}/${this.leagueSlug()}/tournaments/${this.tournamentSlug()}/drafts/${this.draftSlug()}/teams/${teamId}/draft/${pokemonId}`,
-    );
-  }
-
   /**
    * Every team in the tournament, grouped by draft pool. Public — the teams
    * page is readable without a session or a sign-up.
@@ -333,56 +255,6 @@ export class LeagueZoneService {
   }> {
     return this.apiService.get(
       `${ROOTPATH}/${this.leagueSlug()}/tournaments/${this.tournamentSlug()}/teams/by-draft`,
-    );
-  }
-
-  getTeamDetail(teamIndex: number) {
-    const team = defenseData[teamIndex];
-    const roster: League.LeaguePokemon[] = [];
-    const pokemonCount = Math.round(Math.random() * 2) + 10;
-    for (let i = 0; i < pokemonCount; i++) {
-      const brought = Math.round(Math.random() * 8);
-      const kills = Math.round(Math.random() * 20);
-      const deaths = Math.round(Math.random() * 20);
-      const tera = Math.round(Math.random() * 6) ? undefined : [];
-      const z = Math.round(Math.random() * 6) ? undefined : [];
-      const dmax = Math.round(Math.random() * 6) === 0;
-
-      roster.push({
-        ...getRandomPokemon(),
-        tier: Math.round(Math.random() * 20).toFixed(0),
-        cost: Math.round(Math.random() * 10),
-        record: {
-          brought,
-          kills,
-          deaths,
-        },
-        capt: {
-          tera,
-          z,
-          dmax,
-        },
-      });
-    }
-
-    const wins = Math.round(Math.random() * 8);
-    const diff = Math.round(Math.random() * 20) - 10;
-
-    return of({
-      ...team,
-      roster,
-      timezone: 'EST/EDT',
-      record: {
-        wins,
-        losses: 8 - wins,
-        diff,
-      },
-    });
-  }
-
-  getDraftOrder(draftSlug: string) {
-    return this.apiService.get<League.DraftRound[]>(
-      `${ROOTPATH}/${this.leagueSlug()}/tournaments/${this.tournamentSlug()}/drafts/${draftSlug}/order`,
     );
   }
 
@@ -408,12 +280,6 @@ export class LeagueZoneService {
       {
         errorHandlingOptions: { suppressStatuses: options?.suppressStatuses },
       },
-    );
-  }
-
-  getDiscordJoinedStatus(discordId: string): Observable<{ joined: boolean }> {
-    return this.apiService.get(
-      `${ROOTPATH}/${this.leagueSlug()}/tournaments/${this.tournamentSlug()}/discord/joined/${discordId}`,
     );
   }
 
@@ -576,14 +442,6 @@ export class LeagueZoneService {
     return this.apiService.get<TournamentBracket>(
       `${ROOTPATH}/${this.leagueSlug()}/tournaments/${this.tournamentSlug()}/bracket`,
     );
-  }
-
-  getStageBracket(stageSlug: string): Observable<BracketWithSeeding> {
-    return this.apiService
-      .get<RawBracketResponse>(
-        `${ROOTPATH}/${this.leagueSlug()}/tournaments/${this.tournamentSlug()}/stages/${stageSlug}/bracket`,
-      )
-      .pipe(map(mapRawBracket));
   }
 
   getTournamentTeams(): Observable<{

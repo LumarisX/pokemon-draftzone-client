@@ -8,6 +8,7 @@ import {
   signal,
 } from '@angular/core';
 import { catchError, of, switchMap, tap } from 'rxjs';
+import { apiErrorMessage } from '@pdz/core/services/api.service';
 import { UploadService } from '@pdz/core/services/upload.service';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
@@ -137,7 +138,7 @@ export class LogoFieldComponent {
         ),
         catchError((err) => {
           this.error.set(
-            err?.error?.message ?? 'Failed to upload logo. Please try again.',
+            apiErrorMessage(err, 'Failed to upload logo. Please try again.'),
           );
           return of(null);
         }),

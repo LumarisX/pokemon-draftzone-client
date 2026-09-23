@@ -25,7 +25,7 @@ import {
 import { UploadService } from '@pdz/core/services/upload.service';
 import { LeagueZoneService } from '../league-zone.service';
 import { League } from '../league.interface';
-import { getLeagueLogoUrl } from '../league.util';
+import { getLeagueLogoUrl, SIGN_UP_LIMITS } from '../league.util';
 import { SelectOptionComponent } from '@pdz/shared/dropdowns/select/select-option.component';
 import { SelectComponent } from '@pdz/shared/dropdowns/select/select.component';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
@@ -72,6 +72,7 @@ export class LeagueSignUpComponent implements OnInit, OnDestroy {
   closed = false;
   wantsToSignUpAsSub = false;
   timezones = Intl.supportedValuesOf('timeZone');
+  protected readonly limits = SIGN_UP_LIMITS;
   signUpDeadline?: Date;
   logoFile: File | null = null;
   logoFileName: string = '';

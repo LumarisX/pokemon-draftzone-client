@@ -18,6 +18,7 @@ import { HttpEventType, HttpResponse } from '@angular/common/http';
 import { catchError, finalize, of, switchMap, tap } from 'rxjs';
 import { DialogService } from '@pdz/shared/dialogs/dialog/dialog.service';
 import { ToastService } from '@pdz/shared/feedback/toast/toast.service';
+import { apiErrorMessage } from '@pdz/core/services/api.service';
 import { UploadService } from '@pdz/core/services/upload.service';
 import { MenuItemComponent } from '@pdz/shared/menu/menu-item.component';
 import { MenuTriggerDirective } from '@pdz/shared/menu/menu-trigger.directive';
@@ -230,7 +231,7 @@ export class ApplicantsPanelComponent {
         },
         error: (err) => {
           this.toast.error(
-            err?.error?.message ?? 'Could not remove that participant.',
+            apiErrorMessage(err, 'Could not remove that participant.'),
           );
         },
       });
@@ -303,7 +304,7 @@ export class ApplicantsPanelComponent {
         },
         error: (err) => {
           this.toast.error(
-            err?.error?.message ?? 'Could not save those details.',
+            apiErrorMessage(err, 'Could not save those details.'),
           );
         },
       });
@@ -337,7 +338,7 @@ export class ApplicantsPanelComponent {
         },
         error: (err) => {
           this.toast.error(
-            err?.error?.message ?? 'Could not replace that coach.',
+            apiErrorMessage(err, 'Could not replace that coach.'),
           );
         },
       });
@@ -363,7 +364,7 @@ export class ApplicantsPanelComponent {
           return of(null);
         }),
         catchError((err) => {
-          this.toast.error(err?.error?.message ?? 'Logo upload failed.');
+          this.toast.error(apiErrorMessage(err, 'Logo upload failed.'));
           return of(null);
         }),
         finalize(() => this.busyId.set(null)),

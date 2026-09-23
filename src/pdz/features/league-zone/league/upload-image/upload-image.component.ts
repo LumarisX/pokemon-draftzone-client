@@ -10,6 +10,7 @@ import {
   tap,
   throwError,
 } from 'rxjs';
+import { apiErrorMessage } from '@pdz/core/services/api.service';
 import { UploadService } from '@pdz/core/services/upload.service';
 import { DialogService } from '@pdz/shared/dialogs/dialog/dialog.service';
 import { HostedImageComponent } from '@pdz/shared/images/hosted-image/hosted-image.component';
@@ -194,8 +195,10 @@ export class UploadImageComponent implements OnDestroy {
         }),
         catchError((error) => {
           console.error('Upload process error:', error);
-          const message =
-            error?.error?.message || error?.message || 'Unknown error';
+          const message = apiErrorMessage(
+            error,
+            error?.message || 'Unknown error',
+          );
           this.uploadMessage = `Upload failed: ${message}`;
           this.uploadError = true;
           this.uploadProgress = 0;

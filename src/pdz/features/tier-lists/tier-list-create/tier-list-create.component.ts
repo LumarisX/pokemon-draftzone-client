@@ -4,6 +4,7 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { catchError, of } from 'rxjs';
 import { TIER_LIST_PATH } from '@pdz/core/route-paths';
+import { apiErrorMessage } from '@pdz/core/services/api.service';
 import { DataService } from '@pdz/core/services/data.service';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 import { CardComponent } from '@pdz/shared/data/card/card.component';
@@ -85,7 +86,7 @@ export class TierListCreateComponent {
         error: (err) => {
           this.saving.set(false);
           this.toasts.error(
-            err?.error?.message ?? 'Could not create that tier list.',
+            apiErrorMessage(err, 'Could not create that tier list.'),
           );
         },
       });

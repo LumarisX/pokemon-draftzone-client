@@ -55,12 +55,6 @@ function pokemonIds(): PokemonId[] {
   return Object.keys(Namedex) as PokemonId[];
 }
 
-export function getRandomPokemon(): { id: PokemonId; name: string } {
-  const ids = pokemonIds();
-  const id = ids[Math.floor(ids.length * Math.random())];
-  return { id, name: Namedex[id].name[0] };
-}
-
 let $nameList: DraftPokemon[] | undefined;
 export function nameList(): DraftPokemon[] {
   if ($nameList) return $nameList;

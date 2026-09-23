@@ -9,6 +9,7 @@ import {
   switchMap,
   tap,
 } from 'rxjs';
+import { apiErrorMessage } from '@pdz/core/services/api.service';
 import { LeagueTier } from '@pdz/features/tier-lists/tier-list.model';
 import { TierListService } from '@pdz/features/tier-lists/tier-list.service';
 import { LeagueManageService } from '../league-manage/league-manage.service';
@@ -280,7 +281,7 @@ export class TournamentSettingsStore {
         },
         error: (err) => {
           this.loadError.set(
-            err?.error?.message ?? 'Failed to load tournament settings.',
+            apiErrorMessage(err, 'Failed to load tournament settings.'),
           );
           this.loading.set(false);
         },
@@ -574,7 +575,7 @@ export class TournamentSettingsStore {
         },
         error: (err) => {
           this.saveError.set(
-            err?.error?.message ?? 'Failed to save. Please try again.',
+            apiErrorMessage(err, 'Failed to save. Please try again.'),
           );
           this.saving.set(false);
         },
@@ -922,7 +923,7 @@ export class TournamentSettingsStore {
         },
         error: (err) => {
           this.saveError.set(
-            err?.error?.message ?? 'Could not create that pool.',
+            apiErrorMessage(err, 'Could not create that pool.'),
           );
           this.saving.set(false);
         },
@@ -948,7 +949,7 @@ export class TournamentSettingsStore {
         },
         error: (err) => {
           this.saveError.set(
-            err?.error?.message ?? 'Could not delete that pool.',
+            apiErrorMessage(err, 'Could not delete that pool.'),
           );
           this.saving.set(false);
         },

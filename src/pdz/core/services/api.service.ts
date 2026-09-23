@@ -22,6 +22,11 @@ interface ErrorHandlingOptions {
   suppressStatuses?: number[];
 }
 
+export function apiErrorMessage(err: unknown, fallback: string): string {
+  const body = (err as HttpErrorResponse | undefined)?.error;
+  return body?.error?.message ?? body?.message ?? fallback;
+}
+
 @Injectable({
   providedIn: 'root',
 })

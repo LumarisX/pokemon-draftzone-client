@@ -20,8 +20,10 @@ the reasoning behind the step.
 | 6 | Organizer management + participant-drop flow | **done** |
 | 7 | Sweep the orphaned components and dead routes | **done** |
 | 8 | Smaller fixes: `tradeDeadline` enforcement, deadline editors, ~~nested anchor~~, N+1s, `archived` | **done** |
-| 9 | Participation model, sign-up flexibility, invite-only sign-ups — see §11 | **planned** |
+| 9 | Participation model, sign-up flexibility, invite-only sign-ups — see §11 | **mostly done** — §11.10 steps 1–10b landed 2026-09-22; step 11 and the multi-coach flows remain (§11.14) |
 | 10 | Create leagues and tournaments through the product — see §12 | **not started** |
+| 11 | Bug sweep from the 2026-09-23 review — see §13 | **done**; §13.7 script written, not yet run |
+| 12 | Security, data-integrity and structure review — see §14 | **not started** — **priority**: §14.1 (P0) goes ahead of every other open step, then §14.2–14.3 |
 
 ---
 
@@ -342,14 +344,14 @@ when it exists. The draft-status badge already uses that field.
 
 | Endpoint / field | Note |
 | --- | --- |
-| `DELETE /…/trades/:tradeId` | no client call — trades can't be cancelled |
-| `DELETE /…/chat/messages/:messageId` | no chat moderation |
+| ~~`DELETE /…/trades/:tradeId`~~ | **done** — `withdrawTrade`, called from `league-trade-widget` (found 2026-09-23) |
+| ~~`DELETE /…/chat/messages/:messageId`~~ | **done** — `deleteChatMessage`, called from `league-chat` (found 2026-09-23) |
 | ~~`round.tradeDeadline`~~ | **done in step 8** — editor in the stage builder, and now enforced |
 | ~~`round.bestOf`~~ | **done in step 8** — editor in the stage builder |
 | chat channels `tournament`, `spectator`, `draft` | full policy in `chat.policy.ts`, only `matchup` has UI |
 | ~~`organizers[]`~~ | **done in step 6** — endpoints + `manage/organizers` page |
 | `POST /…/stages`, `/stages/:slug/pools`, `/stages/:slug/current-round`, `GET /stages/:slug/schedule`, stage-scoped trades | intentional legacy, unreferenced |
-| `createBracket` / `updateBracket` / `deleteBracket` (stage-scoped) | in `league-manage.service.ts`, zero callers |
+| `updateBracket` / `deleteBracket` (stage-scoped) | in `league-manage.service.ts`, still zero callers as of 2026-09-23; `createBracket` is gone |
 
 ### Step 6: organizer management
 
@@ -521,12 +523,14 @@ test baseline — that spec's `ngx-markdown` ESM failure is gone with the file.
   page. Flipping it drops the tournament out of coaches' lists and out of the ad
   list without touching its pages.
 - **No tournament visibility flag.** Stages have `public`; tournaments don't.
-- **No capacity / max teams / waitlist**, and no open-close toggle independent of
-  `signUpDeadline`.
+- ~~**No capacity / max teams / waitlist**, and no open-close toggle independent
+  of `signUpDeadline`.~~ **Done in §11.10 steps 6–10:** `maxTeams` gates
+  approval, `waitlisted` is an application status, and `signUpAccess: "closed"`
+  pauses intake without moving the published deadline.
 - **No deadline reminders.** `agenda.service.ts` only defines draft pick-skip
   jobs. `matchDeadline` and `tradeDeadline` fire nothing. Separately,
   `cleanup-file-uploads` is defined but its `agenda.every(…)` is commented out —
-  uploads are never GC'd.
+  uploads are never GC'd. Still true 2026-09-23.
 - ~~**`tradeDeadline` is never enforced.**~~ **Done in step 8.** Plumbed through
   `bracket-view.ts`, `stage-axis.ts` and `tournament-bracket.service.ts`;
   `tournament-trade.service.ts` never read it. (`tradePointLimit` *is* enforced.)
@@ -539,6 +543,11 @@ test baseline — that spec's `ngx-markdown` ESM failure is gone with the file.
   regardless of approval status — a denied signup keeps the coach role. The
   signups page shows `inDiscordServer` / `hasDiscordRole` / `hasValidTeam` as
   read-only badges with no way to act on them.
+
+  *Partly fixed in §11.10 step 6:* the grant moved to approval behind
+  `autoGrantCoachRole`. Still open: the role is never revoked on drop or
+  denial, the badges are still read-only, and `discordName` is still an
+  unverified string (§11.11).
 
 ### The standings payload did not match its client type
 
@@ -633,7 +642,7 @@ Drift:
 
 ---
 
-## 11. Participation model and invite-only sign-ups — planned
+## 11. Participation model and invite-only sign-ups — mostly done
 
 Step 9. Designed 2026-09-21. Two features that look separate but share one
 blocker: an invite hands out a *roster spot*, and a roster spot is not currently
@@ -717,13 +726,20 @@ is `required` and an application has no team yet:
 auth0Id, name, gameName, discordName, timezone, experience,
 droppedBefore, droppedWhy, confirmed,
 preferredTeamName, preferredLogo,
-intent: "team" | "sub" | "either",
-status: "pending" | "waitlisted" | "approved" | "denied" | "withdrawn",
-answers: { questionId: string; value: string | string[] }[],
-joinTeamId?: Types.ObjectId
+intent: "team" | "sub",
+status: "pending" | "waitlisted" | "approved" | "denied",
+answers: { questionId: string; values: string[] }[],
+joinTeamId?: Types.ObjectId,
+resultingTeamId?: Types.ObjectId, resultingCoachId?: Types.ObjectId,
+decidedBy?: string, decidedAt?: Date, submittedAt: Date
 ```
 
-`joinTeamId` is set when applying as a sub to a specific existing team.
+This is the shape as built (updated 2026-09-23). The first design also had an
+`either` intent and a `withdrawn` status; both were cut, see the trim note
+below.
+
+`joinTeamId` is set when applying as a sub to a specific existing team. Nothing
+sets it yet: there is no sub-for-a-specific-team flow in the sign-up form.
 
 **Three status enums, not one.** Today `TeamStatus` does double duty: it is both
 application state (`pending`, `denied`) and participation state (`approved`,
@@ -770,7 +786,8 @@ published.
   membership. Same end state as today, one step later.
 - `sub` — no team is created. The application goes `approved` and the person
   enters the sub pool.
-- `either` — the TO picks which of the two at approval time.
+- ~~`either` — the TO picks which of the two at approval time.~~ Cut 2026-09-22
+  (§11.3): nothing produced it.
 
 **Normal sign-up (the 99% case)** is the `team` branch with nothing unusual
 about it.
@@ -853,7 +870,8 @@ Approving past the cap offers `waitlisted` instead.
 
 **The waitlist is the sub pool.** When a team drops or a coach leaves, the
 replacement picker in §11.4 draws from applications that are `waitlisted`, plus
-`approved` ones with `intent` of `sub` or `either`. This is what makes that flow
+`approved` ones with no team yet (as built; the `either` intent this first
+said was cut). This is what makes that flow
 operable — without it the TO has a replacement UI and nobody to put in it.
 
 Per-pool capacity in a multi-division tournament is deferred. Noting it because
@@ -1131,9 +1149,10 @@ who finds it can sign up.
 
    **6b-6e server side — done 2026-09-22.**
    - `createSignup` writes a `pending` application and creates no team or coach.
-     Its duplicate guard is now `findBlockingApplication`, which ignores
-     `withdrawn` so a withdrawal can be re-submitted while a denial still
-     cannot (§11.12).
+     Its duplicate guard is now `findBlockingApplication`. It originally
+     ignored `withdrawn` so a withdrawal could be re-submitted; once
+     `withdrawn` was cut (§11.3), any existing application blocks, which is
+     the §11.12 decision stated directly.
    - `PATCH :tournamentSlug/applications/:applicationId` decides one. Approving
      a `team`-intent application creates the Team + Coach + `primaryCoach`;
      approving a `sub` creates nothing; denying/waitlisting only moves status.
@@ -1354,8 +1373,6 @@ who finds it can sign up.
     origin. Every deep link was being dropped at login, not just invites.
     `AuthService` now navigates to `appState.target` on callback, which fixes
     invites and every other deep link with them.
-10. Add `signUpAccess` / `signUpToken`, the invite gate, **and `signUpDeadline`
-    enforcement** — one guard, built once.
 10b. **done 2026-09-22**, in a maintenance window. `TeamEntity.coach` is gone
     from the schema; its data stays in the documents, so restoring the
     decorator restores the field.
@@ -1499,29 +1516,64 @@ Real, but they block nothing above and can land on their own schedule.
   rejection on a public endpoint. Filter to approved for anonymous callers.
   (`listTeamsByDraft` documents itself as "every approved team"; `listTeams`
   does not do it.)
+
+  **Done 2026-09-23 (§13).** Step 6b fixed only `getCoaches`; `listTeams` still
+  leaked, because the backfilled pre-application teams keep their old
+  `pending`/`denied` statuses. It now returns `approved` and `dropped` teams to
+  everyone.
 - **`assignCoaches` fails silently.** Invalid ObjectId, missing coach, wrong
   tournament, unknown pool — every failure path is a bare `continue`. The call
   returns 200 having done nothing and the TO gets a success toast. Collect the
   failures and report them. Pairs with the existing trap that an absent
   `divisionKey` means `draftId: null`, so a partial payload silently unassigns.
+
+  **Done 2026-09-23 (§13).**
 - **`countByTournament` counts every status**, so the Discord "Total sign ups"
   number includes denied and dropped — and that is the figure TOs quote at each
   other.
+
+  **Done 2026-09-23 (§13).** Step 6b had already switched the embed to
+  counting applications, but only `pending` ones.
 - **Orphaned logo uploads.** Logos go to S3 at submission; denied applicants
   leave the object behind permanently. Teams-at-approval makes the cleanup point
-  explicit.
+  explicit. *Still open.*
 - **Validation is split and unbounded.** `experience` is `@IsString()` with no
   length limit while the Discord embed clamps it to 1024, so a 50KB string is
   accepted, stored, and silently truncated in one view. `droppedWhy` is
   validated in the DTO and again by a manual trim in the service. Add
   `@MaxLength` at the DTO and pick one layer.
 
+  **Done 2026-09-23 (§13).** By then `experience` and `droppedWhy` had become
+  question answers (step 9), so the gap had moved rather than closed: every
+  built-in sign-up field and any question without its own `maxLength` were
+  unbounded. Limits now live in `SIGN_UP_LIMITS` at the DTO layer.
+
+### 11.14 Modelled but not built
+
+Added 2026-09-23. The schema has supported these since step 10b, but no endpoint
+or UI reaches them:
+
+- **Adding a co-coach.** The only path that creates a second membership on an
+  existing team is `replace-coach`, which also retires the outgoing one. There
+  is no "add coach to team" endpoint.
+- **A coach leaving a team that plays on.** `leftAt` is only ever set by
+  `replace-coach`. There is no drop-one-coach action.
+- **`setPrimaryCoach` and auto-promotion** (§11.4). Neither exists; nothing
+  reassigns `primaryCoach` except `replace-coach`.
+- **Who-acted for picks.** `pickLog.picker` still comes from `pickerFor(team)`,
+  i.e. the primary (§11.7). Harmless while every team has one coach, wrong the
+  day a co-coach picks.
+- **`joinTeamId`** on applications is stored but nothing sets it.
+- **Duplicate team-name warning on replacement** (§11.12) is not in the
+  replace-coach dialog.
+
 ---
 
 ## 12. Creating leagues and tournaments — not started
 
 There is still no create flow (see §7): `league-new/` was swept in step 7, and
-the server has no create endpoint for a league, a tournament or a draft. Record
+the server has no create endpoint for a league or a tournament. Draft pools
+*can* be created now (`POST …/drafts`, from the settings Draft section). Record
 requirements here as they are decided, so the form ships with them.
 
 ### 12.1 Required: the owner's organizer name
@@ -1553,3 +1605,737 @@ The create-tournament form must:
   prefill is a default, not a link.
 - Creating a league creates no tournament, so it needs no name field. Ask when
   the first tournament is created.
+
+---
+
+## 13. Bug sweep — 2026-09-23
+
+Found by re-auditing §6–§11 against the code, after steps 1–10b had landed.
+Nothing below is committed yet.
+
+### 13.1 The team cap counted every team
+
+`assertRosterHasRoom` called `teamRepo.countByTournament`, which was a bare
+`countDocuments({ tournamentId })`. Dropped teams counted against `maxTeams`,
+and so did every pre-application team the backfill left behind with its old
+`pending` or `denied` status. A tournament could refuse approval as
+`TOURNAMENT_FULL` with real room left.
+
+The method is now `countApprovedByTournament`. It was renamed rather than given
+a status parameter, because its only job is the cap, and a bare count is exactly
+the mistake it made.
+
+The same fix exposed a second hole: `assignCoaches` could move a `dropped` team
+back to `approved` with no cap check at all. It now counts the teams a batch
+would reinstate and checks them against the cap in one go
+(`assertRosterHasRoom(tournament, incoming)`). Teams that are already approved
+are not counted, so moving an approved team between pools never trips the cap.
+
+### 13.2 `listTeams` still leaked rejected applicants
+
+See §11.13. The fix filters to `approved` and `dropped` for **every** caller,
+not only anonymous ones. All three consumers (trade manager, stage builder,
+trade-propose dialog) either filter to `approved` themselves or key off pool
+membership, and none needs pending or denied teams. Organizers review
+applicants on the applicants panel, which reads `getCoaches`.
+
+Dropped teams stay in the response: they have played matches, and the
+trade-propose dialog relies on their rosters to mark Pokémon as taken.
+
+### 13.3 `assignCoaches` validates before it writes
+
+It was worse than §11.13 described. On top of the silent `continue`s, an unknown
+pool threw **after** the earlier assignments in the loop had already been
+written, which left the tournament half-updated.
+
+It now resolves every assignment first (`findTournamentTeamByCoachId`). Unknown
+pools throw `DRAFT.NOT_IN_LEAGUE`, and unresolvable coach ids throw the new
+`LEAGUE.ASSIGNMENT_COACHES_NOT_FOUND` (LR-016), whose `details.coachIds` names
+them. It writes only once all of that has passed, so a bad batch changes
+nothing.
+
+### 13.4 The sign-up embed count
+
+`countByStatus(id, "pending")` → `countByStatuses(id, ["pending",
+"waitlisted", "approved"])`: everything except `denied`. Dropped teams still
+count, because their applications stay `approved`; that is a known and minor
+overcount.
+
+### 13.5 Length limits
+
+`SIGN_UP_LIMITS` in `hosted-tournament.dto.ts`:
+
+| Field | Limit |
+| --- | --- |
+| name, discordName, teamName, timezone | 64 |
+| gameName | 32 |
+| logo key | 256 |
+| experience (coach edit), replace reason | 500 |
+| each answer value | 2000 |
+| answers per sign-up, values per answer | 50 |
+
+Applied to `SignUpDto`, `UpdateCoachDetailsDto`, `ReplaceCoachDto` and
+`DecideApplicationDto`. A question's own `maxLength` is capped at 2000 too.
+`validateAnswers` is unchanged: the per-value ceiling at the DTO is the one
+layer, and the question's `maxLength` narrows it.
+
+The client mirrors the limits in `SIGN_UP_LIMITS` in `league.util.ts` as native
+`maxlength` attributes on the sign-up form, so the browser stops input at the
+limit before the server ever returns a 400. The question editor has no
+`maxLength` control, so it cannot author a value over the cap.
+
+Risk to existing data is narrower than it first looked. Both team-edit paths
+send `teamName` only when it changed, so a long existing team name never blocks
+an edit. The coach-edit dialog does resend all four coach fields, so only an
+existing coach display name over 64 characters could trip it; Showdown names,
+Discord handles and IANA timezones are shorter than their limits by nature.
+The §13.7 script's dry run reports any team or coach name over 64 characters.
+
+### 13.6 Organizers never saw server error messages
+
+`BusinessExceptionFilter` responds with `{ error: { code, message, details } }`,
+so an `HttpErrorResponse` carries the message at `err.error.error.message`.
+The settings store, applicants panel, invite-link slot, logo field and stage
+builder all read `err.error.message`, which is always `undefined`, so every
+refusal fell through to the generic fallback. `TOURNAMENT_FULL`,
+`COACH_HAS_MATCHES` and the pool-delete refusals had never reached a TO. The
+stage builder's bracket-validation `details.reasons` had the same wrong nesting.
+
+The fix is `apiErrorMessage(err, fallback)` in `core/services/api.service.ts`,
+now used at every league-zone site. The organizer pages from step 6
+(`league-organizers`, `organizer-invite`) already read the right path.
+
+The same fix then went into `tier-list-browse` (whose `details.reason` read had
+the same wrong nesting), `tier-list-create`, `upload-image` and
+`pokemon-search-core`. The debug calculator was left alone as a dev-only page.
+
+### 13.7 Legacy teams and their applications disagree — script written, not yet run
+
+The step-6a backfill gave every pre-existing team an application with
+`resultingTeamId` set, and carried the team's status onto it. From then on, the
+two records can each be changed without the other:
+
+- `decideApplication` on an application that already has a team only moves the
+  **application** status. Approving a legacy `pending` application leaves the
+  team `pending`, so it never shows up in rosters or standings.
+- `assignCoaches` on that team moves the **team** status and leaves the
+  application where it was. `getCoaches` shows the application status (unless
+  the team is `dropped`), so the panel keeps showing the row as pending.
+- In the panel it is worse than either: any row with a team is routed to
+  `assignCoaches` and offered only `approved`/`dropped`, so a legacy pending
+  sign-up **cannot be denied at all**, and approving it leaves it in *Needs a
+  decision* after a reload.
+
+**Decided 2026-09-23: retire them.** A pending or denied team is exactly the
+state §11.3 says should not exist, since teams are created at approval.
+Removing those teams makes a legacy sign-up behave like any new one. The
+alternative, syncing both records in code, would keep `pending`/`denied`
+valid team statuses forever and block narrowing `TEAM_STATUSES`.
+
+`scripts/reconcile-legacy-team-applications.ts` walks every application that
+has a `resultingTeamId` and handles each (team status, application status)
+pair:
+
+| Team | Application | Action |
+| --- | --- | --- |
+| pending/denied | approved | **PROMOTE** — team → `approved` (the TO approved it through `decideApplication`) |
+| approved/dropped | not approved | **SYNC** — application → `approved` (the TO approved it through the team path) |
+| pending/denied | pending/denied/waitlisted | **RETIRE** — see below |
+
+Retiring a team:
+
+1. copies the team, its coach documents and the application into
+   `legacyteamreconciliations`;
+2. refreshes the application's name, Showdown name, Discord, timezone,
+   preferred team name and logo from the coach and team, since panel edits
+   only ever wrote those;
+3. unsets `resultingTeamId`/`resultingCoachId` on the application;
+4. deletes the coach documents and the team.
+
+The application keeps its own status, so a pending one lands in *Needs a
+decision* and approving it creates a fresh team through the normal path (cap
+included). A denied one lands in *Not participating*.
+
+A team is **skipped and reported** rather than retired if it has picks, if more
+than one application points at it, if any matchup, stage (seeds, legacy
+pools, legacy trades), tournament trade, chat message or draft `teamOrder`
+references it, or if its coach appears in another team's pick log. The dry
+run also reports pending/denied teams with no application at all, and any team
+or coach name over 64 characters (§13.5).
+
+Every write is backed up first. Status changes record `from`/`to`; rollback
+restores them only where the current value still equals `to`, and restores a
+retired team only if its application has not since been linked to a new team.
+Anything else is reported as a conflict and left alone.
+
+```
+npx ts-node scripts/reconcile-legacy-team-applications.ts                       # dry run
+npx ts-node scripts/reconcile-legacy-team-applications.ts --apply               # write
+npx ts-node scripts/reconcile-legacy-team-applications.ts --rollback            # rollback dry run
+npx ts-node scripts/reconcile-legacy-team-applications.ts --rollback --apply    # rollback
+```
+
+Typechecked against the project's compiler flags. It has not been run, even as
+a dry run.
+
+Two code changes stop the drift from coming back:
+
+- `decideApplication` refuses anything but `approved` for an application that
+  already has a team (`LEAGUE.APPLICATION_HAS_TEAM`, LR-017). Once a team
+  exists, leaving means dropping the team.
+- `getCoaches` shows the **coach** document's name, Showdown name, Discord and
+  timezone when there is one, and looks up Discord membership by that name.
+  This was a live bug for every sign-up, not only legacy ones: coach edits in
+  the panel write the coach document, the panel read the application, so every
+  edit reverted on reload, and a corrected Discord typo still showed "not in
+  server". `getCoaches` has no spec harness (it needs tier-list roster
+  validation mocked), so this change is untested.
+
+### 13.8 Cleanup — 2026-09-23
+
+Removed, all verified to have no callers anywhere including specs:
+
+- `LeagueManageService`: `setPick`, `generateBracket`, `updateBracket`,
+  `deleteBracket`. The stage-scoped bracket endpoints on the server now have no
+  client caller at all. They stay, per §6 ("intentional legacy").
+- `LeagueZoneService`: `getPicks`, `setPicks`, `removeDraftPokemon`,
+  `getTeamDetail`, `getDraftOrder`, `getDiscordJoinedStatus`,
+  `getStageBracket`, plus three commented-out tier-list methods.
+- `getTeamDetail` returned random mock data, and with it went `league-ghost.ts`
+  (mock teams) and `getRandomPokemon` in `namedex.ts`.
+- `getStageBracket` was the only consumer of `league-bracket/bracket-mapping.ts`,
+  so that module and its spec are deleted too. The service's re-export of its
+  types had no importers.
+
+Deliberately **not** done yet:
+
+- **Narrowing `TEAM_STATUSES` to `approved | dropped`.** It becomes possible
+  once the §13.7 script has run, but has to wait for the dry-run output: every
+  team the script *skips* keeps a `pending`/`denied` status, and a narrowed
+  enum would make any `save()` on such a document fail validation. Deploy order
+  matters too: the script must run before any narrowed build ships.
+  `teamRepo.create`'s `"pending"` default goes in the same change.
+- **Step 11, `$unset` of `leagueteams.coach`.** Step 10b landed 2026-09-22;
+  §11.10 asks for weeks of it running live first, and this is the one
+  irreversible act in the migration.
+
+### Verification
+
+- Server: `tsc --noEmit` clean. Tournament, team and application suites pass
+  248/249, including 7 new tests (6 `assignCoaches`, 1 `listTeams`), plus an
+  assertion on the embed count. The one failure is
+  `external-tournament.controller.spec`, which none of this touches.
+- Client: `ng build --configuration development` clean. `league-zone` and
+  `core/services` pass 162/162; `power-rankings` is the documented baseline.
+- After §13.7–13.8: server `tsc --noEmit` clean, hosted-tournament suites
+  94/94 (one new test for LR-017). Client build clean; `league-zone`,
+  `tier-lists` and `shared/data` pass 199/199, with `power-rankings` still the
+  only failing suite.
+
+---
+
+## 14. Security, data integrity and structure review — 2026-09-23
+
+A read-only review of everything hosted tournaments touch on the server:
+tournament, stage, bracket, matchup, trade, draft, chat, team, coach,
+application, upload and Discord. Nothing was run against a live server. Every
+finding comes from reading the code, and the one marked *plausible* needs a
+concurrency test before it is fixed.
+
+The data here is handles and team names, not PII, so the threat model is
+different: **the integrity of the competition** (who drafts, who reports, what
+a roster is) and **not letting the shared Discord bot be used against other
+communities**.
+
+Paths below are in `pokemon-draftzone-server/src/modules/` unless stated.
+
+### Tracker
+
+| ID | Item | Priority | Status |
+| --- | --- | --- | --- |
+| S1 | Anyone can join any team as a coach | **P0** | open |
+| S2 | Generic `/teams` and `/coaches` routes bypass the tournament | **P0** | open |
+| S3 | Discord settings drive the shared bot in other servers | **P0** | open |
+| S4 | Legacy stage-scoped writes aren't tied to the URL's tournament | **P0** | open |
+| S5 | Replaced and dropped coaches keep chat access | **P0** | open |
+| D1 | Multi-document writes without transactions | P1 | open |
+| D2 | Trades: lost updates and check-then-act | P1 | open |
+| D3 | Trades and name changes reference rounds by index | P1 | open |
+| D4 | Races on sign-up uniqueness and the team cap | P1 | open |
+| D5 | Settings validated against the patch, not the result | P1 | open |
+| D6 | Matchup result fields can contradict each other | P1 | open |
+| D7 | Draft pick checks read pre-transaction state | P1 | plausible |
+| H1 | "Coach only" draft visibility is client-side only | P1 | needs a decision |
+| H2 | The draft websocket is unauthenticated | P1 | open |
+| H3 | Match result payloads are barely validated | P1 | open |
+| H4 | Uploads: no size cap, keys not bound to uploader | P2 | open |
+| H5 | Archived tournaments still accept writes | P2 | open |
+| H6 | Cross-tournament references in reads and trades | P2 | open |
+| H7 | Small hardening items | P3 | open |
+| A1–A7 | Structure that limits future work | P2 | open |
+| §14.5 | Smaller smells | P3 | open |
+
+### 14.1 P0 — exploitable now
+
+**S1. Anyone can join any team as a coach.**
+`POST /coaches` (`coach/coach.controller.ts:28` → `coach/coach.service.ts:23`)
+has no authorization check. It creates a `CoachEntity` with the caller's `sub`
+on whatever `teamId` the body names. Every team permission comes from the
+team's `coaches` virtual, meaning every coach record whose `teamId` matches.
+`can()` in `tournament/membership.ts:15` returns `seat.active` for every
+capability. Team ObjectIds are public: `GET …/tournaments/:slug/teams` needs no
+session and returns `id`.
+
+One request therefore makes any signed-in user an active co-coach of any team,
+who can then:
+
+- draft for it and edit its pick queue (`isCoach` → `canOnTeam(…, "draft")`),
+- submit its match reports and set match times,
+- file and withdraw its trades,
+- post as the team in chat,
+- rename it (`PATCH /teams/:id`),
+- delete it and all its coaches (`DELETE /teams/:id`).
+
+Fix: delete the route. Memberships are only created by `decideApplication` and
+`replaceCoach`. §11.14's "add a co-coach" becomes an organizer action on the
+tournament controller when it is built.
+
+**S2. Generic `/teams` and `/coaches` routes bypass the tournament.**
+The client calls only `PATCH /teams/:id` and `PATCH /coaches/:id`. The rest:
+
+- `POST /teams` (`team/team.controller.ts:41`) creates a team in whatever
+  `tournamentId` the body names. The only check is whether the caller owns the
+  *coach*. It skips sign-up access, the deadline, `maxTeams` and approval.
+- `DELETE /teams/:id` (`:81`) lets any active coach hard-delete their own team
+  and its coaches. Unlike `removeParticipant`, it doesn't check for played
+  matches, so mid-season it orphans matchups and trades.
+- `DELETE /coaches/:id` is harmless today only because every coach has a
+  `teamId`, which `deleteCoach` refuses.
+- `GET /teams/:id`, `GET /teams?coachId=` and `GET /coaches/:id` return whole
+  documents to any signed-in user: Auth0 subs, Discord and in-game names,
+  experience, drop reasons. `getTeam` deliberately shows those only to the
+  team's own coach.
+
+Fix: delete all of them. The coach edit already exists as
+`PATCH …/tournaments/:slug/coaches/:coachId`. Team name and logo move to a
+tournament-scoped team route (see A6). Then delete both controllers.
+
+**S3. Discord settings drive the shared bot in other servers.**
+`discordSettings.guildId`, `coachRoleId` and `signUpChannelId` (set in
+`updateSettings`, `hosted-tournament.service.ts:1498`) and a draft pool's
+`channelId` are free text. Any organizer of any tournament can set them.
+`DiscordService.grantRole` (`discord/discord.service.ts:109`) and `sendMessage`
+(`:166`) act on whatever guild, role or channel they're given, as long as the
+bot is in that server. An organizer can:
+
+- point `guildId` and `coachRoleId` at another community's server and a role
+  there, then approve an application carrying their own Discord name there. The
+  bot grants them the role, limited only by the bot's own position in that
+  server's role list.
+- point `signUpChannelId` or a draft `channelId` at any channel the bot can
+  post to, then use `settings/test-message` to post there on demand.
+
+Nothing checks that the organizer controls that server.
+
+Fix: bind a server to a tournament from inside Discord. A server admin runs a
+bot slash command (e.g. `/draftzone link <code>`) that Discord only lets
+Manage Server holders use, and that link is what stores `guildId`. On every
+settings save, check:
+
+- the channel belongs to the linked server;
+- the role belongs to it, isn't managed, and carries no elevated permission
+  (Administrator, Manage Server, Manage Roles, Manage Channels, Kick, Ban);
+- the role sits below the bot's own role.
+
+Interim, before linking exists: run those role and channel checks against
+`guildId`, and gate `guildId` changes behind a site-admin allowlist.
+
+**S4. Legacy stage-scoped writes aren't tied to the URL's tournament.**
+Four methods authorize the caller as an organizer of the URL's tournament, then
+load the stage by global slug without checking `stage.tournamentId`. The other
+stage writes do check. The four:
+
+- `setPools` (`stage/stage.service.ts:302`)
+- `advanceCurrentRound` (`:350`)
+- the stage-scoped `createTrade` (`:1558`)
+- `setTradeStatus` (`:1720`)
+
+The `assertStageOwnsItsSchedule` guard looks at the URL's tournament. A
+tournament with no rounds yet counts as "legacy", so an organizer of any
+not-yet-built tournament gets past it. Stage slugs are public through
+`GET …/stages`.
+
+The sharpest case is `setPools` on another tournament's stage that has no
+`teamIds` yet. It writes `pools`, which `stageTeamIds()` falls back to, so an
+outsider can inject teams into that stage's seeding.
+
+The client no longer calls any stage-scoped route except `GET …/stages` (§13.8).
+Fix: delete every `StageController` route except `GET /`. This reverses §6's
+"intentional legacy" call on security grounds. It also removes
+`DELETE …/stages/:slug/bracket`, which deletes matchups with recorded results;
+the tournament-level bracket refuses to do that.
+
+**S5. Replaced and dropped coaches keep chat access.**
+`ChatService.findViewerTeam` (`chat/chat.service.ts:211`) takes any coach record
+for the caller. It has no `isActiveCoach` filter and no team-status filter. So
+a coach retired by `replaceCoach` (`leftAt` set), or one on a dropped or denied
+team, still reads and posts in the tournament channel and their old team's
+matchup rooms. Their messages are labelled with the *current* primary coach's
+name (`authorName: team.primaryCoach.name`), so a co-coach is also mislabelled.
+
+Fix:
+
+- filter to active coaches on approved teams;
+- take `authorName` from the caller's own coach record.
+
+`getInfo`'s `canSeeAllDrafts` goes through `findSignupForTournament`, which
+filters active coaches but not team status, so a denied legacy team's coach can
+see private pools.
+
+### 14.2 P1 — data integrity
+
+**D1. Multi-document writes without transactions.**
+Each of these writes several documents with nothing tying the writes together:
+
+- `decideApplication`: team → coach → application
+- `replaceCoach`: four writes
+- `removeParticipant`
+- `deletePool`: a per-team loop, then the delete
+- `TournamentBracketService.updateBracket`: stages, schedule, matchups,
+  advancement
+
+The draft engine already uses transactions (`draft/draft-engine.service.ts:335`),
+so the cluster supports them.
+
+One of these already produces a stuck state without any crash:
+`removeParticipant` deletes the team and coach but never touches the
+application. That stays `approved`, with `resultingTeamId` pointing at nothing.
+
+- The person can't re-apply: `findBlockingApplication` matches any status.
+- The organizer can't deny them: `APPLICATION_HAS_TEAM`.
+- Re-approving skips team creation, because `resultingTeamId` is set.
+
+Fix: add a small `withTransaction(fn)` helper and pass `session` through the
+repository methods. In the same transaction, have `removeParticipant` move the
+application to a terminal status. A `diagnose-` script should list
+applications whose `resultingTeamId` no longer exists.
+
+**D2. Trades: lost updates and check-then-act.**
+`createTrade`, `updateTrade` and `withdrawTrade`
+(`stage/tournament-trade.service.ts:247, 319, 355`) read `tournament.trades`,
+change the array in memory, and `$set` the whole array back. So:
+
+- two coaches filing at once lose one of the trades;
+- an approval racing a filing loses one of them;
+- the trade-point limit and roster checks run on the stale array, so two
+  concurrent approvals can together exceed the limit or trade the same Pokémon
+  twice.
+
+Fix: move trades to their own collection. They have their own lifecycle and
+make the tournament document grow without limit. Short of that:
+
+- `$push` to create;
+- a positional update with `"trades.status": "PENDING"` in the filter to
+  approve or withdraw;
+- a version in the filter, so validation and the write see the same state.
+
+**D3. Trades and name changes reference rounds by index.**
+Matchups point at a round's `_id`. `TournamentTradeEntity.activeRound`
+(`tournament/…/hosted-tournament.schema.ts:126`) and `nameHistory.round` store
+its position instead. `TournamentBracketService.updateBracket` already re-finds
+the current round by id, because edits shift positions, but it doesn't re-map
+trades.
+
+Insert a round ahead of an existing one, and every trade from that point on
+takes effect one round earlier than it did. Past rosters, the trade-deadline
+checks and the roster shown on each matchup all change after the fact.
+
+Fix: store `activeRoundId` (and `roundId` on name changes). Add a backfill
+script from index to id, with a rollback. Resolve the id to an index only when
+reading.
+
+**D4. Races on sign-up uniqueness and the team cap.**
+
+- The applications index on `(tournamentId, auth0Id)` isn't unique
+  (`tournament-application/tournament-application.schema.ts:125`). A
+  double-submitted sign-up passes `findBlockingApplication` twice and is stored
+  twice.
+- `assertRosterHasRoom` counts approved teams, then creates one. Two
+  simultaneous approvals can exceed `maxTeams`.
+
+Fix: make the index unique. §11.12 already allows one application per person
+per tournament, since denied applicants can't re-apply. Run a `diagnose-`
+script for existing duplicates first, and map E11000 to `ALREADY_SIGNED_UP`.
+For the cap, keep an `approvedTeamCount` on the tournament and `$inc` it with
+`{ approvedTeamCount: { $lt: maxTeams } }` in the filter, inside the D1
+transaction.
+
+**D5. Settings validated against the patch, not the result.**
+`updateSettings` (`hosted-tournament.service.ts:1407`) validates
+`tierRequirements` only when the request includes them.
+
+- Switching `tierListId` alone keeps requirements that point at the old list's
+  tiers.
+- Lowering `draftCount.max` alone skips the "required picks exceed roster size"
+  check.
+
+Fix: merge the patch into the current settings, validate the result, then write
+it. Make the validation a method on the `HostedTournament` domain object so the
+create flow (§12) reuses it.
+
+**D6. Matchup result fields can contradict each other.**
+`results`, `side1/2.score`, `winner`, `forfeit` and `status` are stored
+separately and set from separate inputs.
+
+- `updateMatchup` (`stage/stage.service.ts:1759`) never clears `forfeit`.
+  Correcting `side1ffw` to `side1` leaves `forfeit: true`, and standings keep
+  applying the forfeit differential.
+- In `updateMatchup`, score, winner and the game list are independent, so a
+  2–0 with `winner: side2` is accepted. Advancement only re-runs when the
+  payload includes `winner`.
+- A coach can re-report an already approved match: `submitMatchupReport` sets
+  `status = "pending"` (`:1260`) over the approved results. Rejecting that
+  report then sets `status` to `undefined`, and the approved results stay.
+- `reviewMatchupReport` keeps the old `winner` when the report has none.
+
+Fix:
+
+- One function derives `score` and `winner` from `results` unless an explicit
+  forfeit is given, and all three write paths use it.
+- A coach report on an approved match is refused, or stored as a dispute
+  without touching `status`.
+- `status` becomes an explicit enum that includes `unplayed`.
+
+**D7. Draft pick checks read pre-transaction state** *(plausible — needs a
+concurrency test)*. `draftPokemon` (`draft/draft-engine.service.ts:325`)
+starts its transaction after `loadContext` has already read the draft and every
+team. `canTeamDraft` and `canBeDraftedWithReason` (`:365`) then check that
+snapshot.
+
+In sequential drafts, the `counter` write makes two overlapping picks conflict,
+which covers the common case. It doesn't cover:
+
+- non-sequential drafts, where two teams can take the same Pokémon;
+- the timer's auto-pick racing a manual pick;
+- a request that reads before another pick commits and writes after it.
+
+Fix: turn on `optimisticConcurrency: true` for the Team and Draft schemas, so a
+stale `save()` fails with `VersionError`; retry once. Make "already taken" a
+database-level guarantee: inside the transaction, `$addToSet` the Pokémon onto
+a `taken` list on the draft with `taken: { $ne: id }` in the filter.
+
+### 14.3 Security hardening
+
+**H1. "Coach only" draft visibility is client-side only.**
+The draft settings label `visibility: "SELF"` as "Coach only", but only the
+client acts on it, by disabling the team switcher. `getDraftDetails` and
+`getTeams` still return every team's drafted Pokémon to every viewer. The
+websocket also broadcasts each pick with the picking team's full roster.
+Decide what "Coach only" is meant to hide. If it's other teams' picks, the
+server has to filter them and the socket must not broadcast them.
+
+**H2. The draft websocket is unauthenticated.**
+`DraftGateway` (`draft/draft.gateway.ts:64`) joins any socket to any room name
+the client sends. Rooms are tournament slugs, which are public, and events
+carry `draftSlug`. For a draft with `public: false`, the slug is the only
+protection: the HTTP routes check nothing else. Subscribing to a tournament
+therefore leaks every private draft's slug and its live picks.
+
+Fix:
+
+- check the JWT during the socket handshake;
+- on `league.subscribe`, check the viewer may see that tournament;
+- key rooms by draft and authorize per draft, or keep private drafts' events
+  away from viewers who aren't organizers or coaches in that draft;
+- reject room names that aren't slugs.
+
+**H3. Match result payloads are barely validated.**
+`MatchTeamResultDto.pokemon` (`stage/stage.dto.ts:32`) is only checked with
+`@IsObject()`.
+
+- Per-Pokémon `status` and `kills` aren't validated. A bad value reaches
+  Mongoose and becomes a 500.
+- Keys aren't checked against either roster, so a coach can credit kills to
+  Pokémon not on the team. Those feed the Pokémon standings.
+- `matches` and the map have no size limit.
+- `link` isn't checked to be a replay URL.
+
+Fix:
+
+- nested DTOs with `@IsIn` and `@IsInt @Min(0)`;
+- `@ArrayMaxSize` on `matches`;
+- `@IsUrl({ protocols: ["https"] })` on `link`;
+- a service check that every key is on that side's roster at the matchup's
+  round.
+
+**H4. Uploads.**
+
+- Presigned PUTs have no size limit; `core/storage/s3.service.ts` admits this
+  in a comment. Switch to a presigned POST with `content-length-range`.
+- Logo keys accepted by sign-up, `setCoachLogo` and settings are only checked
+  for existence. Bind them to the uploader and folder through
+  `FileUploadEntity.uploadedBy` and `uploadType`.
+- Call `confirmUpload`. Orphan cleanup is switched off in
+  `agenda/agenda.service.ts` because nothing confirms uploads.
+
+**H5. Archived tournaments still accept writes.**
+`archived` only hides a tournament from `findByParticipant`. Sign-ups, reports,
+trades, draft picks and chat all keep working. Enforce it in the A1 guard.
+
+**H6. Cross-tournament references in reads and trades.**
+
+- `getTeam` loads the team by global slug (`hosted-tournament.service.ts:135`)
+  and renders it against the URL tournament's tier list and stages.
+- `resolveStage` does the same with stage slugs.
+- Trade sides accept any team ObjectId, so a coach can file a trade with a team
+  from another tournament and it reaches the organizer as pending.
+- `decideApplication` and `replaceCoach` answer a foreign application or team
+  with FORBIDDEN, which confirms it exists elsewhere. They should return
+  NOT_FOUND.
+
+Fixed properly by A2.
+
+**H7. Small items.**
+
+- `WebhookGuard` compares the secret with `!==`. Use `crypto.timingSafeEqual`.
+- The Auth0 audience is still the Management API, deferred 2026-08-06.
+- Sign-up, chat post and match report share the global 300/min per-IP limit.
+  Give them a tighter per-user limit.
+- Outside hosted tournaments, noted for completeness: the ad-review Discord
+  buttons don't check who clicked, and rely on the review channel's
+  permissions.
+
+### 14.4 P2 — structure that limits future work
+
+**A1. Permission checks are written in eight places.**
+There's a private `isOrganizer` in the stage, bracket, schedule, trade, draft
+and chat services, plus `HostedTournament.isOrganizer` and
+`isOrganizerOrOwner`. Every method reloads the tournament and checks inline.
+`tournament/tournament-access.ts` gets its models from global `mongoose.model()`
+lookups, bypassing dependency injection. Owners exist only at the league level.
+Organizers are a list of subs with a separate parallel list of names, which
+takes two writes to rename one. Roles are strings.
+
+Adding a scorekeeper role, or staff shared across a league's seasons, would mean
+editing every service. Fix: one guard that loads the tournament and the caller's
+roles once per request, one policy function (`can(actor, action)`), and
+organizers stored as `{ sub, name, role }[]`. The guard is also the natural home
+for H5 and H6.
+
+**A2. Lookups aren't scoped to the tournament in the URL.**
+Teams, stages and matchups are loaded by global slug or id. Matchups don't
+store a tournament id, so every access check goes through the stage first; a
+comment in `setMatchupAdvancement` says so. Repository methods should take the
+tournament id (`findBySlugInTournament`), and matchups should store
+`tournamentId`.
+
+**A3. Old and new data shapes are both still supported.**
+The sections-to-stages migration sits in `scripts/complete`, but all of this is
+still live:
+
+- the helpers in `stage/domain/stage-axis.ts` that pick between the two shapes;
+- the deprecated stage fields;
+- `getTeam`'s branch for unmigrated tournaments;
+- the stage-scoped trade implementation in `StageService`;
+- every stage-scoped controller route (see S4).
+
+Run `verify-sections-to-stages.ts` against prod, then delete the old path. Keep
+the rollback script, and keep the deprecated fields only until the rollback
+window closes.
+
+**A4. Every request loads the entire tournament.**
+`findBySlug` runs a league query, the tournament query, one query per stage
+(`resolveStages` doesn't batch them) and a tier-list query, even for
+`getRules`. There are two loaders (`tournamentRepo.findBySlug` and
+`draftRepo.findTournament`), and `getCoaches` builds the with-tier-list object
+by hand. The domain object holds raw `StageDocument`s. Trades are stored inside
+the tournament document, so it grows with every trade (see D2).
+
+**A5. Side effects run inside the request.**
+`getCoaches` calls Discord `findMember` once per applicant on every panel load.
+Sign-up notifications and role grants are awaited inside the request.
+`EventEmitter2` is already set up. Emitting events such as
+`application.approved` makes role removal on drop (§11.11), email and an audit
+log straightforward to add, and moves Discord's latency and rate limits off the
+request path.
+
+**A6. Team data is edited through coach ids.**
+
+- `PATCH …/coaches/:coachId` renames the team, and `…/logo` sets the team logo.
+- `assignCoaches` moves teams by coach id.
+- There are three ways to rename a team.
+
+With several coaches per team, which coach's id to use is arbitrary. Match
+reports record `primaryCoach.name` as the submitter even when a co-coach
+submitted (`stage/stage.service.ts:1249`), and so does chat (S5). That's the
+same problem as §11.14's `pickLog.picker`. Fix: tournament-scoped team routes
+keyed by team slug, and the acting coach recorded from the caller's own seat.
+
+**A7. Scoring rules are hardcoded.**
+
+- Standings always sort wins, then game difference, then Pokémon difference,
+  ignoring the tournament's `diffMode` setting (`stage/domain/standings.ts:462`).
+- `calculateTeamScore` works out `diffMode` from whether a matchup has more
+  than one game (`:491`), not from the setting.
+- Draws are never counted.
+- There's no head-to-head tiebreaker, and no strength of schedule for Swiss.
+
+Fix: an ordered tiebreaker list on the tournament or stage, and one scoring
+module that uses it.
+
+### 14.5 P3 — smaller smells
+
+- **Response shapes:** built inline with `unknown[]` types, and the roster-row
+  mapping is copied four times in `hosted-tournament.service.ts`. Success
+  responses are sometimes `{ message }` and sometimes `{ success: true }`.
+  Response DTOs would have caught §8's standings mismatch.
+- **Swallowed errors:** there are 13 `.catch(() => null)` calls on `findById`,
+  which turn database failures into 404s. Give `CoachRepository` a
+  `findByIdOrNull`.
+- **Error codes:** tournament errors live under `LEAGUE`, including "Division
+  not found in this league" for a draft pool; `TOURNAMENT` has two leaves.
+- **Module wiring:** `HostedTournamentCoreModule` imports the full
+  `StageModule`, `TeamModule` and `CoachModule` and registers the tier-list
+  schema itself. That breaks the server CLAUDE.md rule that a core module is
+  schema + repository only.
+- **Naming:** division, draft and pool all mean the same thing, and
+  `divisionKey` is a draft slug.
+- **Rules endpoint:** `POST …/rules` replaces the whole list, so it should be
+  `PUT`. `updateRules` filters by tournament slug alone.
+
+### 14.6 Checked and sound
+
+Recorded so these aren't re-audited:
+
+- **Global setup:** helmet, `ValidationPipe({ whitelist: true })`, RS256 JWT
+  with issuer and audience checks, a global throttle, and Express 5's simple
+  query parser, which rules out `?x[$ne]=` operator injection. Slug lookups use
+  `$eq`, and the error filter returns no stack traces.
+- **Organizer invites:** hashed tokens, a TTL, an atomic `claim` with `release`
+  on failure, and a revoke scoped to the tournament. This is the pattern for
+  any future token.
+- **Tournament-level matchup routes** (`resolveMatchup`, `updateMatchup`,
+  `setMatchupAdvancement`) check `stage.tournamentId` against the URL. Hidden
+  stages return 404, not 403.
+- **Draft routes:** the draft is scoped to the tournament (`findDraft`) and the
+  team to the draft (`findTeamInDraftOrThrow`). Pick queues are returned only
+  to the team's own coaches.
+- **Tournament-level `updateBracket`** refuses to delete played matchups or
+  orphan stages, and resolves seeding before it writes anything.
+- **Sign-up token:** stored in plain text on purpose, because organizers need to
+  see and re-share the link. Only `getSettings` returns it.
+- **Chat deletion** is scoped to the tournament, and limited to the author or an
+  organizer.
+
+### 14.7 Order
+
+1. **S1, S2, S4:** route deletions only, one change, no migration. **S5:** a
+   filter and a name source.
+2. **S3:** the interim role and channel checks plus the admin allowlist now;
+   server linking after.
+3. **D1** (the helper, plus the `removeParticipant` fix and its diagnose
+   script), **D2**, then **D4** (diagnose duplicates, then the index), then
+   **D3** (backfill script plus rollback). Per the migration conventions, the
+   scripts are written and reviewed, and the user runs them.
+4. **A1**, which absorbs H5 and H6, then **A2**.
+5. **D5–D7**, **H1–H4**, then the rest of §14.4–14.5.

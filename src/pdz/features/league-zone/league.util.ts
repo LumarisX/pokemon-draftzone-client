@@ -19,6 +19,14 @@ export function getLeagueLogoUrl(logoId: string | undefined): string | undefined
   return `https://${BUCKETPATH}/league-uploads/${logoId}`;
 }
 
+export const SIGN_UP_LIMITS = {
+  name: 64,
+  gameName: 32,
+  discordName: 64,
+  teamName: 64,
+  answer: 2000,
+} as const;
+
 export const ORGANIZER_NAME_MIN = 3;
 export const ORGANIZER_NAME_MAX = 24;
 const ORGANIZER_NAME_PATTERN = /^[\p{L}\p{N}](?:[^\p{C}]*[\p{L}\p{N}])?$/u;

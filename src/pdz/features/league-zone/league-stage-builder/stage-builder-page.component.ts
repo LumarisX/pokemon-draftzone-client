@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { apiErrorMessage } from '@pdz/core/services/api.service';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
 import {
@@ -222,8 +223,10 @@ export class LeagueScheduleComponent implements OnInit {
       },
       error: (err) => {
         this.isSavingRound = false;
-        this.errorMessage =
-          err?.error?.message ?? 'Failed to set the live round.';
+        this.errorMessage = apiErrorMessage(
+          err,
+          'Failed to set the live round.',
+        );
       },
     });
   }
@@ -454,9 +457,8 @@ export class LeagueScheduleComponent implements OnInit {
       error: (err) => {
         this.isSaving = false;
         this.errorMessage =
-          err?.error?.details?.reasons?.join(' ') ??
-          err?.error?.message ??
-          'Failed to save the bracket.';
+          err?.error?.error?.details?.reasons?.join(' ') ??
+          apiErrorMessage(err, 'Failed to save the bracket.');
       },
     });
   }
@@ -491,9 +493,8 @@ export class LeagueScheduleComponent implements OnInit {
         error: (err) => {
           this.isSaving = false;
           this.errorMessage =
-            err?.error?.details?.reason ??
-            err?.error?.message ??
-            'Failed to clear the bracket.';
+            err?.error?.error?.details?.reason ??
+            apiErrorMessage(err, 'Failed to clear the bracket.');
         },
       });
   }
