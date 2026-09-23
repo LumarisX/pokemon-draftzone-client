@@ -392,9 +392,10 @@ export class LeagueZoneService {
     );
   }
 
-  signUp(signupData: object) {
+  signUp(signupData: object, invite?: string) {
+    const query = invite ? `?invite=${encodeURIComponent(invite)}` : '';
     return this.apiService.post<League.SignUpResult>(
-      `${ROOTPATH}/${this.leagueSlug()}/tournaments/${this.tournamentSlug()}/signup`,
+      `${ROOTPATH}/${this.leagueSlug()}/tournaments/${this.tournamentSlug()}/signup${query}`,
       signupData,
     );
   }
@@ -443,17 +444,9 @@ export class LeagueZoneService {
     return this.apiService.get(this.organizersPath());
   }
 
-  searchOrganizerCandidates(
-    query: string,
-  ): Observable<League.OrganizerCandidate[]> {
-    return this.apiService.get(`${this.organizersPath()}/search`, {
-      params: { q: query },
-    });
-  }
-
-  addOrganizer(
-    body: { coachId: string } | { sub: string },
-  ): Observable<League.TournamentOrganizers> {
+  addOrganizer(body: {
+    coachId: string;
+  }): Observable<League.TournamentOrganizers> {
     return this.apiService.post(this.organizersPath(), body, {
       invalidateCache: [this.organizersPath()],
     });
@@ -466,6 +459,59 @@ export class LeagueZoneService {
     );
   }
 
+  renameOrganizer(
+    sub: string,
+    name: string,
+  ): Observable<League.TournamentOrganizers> {
+    return this.apiService.patch(
+      `${this.organizersPath()}/${encodeURIComponent(sub)}/name`,
+      { name },
+      { invalidateCache: [this.organizersPath()] },
+    );
+  }
+
+  createOrganizerInvite(
+    name: string,
+  ): Observable<League.CreatedOrganizerInvite> {
+    return this.apiService.post(
+      `${this.organizersPath()}/invites`,
+      { name },
+      { invalidateCache: [this.organizersPath()] },
+    );
+  }
+
+  revokeOrganizerInvite(
+    inviteId: string,
+  ): Observable<League.TournamentOrganizers> {
+    return this.apiService.delete(
+      `${this.organizersPath()}/invites/${encodeURIComponent(inviteId)}`,
+      { invalidateCache: [this.organizersPath()] },
+    );
+  }
+
+  previewOrganizerInvite(
+    leagueSlug: string,
+    tournamentSlug: string,
+    token: string,
+  ): Observable<League.OrganizerInvitePreview> {
+    return this.apiService.post(
+      `${ROOTPATH}/${leagueSlug}/tournaments/${tournamentSlug}/organizer-invites/preview`,
+      { token },
+    );
+  }
+
+  acceptOrganizerInvite(
+    leagueSlug: string,
+    tournamentSlug: string,
+    token: string,
+    name: string,
+  ): Observable<{ tournamentSlug: string }> {
+    return this.apiService.post(
+      `${ROOTPATH}/${leagueSlug}/tournaments/${tournamentSlug}/organizer-invites/accept`,
+      { token, name },
+    );
+  }
+
   removeParticipant(coachId: string): Observable<{ message: string }> {
     return this.apiService.delete(
       `${ROOTPATH}/${this.leagueSlug()}/tournaments/${this.tournamentSlug()}/coaches/${coachId}`,
@@ -474,6 +520,39 @@ export class LeagueZoneService {
           `${ROOTPATH}/${this.leagueSlug()}/tournaments/${this.tournamentSlug()}/coaches`,
         ],
       },
+    );
+  }
+
+  decideApplication(
+    applicationId: string,
+    decision: {
+      status: League.SignUpStatus;
+      teamName?: string;
+    },
+  ): Observable<unknown> {
+    return this.apiService.patch(
+      `${ROOTPATH}/${this.leagueSlug()}/tournaments/${this.tournamentSlug()}/applications/${applicationId}`,
+      decision,
+    );
+  }
+
+  replaceCoach(
+    teamSlug: string,
+    body: { applicationId: string; teamName?: string; reason?: string },
+  ): Observable<unknown> {
+    return this.apiService.post(
+      `${ROOTPATH}/${this.leagueSlug()}/tournaments/${this.tournamentSlug()}/teams/${teamSlug}/replace-coach`,
+      body,
+    );
+  }
+
+  rotateSignUpToken(): Observable<{
+    signUpToken: string;
+    signUpTokenRotatedAt: string;
+  }> {
+    return this.apiService.post(
+      `${ROOTPATH}/${this.leagueSlug()}/tournaments/${this.tournamentSlug()}/signup-token/rotate`,
+      {},
     );
   }
 

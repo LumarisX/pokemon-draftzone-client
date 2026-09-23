@@ -2,10 +2,8 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
-  ElementRef,
   inject,
   signal,
-  viewChild,
 } from '@angular/core';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 import { SelectOptionComponent } from '@pdz/shared/dropdowns/select/select-option.component';
@@ -13,8 +11,6 @@ import { SelectComponent } from '@pdz/shared/dropdowns/select/select.component';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { CheckComponent } from '@pdz/shared/inputs/choice/check.component';
 import { ChoiceDirective } from '@pdz/shared/inputs/choice/choice.directive';
-import { SegmentedOptionComponent } from '@pdz/shared/inputs/segmented/segmented-option.component';
-import { SegmentedComponent } from '@pdz/shared/inputs/segmented/segmented.component';
 import { DisclosureComponent } from '@pdz/shared/layout/disclosure/disclosure.component';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -40,16 +36,27 @@ import {
   TeamEditDialogResult,
 } from '../dialogs/team-edit-dialog/team-edit-dialog.component';
 import {
-  SIGNUP_STATUSES,
+  ReplaceCoachDialogComponent,
+  ReplaceCoachDialogData,
+  ReplaceCoachDialogResult,
+} from '../dialogs/replace-coach-dialog/replace-coach-dialog.component';
+import {
+  DECIDABLE_STATUSES,
   SIGNUP_STATUS_LABELS,
+  SignUpAnswerValue,
   SignUpStatus,
   SignUpValue,
+  TEAM_STATUSES,
 } from './settings-schema';
 import { TournamentSettingsStore } from './tournament-settings.store';
 
-type Filter = 'all' | SignUpStatus;
-
-const FILTERS: readonly Filter[] = ['all', ...SIGNUP_STATUSES];
+type ApplicantGroup = {
+  id: string;
+  label: string;
+  hint: string;
+  selectable: boolean;
+  entries: SignUpValue[];
+};
 
 @Component({
   selector: 'pdz-applicants-panel',
@@ -65,8 +72,6 @@ const FILTERS: readonly Filter[] = ['all', ...SIGNUP_STATUSES];
     MenuComponent,
     MenuItemComponent,
     MenuTriggerDirective,
-    SegmentedComponent,
-    SegmentedOptionComponent,
     SelectComponent,
     SelectOptionComponent,
   ],
@@ -83,41 +88,76 @@ export class ApplicantsPanelComponent {
 
   protected readonly busyId = signal<string | null>(null);
 
-  private readonly logoInput =
-    viewChild.required<ElementRef<HTMLInputElement>>('logoInput');
-  private logoTarget: SignUpValue | null = null;
-
-  protected readonly statuses = SIGNUP_STATUSES;
+  protected readonly decidableStatuses = DECIDABLE_STATUSES;
   protected readonly statusLabels = SIGNUP_STATUS_LABELS;
-  protected readonly filters = FILTERS;
 
-  protected readonly filter = signal<Filter>('all');
   protected readonly selected = signal<ReadonlySet<string>>(new Set());
 
-  protected readonly visible = computed(() => {
-    const filter = this.filter();
+  protected readonly subPool = computed(() =>
+    this.store
+      .signUps()
+      .filter(
+        (entry) =>
+          !entry.teamId &&
+          (entry.status === 'approved' || entry.status === 'waitlisted'),
+      ),
+  );
+
+  protected readonly groups = computed<ApplicantGroup[]>(() => {
     const entries = this.store.signUps();
-    return filter === 'all'
-      ? entries
-      : entries.filter((entry) => entry.status === filter);
+    return [
+      {
+        id: 'decide',
+        label: 'Needs a decision',
+        hint: 'Applied and waiting on you.',
+        selectable: true,
+        entries: entries.filter((entry) => entry.status === 'pending'),
+      },
+      {
+        id: 'roster',
+        label: 'On a roster',
+        hint: 'Approved, with a team.',
+        selectable: false,
+        entries: entries.filter(
+          (entry) => !!entry.teamId && entry.status === 'approved',
+        ),
+      },
+      {
+        id: 'subs',
+        label: 'Available to sub',
+        hint: 'Approved or waitlisted without a team. Replacements draw from here.',
+        selectable: true,
+        entries: this.subPool(),
+      },
+      {
+        id: 'out',
+        label: 'Not participating',
+        hint: 'Denied, or dropped after being approved.',
+        selectable: false,
+        entries: entries.filter(
+          (entry) => entry.status === 'denied' || entry.status === 'dropped',
+        ),
+      },
+    ];
   });
 
   protected readonly selectedIds = computed(() => [...this.selected()]);
 
-  protected readonly allVisibleSelected = computed(() => {
-    const visible = this.visible();
-    if (!visible.length) return false;
+  protected allSelected(entries: readonly SignUpValue[]): boolean {
+    if (!entries.length) return false;
     const selected = this.selected();
-    return visible.every((entry) => selected.has(entry.id));
-  });
-
-  protected filterLabel(filter: Filter): string {
-    if (filter === 'all') return `All ${this.store.signUps().length}`;
-    return `${this.statusLabels[filter]} ${this.store.statusCounts()[filter]}`;
+    return entries.every((entry) => selected.has(entry.applicationId));
   }
 
   protected isSelected(id: string): boolean {
     return this.selected().has(id);
+  }
+
+  protected answerText(answer: SignUpAnswerValue): string {
+    const joined = answer.values.join(', ');
+    if (joined === 'true') return 'Yes';
+    if (joined === 'false') return 'No';
+    return joined || '—';
   }
 
   protected toggle(id: string): void {
@@ -128,17 +168,21 @@ export class ApplicantsPanelComponent {
     });
   }
 
-  protected toggleAllVisible(): void {
-    const visible = this.visible().map((entry) => entry.id);
+  protected toggleAll(entries: readonly SignUpValue[]): void {
+    const ids = entries.map((entry) => entry.applicationId);
     this.selected.update((current) => {
       const next = new Set(current);
-      const selectAll = !visible.every((id) => next.has(id));
-      for (const id of visible) {
+      const selectAll = !ids.every((id) => next.has(id));
+      for (const id of ids) {
         if (selectAll) next.add(id);
         else next.delete(id);
       }
       return next;
     });
+  }
+
+  protected statusesFor(entry: SignUpValue): readonly SignUpStatus[] {
+    return entry.teamId ? TEAM_STATUSES : DECIDABLE_STATUSES;
   }
 
   protected setStatus(id: string, status: SignUpStatus): void {
@@ -173,13 +217,15 @@ export class ApplicantsPanelComponent {
     });
     if (!confirmed) return;
 
-    this.busyId.set(entry.id);
+    const coachId = entry.id;
+    if (!coachId) return;
+    this.busyId.set(entry.applicationId);
     this.league
-      .removeParticipant(entry.id)
+      .removeParticipant(coachId)
       .pipe(finalize(() => this.busyId.set(null)))
       .subscribe({
         next: () => {
-          this.store.dropSignUp(entry.id);
+          this.store.dropSignUp(entry.applicationId);
           this.toast.success(`${entry.teamName} removed.`);
         },
         error: (err) => {
@@ -244,13 +290,15 @@ export class ApplicantsPanelComponent {
       teamName?: string;
     },
   ): void {
-    this.busyId.set(entry.id);
+    const coachId = entry.id;
+    if (!coachId) return;
+    this.busyId.set(entry.applicationId);
     this.manage
-      .updateCoachDetails(entry.id, changes)
+      .updateCoachDetails(coachId, changes)
       .pipe(finalize(() => this.busyId.set(null)))
       .subscribe({
         next: () => {
-          this.store.patchSignUp(entry.id, changes);
+          this.store.patchSignUp(entry.applicationId, changes);
           this.toast.success('Details updated.');
         },
         error: (err) => {
@@ -261,24 +309,45 @@ export class ApplicantsPanelComponent {
       });
   }
 
-  protected pickLogo(entry: SignUpValue): void {
-    this.logoTarget = entry;
-    this.logoInput().nativeElement.click();
-  }
+  protected async replaceCoach(entry: SignUpValue): Promise<void> {
+    if (!entry.teamSlug) return;
 
-  protected uploadLogo(event: Event): void {
-    const element = event.currentTarget as HTMLInputElement;
-    const file = element.files?.[0];
-    const entry = this.logoTarget;
-    element.value = '';
-    this.logoTarget = null;
-    if (!file || !entry) return;
-    this.sendLogo(entry, file);
+    const result = await this.dialogs.open<
+      ReplaceCoachDialogComponent,
+      ReplaceCoachDialogResult,
+      ReplaceCoachDialogData
+    >(ReplaceCoachDialogComponent, {
+      heading: `Replace ${entry.coach}`,
+      data: { teamName: entry.teamName, candidates: this.subPool() },
+    }).closed;
+    if (!result) return;
+
+    this.busyId.set(entry.applicationId);
+    this.league
+      .replaceCoach(entry.teamSlug, {
+        applicationId: result.applicationId,
+        teamName: result.teamName,
+        reason: result.reason,
+      })
+      .pipe(finalize(() => this.busyId.set(null)))
+      .subscribe({
+        next: () => {
+          this.toast.success(`${entry.teamName} handed over.`);
+          this.store.load();
+        },
+        error: (err) => {
+          this.toast.error(
+            err?.error?.message ?? 'Could not replace that coach.',
+          );
+        },
+      });
   }
 
   private sendLogo(entry: SignUpValue, file: File): void {
 
-    this.busyId.set(entry.id);
+    const coachId = entry.id;
+    if (!coachId) return;
+    this.busyId.set(entry.applicationId);
     let key: string | null = null;
 
     this.league
@@ -289,7 +358,7 @@ export class ApplicantsPanelComponent {
         switchMap((progress) => {
           if (progress.type === HttpEventType.UploadProgress) return of(null);
           if (progress instanceof HttpResponse && progress.ok && key) {
-            return this.league.updateCoachLogo(entry.id, key);
+            return this.league.updateCoachLogo(coachId, key);
           }
           return of(null);
         }),
@@ -302,7 +371,7 @@ export class ApplicantsPanelComponent {
       .subscribe({
         next: (response) => {
           if (!response) return;
-          if (key) this.store.patchSignUp(entry.id, { logo: key });
+          if (key) this.store.patchSignUp(entry.applicationId, { logo: key });
           this.toast.success(`${entry.teamName} logo updated.`);
         },
       });
@@ -311,7 +380,7 @@ export class ApplicantsPanelComponent {
   protected readiness(entry: SignUpValue): string[] {
     const issues: string[] = [];
     if (!entry.inDiscordServer) issues.push('Not in the Discord server');
-    if (entry.status === 'approved' && !entry.hasDiscordRole) {
+    else if (entry.status === 'approved' && !entry.hasDiscordRole) {
       issues.push('Missing the coach role');
     }
     return issues;

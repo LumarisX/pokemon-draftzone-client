@@ -1,0 +1,73 @@
+<div class="dialog-body">
+  @if (!data.candidates.length) {
+    <p class="replace__empty">
+      Nobody has signed up as a sub yet. Approve an application with a sub
+      intent, or waitlist one, and they will appear here.
+    </p>
+  } @else {
+    <label pdz-field label="Replacement coach" required>
+      <pdz-select
+        aria-label="Replacement coach"
+        placeholder="Choose a sub"
+        [ngModel]="applicationId()"
+        (ngModelChange)="pick($event)"
+        [ngModelOptions]="{ standalone: true }"
+      >
+        @for (candidate of data.candidates; track candidate.applicationId) {
+          <pdz-option
+            [value]="candidate.applicationId"
+            [label]="candidate.coach + ' · ' + candidate.timezone"
+          />
+        }
+      </pdz-select>
+    </label>
+
+    @if (selected()) {
+      <label pdz-field label="Team name">
+        <input
+          pdz-input
+          [ngModel]="teamName()"
+          (ngModelChange)="teamName.set($event)"
+          [ngModelOptions]="{ standalone: true }"
+          [placeholder]="selected()!.teamName"
+        />
+      </label>
+
+      <p class="replace__note">
+        {{ data.teamName }} becomes <strong>{{ resolvedName() }}</strong
+        >. The outgoing coach keeps their pick history and the team keeps its
+        roster, record and URL.
+      </p>
+
+      <label pdz-field label="Reason">
+        <input
+          pdz-input
+          placeholder="Dropped mid-season"
+          [ngModel]="reason()"
+          (ngModelChange)="reason.set($event)"
+          [ngModelOptions]="{ standalone: true }"
+        />
+      </label>
+    }
+  }
+</div>
+
+<div class="pdz-dialog-actions">
+  <button
+    pdz-button
+    type="button"
+    variant="outlined"
+    color="neutral"
+    (click)="ref.close()"
+  >
+    Cancel
+  </button>
+  <button
+    pdz-button
+    type="button"
+    [disabled]="!applicationId()"
+    (click)="confirm()"
+  >
+    Replace Coach
+  </button>
+</div>

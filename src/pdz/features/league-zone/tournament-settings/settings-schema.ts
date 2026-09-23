@@ -103,6 +103,34 @@ export interface TierRequirement {
   max: number | null;
 }
 
+export type SignUpQuestionType =
+  | 'short'
+  | 'long'
+  | 'choice'
+  | 'multi'
+  | 'boolean';
+
+export const SIGNUP_QUESTION_TYPE_OPTIONS: readonly ChoiceOption[] = [
+  { value: 'short', label: 'Short text' },
+  { value: 'long', label: 'Long text' },
+  { value: 'choice', label: 'Pick one' },
+  { value: 'multi', label: 'Pick many' },
+  { value: 'boolean', label: 'Yes / no' },
+];
+
+export interface SignUpQuestionValue {
+  id: string;
+  label: string;
+  help: string;
+  type: SignUpQuestionType;
+  options: string[];
+  required: boolean;
+  maxLength: number | null;
+  dependsOnQuestionId: string | null;
+  dependsOnEquals: string;
+  archived: boolean;
+}
+
 export interface PrizeShare {
   place: number;
   percent: number;
@@ -115,6 +143,10 @@ export interface SettingsValue {
   discord: string;
 
   signUpDeadline: string;
+  signUpAccess: 'open' | 'invite' | 'closed';
+  signUpQuestions: SignUpQuestionValue[];
+  maxTeamsEnabled: boolean;
+  maxTeams: number;
 
   draftCountMin: number;
   draftCountMax: number;
@@ -137,6 +169,7 @@ export interface SettingsValue {
 
   discordGuildId: string;
   discordCoachRoleId: string;
+  discordAutoGrantCoachRole: boolean;
   discordSignUpChannelId: string;
 
   adAdvertise: boolean;
@@ -159,10 +192,16 @@ export function draftNotStarted(status: DraftStatus): boolean {
   return !['IN_PROGRESS', 'PAUSED', 'COMPLETED'].includes(status);
 }
 
-export type SignUpStatus = 'approved' | 'pending' | 'denied' | 'dropped';
+export type SignUpStatus =
+  | 'approved'
+  | 'pending'
+  | 'waitlisted'
+  | 'denied'
+  | 'dropped';
 
 export const SIGNUP_STATUSES: readonly SignUpStatus[] = [
   'pending',
+  'waitlisted',
   'approved',
   'denied',
   'dropped',
@@ -170,13 +209,32 @@ export const SIGNUP_STATUSES: readonly SignUpStatus[] = [
 
 export const SIGNUP_STATUS_LABELS: Record<SignUpStatus, string> = {
   pending: 'Pending',
+  waitlisted: 'Waitlisted',
   approved: 'Approved',
   denied: 'Denied',
   dropped: 'Dropped',
 };
 
+export const DECIDABLE_STATUSES: readonly SignUpStatus[] = [
+  'pending',
+  'waitlisted',
+  'approved',
+  'denied',
+];
+
+export const TEAM_STATUSES: readonly SignUpStatus[] = ['approved', 'dropped'];
+
+export interface SignUpAnswerValue {
+  questionId: string;
+  label: string;
+  values: string[];
+}
+
 export interface SignUpValue {
-  id: string;
+  id: string | null;
+  applicationId: string;
+  intent: 'team' | 'sub';
+  answers: SignUpAnswerValue[];
   teamId: string | null;
   teamSlug: string | null;
   logo: string | null;
@@ -223,6 +281,8 @@ export type CustomSlot =
   | 'tier-requirements'
   | 'prize-split'
   | 'discord-channels'
+  | 'invite-link'
+  | 'signup-questions'
   | 'pool-channel'
   | 'pool-window'
   | 'pool-order';
@@ -470,6 +530,53 @@ export const SETTINGS_NODES: readonly SettingsNode[] = [
     ],
   },
   {
+    id: 'signup.access',
+    section: 'signup',
+    title: 'Who can sign up',
+    help: 'Invite-only hides nothing — it means only people with your link can apply. Everyone still lands as pending for you to approve.',
+    controls: [
+      {
+        kind: 'choice',
+        key: 'signUpAccess',
+        label: 'Access',
+        as: 'radio',
+        options: [
+          { value: 'open', label: 'Anyone can apply' },
+          { value: 'invite', label: 'Invite link only' },
+          { value: 'closed', label: 'Closed' },
+        ],
+      },
+      {
+        kind: 'custom',
+        slot: 'invite-link',
+        keys: ['signUpAccess'],
+      },
+    ],
+  },
+  {
+    id: 'signup.questions',
+    section: 'signup',
+    title: 'Questions',
+    help: 'Asked on the sign-up form on top of the built-in name, Showdown name, Discord, timezone and team name.',
+    controls: [{ kind: 'custom', slot: 'signup-questions', keys: ['signUpQuestions'] }],
+  },
+  {
+    id: 'signup.capacity',
+    section: 'signup',
+    title: 'Team limit',
+    help: 'Caps how many teams you can approve. Sign-ups stay open past it so you can keep a waitlist.',
+    controls: [
+      { kind: 'toggle', key: 'maxTeamsEnabled', label: 'Limit the roster' },
+      {
+        kind: 'number',
+        key: 'maxTeams',
+        label: 'Maximum teams',
+        min: 1,
+        showWhen: (v) => v.maxTeamsEnabled,
+      },
+    ],
+  },
+  {
     id: 'signup.listing',
     section: 'signup',
     title: 'Find a League listing',
@@ -675,6 +782,12 @@ export const SETTINGS_NODES: readonly SettingsNode[] = [
     controls: [
       { kind: 'text', key: 'discordGuildId', label: 'Server ID' },
       { kind: 'text', key: 'discordCoachRoleId', label: 'Coach role ID' },
+      {
+        kind: 'toggle',
+        key: 'discordAutoGrantCoachRole',
+        label: 'Grant the coach role on approval',
+        showWhen: (v) => !!v.discordCoachRoleId,
+      },
       {
         kind: 'custom',
         slot: 'discord-channels',

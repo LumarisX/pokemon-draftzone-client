@@ -5,6 +5,7 @@ export const LEAGUE_ZONE_PATH = 'leagues';
 export const TOOLS_PATH = 'tools';
 export const DEBUG_PATH = 'debug';
 export const LEAGUE_ZONE_MANAGE_PATH = 'manage';
+export const ORGANIZER_INVITE_PATH = 'organizer-invite';
 export const EXTERNAL_LINK_PATH = 'external';
 export const STATISTICS_PATH = 'statistics';
 export const TIER_LIST_PATH = 'tier-lists';

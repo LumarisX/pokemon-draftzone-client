@@ -3,6 +3,7 @@ import { AuthGuard } from '@auth0/auth0-angular';
 import {
   DRAFT_OVERVIEW_PATH,
   LEAGUE_ZONE_MANAGE_PATH,
+  ORGANIZER_INVITE_PATH,
 } from '@pdz/core/route-paths';
 import { MatchupOverviewComponent } from '../drafts/matchup-overview/matchup-overview.component';
 import { LEAGUE_MATCHUP_PAGE } from '../drafts/matchup-overview/matchup-page.config';
@@ -22,6 +23,7 @@ import { LeagueStandingsComponent } from './league-standings/league-standings.co
 import { LeagueTeamComponent } from './league-team/league-team.component';
 import { LeagueTeamsComponent } from './league-teams/league-teams.component';
 import { LeagueTradesComponent } from './league-trades/league-trades.component';
+import { OrganizerInviteComponent } from './organizer-invite/organizer-invite.component';
 import { TournamentDraftComponent } from './tournaments/tournament-draft/tournament-draft.component';
 import { TournamentDraftsComponent } from './tournaments/tournament-drafts/tournament-drafts.component';
 import { TournamentLandingComponent } from './tournaments/tournament-landing/tournament-landing.component';
@@ -36,6 +38,11 @@ export const routes: Routes = [
   {
     path: `:leagueSlug`,
     component: LeagueLandingComponent,
+  },
+  {
+    path: `:leagueSlug/tournaments/:tournamentSlug/${ORGANIZER_INVITE_PATH}`,
+    component: OrganizerInviteComponent,
+    canActivate: [AuthGuard],
   },
   {
     path: ':leagueSlug/tournaments/:tournamentSlug',

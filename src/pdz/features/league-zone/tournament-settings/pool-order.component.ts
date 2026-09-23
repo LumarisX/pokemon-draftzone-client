@@ -85,11 +85,13 @@ export class PoolOrderComponent {
     );
   }
 
-  protected move(teamId: string, target: string): void {
+  protected move(teamId: string | null, target: string): void {
+    if (!teamId) return;
     this.store.assignTeam(teamId, target === 'unassigned' ? null : target);
   }
 
-  protected claim(teamId: string): void {
+  protected claim(teamId: string | null): void {
+    if (!teamId) return;
     this.store.assignTeam(teamId, this.poolId());
   }
 }

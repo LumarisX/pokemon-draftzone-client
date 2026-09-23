@@ -20,7 +20,7 @@
       [cdkDropListDisabled]="!canReorder()"
       (cdkDropListDropped)="drop($event)"
     >
-      @for (team of teams(); track team.id) {
+      @for (team of teams(); track team.applicationId) {
         <li
           class="order__row"
           cdkDrag
@@ -94,7 +94,7 @@
         Unassigned · {{ unassigned().length }}
       </h4>
       <ul class="order__bench-list">
-        @for (team of unassigned(); track team.id) {
+        @for (team of unassigned(); track team.applicationId) {
           <li class="order__bench-row">
             <span class="order__who">
               <span class="order__team">{{ team.teamName }}</span>

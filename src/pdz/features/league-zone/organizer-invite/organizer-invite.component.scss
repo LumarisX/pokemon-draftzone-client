@@ -1,0 +1,19 @@
+@use "pdz-theming" as pdz;
+
+.invite {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(lg);
+
+  &__form {
+    width: 100%;
+    max-width: 22rem;
+    text-align: start;
+  }
+
+  &__expiry {
+    @include pdz.text(body-sm);
+    color: pdz.color(on-surface-variant);
+    margin: 0;
+  }
+}

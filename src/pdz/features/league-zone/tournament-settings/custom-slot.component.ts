@@ -7,13 +7,25 @@ import {
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
+import { SelectOptionComponent } from '@pdz/shared/dropdowns/select/select-option.component';
+import { SelectComponent } from '@pdz/shared/dropdowns/select/select.component';
+import { CheckComponent } from '@pdz/shared/inputs/choice/check.component';
+import { ChoiceDirective } from '@pdz/shared/inputs/choice/choice.directive';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { FieldComponent } from '@pdz/shared/inputs/field/field.component';
 import { InputDirective } from '@pdz/shared/inputs/field/input.directive';
 import { LogoFieldComponent } from './logo-field.component';
 import { PoolOrderComponent } from './pool-order.component';
-import { AnyControlSpec, PrizeShare } from './settings-schema';
+import {
+  AnyControlSpec,
+  PrizeShare,
+  SIGNUP_QUESTION_TYPE_OPTIONS,
+  SignUpQuestionValue,
+} from './settings-schema';
 import { TournamentSettingsStore } from './tournament-settings.store';
+import { LeagueZoneService } from '../league-zone.service';
+import { DialogService } from '@pdz/shared/dialogs/dialog/dialog.service';
+import { ToastService } from '@pdz/shared/feedback/toast/toast.service';
 import { TierListPanelComponent } from './tier-list-panel.component';
 
 @Component({
@@ -22,8 +34,12 @@ import { TierListPanelComponent } from './tier-list-panel.component';
   imports: [
     FormsModule,
     ButtonComponent,
+    CheckComponent,
+    ChoiceDirective,
     FieldComponent,
     IconComponent,
+    SelectComponent,
+    SelectOptionComponent,
     InputDirective,
     LogoFieldComponent,
     PoolOrderComponent,
@@ -38,6 +54,9 @@ export class CustomSlotComponent {
   readonly poolId = input<string | null>(null);
 
   protected readonly store = inject(TournamentSettingsStore);
+  private readonly league = inject(LeagueZoneService);
+  private readonly toast = inject(ToastService);
+  private readonly dialogs = inject(DialogService);
 
   protected readonly slot = computed(() => {
     const control = this.control();
@@ -47,6 +66,144 @@ export class CustomSlotComponent {
   protected readonly signUpChannelId = computed(() =>
     this.store.read<string>('discordSignUpChannelId'),
   );
+
+  protected readonly questionTypes = SIGNUP_QUESTION_TYPE_OPTIONS;
+
+  protected readonly questions = computed(
+    () => this.store.read<SignUpQuestionValue[]>('signUpQuestions') ?? [],
+  );
+
+  protected dependencyChoices(
+    questionId: string,
+  ): { id: string; label: string }[] {
+    return this.questions()
+      .filter(
+        (question) =>
+          question.id !== questionId &&
+          question.type === 'boolean' &&
+          !question.archived,
+      )
+      .map((question) => ({
+        id: question.id,
+        label: question.label || 'Untitled question',
+      }));
+  }
+
+  private writeQuestions(next: SignUpQuestionValue[]): void {
+    this.store.write('signUpQuestions', next);
+  }
+
+  protected addQuestion(): void {
+    this.writeQuestions([
+      ...this.questions(),
+      {
+        id: `q-${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 8)}`,
+        label: '',
+        help: '',
+        type: 'short',
+        options: [],
+        required: false,
+        maxLength: null,
+        dependsOnQuestionId: null,
+        dependsOnEquals: '',
+        archived: false,
+      },
+    ]);
+  }
+
+  protected patchQuestion(
+    id: string,
+    changes: Partial<SignUpQuestionValue>,
+  ): void {
+    this.writeQuestions(
+      this.questions().map((question) =>
+        question.id === id ? { ...question, ...changes } : question,
+      ),
+    );
+  }
+
+  protected optionsText(question: SignUpQuestionValue): string {
+    return question.options.join('\n');
+  }
+
+  protected setOptions(id: string, raw: string): void {
+    this.patchQuestion(id, {
+      options: raw
+        .split('\n')
+        .map((option) => option.trim())
+        .filter((option) => option.length > 0),
+    });
+  }
+
+  protected setDependency(id: string, questionId: string): void {
+    this.patchQuestion(id, {
+      dependsOnQuestionId: questionId || null,
+      dependsOnEquals: questionId ? 'true' : '',
+    });
+  }
+
+  protected toggleArchived(id: string): void {
+    const question = this.questions().find((entry) => entry.id === id);
+    if (!question) return;
+    this.patchQuestion(id, {
+      archived: !question.archived,
+      ...(question.archived
+        ? {}
+        : { dependsOnQuestionId: null, dependsOnEquals: '' }),
+    });
+    if (!question.archived) this.detachDependents(id);
+  }
+
+  private detachDependents(questionId: string): void {
+    this.writeQuestions(
+      this.questions().map((question) =>
+        question.dependsOnQuestionId === questionId
+          ? { ...question, dependsOnQuestionId: null, dependsOnEquals: '' }
+          : question,
+      ),
+    );
+  }
+
+  protected readonly inviteMode = computed(
+    () => this.store.read<string>('signUpAccess') === 'invite',
+  );
+
+  protected readonly inviteUrl = computed(() => {
+    const token = this.store.signUpToken();
+    if (!token) return null;
+    const leagueSlug = this.league.leagueSlug();
+    const tournamentSlug = this.league.tournamentSlug();
+    return `${window.location.origin}/leagues/${leagueSlug}/tournaments/${tournamentSlug}/sign-up?invite=${token}`;
+  });
+
+  protected async copyInvite(url: string): Promise<void> {
+    try {
+      await navigator.clipboard.writeText(url);
+      this.toast.success('Invite link copied.');
+    } catch {
+      this.toast.error('Could not copy the link.');
+    }
+  }
+
+  protected async rotateInvite(): Promise<void> {
+    const confirmed = await this.dialogs.confirm('Rotate the invite link?', {
+      message:
+        'Every link you have already sent stops working immediately. Anyone mid-signup will have to start again with the new link.',
+      confirmLabel: 'Rotate',
+      confirmColor: 'danger',
+    });
+    if (!confirmed) return;
+
+    this.league.rotateSignUpToken().subscribe({
+      next: ({ signUpToken }) => {
+        this.store.setSignUpToken(signUpToken);
+        this.toast.success('Invite link rotated.');
+      },
+      error: (err) => {
+        this.toast.error(err?.error?.message ?? 'Could not rotate the link.');
+      },
+    });
+  }
 
   protected readonly poolChannelId = computed(() =>
     this.store.read<string>('channelId', this.poolId()),

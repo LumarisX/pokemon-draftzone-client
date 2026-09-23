@@ -23,14 +23,58 @@
     margin: 0 0 pdz.space(md);
   }
 
-  &__field {
-    width: 100%;
+  &__subtitle {
+    @include pdz.caps;
+    color: pdz.color(on-surface-variant);
+    margin: pdz.space(lg) 0 pdz.space(sm);
+  }
+
+  &__lead {
+    @include pdz.text(body-sm);
+    color: pdz.color(on-surface-variant);
+    margin: 0 0 pdz.space(md);
   }
 
   &__hint {
     @include pdz.text(body-sm);
     color: pdz.color(on-surface-variant);
-    margin: pdz.space(sm) 0 0;
+    margin: 0;
+  }
+}
+
+.invite-form {
+  display: flex;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  gap: pdz.space(sm);
+
+  &__field {
+    flex: 1 1 16rem;
+  }
+}
+
+.rename {
+  display: flex;
+  align-items: center;
+  gap: pdz.space(sm);
+  flex: 1 1 auto;
+  min-width: 0;
+
+  &__field {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+}
+
+.invite-created {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(sm);
+  margin-top: pdz.space(md);
+
+  &__actions {
+    display: flex;
+    gap: pdz.space(sm);
   }
 }
 

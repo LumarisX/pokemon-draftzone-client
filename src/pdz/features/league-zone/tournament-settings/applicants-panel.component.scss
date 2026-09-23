@@ -10,12 +10,49 @@
   gap: pdz.space(sm);
 }
 
-.apps__bar {
+.apps__group {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
+  gap: pdz.space(xs);
+}
+
+.apps__group-head {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: baseline;
+  gap: pdz.space(2xs) pdz.space(sm);
+  padding-bottom: pdz.space(2xs);
+  border-bottom: 1px solid pdz.color(outline-variant);
+}
+
+.apps__group-title {
+  display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: pdz.space(sm);
+  gap: pdz.space(2xs);
+  margin: 0;
+  color: pdz.color(on-surface);
+  @include pdz.caps;
+}
+
+.apps__group-count {
+  padding: 0 pdz.space(2xs);
+  color: pdz.color(on-surface-variant);
+  background: pdz.color(surface-container);
+  border-radius: pdz.shape(corner-sm);
+  @include pdz.text(body-sm);
+}
+
+.apps__group-hint {
+  grid-column: 1 / -1;
+  grid-row: 2;
+  margin: 0;
+  color: pdz.color(on-surface-variant);
+  @include pdz.text(body-sm);
+}
+
+.apps__group-all {
+  grid-column: 2;
+  grid-row: 1;
 }
 
 .apps__bulk {
@@ -41,10 +78,6 @@
   gap: pdz.space(xs);
 }
 
-.apps__head {
-  padding-bottom: pdz.space(2xs);
-  border-bottom: 1px solid pdz.color(outline-variant);
-}
 
 .apps__list {
   display: flex;
@@ -89,14 +122,36 @@
   min-width: 0;
 }
 
-.app__team {
+.app__name {
   color: pdz.color(on-surface);
   @include pdz.text(body-sm-strong);
 }
 
-.app__coach {
+.app__meta {
   color: pdz.color(on-surface-variant);
-  @include pdz.text(label);
+  @include pdz.text(body-sm);
+}
+
+.app__want {
+  color: pdz.color(on-surface-variant);
+  @include pdz.text(body-sm);
+
+  a {
+    color: pdz.color(primary);
+  }
+}
+
+.app__flag {
+  margin-left: pdz.space(2xs);
+  padding: 0 pdz.space(2xs);
+  color: pdz.color(on-surface-variant);
+  background: pdz.color(surface-container);
+  border-radius: pdz.shape(corner-sm);
+  @include pdz.text(body-sm);
+}
+
+.app__muted {
+  color: pdz.color(on-surface-variant);
 }
 
 .app__controls {
@@ -140,12 +195,3 @@
   grid-column: 1 / -1;
 }
 
-.app__file {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  overflow: hidden;
-  clip-path: inset(50%);
-  white-space: nowrap;
-}

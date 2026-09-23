@@ -72,6 +72,159 @@
     </label>
   }
 
+  @case ('signup-questions') {
+    <div class="slot-questions">
+      @for (question of questions(); track question.id) {
+        <div class="slot-question" [class.slot-question--archived]="question.archived">
+          <div class="slot-question__head">
+            <label pdz-field label="Question" class="slot-question__label">
+              <input
+                pdz-input
+                type="text"
+                [disabled]="disabled() || question.archived"
+                [ngModel]="question.label"
+                (ngModelChange)="patchQuestion(question.id, { label: $event })"
+                [ngModelOptions]="{ standalone: true }"
+              />
+            </label>
+            <label pdz-field label="Type" class="slot-question__type">
+              <pdz-select
+                aria-label="Question type"
+                [disabled]="disabled() || question.archived"
+                [ngModel]="question.type"
+                (ngModelChange)="patchQuestion(question.id, { type: $event })"
+                [ngModelOptions]="{ standalone: true }"
+              >
+                @for (option of questionTypes; track option.value) {
+                  <pdz-option [value]="option.value" [label]="option.label" />
+                }
+              </pdz-select>
+            </label>
+          </div>
+
+          <label pdz-field label="Help text">
+            <input
+              pdz-input
+              type="text"
+              [disabled]="disabled() || question.archived"
+              [ngModel]="question.help"
+              (ngModelChange)="patchQuestion(question.id, { help: $event })"
+              [ngModelOptions]="{ standalone: true }"
+            />
+          </label>
+
+          @if (question.type === 'choice' || question.type === 'multi') {
+            <label pdz-field label="Options" hint="One per line">
+              <textarea
+                pdz-input
+                rows="3"
+                [disabled]="disabled() || question.archived"
+                [ngModel]="optionsText(question)"
+                (ngModelChange)="setOptions(question.id, $event)"
+                [ngModelOptions]="{ standalone: true }"
+              ></textarea>
+            </label>
+          }
+
+          @if (dependencyChoices(question.id); as choices) {
+            @if (choices.length) {
+              <label pdz-field label="Only ask when" hint="Leave blank to always ask">
+                <pdz-select
+                  aria-label="Depends on"
+                  [disabled]="disabled() || question.archived"
+                  [ngModel]="question.dependsOnQuestionId ?? ''"
+                  (ngModelChange)="setDependency(question.id, $event)"
+                  [ngModelOptions]="{ standalone: true }"
+                >
+                  <pdz-option value="" label="Always ask" />
+                  @for (choice of choices; track choice.id) {
+                    <pdz-option
+                      [value]="choice.id"
+                      [label]="choice.label + ' is Yes'"
+                    />
+                  }
+                </pdz-select>
+              </label>
+            }
+          }
+
+          <div class="slot-question__foot">
+            <label pdz-check>
+              <input
+                pdz-checkbox
+                type="checkbox"
+                [disabled]="disabled() || question.archived"
+                [ngModel]="question.required"
+                (ngModelChange)="patchQuestion(question.id, { required: $event })"
+                [ngModelOptions]="{ standalone: true }"
+              />
+              <span>Required</span>
+            </label>
+
+            <button
+              pdz-button
+              type="button"
+              variant="outlined"
+              color="neutral"
+              size="sm"
+              [disabled]="disabled()"
+              (click)="toggleArchived(question.id)"
+            >
+              {{ question.archived ? 'Restore' : 'Retire' }}
+            </button>
+          </div>
+
+          @if (question.archived) {
+            <p class="slot-questions__note">
+              Retired. It is no longer asked, and answers already given still
+              show on the applicant.
+            </p>
+          }
+        </div>
+      }
+
+      <button
+        pdz-button
+        type="button"
+        variant="outlined"
+        color="neutral"
+        size="sm"
+        [disabled]="disabled()"
+        (click)="addQuestion()"
+      >
+        <pdz-icon name="add" [size]="16" aria-hidden="true" />
+        Add question
+      </button>
+    </div>
+  }
+
+  @case ('invite-link') {
+    @if (inviteMode()) {
+      <div class="slot-invite">
+        @if (inviteUrl(); as url) {
+          <label pdz-field label="Invite link">
+            <input pdz-input type="text" readonly [ngModel]="url" [ngModelOptions]="{ standalone: true }" />
+          </label>
+          <div class="slot-invite__actions">
+            <button pdz-button type="button" size="sm" variant="outlined" (click)="copyInvite(url)">
+              Copy link
+            </button>
+            <button pdz-button type="button" size="sm" variant="outlined" color="danger" (click)="rotateInvite()">
+              Rotate
+            </button>
+          </div>
+          <p class="slot-invite__note">
+            Rotating breaks every link you have already sent.
+          </p>
+        } @else {
+          <p class="slot-invite__note">
+            Save to generate this tournament's invite link.
+          </p>
+        }
+      </div>
+    }
+  }
+
   @case ('pool-channel') {
     <div class="slot-channel">
       <label pdz-field label="Channel ID" class="slot-channel__field">

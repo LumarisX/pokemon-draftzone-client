@@ -1,0 +1,18 @@
+@use "pdz-theming" as pdz;
+
+.dialog-body {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(md);
+}
+
+.replace__empty,
+.replace__note {
+  margin: 0;
+  color: pdz.color(on-surface-variant);
+  @include pdz.text(body-sm);
+}
+
+.replace__note strong {
+  color: pdz.color(on-surface);
+}

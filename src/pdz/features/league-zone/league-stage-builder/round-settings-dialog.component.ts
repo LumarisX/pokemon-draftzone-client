@@ -1,4 +1,9 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  inject,
+  signal,
+} from '@angular/core';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 import { FieldComponent } from '@pdz/shared/inputs/field/field.component';
 import { InputDirective } from '@pdz/shared/inputs/field/input.directive';
@@ -28,11 +33,7 @@ export interface RoundSettingsData {
         />
       </label>
 
-      <label
-        pdz-field
-        label="Match deadline"
-        hint="When these matches have to be played by."
-      >
+      <label pdz-field label="Match deadline">
         <input
           pdz-input
           type="datetime-local"
@@ -41,11 +42,7 @@ export interface RoundSettingsData {
         />
       </label>
 
-      <label
-        pdz-field
-        label="Trade deadline"
-        hint="Coaches cannot file trades for this round after this."
-      >
+      <label pdz-field label="Trade deadline">
         <input
           pdz-input
           type="datetime-local"

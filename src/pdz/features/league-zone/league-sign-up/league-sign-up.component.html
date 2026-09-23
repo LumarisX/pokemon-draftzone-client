@@ -148,70 +148,93 @@
           </label>
         </div>
 
-        <label pdz-field class="form-field" label="Experience" required>
-          <textarea
-            id="experience"
-            pdz-input
-            formControlName="experience"
-            maxlength="500"
-            rows="4"
-            placeholder="How much experience do you have in draft?"
-          ></textarea>
-          @if (
-            signupForm.get("experience")?.hasError("required") &&
-            signupForm.get("experience")?.touched
-          ) {
-            <span pdz-error>Required</span>
-          }
-        </label>
-
-        <div
-          pdz-field
-          class="form-field"
-          label="Have you dropped from a league before?"
-        >
-          <div class="radio-group">
-            <label class="radio-label">
-              <input
-                pdz-radio
-                type="radio"
-                name="droppedBefore"
-                class="radio-input"
-                [value]="true"
-                formControlName="droppedBefore"
-              />
-              <span>Yes</span>
-            </label>
-            <label class="radio-label">
-              <input
-                pdz-radio
-                type="radio"
-                name="droppedBefore"
-                class="radio-input"
-                [value]="false"
-                formControlName="droppedBefore"
-              />
-              <span>No</span>
-            </label>
-          </div>
-        </div>
-
-        @if (signupForm.get("droppedBefore")?.value) {
-          <label pdz-field class="form-field" label="Why?" required>
-            <textarea
-              id="droppedWhy"
-              pdz-input
-              formControlName="droppedWhy"
-              maxlength="500"
-              rows="4"
-            ></textarea>
-            @if (
-              signupForm.get("droppedWhy")?.hasError("required") &&
-              signupForm.get("droppedWhy")?.touched
-            ) {
+        @for (question of visibleQuestions(); track question.id) {
+          <div class="form-field" [formGroupName]="'answers'">
+            @switch (question.type) {
+              @case ("boolean") {
+                <div
+                  pdz-field
+                  class="form-field"
+                  [label]="question.label"
+                  [hint]="question.help"
+                >
+                  <div class="radio-group">
+                    <label class="radio-label">
+                      <input
+                        pdz-radio
+                        type="radio"
+                        [name]="question.id"
+                        class="radio-input"
+                        value="true"
+                        [formControlName]="question.id"
+                      />
+                      <span>Yes</span>
+                    </label>
+                    <label class="radio-label">
+                      <input
+                        pdz-radio
+                        type="radio"
+                        [name]="question.id"
+                        class="radio-input"
+                        value="false"
+                        [formControlName]="question.id"
+                      />
+                      <span>No</span>
+                    </label>
+                  </div>
+                </div>
+              }
+              @case ("choice") {
+                <label
+                  pdz-field
+                  [label]="question.label"
+                  [hint]="question.help"
+                  [required]="question.required"
+                >
+                  <pdz-select
+                    [attr.aria-label]="question.label"
+                    [formControlName]="question.id"
+                  >
+                    @for (option of question.options; track option) {
+                      <pdz-option [value]="option" [label]="option" />
+                    }
+                  </pdz-select>
+                </label>
+              }
+              @case ("long") {
+                <label
+                  pdz-field
+                  [label]="question.label"
+                  [hint]="question.help"
+                  [required]="question.required"
+                >
+                  <textarea
+                    pdz-input
+                    rows="4"
+                    [attr.maxlength]="question.maxLength"
+                    [formControlName]="question.id"
+                  ></textarea>
+                </label>
+              }
+              @default {
+                <label
+                  pdz-field
+                  [label]="question.label"
+                  [hint]="question.help"
+                  [required]="question.required"
+                >
+                  <input
+                    pdz-input
+                    [attr.maxlength]="question.maxLength"
+                    [formControlName]="question.id"
+                  />
+                </label>
+              }
+            }
+            @if (answerInvalid(question)) {
               <span pdz-error>Required</span>
             }
-          </label>
+          </div>
         }
       </div>
     </section>

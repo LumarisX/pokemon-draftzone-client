@@ -19,23 +19,74 @@
                 [size]="20"
               />
             </span>
-            <span class="person__body">
-              <span class="person__name">{{ label(organizer) }}</span>
-              @if (organizer.isOwner) {
-                <span class="person__note">Owner</span>
+            @if (editingSub() === organizer.sub) {
+              <form class="rename" (ngSubmit)="saveRename(organizer)">
+                <label pdz-field class="rename__field">
+                  <input
+                    pdz-input
+                    type="text"
+                    name="draftName"
+                    [maxlength]="nameMax"
+                    aria-label="Organizer name"
+                    [(ngModel)]="draftName"
+                  />
+                </label>
+                <button
+                  pdz-button
+                  type="submit"
+                  size="sm"
+                  [disabled]="
+                    !isValidName(draftName) || busyId() === organizer.sub
+                  "
+                >
+                  Save
+                </button>
+                <button
+                  pdz-button
+                  type="button"
+                  size="sm"
+                  variant="ghost"
+                  (click)="cancelRename()"
+                >
+                  Cancel
+                </button>
+              </form>
+            } @else {
+              <span class="person__body">
+                <span class="person__name">{{ label(organizer) }}</span>
+                @if (note(organizer); as text) {
+                  <span class="person__note">{{ text }}</span>
+                }
+              </span>
+              @if (canRename(organizer)) {
+                <button
+                  pdz-button
+                  iconOnly
+                  size="sm"
+                  variant="ghost"
+                  color="neutral"
+                  pdzTooltip="Rename"
+                  [attr.aria-label]="'Rename ' + label(organizer)"
+                  (click)="startRename(organizer)"
+                >
+                  <pdz-icon name="edit" [size]="20" />
+                </button>
               }
-            </span>
-            @if (canEdit() && !organizer.isOwner) {
-              <button
-                pdz-button
-                size="sm"
-                color="danger"
-                variant="outlined"
-                [disabled]="busySub() === organizer.sub"
-                (click)="remove(organizer)"
-              >
-                Remove
-              </button>
+              @if (canEdit() && !organizer.isOwner) {
+                <button
+                  pdz-button
+                  iconOnly
+                  size="sm"
+                  variant="ghost"
+                  color="danger"
+                  pdzTooltip="Remove"
+                  [attr.aria-label]="'Remove ' + label(organizer)"
+                  [disabled]="busyId() === organizer.sub"
+                  (click)="remove(organizer)"
+                >
+                  <pdz-icon name="person_remove" [size]="20" />
+                </button>
+              }
             }
           </li>
         }
@@ -44,72 +95,123 @@
 
     @if (canEdit()) {
       <section class="panel">
-        <h2 class="panel__title">Add by username</h2>
-        <label pdz-field class="panel__field">
-          <input
-            pdz-input
-            type="search"
-            placeholder="Search usernames"
-            [ngModel]="query"
-            (ngModelChange)="onQueryChange($event)"
-            aria-label="Search usernames"
-          />
-        </label>
+        <h2 class="panel__title">Invite by link</h2>
+        <p class="panel__lead">
+          For someone who isn't playing in this tournament. Each link works for
+          one person and expires after 7 days. They'll be asked to sign in or
+          create an account, then accept.
+        </p>
 
-        @if (searching()) {
-          <p class="panel__hint">Searching…</p>
-        } @else if (candidates().length) {
+        <form class="invite-form" (ngSubmit)="createInvite()">
+          <label
+            pdz-field
+            label="Organizer name"
+            hint="What other organizers will see. They can change it when they accept."
+            required
+            class="invite-form__field"
+          >
+            <input
+              pdz-input
+              type="text"
+              name="inviteName"
+              [maxlength]="nameMax"
+              placeholder="e.g. Misty"
+              [(ngModel)]="inviteName"
+            />
+          </label>
+          <button
+            pdz-button
+            type="submit"
+            [disabled]="creatingInvite() || !isValidName(inviteName)"
+          >
+            <pdz-icon name="add_link" [size]="18" />
+            Create link
+          </button>
+        </form>
+
+        @if (createdLink(); as link) {
+          <div class="invite-created">
+            <label pdz-field label="New invite link">
+              <input
+                pdz-input
+                type="text"
+                readonly
+                [value]="link.url"
+                aria-label="New invite link"
+              />
+            </label>
+            <div class="invite-created__actions">
+              <button
+                pdz-button
+                type="button"
+                size="sm"
+                variant="outlined"
+                (click)="copyLink(link.url)"
+              >
+                Copy link
+              </button>
+            </div>
+            <p class="panel__hint">
+              Copy it now. The link is not stored, so it can't be shown again.
+            </p>
+          </div>
+        }
+
+        @if (invites().length) {
+          <h3 class="panel__subtitle">Pending</h3>
           <ul class="people">
-            @for (candidate of candidates(); track candidate.sub) {
+            @for (invite of invites(); track invite.id) {
               <li class="person">
                 <span class="person__icon">
-                  <pdz-icon name="person_add" [size]="20" />
+                  <pdz-icon name="link" [size]="20" />
                 </span>
                 <span class="person__body">
                   <span class="person__name">
-                    {{ candidate.username ?? candidate.sub }}
+                    {{ invite.name }}
                   </span>
                   <span class="person__note">
-                    Joined {{ candidate.joined | date: "MMM y" }}
+                    Expires {{ invite.expiresAt | date: "MMM d, h:mm a" }}
                   </span>
                 </span>
                 <button
                   pdz-button
                   size="sm"
-                  [disabled]="busySub() === candidate.sub"
-                  (click)="addBySub(candidate)"
+                  color="danger"
+                  variant="outlined"
+                  [disabled]="busyId() === invite.id"
+                  (click)="revokeInvite(invite)"
                 >
-                  Add
+                  Revoke
                 </button>
               </li>
             }
           </ul>
-        } @else if (query.trim().length >= 2) {
-          <p class="panel__hint">No users match that name.</p>
         }
       </section>
 
       <section class="panel">
         <h2 class="panel__title">Promote a participant</h2>
-        @if (promotableCoaches().length) {
+        @if (candidates().length) {
           <ul class="people">
-            @for (coach of promotableCoaches(); track coach.id) {
+            @for (candidate of candidates(); track candidate.coachId) {
               <li class="person">
                 <span class="person__icon">
                   <pdz-icon name="person" [size]="20" />
                 </span>
                 <span class="person__body">
-                  <span class="person__name">{{ coach.name }}</span>
-                  <span class="person__note">{{ coach.teamName }}</span>
+                  <span class="person__name">{{ candidate.name }}</span>
                 </span>
                 <button
                   pdz-button
+                  iconOnly
                   size="sm"
-                  variant="outlined"
-                  [disabled]="busySub() === coach.id"
-                  (click)="addByCoach(coach)"
+                  variant="ghost"
+                  pdzTooltip="Make organizer"
+                  [attr.aria-label]="'Make ' + candidate.name + ' an organizer'"
+                  [disabled]="busyId() === candidate.coachId"
+                  (click)="promote(candidate)"
                 >
-                  Add
+                  <pdz-icon name="person_add" [size]="20" />
                 </button>
               </li>
             }
@@ -117,8 +219,8 @@
         } @else {
           <pdz-empty-state
             icon="group_off"
-            heading="No participants yet"
-            message="Coaches appear here once they sign up."
+            heading="No one to promote"
+            message="Approved coaches who aren't already organizers appear here."
           ></pdz-empty-state>
         }
       </section>

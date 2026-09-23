@@ -255,6 +255,7 @@ export class LeagueManageService {
       discordSettings?: {
         guildId?: string;
         coachRoleId?: string;
+        autoGrantCoachRole?: boolean;
         signUpChannelId?: string;
       };
       forfeit: { gameDiff: number; pokemonDiff: number };
@@ -262,6 +263,20 @@ export class LeagueManageService {
       tierListId: string;
       draftCount: { min: number; max: number };
       pointTotal?: number;
+      maxTeams?: number;
+      signUpAccess?: 'open' | 'invite' | 'closed';
+      signUpToken?: string;
+      signUpQuestions?: {
+        id: string;
+        label: string;
+        help?: string;
+        type: 'short' | 'long' | 'choice' | 'multi' | 'boolean';
+        options?: string[];
+        required: boolean;
+        maxLength?: number;
+        dependsOn?: { questionId: string; equals: string };
+        archived?: boolean;
+      }[];
       tradePointLimit?: number;
       tierRequirements: { tierId: string; required: number; max?: number }[];
       prizeSplit?: { place: number; percent: number }[];
@@ -293,6 +308,7 @@ export class LeagueManageService {
     discordSettings?: {
       guildId?: string;
       coachRoleId?: string;
+      autoGrantCoachRole?: boolean;
       signUpChannelId?: string;
     };
     forfeit?: { gameDiff: number; pokemonDiff: number };
@@ -300,6 +316,20 @@ export class LeagueManageService {
     draftCount?: { min: number; max: number };
     /** `null` clears an existing point cap; `undefined` leaves it untouched. */
     pointTotal?: number | null;
+    /** `null` clears an existing team limit; `undefined` leaves it untouched. */
+    maxTeams?: number | null;
+    signUpAccess?: 'open' | 'invite' | 'closed';
+    signUpQuestions?: {
+      id: string;
+      label: string;
+      help?: string;
+      type: 'short' | 'long' | 'choice' | 'multi' | 'boolean';
+      options?: string[];
+      required: boolean;
+      maxLength?: number;
+      dependsOn?: { questionId: string; equals: string };
+      archived?: boolean;
+    }[];
     tradePointLimit?: number | null;
     tierRequirements?: { tierId: string; required: number; max?: number }[];
     prizeSplit?: { place: number; percent: number }[];

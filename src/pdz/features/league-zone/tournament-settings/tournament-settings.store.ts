@@ -2,6 +2,7 @@ import { Injectable, computed, inject, signal } from '@angular/core';
 import {
   Observable,
   catchError,
+  concat,
   forkJoin,
   map,
   of,
@@ -46,6 +47,10 @@ const EMPTY_SETTINGS: SettingsValue = {
   logo: null,
   discord: '',
   signUpDeadline: '',
+  signUpAccess: 'open',
+  signUpQuestions: [],
+  maxTeamsEnabled: false,
+  maxTeams: 12,
   draftCountMin: 1,
   draftCountMax: 1,
   pointTotalEnabled: false,
@@ -64,6 +69,7 @@ const EMPTY_SETTINGS: SettingsValue = {
   coachReporting: true,
   discordGuildId: '',
   discordCoachRoleId: '',
+  discordAutoGrantCoachRole: true,
   discordSignUpChannelId: '',
   adAdvertise: false,
   adSkillFrom: '0',
@@ -131,6 +137,13 @@ export class TournamentSettingsStore {
   private readonly draftSignUps = signal<SignUpValue[]>([]);
   private readonly artifactState = signal<ArtifactState>(EMPTY_ARTIFACTS);
 
+  private readonly signUpTokenValue = signal<string | null>(null);
+  readonly signUpToken = this.signUpTokenValue.asReadonly();
+
+  setSignUpToken(token: string): void {
+    this.signUpTokenValue.set(token);
+  }
+
   readonly pendingReports = signal(0);
   readonly pendingTrades = signal(0);
 
@@ -185,6 +198,7 @@ export class TournamentSettingsStore {
   readonly statusCounts = computed(() => {
     const counts: Record<SignUpStatus, number> = {
       pending: 0,
+      waitlisted: 0,
       approved: 0,
       denied: 0,
       dropped: 0,
@@ -195,7 +209,9 @@ export class TournamentSettingsStore {
 
   readonly unassigned = computed(() => {
     const placed = new Set(this.pools().flatMap((pool) => pool.teams));
-    return this.approved().filter((entry) => !placed.has(entry.id));
+    return this.approved().filter(
+      (entry) => !!entry.id && !placed.has(entry.id),
+    );
   });
 
   readonly selectedPoolId = signal<string | null>(null);
@@ -286,6 +302,21 @@ export class TournamentSettingsStore {
       logo: settings.logo ?? null,
       discord: settings.discord ?? '',
       signUpDeadline: toLocalInput(settings.signUpDeadline),
+      signUpAccess: settings.signUpAccess ?? 'open',
+      signUpQuestions: (settings.signUpQuestions ?? []).map((question) => ({
+        id: question.id,
+        label: question.label,
+        help: question.help ?? '',
+        type: question.type,
+        options: [...(question.options ?? [])],
+        required: question.required,
+        maxLength: question.maxLength ?? null,
+        dependsOnQuestionId: question.dependsOn?.questionId ?? null,
+        dependsOnEquals: question.dependsOn?.equals ?? '',
+        archived: question.archived ?? false,
+      })),
+      maxTeamsEnabled: settings.maxTeams != null,
+      maxTeams: settings.maxTeams ?? 12,
       draftCountMin: settings.draftCount?.min ?? 1,
       draftCountMax: settings.draftCount?.max ?? 1,
       pointTotalEnabled: settings.pointTotal != null,
@@ -308,6 +339,8 @@ export class TournamentSettingsStore {
       coachReporting: settings.matchSettings?.coachReporting !== false,
       discordGuildId: settings.discordSettings?.guildId ?? '',
       discordCoachRoleId: settings.discordSettings?.coachRoleId ?? '',
+      discordAutoGrantCoachRole:
+        settings.discordSettings?.autoGrantCoachRole !== false,
       discordSignUpChannelId: settings.discordSettings?.signUpChannelId ?? '',
       adAdvertise: settings.adSettings?.advertise ?? false,
       adSkillFrom: settings.adSettings?.skillLevelRange?.from ?? '0',
@@ -322,8 +355,17 @@ export class TournamentSettingsStore {
       archived: settings.archived ?? false,
     };
 
+    this.signUpTokenValue.set(settings.signUpToken ?? null);
+
     const signUps: SignUpValue[] = (coaches?.signups ?? []).map((entry) => ({
-      id: entry.id,
+      id: entry.id ?? null,
+      applicationId: entry.applicationId,
+      intent: entry.intent ?? 'team',
+      answers: (entry.answers ?? []).map((answer) => ({
+        questionId: answer.questionId,
+        label: answer.label,
+        values: [...answer.values],
+      })),
       teamId: entry.teamId ?? null,
       teamSlug: entry.teamSlug ?? null,
       logo: entry.logo ?? null,
@@ -350,8 +392,9 @@ export class TournamentSettingsStore {
       const detail = detailBySlug.get(entry.draftSlug) ?? null;
       const members = signUps.filter(
         (signUp) =>
-          (coaches?.signups ?? []).find((raw) => raw.id === signUp.id)
-            ?.draft === entry.draftSlug,
+          (coaches?.signups ?? []).find(
+            (raw) => raw.applicationId === signUp.applicationId,
+          )?.draft === entry.draftSlug,
       );
       return {
         id: entry.draftSlug,
@@ -460,7 +503,7 @@ export class TournamentSettingsStore {
   }
 
   private statusDirtyCount(): number {
-    return this.statusPatch().length;
+    return this.changedStatuses().length;
   }
 
   sectionHasErrors(section: SettingsSectionId): boolean {
@@ -496,12 +539,26 @@ export class TournamentSettingsStore {
     if (Object.keys(settings).length) {
       requests.push(this.manage.updateTournamentSettings(settings));
     }
-    const assignments =
-      section === 'signup'
-        ? this.statusPatch()
-        : section === 'draft'
-          ? this.membershipPatch()
-          : [];
+    if (section === 'signup') {
+      const decisions = this.statusDecisions();
+      if (decisions.length) {
+        requests.push(
+          concat(
+            ...decisions.map((decision) =>
+              this.league.decideApplication(decision.applicationId, {
+                status: decision.status,
+              }),
+            ),
+          ),
+        );
+      }
+      const teamStatuses = this.teamStatusPatch();
+      if (teamStatuses.length) {
+        requests.push(this.league.updateSignUps(teamStatuses));
+      }
+    }
+
+    const assignments = section === 'draft' ? this.membershipPatch() : [];
     if (assignments.length) {
       requests.push(this.league.updateSignUps(assignments));
     }
@@ -513,6 +570,7 @@ export class TournamentSettingsStore {
         next: () => {
           this.commitSection(section);
           this.saving.set(false);
+          if (section === 'signup') this.load();
         },
         error: (err) => {
           this.saveError.set(
@@ -577,6 +635,30 @@ export class TournamentSettingsStore {
       ...(touched('signUpDeadline')
         ? { signUpDeadline: fromLocalInput(v.signUpDeadline) }
         : {}),
+      ...(touched('maxTeamsEnabled', 'maxTeams')
+        ? { maxTeams: v.maxTeamsEnabled ? v.maxTeams : null }
+        : {}),
+      ...(touched('signUpAccess') ? { signUpAccess: v.signUpAccess } : {}),
+      ...(touched('signUpQuestions')
+        ? {
+            signUpQuestions: v.signUpQuestions.map((question) => ({
+              id: question.id,
+              label: question.label.trim(),
+              help: question.help.trim() || undefined,
+              type: question.type,
+              options: question.options.filter((option) => option.trim()),
+              required: question.required,
+              maxLength: question.maxLength ?? undefined,
+              dependsOn: question.dependsOnQuestionId
+                ? {
+                    questionId: question.dependsOnQuestionId,
+                    equals: question.dependsOnEquals,
+                  }
+                : undefined,
+              archived: question.archived,
+            })),
+          }
+        : {}),
       ...(touched('seasonStart', 'seasonEnd')
         ? {
             seasonStart: fromLocalInput(v.seasonStart),
@@ -629,12 +711,14 @@ export class TournamentSettingsStore {
       ...(touched(
         'discordGuildId',
         'discordCoachRoleId',
+        'discordAutoGrantCoachRole',
         'discordSignUpChannelId',
       )
         ? {
             discordSettings: {
               guildId: v.discordGuildId || undefined,
               coachRoleId: v.discordCoachRoleId || undefined,
+              autoGrantCoachRole: v.discordAutoGrantCoachRole,
               signUpChannelId: v.discordSignUpChannelId || undefined,
             },
           }
@@ -652,15 +736,33 @@ export class TournamentSettingsStore {
     };
   }
 
-  private statusPatch(): SignUpAssignment[] {
+  private changedStatuses(): SignUpValue[] {
     const saved = new Map(
-      this.savedSignUps().map((entry) => [entry.id, entry.status]),
+      this.savedSignUps().map((entry) => [entry.applicationId, entry.status]),
     );
+    return this.signUps().filter(
+      (entry) => saved.get(entry.applicationId) !== entry.status,
+    );
+  }
+
+  private statusDecisions(): {
+    applicationId: string;
+    status: SignUpStatus;
+  }[] {
+    return this.changedStatuses()
+      .filter((entry) => !entry.teamId)
+      .map((entry) => ({
+        applicationId: entry.applicationId,
+        status: entry.status,
+      }));
+  }
+
+  private teamStatusPatch(): SignUpAssignment[] {
     const pool = this.poolBySignUp(this.pools());
-    return this.signUps().flatMap((entry) =>
-      saved.get(entry.id) === entry.status
-        ? []
-        : [{ id: entry.id, draft: pool.get(entry.id), status: entry.status }],
+    return this.changedStatuses().flatMap((entry) =>
+      entry.teamId && entry.id
+        ? [{ id: entry.id, draft: pool.get(entry.id), status: entry.status }]
+        : [],
     );
   }
 
@@ -668,10 +770,12 @@ export class TournamentSettingsStore {
     const saved = this.poolBySignUp(this.savedPools());
     const draft = this.poolBySignUp(this.pools());
     return this.signUps().flatMap((entry) => {
-      const pool = draft.get(entry.id);
-      return saved.get(entry.id) === pool
+      const coachId = entry.id;
+      if (!coachId) return [];
+      const pool = draft.get(coachId);
+      return saved.get(coachId) === pool
         ? []
-        : [{ id: entry.id, draft: pool, status: entry.status }];
+        : [{ id: coachId, draft: pool, status: entry.status }];
     });
   }
 
@@ -893,17 +997,20 @@ export class TournamentSettingsStore {
     );
   }
 
-  setSignUpStatus(signUpId: string, status: SignUpStatus): void {
+  setSignUpStatus(applicationId: string, status: SignUpStatus): void {
+    const coachId = this.signUps().find(
+      (entry) => entry.applicationId === applicationId,
+    )?.id;
     this.draftSignUps.update((entries) =>
       entries.map((entry) =>
-        entry.id === signUpId ? { ...entry, status } : entry,
+        entry.applicationId === applicationId ? { ...entry, status } : entry,
       ),
     );
-    if (status !== 'approved') this.assignTeam(signUpId, null);
+    if (status !== 'approved' && coachId) this.assignTeam(coachId, null);
   }
 
   patchSignUp(
-    signUpId: string,
+    applicationId: string,
     changes: {
       name?: string;
       gameName?: string;
@@ -914,7 +1021,7 @@ export class TournamentSettingsStore {
     },
   ): void {
     const apply = (entry: SignUpValue): SignUpValue =>
-      entry.id === signUpId
+      entry.applicationId === applicationId
         ? {
             ...entry,
             ...(changes.name === undefined ? {} : { coach: changes.name }),
@@ -938,22 +1045,29 @@ export class TournamentSettingsStore {
     this.savedSignUps.update((entries) => entries.map(apply));
   }
 
-  dropSignUp(signUpId: string): void {
+  dropSignUp(applicationId: string): void {
+    const coachId = this.signUps().find(
+      (entry) => entry.applicationId === applicationId,
+    )?.id;
     const without = (entries: SignUpValue[]) =>
-      entries.filter((entry) => entry.id !== signUpId);
+      entries.filter((entry) => entry.applicationId !== applicationId);
     this.draftSignUps.update(without);
     this.savedSignUps.update(without);
-    this.assignTeam(signUpId, null);
+    if (!coachId) return;
+    this.assignTeam(coachId, null);
     this.savedPools.update((pools) =>
       pools.map((pool) => ({
         ...pool,
-        teams: pool.teams.filter((id) => id !== signUpId),
+        teams: pool.teams.filter((id) => id !== coachId),
       })),
     );
   }
 
-  setStatusForAll(signUpIds: readonly string[], status: SignUpStatus): void {
-    for (const id of signUpIds) this.setSignUpStatus(id, status);
+  setStatusForAll(
+    applicationIds: readonly string[],
+    status: SignUpStatus,
+  ): void {
+    for (const id of applicationIds) this.setSignUpStatus(id, status);
   }
 }
 
@@ -1021,7 +1135,8 @@ function orderMembers(
       if (right == null) return -1;
       return left - right;
     })
-    .map((entry) => entry.id);
+    .map((entry) => entry.id)
+    .filter((id): id is string => !!id);
 }
 
 function summariseRules(

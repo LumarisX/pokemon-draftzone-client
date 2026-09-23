@@ -1,0 +1,89 @@
+<pdz-page width="narrow">
+  <div class="invite">
+    <pdz-page-header
+      title="Organizer invite"
+      [eyebrow]="preview()?.leagueName ?? ''"
+    />
+
+    @if (loading()) {
+      <pdz-loading></pdz-loading>
+    } @else if (preview(); as invite) {
+      @if (invite.alreadyOrganizer) {
+        <pdz-empty-state
+          bordered
+          icon="shield_person"
+          heading="You're already an organizer"
+          [message]="'You can already manage ' + invite.tournamentName + '.'"
+        >
+          <a pdz-empty-state-actions pdz-button [routerLink]="manageLink">
+            Open manage
+          </a>
+        </pdz-empty-state>
+      } @else {
+        <pdz-empty-state
+          bordered
+          icon="shield_person"
+          [heading]="
+            (invite.invitedBy ?? 'The tournament owner') +
+            ' invited you to help organize ' +
+            invite.tournamentName
+          "
+          message="Organizers can manage every part of this tournament: sign-ups, drafts, schedule, and results."
+        >
+          <form id="accept-invite" class="invite__form" (ngSubmit)="accept()">
+            <label
+              pdz-field
+              label="Your organizer name"
+              hint="Only what other organizers of this tournament see. Your account name stays private."
+              required
+            >
+              <input
+                pdz-input
+                type="text"
+                name="organizerName"
+                [maxlength]="nameMax"
+                [(ngModel)]="name"
+              />
+            </label>
+          </form>
+          <p class="invite__expiry">
+            This invite expires {{ invite.expiresAt | date: "MMM d, h:mm a" }}.
+          </p>
+          <button
+            pdz-empty-state-actions
+            pdz-button
+            type="submit"
+            form="accept-invite"
+            [disabled]="accepting() || !isValidName(name)"
+          >
+            Accept
+          </button>
+          <a
+            pdz-empty-state-actions
+            pdz-button
+            variant="outlined"
+            [routerLink]="tournamentLink"
+          >
+            Not now
+          </a>
+        </pdz-empty-state>
+      }
+    } @else {
+      <pdz-empty-state
+        bordered
+        icon="link_off"
+        heading="This invite can't be used"
+        message="It may have expired, been revoked, or already been accepted. Ask the tournament owner for a new link."
+      >
+        <a
+          pdz-empty-state-actions
+          pdz-button
+          variant="outlined"
+          [routerLink]="tournamentLink"
+        >
+          Go to the tournament
+        </a>
+      </pdz-empty-state>
+    }
+  </div>
+</pdz-page>

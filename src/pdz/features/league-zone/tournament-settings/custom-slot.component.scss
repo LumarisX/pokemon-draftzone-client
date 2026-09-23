@@ -91,3 +91,67 @@
     flex: 1 1 100%;
   }
 }
+
+.slot-invite {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(sm);
+}
+
+.slot-invite__actions {
+  display: flex;
+  gap: pdz.space(sm);
+}
+
+.slot-invite__note {
+  margin: 0;
+  color: pdz.color(on-surface-variant);
+  @include pdz.text(body-sm);
+}
+
+.slot-questions {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(md);
+}
+
+.slot-question {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(sm);
+  padding: pdz.space(md);
+  background: pdz.color(surface-container-lowest);
+  border: 1px solid pdz.color(outline-variant);
+  border-radius: pdz.shape(corner-lg);
+}
+
+.slot-question--archived {
+  opacity: 0.6;
+}
+
+.slot-question__head {
+  display: flex;
+  gap: pdz.space(sm);
+  flex-wrap: wrap;
+}
+
+.slot-question__label {
+  flex: 2 1 12rem;
+}
+
+.slot-question__type {
+  flex: 1 1 8rem;
+}
+
+.slot-question__foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: pdz.space(sm);
+}
+
+.slot-questions__note {
+  margin: 0;
+  color: pdz.color(on-surface-variant);
+  @include pdz.text(body-sm);
+}

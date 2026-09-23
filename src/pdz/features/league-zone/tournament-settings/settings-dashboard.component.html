@@ -151,16 +151,6 @@
           }
         </div>
       </section>
-
-      @if (coachViewLinks().length) {
-        <p class="dash__coach-view">
-          See what coaches see:
-          @for (pool of coachViewLinks(); track pool.route; let last = $last) {
-            <a [routerLink]="pool.route">{{ pool.name }}</a
-            >{{ last ? "" : ", " }}
-          }
-        </p>
-      }
     </div>
   }
 </pdz-page>

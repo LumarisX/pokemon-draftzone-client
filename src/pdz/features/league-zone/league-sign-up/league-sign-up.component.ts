@@ -80,6 +80,8 @@ export class LeagueSignUpComponent implements OnInit, OnDestroy {
   uploadError: string | null = null;
 
   leagueInfo: League.LeagueInfo | null = null;
+  private readonly invite =
+    new URLSearchParams(window.location.search).get('invite') ?? undefined;
   isCheckingSignUp = true;
 
   ngOnInit(): void {
@@ -104,6 +106,7 @@ export class LeagueSignUpComponent implements OnInit, OnDestroy {
         next: (leagueInfo) => {
           this.leagueInfo = leagueInfo;
           this.updateClosedStatus();
+          this.buildAnswerControls();
         },
         error: (error) => {
           console.error('Error fetching league info:', error);
@@ -112,6 +115,7 @@ export class LeagueSignUpComponent implements OnInit, OnDestroy {
 
     this.createForm().subscribe((form) => {
       this.signupForm = form;
+      this.buildAnswerControls();
       this.manageFormLogic();
     });
   }
@@ -146,28 +150,76 @@ export class LeagueSignUpComponent implements OnInit, OnDestroy {
             Validators.required,
           ],
           teamName: ['', Validators.required],
-          experience: ['', Validators.required],
-          droppedBefore: [null, Validators.required],
-          droppedWhy: ['', Validators.required],
           confirm: [false, Validators.requiredTrue],
+          answers: this.fb.group({}),
         });
       }),
     );
   }
 
+  private get answerGroup(): FormGroup | null {
+    return (this.signupForm?.get('answers') as FormGroup) ?? null;
+  }
+
+  private get questions(): League.SignUpQuestion[] {
+    return this.leagueInfo?.signUpQuestions ?? [];
+  }
+
+  private buildAnswerControls(): void {
+    const group = this.answerGroup;
+    if (!group) return;
+
+    for (const question of this.questions) {
+      if (group.contains(question.id)) continue;
+      group.addControl(
+        question.id,
+        this.fb.control(question.type === 'multi' ? [] : ''),
+      );
+    }
+    this.syncAnswerValidators();
+  }
+
+  protected visibleQuestions(): League.SignUpQuestion[] {
+    const group = this.answerGroup;
+    if (!group) return [];
+    return this.questions.filter((question) => {
+      if (!question.dependsOn) return true;
+      return (
+        String(group.get(question.dependsOn.questionId)?.value ?? '') ===
+        question.dependsOn.equals
+      );
+    });
+  }
+
+  protected answerInvalid(question: League.SignUpQuestion): boolean {
+    const control = this.answerGroup?.get(question.id);
+    return !!control && control.touched && control.invalid;
+  }
+
+  private syncAnswerValidators(): void {
+    const group = this.answerGroup;
+    if (!group) return;
+
+    const visible = new Set(
+      this.visibleQuestions().map((question) => question.id),
+    );
+
+    for (const question of this.questions) {
+      const control = group.get(question.id);
+      if (!control) continue;
+      if (question.required && visible.has(question.id)) {
+        control.setValidators(Validators.required);
+      } else {
+        control.clearValidators();
+      }
+      control.updateValueAndValidity({ emitEvent: false });
+    }
+  }
+
   private manageFormLogic(): void {
-    this.signupForm
-      .get('droppedBefore')
+    this.answerGroup
       ?.valueChanges.pipe(takeUntil(this.destroy$))
-      .subscribe((dropped) => {
-        const droppedWhyControl = this.signupForm.get('droppedWhy');
-        if (dropped) {
-          droppedWhyControl?.addValidators(Validators.required);
-        } else {
-          droppedWhyControl?.clearValidators();
-        }
-        droppedWhyControl?.updateValueAndValidity();
-      });
+      .subscribe(() => this.syncAnswerValidators());
   }
 
   async onSubmit() {
@@ -189,18 +241,37 @@ export class LeagueSignUpComponent implements OnInit, OnDestroy {
         logoFileKey = await this.uploadLogoAndGetFileKey(this.logoFile);
       }
 
-      const signupPayload = logoFileKey
-        ? { ...this.signupForm.value, logo: logoFileKey }
-        : this.signupForm.value;
+      const { answers: rawAnswers, ...fields } = this.signupForm.value;
+      const visible = new Set(
+        this.visibleQuestions().map((question) => question.id),
+      );
+      const answers: League.SignUpAnswer[] = Object.entries(
+        (rawAnswers ?? {}) as Record<string, string | string[]>,
+      )
+        .filter(([questionId]) => visible.has(questionId))
+        .map(([questionId, value]) => ({
+          questionId,
+          values: (Array.isArray(value) ? value : [value]).filter(
+            (entry) => `${entry}`.trim().length > 0,
+          ),
+        }))
+        .filter((answer) => answer.values.length > 0);
 
-      const response = await firstValueFrom(
+      const signupPayload = {
+        ...fields,
+        intent: this.wantsToSignUpAsSub ? 'sub' : 'team',
+        answers,
+        ...(logoFileKey ? { logo: logoFileKey } : {}),
+      };
+
+      await firstValueFrom(
         this.leagueService
-          .signUp(signupPayload)
+          .signUp(signupPayload, this.invite)
           .pipe(takeUntil(this.destroy$), take(1)),
       );
 
       this.added = true;
-      this.navigateToTeam(response?.teamSlug);
+      this.navigateToTeam();
     } catch (error: any) {
       console.error('Sign up failed:', error);
       if (this.logoFile && !this.uploadError) {

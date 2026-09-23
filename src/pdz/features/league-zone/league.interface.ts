@@ -199,27 +199,59 @@ export namespace League {
     pokemon?: Pokemon;
   }[];
 
-  export type SignUpStatus = 'approved' | 'pending' | 'denied' | 'dropped';
+  export type SignUpStatus =
+    | 'approved'
+    | 'pending'
+    | 'waitlisted'
+    | 'denied'
+    | 'dropped';
 
   export type TournamentOrganizer = {
     sub: string;
-    username: string | null;
+    name: string | null;
     isOwner: boolean;
+    isYou: boolean;
+  };
+
+  export type OrganizerInvite = {
+    id: string;
+    name: string;
+    createdAt: string | null;
+    expiresAt: string;
+  };
+
+  export type OrganizerCandidate = {
+    coachId: string;
+    name: string;
+    teamName: string;
   };
 
   export type TournamentOrganizers = {
     canEdit: boolean;
     organizers: TournamentOrganizer[];
+    invites: OrganizerInvite[];
+    candidates: OrganizerCandidate[];
   };
 
-  export type OrganizerCandidate = {
-    sub: string;
-    username: string | null;
-    joined: string;
+  export type CreatedOrganizerInvite = TournamentOrganizers & {
+    created: { id: string; token: string };
+  };
+
+  export type OrganizerInvitePreview = {
+    tournamentName: string;
+    leagueName: string;
+    invitedBy: string | null;
+    suggestedName: string;
+    expiresAt: string;
+    alreadyOrganizer: boolean;
   };
 
   export type LeagueSignUp = {
-    id: string;
+    /** The coach id, absent until the application is approved. */
+    id?: string;
+    applicationId: string;
+    intent?: 'team' | 'sub';
+    answers?: { questionId: string; label: string; values: string[] }[];
     teamId?: string;
     /** URL identifier for the team's page. */
     teamSlug?: string;
@@ -295,6 +327,28 @@ export namespace League {
     pokemonStandings: PokemonStanding[];
   };
 
+  export type SignUpQuestionType =
+    | 'short'
+    | 'long'
+    | 'choice'
+    | 'multi'
+    | 'boolean';
+
+  export type SignUpQuestion = {
+    id: string;
+    label: string;
+    help?: string;
+    type: SignUpQuestionType;
+    options: string[];
+    required: boolean;
+    maxLength?: number;
+    dependsOn?: { questionId: string; equals: string };
+  };
+
+  export type SignUpAnswer = { questionId: string; values: string[] };
+
+  export type SignUpAccessMode = 'open' | 'invite' | 'closed';
+
   export type LeagueInfo = {
     name: string;
     tournamentSlug: string;
@@ -312,6 +366,8 @@ export namespace League {
     tierListId?: string;
     draftCount?: { min: number; max: number };
     pointTotal?: number;
+    signUpAccess?: SignUpAccessMode;
+    signUpQuestions?: SignUpQuestion[];
   };
 
   export type TournamentSummary = {
@@ -355,10 +411,9 @@ export namespace League {
 
   export type SignUpResult = {
     message: string;
-    userId: string;
+    applicationId: string;
     tournamentId: string;
-    teamId?: string;
-    teamSlug?: string;
+    status: SignUpStatus;
   };
 
   /** Mirrors the server's STAGE_TYPES enum. */
