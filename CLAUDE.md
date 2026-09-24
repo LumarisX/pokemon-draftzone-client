@@ -10,6 +10,7 @@ Angular 21 SPA (standalone components, signals). The API lives in the sibling re
 | Dev server | `npm run local-dev` |
 | Dev server against deployed API | `npm run api-dev` |
 | Production build | `npm run build` |
+| Deploy to prod (build, S3, CloudFront) | `npm run deploy` — `-- --dry-run` to preview; only when the user asks |
 | Typecheck / compile check | `npx ng build --configuration development` |
 | Style token linter | `npm run lint:styles` |
 | Regenerate color ramps | `npm run gen:colors` |

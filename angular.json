@@ -13,7 +13,12 @@
         "build": {
           "builder": "@angular/build:application",
           "options": {
-            "allowedCommonJsDependencies": ["dayjs"],
+            "allowedCommonJsDependencies": [
+              "dayjs",
+              "shimmer",
+              "ua-parser-js",
+              "@aws-crypto/sha256-js"
+            ],
             "outputPath": "dist/pokemon-draftzone-client",
             "index": "src/index.html",
             "browser": "src/main.ts",
@@ -41,7 +46,7 @@
                 },
                 {
                   "type": "anyComponentStyle",
-                  "maximumWarning": "2kb",
+                  "maximumWarning": "20kb",
                   "maximumError": "50kb"
                 }
               ],

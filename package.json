@@ -6,6 +6,7 @@
     "prod": "ng serve --configuration=production",
     "api-dev": "ng serve --configuration=api-dev",
     "build": "ng build --configuration=production",
+    "deploy": "ng build --configuration=production && node tools/deploy.mjs",
     "local-dev-broadcast": "ng serve --configuration=broadcast --ssl --host 0.0.0.0",
     "lint:styles": "node tools/lint-styles.mjs",
     "test": "jest",

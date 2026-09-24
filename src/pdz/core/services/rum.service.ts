@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
-import { AwsRum, AwsRumConfig } from 'aws-rum-web';
+import type { AwsRum, AwsRumConfig } from 'aws-rum-web';
 import { filter } from 'rxjs';
 import { ClientError } from '@pdz/layout/error/error.service';
 import { environment } from '@pdz/environments/environment';
@@ -9,6 +9,8 @@ type RumConfig = AwsRumConfig & {
   endpoint?: string;
   signing?: boolean;
 };
+
+const MAX_PENDING_ERRORS = 20;
 
 @Injectable({
   providedIn: 'root',
@@ -19,6 +21,7 @@ export class RumService {
   private initialized = false;
   private routeListenerInitialized = false;
   private recordedRoutes = new Set<string>();
+  private pendingErrors: Error[] | null = null;
 
   init(): void {
     if (this.initialized || !environment.rum?.enabled) {
@@ -33,12 +36,28 @@ export class RumService {
       return;
     }
 
+    this.initialized = true;
+    this.pendingErrors = [];
+    void this.load(appId, appVersion, region, rumConfig);
+  }
+
+  private async load(
+    appId: string,
+    appVersion: string,
+    region: string,
+    rumConfig: RumConfig,
+  ): Promise<void> {
     try {
+      const { AwsRum } = await import('aws-rum-web');
       this.rum = new AwsRum(appId, appVersion, region, rumConfig);
-      this.initialized = true;
       this.initRouteTracking();
+      for (const error of this.pendingErrors ?? []) {
+        this.rum.recordError(error);
+      }
     } catch (error) {
       console.warn('RUM initialization failed', error);
+    } finally {
+      this.pendingErrors = null;
     }
   }
 
@@ -76,7 +95,7 @@ export class RumService {
   }
 
   recordClientError(error: ClientError): void {
-    if (!this.rum) {
+    if (!this.rum && !this.pendingErrors) {
       return;
     }
 
@@ -87,6 +106,10 @@ export class RumService {
       errorToRecord.stack = error.error.stack;
     }
 
-    this.rum.recordError(errorToRecord);
+    if (this.rum) {
+      this.rum.recordError(errorToRecord);
+    } else if (this.pendingErrors && this.pendingErrors.length < MAX_PENDING_ERRORS) {
+      this.pendingErrors.push(errorToRecord);
+    }
   }
 }
