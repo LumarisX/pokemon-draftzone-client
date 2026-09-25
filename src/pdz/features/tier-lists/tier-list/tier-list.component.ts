@@ -19,7 +19,7 @@ import {
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TooltipDirective } from '@pdz/shared/tooltip/tooltip.directive';
 import { RouterModule } from '@angular/router';
-import { WebSocketService } from '@pdz/core/services/ws.service';
+import { EventStreamService } from '@pdz/core/services/event-stream.service';
 import { Pokemon } from '@pdz/core/utils/pokemon';
 import { typeColor } from '@pdz/core/utils/styling';
 import { Type, TYPES } from '@pdz/shared/data';
@@ -89,7 +89,7 @@ interface DraftPokemonAction {
 })
 export class TierListComponent implements OnInit, OnDestroy {
   private tierListService = inject(TierListService);
-  private wsService = inject(WebSocketService);
+  private eventStream = inject(EventStreamService);
   private dialogs = inject(DialogService);
   private destroy$ = new Subject<void>();
 
@@ -100,6 +100,8 @@ export class TierListComponent implements OnInit, OnDestroy {
   drafted = signal<{
     [division: string]: { pokemonId: string; teamId?: string }[];
   }>({});
+  private sharedDivisions = new Set<string>();
+  private coachedTeamIds = new Set<string>();
   tiers = signal<LeagueTier[] | undefined>(undefined);
   ruleset = signal<string | undefined>(undefined);
   tierListName = signal<string>('Tier List');
@@ -247,18 +249,20 @@ export class TierListComponent implements OnInit, OnDestroy {
     this.tierListService
       .getDraftedByDivision()
       .pipe(first())
-      .subscribe(({ divisions, selected }) => {
+      .subscribe(({ divisions, selected, sharedDivisions, coachedTeamIds }) => {
         this.drafted.set(divisions);
+        this.sharedDivisions = new Set(sharedDivisions);
+        this.coachedTeamIds = new Set(coachedTeamIds);
         if (selected) this.selectedDivision.set(selected);
       });
   }
 
   private subscribeToLiveUpdates(): void {
-    this.wsService
+    this.eventStream
       .on<{
         pick: {
           draft: string;
-          pokemon: League.LeaguePokemon;
+          pokemon?: League.LeaguePokemon;
           team: { id: string; name: string };
         };
         team: {
@@ -270,14 +274,21 @@ export class TierListComponent implements OnInit, OnDestroy {
       }>('league.draft.added')
       .pipe(takeUntil(this.destroy$))
       .subscribe((data) => {
-        const currentDrafted = this.drafted();
+        const pokemon = data.pick.pokemon;
+        if (!pokemon) return;
         const division = data.pick.draft;
+        if (
+          this.sharedDivisions.has(division) &&
+          !this.coachedTeamIds.has(data.pick.team.id)
+        )
+          return;
 
+        const currentDrafted = this.drafted();
         this.drafted.set({
           ...currentDrafted,
           [division]: [
             ...(currentDrafted[division] ?? []),
-            { pokemonId: data.pick.pokemon.id, teamId: data.pick.team.id },
+            { pokemonId: pokemon.id, teamId: data.pick.team.id },
           ],
         });
       });

@@ -29,9 +29,6 @@
   min-height: 0;
   overflow: hidden;
   .draft-bar {
-    // .draft-section (its other class) sets flex-grow: 1 - override it so this
-    // box sizes to its content instead of stretching to fill leftover height
-    // and leaving a big empty gap above the tier list.
     flex-grow: 0;
     flex-shrink: 0;
 
@@ -273,6 +270,17 @@
       flex-direction: column;
       gap: pdz.space(xs);
       padding: pdz.space(xs);
+
+      .hidden-picks {
+        display: flex;
+        align-items: center;
+        gap: pdz.space(xs);
+        padding: pdz.space(sm);
+        border: 1px dashed pdz.color(outline-variant);
+        border-radius: pdz.shape(corner-sm);
+        color: pdz.color(on-surface-variant);
+        @include pdz.text(body-sm);
+      }
 
       .my-draft-pokemon {
         counter-increment: item;

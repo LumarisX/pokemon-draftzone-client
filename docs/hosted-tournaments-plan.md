@@ -23,7 +23,7 @@ the reasoning behind the step.
 | 9 | Participation model, sign-up flexibility, invite-only sign-ups — see §11 | **mostly done** — §11.10 steps 1–10b landed 2026-09-22; step 11 and the multi-coach flows remain (§11.14) |
 | 10 | Create leagues and tournaments through the product — see §12 | **not started** |
 | 11 | Bug sweep from the 2026-09-23 review — see §13 | **done** — legacy data repaired, `TEAM_STATUSES` narrowed; step 11 applied (backup kept) |
-| 12 | Security, data-integrity and structure review — see §14 | **not started** — **priority**: §14.1 (P0) goes ahead of every other open step, then §14.2–14.3 |
+| 12 | Security, data-integrity and structure review — see §14 | **in progress** — **priority**: all five P0s landed 2026-09-23, D1–D4 2026-09-24 (D3/D4 scripts still to run); next A1, then A2, per §14.7 |
 
 ---
 
@@ -1977,21 +1977,21 @@ Paths below are in `pokemon-draftzone-server/src/modules/` unless stated.
 | S3 | Discord settings drive the shared bot in other servers | **P0** | **done** 2026-09-23 — `/draftzone link`; run the diagnose script for grandfathered servers |
 | S4 | Legacy stage-scoped writes aren't tied to the URL's tournament | **P0** | **done** 2026-09-23 |
 | S5 | Replaced and dropped coaches keep chat access | **P0** | **done** 2026-09-23 |
-| D1 | Multi-document writes without transactions | P1 | open |
-| D2 | Trades: lost updates and check-then-act | P1 | open |
-| D3 | Trades and name changes reference rounds by index | P1 | open |
-| D4 | Races on sign-up uniqueness and the team cap | P1 | open |
-| D5 | Settings validated against the patch, not the result | P1 | open |
-| D6 | Matchup result fields can contradict each other | P1 | open |
-| D7 | Draft pick checks read pre-transaction state | P1 | plausible |
-| H1 | "Coach only" draft visibility is client-side only | P1 | needs a decision |
-| H2 | The draft websocket is unauthenticated | P1 | open |
+| D1 | Multi-document writes without transactions | P1 | **done** 2026-09-24 — diagnose run 2026-09-24: 181 linked applications, 0 orphaned |
+| D2 | Trades: lost updates and check-then-act | P1 | **done** 2026-09-24 — versioned writes; own collection deferred |
+| D3 | Trades and name changes reference rounds by index | P1 | **code done** 2026-09-24 — backfill applied pre-deploy 2026-09-24 (206/206, 160 `_id`s assigned); re-run `--apply` after deploy |
+| D4 | Races on sign-up uniqueness and the team cap | P1 | **code done** 2026-09-24 — diagnose run 2026-09-24, 0 duplicates; `migrate-application-unique-index.ts --apply` still to run |
+| D5 | Settings validated against the patch, not the result | P1 | **done** 2026-09-24 |
+| D6 | Matchup result fields can contradict each other | P1 | **done** 2026-09-24 — winner-vs-score left permissive by design |
+| D7 | Draft pick checks read pre-transaction state | P1 | **done** 2026-09-24 — confirmed real for non-sequential drafts |
+| H1 | "Coach only" draft visibility is client-side only | P1 | **code done** 2026-09-25 — blind draft + `allowDuplicates`; run `migrate-draft-pick-settings.ts --apply` **before** deploy |
+| H2 | The draft websocket is unauthenticated | P1 | **done** 2026-09-24 |
 | H3 | Match result payloads are barely validated | P1 | open |
 | H4 | Uploads: no size cap, keys not bound to uploader | P2 | open |
-| H5 | Archived tournaments still accept writes | P2 | open |
-| H6 | Cross-tournament references in reads and trades | P2 | open |
+| H5 | Archived tournaments still accept writes | P2 | **done** 2026-09-24 — `TournamentOpenGuard` |
+| H6 | Cross-tournament references in reads and trades | P2 | **done** 2026-09-24 via A2 |
 | H7 | Small hardening items | P3 | open |
-| A1–A7 | Structure that limits future work | P2 | open |
+| A1–A7 | Structure that limits future work | P2 | A1 policy + staff roles done 2026-09-24 (`migrate-tournament-staff.ts` applied to 3 tournaments, `--check` clean 2026-09-24); its request-guard phase folded into A4; A2 code done 2026-09-24 (run `backfill-matchup-tournament-ids.ts` before deploy); A3–A7 open; A8 (websocket → SSE) **done** 2026-09-25 |
 | §14.5 | Smaller smells | P3 | open |
 
 ### 14.1 P0 — exploitable now
@@ -2402,6 +2402,33 @@ keyed by team slug, and the acting coach recorded from the caller's own seat.
 Fix: an ordered tiebreaker list on the tournament or stage, and one scoring
 module that uses it.
 
+**A8. Live draft updates use a websocket for one-way traffic.** Decided
+2026-09-25: move to Server-Sent Events. **Done 2026-09-25**, see §14.11.
+
+- Only the server pushes over the socket. Picks and edits are HTTP requests,
+  and the client's only messages are `league.subscribe` and
+  `league.unsubscribe`.
+- Consumers: the draft board, the manage-draft page and the tier list.
+- Because the socket is two-way, H2 had to rebuild parts of HTTP: a login
+  check (`WsAuthService` and a direct `jsonwebtoken` dependency), per-socket
+  access, a JSON-RPC layer, and reconnect with replay on the client.
+
+Fix:
+
+- `@Sse()` on `GET …/drafts/:draftSlug/events`, behind the normal guards and
+  draft access check. Blind redaction reuses `canSeeTeamPicks`.
+- Forward the existing `DraftEventsService` events, so the draft engine
+  doesn't change.
+- Client: a fetch-based SSE reader. Native `EventSource` can't send an
+  `Authorization` header.
+- Then delete `DraftGateway`, `WsAuthService`, the JSON-RPC layer,
+  `socket.io` / `socket.io-client`, and the direct `jsonwebtoken` dependency.
+
+The server is a single pm2 process with no load balancing (confirmed
+2026-09-25), so the in-process event bus is enough and no Redis is needed.
+There's no urgency: do it the next time the live-update code needs real
+work.
+
 ### 14.5 P3 — smaller smells
 
 - **Response shapes:** built inline with `unknown[]` types, and the roster-row
@@ -2562,3 +2589,679 @@ Verification: server `tsc --noEmit` clean; the tournament, stage, draft, chat,
 team, coach, matchup and discord suites pass 829/830, and the one failure is
 the `external-tournament.controller.spec` baseline. Client
 `ng build --configuration development` is clean.
+
+### 14.9 Landed — 2026-09-24
+
+**D1.** `TransactionRunner.run(work)` (`src/core/database/`, provided by a
+global `DatabaseModule`) wraps `connection.transaction()`. It turns on
+Mongoose's `transactionAsyncLocalStorage`, so every query, save, `create` and
+`bulkWrite` inside `work` joins the session on its own. No repository method
+takes a `session` parameter. It also retries transient transaction errors,
+which the draft engine's hand-rolled `startSession` does not.
+
+Wrapped:
+
+- `decideApplication`: the cap check, team, coach and decision. The Discord
+  role grant runs after the commit, since it can't be rolled back.
+- `replaceCoach`: retiring the outgoing coach, creating the incoming one, the
+  team update and the decision. The role grant runs after.
+- `removeParticipant`: see below.
+- `deletePool`: the per-team unassign loop and the delete. Cancelling the
+  scheduled jobs stays outside, because Agenda isn't in the transaction.
+- `TournamentBracketService.updateBracket`: the stage diff, schedule, matchup
+  diff and advancement replay. Advancement now reads the uncommitted matchups
+  through the same session.
+
+**The stuck `removeParticipant` state.** Decided 2026-09-24: a removed
+participant's application becomes `denied`, not a new `removed` status. In one
+transaction, the team is deleted, then **every** coach on it
+(`deleteAllByTeam`; before, a replaced coach was left pointing at a deleted
+team), then every application with that `resultingTeamId` moves to `denied`
+with `resultingTeamId` and `resultingCoachId` unset. Switching the application
+back to approved therefore creates a fresh team, which works as an undo. The
+person still can't re-apply on their own, since any application blocks that.
+Removing through a coach who has `leftAt` set is now refused, because it would
+have deleted the team out from under its active coach.
+
+Before this, a removed person showed as `approved` with no team, landing in
+the applicants panel's **"Available to sub"** group. Picking them as a
+replacement then failed with `ALREADY_SIGNED_UP`.
+
+**Diagnose.** `npx ts-node scripts/diagnose-orphaned-applications.ts`
+(read-only) lists applications whose `resultingTeamId` or `resultingCoachId`
+no longer exists, split into both gone (the removeParticipant signature), team
+only, and coach only. A repair script follows if it finds any.
+
+**Not verified.** The specs use a recording runner. They check which writes
+happen inside the transaction and in what order, that a failed write aborts,
+and that no role is granted after an abort. They can't prove Mongo rolls back,
+because no `mongodb-memory-server` replica set is installed.
+
+Verification: server `tsc --noEmit` clean. The tournament, stage, draft, chat,
+team, coach, matchup, discord, tournament-application and core suites pass
+929/931. The two failures are the `external-tournament.controller.spec`
+baseline and `rulesets.spec`, which expects an older error message from
+`getRuleset`; neither touches this change.
+
+**D2.** Trades stay on the tournament document. Moving them to their own
+collection is still worthwhile, but it's a migration, and D3 rewrites the same
+fields, so it waits for D3. The race fix doesn't depend on it.
+
+- `leaguetournaments.tradesVersion` is a counter. Every trade write filters on
+  the version its checks read and `$inc`s it. A document with no field reads
+  as 0 (`{ $in: [0, null] }`), so no backfill is needed.
+- The whole-array `setTrades` is gone. The repository now has `pushTrade`,
+  `resolvePendingTrade` (a positional `$set` under
+  `$elemMatch: { _id, status: "PENDING" }`) and `pullPendingTrade`. Each
+  returns `false` on a version mismatch.
+- `TournamentTradeService` runs each write in `retryOnTradeConflict`. On a
+  mismatch it reloads the tournament and re-runs every check: permissions,
+  deadline, pending status, point limit and rosters. After 3 conflicting
+  attempts it answers `STG-009` (409, "Trades changed while this was being
+  saved").
+- As a result:
+  - two coaches filing at once both land;
+  - two approvals can't jointly exceed the point limit or trade the same
+    Pokémon twice, because the second is re-checked against the first;
+  - an approval racing a withdrawal fails cleanly with "already APPROVED",
+    instead of one silently overwriting the other.
+
+Still open: `updateBracket`'s `setSchedule` doesn't bump `tradesVersion`, so
+a round edit that shifts indices isn't serialized against trade writes. D3
+removes that by storing round ids.
+
+Verification: server `tsc --noEmit` clean. The tournament, stage, draft, chat,
+team, coach, matchup, discord and tournament-application suites pass 859/860;
+the one failure is the `external-tournament.controller.spec` baseline. New
+specs cover the version passed to each write, a retry at the new version, a
+retry that re-checks the point limit and refuses, giving up with `STG-009`,
+and approvals or withdrawals that lose to a concurrent decision.
+
+**D4, sign-up uniqueness.**
+
+- The schema now declares `(tournamentId, auth0Id)` as `unique`.
+- `TournamentApplicationRepository.create` maps E11000 to `ALREADY_SIGNED_UP`,
+  so a double-submitted sign-up gets the same answer as the pre-check.
+- The index itself has to be swapped by script. Mongoose can't turn an
+  existing plain index into a unique one, and at startup `autoIndex` only logs
+  an options-conflict error until the swap is done. Order:
+  1. `npx ts-node scripts/diagnose-duplicate-applications.ts`. Read-only. It
+     lists every person with more than one application in a tournament and
+     which of those applications are linked to a team or coach.
+  2. Resolve any duplicates it finds. A merge/delete script can be written
+     once the output is known.
+  3. `npx ts-node scripts/migrate-application-unique-index.ts`. A dry run
+     that re-checks for duplicates. Then run it with `--apply`, which refuses
+     while any duplicates remain. `--rollback` restores the plain index.
+
+**D4, team cap.** This deviates from the plan above: there is no
+`approvedTeamCount` counter. A counter would have to stay in step with every
+path that changes a team's status (approve, drop, remove, reinstate), and any
+path that missed it would silently corrupt the cap.
+
+Instead, `reserveRosterRoom` (formerly `assertRosterHasRoom`) first `$inc`s
+`leaguetournaments.rosterVersion` and only then counts approved teams. It runs
+as the first step of the D1 transaction. Two concurrent approvals both write
+the tournament document, so Mongo raises a write conflict. The loser's
+transaction is retried by `connection.transaction()`, and its recount sees the
+winner's team.
+
+`assignCoaches` is now also wrapped in a transaction, with the same
+reservation when it reinstates teams. It skips the reservation when nothing is
+reinstated. Nothing is backfilled: a missing `rosterVersion` field is simply
+incremented to 1.
+
+Verification: server `tsc --noEmit` clean. The same suites plus
+tournament-application pass 864/865; the one failure is the
+`external-tournament` baseline. New specs:
+
+- the roster bump comes before the count, inside the transaction, for both
+  `decideApplication` and `assignCoaches`;
+- no bump when nothing is reinstated;
+- the repository maps E11000 and passes other errors through.
+
+As with D1, the actual write-conflict behavior needs a real replica set to
+prove and is not exercised by the specs.
+
+**D3.**
+
+- **New fields.**
+  - A tournament trade now stores `activeRoundId`, a `TournamentRound._id`.
+  - A rename in `nameHistory` stores `roundId`.
+  - The schema's `activeRound` lost its `-1` default and is now optional.
+- **Resolving.** `tradeRoundIndex(trade, rounds)` in `stage/domain/stage-axis.ts`
+  turns the id into a position at read time. It falls back to the stored index
+  for a trade that has no id: a legacy stage-owned trade, or one not yet
+  backfilled. It returns -1 for a round that's gone, so that trade drops off
+  the axis instead of landing in the wrong week.
+  - The roster walks (`roster.ts`, now one shared `approvedTradesByRound`
+    helper), `getTrades` bucketing and `updateTrade` all resolve through it.
+  - The client payloads are unchanged: they still carry `activeRound` as a
+    position.
+- **Writes.**
+  - `createTrade` writes only `activeRoundId`.
+  - `resolvePendingTrade` sets `activeRoundId` and unsets the old
+    `activeRound`, so a resolved trade can't carry a stale index.
+  - `replaceCoach` writes `roundId`.
+- **New refusal in `updateBracket`.** It won't remove a round that a PENDING or
+  APPROVED trade takes effect in (`STG-004`: "move or reject those trades
+  first"). Before, removing a round silently moved every later trade a week
+  earlier. With ids it would silently orphan them instead, and neither is
+  acceptable.
+- **Race with trade writes.** `setSchedule` takes an optional `tradesVersion`.
+  `updateBracket` passes the version it validated against and bumps it, so a
+  trade filed into a round while that round is being removed can't slip
+  through: one side gets `STG-009`. This closes the gap D2 left open.
+- **Backfill.** `scripts/backfill-trade-round-ids.ts` converts positions to ids
+  for trades and renames. It is idempotent: it skips anything that already has
+  an id, and every write is conditional. It flags out-of-range indexes rather
+  than guessing. `--rollback --apply` turns ids back into positions, resolved
+  against the current rounds.
+- **Trades with no `_id` (found in the first dry run, 2026-09-24).** All 206
+  trades on s3-singles were stored with no `_id`, most likely because the
+  sections-to-stages migration copied them up from stages without one.
+  Mongoose invents a random `_id` for such a subdocument on every load, so
+  these trades could never be approved, rejected or withdrawn: every request
+  saw a different id. That bug predates this work.
+  - The first version of the backfill targeted trades by `_id`. For these
+    trades that meant filtering on `_id: null`, which would have pinned every
+    id-less trade in the tournament to the first write's round. It was caught
+    in the dry run, before any write.
+  - The script now targets each trade by its position in the array. The
+    filter also checks that the trade at that position still has the same
+    `_id` (or none), `activeRound`, `activeRoundId` and `timestamp`.
+  - It assigns a stable `_id` to any trade missing one. Rollback leaves those
+    ids in place.
+- **Order.**
+  1. Dry run, then `--apply`, before deploying. The old code ignores the new
+     fields.
+  2. Deploy.
+  3. Run `--apply` again, to pick up any trade the old code filed in between.
+
+Verification: server `tsc --noEmit` clean. The suites pass 875/876; the one
+failure is the `external-tournament` baseline. New specs:
+
+- `tradeRoundIndex`: resolving an id, following a round across an insertion,
+  a missing round, and the index fallback;
+- roster replay by id after an inserted round;
+- `getTrades` bucketing by id and dropping an orphaned id;
+- `createTrade` and `updateTrade` writing ids;
+- the bracket refusing to remove a traded round, allowing it when the only
+  trade was rejected, and passing the trades version.
+
+**A1, phase 1 of 3: one policy.** Decided 2026-09-24. The user has no second
+role in mind yet. The requirement is that adding one later is a small change,
+not a rewrite.
+
+- **The policy.** `src/modules/tournament/tournament-policy.ts` holds:
+  - the named actions: `viewHidden`, `viewStaff`, `manageSettings`,
+    `manageParticipants`, `manageDrafts`, `manageSchedule`, `manageResults`,
+    `manageTrades`, `moderateChat`, `manageStaff`;
+  - `ROLE_ACTIONS`, which maps each role to its actions (owner: all;
+    organizer: all but `manageStaff`);
+  - `rolesOf(tournament, sub)`, the only place that reads where roles are
+    stored;
+  - `can`, `assertCan` and `isStaff`.
+- **What changed.**
+  - Six private `isOrganizer`/`assertOrganizer` copies are deleted, along with
+    `HostedTournament.isOrganizer`.
+  - Every call site now names the action it actually needs.
+  - `HostedTournament.getRoles` delegates to `rolesOf`. The `/roles` payload is
+    unchanged.
+- **Where the old single check meant several things,** it's now split:
+  - The schedule shows hidden stages on `viewHidden`, pending report details
+    on `manageResults`, and blocked-match markers on `manageSchedule`.
+  - The matchup viewer's `isOrganizer` flag is `manageResults`.
+  - Chat's is `moderateChat`.
+  - For today's two roles the outcomes are identical.
+- **Adding a role later** takes three steps:
+  1. Add it to `TOURNAMENT_ROLES`.
+  2. Give it an entry in `ROLE_ACTIONS`.
+  3. Have `rolesOf` read it. Phase 3 stores roles on organizer entries, so
+     this becomes data rather than code.
+
+  No service changes are needed.
+
+**H5.** `TournamentOpenGuard` (`hosted-tournament/tournament-open.guard.ts`)
+is a global `APP_GUARD`, registered in `HostedTournamentModule`.
+
+- It rejects any non-GET HTTP request whose route carries `:leagueSlug` and
+  `:tournamentSlug` when that tournament is archived. The error is `TRN-005`
+  (409).
+- That covers sign-ups, reports, trades, draft picks, chat and every organizer
+  write, and any future route is covered by default.
+- The lookup is a projection on `archived` only
+  (`HostedTournamentRepository.isArchived`).
+- **Exemptions** use `@AllowWhileArchived(predicate?)`:
+  - the organizer-invite preview, a read that happens to use POST;
+  - `PATCH settings`, only when the body un-archives
+    (`unarchivesTournament`), so an organizer can always bring a tournament
+    back.
+- Websocket contexts and the Agenda draft-timer jobs don't go through it. The
+  timer only runs on drafts that are in progress.
+
+Verification: server `tsc --noEmit` clean. The suites pass 885/886; the one
+failure is the `external-tournament` baseline. There are new specs for the
+policy table and for the guard: blocked write, open tournament, reads skipped,
+non-tournament routes skipped, exempt route, and unarchive-only settings.
+Server startup and DI wiring were not exercised; there was no local boot
+against a database.
+
+**A1, phase 2: folded into A4.** Decided 2026-09-24. A request guard that
+loads the tournament once and passes it to services would touch about 88
+routes, 65 service methods and 220 spec calls. Its benefit is fewer loads per
+request, not role flexibility. That is A4's problem, so it moves there.
+
+**A1, phase 3: staff roles in the data.**
+
+- **Storage.** `leaguetournaments.staff: [{ sub, name?, role }]` replaces
+  `organizers: string[]` plus `organizerNames`. Each organizer is now one
+  entry, so adding, renaming or removing one is a single atomic write
+  (`addStaff` guards against duplicate subs, `setStaffName`, `removeStaff`).
+- **Roles.** `role` is restricted to `STAFF_ROLES` from the policy module, so
+  the schema, policy and data agree. `rolesOf` reads the owner (from the
+  league) plus each `staff[].role`.
+- **The owner's name.** The owner isn't staff, since ownership comes from the
+  league. Their per-tournament display name lives in `ownerName: { sub, name }`
+  and is shown only while that sub is still the owner. A stale entry can't
+  grant rights or mislabel a new owner. It is written by `setOwnerName`.
+- **Unchanged.** The `/organizers` payload the client reads has the same shape.
+- **Adding a role now takes three edits:**
+  1. Append it to `STAFF_ROLES`.
+  2. Give it a `ROLE_ACTIONS` entry.
+  3. Write that role on the staff entry (for example, from an invite).
+
+  There's no migration and no service change.
+- **Migration.** `scripts/migrate-tournament-staff.ts` builds `staff` and
+  `ownerName` from the old fields.
+  - It skips the owner if they appear in `organizers`, dedupes, and flags
+    names belonging to people who are neither organizer nor owner. Those names
+    are dropped.
+  - It writes only where `staff` is missing or empty. The old fields are left
+    in place.
+  - `--check` compares old and new fields per tournament.
+  - `--rollback --apply` rebuilds `organizers` and `organizerNames` from
+    `staff` and `ownerName`, then unsets both.
+  - Order: dry run, `--apply`, deploy, `--check`. Avoid adding or removing
+    organizers between the apply and the deploy, because the old code writes
+    only the old fields.
+
+Verification: server `tsc --noEmit` clean. The suites pass 890/891; the one
+failure is the `external-tournament` baseline. New or updated specs cover:
+
+- the policy reading staff roles, and an owner who is also listed as staff;
+- `addStaff`, `removeStaff` and `setStaffName`;
+- the owner's rename going to `ownerName`;
+- a previous owner's stored name hidden from a new owner;
+- the owner listed once.
+
+**A2 + H6: lookups scoped to the tournament in the URL.**
+
+- **Repository signatures now require the tournament**, so no unscoped version
+  is left to call by accident:
+  - `TeamRepository.findBySlug(tournamentId, slug)` and
+    `findIdsBySlugs(tournamentId, slugs)`;
+  - `StageRepository.findBySlug(tournamentId, slug)`;
+  - `LeagueMatchupRepository.findBySlug` / `findBySlugPopulated(tournamentId,
+    slug)`;
+  - `findByIdInTournament(tournamentId, id)`, which replaces `findByIdOrNull`
+    and is used by chat's matchup channel;
+  - `TournamentApplicationRepository.findInTournament(tournamentId, id)`.
+- **Answers are now NOT_FOUND, not FORBIDDEN.** In `decideApplication` and
+  `replaceCoach`, a foreign application or team now gets the same answer as a
+  missing one, so the response no longer confirms it exists elsewhere.
+- **Trades.** `createTrade` refuses a side whose team isn't in this tournament
+  (`countInTournament`), answering `TEAM.NOT_FOUND`.
+- **Draft routes.** `findTeamInDraftOrThrow` looks the team up in the
+  already-loaded `draft.teams` instead of a global `findById`. That saves a
+  query and no longer distinguishes "exists elsewhere" from "missing". The
+  unused `findTeamById` is deleted.
+- **Matchups store `tournamentId`** (indexed). The bracket stamps it on every
+  match it creates, and that's the only creation path left; the old
+  `createMany` has no callers.
+- **Backfill.** `scripts/backfill-matchup-tournament-ids.ts` stamps existing
+  matchups from their stage's `tournamentId`, one `updateMany` per stage.
+  - It's idempotent: it only touches matchups without the field.
+  - It flags matchups with no stage, or whose stage is gone. Those become
+    unreachable by URL, which is correct: they belong to no tournament.
+  - `--rollback --apply` unsets the field.
+  - Order:
+    1. Dry run, then `--apply`, **before deploying**. The new code's matchup
+       page queries on `tournamentId`, so an unstamped matchup returns 404.
+    2. Deploy.
+    3. `--apply` again, to catch any bracket saved by the old code in between.
+
+Verification: server `tsc --noEmit` clean. The suites pass 894/895; the one
+failure is the `external-tournament` baseline. New specs:
+
+- a foreign team in a trade is refused before anything is written;
+- `findInTournament` filters on the tournament and answers a foreign
+  application with the same code as a missing one;
+- the bracket stamps `tournamentId` on new matches.
+
+**D5.** `assertRosterRules` and `assertPrizeSplit` now live in
+`hosted-tournament.domain.ts`, so the create flow (§12) can reuse them.
+
+- **What's validated.** `updateSettings` checks the result, not the patch:
+  the effective tier list (`dto.tierListId ?? current`), roster size and tier
+  requirements.
+- **When it runs.** Whenever any of those three fields is in the request. So
+  switching the tier list alone, or lowering `draftCount.max` alone, is now
+  checked against the saved requirements.
+- **New check.** A minimum roster size above the maximum is refused; the DTO
+  only checked each value was ≥ 0.
+- **Unrelated saves** (a rename, say) skip the check and no longer load the
+  tier list. Existing inconsistent data can't block them.
+- **Error message.** A requirement that names a tier the new list lacks now
+  says to "update or clear them in the same save".
+- **Small fix in passing.** The `tierListId` ObjectId check now runs before the
+  tier-list lookup instead of after it.
+
+**D6.** Decided 2026-09-24: the server doesn't reject a winner that
+contradicts the score. The shared score-entry widget deliberately allows it:
+"X is set as the winner but has the lower score" is a submit-time warning with
+*Submit anyway*, a tied series with a picked winner is valid, and a score-only
+report has no games. Forcing the plan's "derive score and winner from games"
+would overrule that design. What was fixed instead:
+
+- **Deleted the dead `POST …/matchups/:slug` (`updateMatchup`)** with
+  `UpdateMatchupDto`. The client stopped calling it on 2026-09-21. It was the
+  path that never cleared `forfeit` and only re-ran advancement when the
+  payload carried `winner`. The organizer path (`/report`) already writes
+  `forfeit` explicitly and always re-runs advancement.
+- **A coach report on an approved match is refused** with `MU-005` (409):
+  "already approved, ask an organizer to correct it". Before, it set
+  `status: "pending"` over the approved result.
+- **Rejecting a report restores the prior state.** Status goes to `approved`
+  if the match already has a recorded winner, otherwise it stays unplayed.
+  Before, it was always blanked.
+- **Approving a report with no winner** (legacy reports) takes the winner from
+  the reported score instead of keeping the old one.
+- **Not done:** an explicit `unplayed` status. `undefined` already means
+  unplayed everywhere, and a new enum value would need a backfill for no
+  behavior change.
+
+**D7.** Confirmed real, not just plausible. In a non-sequential draft a pick
+writes only the picking team's document, and both the "already taken" check
+and the turn check read data loaded before the transaction. So two teams
+could draft the same Pokémon at once, and a double-submitted pick could pass
+the turn check twice.
+
+- **The fix: `DraftEngineService.claimPick`,** run inside the pick transaction
+  after the existing checks and before any write:
+  1. `findOneAndUpdate` `$inc`s `leaguedrafts.pickVersion` and returns the
+     current `counter` and `status`. Two picks in flight in the same draft
+     therefore conflict.
+  2. Unless it's an organizer override, a counter or status that moved since
+     the request loaded the draft gives `DR-013` (409, "the draft changed…
+     try again").
+  3. `TeamRepository.isPokemonTakenInDraft` re-checks, with the session, that
+     no team in the draft already holds the Pokémon. If one does, the answer
+     is `DR-003`.
+- **Write conflicts.** A Mongo write conflict (code 112, or a
+  `TransientTransactionError` label) is turned into `DR-013` instead of a raw
+  500.
+- **No denormalized "taken" list and no backfill,** so removals and resets
+  can't drift out of sync with it.
+- **Left alone:** `setPickAtRound` (organizer-only correction) still saves
+  without a transaction. It's rare and organizer-driven, and a guard would
+  need special-casing for a no-op edit.
+
+Verification: server `tsc --noEmit` clean. The suites pass 896/897; the one
+failure is the `external-tournament` baseline. New specs:
+
+- **D5:** switching the tier list, lowering the max, min above max, and no
+  tier-list load on unrelated saves;
+- **D6:** a coach report is held, a report on an approved match is refused, an
+  organizer result clears a stale forfeit and re-runs advancement, reject on
+  an unplayed and on a recorded match, and approve with no winner;
+- **D7:** the claim runs inside the transaction, a Pokémon taken by another
+  team is refused, a moved counter is refused, an organizer override ignores
+  the counter, and a write conflict maps to `DR-013`.
+
+As with D1, real write-conflict behavior needs a replica set to prove.
+
+**H1 decision (2026-09-24).** "Coach only" (`visibility: "SELF"`) is a
+**blind draft**. It came from a budget tournament where each team drafted its
+own set at its own pace and couldn't see the others' teams until the end, so
+nobody could counter-team.
+
+- **Hidden from coaches:** other teams' picks, until the draft is `COMPLETED`
+  or an organizer switches visibility to "Everyone" early. Organizers always
+  see everything.
+- **Allow duplicates:** a separate new draft setting, off by default. When on,
+  several teams may draft the same Pokémon, and the "already drafted" check,
+  including D7's `claimPick` re-check, is skipped. Without it, a blind draft's
+  refusal leaks what others took.
+- **Every surface that shows rosters has to honor it:**
+  - the draft routes: details, teams, order board, picks;
+  - `/teams`, `/teams/by-draft` (which the tier list uses) and the team page;
+  - the websocket's `added`/`updated` events;
+  - the Discord pick announcements.
+
+  Today only the side panel's team switcher is locked, while the order board,
+  socket and Discord all show every pick.
+
+**H2.** The websocket was unauthenticated.
+
+- **Handshake.** `DraftGateway.handleConnection` verifies
+  `handshake.auth.token` with the new `WsAuthService` (auth module, jwks-rsa +
+  `jsonwebtoken` against the same issuer, audience and RS256 as the HTTP
+  strategy). A missing or bad token leaves the socket anonymous rather than
+  rejecting it, since public drafts are watchable signed out. `jsonwebtoken`
+  and `@types/jsonwebtoken` are now direct dependencies instead of arriving
+  via `passport-jwt`.
+- **Subscribing.** `league.subscribe` rejects room names that aren't slugs and
+  looks the tournament up with the new `findBySlugAnyLeague` (tournament slugs
+  are globally unique, so the client call is unchanged). It then records
+  whether the viewer is a *member*: staff, or an active coach on an approved
+  team. That's the same rule `getInfo` uses for private pools.
+- **Sending.** Every draft event type now carries a required, server-only
+  `audience: { draftPublic }`, set at all 8 emit sites via `draftAudience(draft)`.
+  - Public drafts' events still go to the whole room.
+  - Private drafts' events go socket by socket, to members only.
+  - The gateway strips `audience` before sending.
+  - H1 extends this same field with the blind-draft rule.
+- **Client.** `WebSocketService` sends the Auth0 access token in the
+  handshake, or nothing when signed out. It remembers `league.subscribe` calls
+  and replays them on every reconnect after the first. Before, a network blip
+  silently dropped live updates until a reload. On sign-in or sign-out it
+  reconnects, so the server sees the new identity.
+- **Membership is decided at subscribe time.** A coach approved mid-session
+  gets private-draft events after their next page load or reconnect.
+
+Verification: server `tsc --noEmit` clean. The suites pass 919/920; the one
+failure is the `external-tournament` baseline. The client
+`ng build --configuration development` is clean.
+
+- **New server specs:** `WsAuthService` (missing, valid and expired token) and
+  `DraftGateway` (joins with a verified sub, rejects a bad slug and an unknown
+  tournament, public events go to the whole room without `audience`, private
+  events reach only staff and approved coaches, a dropped team isn't
+  membership).
+- **New client spec:** `ws.service.spec` (token when signed in, anonymous
+  otherwise or on a token failure, replay after reconnect, unsubscribe stops
+  replay, reconnect on sign-in).
+- **Not verified:** a live socket against a real Auth0 token. No browser or
+  Playwright session was run.
+
+### 14.10 Landed — 2026-09-25
+
+**H1.** Blind drafts, built to the 2026-09-24 decision above.
+
+- **Two settings replace `visibility`.** `picksVisibleTo: "everyone" |
+  "ownTeam"` (default `everyone`) and `allowDuplicates` (default `false`) on
+  `DraftEntity`. The rules live in `draft/domain/pick-visibility.ts`:
+  - `picksAreBlind`: `ownTeam` and the draft isn't `COMPLETED`.
+  - `canSeeAllPicks`: not blind, or the viewer can `manageDrafts`.
+  - `canSeeTeamPicks`: `canSeeAllPicks`, or the viewer is an active coach of
+    that team.
+- **Blind is a status check, not a stored flag,** so completing the draft or
+  an organizer switching back to `everyone` reveals everything with no
+  write. Switching mid-draft is allowed.
+- **`allowDuplicates` locks once the draft starts,** like turn order. Both
+  `canBeDrafted` paths now go through one `takenReason`:
+  - a team can never hold the same Pokémon twice;
+  - another team's pick blocks only when duplicates are off.
+  
+  D7's `claimPick` re-check and the queue sniping (`removePokemonFromPicks`) are
+  skipped when duplicates are on.
+- **Behavior change:** the old code skipped the "already drafted" check
+  whenever `sequentialTurns` was off, so non-sequential drafts silently
+  allowed duplicates. That's now the explicit setting. The migration sets
+  `allowDuplicates: true` on existing non-sequential drafts to keep them as
+  they were.
+- **Every roster surface filters.** Hidden teams come back with an empty
+  roster, `picksHidden: true`, and a `pickCount` so the UI can say how many
+  picks exist without naming them:
+  - the draft routes: details (`getTeamsWithCoachStatus`, plus `picksBlind`
+    and `canSeeAllPicks`), `teams`, `picks`, and `order`, where hidden slots
+    are `{ hidden: true }`. `power-rankings` leaves hidden teams out.
+    `pokemon-list` is organizer-only, so it's unchanged;
+  - `GET …/teams` (now `@OptionalAuth`, so a signed-out visitor sees every
+    blind roster hidden), `…/teams/by-draft` (also reports each pool's
+    `allowDuplicates`), and the team page;
+  - the socket. `draftAudience(draft, teamId)` adds `blindTeamId` to `added`
+    and `updated` events while the draft is blind. `TournamentAccess` now
+    records the viewer's `teamIds` and `seesAllPicks`. Viewers who are
+    neither get the event through the `hidePick` redactor: team id and name
+    stay, and `pokemon`, `previous` and the roster are stripped. Counter,
+    status, skip and completed events aren't redacted, since they carry no
+    Pokémon;
+  - Discord. Pick and roster-edit announcements are suppressed while blind.
+    The "draft complete" message still posts.
+- **Deliberately left:** with duplicates *off*, a blind draft's
+  "already drafted" refusal still tells a coach that someone took that Pokémon.
+  That's the reason `allowDuplicates` exists. Organizers are expected to turn it
+  on for blind drafts, and the settings copy says what "own team only" hides.
+- **Client.**
+  - The draft board locks the team switcher only when blind and the viewer
+    can't see all picks.
+  - Hidden rounds render as a lock and "Hidden". The side panel shows "N
+    picks hidden until the draft ends".
+  - Pick toasts say "X made a pick." With duplicates on, the tier list greys
+    out only the viewer's own team's picks.
+  - The board refetches details when a blind draft completes, on either
+    `league.draft.status` or `league.draft.completed`.
+  - The team page and team cards use a `pdz-empty-state`.
+  - Both settings surfaces (the manage draft page and the settings workbench's
+    pool node) have "Who sees picks" (Everyone / Own team only) and the
+    duplicates toggle. Duplicates is sent only while the draft is pre-draft.
+  - The organizer's pick editor withholds only that team's own picks when
+    duplicates are on.
+- **Migration:** `scripts/migrate-draft-pick-settings.ts` (server).
+  - Dry run by default. `--apply` sets `picksVisibleTo` from `visibility`
+    (`SELF` → `ownTeam`) and `allowDuplicates` from `sequentialTurns === false`.
+    It never overwrites a field that's already set, and it leaves `visibility`
+    in place.
+  - `--rollback --apply` restores `visibility` and unsets both new fields.
+  - **Run it before deploying.** Without it, the schema default reads every
+    existing "Coach only" draft as `everyone`, and non-sequential drafts lose
+    duplicates.
+- **Not done:**
+  - Switching an in-progress draft from `ownTeam` to `everyone` emits no socket
+    event. Coaches see the reveal on their next load.
+  - A hidden team's `pickCount` on an open board doesn't track organizer
+    roster edits (`league.draft.updated`) until reload.
+
+Verification:
+
+- **Server:** `tsc --noEmit` is clean. The draft and hosted-tournament suites
+  pass 380/380. In the full run, 1527/1533 pass. `external-tournament` is the
+  usual baseline. Three suites are newly red, none touched by this work and
+  none with working-tree changes: `rulesets.spec` and `data.repository.spec`
+  expect "Ruleset Id not found: …" but get "Ruleset not found", and
+  `move.domain.spec` has three tag assertions with one extra tag.
+- **New server specs:**
+  - `pick-visibility` via tier-cost: duplicates allowed, own duplicate refused;
+  - engine: queue sniping skipped, Discord suppressed and the event tagged,
+    visibility changeable mid-draft;
+  - `DraftService`: `getPicks` for coach, staff and completed, `getOrder`
+    hidden slots, power rankings, `getTeams`;
+  - hosted-tournament: `listTeams` for coach, signed-out, organizer and
+    completed; `listTeamsByDraft`; `getTeam`;
+  - gateway: redaction to non-owners, unredacted status events.
+- **Client:** `ng build --configuration development` is clean, and
+  `lint:styles` is clean. `test:safe` fails only the six baseline suites.
+  - H2 had broken `league-standings` and `league-bracket`: `WebSocketService`
+    now injects `AuthService`. Both now stub the socket.
+  - New `league-manage-draft` specs cover the duplicate-aware taken list.
+- **Not verified:** a blind draft in a browser. No Playwright session was run.
+
+### 14.11 Landed — 2026-09-25 (A8)
+
+**A8.** Live draft updates moved from socket.io to Server-Sent Events.
+
+- **One stream per tournament, not per draft.** The endpoint is
+  `GET leagues/:leagueSlug/tournaments/:tournamentSlug/draft-events`. The A8
+  entry above planned a per-draft endpoint, but the tier list shows picks from
+  every pool in the tournament. Per-draft streams would have meant one
+  connection per pool. So it keeps the old room's scope, one connection per
+  tournament page, and filters per event.
+- **Server.**
+  - `DraftStreamController` is `@Sse()` behind `JwtAuthGuard` with
+    `@OptionalAuth`, like `GET …/teams`. Signed-out viewers still get public
+    drafts' events.
+  - The tournament is loaded before the stream opens, so an unknown one gets
+    a plain 404, not an empty stream.
+  - `DraftStreamService` listens to the six `league.draft.*` events. It moved
+    the gateway's rules over unchanged:
+    - private drafts only reach staff and active coaches on approved teams;
+    - blind `added` and `updated` events are redacted (`hidePick`) for
+      everyone but the picking team and anyone with `manageDrafts`;
+    - `audience` is stripped.
+  - A `: keepalive` comment every 25s (`HEARTBEAT_MS`) keeps idle proxies
+    from closing the connection. Nest sends `X-Accel-Buffering: no` itself.
+  - Access is worked out once, when the stream connects, as it was at
+    subscribe time before.
+- **Client.** `EventStreamService` (`core/services/event-stream.service.ts`)
+  replaces `WebSocketService` and keeps its `on<T>(event)` API, so the three
+  consumers only changed their injection.
+  - It streams with `fetch`, since native `EventSource` can't send
+    `Authorization`, and parses the event stream by hand. It sends the Auth0
+    token when signed in.
+  - Reconnects back off from 1s, doubling, to a 30s cap. There's no retry on
+    a 4xx other than 429.
+  - It restarts on sign-in or sign-out.
+  - `LeagueZoneService` opens the stream while the route has league and
+    tournament slugs, and closes it otherwise.
+- **Deleted:**
+  - server: `DraftGateway` and its spec, `WsAuthService` and its spec,
+    `HostedTournamentRepository.findBySlugAnyLeague`, and the packages
+    `@nestjs/websockets`, `@nestjs/platform-socket.io`, `socket.io`,
+    `jsonwebtoken` and `@types/jsonwebtoken`. `jwks-rsa` stays for
+    `JwtStrategy`;
+  - client: `ws.service.ts` and its spec, and `socket.io-client`.
+- **Unchanged:** events missed while disconnected aren't replayed. That was
+  already true of the socket, whose replay only re-subscribed. Adding
+  `Last-Event-ID` would need a server-side buffer.
+
+Verification:
+
+- **Server:** `tsc --noEmit` is clean. The full run passes 1526/1532. The
+  failures are the same four suites as in §14.10 (`external-tournament`,
+  `rulesets`, `data.repository`, `move.domain`), none touched here.
+  - New `draft-stream.service.spec` ports every gateway case: public to all,
+    tournament scoping, private to staff and approved coaches only,
+    dropped-team exclusion, blind redaction of `added` and `updated`,
+    unredacted status, and the keepalive.
+  - New `draft-stream.controller.spec` boots a real Nest app on a random
+    port and reads the stream with `fetch`. It checks the
+    `text/event-stream` and `X-Accel-Buffering` headers and the `event:` /
+    `data:` wire format, and that an unknown tournament gets 404 before any
+    stream.
+- **Client:** `ng build --configuration development` is clean. `test:safe`
+  fails only the six baseline suites. New `event-stream.service.spec`
+  (12 cases) covers:
+  - the token and the anonymous fallback;
+  - events split across chunks, and comments;
+  - bad JSON;
+  - backoff, reconnect after the server closes, and no retry on 404 or after
+    close;
+  - the same path opened twice, and switching tournaments;
+  - reconnecting on sign-in.
+- **Not verified:** the stream through the production proxy in front of
+  `api.pokemondraftzone.com`, or in a browser. To check after deploying, open
+  a draft page and look for a `draft-events` fetch request that stays pending
+  and receives events. A proxy that buffers
+  responses would show events arriving in bursts.

@@ -8,7 +8,7 @@ import { LeagueZoneService } from '../../league-zone.service';
 import { DraftDetails, LeagueManageService } from '../league-manage.service';
 import { TierListService } from '../../../tier-lists/tier-list.service';
 import { LeagueNotificationService } from '../../league-notification.service';
-import { WebSocketService } from '@pdz/core/services/ws.service';
+import { EventStreamService } from '@pdz/core/services/event-stream.service';
 import { League } from '../../league.interface';
 
 function makeTeam(id: string, name: string): League.LeagueTeam {
@@ -40,7 +40,10 @@ function makeDetails(overrides: Partial<DraftDetails> = {}): DraftDetails {
     teams,
     orderProgression: 'snake',
     sequentialTurns: true,
-    visibility: 'ALL',
+    picksVisibleTo: 'everyone',
+    allowDuplicates: false,
+    picksBlind: false,
+    canSeeAllPicks: true,
     allowRemovals: false,
     status: 'IN_PROGRESS',
     noTimer: false,
@@ -94,7 +97,7 @@ describe('LeagueManageDraftComponent', () => {
           },
         },
         {
-          provide: WebSocketService,
+          provide: EventStreamService,
           useValue: { on: () => EMPTY },
         },
       ],
@@ -181,5 +184,35 @@ describe('LeagueManageDraftComponent', () => {
     );
 
     expect(statusBadgeText()).toContain('Draft complete');
+  });
+
+  describe('pick editor taken list', () => {
+    const pikachu = { id: 'pikachu', name: 'Pikachu' } as League.LeaguePokemon;
+    const eevee = { id: 'eevee', name: 'Eevee' } as League.LeaguePokemon;
+    const drafted = [
+      { ...teams[0], draft: [pikachu] },
+      { ...teams[1], draft: [eevee] },
+    ];
+
+    function turnFor(teamIndex: number) {
+      return component.rounds[1].turns.find(
+        (turn) => turn.team.id === drafted[teamIndex].id,
+      )!;
+    }
+
+    it('offers nothing another team holds when duplicates are off', async () => {
+      await setup(makeDetails({ teams: drafted }));
+
+      expect(component.takenIdsFor(turnFor(1)).sort()).toEqual([
+        'eevee',
+        'pikachu',
+      ]);
+    });
+
+    it('only withholds the team’s own picks when duplicates are allowed', async () => {
+      await setup(makeDetails({ teams: drafted, allowDuplicates: true }));
+
+      expect(component.takenIdsFor(turnFor(1))).toEqual(['eevee']);
+    });
   });
 });

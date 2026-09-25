@@ -15,7 +15,7 @@ import { TierListService } from '../../../tier-lists/tier-list.service';
 import { LeagueNotificationService } from '../../league-notification.service';
 import { DraftDetails, LeagueManageService } from '../league-manage.service';
 import { LeagueZoneService } from '../../league-zone.service';
-import { WebSocketService } from '@pdz/core/services/ws.service';
+import { EventStreamService } from '@pdz/core/services/event-stream.service';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
@@ -36,19 +36,15 @@ interface DraftCounterEvent {
   nextTeam: string;
 }
 
-/** An organizer edited a roster slot out of band — set, swapped, or cleared. */
 interface DraftPickUpdatedEvent {
   draftSlug: string;
   round?: number;
-  /** Absent when the slot was cleared rather than set. */
   pokemon?: League.LeaguePokemon;
   previous?: League.LeaguePokemon;
   team: { id: string; name: string; draft: League.LeaguePokemon[] };
 }
 
-/** One team's slot in one round — the unit this page is built out of. */
 export interface DraftTurn {
-  /** Stable identity for `track`, and the key the inline editor opens against. */
   key: string;
   round: number;
   position: number;
@@ -83,7 +79,7 @@ export interface DraftTurnRound {
 export class LeagueManageDraftComponent implements OnInit, OnDestroy {
   leagueManageService = inject(LeagueManageService);
   leagueZoneService = inject(LeagueZoneService);
-  webSocketService = inject(WebSocketService);
+  private eventStream = inject(EventStreamService);
   private notificationService = inject(LeagueNotificationService);
   private tierListService = inject(TierListService);
   private route = inject(ActivatedRoute);
@@ -103,61 +99,48 @@ export class LeagueManageDraftComponent implements OnInit, OnDestroy {
   roundCount = 0;
   teamOrder: string[] = [];
   currentPick?: { round: number; position: number; skipTime?: Date };
-  /** Live "time left on the clock" text for currentPick, ticking every second. */
   pickTimeDisplay: string | null = null;
 
-  /** Last-saved seeding config, from the server. */
   useRandomSeeding = true;
-  /** Organizer's in-progress edit, staged until Save is pressed. */
   pendingUseRandomSeeding = true;
   pendingOrder: string[] = [];
   orderSaving = false;
 
-  /** Last-saved draft metadata, from the server. */
   draftName = '';
   channelId?: string;
-  visibility: 'ALL' | 'SELF' = 'ALL';
+  picksVisibleTo: League.PicksVisibleTo = 'everyone';
+  allowDuplicates = false;
   allowRemovals = false;
 
-  /** Organizer's in-progress settings edit, staged until Save is pressed. */
   pendingDraftName = '';
   pendingChannelId = '';
   pendingOrderProgression: 'snake' | 'linear' = 'snake';
   pendingSequentialTurns = false;
-  pendingVisibility: 'ALL' | 'SELF' = 'ALL';
+  pendingPicksVisibleTo: League.PicksVisibleTo = 'everyone';
+  pendingAllowDuplicates = false;
   pendingAllowRemovals = false;
   settingsSaving = false;
   testingMessage = false;
 
-  /** `DraftTurn.key` of the turn whose pick editor is open, if any. */
   editingKey: string | null = null;
-  /** `DraftTurn.key` of the turn with an in-flight set/clear request. */
   pendingKey: string | null = null;
 
   get teamsMap(): Map<string, League.LeagueTeam> {
     return new Map(this.teams.map((team) => [team.id, team]));
   }
 
-  /** Every Pokemon already off the board, so the search can't offer a duplicate. */
-  get draftedIds(): string[] {
-    return this.teams.flatMap((team) =>
-      team.draft.map((pokemon) => pokemon.id),
-    );
+  takenIdsFor(turn: DraftTurn): string[] {
+    const teams = this.allowDuplicates ? [turn.team] : this.teams;
+    return teams.flatMap((team) => team.draft.map((pokemon) => pokemon.id));
   }
 
   private get orderedTeams(): League.LeagueTeam[] {
     const ordered = this.teamOrder
       .map((teamId) => this.teamsMap.get(teamId))
       .filter((team): team is League.LeagueTeam => team !== undefined);
-    // Drafts seeded before teamOrder existed still have teams to lay out.
     return ordered.length ? ordered : this.teams;
   }
 
-  /**
-   * Reordering is only safe before any picks exist. Legacy drafts may carry
-   * statuses like NOT_STARTED, so treat anything not active/finished as
-   * pre-draft rather than checking for the literal 'PRE_DRAFT' string.
-   */
   get canEditOrder(): boolean {
     return !['IN_PROGRESS', 'PAUSED', 'COMPLETED'].includes(this.status);
   }
@@ -166,7 +149,6 @@ export class LeagueManageDraftComponent implements OnInit, OnDestroy {
     return this.canEditOrder && !this.pendingUseRandomSeeding;
   }
 
-  /** The list the order panel renders: staged edits while editing manually, else the saved order. */
   get orderPreview(): League.LeagueTeam[] {
     const ids = this.pendingUseRandomSeeding ? this.teamOrder : this.pendingOrder;
     const ordered = ids
@@ -191,7 +173,8 @@ export class LeagueManageDraftComponent implements OnInit, OnDestroy {
       this.pendingChannelId !== (this.channelId ?? '') ||
       this.pendingOrderProgression !== this.orderProgression ||
       this.pendingSequentialTurns !== this.sequentialTurns ||
-      this.pendingVisibility !== this.visibility ||
+      this.pendingPicksVisibleTo !== this.picksVisibleTo ||
+      this.pendingAllowDuplicates !== this.allowDuplicates ||
       this.pendingAllowRemovals !== this.allowRemovals
     );
   }
@@ -218,7 +201,6 @@ export class LeagueManageDraftComponent implements OnInit, OnDestroy {
     });
   }
 
-  /** The turn currently on the clock, if any — drives the header's status line. */
   get currentTurn(): DraftTurn | undefined {
     if (!this.currentPick) return undefined;
     return this.rounds[this.currentPick.round]?.turns.find(
@@ -226,7 +208,6 @@ export class LeagueManageDraftComponent implements OnInit, OnDestroy {
     );
   }
 
-  /** Short, human-readable summary of what the draft is doing right now. */
   get statusLabel(): string {
     switch (this.status) {
       case 'COMPLETED':
@@ -258,8 +239,6 @@ export class LeagueManageDraftComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    // The tier list — not the full dex — is the set of Pokemon an organizer is
-    // allowed to put on a roster, and it's what the server validates against.
     this.tierListService
       .getTierList()
       .pipe(takeUntil(this.destroy$))
@@ -295,7 +274,7 @@ export class LeagueManageDraftComponent implements OnInit, OnDestroy {
         this.startCountdown();
       });
 
-    this.webSocketService
+    this.eventStream
       .on<{
         draftSlug: string;
         pick: { pokemon: League.LeaguePokemon };
@@ -313,9 +292,7 @@ export class LeagueManageDraftComponent implements OnInit, OnDestroy {
         );
       });
 
-    // The acting organizer already gets a toast off their own request, so this
-    // only keeps a second organizer's board in sync.
-    this.webSocketService
+    this.eventStream
       .on<DraftPickUpdatedEvent>('league.draft.updated')
       .pipe(takeUntil(this.destroy$))
       .subscribe((data) => {
@@ -325,7 +302,7 @@ export class LeagueManageDraftComponent implements OnInit, OnDestroy {
         if (team) team.draft = data.team.draft;
       });
 
-    this.webSocketService
+    this.eventStream
       .on<DraftCounterEvent>('league.draft.counter')
       .pipe(takeUntil(this.destroy$))
       .subscribe((data) => {
@@ -335,7 +312,7 @@ export class LeagueManageDraftComponent implements OnInit, OnDestroy {
         this.startCountdown();
       });
 
-    this.webSocketService
+    this.eventStream
       .on<{
         draftSlug: string;
         status: 'PRE_DRAFT' | 'IN_PROGRESS' | 'PAUSED' | 'COMPLETED';
@@ -361,7 +338,6 @@ export class LeagueManageDraftComponent implements OnInit, OnDestroy {
     this.countdownTick$.complete();
   }
 
-  /** Restarts the 1s ticker so `pickTimeDisplay` tracks the latest `currentPick.skipTime`. */
   private startCountdown(): void {
     this.countdownTick$.next();
     this.updatePickTimeDisplay();
@@ -423,18 +399,19 @@ export class LeagueManageDraftComponent implements OnInit, OnDestroy {
 
     this.draftName = data.draftName;
     this.channelId = data.channelId;
-    this.visibility = data.visibility;
+    this.picksVisibleTo = data.picksVisibleTo;
+    this.allowDuplicates = data.allowDuplicates;
     this.allowRemovals = data.allowRemovals;
 
     this.pendingDraftName = data.draftName;
     this.pendingChannelId = data.channelId ?? '';
     this.pendingOrderProgression = data.orderProgression;
     this.pendingSequentialTurns = data.sequentialTurns;
-    this.pendingVisibility = data.visibility;
+    this.pendingPicksVisibleTo = data.picksVisibleTo;
+    this.pendingAllowDuplicates = data.allowDuplicates;
     this.pendingAllowRemovals = data.allowRemovals;
   }
 
-  /** Who to credit on a turn: the coach who owes the pick, or whoever made it. */
   turnCoach(turn: DraftTurn): string {
     return turn.pokemon?.picker || turn.team.coach || 'Unknown coach';
   }
@@ -443,10 +420,6 @@ export class LeagueManageDraftComponent implements OnInit, OnDestroy {
     return round.turns.filter((turn) => turn.pokemon).length;
   }
 
-  /**
-   * A roster has no gaps, so a turn is only settable once every earlier round
-   * for that team is filled — the server rejects anything further out.
-   */
   canSetTurn(turn: DraftTurn): boolean {
     return turn.round <= turn.team.draft.length;
   }
@@ -523,15 +496,10 @@ export class LeagueManageDraftComponent implements OnInit, OnDestroy {
       });
   }
 
-  /**
-   * Only an empty slot can be handed back to its team — a turn that already has
-   * a pick has nothing left to do, and the current turn is already there.
-   */
   canMakeCurrent(turn: DraftTurn): boolean {
     return this.sequentialTurns && !turn.pokemon && turn.state !== 'current';
   }
 
-  /** Rewinds (or jumps) the draft to this turn and restarts its clock. */
   makeCurrentTurn(turn: DraftTurn): void {
     if (!this.canMakeCurrent(turn) || this.pendingKey) return;
     this.pendingKey = turn.key;
@@ -559,7 +527,6 @@ export class LeagueManageDraftComponent implements OnInit, OnDestroy {
       });
   }
 
-  /** Pulls the server's human-readable rejection reason out of a PDZError body. */
   private errorReason(error: unknown): string | undefined {
     const reason = (
       error as { error?: { error?: { details?: { reason?: unknown } } } }
@@ -586,9 +553,6 @@ export class LeagueManageDraftComponent implements OnInit, OnDestroy {
     if (!this.canEditOrder) return;
     this.pendingUseRandomSeeding = !this.pendingUseRandomSeeding;
     if (!this.pendingUseRandomSeeding && !this.pendingOrder.length) {
-      // Seed the manual list from whatever's currently on screen (falls back
-      // to team-join order when there's no saved teamOrder yet), so the
-      // organizer edits from somewhere sensible rather than an empty list.
       this.pendingOrder = this.orderedTeams.map((team) => team.id);
     }
   }
@@ -634,10 +598,15 @@ export class LeagueManageDraftComponent implements OnInit, OnDestroy {
         channelId: this.pendingChannelId.trim()
           ? this.pendingChannelId.trim()
           : null,
-        orderProgression: this.pendingOrderProgression,
-        sequentialTurns: this.pendingSequentialTurns,
-        visibility: this.pendingVisibility,
+        picksVisibleTo: this.pendingPicksVisibleTo,
         allowRemovals: this.pendingAllowRemovals,
+        ...(this.canEditOrder
+          ? {
+              orderProgression: this.pendingOrderProgression,
+              sequentialTurns: this.pendingSequentialTurns,
+              allowDuplicates: this.pendingAllowDuplicates,
+            }
+          : {}),
       })
       .pipe(
         takeUntil(this.destroy$),
@@ -656,7 +625,6 @@ export class LeagueManageDraftComponent implements OnInit, OnDestroy {
       });
   }
 
-  /** Tests the *saved* channelId — save settings first if you just changed it. */
   sendTestMessage(): void {
     if (!this.channelId || this.testingMessage) return;
     this.testingMessage = true;

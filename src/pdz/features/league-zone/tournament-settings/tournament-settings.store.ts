@@ -452,7 +452,8 @@ export class TournamentSettingsStore {
         pickTimerEnabled: detail ? !detail.noTimer : true,
         pickTimerMinutes: secondsToMinutes(detail?.timerLength),
         useRandomSeeding: detail?.useRandomSeeding ?? true,
-        visibility: detail?.visibility ?? 'ALL',
+        picksVisibleTo: detail?.picksVisibleTo ?? 'everyone',
+        allowDuplicates: detail?.allowDuplicates ?? false,
         allowRemovals: detail?.allowRemovals ?? false,
         teams: orderMembers(members, detail?.teamOrder ?? []),
       };
@@ -842,8 +843,8 @@ export class TournamentSettingsStore {
       if (before.channelId !== pool.channelId) {
         settings['channelId'] = pool.channelId || null;
       }
-      if (before.visibility !== pool.visibility) {
-        settings['visibility'] = pool.visibility;
+      if (before.picksVisibleTo !== pool.picksVisibleTo) {
+        settings['picksVisibleTo'] = pool.picksVisibleTo;
       }
       if (before.allowRemovals !== pool.allowRemovals) {
         settings['allowRemovals'] = pool.allowRemovals;
@@ -860,6 +861,9 @@ export class TournamentSettingsStore {
         }
         if (before.sequentialTurns !== pool.sequentialTurns) {
           settings['sequentialTurns'] = pool.sequentialTurns;
+        }
+        if (before.allowDuplicates !== pool.allowDuplicates) {
+          settings['allowDuplicates'] = pool.allowDuplicates;
         }
         if (before.pickTimerMinutes !== pool.pickTimerMinutes) {
           settings['timerLength'] = Math.round(pool.pickTimerMinutes * 60);
@@ -952,7 +956,8 @@ export class TournamentSettingsStore {
             pickTimerEnabled: true,
             pickTimerMinutes: DEFAULT_TIMER_MINUTES,
             useRandomSeeding: true,
-            visibility: 'ALL',
+            picksVisibleTo: 'everyone',
+            allowDuplicates: false,
             allowRemovals: false,
             teams: [],
           };
@@ -1146,7 +1151,8 @@ type DraftDetailsResponse = {
   channelId?: string;
   orderProgression: 'snake' | 'linear';
   sequentialTurns: boolean;
-  visibility: 'ALL' | 'SELF';
+  picksVisibleTo: 'everyone' | 'ownTeam';
+  allowDuplicates: boolean;
   allowRemovals: boolean;
   status: 'PRE_DRAFT' | 'IN_PROGRESS' | 'PAUSED' | 'COMPLETED';
   noTimer: boolean;

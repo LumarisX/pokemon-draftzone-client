@@ -30,14 +30,14 @@ export type DraftSettingsPayload = {
   channelId?: string | null;
   orderProgression?: 'snake' | 'linear';
   sequentialTurns?: boolean;
-  visibility?: 'ALL' | 'SELF';
+  picksVisibleTo?: League.PicksVisibleTo;
+  allowDuplicates?: boolean;
   allowRemovals?: boolean;
   timerLength?: number;
   draftStart?: string | null;
   draftEnd?: string | null;
 };
 
-/** Payload every draft-mutating organizer endpoint echoes back. */
 export type DraftDetails =
   ReturnType<LeagueZoneService['getDraftDetails']> extends Observable<infer T>
     ? T
@@ -50,14 +50,6 @@ export class LeagueManageService {
   private apiService = inject(ApiService);
   leagueZoneService = inject(LeagueZoneService);
 
-  /**
-   * Names the side that leaves a match whose result cannot say so itself.
-   *
-   * The fix for a bracket stalled by a double forfeit: it decides nothing, so
-   * the matches below it can never be filled until an organizer picks a side —
-   * or `'none'` to rule that nobody advances. `null` withdraws the decision and
-   * puts the bracket back on the recorded result.
-   */
   setMatchupAdvancement(
     matchupSlug: string,
     advances: 'side1' | 'side2' | 'none' | null,
@@ -71,11 +63,6 @@ export class LeagueManageService {
     );
   }
 
-  /**
-   * Organizer edit of a single draft turn: writes the pick into that team's
-   * round slot rather than appending it, so correcting an earlier round doesn't
-   * land the Pokemon at the end of their roster. Returns fresh draft details.
-   */
   setRoundPick(
     teamId: string,
     round: number,
@@ -87,17 +74,12 @@ export class LeagueManageService {
     );
   }
 
-  /** Organizer removal of a drafted Pokemon. Returns fresh draft details. */
   clearPick(teamId: string, pokemonId: string) {
     return this.apiService.delete<DraftDetails>(
       `${this.draftPath()}/teams/${teamId}/draft/${pokemonId}`,
     );
   }
 
-  /**
-   * Points the draft back at a specific turn and hands that team a fresh clock.
-   * Both indices are zero-based. Returns fresh draft details.
-   */
   setCurrentPick(round: number, position: number) {
     return this.apiService.post<DraftDetails>(
       `${this.draftPath()}/current-pick`,
@@ -105,7 +87,6 @@ export class LeagueManageService {
     );
   }
 
-  /** Organizer-only, PRE_DRAFT-only: switch seeding mode and/or write a manual order. */
   setDraftOrder(payload: { useRandomSeeding: boolean; order?: string[] }) {
     return this.apiService.post<DraftDetails>(
       `${this.draftPath()}/order`,
@@ -180,7 +161,6 @@ export class LeagueManageService {
     });
   }
 
-  /** Organizer-only: sends a test message to the draft's saved channelId. */
   sendTestMessage() {
     return this.apiService.post<{ success: boolean }>(
       `${this.draftPath()}/settings/test-message`,
@@ -315,7 +295,6 @@ export class LeagueManageService {
     seasonStart?: Date;
     seasonEnd?: Date;
     discord?: string;
-    /** `null` clears the existing logo; `undefined` leaves it untouched. */
     logo?: string | null;
     discordSettings?: {
       coachRoleId?: string;
@@ -325,9 +304,7 @@ export class LeagueManageService {
     forfeit?: { gameDiff: number; pokemonDiff: number };
     diffMode?: 'pokemon' | 'game';
     draftCount?: { min: number; max: number };
-    /** `null` clears an existing point cap; `undefined` leaves it untouched. */
     pointTotal?: number | null;
-    /** `null` clears an existing team limit; `undefined` leaves it untouched. */
     maxTeams?: number | null;
     signUpAccess?: 'open' | 'invite' | 'closed';
     signUpQuestions?: {
@@ -367,14 +344,6 @@ export class LeagueManageService {
     return this.apiService.get<TournamentBracket>(this.tournamentBracketUrl);
   }
 
-  /**
-   * Applies an edited bracket to a tournament that may already be under way.
-   *
-   * Rounds, stages and matches carrying an `_id` are updated in place, so
-   * recorded results survive the edit; anything the payload omits is removed.
-   * Send a stage's `seedGroups` only to seed it for the first time or to append
-   * teams — the server refuses a payload that would re-draw an existing draw.
-   */
   updateTournamentBracket(payload: UpdateTournamentBracketPayload) {
     return this.apiService.patch<UpdateTournamentBracketResult>(
       this.tournamentBracketUrl,

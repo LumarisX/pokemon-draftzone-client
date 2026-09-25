@@ -71,7 +71,14 @@
     </div>
 
     <div class="team-body">
-      @if (data === "overview") {
+      @if (teamDetails().picksHidden) {
+        <pdz-empty-state
+          size="sm"
+          icon="lock"
+          heading="Picks hidden until the draft ends"
+          [message]="hiddenPicksMessage()"
+        />
+      } @else if (data === "overview") {
         <div class="table-wrapper">
           <table
             class="pdz-table roster-table"
@@ -133,7 +140,7 @@
           </table>
         </div>
       }
-      @if (data === "stats") {
+      @else if (data === "stats") {
         <div class="table-wrapper">
           <table
             class="pdz-table roster-table"

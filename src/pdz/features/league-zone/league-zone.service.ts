@@ -20,7 +20,7 @@ import { TournamentDetails } from '@pdz/features/league-zone/league.model';
 import { Observable, throwError } from 'rxjs';
 import { filter, map, mergeMap } from 'rxjs/operators';
 import { ApiService } from '@pdz/core/services/api.service';
-import { WebSocketService } from '@pdz/core/services/ws.service';
+import { EventStreamService } from '@pdz/core/services/event-stream.service';
 import { UploadService } from '@pdz/core/services/upload.service';
 
 const ROOTPATH = 'leagues';
@@ -32,7 +32,7 @@ export class LeagueZoneService {
   private apiService = inject(ApiService);
   private uploadService = inject(UploadService);
   private router = inject(Router);
-  private webSocketService = inject(WebSocketService);
+  private eventStream = inject(EventStreamService);
 
   leagueSlug = signal<string | null>(null);
   tournamentSlug = signal<string | null>(null);
@@ -41,8 +41,6 @@ export class LeagueZoneService {
   teamSlug = signal<string | null>(null);
 
   constructor() {
-    this.webSocketService.connect();
-
     this.router.events
       .pipe(
         filter((event) => event instanceof NavigationEnd),
@@ -69,21 +67,14 @@ export class LeagueZoneService {
         this.teamSlug.set(teamSlug);
       });
 
-    effect((onCleanup) => {
+    effect(() => {
+      const leagueSlug = this.leagueSlug();
       const tournamentSlug = this.tournamentSlug();
-      if (tournamentSlug) {
-        this.webSocketService
-          .sendMessage('league.subscribe', { tournamentSlug })
-          .subscribe();
-      }
-
-      onCleanup(() => {
-        if (tournamentSlug) {
-          this.webSocketService
-            .sendMessage('league.unsubscribe', { tournamentSlug })
-            .subscribe();
-        }
-      });
+      if (leagueSlug && tournamentSlug)
+        this.eventStream.open(
+          `${ROOTPATH}/${leagueSlug}/tournaments/${tournamentSlug}/draft-events`,
+        );
+      else this.eventStream.close();
     });
   }
 
@@ -126,7 +117,10 @@ export class LeagueZoneService {
       teams: League.LeagueTeam[];
       orderProgression: 'snake' | 'linear';
       sequentialTurns: boolean;
-      visibility: 'ALL' | 'SELF';
+      picksVisibleTo: League.PicksVisibleTo;
+      allowDuplicates: boolean;
+      picksBlind: boolean;
+      canSeeAllPicks: boolean;
       allowRemovals: boolean;
       status: 'PRE_DRAFT' | 'IN_PROGRESS' | 'PAUSED' | 'COMPLETED';
       noTimer: boolean;
@@ -144,11 +138,6 @@ export class LeagueZoneService {
     );
   }
 
-  /**
-   * Trades belong to the tournament: the round a trade takes effect in is
-   * tournament-wide, so a roster change made during the group phase still
-   * holds when the playoffs start.
-   */
   getTrades() {
     const teamSlug = this.teamSlug();
     return this.apiService.get<{
@@ -156,7 +145,6 @@ export class LeagueZoneService {
         name: string;
         trades: TradeLog[];
       }[];
-      /** Rounds at or before this index have already been played. */
       currentRoundIndex: number;
       tradePoints: {
         limit: number | null;
@@ -199,12 +187,6 @@ export class LeagueZoneService {
     );
   }
 
-  /**
-   * The whole tournament's schedule, each round's matches grouped by stage.
-   *
-   * Tournament-scoped rather than per stage because rounds are: a coach's week
-   * may contain matches from more than one stage at once.
-   */
   getSchedule(params?: { round?: string }) {
     const teamSlug = this.teamSlug();
     return this.apiService.get<{
@@ -241,15 +223,11 @@ export class LeagueZoneService {
     );
   }
 
-  /**
-   * Every team in the tournament, grouped by draft pool. Public — the teams
-   * page is readable without a session or a sign-up.
-   */
   getTeamsByDraft(): Observable<{
     drafts: {
-      /** null for teams whose pool was removed or never assigned. */
       draftSlug: string | null;
       name: string;
+      allowDuplicates: boolean;
       teams: League.LeagueTeam[];
     }[];
   }> {
@@ -437,7 +415,6 @@ export class LeagueZoneService {
     );
   }
 
-  /** Public read — the server allows this without a session, so anyone can view the schedule. */
   getTournamentBracket(): Observable<TournamentBracket> {
     return this.apiService.get<TournamentBracket>(
       `${ROOTPATH}/${this.leagueSlug()}/tournaments/${this.tournamentSlug()}/bracket`,
@@ -452,14 +429,7 @@ export class LeagueZoneService {
       logo?: string;
       pickCount: number;
       status: League.SignUpStatus;
-      /** Draft pool the team drafted in; null if it was never assigned one. */
       draft: { draftSlug: string; name: string } | null;
-      /**
-       * What the team holds — the pick log with every approved trade applied,
-       * including ones dated to a round that has not been reached yet.
-       * `cost`/`tier` are absent for a Pokémon the tournament's tier list no
-       * longer carries.
-       */
       roster: { id: string; name: string; cost?: number; tier?: string }[];
     }[];
   }> {
@@ -477,11 +447,6 @@ export class LeagueZoneService {
     );
   }
 
-  /**
-   * A team's page is tournament-scoped: its roster comes from the tournament's
-   * trades and its record spans every stage it plays in, so there is no stage
-   * to pass.
-   */
   getTeam(teamSlug?: string): Observable<
     League.LeagueTeam & {
       pokemonStandings: League.PokemonStanding[];
@@ -525,10 +490,6 @@ export class LeagueZoneService {
     return `${ROOTPATH}/${this.leagueSlug()}/tournaments/${this.tournamentSlug()}/coaches/${coachId}`;
   }
 
-  /**
-   * A matchup is addressed at tournament level: its slug is unique, and the
-   * stage it sits in is something the server reads off the matchup itself.
-   */
   private matchupPath(matchupSlug: string): string {
     return `${ROOTPATH}/${this.leagueSlug()}/tournaments/${this.tournamentSlug()}/matchups/${matchupSlug}`;
   }

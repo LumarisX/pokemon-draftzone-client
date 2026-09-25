@@ -81,8 +81,10 @@ the eyebrow as a link up to the league.
 
 - **No Angular Material.** Removed 2026-08-22, package uninstalled. Do not reintroduce it.
 - **No Tailwind.** Not installed; do not add utility classes.
-- **No explanatory code comments.** Write code that reads without them. (Some older
-  files still carry comments — leave those alone unless you are rewriting the block.)
+- **No explanatory code comments, in either repo.** Write code that reads without them.
+  Older files still carry comments: when you touch or open one, strip its comments
+  (`//`, `/** */`, section banners). Keep lint/tool directives such as
+  `eslint-disable-next-line`.
 - **`@angular/cdk` is allowed only for drag-drop, table, scrolling, clipboard, and
   coercion.** All overlay/popover work goes through pdz primitives on the native
   popover API. There are no `cdk/overlay` usages left; do not add one.

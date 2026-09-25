@@ -8,7 +8,7 @@ import {
   ViewChild,
 } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { WebSocketService } from '@pdz/core/services/ws.service';
+import { EventStreamService } from '@pdz/core/services/event-stream.service';
 import { PokemonTypeComponent } from '@pdz/shared/data/pokemon-type/pokemon-type.component';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
@@ -30,14 +30,14 @@ import { MenuTriggerDirective } from '@pdz/shared/menu/menu-trigger.directive';
 interface DraftAddedEvent {
   draftSlug: string;
   pick: {
-    pokemon: League.LeaguePokemon;
+    pokemon?: League.LeaguePokemon;
   };
   team: {
     id: string;
     name: string;
     draft: League.LeaguePokemon[];
   };
-  canDraftCounts: Record<string, number>;
+  canDraftCounts?: Record<string, number>;
 }
 
 interface DraftCounterEvent {
@@ -51,11 +51,9 @@ interface DraftCounterEvent {
   nextTeam: string;
 }
 
-/** An organizer edited a roster slot out of band — set, swapped, or cleared. */
 interface DraftPickUpdatedEvent {
   draftSlug: string;
   round?: number;
-  /** Absent when the slot was cleared rather than set. */
   pokemon?: League.LeaguePokemon;
   previous?: League.LeaguePokemon;
   team: {
@@ -63,7 +61,7 @@ interface DraftPickUpdatedEvent {
     name: string;
     draft: League.LeaguePokemon[];
   };
-  canDraftCounts: Record<string, number>;
+  canDraftCounts?: Record<string, number>;
 }
 
 interface DraftStatusEvent {
@@ -109,7 +107,7 @@ type DraftDetailsResponse =
 })
 export class LeagueDraftComponent implements OnInit, OnDestroy {
   private notificationService = inject(LeagueNotificationService);
-  private webSocketService = inject(WebSocketService);
+  private eventStream = inject(EventStreamService);
   private leagueService = inject(LeagueZoneService);
 
   private destroy$ = new Subject<void>();
@@ -126,9 +124,7 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
   canDraftCounts: Record<string, number> = {};
   selectedTeam!: League.LeagueTeam;
 
-  /** Snapshot of selectedTeam.draft as confirmed by the server (set on load and after each save). */
   private originalDraft: League.LeaguePokemon[] = [];
-  /** True when the picks queue (choices/rounds) has been changed but not yet saved. */
   private picksChanged: boolean = false;
   isSubmitting: boolean = false;
 
@@ -157,22 +153,33 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
   draftDetails: {
     orderProgression: 'snake' | 'linear';
     sequentialTurns: boolean;
-    visibility: 'ALL' | 'SELF';
+    picksBlind: boolean;
+    canSeeAllPicks: boolean;
+    allowDuplicates: boolean;
     roundCount: number;
     teamOrder: string[];
     status: 'PRE_DRAFT' | 'IN_PROGRESS' | 'PAUSED' | 'COMPLETED';
   } = {
     orderProgression: 'snake',
     sequentialTurns: true,
-    visibility: 'SELF',
+    picksBlind: false,
+    canSeeAllPicks: false,
+    allowDuplicates: false,
     roundCount: 0,
     teamOrder: [],
     status: 'IN_PROGRESS',
   };
 
-  // Configuration constants
   private readonly COUNTDOWN_TICK_MS = 1000;
-  private readonly FAST_TIME_THRESHOLD_MS = 300; // seconds
+  private readonly FAST_TIME_THRESHOLD_MS = 300;
+
+  get teamSwitchLocked(): boolean {
+    return this.draftDetails.picksBlind && !this.draftDetails.canSeeAllPicks;
+  }
+
+  hiddenPickAt(team: League.LeagueTeam, round: number): boolean {
+    return !!team.picksHidden && round < (team.pickCount ?? 0);
+  }
 
   selectTeamAndClose(team: League.LeagueTeam): void {
     this.selectedTeam = team;
@@ -201,9 +208,9 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
     );
   }
 
-  /** Every Pokemon already taken in this draft, across all teams (plus the selected
-   * team's locally staged picks), so the tier list grays out anything unavailable. */
   get draftedIds(): string[] {
+    if (this.draftDetails.allowDuplicates)
+      return (this.selectedTeam?.draft ?? []).map((p) => p.id);
     return this.teams.flatMap((team) =>
       (team.id === this.selectedTeam?.id
         ? this.selectedTeam.draft
@@ -240,20 +247,12 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
     this.draftDetails.roundCount = data.rounds;
     this.draftDetails.teamOrder = data.teamOrder;
     this.draftDetails.status = data.status;
-    this.draftDetails.visibility = data.visibility;
+    this.draftDetails.picksBlind = data.picksBlind;
+    this.draftDetails.canSeeAllPicks = data.canSeeAllPicks;
+    this.draftDetails.allowDuplicates = data.allowDuplicates;
   }
 
-  ngOnInit(): void {
-    this.leagueService
-      .getLeagueInfo()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((info) => {
-        this.draftStart = info.draftStart
-          ? new Date(info.draftStart)
-          : undefined;
-        this.updateDraftStartDisplay();
-      });
-
+  private loadDraftDetails(): void {
     this.leagueService
       .getDraftDetails()
       .pipe(takeUntil(this.destroy$))
@@ -268,22 +267,39 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
         this.scheduleScrollToCurrentRoundOnLoad();
         this.startCountdown();
       });
+  }
 
-    this.webSocketService
+  ngOnInit(): void {
+    this.leagueService
+      .getLeagueInfo()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((info) => {
+        this.draftStart = info.draftStart
+          ? new Date(info.draftStart)
+          : undefined;
+        this.updateDraftStartDisplay();
+      });
+
+    this.loadDraftDetails();
+
+    this.eventStream
       .on<DraftAddedEvent>('league.draft.added')
       .pipe(takeUntil(this.destroy$))
       .subscribe((data) => {
         if (this.leagueService.draftSlug() !== data.draftSlug) return;
 
+        const pokemon = data.pick.pokemon;
         this.teams = this.teams.map((team) => {
           const newTeam = { ...team };
           if (team.id === data.team.id) {
-            newTeam.draft = data.team.draft;
+            if (pokemon) newTeam.draft = data.team.draft;
+            newTeam.pickCount = (team.pickCount ?? team.draft.length) + 1;
             newTeam.picks = newTeam.picks.filter((_, index) => index);
           }
-          newTeam.picks = newTeam.picks.map((round) =>
-            round.filter((pick) => pick.id !== data.pick.pokemon.id),
-          );
+          if (pokemon && !this.draftDetails.allowDuplicates)
+            newTeam.picks = newTeam.picks.map((round) =>
+              round.filter((pick) => pick.id !== pokemon.id),
+            );
           return newTeam;
         });
 
@@ -293,7 +309,7 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
           );
 
           if (updatedSelectedTeam) {
-            updatedSelectedTeam.pointTotal = data.team.draft.reduce(
+            updatedSelectedTeam.pointTotal = updatedSelectedTeam.draft.reduce(
               (points, p) => points + (p.cost ?? 0),
               0,
             );
@@ -303,12 +319,14 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
 
         this.canDraftCounts = data.canDraftCounts ?? {};
         this.notificationService.show(
-          `${data.team.name} drafted ${data.pick.pokemon.name}!`,
+          pokemon
+            ? `${data.team.name} drafted ${pokemon.name}!`
+            : `${data.team.name} made a pick.`,
           'success',
         );
       });
 
-    this.webSocketService
+    this.eventStream
       .on<DraftPickUpdatedEvent>('league.draft.updated')
       .pipe(takeUntil(this.destroy$))
       .subscribe((data) => {
@@ -321,8 +339,7 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
         this.teams = this.teams.map((team) => {
           const newTeam = { ...team };
           if (team.id === data.team.id) newTeam.draft = data.team.draft;
-          // A slot the organizer just filled is off the board for everyone.
-          if (data.pokemon)
+          if (data.pokemon && !this.draftDetails.allowDuplicates)
             newTeam.picks = newTeam.picks.map((round) =>
               round.filter((pick) => pick.id !== data.pokemon!.id),
             );
@@ -338,8 +355,6 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
             0,
           );
           Object.assign(this.selectedTeam, updatedSelectedTeam);
-          // The organizer's roster is the new baseline — diffing against the
-          // old one would send a save that undoes their edit.
           if (isViewedTeam) this.originalDraft = [...data.team.draft];
         }
 
@@ -355,7 +370,7 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
           );
       });
 
-    this.webSocketService
+    this.eventStream
       .on<DraftCounterEvent>('league.draft.counter')
       .pipe(takeUntil(this.destroy$))
       .subscribe((data) => {
@@ -373,7 +388,7 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
         );
       });
 
-    this.webSocketService
+    this.eventStream
       .on<DraftStatusEvent>('league.draft.status')
       .pipe(takeUntil(this.destroy$))
       .subscribe((data) => {
@@ -386,9 +401,13 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
         this.updateDraftStartDisplay();
         switch (data.status) {
           case 'PAUSED':
+            this.countdownTick$.next();
+            this.clearHalfwayReminder();
+            break;
           case 'COMPLETED':
             this.countdownTick$.next();
             this.clearHalfwayReminder();
+            if (this.draftDetails.picksBlind) this.loadDraftDetails();
             break;
           case 'IN_PROGRESS':
             this.startCountdown();
@@ -397,7 +416,18 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
         this.notificationService.show(`Draft Status: ${data.status}`, 'info');
       });
 
-    this.webSocketService
+    this.eventStream
+      .on<{ draftSlug: string }>('league.draft.completed')
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((data) => {
+        if (this.leagueService.draftSlug() !== data.draftSlug) return;
+        this.draftDetails.status = 'COMPLETED';
+        this.countdownTick$.next();
+        this.clearHalfwayReminder();
+        if (this.draftDetails.picksBlind) this.loadDraftDetails();
+      });
+
+    this.eventStream
       .on<DraftSkipEvent>('league.draft.skip')
       .pipe(takeUntil(this.destroy$))
       .subscribe((data) => {
@@ -416,13 +446,14 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
     this.clearHalfwayReminder();
   }
 
-  /** Phrases an organizer's out-of-band roster edit for the notification feed. */
   private pickUpdateMessage(data: DraftPickUpdatedEvent): string {
     const slot =
       data.round === undefined
         ? `${data.team.name}'s roster`
         : `${data.team.name}'s round ${data.round + 1} pick`;
 
+    if (this.teamsMap.get(data.team.id)?.picksHidden)
+      return `An organizer changed ${slot}.`;
     if (data.pokemon && data.previous)
       return `An organizer changed ${slot} from ${data.previous.name} to ${data.pokemon.name}.`;
     if (data.pokemon)
@@ -478,7 +509,6 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
     this.scheduleHalfwayReminder();
   }
 
-  /** The current picking team, derived the same way the round table highlights it. */
   private currentPickingTeam(): League.LeagueTeam | undefined {
     if (!this.currentPick) return undefined;
     return this.draftRounds[this.currentPick.round]?.[
@@ -486,7 +516,6 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
     ];
   }
 
-  /** " — Xm to pick" suffix for turn-change notifications; empty when there's no active clock. */
   private pickTimeSuffix(): string {
     if (this.noTimer || !this.currentPick?.skipTime) return '';
     const msRemaining =
@@ -502,7 +531,6 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
     }
   }
 
-  /** Fires a single notification at the midpoint of the current team's clock. */
   private scheduleHalfwayReminder(): void {
     this.clearHalfwayReminder();
     if (this.noTimer || !this.currentPick?.skipTime) return;
@@ -515,7 +543,6 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
     const round = this.currentPick.round;
     const position = this.currentPick.position;
     this.halfwayReminderTimer = setTimeout(() => {
-      // Bail if the turn has already moved on since this was scheduled.
       if (
         !this.currentPick ||
         this.currentPick.round !== round ||
@@ -531,7 +558,6 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
     }, msUntilHalfway);
   }
 
-  /** Legacy drafts may carry statuses like NOT_STARTED, so treat anything not active/finished as pre-draft. */
   get isPreDraft(): boolean {
     return !['IN_PROGRESS', 'PAUSED', 'COMPLETED'].includes(
       this.draftDetails.status,
@@ -653,7 +679,6 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
     this.picksChanged = true;
   }
 
-  /** Tier requirements not yet met by selectedTeam's currently staged draft. */
   unmetTierRequirements(): {
     tierName: string;
     have: number;
@@ -673,12 +698,6 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
       .filter((req) => req.have < req.required);
   }
 
-  /**
-   * Only the actual drafted roster (not the queued picks) must stay within budget; roster
-   * completeness (min count, tier requirements) is only required once the draft is finished,
-   * not on every intermediate save. A falsy `points` means the tournament has no point budget
-   * (e.g. a BST-cap format), so there's nothing to enforce.
-   */
   isRosterValid(): boolean {
     return !this.points || this.selectedTeam.pointTotal <= this.points;
   }
@@ -783,7 +802,6 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
     );
   }
 
-  /** How many Pokemon selectedTeam can draft right now, accounting for locally staged changes. */
   draftableCount(): number {
     if (!this.selectedTeam.isCoach) return 0;
     const serverCount = this.canDraftCounts[this.selectedTeam.id] ?? 0;

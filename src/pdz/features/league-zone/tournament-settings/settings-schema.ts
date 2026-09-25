@@ -184,7 +184,7 @@ export interface SettingsValue {
 
 export type OrderProgression = 'snake' | 'linear';
 
-export type PoolVisibility = 'ALL' | 'SELF';
+export type PicksVisibleTo = 'everyone' | 'ownTeam';
 
 export type DraftStatus = 'PRE_DRAFT' | 'IN_PROGRESS' | 'PAUSED' | 'COMPLETED';
 
@@ -264,7 +264,8 @@ export interface DraftPoolValue {
   pickTimerEnabled: boolean;
   pickTimerMinutes: number;
   useRandomSeeding: boolean;
-  visibility: PoolVisibility;
+  picksVisibleTo: PicksVisibleTo;
+  allowDuplicates: boolean;
   allowRemovals: boolean;
   teams: string[];
 }
@@ -447,9 +448,9 @@ const DRAFT_ORDERS: readonly ChoiceOption[] = [
   { value: 'linear', label: 'Linear' },
 ];
 
-const VISIBILITIES: readonly ChoiceOption[] = [
-  { value: 'ALL', label: 'Everyone' },
-  { value: 'SELF', label: 'Coach only' },
+const PICK_VISIBILITIES: readonly ChoiceOption[] = [
+  { value: 'everyone', label: 'Everyone' },
+  { value: 'ownTeam', label: 'Own team only' },
 ];
 
 const DIFF_MODES: readonly ChoiceOption[] = [
@@ -836,6 +837,7 @@ export const POOL_NODES: readonly PoolNode[] = [
   {
     id: 'pool.order',
     title: 'Turn order',
+    help: 'These lock once the draft starts.',
     controls: [
       {
         kind: 'choice',
@@ -848,6 +850,11 @@ export const POOL_NODES: readonly PoolNode[] = [
         kind: 'toggle',
         key: 'sequentialTurns',
         label: 'Sequential turns',
+      },
+      {
+        kind: 'toggle',
+        key: 'allowDuplicates',
+        label: 'Let more than one team draft the same Pokémon',
       },
     ],
   },
@@ -870,12 +877,13 @@ export const POOL_NODES: readonly PoolNode[] = [
   {
     id: 'pool.access',
     title: 'Coach access',
+    help: 'With own team only, coaches see just their own picks until the draft completes. Organizers always see every pick; switch back to everyone to reveal early.',
     controls: [
       {
         kind: 'choice',
-        key: 'visibility',
-        label: 'Who sees the board',
-        options: VISIBILITIES,
+        key: 'picksVisibleTo',
+        label: 'Who sees picks',
+        options: PICK_VISIBILITIES,
         as: 'radio',
       },
       {

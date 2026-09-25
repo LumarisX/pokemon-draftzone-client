@@ -9,9 +9,10 @@ import { Pokemon } from '@pdz/core/utils/pokemon';
 import { Type } from '@pdz/shared/data';
 
 export namespace League {
+  export type PicksVisibleTo = 'everyone' | 'ownTeam';
+
   export type Team = {
     id: string;
-    /** URL identifier for the team's page; `id` is what payloads join on. */
     slug: string;
     name: string;
     coach: string;
@@ -27,12 +28,12 @@ export namespace League {
     picks: LeaguePokemon[][];
     isCoach: boolean;
     coach: string;
-    /** Id of the coach who owns the team; needed to edit their profile. */
     coachId?: string;
-    /** Contact handles are only returned to the team's own coach. */
     gameName?: string;
     discordName?: string;
     pointTotal: number;
+    picksHidden?: boolean;
+    pickCount?: number;
     record?: {
       wins: number;
       losses: number;
@@ -46,14 +47,9 @@ export namespace League {
   export type LeaguePokemon = DraftPokemon & {
     tier: string;
     cost: number;
-    /**
-     * Drafted, but no longer on the tournament's tier list. Its cost reads as
-     * 0 because nothing prices it — not because it was free.
-     */
     missingFromTierList?: boolean;
     types?: Type[];
     addons?: string[];
-    /** Coach who made the pick; absent on legacy picks with an unresolvable picker. */
     picker?: string;
     timestamp?: Date;
     record?: {
@@ -83,10 +79,6 @@ export namespace League {
     [key: string]: MatchPokemonStats;
   };
 
-  /**
-   * A forfeited match reports a distinct marker rather than a plain side, so a
-   * reader can tell a walkover from a played result.
-   */
   export type MatchupWinner =
     | 'side1'
     | 'side2'
@@ -105,9 +97,7 @@ export namespace League {
 
   export type Matchup = {
     id: string;
-    /** URL identifier for the matchup page. Unique tournament-wide. */
     slug: string;
-    /** The bracket's name for this match, e.g. "Match 3". */
     label?: string;
     team1: MatchupSide;
     team2: MatchupSide;
@@ -127,21 +117,9 @@ export namespace League {
     scheduledDate?: string | null;
     notes?: string;
     winner?: MatchupWinner;
-    /**
-     * Organizer override for which side leaves this match. Only ever set where
-     * the result could not decide — a double forfeit advances nobody, so every
-     * bracket slot below it stays empty until an organizer answers.
-     * `'none'` is the answer that nobody advances.
-     */
     advances?: 'side1' | 'side2' | 'none' | null;
-    /**
-     * Organizer-only: this match has stopped the bracket — it is settled with
-     * no side leaving it while something downstream is still waiting on one.
-     */
     advancementBlocked?: boolean;
-    /** Organizer-only: present when the schedule was fetched by an organizer. */
     status?: 'pending' | 'approved';
-    /** Organizer-only: a coach-submitted result awaiting approve/reject. */
     report?: {
       submittedByName: string;
       submittedAt: string;
@@ -159,14 +137,6 @@ export namespace League {
     matchups: Matchup[];
   };
 
-  /**
-   * One round of the tournament's schedule, with its matches grouped by the
-   * stage they belong to.
-   *
-   * Rounds are tournament-wide, so a coach may have a group-phase match and a
-   * playoff match in the same week; flattening them into one list would lose
-   * which competition each belongs to.
-   */
   export type ScheduleRound = {
     _id: string;
     name: string;
@@ -247,13 +217,11 @@ export namespace League {
   };
 
   export type LeagueSignUp = {
-    /** The coach id, absent until the application is approved. */
     id?: string;
     applicationId: string;
     intent?: 'team' | 'sub';
     answers?: { questionId: string; label: string; values: string[] }[];
     teamId?: string;
-    /** URL identifier for the team's page. */
     teamSlug?: string;
     name: string;
     gameName: string;
@@ -300,7 +268,6 @@ export namespace League {
     pokemonDiff: number;
     logo?: string;
     id: string;
-    /** URL identifier for the team's page. Absent on older payloads. */
     teamSlug?: string;
   };
 
@@ -404,7 +371,6 @@ export namespace League {
     logo?: string;
     signedUpAt: Date;
     teamId?: string;
-    /** URL identifier for the team's page. */
     teamSlug?: string;
     draft?: { draftSlug: string; name: string };
     inDiscordServer: boolean;
@@ -417,7 +383,6 @@ export namespace League {
     status: SignUpStatus;
   };
 
-  /** Mirrors the server's STAGE_TYPES enum. */
   export type StageType =
     | 'round-robin'
     | 'single-elimination'
@@ -427,13 +392,11 @@ export namespace League {
 
   export type StageSummary = {
     _id: string;
-    /** URL identifier for the stage's pages and endpoints. */
     slug: string;
     name: string;
     type: string;
     order: number;
     currentRoundIndex: number;
-    /** Hidden stages are only listed for organizers. */
     public: boolean;
   };
 }
@@ -448,7 +411,6 @@ export type TradePokemon = Pokemon & {
 export type TradeParticipant = {
   team?: League.Team;
   pokemon: TradePokemon[];
-  /** Trade points charged to this side's team; 0 for free agency. */
   tradePoints?: number;
 };
 
@@ -469,9 +431,7 @@ export type TradeData = {
 };
 
 export type TradeLog = {
-  /** Absent on trades predating the trade-id backfill. */
   id?: string;
-  /** Index of the round the trade takes effect in. */
   activeRound: number;
   side1: TradeParticipant;
   side2: TradeParticipant;

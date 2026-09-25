@@ -4,6 +4,7 @@ import { Component, inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { UploadService } from '@pdz/core/services/upload.service';
 import { DialogService } from '@pdz/shared/dialogs/dialog/dialog.service';
+import { EmptyStateComponent } from '@pdz/shared/feedback/empty-state/empty-state.component';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { TooltipDirective } from '@pdz/shared/tooltip/tooltip.directive';
 import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
@@ -54,6 +55,7 @@ const ALLOWED_LOGO_TYPES = [
     ButtonComponent,
     RouterModule,
     LoadingComponent,
+    EmptyStateComponent,
     IconComponent,
     TooltipDirective,
     SpriteComponent,
@@ -76,7 +78,6 @@ export class LeagueTeamComponent implements OnInit, OnDestroy {
   getLogoUrl = getLogoUrl;
   coachCurrentTime = '';
 
-  /** Set while an edit is being persisted, and cleared once it lands. */
   saving = false;
   saveError = '';
 
@@ -130,7 +131,6 @@ export class LeagueTeamComponent implements OnInit, OnDestroy {
             takeUntil(this.destroy$),
           )
           .subscribe(() => {
-            // Force child widgets to re-initialize after team route changes.
             this.teamData = undefined;
 
             this.loadTeam();
@@ -351,10 +351,6 @@ export class LeagueTeamComponent implements OnInit, OnDestroy {
     return null;
   }
 
-  /**
-   * Presign, push to S3, then point the team at the new key. Emits that key
-   * once — intermediate upload-progress events are dropped.
-   */
   private uploadLogo(file: File): Observable<string | null> {
     const coachId = this.teamData?.coachId;
     if (!coachId) return of(null);
@@ -390,9 +386,6 @@ export class LeagueTeamComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (data) => {
           this.scheduleRounds = data.rounds;
-          // The tournament's current round, not a stage's. A coach files a
-          // trade against this index, so reading it off a stage would date the
-          // trade to the wrong week.
           this.currentRoundIndex = Math.max(data.currentRoundIndex, 0);
         },
         error: (error) => {

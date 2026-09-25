@@ -41,10 +41,10 @@
               color="neutral"
               variant="ghost"
               class="draft-section-title"
-              [disabled]="draftDetails.visibility === 'SELF'"
+              [disabled]="teamSwitchLocked"
             >
               {{ selectedTeam.name }}
-              @if (draftDetails.visibility !== "SELF") {
+              @if (!teamSwitchLocked) {
                 <pdz-icon name="arrow_drop_down"></pdz-icon>
               }
             </button>
@@ -55,6 +55,14 @@
             }
           </pdz-menu>
           <ol class="my-draft-pokemons draft-section-body">
+            @if (selectedTeam.picksHidden) {
+              <li class="hidden-picks">
+                <pdz-icon name="lock" size="sm"></pdz-icon>
+                {{ selectedTeam.pickCount ?? 0 }}
+                {{ selectedTeam.pickCount === 1 ? "pick" : "picks" }} hidden
+                until the draft ends
+              </li>
+            }
             @for (pokemon of selectedTeam.draft; track pokemon.id) {
               <li
                 class="my-draft-pokemon"
@@ -255,7 +263,11 @@
                 <div class="card-container">
                   @for (position of round; track $index) {
                     @let pokemon = position.draft[roundIndex];
-                    <div class="team-card" [class.alternate]="!pokemon">
+                    @let hiddenPick = hiddenPickAt(position, roundIndex);
+                    <div
+                      class="team-card"
+                      [class.alternate]="!pokemon && !hiddenPick"
+                    >
                       <div class="team-card-header">
                         <span
                           [class.selectedTeam]="
@@ -276,6 +288,8 @@
                         <div class="team-card-icon">
                           @if (pokemon) {
                             <pdz-sprite [pokemon]="pokemon"></pdz-sprite>
+                          } @else if (hiddenPick) {
+                            <pdz-icon name="lock"></pdz-icon>
                           } @else if (
                             currentPick &&
                             currentPick.round === roundIndex &&
@@ -301,6 +315,8 @@
                         <div class="team-card-name">
                           @if (pokemon) {
                             {{ pokemon.name }}
+                          } @else if (hiddenPick) {
+                            Hidden
                           } @else if (
                             currentPick &&
                             currentPick.round === roundIndex &&

@@ -53,6 +53,8 @@ export type TierListBrowseQuery = {
 export type DraftedDivisions = {
   divisions: { [division: string]: { pokemonId: string; teamId: string }[] };
   selected?: string;
+  sharedDivisions?: string[];
+  coachedTeamIds?: string[];
 };
 
 @Injectable({
@@ -69,9 +71,6 @@ export class TierListService {
     this.router.events
       .pipe(
         filter((event) => event instanceof NavigationEnd),
-        // On a cold load the component is constructed before NavigationEnd
-        // fires, so without this the id is still null when it asks for its
-        // tier list and the request falls through to the league context.
         startWith(null),
         map(() => {
           let route = this.router.routerState.root;
@@ -84,8 +83,6 @@ export class TierListService {
         mergeMap((route) => route.paramMap),
       )
       .subscribe((paramMap) => {
-        // `tierListSlug` is what /tier-lists routes carry; `tierListId` is
-        // still used by the planner's own route.
         const tierListId =
           paramMap.get('tierListSlug') ?? paramMap.get('tierListId');
         this.tierListId.set(tierListId);
@@ -129,11 +126,6 @@ export class TierListService {
     );
   }
 
-  /**
-   * The routed `:tierListId` when there is one, else the tier list attached to
-   * the tournament in context. Errors rather than requesting with null slugs
-   * when neither is available.
-   */
   private resolveTierListId(): Observable<string> {
     const routed = this.tierListId();
     if (routed) return of(routed);
@@ -178,19 +170,24 @@ export class TierListService {
         const routedDraftSlug = this.leagueZoneService.draftSlug();
         let routed: string | undefined;
         let coached: string | undefined;
+        const sharedDivisions: string[] = [];
+        const coachedTeamIds: string[] = [];
 
-        // A draft-scoped route is bound to one pool, so it gets that pool's
-        // takings alone — there is nothing for the viewer to switch between.
         const groups = routedDraftSlug
           ? data.drafts.filter((group) => group.draftSlug === routedDraftSlug)
           : data.drafts;
 
         for (const group of groups) {
           if (group.draftSlug === routedDraftSlug) routed = group.name;
+          if (group.allowDuplicates) sharedDivisions.push(group.name);
 
           const held = (divisions[group.name] ??= []);
           for (const team of group.teams) {
-            if (team.isCoach) coached = group.name;
+            if (team.isCoach) {
+              coached = group.name;
+              coachedTeamIds.push(team.id);
+            }
+            if (group.allowDuplicates && !team.isCoach) continue;
             for (const pokemon of team.draft) {
               held.push({ pokemonId: pokemon.id, teamId: team.id });
             }
@@ -200,6 +197,8 @@ export class TierListService {
         return {
           divisions,
           selected: routed ?? coached ?? Object.keys(divisions)[0],
+          sharedDivisions,
+          coachedTeamIds,
         };
       }),
       catchError(() => of({ divisions: {} })),

@@ -3,6 +3,7 @@ import { Component, input } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 import { CardComponent } from '@pdz/shared/data/card/card.component';
+import { EmptyStateComponent } from '@pdz/shared/feedback/empty-state/empty-state.component';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
 import { League } from '../../league.interface';
@@ -14,6 +15,7 @@ import { getLogoUrl } from '../../league.util';
     CommonModule,
     ButtonComponent,
     CardComponent,
+    EmptyStateComponent,
     SpriteComponent,
     IconComponent,
     RouterLink,
@@ -50,6 +52,11 @@ export class LeagueTeamCardComponent {
     return teamDetails.diffMode === 'game'
       ? teamDetails.record.gameDiff
       : teamDetails.record.pokemonDiff;
+  }
+
+  hiddenPicksMessage(): string {
+    const count = this.teamDetails().pickCount ?? 0;
+    return `${count} ${count === 1 ? 'pick' : 'picks'} made so far.`;
   }
 
   hasCapt(): boolean {
