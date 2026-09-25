@@ -132,7 +132,6 @@ export class LeagueManageService {
       gameName?: string;
       discordName?: string;
       timezone?: string;
-      teamName?: string;
     },
   ) {
     return this.apiService.patch<{ message: string }>(

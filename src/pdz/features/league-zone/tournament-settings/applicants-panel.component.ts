@@ -281,10 +281,26 @@ export class ApplicantsPanelComponent {
     }).closed;
     if (!result) return;
 
-    if (result.teamName !== entry.teamName) {
-      this.persist(entry, { teamName: result.teamName });
-    }
+    if (result.teamName !== entry.teamName) this.rename(entry, result.teamName);
     if (result.logoFile) this.sendLogo(entry, result.logoFile);
+  }
+
+  private rename(entry: SignUpValue, teamName: string): void {
+    const teamSlug = entry.teamSlug;
+    if (!teamSlug) return;
+    this.busyId.set(entry.applicationId);
+    this.league
+      .updateTeam(teamSlug, { teamName })
+      .pipe(finalize(() => this.busyId.set(null)))
+      .subscribe({
+        next: () => {
+          this.store.patchSignUp(entry.applicationId, { teamName });
+          this.toast.success('Team renamed.');
+        },
+        error: (err) => {
+          this.toast.error(apiErrorMessage(err, 'Could not rename that team.'));
+        },
+      });
   }
 
   private persist(
@@ -294,7 +310,6 @@ export class ApplicantsPanelComponent {
       gameName?: string;
       discordName?: string;
       timezone?: string;
-      teamName?: string;
     },
   ): void {
     const coachId = entry.id;
@@ -351,9 +366,8 @@ export class ApplicantsPanelComponent {
   }
 
   private sendLogo(entry: SignUpValue, file: File): void {
-
-    const coachId = entry.id;
-    if (!coachId) return;
+    const teamSlug = entry.teamSlug;
+    if (!teamSlug) return;
     this.busyId.set(entry.applicationId);
     let key: string | null = null;
 
@@ -365,7 +379,7 @@ export class ApplicantsPanelComponent {
         switchMap((progress) => {
           if (progress.type === HttpEventType.UploadProgress) return of(null);
           if (progress instanceof HttpResponse && progress.ok && key) {
-            return this.league.updateCoachLogo(coachId, key);
+            return this.league.updateTeam(teamSlug, { logo: key });
           }
           return of(null);
         }),

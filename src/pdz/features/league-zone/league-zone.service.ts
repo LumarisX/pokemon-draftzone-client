@@ -17,7 +17,7 @@ import {
   MatchupReportPayload,
 } from '@pdz/features/league-zone/league-matchup/league-matchup.model';
 import { TournamentDetails } from '@pdz/features/league-zone/league.model';
-import { Observable, throwError } from 'rxjs';
+import { Observable } from 'rxjs';
 import { filter, map, mergeMap } from 'rxjs/operators';
 import { ApiService } from '@pdz/core/services/api.service';
 import { EventStreamService } from '@pdz/core/services/event-stream.service';
@@ -404,13 +404,17 @@ export class LeagueZoneService {
   }
 
   updateSignUps(
-    signups: { id: string; draft?: string; status?: League.SignUpStatus }[],
+    signups: {
+      teamSlug: string;
+      draft?: string;
+      status?: League.SignUpStatus;
+    }[],
   ): Observable<{ message: string }> {
     return this.apiService.patch(
-      `${ROOTPATH}/${this.leagueSlug()}/tournaments/${this.tournamentSlug()}/coaches`,
+      `${ROOTPATH}/${this.leagueSlug()}/tournaments/${this.tournamentSlug()}/teams`,
       {
         assignments: signups.map((s) => ({
-          coachId: s.id,
+          teamSlug: s.teamSlug,
           divisionKey: s.draft || undefined,
           status: s.status,
         })),
@@ -461,11 +465,16 @@ export class LeagueZoneService {
     );
   }
 
-  renameTeam(coachId: string, teamSlug: string, teamName: string) {
-    return this.apiService.patch<{ message: string }>(
-      this.coachPath(coachId),
-      { teamName },
-      { invalidateCache: [this.teamPath(teamSlug)] },
+  updateTeam(teamSlug: string, changes: { teamName?: string; logo?: string }) {
+    return this.apiService.patch<{ teamName: string; logo: string | null }>(
+      this.teamPath(teamSlug),
+      changes,
+      {
+        invalidateCache: [
+          this.teamPath(teamSlug),
+          `${ROOTPATH}/${this.leagueSlug()}/tournaments/${this.tournamentSlug()}/signup`,
+        ],
+      },
     );
   }
 
@@ -575,22 +584,6 @@ export class LeagueZoneService {
       filename,
       contentType,
       'team-logos',
-    );
-  }
-
-  updateCoachLogo(coachId: string, fileKey: string) {
-    const tournamentSlug = this.tournamentSlug();
-    if (!tournamentSlug)
-      return throwError(() => new Error('Tournament key not available'));
-
-    return this.apiService.patch(
-      `${ROOTPATH}/${this.leagueSlug()}/tournaments/${tournamentSlug}/coaches/${coachId}/logo`,
-      { fileKey },
-      {
-        invalidateCache: [
-          `${ROOTPATH}/${this.leagueSlug()}/tournaments/${tournamentSlug}/signup`,
-        ],
-      },
     );
   }
 }

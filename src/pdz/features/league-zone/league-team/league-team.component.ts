@@ -272,8 +272,7 @@ export class LeagueTeamComponent implements OnInit, OnDestroy {
 
   private saveTeamEdit(result: TeamEditDialogResult): void {
     const team = this.teamData;
-    const coachId = team?.coachId;
-    if (!team || !coachId) return;
+    if (!team?.slug) return;
 
     const renamed = result.teamName !== team.name;
     if (!renamed && !result.logoFile) return;
@@ -290,7 +289,7 @@ export class LeagueTeamComponent implements OnInit, OnDestroy {
     this.saveError = '';
 
     const rename$: Observable<unknown> = renamed
-      ? this.leagueService.renameTeam(coachId, team.slug, result.teamName)
+      ? this.leagueService.updateTeam(team.slug, { teamName: result.teamName })
       : of(null);
 
     rename$
@@ -352,8 +351,8 @@ export class LeagueTeamComponent implements OnInit, OnDestroy {
   }
 
   private uploadLogo(file: File): Observable<string | null> {
-    const coachId = this.teamData?.coachId;
-    if (!coachId) return of(null);
+    const teamSlug = this.teamData?.slug;
+    if (!teamSlug) return of(null);
 
     return this.leagueService
       .getLeagueUploadPresignedUrl(file.name, file.type || 'image/png')
@@ -371,7 +370,7 @@ export class LeagueTeamComponent implements OnInit, OnDestroy {
                   `S3 upload failed with status: ${event.status}`,
                 );
               return this.leagueService
-                .updateCoachLogo(coachId, presigned.key)
+                .updateTeam(teamSlug, { logo: presigned.key })
                 .pipe(map(() => presigned.key));
             }),
           );

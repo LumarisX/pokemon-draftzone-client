@@ -1568,7 +1568,8 @@ or UI reaches them:
   reassigns `primaryCoach` except `replace-coach`.
 - **Who-acted for picks.** `pickLog.picker` still comes from `pickerFor(team)`,
   i.e. the primary (§11.7). Harmless while every team has one coach, wrong the
-  day a co-coach picks.
+  day a co-coach picks. *Built 2026-09-25 with A6 (§14.15): the caller's own
+  seat, falling back to the primary.*
 - **`joinTeamId`** on applications is stored but nothing sets it.
 - **Duplicate team-name warning on replacement** (§11.12) is not in the
   replace-coach dialog.
@@ -1990,8 +1991,8 @@ Paths below are in `pokemon-draftzone-server/src/modules/` unless stated.
 | H4 | Uploads: no size cap, keys not bound to uploader | P2 | **code done** 2026-09-25 — see §14.13; bucket CORS must allow `POST` **before** deploy, and deploy client and server together |
 | H5 | Archived tournaments still accept writes | P2 | **done** 2026-09-24 — `TournamentOpenGuard` |
 | H6 | Cross-tournament references in reads and trades | P2 | **done** 2026-09-24 via A2 |
-| H7 | Small hardening items | P3 | open |
-| A1–A7 | Structure that limits future work | P2 | A1 policy + staff roles done 2026-09-24 (`migrate-tournament-staff.ts` applied to 3 tournaments, `--check` clean 2026-09-24); its request-guard phase folded into A4; A2 code done 2026-09-24 (run `backfill-matchup-tournament-ids.ts` before deploy); A3–A7 open; A8 (websocket → SSE) **done** 2026-09-25 |
+| H7 | Small hardening items | P3 | **done** 2026-09-25 — see §14.14; the Auth0 audience stays deferred |
+| A1–A7 | Structure that limits future work | P2 | A1 policy + staff roles done 2026-09-24 (`migrate-tournament-staff.ts` applied to 3 tournaments, `--check` clean 2026-09-24); its request-guard phase folded into A4; A2 code done 2026-09-24 (run `backfill-matchup-tournament-ids.ts` before deploy); A6 **done** 2026-09-25 (§14.15); A3–A5, A7 open; A8 (websocket → SSE) **done** 2026-09-25 |
 | §14.5 | Smaller smells | P3 | open |
 
 ### 14.1 P0 — exploitable now
@@ -3418,3 +3419,137 @@ Verification:
   `upload.service.spec` checks the field order, that no manual `Content-Type`
   is sent, and the size refusal.
 - **Not verified:** a real upload against S3, or the bucket's CORS.
+
+### 14.14 Landed — 2026-09-25 (H7)
+
+**H7.** The small hardening items, except the Auth0 audience, which stays
+deferred (decided 2026-08-06).
+
+- **Webhook secret.** `WebhookGuard` compares SHA-256 digests of the
+  incoming and configured secrets with `crypto.timingSafeEqual`, so neither
+  the content nor the length leaks through timing. A missing or empty
+  configured secret, an empty key, and a repeated header (an array) are all
+  refused.
+- **Per-user limits.**
+  - Why a separate guard: the global throttler is an `APP_GUARD`, so it runs
+    before `JwtAuthGuard` and can only key on IP. The upload module already
+    worked around this with its own guard.
+  - That guard is now the shared `core/guards/user-throttler.guard.ts`
+    (`UserThrottlerGuard`). It tracks `req.user.sub`, falling back to IP, and
+    refuses with the new `SYS-006 RATE_LIMITED` (429, "You're doing that too
+    often…") in place of Nest's bare "ThrottlerException".
+  - A route opts in with `@UseGuards(JwtAuthGuard, UserThrottlerGuard)`,
+    `@SkipGlobalThrottle()` and `@Throttle(...)`. Counters are per route and
+    per user.
+  - Limits:
+    - `POST …/signup`: 5 per 10 minutes;
+    - `POST …/chat/:channel`: 20 per minute;
+    - `POST …/matchups/:matchupSlug/report`: 30 per minute. It's set high
+      because organizers enter a week's results in a burst.
+  - Uploads moved to the shared guard (still the default 300 per minute, now
+    with the readable 429). `upload-throttler.guard.ts` and its spec are
+    deleted.
+- **Ad-review buttons.** `handleReviewAction` refuses a click that doesn't
+  come from the review channel, with an ephemeral reply, and logs the
+  clicker. Only the bot can post those buttons, and it only posts them there,
+  so this is defence in depth.
+  - It still doesn't check *who* clicked. That needs a reviewer role or
+    permission to test against, and none is defined. Whoever can see the
+    review channel can still approve.
+
+Verification:
+
+- **Server:** `tsc --noEmit` is clean. `core/guards`, `webhook`, `upload`,
+  `chat`, `stage`, `tournament` and `tournament-ad` pass, apart from the known
+  `external-tournament` failure.
+- **New specs:**
+  - `webhook.guard.spec`: prefix-only key, array header, empty secret;
+  - `user-throttler.guard.spec`: tracker fallbacks and the `SYS-006` 429;
+  - `chat.controller.throttle.spec`: boots a real Nest app with the global
+    throttler and the exception filter. The 21st post in a minute gets a 429
+    with `SYS-006`, and a second user is still allowed. So the per-user guard
+    works behind `JwtAuthGuard` and the global limit is skipped;
+  - `external-tournament-ad.service.spec`: a click from another channel
+    changes nothing.
+
+### 14.15 Landed — 2026-09-25 (A6)
+
+**A6.** Team data is edited through the team, and the acting coach is taken
+from the caller's own seat.
+
+- **One way to rename a team, one way to set its logo:**
+  `PATCH …/tournaments/:tournamentSlug/teams/:teamSlug` with
+  `{ teamName?, logo? }` (`UpdateTeamDto`, name trimmed).
+  - Allowed for `manageParticipants`, or any active coach on that team via the
+    new `actingCoach(team, sub, capability)` in `tournament/membership.ts`. So
+    a co-coach can now edit the team. Before, the page used the primary's
+    coach id, and `loadCoachForEdit` refused anyone else.
+  - A rename pushes a `nameHistory` entry: `from`, `to`, the current round's
+    id, reason "Renamed", `changedBy`. `teamRepo.update` takes the same
+    `nameChange` as `replaceCoach` (the type is now `TeamNameChange`).
+    Nothing reads `nameHistory` yet, so this only stops the history from
+    missing plain renames.
+  - A new logo is claimed through H4's `claimUpload`. An unchanged name and
+    logo writes nothing.
+  - Returns `{ teamName, logo }`.
+- **Removed:**
+  - `PATCH …/coaches/:coachId/logo` and `setCoachLogo`;
+  - `teamName` on `UpdateCoachDetailsDto`. `PATCH …/coaches/:coachId` edits
+    only the person now.
+- **Draft assignment is team-keyed.** `PATCH …/teams` takes
+  `{ assignments: [{ teamSlug, divisionKey?, status? }] }` (`AssignTeamsDto`)
+  and replaces `PATCH …/coaches`.
+  - `assignTeams` loads the tournament's teams once and maps them by slug,
+    instead of two lookups per row through `findTournamentTeamByCoachId`
+    (deleted).
+  - The unresolved-row error is now `ASSIGNMENT_TEAMS_NOT_FOUND` with
+    `teamSlugs` (same code, LR-016).
+  - An absent `divisionKey` still unassigns, so rows must still carry both
+    pool and status.
+- **Acting coach.**
+  - Match reports: `submittedByName` is the reporting seat's own name,
+    falling back to the primary.
+  - Draft picks: `batchDraftPokemon` and `draftPokemon` take an optional
+    `actor`, and `pickerFor(team, actor)` prefers the actor's active seat.
+    The only caller that passes it is `DraftService.draftPick`.
+  - Queue auto-picks, the skip timer and the organizer's `setPickAtRound`
+    still record the primary, since no coach acted. An organizer who is also a
+    coach on the team is recorded as that coach.
+  - §11.14's "who-acted for picks" is done.
+- **Client.**
+  - `LeagueZoneService.updateTeam(teamSlug, changes)` replaces `renameTeam`
+    and `updateCoachLogo`. It invalidates the team page and the sign-up
+    cache.
+  - The team page renames and sets the logo by its own `slug`. The
+    applicants panel does too, by `entry.teamSlug`, with a separate `rename`
+    and a "Team renamed." toast.
+  - `updateSignUps` sends `teamSlug`. The settings store still keys pools by
+    coach id internally and maps to `teamSlug` only in `teamStatusPatch` and
+    `membershipPatch`. Rows without a team are skipped, since they can't be
+    pooled anyway.
+- **Deploy client and server together** (already required by H4). The old
+  client calls the removed coach routes.
+- **Not done:**
+  - The team page's "edit coach" still targets the primary coach, since it
+    shows and edits the displayed coach. A co-coach editing their *own*
+    profile from there would need a per-seat coach section.
+  - `nameHistory` has no reader.
+
+Verification:
+
+- **Server:** `tsc --noEmit` is clean. The draft, hosted-tournament and stage
+  suites pass 651/651.
+  - New `updateTeam` block: rename by the primary, a co-coach and an
+    organizer (with the history entry); refusal for a stranger and a departed
+    coach; the logo claim; a failed claim writing nothing; no-op on
+    unchanged values.
+  - `assignTeams` block ported to slugs, plus one query for many rows.
+  - `stage.service.spec`: the co-coach's name on a report.
+  - `draft-engine.service.spec`: the co-coach recorded as picker, and the
+    primary fallback for a seatless organizer.
+  - `draft.service.spec` passes `sub` through.
+- **Client:** `ng build --configuration development` is clean. The
+  league-zone suites pass, apart from the baseline `power-rankings`. A new
+  `tournament-settings.store.spec` case checks that a pool move is sent as
+  `{ teamSlug, draft, status }`.
+- **Not verified:** in a browser.

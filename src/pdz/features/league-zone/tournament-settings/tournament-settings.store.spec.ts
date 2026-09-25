@@ -115,3 +115,74 @@ describe('TournamentSettingsStore Discord link', () => {
     expect(store.read<string>('discordCoachRoleId')).toBe('');
   });
 });
+
+describe('TournamentSettingsStore pool assignments', () => {
+  let store: TournamentSettingsStore;
+  let league: { updateSignUps: jest.Mock };
+
+  beforeEach(() => {
+    const anything = () => of({});
+    league = { updateSignUps: jest.fn(() => of({ message: 'ok' })) };
+
+    TestBed.configureTestingModule({
+      providers: [
+        TournamentSettingsStore,
+        {
+          provide: LeagueManageService,
+          useValue: new Proxy(
+            {
+              getTournamentSettings: () => of(settingsWith()),
+              getSchedule: () => throwError(() => new Error('none')),
+              getTrades: () => throwError(() => new Error('none')),
+            } as Record<string, unknown>,
+            { get: (target, key: string) => target[key] ?? anything },
+          ),
+        },
+        {
+          provide: LeagueZoneService,
+          useValue: {
+            ...league,
+            getSignUps: () =>
+              of({
+                signups: [
+                  {
+                    id: 'coach-1',
+                    applicationId: 'app-1',
+                    teamId: 'team-1',
+                    teamSlug: 'team-rocket',
+                    name: 'Ash',
+                    gameName: 'ash',
+                    discordName: 'ash',
+                    timezone: 'UTC',
+                    experience: '',
+                    status: 'approved',
+                    teamName: 'Team Rocket',
+                    signedUpAt: new Date('2026-09-01'),
+                  },
+                ],
+                drafts: [{ draftSlug: 'pool-a', name: 'Pool A' }],
+              }),
+            getRules: () => throwError(() => new Error('none')),
+            getDraftDetails: () => throwError(() => new Error('none')),
+          },
+        },
+        {
+          provide: TierListService,
+          useValue: { getTierList: () => throwError(() => new Error('none')) },
+        },
+      ],
+    });
+    store = TestBed.inject(TournamentSettingsStore);
+    store.load();
+  });
+
+  it('assigns by team slug, not by coach id', async () => {
+    store.assignTeam('coach-1', 'pool-a');
+
+    await firstValueFrom(store.saveSection('draft'));
+
+    expect(league.updateSignUps).toHaveBeenCalledWith([
+      { teamSlug: 'team-rocket', draft: 'pool-a', status: 'approved' },
+    ]);
+  });
+});

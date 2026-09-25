@@ -802,8 +802,14 @@ export class TournamentSettingsStore {
   private teamStatusPatch(): SignUpAssignment[] {
     const pool = this.poolBySignUp(this.pools());
     return this.changedStatuses().flatMap((entry) =>
-      entry.teamId && entry.id
-        ? [{ id: entry.id, draft: pool.get(entry.id), status: entry.status }]
+      entry.teamSlug && entry.id
+        ? [
+            {
+              teamSlug: entry.teamSlug,
+              draft: pool.get(entry.id),
+              status: entry.status,
+            },
+          ]
         : [],
     );
   }
@@ -813,11 +819,11 @@ export class TournamentSettingsStore {
     const draft = this.poolBySignUp(this.pools());
     return this.signUps().flatMap((entry) => {
       const coachId = entry.id;
-      if (!coachId) return [];
+      if (!coachId || !entry.teamSlug) return [];
       const pool = draft.get(coachId);
       return saved.get(coachId) === pool
         ? []
-        : [{ id: coachId, draft: pool, status: entry.status }];
+        : [{ teamSlug: entry.teamSlug, draft: pool, status: entry.status }];
     });
   }
 
@@ -1118,7 +1124,7 @@ export class TournamentSettingsStore {
 }
 
 type SignUpAssignment = {
-  id: string;
+  teamSlug: string;
   draft?: string;
   status: League.SignUpStatus;
 };
