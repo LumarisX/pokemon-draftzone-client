@@ -1,6 +1,5 @@
 import { Injectable, inject } from '@angular/core';
 import { Observable } from 'rxjs';
-import { TierPokemonAddon } from '../../tier-lists/tier-list.model';
 import {
   TournamentBracket,
   UpdateTournamentBracketPayload,
@@ -358,27 +357,5 @@ export class LeagueManageService {
       message: string;
       currentRoundIndex: number;
     }>(`${this.tournamentBracketUrl}/current-round`, { currentRoundIndex });
-  }
-
-  getPokemonList() {
-    return this.apiService.get<{
-      groups?: {
-        roster: {
-          id: string;
-          name: string;
-          cost: number;
-          addons?: TierPokemonAddon[];
-          setAddons?: string[];
-        }[];
-        team?: { id: string; name: string; coachName: string };
-      }[];
-      stages: string[];
-      currentStage: number;
-    }>(
-      `leagues/${this.leagueZoneService.leagueSlug()}/tournaments/${this.leagueZoneService.tournamentSlug()}/drafts/${this.leagueZoneService.draftSlug()}/pokemon-list`,
-      {
-        params: { stageSlug: this.leagueZoneService.stageSlug() ?? '' },
-      },
-    );
   }
 }

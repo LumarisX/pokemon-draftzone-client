@@ -412,7 +412,6 @@ export namespace League {
     name: string;
     type: string;
     order: number;
-    currentRoundIndex: number;
     public: boolean;
   };
 }

@@ -1992,7 +1992,7 @@ Paths below are in `pokemon-draftzone-server/src/modules/` unless stated.
 | H5 | Archived tournaments still accept writes | P2 | **done** 2026-09-24 — `TournamentOpenGuard` |
 | H6 | Cross-tournament references in reads and trades | P2 | **done** 2026-09-24 via A2 |
 | H7 | Small hardening items | P3 | **done** 2026-09-25 — see §14.14; the Auth0 audience stays deferred |
-| A1–A7 | Structure that limits future work | P2 | A1 policy + staff roles done 2026-09-24 (`migrate-tournament-staff.ts` applied to 3 tournaments, `--check` clean 2026-09-24); its request-guard phase folded into A4; A2 code done 2026-09-24 (run `backfill-matchup-tournament-ids.ts` before deploy); A6 **done** 2026-09-25 (§14.15); A5 **done** 2026-09-25 (§14.16); A4 query batching **done** 2026-09-25 (§14.17), request-scoped memo deferred; A7 **done** 2026-09-25 (§14.18); A3 open; A8 (websocket → SSE) **done** 2026-09-25 |
+| A1–A7 | Structure that limits future work | P2 | A1 policy + staff roles done 2026-09-24 (`migrate-tournament-staff.ts` applied to 3 tournaments, `--check` clean 2026-09-24); its request-guard phase folded into A4; A2 code done 2026-09-24 (run `backfill-matchup-tournament-ids.ts` before deploy); A6 **done** 2026-09-25 (§14.15); A5 **done** 2026-09-25 (§14.16); A4 query batching **done** 2026-09-25 (§14.17), request-scoped memo deferred; A7 **done** 2026-09-25 (§14.18); A3 **done** 2026-09-25 (§14.19), diagnose clean; A8 (websocket → SSE) **done** 2026-09-25 |
 | §14.5 | Smaller smells | P3 | open |
 
 ### 14.1 P0 — exploitable now
@@ -2361,7 +2361,8 @@ still live:
 
 Run `verify-sections-to-stages.ts` against prod, then delete the old path. Keep
 the rollback script, and keep the deprecated fields only until the rollback
-window closes.
+window closes. **Code done 2026-09-25**, see §14.19. The gate is now
+`diagnose-legacy-stage-shape.ts`.
 
 **A4. Every request loads the entire tournament.**
 `findBySlug` runs a league query, the tournament query, one query per stage
@@ -3780,4 +3781,90 @@ Verification:
   - New `api.service.spec` for `apiErrorMessage`.
   - `tournament-settings.store.spec`: rules load with every tiebreaker
     listed; points and order save together; points save alone.
+- **Not verified:** in a browser.
+
+### 14.19 Landed — 2026-09-25 (A3, code only)
+
+**A3.** The old stage-shaped round axis is gone from the server. Every read
+now takes rounds, the current round and trades from the tournament, and a
+stage's teams from `teamIds`.
+
+**Gate:** run `scripts/diagnose-legacy-stage-shape.ts` against prod **before
+deploying**. It's read-only. It reports a BLOCKER for:
+
+- a stage holding rounds, trades or a current round on a tournament with no
+  rounds of its own;
+- a stage whose teams exist only in `pools`;
+- a matchup whose round isn't on its tournament.
+
+Legacy fields on migrated tournaments are listed as "leftover" and are
+harmless, because the app already ignored them. The old
+`verify-sections-to-stages.ts --compare` can't do this job anymore. Its
+snapshot predates D3 and every result entered since, so it would report
+every legitimate change as a difference.
+
+- **`stage/domain/stage-axis.ts`** is down to `RoundLike`, `TradeLike`,
+  `tradeRoundIndex` and `rosterContext(tournament)`.
+  - Deleted: `stageRounds`, `currentRoundIndex`, `stageTeamIds`,
+    `stageTrades`, `usesTournamentAxis`, `rosterContextForTournament`,
+    `tournamentRosterContext` and `AxisStage`.
+  - `tradeRoundIndex` keeps its `activeRound` fallback until the D3 backfill
+    has been re-run after deploy.
+- **Schema.** `StageEntity` drops `rounds`, `pools`, `sections`, `trades` and
+  `currentRoundIndex`, along with the stage trade, round, pool and section
+  sub-schemas. No data is unset. Mongoose leaves unknown fields alone, and
+  `rollback-sections-to-stages.ts` reads raw collections, so the rollback
+  still works. Unsetting the fields is a later, separate script, once the
+  rollback window is closed.
+- **Branches removed:**
+  - `getTeam`'s unmigrated branch and its `stageSlug` query parameter,
+    together with the `resolveStage` that threw "Multiple stages exist";
+  - the schedule's per-stage axis and round index;
+  - `setCurrentRound`'s axis assertion. The range check already refuses
+    every round when there are none.
+  - STG-007 (`SCHEDULE_IS_TOURNAMENT_WIDE`), which nothing threw;
+  - the dead `buildBracketView`, which was the only reader of `sections`;
+  - the dead `StageRepository.create` and `findByTeamId`, the latter still
+    querying `pools.teamIds`;
+  - `currentRoundIndex` on `GET …/stages`. The client never read it.
+- **Bug fixed on the way:** `GET …/drafts/:draftSlug/pokemon-list` built
+  `stages` and `currentStage` from the stage's own rounds. Those are empty on
+  every migrated tournament. It now reads the tournament's rounds and no
+  longer takes `stageSlug`. The client's `getPokemonList()` had no callers
+  and was deleted, so the server endpoint currently has no consumer. That's a
+  candidate for §14.5.
+- **Not touched:**
+  - the matchup-level `section` and `bracketRound` fields, which the
+    rollback also needs;
+  - the client's `stages/:stageSlug/trades` route and the manage redirect.
+    Those are client routing, not the data shape.
+
+Verification:
+
+- **Server:** `tsc --noEmit` is clean. The stage, draft, tournament and league
+  suites pass 784/785. The one failure is `external-tournament.controller`,
+  which fails the same way on the stashed clean tree.
+  - The legacy-branch specs were deleted or re-pointed:
+    - `stage-axis.spec` is down to `tradeRoundIndex` and `rosterContext`;
+    - `roster.spec` and `standings.spec` build tournaments instead of
+      stages;
+    - the schedule and `setCurrentRound` specs now cover a tournament with
+      no rounds yet.
+- **Client:** `ng build` is clean. The stage-builder and league-manage specs
+  pass.
+- **Diagnose run 2026-09-25: no blockers.**
+  - All 5 tournaments are on the tournament axis.
+  - 6 migrated stages still carry leftover copies, which the app ignores:
+    s3-singles and s3-vgc have stage rounds, and 63 and 97 trades; s12 has
+    `currentRoundIndex=0`.
+  - 7 stages have no `tournamentId`. They were detached on purpose:
+    - one pre-split "Tournament Bracket" with `migratedTournamentId`, which
+      `rollback-sections-to-stages.ts` finds it by;
+    - six Attack/Speed/Defense stages with `archivedTournamentId` and
+      `mergedInto`, from `merge-division-pools-into-stage.ts`.
+
+    No code path reaches them. Delete them together with the leftover
+    fields when the rollback window closes.
+  - The script's first run crashed on those stages. It now reports them as
+    UNOWNED instead of assuming every stage has a `tournamentId`.
 - **Not verified:** in a browser.
