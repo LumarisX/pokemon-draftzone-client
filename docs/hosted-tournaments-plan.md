@@ -1993,7 +1993,7 @@ Paths below are in `pokemon-draftzone-server/src/modules/` unless stated.
 | H6 | Cross-tournament references in reads and trades | P2 | **done** 2026-09-24 via A2 |
 | H7 | Small hardening items | P3 | **done** 2026-09-25 — see §14.14; the Auth0 audience stays deferred |
 | A1–A7 | Structure that limits future work | P2 | A1 policy + staff roles done 2026-09-24 (`migrate-tournament-staff.ts` applied to 3 tournaments, `--check` clean 2026-09-24); its request-guard phase folded into A4; A2 code done 2026-09-24 (run `backfill-matchup-tournament-ids.ts` before deploy); A6 **done** 2026-09-25 (§14.15); A5 **done** 2026-09-25 (§14.16); A4 query batching **done** 2026-09-25 (§14.17), request-scoped memo deferred; A7 **done** 2026-09-25 (§14.18); A3 **done** 2026-09-25 (§14.19), diagnose clean; A8 (websocket → SSE) **done** 2026-09-25 |
-| §14.5 | Smaller smells | P3 | open |
+| §14.5 | Smaller smells | P3 | swallowed errors, rules endpoint, roster rows **done** 2026-09-25 (§14.20); response DTOs, error codes, module wiring, naming open |
 
 ### 14.1 P0 — exploitable now
 
@@ -3867,4 +3867,60 @@ Verification:
     fields when the rollback window closes.
   - The script's first run crashed on those stages. It now reports them as
     UNOWNED instead of assuming every stage has a `tournamentId`.
+- **Not verified:** in a browser.
+
+### 14.20 Landed — 2026-09-25 (§14.5, first pass)
+
+- **Swallowed errors.** New `nullIfNotFound(promise)` in
+  `core/pdz-error.ts`. It turns only a 404 `PDZError` into `null` and
+  rethrows everything else. There's also a new
+  `CoachRepository.findByIdOrNull`, which returns null for a malformed or
+  missing id. Every repository `.catch(() => null | undefined)` is gone:
+  - the four coach lookups (remove participant, both coach-detail routes,
+    and the organizer's `coachInTournament`);
+  - three tier-list lookups (`listTeams`, matchup analysis, `getTrades`);
+  - `isArchived`'s league lookup. A database error there used to read as
+    "not archived", so `TournamentOpenGuard` let the write through;
+  - four agenda job lookups.
+  - **Real bug, agenda `reconcileDraftJobs`.** A failed draft lookup at
+    startup became `draft = null`, which marked every skip and reminder job
+    for that draft as doomed, and the loop cancelled them. One transient
+    error could kill a live draft's timer. A malformed id is still treated
+    as missing. A database error now throws into the existing
+    log-and-abort `catch`, and nothing is cancelled.
+  - Left alone: the Discord API fetches, where a missing role or member is
+    an expected result, and `abortTransaction`.
+- **Rules endpoint.** Now `PUT …/rules`, and the client's `saveRules` uses
+  `put`. `updateRules` writes by the tournament `_id` the service has
+  already authorized, not by slug alone. Slugs are globally unique, so this
+  wasn't exploitable, but the write now matches what was checked. The
+  client's response type drops a `success` field the server never sent.
+- **Roster rows.** New `stage/domain/roster-row.ts` with `rosterRow` and
+  `captainRosterRow`, which replace four identical copies: `getTeam`,
+  `listTeamsByDraft`, and both branches of `DraftService.getTeams`.
+  `listTeams` keeps its own mapping, because it shows the tier name and has
+  to tolerate a missing tier list.
+- **Dead code** found with `--noUnusedLocals` in touched files:
+  `StageService.assertMatchupParticipant`, an unused `logger` in
+  `HostedTournamentService`, and two unused imports.
+
+Still open in §14.5:
+
+- `{ message }` vs `{ success: true }` responses and inline `unknown[]`
+  types, which need response DTOs;
+- tournament error codes living under `LEAGUE`;
+- `HostedTournamentCoreModule`'s wiring;
+- the division/draft/pool naming;
+- `GET …/pokemon-list`, which has no client consumer since §14.19.
+
+Verification:
+
+- **Server:** `tsc --noEmit` is clean. The stage, tournament, agenda, coach,
+  draft, league and core suites pass 880/882. The failures are
+  `rulesets.spec` and `external-tournament.controller.spec`, both red on the
+  clean tree. `pdz-error.spec` gained four `nullIfNotFound` cases: found,
+  404 → null, non-404 rethrown, and a database error rethrown. The trade
+  spec's "no tier list" fixture now rejects with a real `TIER_LIST.NOT_FOUND`
+  instead of a plain `Error`.
+- **Client:** `ng build` is clean.
 - **Not verified:** in a browser.

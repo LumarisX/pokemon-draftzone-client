@@ -93,8 +93,8 @@ export class LeagueZoneService {
 
   saveRules(
     ruleSections: League.RuleSection[],
-  ): Observable<{ success: boolean; message: string }> {
-    return this.apiService.post<{ success: boolean; message: string }>(
+  ): Observable<{ message: string }> {
+    return this.apiService.put<{ message: string }>(
       `${ROOTPATH}/${this.leagueSlug()}/tournaments/${this.tournamentSlug()}/rules`,
       { ruleSections },
     );
