@@ -361,7 +361,7 @@ export class LeagueTeamComponent implements OnInit, OnDestroy {
         switchMap((presigned) => {
           if (!presigned?.url)
             throw new Error('Failed to get pre-signed URL from server');
-          return this.uploadService.uploadToS3(presigned.url, file).pipe(
+          return this.uploadService.uploadToS3(presigned, file).pipe(
             filter((event) => event.type !== HttpEventType.UploadProgress),
             switchMap((event) => {
               if (!(event instanceof HttpResponse))

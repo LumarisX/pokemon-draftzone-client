@@ -124,7 +124,7 @@ export class LogoFieldComponent {
       .getPresignedUploadUrl(file.name, file.type, 'tournament-logos')
       .pipe(
         switchMap((response) =>
-          this.uploads.uploadToS3(response.url, file).pipe(
+          this.uploads.uploadToS3(response, file).pipe(
             tap((event) => {
               if (event.type === HttpEventType.UploadProgress && event.total) {
                 this.progress.set(

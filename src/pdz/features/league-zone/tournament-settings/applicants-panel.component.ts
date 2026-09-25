@@ -361,7 +361,7 @@ export class ApplicantsPanelComponent {
       .getLeagueUploadPresignedUrl(file.name, file.type || 'image/png')
       .pipe(
         tap((response) => (key = response.key)),
-        switchMap((response) => this.uploads.uploadToS3(response.url, file)),
+        switchMap((response) => this.uploads.uploadToS3(response, file)),
         switchMap((progress) => {
           if (progress.type === HttpEventType.UploadProgress) return of(null);
           if (progress instanceof HttpResponse && progress.ok && key) {

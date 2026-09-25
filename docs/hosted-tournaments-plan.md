@@ -1987,7 +1987,7 @@ Paths below are in `pokemon-draftzone-server/src/modules/` unless stated.
 | H1 | "Coach only" draft visibility is client-side only | P1 | **code done** 2026-09-25 — blind draft + `allowDuplicates`; run `migrate-draft-pick-settings.ts --apply` **before** deploy |
 | H2 | The draft websocket is unauthenticated | P1 | **done** 2026-09-24 |
 | H3 | Match result payloads are barely validated | P1 | **done** 2026-09-25 — see §14.12 |
-| H4 | Uploads: no size cap, keys not bound to uploader | P2 | open |
+| H4 | Uploads: no size cap, keys not bound to uploader | P2 | **code done** 2026-09-25 — see §14.13; bucket CORS must allow `POST` **before** deploy, and deploy client and server together |
 | H5 | Archived tournaments still accept writes | P2 | **done** 2026-09-24 — `TournamentOpenGuard` |
 | H6 | Cross-tournament references in reads and trades | P2 | **done** 2026-09-24 via A2 |
 | H7 | Small hardening items | P3 | open |
@@ -3324,3 +3324,97 @@ Verification:
   score-entry and league-matchup specs pass. New `score-entry.model.spec`
   covers `toReplayLink`.
 - **Not verified:** a report submitted in a browser.
+
+### 14.13 Landed — 2026-09-25 (H4)
+
+**H4.** Uploads have a hard size cap, and a key can only be used by the
+person who uploaded it, for the folder it was uploaded to.
+
+- **Presigned POST instead of PUT.**
+  - `S3Service.getPresignedUploadPost` uses `@aws-sdk/s3-presigned-post`
+    (new dependency, pinned to the `client-s3` version). The policy carries
+    `content-length-range` 1–`MAX_UPLOAD_BYTES` (5 MB, the limit the client
+    already showed) and an exact `Content-Type`, so S3 itself refuses a bigger
+    or different file.
+  - `POST /uploads/presigned-url` now returns `{ url, fields, key, expiresIn,
+    maxBytes }`.
+  - Creating the `fileuploads` record is no longer best-effort. A failure
+    fails the request, since a key with no record could never be claimed.
+- **Keys are claimed, not just checked for existence.**
+  `UploadsService.claimUpload(key, { uploadedBy, folder, relatedEntityId })`
+  replaces the three bare `headObject` checks. It refuses with `FILE-003`
+  unless:
+  - the record exists and isn't `deleted`;
+  - `uploadedBy` is the caller;
+  - `uploadType` is the expected folder;
+  - the object is in S3 (skipped when S3 is off);
+  - the object is at most 5 MB (new `FILE-004`). That's a backstop for PUT URLs
+    handed out just before the deploy.
+
+  It then marks the record `confirmed` with its size and entity. The uploader
+  may reuse a key they already claimed.
+- **Call sites.**
+  - sign-up: `team-logos`, related to the tournament;
+  - `setCoachLogo`: `team-logos`, related to the team. The caller is the
+    uploader, so an organizer setting a logo from the applicants panel claims
+    their own upload;
+  - settings: `tournament-logos`, related to the tournament.
+
+  `setCoachLogo` and settings skip the claim when the key is the one already
+  saved. So re-saving settings with an unchanged logo, one another organizer
+  uploaded, or one from before this change, still works.
+- **Orphan cleanup is back on,** daily at 03:00 outside development.
+  - It deletes only `pending` records past a new `claimDeadline` (24h after
+    the URL was issued). Records from before this change have no
+    `claimDeadline`, so they're never touched, and no backfill is needed to
+    protect live logos.
+  - A failed S3 delete now keeps the record for the next run, instead of
+    dropping it and leaking the object.
+  - New indexes: `key`, and `(status, claimDeadline)`.
+- **Client.**
+  - `UploadService.uploadToS3(presigned, file)` sends `multipart/form-data`:
+    the signed fields, then `file`. It refuses a file over `maxBytes` before
+    sending anything.
+  - The four callers (sign-up, team page, applicants panel, tournament logo
+    field) pass the whole presigned response.
+  - The dead `getUploadLink`, `confirmUploadWithBackend` and the debug
+    `console.log` are gone.
+  - Deleted the orphaned `league-zone/league/` folder (`pdz-upload-image` and
+    `file-upload-preview`). Nothing referenced it, and its `league-logos`
+    uploads can't be claimed by any endpoint.
+- **Before deploying:**
+  - The `pokemondraftzone-public` bucket's CORS rules must allow `POST` from
+    the site's origins. PUT was enough before. This wasn't checked: there are
+    no AWS credentials on the dev machine.
+  - Deploy client and server together. An old client PUTs to the POST URL
+    and fails.
+- **Not done:**
+  - Replacing a logo doesn't mark the old record `deleted` or remove the old
+    object.
+  - The pre-existing `pending` records (no `claimDeadline`) and any objects
+    only they point at are left alone. Listing them would need a `diagnose-`
+    script that checks every logo field (tournaments, teams, applications,
+    leagues).
+
+Verification:
+
+- **Server:** `tsc --noEmit` is clean. `src/modules/upload`, `src/core/storage`,
+  `src/modules/tournament` and `src/modules/agenda` pass, except the known
+  `external-tournament` failure.
+  - `upload.service.spec` was rewritten. It covers the signed POST, the
+    required record and its deadline, and every `claimUpload` refusal:
+    missing, another uploader, wrong folder, deleted, not in S3, oversized, a
+    record that changed mid-claim, and ownership still checked with S3 off.
+    It also covers cleanup keeping the record on a failed delete.
+  - `s3.service.spec` checks the POST policy's conditions.
+  - `hosted-tournament.service.spec`:
+    - sign-up claims, and a refused claim creates no application;
+    - `setCoachLogo` for the coach and for an organizer, the unchanged-key
+      skip, and a refused claim writing nothing;
+    - settings: claim, unchanged-key skip, clearing, and a refused claim
+      saving nothing.
+  - `agenda.service.spec` now expects the cleanup schedule.
+- **Client:** `ng build --configuration development` is clean. New
+  `upload.service.spec` checks the field order, that no manual `Content-Type`
+  is sent, and the size refusal.
+- **Not verified:** a real upload against S3, or the bucket's CORS.

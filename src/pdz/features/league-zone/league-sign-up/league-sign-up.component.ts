@@ -321,7 +321,7 @@ export class LeagueSignUpComponent implements OnInit, OnDestroy {
     );
 
     await firstValueFrom(
-      this.uploadService.uploadToS3(presigned.url, file).pipe(
+      this.uploadService.uploadToS3(presigned, file).pipe(
         filter((response) => response instanceof HttpResponse),
         map((response) => response as HttpResponse<object>),
         take(1),

@@ -21,7 +21,10 @@ import { Observable, throwError } from 'rxjs';
 import { filter, map, mergeMap } from 'rxjs/operators';
 import { ApiService } from '@pdz/core/services/api.service';
 import { EventStreamService } from '@pdz/core/services/event-stream.service';
-import { UploadService } from '@pdz/core/services/upload.service';
+import {
+  PresignedUpload,
+  UploadService,
+} from '@pdz/core/services/upload.service';
 
 const ROOTPATH = 'leagues';
 
@@ -567,7 +570,7 @@ export class LeagueZoneService {
   getLeagueUploadPresignedUrl(
     filename: string,
     contentType: string,
-  ): Observable<{ url: string; key: string }> {
+  ): Observable<PresignedUpload> {
     return this.uploadService.getPresignedUploadUrl(
       filename,
       contentType,
