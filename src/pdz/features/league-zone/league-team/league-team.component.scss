@@ -45,6 +45,16 @@
     height: 2rem;
   }
 
+  &__draws {
+    @include pdz-league-record-box();
+    background-color: pdz.color(secondary-container);
+    font-size: pdz.font-size(lg);
+    color: pdz.color(on-secondary-container);
+    line-height: 2rem;
+    width: 2rem;
+    height: 2rem;
+  }
+
   &__losses {
     @include pdz-league-record-box();
     background-color: pdz.color(negative);
@@ -73,8 +83,6 @@
   gap: pdz.space(sm);
   height: fit-content;
   max-width: 100%;
-  // Without a floor, a section holding only a placeholder shrinks to the
-  // width of its own title and the row reads as a set of stray chips.
   min-width: min(20rem, 100%);
   &--matchups {
     width: fit-content;
@@ -94,7 +102,6 @@
     border-bottom: 2px solid pdz.color(primary-accent);
     padding: 0 pdz.space(xs);
 
-    // Keeps a header's trailing action on the same baseline as its title.
     &--actionable {
       display: flex;
       align-items: center;

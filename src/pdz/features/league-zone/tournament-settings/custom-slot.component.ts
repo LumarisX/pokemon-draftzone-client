@@ -20,9 +20,13 @@ import { LogoFieldComponent } from './logo-field.component';
 import { PoolOrderComponent } from './pool-order.component';
 import {
   AnyControlSpec,
+  defaultTiebreakers,
   PrizeShare,
   SIGNUP_QUESTION_TYPE_OPTIONS,
   SignUpQuestionValue,
+  TIEBREAKER_OPTIONS,
+  Tiebreaker,
+  withEveryTiebreaker,
 } from './settings-schema';
 import { TournamentSettingsStore } from './tournament-settings.store';
 import { LeagueZoneService } from '../league-zone.service';
@@ -303,6 +307,34 @@ export class CustomSlotComponent {
   );
 
   protected readonly multiPool = computed(() => this.store.poolCount() > 1);
+
+  protected readonly tiebreakersSet = computed(
+    () =>
+      this.store.tiebreakersCustomized() ||
+      this.store.dirtyKeys().includes('tiebreakers'),
+  );
+
+  protected readonly tiebreakers = computed(() =>
+    this.tiebreakersSet()
+      ? this.store.read<Tiebreaker[]>('tiebreakers')
+      : withEveryTiebreaker(
+          defaultTiebreakers(
+            this.store.read<'pokemon' | 'game'>('diffMode') ?? 'pokemon',
+          ),
+        ),
+  );
+
+  protected tiebreakerOption(value: Tiebreaker) {
+    return TIEBREAKER_OPTIONS.find((option) => option.value === value)!;
+  }
+
+  protected moveTiebreaker(index: number, delta: -1 | 1): void {
+    const next = [...this.tiebreakers()];
+    const target = index + delta;
+    if (target < 0 || target >= next.length) return;
+    [next[index], next[target]] = [next[target], next[index]];
+    this.store.write('tiebreakers', next);
+  }
 
   protected readonly prizeSplit = computed(() =>
     this.store.read<PrizeShare[]>('prizeSplit'),

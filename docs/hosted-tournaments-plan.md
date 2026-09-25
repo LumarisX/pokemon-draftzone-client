@@ -1992,7 +1992,7 @@ Paths below are in `pokemon-draftzone-server/src/modules/` unless stated.
 | H5 | Archived tournaments still accept writes | P2 | **done** 2026-09-24 — `TournamentOpenGuard` |
 | H6 | Cross-tournament references in reads and trades | P2 | **done** 2026-09-24 via A2 |
 | H7 | Small hardening items | P3 | **done** 2026-09-25 — see §14.14; the Auth0 audience stays deferred |
-| A1–A7 | Structure that limits future work | P2 | A1 policy + staff roles done 2026-09-24 (`migrate-tournament-staff.ts` applied to 3 tournaments, `--check` clean 2026-09-24); its request-guard phase folded into A4; A2 code done 2026-09-24 (run `backfill-matchup-tournament-ids.ts` before deploy); A6 **done** 2026-09-25 (§14.15); A3–A5, A7 open; A8 (websocket → SSE) **done** 2026-09-25 |
+| A1–A7 | Structure that limits future work | P2 | A1 policy + staff roles done 2026-09-24 (`migrate-tournament-staff.ts` applied to 3 tournaments, `--check` clean 2026-09-24); its request-guard phase folded into A4; A2 code done 2026-09-24 (run `backfill-matchup-tournament-ids.ts` before deploy); A6 **done** 2026-09-25 (§14.15); A5 **done** 2026-09-25 (§14.16); A4 query batching **done** 2026-09-25 (§14.17), request-scoped memo deferred; A7 **done** 2026-09-25 (§14.18); A3 open; A8 (websocket → SSE) **done** 2026-09-25 |
 | §14.5 | Smaller smells | P3 | open |
 
 ### 14.1 P0 — exploitable now
@@ -3552,4 +3552,232 @@ Verification:
   league-zone suites pass, apart from the baseline `power-rankings`. A new
   `tournament-settings.store.spec` case checks that a pool move is sent as
   `{ teamSlug, draft, status }`.
+- **Not verified:** in a browser.
+
+### 14.16 Landed — 2026-09-25 (A5)
+
+**A5.** Discord side effects of sign-ups and approvals no longer run inside
+the request.
+
+- **Events.** `hosted-tournament/tournament-events.ts` defines
+  `TOURNAMENT_EVENTS`:
+  - `tournament.application.submitted`, carrying `{ tournament, signUp,
+    answers }`;
+  - `tournament.coach.seated`, carrying `{ tournament, discordName }`.
+
+  `HostedTournamentService` takes `EventEmitter2` and emits them:
+  - the first after the application is written;
+  - the second after `decideApplication` (sub and team paths) and
+    `replaceCoach` have committed their transaction.
+
+  A failed write or an aborted transaction emits nothing.
+- **Listener.** The new `TournamentNotificationsService` holds the code that
+  used to be `notifySignup` and `grantCoachRole`, moved unchanged: the
+  sign-up embed with the running total, and the `autoGrantCoachRole` check.
+  - Both handlers are `@OnEvent(…, { async: true })`, so they start after
+    `emit` returns and the response isn't held on Discord's latency or rate
+    limits.
+  - Both still catch and log their own errors.
+  - `HostedTournamentService` no longer imports `EmbedBuilder` or builds any
+    Discord message.
+- **One process, no durability.** The in-process bus is the same one A8
+  relies on. A crash between the commit and the handler loses that one
+  notification or role grant. That's no worse than before, when a Discord
+  failure was already swallowed.
+- **`getCoaches` was already cheaper than §14.4 said.** `findMember` reads a
+  per-guild member index (`MEMBER_INDEX_TTL_MS`, 60s). So it costs one full
+  `guild.members.fetch()` per guild per minute, not one Discord call per
+  applicant. It stays in the request, because the panel shows "in server" and
+  "has role" from it. Moving it off the request path would need a cached
+  status the panel polls. Not worth it yet.
+- **Now easy to add:** role removal when a team is dropped (§11.11), an audit
+  log, and email. Each is one more listener on these events, plus a
+  `team.dropped` event.
+
+Verification:
+
+- **Server:** `tsc --noEmit` is clean. `src/modules/tournament` passes apart
+  from the known `external-tournament` failure.
+- **`hosted-tournament.service.spec`** now asserts events rather than Discord
+  calls:
+  - sign-up emits `application.submitted` and sends nothing itself;
+  - sign-up seats nobody;
+  - a failed write emits nothing;
+  - approval emits `coach.seated` without touching Discord;
+  - denial emits nothing;
+  - the transaction log ends `commit` → `tournament.coach.seated`;
+  - an aborted approval emits nothing.
+- **New `tournament-notifications.service.spec`:**
+  - the embed, total and logo;
+  - no channel;
+  - a swallowed send failure;
+  - a role granted to the member that's found;
+  - `autoGrantCoachRole: false`;
+  - no server, role or name;
+  - a member not in the server;
+  - a swallowed lookup failure;
+  - one case with a real `EventEmitterModule`, which checks that both
+    `@OnEvent` handlers are wired and run only after `emit` returns.
+
+### 14.17 Landed — 2026-09-25 (A4, query batching)
+
+**A4, first half.** Loading a tournament no longer costs one query per stage.
+
+- **Stages in one query.** `resolveStagesFor(stageIdLists)` in
+  `HostedTournamentRepository`:
+  - fetches every stage for one or many tournaments with a single
+    `stageRepo.findManyByIds`, then puts each tournament's stages back in its
+    own `stages` order;
+  - skips ids that no longer exist, as before;
+  - makes no query when there are no stages.
+
+  `findBySlug` and `findById` go through it, as do `findAllByLeague` and
+  `findByParticipant`, which used to run one query per stage of every
+  tournament in the list.
+- **Leagues in one query.** `findByParticipant` used one `leagueRepo.findById`
+  per league. It now uses the new `LeagueRepository.findManyByIds`. A
+  tournament whose league is gone is left out instead of failing the whole
+  list.
+- **`getRules` reads only the rules.** The new `findRulesBySlug` projects
+  `{ rules: 1 }` after the league lookup, with no stage or tier-list queries.
+- `findBySlug` matches the slug with `$eq`, like every other slug lookup
+  (§14.6).
+- **"Two loaders" was overstated.** `draftRepo.findTournament` is
+  `findBySlug` plus the full tier list, not a second implementation.
+  `getCoaches` still attaches the tier list by hand, because
+  `findTournament` refuses a tournament without one.
+- **Deferred: a per-request tournament memo.**
+  - A write request still loads the tournament twice:
+    `TournamentOpenGuard.isArchived` does a league and a projected tournament
+    query, then the service calls `findBySlug`. `reviewMatchupReport` also
+    loads it twice.
+  - Memoizing `findBySlug` per request (AsyncLocalStorage) would remove
+    that, but it risks stale reads: several services write through
+    `StageRepository` or the tournament repo and then read again in the same
+    request, and a memo would need invalidating on every such write.
+  - With stages batched, the repeat costs about three small queries. Revisit
+    if request timing shows it matters.
+- **Still open from A4:** trades live on the tournament document (D2 kept
+  them there).
+
+Verification:
+
+- **Server:** `tsc --noEmit` is clean. The full `test:safe` run passes
+  1597/1603. The only failures are the four known suites (`rulesets`,
+  `data.repository`, `move.domain`, `external-tournament`).
+- **New `hosted-tournament.repository.spec`:**
+  - `findBySlug` uses `$eq` and runs one stage query, in the tournament's
+    order, skipping deleted stages, and none at all without stages;
+  - `findAllByLeague` runs one stage query for many tournaments;
+  - `findByParticipant` runs one league query and leaves out a tournament
+    whose league is gone;
+  - `findRulesBySlug` projects the rules only, and returns NOT_FOUND for an
+    unknown tournament.
+
+### 14.18 Landed — 2026-09-25 (A7)
+
+**A7.** One scoring module, points-based ranking with draws, and an
+organizer-ordered tiebreaker list.
+
+Decided with the user on 2026-09-25:
+
+- tiebreakers are a per-tournament ordered list, with the default derived
+  from `diffMode`;
+- draws are recorded and teams rank by points (default win 3, draw 1,
+  loss 0);
+- the Pokémon differential is score-based everywhere.
+
+- **`stage/domain/scoring.ts`** now owns every scoring rule:
+  - **`sideResult(matchup, side, forfeit)`** turns a matchup into `w`, `d`,
+    `l` or `ff` plus both differentials, or `null` when it's unplayed.
+    - A series `winner: "draw"` is now a real draw. It used to count as
+      neither a win nor a loss, the same as an unplayed match.
+    - A double forfeit is still `ff` for both.
+    - The Pokémon differential is each game's winner's remaining Pokémon, plus
+      for the winner and minus for the loser. A drawn game counts 0.
+  - **`resolveStandingsRules`** fills in the defaults. The default
+    tiebreakers are `[pokemonDiff, gameDiff, headToHead]`, or
+    `[gameDiff, pokemonDiff, headToHead]` when `diffMode` is `game`.
+  - **`rankStandings`** sorts by points and then by each tiebreaker in turn,
+    splitting into tied groups and recursing.
+    - This is transitive, so three-way ties resolve properly.
+    - Head-to-head counts only the points earned between the teams still
+      tied at that step.
+    - Strength of schedule is the total points of every opponent faced.
+    - Teams still tied keep their seed order.
+- **`standings.ts`** keeps its entry points but delegates to `scoring.ts`.
+  - `calculateDivisionTeamStandings` returns `draws`, `points` and the
+    resolved `rules`.
+  - `calculateTeamScore` takes the tournament instead of the forfeit config.
+    It uses the tournament's `diffMode`, instead of guessing it from whether a
+    match had more than one game.
+  - The fainted-count differential the team page and cards used is gone.
+    Before, the standings table and the team page disagreed whenever
+    per-Pokémon statuses weren't entered.
+  - `'t'` still marks a scheduled match without a result, as a deliberate
+    placeholder square (see the existing spec). Draws are `'d'`.
+  - The file's comments were stripped.
+- **Storage.**
+  - New optional `standingsRules: { points?: { win, draw, loss },
+    tiebreakers?: Tiebreaker[] }` on the tournament. No migration: absent
+    means the defaults.
+  - `UpdateHostedTournamentSettingsDto.standingsRules` takes points as integers
+    from 0 to 10 and tiebreakers as a unique subset. `updateSettings` refuses
+    points that rank a loss above a draw or a draw above a win
+    (`INVALID_SETTINGS` with a reason).
+  - `getSettings` returns the effective rules and `standingsRulesCustomized`.
+- **Payloads** gain `draws` and `points`: the standings rows, the team-page
+  record, the team cards, the draft teams' records, and the league-card
+  `score`. The standings views also carry the resolved `rules`.
+- **Client.**
+  - **Standings table:** switches to W-D-L and adds a Pts column once any
+    team has a draw, or when a loss is worth points. Otherwise points only
+    mirror wins. A drawn round shows "D".
+  - **Records:** the team header, team cards and the landing preview show a
+    neutral draws box, or W-D-L, only when there are draws.
+  - **Settings, Season → Scoring:**
+    - three point inputs, with the order validated;
+    - "Differential shown per round" (`diffMode`, relabelled from
+      "Tiebreak differential");
+    - a new `tiebreakers` custom slot, an ordered list with up/down buttons
+      that always shows all four tiebreakers.
+
+    Until the organizer reorders the list, it shows the `diffMode` default
+    and says so, and the store sends `standingsRules.tiebreakers` only once
+    it has been touched. The store flips `tiebreakersCustomized` after a
+    save.
+  - **`apiErrorMessage`** now prefers a server `details.reason` over the
+    generic message. That also brings through the specific Discord
+    role/channel problems (§14.1 S3), which organizers only ever saw as
+    "Invalid tournament settings".
+- **Visible changes on existing tournaments:**
+  - A tournament whose `diffMode` is `pokemon` now breaks ties on Pokémon
+    differential before game differential. It used to be game differential
+    first, whatever the setting.
+  - The team page, team cards and league cards may show different Pokémon
+    differentials, because they now use the standings table's formula.
+  - Unplayed matches are no longer counted as draws.
+- **Not done:** no per-stage override of the rules. A tournament has one set,
+  and the plan's "or stage" is left for when a format needs it.
+
+Verification:
+
+- **Server:** `tsc --noEmit` is clean. The full `test:safe` run passes
+  1620/1626. The only failures are the four known suites.
+  - New `scoring.spec`: every outcome including score-only entry, draws,
+    forfeits and double forfeits; the defaults and stored overrides;
+    ranking by points, tiebreaker order, fall-through, a three-way
+    head-to-head where only games between the tied teams count,
+    re-applying head-to-head to a smaller tied group, strength of schedule,
+    and stable order.
+  - `standings.spec`: a draw recorded and ranked by points, the `diffMode`
+    default order, and the organizer's order winning over `diffMode`.
+  - `hosted-tournament.service.spec`: rules stored, both invalid point
+    orders refused with nothing saved, and effective rules reported.
+  - `league.service.spec`: moved to the score-based fixture.
+- **Client:** `ng build` is clean and `lint:styles` is clean. `test:safe`
+  fails only the six baseline suites.
+  - New `api.service.spec` for `apiErrorMessage`.
+  - `tournament-settings.store.spec`: rules load with every tiebreaker
+    listed; points and order save together; points save alone.
 - **Not verified:** in a browser.

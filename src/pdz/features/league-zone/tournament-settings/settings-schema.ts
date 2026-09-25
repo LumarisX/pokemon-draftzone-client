@@ -1,3 +1,51 @@
+export type Tiebreaker =
+  | 'headToHead'
+  | 'gameDiff'
+  | 'pokemonDiff'
+  | 'strengthOfSchedule';
+
+export const TIEBREAKER_OPTIONS: readonly {
+  value: Tiebreaker;
+  label: string;
+  help: string;
+}[] = [
+  {
+    value: 'headToHead',
+    label: 'Head-to-head',
+    help: 'Points earned in matches between the tied teams.',
+  },
+  {
+    value: 'gameDiff',
+    label: 'Game differential',
+    help: 'Games won minus games lost.',
+  },
+  {
+    value: 'pokemonDiff',
+    label: 'Pokémon differential',
+    help: "Each game's winner's remaining Pokémon, plus for the winner and minus for the loser.",
+  },
+  {
+    value: 'strengthOfSchedule',
+    label: 'Strength of schedule',
+    help: 'Total points of every opponent faced.',
+  },
+];
+
+export function defaultTiebreakers(diffMode: 'pokemon' | 'game'): Tiebreaker[] {
+  return diffMode === 'game'
+    ? ['gameDiff', 'pokemonDiff', 'headToHead']
+    : ['pokemonDiff', 'gameDiff', 'headToHead'];
+}
+
+export function withEveryTiebreaker(order: Tiebreaker[]): Tiebreaker[] {
+  return [
+    ...order,
+    ...TIEBREAKER_OPTIONS.map((option) => option.value).filter(
+      (value) => !order.includes(value),
+    ),
+  ];
+}
+
 export type Lifecycle = 'setup' | 'signups' | 'draft' | 'season' | 'complete';
 
 export type Milestone = Exclude<Lifecycle, 'setup' | 'complete'>;
@@ -162,6 +210,10 @@ export interface SettingsValue {
   seasonStart: string;
   seasonEnd: string;
   diffMode: 'pokemon' | 'game';
+  pointsWin: number;
+  pointsDraw: number;
+  pointsLoss: number;
+  tiebreakers: Tiebreaker[];
   forfeitGameDiff: number;
   forfeitPokemonDiff: number;
   matchupChat: boolean;
@@ -282,6 +334,7 @@ export type CustomSlot =
   | 'logo'
   | 'tier-requirements'
   | 'prize-split'
+  | 'tiebreakers'
   | 'discord-link'
   | 'discord-channels'
   | 'invite-link'
@@ -708,15 +761,29 @@ export const SETTINGS_NODES: readonly SettingsNode[] = [
     id: 'season.scoring',
     section: 'season',
     title: 'Scoring',
+    help: 'Teams are ranked by points, then by each tiebreaker in order.',
     controls: [
+      { kind: 'number', key: 'pointsWin', label: 'Points for a win', min: 0, max: 10 },
+      { kind: 'number', key: 'pointsDraw', label: 'Points for a draw', min: 0, max: 10 },
+      { kind: 'number', key: 'pointsLoss', label: 'Points for a loss', min: 0, max: 10 },
       {
         kind: 'choice',
         key: 'diffMode',
-        label: 'Tiebreak differential',
+        label: 'Differential shown per round',
         options: DIFF_MODES,
         as: 'radio',
       },
+      {
+        kind: 'custom',
+        slot: 'tiebreakers',
+        label: 'Tiebreakers',
+        keys: ['tiebreakers'],
+      },
     ],
+    validate: (v) =>
+      v.pointsLoss <= v.pointsDraw && v.pointsDraw <= v.pointsWin
+        ? null
+        : 'A loss cannot be worth more than a draw, or a draw more than a win.',
   },
   {
     id: 'season.forfeits',

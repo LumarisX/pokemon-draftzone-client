@@ -53,6 +53,7 @@ interface StandingsRow {
   teamId: string;
   teamSlug?: string;
   wins: number;
+  draws: number;
   losses: number;
   diff: number;
 }
@@ -289,6 +290,7 @@ export class TournamentLandingComponent implements OnInit {
             teamId: team.id,
             teamSlug: team.teamSlug || undefined,
             wins: team.wins,
+            draws: team.draws ?? 0,
             losses: team.losses,
             diff:
               table.diffMode === 'game' ? team.gameDiff : team.pokemonDiff,

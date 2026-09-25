@@ -24,6 +24,8 @@ interface ErrorHandlingOptions {
 
 export function apiErrorMessage(err: unknown, fallback: string): string {
   const body = (err as HttpErrorResponse | undefined)?.error;
+  const reason = body?.error?.details?.reason;
+  if (typeof reason === 'string' && reason) return reason;
   return body?.error?.message ?? body?.message ?? fallback;
 }
 

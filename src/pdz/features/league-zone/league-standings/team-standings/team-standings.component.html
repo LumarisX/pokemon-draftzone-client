@@ -42,7 +42,15 @@
         <div class="standing-table__cell" role="cell"></div>
         <div class="standing-table__cell" role="cell">
           <div class="records-container">
-            <div class="record-header record-header--big">W/L</div>
+            <div
+              class="record-header record-header--big"
+              [class.record-header--wide]="showDraws()"
+            >
+              {{ showDraws() ? 'W-D-L' : 'W/L' }}
+            </div>
+            @if (showPoints()) {
+              <div class="record-header">Pts</div>
+            }
             <div class="record-header">GD</div>
             <div class="record-header">PD</div>
           </div>
@@ -86,11 +94,21 @@
             <div class="record-cell">
               <span
                 class="record-box record-box--big"
+                [class.record-box--wide]="showDraws()"
                 [class.positive]="team.wins > team.losses"
                 [class.negative]="team.wins < team.losses"
                 [class.neutral]="team.wins === team.losses"
-                >{{ team.wins }}-{{ team.losses }}</span
+                >@if (showDraws()) {
+                  {{ team.wins }}-{{ team.draws ?? 0 }}-{{ team.losses }}
+                } @else {
+                  {{ team.wins }}-{{ team.losses }}
+                }</span
               >
+              @if (showPoints()) {
+                <span class="record-box record-box--points">
+                  {{ team.points ?? 0 }}
+                </span>
+              }
               <span
                 class="record-box"
                 [class.positive]="team.gameDiff > 0"

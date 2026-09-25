@@ -251,6 +251,8 @@ export class LeagueManageService {
       discordSettings?: DiscordSettingsResponse;
       forfeit: { gameDiff: number; pokemonDiff: number };
       diffMode: 'pokemon' | 'game';
+      standingsRules?: League.StandingsRules;
+      standingsRulesCustomized?: boolean;
       tierListId: string;
       draftCount: { min: number; max: number };
       pointTotal?: number;
@@ -302,6 +304,7 @@ export class LeagueManageService {
     };
     forfeit?: { gameDiff: number; pokemonDiff: number };
     diffMode?: 'pokemon' | 'game';
+    standingsRules?: Partial<League.StandingsRules>;
     draftCount?: { min: number; max: number };
     pointTotal?: number | null;
     maxTeams?: number | null;

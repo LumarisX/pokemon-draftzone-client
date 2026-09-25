@@ -74,6 +74,16 @@ pdz-card {
           font-size: pdz.font-size(xs);
         }
 
+        &__draws {
+          @include pdz-league-record-box();
+          background-color: pdz.color(secondary-container);
+          color: pdz.color(on-secondary-container);
+          width: 1.25rem;
+          height: 1.25rem;
+          line-height: 1.25rem;
+          font-size: pdz.font-size(xs);
+        }
+
         &__losses {
           @include pdz-league-record-box();
           background-color: pdz.color(negative);

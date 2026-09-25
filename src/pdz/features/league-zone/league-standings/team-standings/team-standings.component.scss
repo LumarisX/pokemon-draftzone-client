@@ -154,6 +154,9 @@
       &--big {
         width: 2.5rem;
       }
+      &--wide {
+        width: 3.5rem;
+      }
     }
   }
 
@@ -169,6 +172,13 @@
 
       &--big {
         width: 2.5rem;
+      }
+      &--wide {
+        width: 3.5rem;
+      }
+      &--points {
+        @include pdz.numeric;
+        font-weight: var(--pdz-font-weight-bold);
       }
     }
   }

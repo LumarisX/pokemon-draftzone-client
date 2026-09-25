@@ -36,7 +36,9 @@ export namespace League {
     pickCount?: number;
     record?: {
       wins: number;
+      draws?: number;
       losses: number;
+      points?: number;
       gameDiff: number;
       pokemonDiff: number;
     };
@@ -255,7 +257,7 @@ export namespace League {
   export type TeamStandingData = {
     name: string;
     results: ({
-      outcome: 'w' | 'l' | 't' | 'ff';
+      outcome: 'w' | 'd' | 'l' | 't' | 'ff';
       score: number;
     } | null)[];
     coach: string;
@@ -263,7 +265,9 @@ export namespace League {
     streak: number;
     direction?: number;
     wins: number;
+    draws?: number;
     losses: number;
+    points?: number;
     gameDiff: number;
     pokemonDiff: number;
     logo?: string;
@@ -271,8 +275,20 @@ export namespace League {
     teamSlug?: string;
   };
 
+  export type Tiebreaker =
+    | 'headToHead'
+    | 'gameDiff'
+    | 'pokemonDiff'
+    | 'strengthOfSchedule';
+
+  export type StandingsRules = {
+    points: { win: number; draw: number; loss: number };
+    tiebreakers: Tiebreaker[];
+  };
+
   export type TeamStandingsTable = {
     diffMode: 'game' | 'pokemon';
+    rules?: StandingsRules;
     teams: TeamStandingData[];
   };
 

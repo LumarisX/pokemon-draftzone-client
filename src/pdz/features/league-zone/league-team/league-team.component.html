@@ -30,6 +30,9 @@
 
     <p pdz-page-header-meta class="team-header__record">
       <span class="team-header__wins">{{ teamData.record?.wins ?? 0 }}</span>
+      @if (teamData.record?.draws) {
+        <span class="team-header__draws">{{ teamData.record?.draws }}</span>
+      }
       <span class="team-header__losses">{{ teamData.record?.losses ?? 0 }}</span>
     </p>
 

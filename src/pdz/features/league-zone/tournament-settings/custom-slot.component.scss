@@ -46,6 +46,51 @@
   color: pdz.color(on-surface-variant);
 }
 
+.slot-tiebreakers {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(xs);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.slot-tiebreakers__row {
+  display: flex;
+  align-items: center;
+  gap: pdz.space(sm);
+}
+
+.slot-tiebreakers__rank {
+  @include pdz.numeric;
+  @include pdz.text(label-strong);
+  min-width: 1.5rem;
+  text-align: center;
+  color: pdz.color(on-surface-variant);
+}
+
+.slot-tiebreakers__text {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.slot-tiebreakers__label {
+  @include pdz.text(body-sm);
+  color: pdz.color(on-surface);
+}
+
+.slot-tiebreakers__help,
+.slot-tiebreakers__note {
+  @include pdz.text(body-sm);
+  color: pdz.color(on-surface-variant);
+}
+
+.slot-tiebreakers__note {
+  margin: pdz.space(xs) 0 0;
+}
+
 .slot-prizes {
   display: flex;
   flex-direction: column;

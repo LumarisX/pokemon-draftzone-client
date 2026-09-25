@@ -7,6 +7,63 @@
     <pdz-tier-list-panel />
   }
 
+  @case ('tiebreakers') {
+    <ol class="slot-tiebreakers" aria-label="Tiebreakers, in order">
+      @for (
+        tiebreaker of tiebreakers();
+        track tiebreaker;
+        let i = $index, first = $first, last = $last
+      ) {
+        <li class="slot-tiebreakers__row">
+          <span class="slot-tiebreakers__rank">{{ i + 1 }}</span>
+          <span class="slot-tiebreakers__text">
+            <span class="slot-tiebreakers__label">{{
+              tiebreakerOption(tiebreaker).label
+            }}</span>
+            <span class="slot-tiebreakers__help">{{
+              tiebreakerOption(tiebreaker).help
+            }}</span>
+          </span>
+          <button
+            pdz-button
+            type="button"
+            variant="ghost"
+            color="neutral"
+            size="sm"
+            iconOnly
+            [attr.aria-label]="
+              'Move ' + tiebreakerOption(tiebreaker).label + ' up'
+            "
+            [disabled]="disabled() || first"
+            (click)="moveTiebreaker(i, -1)"
+          >
+            <pdz-icon name="arrow_upward" [size]="16" aria-hidden="true" />
+          </button>
+          <button
+            pdz-button
+            type="button"
+            variant="ghost"
+            color="neutral"
+            size="sm"
+            iconOnly
+            [attr.aria-label]="
+              'Move ' + tiebreakerOption(tiebreaker).label + ' down'
+            "
+            [disabled]="disabled() || last"
+            (click)="moveTiebreaker(i, 1)"
+          >
+            <pdz-icon name="arrow_downward" [size]="16" aria-hidden="true" />
+          </button>
+        </li>
+      }
+    </ol>
+    @if (!tiebreakersSet()) {
+      <p class="slot-tiebreakers__note">
+        This order follows the differential above until you change it.
+      </p>
+    }
+  }
+
   @case ('prize-split') {
     <div class="slot-prizes">
       @for (share of prizeSplit(); track share.place; let i = $index) {

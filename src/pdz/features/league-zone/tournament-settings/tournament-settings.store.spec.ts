@@ -116,6 +116,97 @@ describe('TournamentSettingsStore Discord link', () => {
   });
 });
 
+describe('TournamentSettingsStore standings rules', () => {
+  function setup(settings: Record<string, unknown>) {
+    const manage = {
+      getTournamentSettings: jest.fn(() => of({ ...settingsWith(), ...settings })),
+      getSchedule: jest.fn(() => throwError(() => new Error('none'))),
+      getTrades: jest.fn(() => throwError(() => new Error('none'))),
+      updateTournamentSettings: jest.fn(() => of({ success: true })),
+    };
+    TestBed.configureTestingModule({
+      providers: [
+        TournamentSettingsStore,
+        { provide: LeagueManageService, useValue: manage },
+        {
+          provide: LeagueZoneService,
+          useValue: {
+            getSignUps: () => throwError(() => new Error('none')),
+            getRules: () => throwError(() => new Error('none')),
+          },
+        },
+        {
+          provide: TierListService,
+          useValue: { getTierList: () => throwError(() => new Error('none')) },
+        },
+      ],
+    });
+    const store = TestBed.inject(TournamentSettingsStore);
+    store.load();
+    return { store, manage };
+  }
+
+  it('loads the points and lists every tiebreaker, the chosen ones first', () => {
+    const { store } = setup({
+      standingsRules: {
+        points: { win: 2, draw: 1, loss: 0 },
+        tiebreakers: ['headToHead', 'gameDiff'],
+      },
+      standingsRulesCustomized: true,
+    });
+
+    expect(store.read<number>('pointsWin')).toBe(2);
+    expect(store.read<string[]>('tiebreakers')).toEqual([
+      'headToHead',
+      'gameDiff',
+      'pokemonDiff',
+      'strengthOfSchedule',
+    ]);
+    expect(store.tiebreakersCustomized()).toBe(true);
+  });
+
+  it('saves points and order together as standingsRules', async () => {
+    const { store, manage } = setup({});
+
+    store.write('pointsDraw', 0);
+    store.write('tiebreakers', [
+      'gameDiff',
+      'headToHead',
+      'pokemonDiff',
+      'strengthOfSchedule',
+    ]);
+    await firstValueFrom(store.saveSection('season'));
+
+    expect(manage.updateTournamentSettings).toHaveBeenCalledWith(
+      expect.objectContaining({
+        standingsRules: {
+          points: { win: 3, draw: 0, loss: 0 },
+          tiebreakers: [
+            'gameDiff',
+            'headToHead',
+            'pokemonDiff',
+            'strengthOfSchedule',
+          ],
+        },
+      }),
+    );
+    expect(store.tiebreakersCustomized()).toBe(true);
+  });
+
+  it('sends only the points when the order was not touched', async () => {
+    const { store, manage } = setup({});
+
+    store.write('pointsWin', 2);
+    await firstValueFrom(store.saveSection('season'));
+
+    expect(manage.updateTournamentSettings).toHaveBeenCalledWith(
+      expect.objectContaining({
+        standingsRules: { points: { win: 2, draw: 1, loss: 0 } },
+      }),
+    );
+  });
+});
+
 describe('TournamentSettingsStore pool assignments', () => {
   let store: TournamentSettingsStore;
   let league: { updateSignUps: jest.Mock };

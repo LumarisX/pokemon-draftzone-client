@@ -46,14 +46,6 @@ export class LeagueTeamCardComponent {
     }
   }
 
-  recordDiff(): number {
-    const teamDetails = this.teamDetails();
-    if (!teamDetails.record) return 0;
-    return teamDetails.diffMode === 'game'
-      ? teamDetails.record.gameDiff
-      : teamDetails.record.pokemonDiff;
-  }
-
   hiddenPicksMessage(): string {
     const count = this.teamDetails().pickCount ?? 0;
     return `${count} ${count === 1 ? 'pick' : 'picks'} made so far.`;

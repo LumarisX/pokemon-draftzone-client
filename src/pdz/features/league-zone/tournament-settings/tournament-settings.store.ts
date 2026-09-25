@@ -29,12 +29,14 @@ import {
   SignUpStatus,
   SignUpValue,
   TierRequirement,
+  defaultTiebreakers,
   draftNotStarted,
   launchChecklist,
   nodesForSection,
   poolErrors,
   sectionKeys,
   settingsErrors,
+  withEveryTiebreaker,
 } from './settings-schema';
 
 const NON_DRAFTABLE_TIER_NAMES = new Set(['untiered', 'ban', 'banned']);
@@ -67,6 +69,10 @@ const EMPTY_SETTINGS: SettingsValue = {
   seasonStart: '',
   seasonEnd: '',
   diffMode: 'pokemon',
+  pointsWin: 3,
+  pointsDraw: 1,
+  pointsLoss: 0,
+  tiebreakers: withEveryTiebreaker(defaultTiebreakers('pokemon')),
   forfeitGameDiff: 0,
   forfeitPokemonDiff: 0,
   matchupChat: true,
@@ -147,6 +153,9 @@ export class TournamentSettingsStore {
   setSignUpToken(token: string): void {
     this.signUpTokenValue.set(token);
   }
+
+  private readonly tiebreakersCustomizedValue = signal(false);
+  readonly tiebreakersCustomized = this.tiebreakersCustomizedValue.asReadonly();
 
   private readonly discordLinkValue = signal<DiscordLink | null>(null);
   readonly discordLink = this.discordLinkValue.asReadonly();
@@ -373,6 +382,13 @@ export class TournamentSettingsStore {
       seasonStart: toLocalInput(settings.seasonStart),
       seasonEnd: toLocalInput(settings.seasonEnd),
       diffMode: settings.diffMode ?? 'pokemon',
+      pointsWin: settings.standingsRules?.points.win ?? 3,
+      pointsDraw: settings.standingsRules?.points.draw ?? 1,
+      pointsLoss: settings.standingsRules?.points.loss ?? 0,
+      tiebreakers: withEveryTiebreaker(
+        settings.standingsRules?.tiebreakers ??
+          defaultTiebreakers(settings.diffMode ?? 'pokemon'),
+      ),
       forfeitGameDiff: settings.forfeit?.gameDiff ?? 0,
       forfeitPokemonDiff: settings.forfeit?.pokemonDiff ?? 0,
       matchupChat: settings.matchSettings?.chat !== false,
@@ -488,6 +504,9 @@ export class TournamentSettingsStore {
 
     this.pendingReports.set(countPendingReports(schedule));
     this.pendingTrades.set(countPendingTrades(trades));
+    this.tiebreakersCustomizedValue.set(
+      settings.standingsRulesCustomized ?? false,
+    );
 
     this.savedValue.set(value);
     this.draftValue.set(clone(value));
@@ -612,6 +631,8 @@ export class TournamentSettingsStore {
     return work.pipe(
       tap({
         next: () => {
+          if ('standingsRules' in settings && settings.standingsRules?.tiebreakers)
+            this.tiebreakersCustomizedValue.set(true);
           this.commitSection(section);
           this.saving.set(false);
           if (section === 'signup') this.load();
@@ -735,6 +756,24 @@ export class TournamentSettingsStore {
         : {}),
       ...(touched('prizeSplit') ? { prizeSplit: v.prizeSplit } : {}),
       ...(touched('diffMode') ? { diffMode: v.diffMode } : {}),
+      ...(touched('pointsWin', 'pointsDraw', 'pointsLoss', 'tiebreakers')
+        ? {
+            standingsRules: {
+              ...(touched('pointsWin', 'pointsDraw', 'pointsLoss')
+                ? {
+                    points: {
+                      win: v.pointsWin,
+                      draw: v.pointsDraw,
+                      loss: v.pointsLoss,
+                    },
+                  }
+                : {}),
+              ...(touched('tiebreakers')
+                ? { tiebreakers: v.tiebreakers }
+                : {}),
+            },
+          }
+        : {}),
       ...(touched('forfeitGameDiff', 'forfeitPokemonDiff')
         ? {
             forfeit: {

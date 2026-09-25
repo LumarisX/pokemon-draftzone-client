@@ -148,7 +148,11 @@
                     [class.positive]="row.wins > row.losses"
                     [class.negative]="row.wins < row.losses"
                     [class.neutral]="row.wins === row.losses"
-                    >{{ row.wins }}-{{ row.losses }}</span
+                    >@if (row.draws) {
+                      {{ row.wins }}-{{ row.draws }}-{{ row.losses }}
+                    } @else {
+                      {{ row.wins }}-{{ row.losses }}
+                    }</span
                   >
                   <span
                     class="record-box"
