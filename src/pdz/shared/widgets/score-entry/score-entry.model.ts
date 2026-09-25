@@ -112,3 +112,8 @@ export const REPLAY_URL_PATTERN = /^replay\.pokemonshowdown\.com\/.+$/i;
 export function isReplayUrl(url: string): boolean {
   return REPLAY_URL_PATTERN.test(url.trim().replace(/^https?:\/\//i, ''));
 }
+
+export function toReplayLink(url: string): string | undefined {
+  const bare = url.trim().replace(/^https?:\/\//i, '');
+  return bare ? `https://${bare}` : undefined;
+}

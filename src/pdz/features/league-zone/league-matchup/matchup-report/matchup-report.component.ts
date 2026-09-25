@@ -16,6 +16,7 @@ import {
   FormGroup,
   ReactiveFormsModule,
 } from '@angular/forms';
+import { apiErrorMessage } from '@pdz/core/services/api.service';
 import { getNameByPid } from '@pdz/shared/data/namedex';
 import { Subject, takeUntil } from 'rxjs';
 import { ReplayService } from '@pdz/features/tools/replay_analyzer/replay.service';
@@ -54,6 +55,7 @@ import {
   ScoreEntryMatchForm,
   ScoreEntrySide,
   ScoreEntryWarningGroup,
+  toReplayLink,
 } from '@pdz/shared/widgets/score-entry/score-entry.model';
 import { toRosterEntries } from '@pdz/shared/widgets/score-entry/score-entry.replay';
 
@@ -344,7 +346,9 @@ export class MatchupReportComponent implements OnInit, OnDestroy {
         },
         error: (error) => {
           this.saving.set(false);
-          this.saveError.set(error?.message || 'Failed to submit the result.');
+          this.saveError.set(
+            apiErrorMessage(error, 'Failed to submit the result.'),
+          );
         },
       });
   }
@@ -354,7 +358,7 @@ export class MatchupReportComponent implements OnInit, OnDestroy {
     const winner = resolvedMatchWinner(this.match, this.gameControls);
 
     const matches = this.playedGames.map((game) => ({
-      link: game.controls.link.value.trim() || undefined,
+      link: toReplayLink(game.controls.link.value),
       winner: (gameWinner(game) ?? 'draw') as MatchupSideKey | 'draw',
       team1: {
         score: game.controls.side1Score.value,

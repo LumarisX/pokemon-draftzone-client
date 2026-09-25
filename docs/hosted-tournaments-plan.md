@@ -1986,7 +1986,7 @@ Paths below are in `pokemon-draftzone-server/src/modules/` unless stated.
 | D7 | Draft pick checks read pre-transaction state | P1 | **done** 2026-09-24 — confirmed real for non-sequential drafts |
 | H1 | "Coach only" draft visibility is client-side only | P1 | **code done** 2026-09-25 — blind draft + `allowDuplicates`; run `migrate-draft-pick-settings.ts --apply` **before** deploy |
 | H2 | The draft websocket is unauthenticated | P1 | **done** 2026-09-24 |
-| H3 | Match result payloads are barely validated | P1 | open |
+| H3 | Match result payloads are barely validated | P1 | **done** 2026-09-25 — see §14.12 |
 | H4 | Uploads: no size cap, keys not bound to uploader | P2 | open |
 | H5 | Archived tournaments still accept writes | P2 | **done** 2026-09-24 — `TournamentOpenGuard` |
 | H6 | Cross-tournament references in reads and trades | P2 | **done** 2026-09-24 via A2 |
@@ -3265,3 +3265,62 @@ Verification:
   a draft page and look for a `draft-events` fetch request that stays pending
   and receives events. A proxy that buffers
   responses would show events arriving in bursts.
+
+### 14.12 Landed — 2026-09-25 (H3)
+
+**H3.** Match reports are validated before they reach Mongoose. There's one
+write path, `POST …/matchups/:matchupSlug/report`, used by coaches and
+organizers alike. Approving a report copies what was already validated at
+submission.
+
+- **Nested DTOs** in `stage/stage.dto.ts`:
+  - `PokemonResultDto`: `status` must be `brought`, `survived` or `fainted`,
+    using `POKEMON_STATUSES`, now exported from the league-matchup schema.
+  - `PokemonKillsDto`: `direct`, `indirect` and `teammate` are optional
+    integers from 0 to `MAX_KILLS_PER_POKEMON` (20).
+  - Each side's `pokemon` record becomes a `Map<string, PokemonResultDto>`
+    during transformation, so `@ValidateNested` checks every entry and
+    `whitelist` strips unknown fields. At most `MAX_POKEMON_PER_SIDE` (30)
+    entries.
+  - Entries sent with `status: null` are still dropped, as they were before;
+    a *missing* status is now rejected.
+  - `matches` is capped at `MAX_GAMES_PER_MATCHUP` (15).
+  - Scores, both per game and for the series, are integers ≥ 0.
+  - `link` is trimmed (blank counts as no link) and must be an `https://`
+    URL of at most 500 characters.
+- **Roster check.** `assertResultsOnRoster` refuses any key that isn't on that
+  side's roster at the matchup's own round, with the new `MU-006
+  NOT_ON_ROSTER` (400). It applies to organizers too.
+  - It uses the same `getRosterByRound(team, rosterContext, roundIndex)` call
+    as the matchup page, and the score-entry form only builds rows from that
+    page's `draft` list. So a real report can't trip it.
+  - Rows a later trade took off the roster are dropped by the form rather than
+    re-sent, so re-saving an old result still works.
+  - A new `matchupRound` helper replaces the round lookup that was copied in
+    `getMatchupAnalysis`, `getMatchupDetail` and now the report.
+- **`buildMatchResults`** builds each stats entry field by field instead of
+  casting the request object, so nothing the DTO didn't check reaches the
+  document.
+- **Client.**
+  - The form accepted replay links with no protocol (`isReplayUrl` strips
+    it). `toReplayLink` in `score-entry.model.ts` now sends every link as
+    `https://`, upgrading `http://`, so pasted links pass the new rule.
+  - The report form showed Angular's "Http failure response…" on any error.
+    It now uses `apiErrorMessage`, so the server's reason is shown.
+
+Verification:
+
+- **Server:** `tsc --noEmit` is clean. `src/modules/stage` and `src/core`
+  pass apart from the known `rulesets.spec` failure (§14.10).
+  - New `stage.dto.spec` (17 cases) runs the real `plainToInstance` +
+    `validate` path. It covers bad, missing, negative, fractional, oversized
+    and string stats; the null-status drop; non-object maps; both caps; http,
+    `javascript:` and plain-text links; negative and fractional scores; and
+    unknown-field stripping.
+  - `stage.service.spec` covers field-by-field storage, the off-roster refusal
+    for a coach and for an organizer (nothing saved), and the roster being
+    read at the matchup's round, not the current one.
+- **Client:** `ng build --configuration development` is clean. The
+  score-entry and league-matchup specs pass. New `score-entry.model.spec`
+  covers `toReplayLink`.
+- **Not verified:** a report submitted in a browser.
