@@ -6,6 +6,7 @@ import {
   input,
   signal,
 } from '@angular/core';
+import { TOURNAMENT_PATH } from '@pdz/core/route-paths';
 import { FormsModule } from '@angular/forms';
 import { apiErrorMessage } from '@pdz/core/services/api.service';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
@@ -260,9 +261,8 @@ export class CustomSlotComponent {
   protected readonly inviteUrl = computed(() => {
     const token = this.store.signUpToken();
     if (!token) return null;
-    const leagueSlug = this.league.leagueSlug();
     const tournamentSlug = this.league.tournamentSlug();
-    return `${window.location.origin}/leagues/${leagueSlug}/tournaments/${tournamentSlug}/sign-up?invite=${token}`;
+    return `${window.location.origin}/${TOURNAMENT_PATH}/${tournamentSlug}/sign-up?invite=${token}`;
   });
 
   protected async copyInvite(url: string): Promise<void> {

@@ -16,6 +16,7 @@ import { SkeletonComponent } from '@pdz/shared/data/skeleton/skeleton.component'
 import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
 import { PlusSignPipe } from '@pdz/shared/pipes/plus-sign.pipe';
 import { catchError, of, switchMap } from 'rxjs';
+import { LEAGUE_ZONE_PATH, tournamentRoute } from '@pdz/core/route-paths';
 import { AuthService } from '@pdz/core/services/auth0.service';
 import {
   LeagueScheduleWidgetComponent,
@@ -83,7 +84,9 @@ export class TournamentLandingComponent implements OnInit {
   private readonly destroyRef = inject(DestroyRef);
 
   protected readonly info = signal<League.LeagueInfo | null>(null);
-  protected readonly leagueName = signal<string | null>(null);
+  protected readonly leagueName = computed(
+    () => this.info()?.league?.name ?? null,
+  );
   protected readonly profile = signal<League.CoachProfile | null>(null);
   protected readonly infoFailed = signal(false);
 
@@ -102,15 +105,13 @@ export class TournamentLandingComponent implements OnInit {
   protected readonly skeletonRows = [0, 1, 2, 3, 4];
 
   protected readonly tournamentBase = computed(() => {
-    const leagueSlug = this.leagueService.leagueSlug();
     const tournamentSlug = this.leagueService.tournamentSlug();
-    if (!leagueSlug || !tournamentSlug) return [];
-    return ['/leagues', leagueSlug, 'tournaments', tournamentSlug];
+    return tournamentSlug ? tournamentRoute(tournamentSlug) : [];
   });
 
   protected readonly leagueLink = computed(() => {
-    const leagueSlug = this.leagueService.leagueSlug();
-    return leagueSlug ? ['/leagues', leagueSlug] : [];
+    const leagueSlug = this.info()?.league?.leagueSlug;
+    return leagueSlug ? ['/', LEAGUE_ZONE_PATH, leagueSlug] : [];
   });
 
   protected readonly facts = computed(() => {
@@ -229,14 +230,6 @@ export class TournamentLandingComponent implements OnInit {
         next: (info) => this.info.set(info),
         error: () => this.infoFailed.set(true),
       });
-
-    this.leagueService
-      .getLeague()
-      .pipe(
-        takeUntilDestroyed(this.destroyRef),
-        catchError(() => of(null)),
-      )
-      .subscribe((league) => this.leagueName.set(league?.name ?? null));
 
     this.loadStandings();
 

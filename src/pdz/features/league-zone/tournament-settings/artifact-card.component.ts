@@ -5,6 +5,7 @@ import {
   inject,
   input,
 } from '@angular/core';
+import { tournamentRoute } from '@pdz/core/route-paths';
 import { RouterLink } from '@angular/router';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
@@ -103,15 +104,9 @@ export class ArtifactCardComponent {
   private readonly spec = computed(() => SPECS[this.slot()]);
 
   protected readonly route = computed(() => {
-    const leagueSlug = this.league.leagueSlug();
     const tournamentSlug = this.league.tournamentSlug();
-    if (!leagueSlug || !tournamentSlug) return [];
-    return this.spec().path([
-      '/leagues',
-      leagueSlug,
-      'tournaments',
-      tournamentSlug,
-    ]);
+    if (!tournamentSlug) return [];
+    return this.spec().path(tournamentRoute(tournamentSlug));
   });
 
   protected readonly icon = computed(() => this.spec().icon);

@@ -2,6 +2,11 @@ export const DRAFT_OVERVIEW_PATH = 'drafts';
 export const DRAFTS_V2_PATH = 'drafts-v2';
 export const PLANNER_PATH = 'planner';
 export const LEAGUE_ZONE_PATH = 'leagues';
+export const TOURNAMENT_PATH = 'tournaments';
+
+export function tournamentRoute(tournamentSlug: string): string[] {
+  return ['/', TOURNAMENT_PATH, tournamentSlug];
+}
 export const TOOLS_PATH = 'tools';
 export const DEBUG_PATH = 'debug';
 export const LEAGUE_ZONE_MANAGE_PATH = 'manage';

@@ -77,7 +77,6 @@
         }
       </div>
     }
-    <!-- ── Coach details ──────────────────────────────────────────── -->
     <section class="form-section">
       <div class="form-section__header">
         <h2 class="form-section__title">Coach Details</h2>
@@ -242,7 +241,6 @@
       </div>
     </section>
 
-    <!-- ── Team details ──────────────────────────────────────────── -->
     <section class="form-section">
       <div class="form-section__header">
         <h2 class="form-section__title">Team Details</h2>
@@ -294,7 +292,6 @@
       </div>
     </section>
 
-    <!-- ── Confirm & submit ──────────────────────────────────────── -->
     <div class="form-field">
       <label class="checkbox-label">
         <input
@@ -306,13 +303,7 @@
           I have read and accept the
           <a
             target="_blank"
-            [href]="
-              'https://pokemondraftzone.com/leagues/' +
-              leagueService.leagueSlug() +
-              '/tournaments/' +
-              leagueInfo.tournamentSlug +
-              '/rules'
-            "
+            [href]="'/tournaments/' + leagueInfo.tournamentSlug + '/rules'"
             class="link"
             >league rules</a
           >

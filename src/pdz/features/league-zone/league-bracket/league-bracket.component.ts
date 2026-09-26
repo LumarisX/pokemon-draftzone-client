@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, computed, inject } from '@angular/core';
+import { tournamentRoute } from '@pdz/core/route-paths';
 import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
 import { StageBuilderComponent } from '../league-stage-builder/stage-builder.component';
 import { toBuilderDraft } from '../league-stage-builder/stage-builder.adapter';
@@ -43,10 +44,8 @@ export class LeagueBracketComponent implements OnInit {
   }
 
   readonly matchupLinkBase = computed(() => {
-    const league = this.leagueService.leagueSlug();
     const tournament = this.leagueService.tournamentSlug();
-    if (!league || !tournament) return null;
-    return ['/leagues', league, 'tournaments', tournament];
+    return tournament ? tournamentRoute(tournament) : null;
   });
 
   ngOnInit(): void {

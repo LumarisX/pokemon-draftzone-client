@@ -3,10 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import {
-  LEAGUE_ZONE_MANAGE_PATH,
-  LEAGUE_ZONE_PATH,
-} from '@pdz/core/route-paths';
+import { LEAGUE_ZONE_MANAGE_PATH, tournamentRoute } from '@pdz/core/route-paths';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 import { EmptyStateComponent } from '@pdz/shared/feedback/empty-state/empty-state.component';
 import { ToastService } from '@pdz/shared/feedback/toast/toast.service';
@@ -43,8 +40,6 @@ export class OrganizerInviteComponent implements OnInit {
   private readonly toast = inject(ToastService);
   private readonly destroyRef = inject(DestroyRef);
 
-  private readonly leagueSlug =
-    this.route.snapshot.paramMap.get('leagueSlug') ?? '';
   private readonly tournamentSlug =
     this.route.snapshot.paramMap.get('tournamentSlug') ?? '';
   private readonly token = this.route.snapshot.queryParamMap.get('token');
@@ -58,13 +53,7 @@ export class OrganizerInviteComponent implements OnInit {
   protected readonly nameMax = ORGANIZER_NAME_MAX;
   protected readonly isValidName = isValidOrganizerName;
 
-  protected readonly tournamentLink = [
-    '/',
-    LEAGUE_ZONE_PATH,
-    this.leagueSlug,
-    'tournaments',
-    this.tournamentSlug,
-  ];
+  protected readonly tournamentLink = tournamentRoute(this.tournamentSlug);
   protected readonly manageLink = [
     ...this.tournamentLink,
     LEAGUE_ZONE_MANAGE_PATH,
@@ -77,7 +66,7 @@ export class OrganizerInviteComponent implements OnInit {
     }
 
     this.leagueService
-      .previewOrganizerInvite(this.leagueSlug, this.tournamentSlug, this.token)
+      .previewOrganizerInvite(this.tournamentSlug, this.token)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (preview) => {
@@ -94,7 +83,6 @@ export class OrganizerInviteComponent implements OnInit {
     this.accepting.set(true);
     this.leagueService
       .acceptOrganizerInvite(
-        this.leagueSlug,
         this.tournamentSlug,
         this.token,
         this.name.trim(),

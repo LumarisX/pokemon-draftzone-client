@@ -92,12 +92,7 @@
                 size="sm"
                 variant="ghost"
                 color="primary"
-                [routerLink]="[
-                  '/leagues',
-                  tournament.leagueSlug,
-                  'tournaments',
-                  tournament.tournamentSlug,
-                ]"
+                [routerLink]="['/tournaments', tournament.tournamentSlug]"
                 >View Tournament</a
               >
               @if (tournament.teamSlug) {
@@ -107,9 +102,7 @@
                   variant="ghost"
                   color="primary"
                   [routerLink]="[
-                    '/leagues',
-                    tournament.leagueSlug,
-                    'tournaments',
+                    '/tournaments',
                     tournament.tournamentSlug,
                     'teams',
                     tournament.teamSlug,

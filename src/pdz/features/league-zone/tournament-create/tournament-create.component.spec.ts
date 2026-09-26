@@ -84,8 +84,6 @@ describe('TournamentCreateComponent', () => {
     });
     expect(navigate).toHaveBeenCalledWith([
       '/',
-      'leagues',
-      'league01',
       'tournaments',
       'season02',
       'manage',

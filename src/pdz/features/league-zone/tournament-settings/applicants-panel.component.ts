@@ -5,6 +5,7 @@ import {
   inject,
   signal,
 } from '@angular/core';
+import { tournamentRoute } from '@pdz/core/route-paths';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 import { SelectOptionComponent } from '@pdz/shared/dropdowns/select/select-option.component';
 import { SelectComponent } from '@pdz/shared/dropdowns/select/select.component';
@@ -202,17 +203,9 @@ export class ApplicantsPanelComponent {
   }
 
   protected teamLink(entry: SignUpValue): string[] | null {
-    const leagueSlug = this.league.leagueSlug();
     const tournamentSlug = this.league.tournamentSlug();
-    if (!leagueSlug || !tournamentSlug || !entry.teamSlug) return null;
-    return [
-      '/leagues',
-      leagueSlug,
-      'tournaments',
-      tournamentSlug,
-      'teams',
-      entry.teamSlug,
-    ];
+    if (!tournamentSlug || !entry.teamSlug) return null;
+    return [...tournamentRoute(tournamentSlug), 'teams', entry.teamSlug];
   }
 
   protected async remove(entry: SignUpValue): Promise<void> {

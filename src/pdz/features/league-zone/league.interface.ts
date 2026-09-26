@@ -336,9 +336,10 @@ export namespace League {
   export type LeagueInfo = {
     name: string;
     tournamentSlug: string;
+    league: { name: string; leagueSlug: string } | null;
     description?: string;
-    format: string;
-    ruleset: string;
+    format: string | null;
+    ruleset: string | null;
     signUpDeadline: Date;
     draftStart?: Date;
     draftEnd?: Date;

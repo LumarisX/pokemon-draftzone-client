@@ -13,6 +13,7 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import {
   LEAGUE_ZONE_MANAGE_PATH,
   LEAGUE_ZONE_PATH,
+  tournamentRoute,
 } from '@pdz/core/route-paths';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 import { CardComponent } from '@pdz/shared/data/card/card.component';
@@ -146,11 +147,7 @@ export class TournamentCreateComponent implements OnInit {
             'Tournament created. Sign-ups stay closed until you open them.',
           );
           this.router.navigate([
-            '/',
-            LEAGUE_ZONE_PATH,
-            this.leagueSlug,
-            'tournaments',
-            tournamentSlug,
+            ...tournamentRoute(tournamentSlug),
             LEAGUE_ZONE_MANAGE_PATH,
           ]);
         },

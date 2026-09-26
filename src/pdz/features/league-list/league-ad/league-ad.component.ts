@@ -9,7 +9,7 @@ import {
 } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { MarkdownModule } from 'ngx-markdown';
-import { EXTERNAL_LINK_PATH } from '@pdz/core/route-paths';
+import { EXTERNAL_LINK_PATH, tournamentRoute } from '@pdz/core/route-paths';
 import { LeagueAd } from '../league-ads.service';
 import {
   BALLHEX,
@@ -39,7 +39,7 @@ export class LeagueAdComponent implements OnInit {
   readonly tournamentLink = computed(() => {
     const links = this.league().hostedLinks;
     if (!links) return null;
-    return ['/leagues', links.leagueSlug, 'tournaments', links.tournamentSlug];
+    return tournamentRoute(links.tournamentSlug);
   });
 
   readonly hostLeague = computed(() => {
@@ -61,7 +61,6 @@ export class LeagueAdComponent implements OnInit {
 
   ngOnInit(): void {
     this.calculateSeasonWeeks();
-    this.setTeamClass();
   }
 
   private calculateSeasonWeeks(): void {
@@ -75,10 +74,6 @@ export class LeagueAdComponent implements OnInit {
     const timeDiff = Math.abs(endTime - startTime);
 
     this.weeks = Math.round(timeDiff / this.MILLISECONDS_IN_WEEK);
-  }
-
-  private setTeamClass(): void {
-    // this.teamClass = this.index % 2 === 0 ? 'team-a' : 'team-b';
   }
 
   getTeamClass(): TeamType {

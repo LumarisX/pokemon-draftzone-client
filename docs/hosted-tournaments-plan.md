@@ -21,9 +21,10 @@ the reasoning behind the step.
 | 7 | Sweep the orphaned components and dead routes | **done** |
 | 8 | Smaller fixes: `tradeDeadline` enforcement, deadline editors, ~~nested anchor~~, N+1s, `archived` | **done** |
 | 9 | Participation model, sign-up flexibility, invite-only sign-ups — see §11 | **mostly done** — §11.10 steps 1–11 landed (step 11 applied 2026-09-23); the multi-coach flows (§11.14) and the §11.11 open decisions remain |
-| 10 | Create leagues and tournaments through the product — see §12 | **code done** 2026-09-25 — see §12.6; needs the Auth0 `league-creator` role before beta users can create |
+| 10 | Create leagues and tournaments through the product — see §12 | **code done** 2026-09-25 (§12.6), uncommitted — **to be reworked by step 13** (§15.4 step 2); don't create the Auth0 role yet |
 | 11 | Bug sweep from the 2026-09-23 review — see §13 | **done** — legacy data repaired, `TEAM_STATUSES` narrowed; step 11 applied (backup kept) |
 | 12 | Security, data-integrity and structure review — see §14 | **code done** 2026-09-25 — every tracker row landed; deploy-time scripts and three deliberate deferrals remain (§14 tracker) |
+| 13 | Tournaments first, leagues optional — see §15 | **in progress** — step 1 done 2026-09-25 (§15.6); step 2 (routes → `/tournaments/:slug`) code done 2026-09-26 (§15.7); next: step 3, the create-flow rework |
 
 ---
 
@@ -1689,7 +1690,9 @@ settings. That is a follow-up if organizers ask for it.
 
 ### 12.6 Landed — 2026-09-25
 
-§12.2–12.5 are built as specified. Server:
+§12.2–12.5 are built as specified, but the league-first model is superseded by
+§15. The copy logic, the owner-name handling and the create pages carry over;
+the gate, the routes and the league-first flow get reworked. Server:
 
 - `league/league-creation.ts` is the pure policy (`decideLeagueCreation`). The
   mode and cap are read through `ConfigService`, so an unset `LEAGUE_CREATION`
@@ -4252,3 +4255,246 @@ Verification:
 - **Not verified:** in a browser. **Deploy client and server together.** The
   pick routes are aliased, but by-pool, the payload keys and the SSE fields
   are not.
+
+---
+
+## 15. Tournaments first, leagues optional — planned 2026-09-25
+
+Step 10 (§12) made the league the entry point: create a league, then create
+tournaments inside it. On reflection that has it backwards. The tournament is
+what people sign up for, draft in and play. Many real events are one-offs, and
+under the §12 model they would need a throwaway league.
+
+**Direction:** a tournament stands on its own. A league becomes an optional
+grouping of tournaments. It gives a series its identity and a scope for
+cross-season statistics.
+
+It is cheap to change now: step 10 is uncommitted, and no league or
+tournament has been created through the product yet. §12.2–12.6 stay as the
+record of what was built. §15.4 lists what gets reworked.
+
+### 15.1 What the league couples today
+
+- **Ownership.** A tournament has no owner of its own.
+  `HostedTournamentMapper` sets `owner: league.owner`, so `rolesOf`'s
+  "owner" is the league owner, and so is every `can()` check that relies on
+  it.
+- **Routes.** 13 server controllers are mounted under
+  `leagues/:leagueSlug/tournaments/...`, and 38 client files use `leagueSlug`.
+  Lookups are `findBySlug(leagueSlug, tournamentSlug)`.
+- **Links built by the server.**
+  - `draft-engine.service.ts` builds the draft link the Discord bot posts.
+  - `hosted-tournament-ad.mapper.ts` builds the sign-up link on Find a League.
+  Both embed the league slug.
+- **Display.**
+  - The tournament nav's eyebrow is the league name.
+  - "My Drafts" shows `leagueName`.
+  - Ads populate `league`.
+- **Schema.** `HostedTournamentEntity.league` is `required: true`.
+
+Tournament slugs are 8-character base62 and unique across the whole site
+(`generateSlug`, unique index), so the league slug was never needed to find a
+tournament.
+
+### 15.2 Target model
+
+| | Owns | Created by |
+| --- | --- | --- |
+| **Tournament** | Its own `owner` (a sub) and `ownerName`, staff, settings, sign-ups, pools, stages, the Discord binding | Beta-gated users (§15.3) |
+| **League** | Name, slug, description, logo, `owner`; the list of tournaments attached to it | Any logged-in user; an empty league is harmless |
+
+- `HostedTournamentEntity.league` becomes optional. `owner` becomes a required
+  field on the tournament itself.
+- The policy reads the tournament's owner. A league's owner has no rights over
+  its tournaments unless they also own them or are on their staff.
+- Canonical URLs become `/tournaments/:tournamentSlug/...` on both client and
+  API. A league keeps `/leagues/:leagueSlug` as its landing page.
+
+### 15.3 Rules
+
+- **Creation gate.** The beta gate moves from league creation to tournament
+  creation. It keeps the §12.2 mechanism: a site role, the `LEAGUE_CREATION`
+  switch renamed to fit, and a per-user cap. The cap now counts the user's
+  tournaments that aren't archived, so running a new season each quarter never
+  hits a lifetime limit.
+- **Attaching to a league.** You can add a tournament to a league only if you
+  own both. Otherwise anyone could fill someone else's league, and its
+  statistics, with junk. A request-and-approve flow is a later addition, for
+  when the organizer running a season is not the league owner.
+- **Detaching or moving.** This is allowed only before any sign-up is
+  approved, so a league's history can't be reshuffled after the fact.
+- **Copying settings.** "Copy settings from last season" becomes "copy from any
+  tournament you own", so it no longer depends on leagues.
+  `TournamentCreationService`'s copy logic carries over unchanged. Only the
+  source lookup changes, from "in this league" to "owned by the caller".
+
+### 15.4 Steps
+
+1. **Tournament ownership.** **Code done 2026-09-25**, see §15.6.
+   - Add `owner` to `HostedTournamentEntity`, with a backfill from
+     `league.owner` (script plus `--check`; the user runs it).
+   - Point the mapper and `rolesOf` at the tournament's own owner.
+   - No route changes. This is safe to ship alone.
+   - *Moved to step 2:* making `league` optional. A schema that allows no
+     league is only honest once the domain (`leagueSlug`, `leagueName`) and
+     the creation path can handle one.
+2. **Routes.** *(Swapped with the old step 3 on 2026-09-26: a tournament
+   with no league has no URL until the routes move, so the routes go first.
+   Every current tournament still has a league, so this ships on its own.)*
+   **Code done 2026-09-26**, see §15.7.
+   - Remount every tournament controller at `tournaments/:tournamentSlug/...`,
+     with lookups by tournament slug alone.
+   - Rebuild the client route tree under `/tournaments/:tournamentSlug`.
+   - Add a permanent redirect from `/leagues/:leagueSlug/tournaments/:tournamentSlug/**`,
+     because those links are in Discord history, bookmarks and ads.
+   - Fix the server-built links (§15.1).
+   - `LeagueZoneService` stops tracking `leagueSlug` for tournament pages.
+3. **Rework step 10's code.** Uses `tournament-creator` as the placeholder
+   role name (§15.5).
+   - Make `league` optional in the schema. `leagueId`, `leagueSlug` and
+     `leagueName` become nullable in the domain. Drop the mapper's
+     `league.owner` fallback and make `owner` required (every tournament is
+     already owned; §15.6).
+   - `POST tournaments` with no league. The form gets an optional "Add to
+     league" select listing the caller's owned leagues.
+   - The gate and cap move to tournament creation; `POST leagues` opens to any
+     logged-in user.
+   - Add `PUT`/`DELETE tournaments/:t/league` for attaching and detaching,
+     with the §15.3 rules.
+   - `newTournamentDefaults` moves from the league summary to a per-user
+     endpoint: the latest `ownerName` and the list of copy sources.
+   - Client: "New tournament" on Find a League and on My Drafts, not only on a
+     league page. The league page keeps its owner action, and it preselects
+     that league.
+   - Drop the league-scoped API aliases (§15.7) once a deploy has been live
+     long enough for open tabs to reload.
+4. **Display fallbacks.** The tournament nav's eyebrow, "My Drafts", the ads
+   and the tournament landing's back link all need a version for a tournament
+   with no league.
+5. **League statistics.** This is its own step, taken once standalone
+   tournaments exist to group. The data supports it: coach seats carry the
+   user's `auth0Id` and matchups hold per-game results. Candidates:
+   - all-time records and head-to-head by user
+   - Pokémon draft and usage trends across seasons
+   - a champions list
+
+   Only scored games from `approved` teams count. Dropped teams need a rule of
+   their own.
+
+### 15.5 Open decisions
+
+- **The role's name.** `league-creator` no longer fits; `tournament-creator` or
+  `host` would. Decide before the role is created in Auth0. **Don't create
+  `league-creator` in the meantime.**
+- **Draft pools and the league.** Do they stay tournament-only? (Probably yes;
+  cross-season stats read results, not pools.)
+- **Staff shared across a league's seasons** (A1 raised this). Is it a league
+  feature, or should copying staff be an opt-in part of "copy settings"?
+- **Discord binding.** It stays per tournament. Is a league-level default
+  wanted, purely as a convenience when creating tournaments?
+- **Unlisted leagues.** Can a league be unlisted, like tournaments can?
+
+### 15.6 Landed — 2026-09-25 (step 1)
+
+- **Schema.** `HostedTournamentEntity.owner` (indexed, optional for now).
+- **Mapper.** `HostedTournamentMapper` sets `owner: doc.owner ??
+  league.owner`, so `rolesOf`, `staffName` and every `can()` check read the
+  tournament's owner once it is set. The fallback keeps the deploy order free:
+  the code can ship before or after the backfill.
+- **Creation.** `TournamentCreationService` writes `owner: sub`.
+- **League summary.** `getLeagueSummary` now prefills the owner name only
+  when the viewer owns the league's latest tournament, which is no longer
+  implied by owning the league.
+- **Spec.** `hosted-tournament.mapper.spec.ts` covers the precedence: the
+  season owner gets the `owner` role, and the league owner gets nothing on a
+  tournament they don't own.
+
+**Backfill: run 2026-09-25, nothing to write.** The dry run found all 5
+tournaments already carrying an `owner` field, which the schema had never
+declared (most likely set when they were inserted by hand). `--check` was
+clean: no missing owners, no mismatched `ownerName`, and 0 owners differing
+from their league owner. So the mapper's switch to `doc.owner` changes nobody's
+permissions. The script is now in `scripts/complete/` and stays there for its
+`--check` and `--rollback`.
+
+How the script works (`scripts/complete/backfill-tournament-owners.ts`):
+
+1. Dry run, then `--apply`: copy `league.owner` to every tournament with no
+   `owner`. The write filters on `owner: { $exists: false }`, so re-running it
+   is safe.
+2. `--check`: lists tournaments with no owner, an `ownerName` belonging to
+   someone else, and owners that differ from the league owner. The last list
+   should stay empty until step 2.
+3. `--rollback --apply`: unsets only owners equal to the league owner. That
+   loses nothing, because the mapper falls back to the same value. Owners that
+   differ are kept and reported.
+
+Verification: server `tsc --noEmit` is clean and the script typechecks. The
+league and tournament specs pass 323/324. The failure is
+`external-tournament.controller.spec`, which predates this work: it expects
+a `tournaments: []` key the controller no longer returns, and the directory is
+untouched since 2026-09-04.
+
+### 15.7 Landed — 2026-09-26 (step 2, routes)
+
+Tournaments now live at `/tournaments/:tournamentSlug` on both the API and
+the client.
+
+Server:
+
+- **Lookups.** `HostedTournamentRepository.findBySlug`, `findRulesBySlug` and
+  `isArchived` take the tournament slug alone. `findBySlug` loads the league
+  from the tournament's own `league` field (`leagueRepo.findById`).
+  `DraftRepository.findTournament` follows.
+- **Signatures.** The `leagueSlug` parameter is gone from every tournament
+  service method, including chat, draft, stage, bracket, schedule, trade,
+  hosted-tournament, Discord and organizer.
+- **Controllers.** Every tournament controller is mounted at both
+  `tournaments/:tournamentSlug/...` and the old
+  `leagues/:leagueSlug/tournaments/...`. The old path is an alias whose
+  league slug is ignored, so an open tab on the previous client keeps
+  working through the deploy. Drop the aliases in step 3.
+  `TournamentCreationController` stays league-scoped until step 3 reworks
+  it.
+- **Archive guard.** `TournamentOpenGuard` needs only `:tournamentSlug`, so
+  it covers both mounts.
+- **Server-built links.** `draft-engine.service.ts` (the Discord pick embed)
+  and `hosted-tournament-ad.mapper.ts` (the sign-up link) now build
+  `/tournaments/...`.
+- **Tournament info.** `getInfo` now returns `league: { name, leagueSlug }`,
+  so tournament pages can show the league and link back without it in the
+  URL.
+
+Client:
+
+- **Routes.** `tournament.routes.ts` holds the tournament tree, mounted at
+  `TOURNAMENT_PATH`. `league-zone.routes.ts` keeps the league pages, and
+  `legacyTournamentRedirect` rewrites any
+  `/leagues/:l/tournaments/:t/**` URL to `/tournaments/:t/**`, keeping the
+  child path, query string and fragment. The `:leagueSlug/tournaments/new`
+  create page is matched before the redirect.
+- **Links.** `tournamentRoute(slug)` in `route-paths.ts` builds every
+  tournament link. About 20 hand-built `['/leagues', l, 'tournaments', t]`
+  arrays and API paths were replaced. `LeagueZoneService` and
+  `LeagueManageService` build `tournaments/:t/...` API paths, and the SSE
+  stream opens on the tournament slug alone.
+- **League display.** The tournament nav and the landing page take the
+  league name and back link from `info.league`, and no longer fetch the
+  league by URL slug.
+- **Absolute URLs.** The invite, sign-up and organizer-invite links copied
+  to the clipboard, and the matchup share URL, use `/tournaments/...`. The
+  sign-up page's rules link stopped hard-coding the production domain.
+
+Verification:
+
+- **Server.** `tsc --noEmit` is clean, and the chat, draft, stage,
+  tournament, league and ad specs pass 841/842. The one failure is the
+  pre-existing `external-tournament.controller.spec`. New specs cover the
+  slug-only lookup, the legacy SSE URL still streaming, the archive guard on
+  a legacy route, and `info.league`.
+- **Client.** `ng build` and `lint:styles` are clean. The league-zone,
+  drafts, league-list and core specs pass, apart from `power-rankings`,
+  which is on the baseline list. `legacy-tournament-redirect.guard.spec.ts`
+  covers the URL rewrite.
+- **Not verified in a browser.** **Deploy the server first.** It serves both
+  URL shapes, and the new client calls only the new ones.

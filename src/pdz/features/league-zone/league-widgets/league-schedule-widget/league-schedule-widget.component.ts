@@ -8,6 +8,7 @@ import {
   output,
   signal,
 } from '@angular/core';
+import { tournamentRoute } from '@pdz/core/route-paths';
 import { Subject, takeUntil } from 'rxjs';
 import { LeagueZoneService } from '../../league-zone.service';
 import { MatchupCardComponent } from '../../matchup-card/matchup-card.component';
@@ -99,12 +100,9 @@ export class LeagueScheduleWidgetComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (data) => {
-          const base = [
-            '/leagues',
-            this.leagueService.leagueSlug() ?? '',
-            'tournaments',
+          const base = tournamentRoute(
             this.leagueService.tournamentSlug() ?? '',
-          ];
+          );
           const rounds = data.rounds.map((round) => ({
             id: round._id,
             name: round.name,

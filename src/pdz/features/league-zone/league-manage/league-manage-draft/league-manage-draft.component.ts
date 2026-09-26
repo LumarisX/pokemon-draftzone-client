@@ -7,6 +7,7 @@ import {
 } from '@angular/cdk/drag-drop';
 import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
+import { LEAGUE_ZONE_MANAGE_PATH, tournamentRoute } from '@pdz/core/route-paths';
 import { BehaviorSubject, interval, Subject, takeUntil } from 'rxjs';
 import { distinctUntilChanged, finalize, map, switchMap, tap } from 'rxjs/operators';
 import { DraftPokemon } from '../../../drafts/draft.model';
@@ -364,11 +365,8 @@ export class LeagueManageDraftComponent implements OnInit, OnDestroy {
 
   onPoolSelected(poolSlug: string): void {
     this.router.navigate([
-      '/leagues',
-      this.leagueZoneService.leagueSlug(),
-      'tournaments',
-      this.leagueZoneService.tournamentSlug(),
-      'manage',
+      ...tournamentRoute(this.leagueZoneService.tournamentSlug() ?? ''),
+      LEAGUE_ZONE_MANAGE_PATH,
       'pools',
       poolSlug,
       'draft',
