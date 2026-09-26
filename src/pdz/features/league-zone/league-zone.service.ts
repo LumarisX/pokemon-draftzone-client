@@ -39,7 +39,7 @@ export class LeagueZoneService {
 
   leagueSlug = signal<string | null>(null);
   tournamentSlug = signal<string | null>(null);
-  draftSlug = signal<string | null>(null);
+  poolSlug = signal<string | null>(null);
   stageSlug = signal<string | null>(null);
   teamSlug = signal<string | null>(null);
 
@@ -62,8 +62,8 @@ export class LeagueZoneService {
         this.leagueSlug.set(leagueSlug);
         const tournamentSlug = paramMap.get('tournamentSlug');
         this.tournamentSlug.set(tournamentSlug);
-        const draftSlug = paramMap.get('draftSlug');
-        this.draftSlug.set(draftSlug);
+        const poolSlug = paramMap.get('poolSlug');
+        this.poolSlug.set(poolSlug);
         const stageSlug = paramMap.get('stageSlug');
         this.stageSlug.set(stageSlug);
         const teamSlug = paramMap.get('teamSlug');
@@ -102,14 +102,14 @@ export class LeagueZoneService {
 
   powerRankingDetails() {
     return this.apiService.get<League.PowerRankingTeam[]>(
-      `${ROOTPATH}/${this.leagueSlug()}/tournaments/${this.tournamentSlug()}/drafts/${this.draftSlug()}/power-rankings`,
+      `${ROOTPATH}/${this.leagueSlug()}/tournaments/${this.tournamentSlug()}/pools/${this.poolSlug()}/power-rankings`,
     );
   }
 
-  getDraftDetails(draftSlug?: string) {
+  getPoolDetails(poolSlug?: string) {
     return this.apiService.get<{
       leagueName: string;
-      draftName: string;
+      poolName: string;
       teamOrder: string[];
       useRandomSeeding: boolean;
       channelId?: string;
@@ -137,7 +137,7 @@ export class LeagueZoneService {
       canDraftCounts: Record<string, number>;
       logo: string;
     }>(
-      `${ROOTPATH}/${this.leagueSlug()}/tournaments/${this.tournamentSlug()}/drafts/${draftSlug ?? this.draftSlug()}`,
+      `${ROOTPATH}/${this.leagueSlug()}/tournaments/${this.tournamentSlug()}/pools/${poolSlug ?? this.poolSlug()}`,
     );
   }
 
@@ -216,26 +216,26 @@ export class LeagueZoneService {
   ) {
     return this.apiService.post<
       ReturnType<
-        LeagueZoneService['getDraftDetails']
+        LeagueZoneService['getPoolDetails']
       > extends import('rxjs').Observable<infer T>
         ? T
         : never
     >(
-      `${ROOTPATH}/${this.leagueSlug()}/tournaments/${this.tournamentSlug()}/drafts/${this.draftSlug()}/teams/${teamId}/draft`,
+      `${ROOTPATH}/${this.leagueSlug()}/tournaments/${this.tournamentSlug()}/pools/${this.poolSlug()}/teams/${teamId}/draft`,
       payload,
     );
   }
 
-  getTeamsByDraft(): Observable<{
-    drafts: {
-      draftSlug: string | null;
+  getTeamsByPool(): Observable<{
+    pools: {
+      poolSlug: string | null;
       name: string;
       allowDuplicates: boolean;
       teams: League.LeagueTeam[];
     }[];
   }> {
     return this.apiService.get(
-      `${ROOTPATH}/${this.leagueSlug()}/tournaments/${this.tournamentSlug()}/teams/by-draft`,
+      `${ROOTPATH}/${this.leagueSlug()}/tournaments/${this.tournamentSlug()}/teams/by-pool`,
     );
   }
 
@@ -276,7 +276,7 @@ export class LeagueZoneService {
 
   getSignUps(): Observable<{
     signups: League.LeagueSignUp[];
-    drafts: { name: string; draftSlug: string }[];
+    pools: { name: string; poolSlug: string }[];
   }> {
     return this.apiService.get(
       `${ROOTPATH}/${this.leagueSlug()}/tournaments/${this.tournamentSlug()}/coaches`,
@@ -406,7 +406,7 @@ export class LeagueZoneService {
   updateSignUps(
     signups: {
       teamSlug: string;
-      draft?: string;
+      pool?: string;
       status?: League.SignUpStatus;
     }[],
   ): Observable<{ message: string }> {
@@ -415,7 +415,7 @@ export class LeagueZoneService {
       {
         assignments: signups.map((s) => ({
           teamSlug: s.teamSlug,
-          divisionKey: s.draft || undefined,
+          poolSlug: s.pool || undefined,
           status: s.status,
         })),
       },
@@ -436,7 +436,7 @@ export class LeagueZoneService {
       logo?: string;
       pickCount: number;
       status: League.SignUpStatus;
-      draft: { draftSlug: string; name: string } | null;
+      pool: { poolSlug: string; name: string } | null;
       roster: { id: string; name: string; cost?: number; tier?: string }[];
     }[];
   }> {
@@ -454,12 +454,7 @@ export class LeagueZoneService {
     );
   }
 
-  getTeam(teamSlug?: string): Observable<
-    League.LeagueTeam & {
-      pokemonStandings: League.PokemonStanding[];
-      matchups: League.Matchup[];
-    }
-  > {
+  getTeam(teamSlug?: string): Observable<League.LeagueTeam> {
     return this.apiService.get(
       `${ROOTPATH}/${this.leagueSlug()}/tournaments/${this.tournamentSlug()}/teams/${teamSlug ?? this.teamSlug()}`,
     );

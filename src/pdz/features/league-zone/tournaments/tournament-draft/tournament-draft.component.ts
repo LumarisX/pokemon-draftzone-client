@@ -6,11 +6,6 @@ import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
 import { LeagueZoneService } from '../../league-zone.service';
 import { League } from '../../league.interface';
 
-/**
- * Smart entry point for "/draft" — sends the current user straight to the
- * draft their team belongs to, or to the drafts list if they have no team
- * in this tournament (or aren't signed in at all).
- */
 @Component({
   selector: 'pdz-tournament-draft',
   templateUrl: './tournament-draft.component.html',
@@ -44,16 +39,16 @@ export class TournamentDraftComponent implements OnInit, OnDestroy {
   private redirect(coachData: League.CoachProfile | null): void {
     const leagueSlug = this.leagueService.leagueSlug();
     const tournamentSlug = this.leagueService.tournamentSlug();
-    const draftsList = [
+    const poolsList = [
       '/leagues',
       leagueSlug,
       'tournaments',
       tournamentSlug,
-      'drafts',
+      'pools',
     ];
-    const destination = coachData?.draft
-      ? [...draftsList, coachData.draft.draftSlug]
-      : draftsList;
+    const destination = coachData?.pool
+      ? [...poolsList, coachData.pool.poolSlug]
+      : poolsList;
     this.router.navigate(destination, { replaceUrl: true });
   }
 

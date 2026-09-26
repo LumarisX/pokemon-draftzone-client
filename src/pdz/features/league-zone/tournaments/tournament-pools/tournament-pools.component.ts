@@ -8,12 +8,12 @@ import { LeagueZoneService } from '../../league-zone.service';
 import { League } from '../../league.interface';
 
 @Component({
-  selector: 'pdz-tournament-drafts',
-  templateUrl: './tournament-drafts.component.html',
-  styleUrl: './tournament-drafts.component.scss',
+  selector: 'pdz-tournament-pools',
+  templateUrl: './tournament-pools.component.html',
+  styleUrl: './tournament-pools.component.scss',
   imports: [CommonModule, RouterModule, LoadingComponent, PageHeaderComponent],
 })
-export class TournamentDraftsComponent implements OnInit, OnDestroy {
+export class TournamentPoolsComponent implements OnInit, OnDestroy {
   private leagueService = inject(LeagueZoneService);
   private destroy$ = new Subject<void>();
 

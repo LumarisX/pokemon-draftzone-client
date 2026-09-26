@@ -18,7 +18,7 @@ const BESPOKE_DISPLAY = [
 const COORDINATED_BADGE = [];
 
 const UNTOKENIZED_ORPHANS = [
-  "src/pdz/features/league-zone/divisions/power-rankings/power-rankings.component.scss",
+  "src/pdz/features/league-zone/pools/power-rankings/power-rankings.component.scss",
   "src/pdz/features/league-zone/league/upload-image/upload-image.component.scss",
   "src/pdz/features/league-zone/league-auction/league-auction.component.scss",
 ];

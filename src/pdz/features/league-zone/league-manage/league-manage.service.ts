@@ -37,8 +37,8 @@ export type DraftSettingsPayload = {
   draftEnd?: string | null;
 };
 
-export type DraftDetails =
-  ReturnType<LeagueZoneService['getDraftDetails']> extends Observable<infer T>
+export type PoolDetails =
+  ReturnType<LeagueZoneService['getPoolDetails']> extends Observable<infer T>
     ? T
     : never;
 
@@ -67,61 +67,61 @@ export class LeagueManageService {
     round: number,
     pick: { pokemonId: string; addons?: string[] },
   ) {
-    return this.apiService.post<DraftDetails>(
-      `${this.draftPath()}/teams/${teamId}/draft/rounds/${round}`,
+    return this.apiService.post<PoolDetails>(
+      `${this.poolPath()}/teams/${teamId}/draft/rounds/${round}`,
       pick,
     );
   }
 
   clearPick(teamId: string, pokemonId: string) {
-    return this.apiService.delete<DraftDetails>(
-      `${this.draftPath()}/teams/${teamId}/draft/${pokemonId}`,
+    return this.apiService.delete<PoolDetails>(
+      `${this.poolPath()}/teams/${teamId}/draft/${pokemonId}`,
     );
   }
 
   setCurrentPick(round: number, position: number) {
-    return this.apiService.post<DraftDetails>(
-      `${this.draftPath()}/current-pick`,
+    return this.apiService.post<PoolDetails>(
+      `${this.poolPath()}/current-pick`,
       { round, position },
     );
   }
 
   setDraftOrder(payload: { useRandomSeeding: boolean; order?: string[] }) {
-    return this.apiService.post<DraftDetails>(
-      `${this.draftPath()}/order`,
+    return this.apiService.post<PoolDetails>(
+      `${this.poolPath()}/order`,
       payload,
     );
   }
 
   setDraftOrderFor(
-    draftSlug: string,
+    poolSlug: string,
     payload: { useRandomSeeding: boolean; order?: string[] },
   ) {
-    return this.apiService.post<DraftDetails>(
-      `${this.draftPath(draftSlug)}/order`,
+    return this.apiService.post<PoolDetails>(
+      `${this.poolPath(poolSlug)}/order`,
       payload,
     );
   }
 
-  createDraftPool(payload: {
+  createPool(payload: {
     name: string;
     draftStart?: string;
     draftEnd?: string;
   }) {
-    return this.apiService.post<{ draftSlug: string; name: string }>(
+    return this.apiService.post<{ poolSlug: string; name: string }>(
       this.poolsPath(),
       payload,
     );
   }
 
-  deleteDraftPool(draftSlug: string) {
-    return this.apiService.delete<{ success: boolean; unassigned: number }>(
-      `${this.poolsPath()}/${draftSlug}`,
+  deletePool(poolSlug: string) {
+    return this.apiService.delete<{ message: string; unassigned: number }>(
+      `${this.poolsPath()}/${poolSlug}`,
     );
   }
 
   private poolsPath(): string {
-    return `leagues/${this.leagueZoneService.leagueSlug()}/tournaments/${this.leagueZoneService.tournamentSlug()}/drafts`;
+    return `leagues/${this.leagueZoneService.leagueSlug()}/tournaments/${this.leagueZoneService.tournamentSlug()}/pools`;
   }
 
   updateCoachDetails(
@@ -140,34 +140,34 @@ export class LeagueManageService {
   }
 
   updateDraftSettings(payload: DraftSettingsPayload) {
-    return this.apiService.post<DraftDetails>(
-      `${this.draftPath()}/settings`,
+    return this.apiService.post<PoolDetails>(
+      `${this.poolPath()}/settings`,
       payload,
     );
   }
 
-  updateDraftSettingsFor(draftSlug: string, payload: DraftSettingsPayload) {
-    return this.apiService.post<DraftDetails>(
-      `${this.draftPath(draftSlug)}/settings`,
+  updateDraftSettingsFor(poolSlug: string, payload: DraftSettingsPayload) {
+    return this.apiService.post<PoolDetails>(
+      `${this.poolPath(poolSlug)}/settings`,
       payload,
     );
   }
 
-  setNoTimerFor(draftSlug: string, noTimer: boolean) {
-    return this.apiService.post(`${this.draftPath(draftSlug)}/timer`, {
+  setNoTimerFor(poolSlug: string, noTimer: boolean) {
+    return this.apiService.post(`${this.poolPath(poolSlug)}/timer`, {
       noTimer,
     });
   }
 
   sendTestMessage() {
-    return this.apiService.post<{ success: boolean }>(
-      `${this.draftPath()}/settings/test-message`,
+    return this.apiService.post<{ delivered: boolean }>(
+      `${this.poolPath()}/settings/test-message`,
       '',
     );
   }
 
-  private draftPath(draftSlug?: string): string {
-    return `leagues/${this.leagueZoneService.leagueSlug()}/tournaments/${this.leagueZoneService.tournamentSlug()}/drafts/${draftSlug ?? this.leagueZoneService.draftSlug()}`;
+  private poolPath(poolSlug?: string): string {
+    return `leagues/${this.leagueZoneService.leagueSlug()}/tournaments/${this.leagueZoneService.tournamentSlug()}/pools/${poolSlug ?? this.leagueZoneService.poolSlug()}`;
   }
 
   canManage(leagueSlug: string, tournamentSlug: string) {
@@ -178,21 +178,21 @@ export class LeagueManageService {
 
   setDraftState(state: string) {
     return this.apiService.post(
-      `leagues/${this.leagueZoneService.leagueSlug()}/tournaments/${this.leagueZoneService.tournamentSlug()}/drafts/${this.leagueZoneService.draftSlug()}/state`,
+      `leagues/${this.leagueZoneService.leagueSlug()}/tournaments/${this.leagueZoneService.tournamentSlug()}/pools/${this.leagueZoneService.poolSlug()}/state`,
       { state },
     );
   }
 
   setNoTimer(noTimer: boolean) {
     return this.apiService.post(
-      `leagues/${this.leagueZoneService.leagueSlug()}/tournaments/${this.leagueZoneService.tournamentSlug()}/drafts/${this.leagueZoneService.draftSlug()}/timer`,
+      `leagues/${this.leagueZoneService.leagueSlug()}/tournaments/${this.leagueZoneService.tournamentSlug()}/pools/${this.leagueZoneService.poolSlug()}/timer`,
       { noTimer },
     );
   }
 
   skipCurrentPick() {
     return this.apiService.post(
-      `leagues/${this.leagueZoneService.leagueSlug()}/tournaments/${this.leagueZoneService.tournamentSlug()}/drafts/${this.leagueZoneService.draftSlug()}/skip`,
+      `leagues/${this.leagueZoneService.leagueSlug()}/tournaments/${this.leagueZoneService.tournamentSlug()}/pools/${this.leagueZoneService.poolSlug()}/skip`,
       '',
     );
   }
@@ -224,8 +224,8 @@ export class LeagueManageService {
     );
   }
 
-  unlinkDiscord(): Observable<{ success: boolean }> {
-    return this.apiService.delete<{ success: boolean }>(
+  unlinkDiscord(): Observable<{ message: string }> {
+    return this.apiService.delete<{ message: string }>(
       `${this.discordPath()}/link`,
     );
   }
@@ -331,7 +331,7 @@ export class LeagueManageService {
     matchSettings?: { chat: boolean; coachReporting: boolean };
     archived?: boolean;
   }) {
-    return this.apiService.patch<{ success: boolean }>(
+    return this.apiService.patch<{ message: string }>(
       `leagues/${this.leagueZoneService.leagueSlug()}/tournaments/${this.leagueZoneService.tournamentSlug()}/settings`,
       settings,
     );

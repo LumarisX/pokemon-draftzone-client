@@ -40,7 +40,7 @@ describe('TournamentSettingsStore Discord link', () => {
   beforeEach(() => {
     manage = {
       getTournamentSettings: jest.fn(() => of(settingsWith(LINKED))),
-      unlinkDiscord: jest.fn(() => of({ success: true })),
+      unlinkDiscord: jest.fn(() => of({ message: 'Discord server unlinked.' })),
       getSchedule: jest.fn(() => throwError(() => new Error('none'))),
       getTrades: jest.fn(() => throwError(() => new Error('none'))),
     };
@@ -122,7 +122,7 @@ describe('TournamentSettingsStore standings rules', () => {
       getTournamentSettings: jest.fn(() => of({ ...settingsWith(), ...settings })),
       getSchedule: jest.fn(() => throwError(() => new Error('none'))),
       getTrades: jest.fn(() => throwError(() => new Error('none'))),
-      updateTournamentSettings: jest.fn(() => of({ success: true })),
+      updateTournamentSettings: jest.fn(() => of({ message: 'Settings saved.' })),
     };
     TestBed.configureTestingModule({
       providers: [
@@ -251,10 +251,10 @@ describe('TournamentSettingsStore pool assignments', () => {
                     signedUpAt: new Date('2026-09-01'),
                   },
                 ],
-                drafts: [{ draftSlug: 'pool-a', name: 'Pool A' }],
+                pools: [{ poolSlug: 'pool-a', name: 'Pool A' }],
               }),
             getRules: () => throwError(() => new Error('none')),
-            getDraftDetails: () => throwError(() => new Error('none')),
+            getPoolDetails: () => throwError(() => new Error('none')),
           },
         },
         {
@@ -273,7 +273,7 @@ describe('TournamentSettingsStore pool assignments', () => {
     await firstValueFrom(store.saveSection('draft'));
 
     expect(league.updateSignUps).toHaveBeenCalledWith([
-      { teamSlug: 'team-rocket', draft: 'pool-a', status: 'approved' },
+      { teamSlug: 'team-rocket', pool: 'pool-a', status: 'approved' },
     ]);
   });
 });

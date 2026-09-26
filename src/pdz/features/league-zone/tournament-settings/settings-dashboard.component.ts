@@ -105,7 +105,7 @@ export class SettingsDashboardComponent {
                 route: [
                   ...this.base(),
                   'manage',
-                  'drafts',
+                  'pools',
                   target.slug,
                   'draft',
                 ],
@@ -124,7 +124,7 @@ export class SettingsDashboardComponent {
   protected readonly coachViewLinks = computed(() =>
     this.store.pools().map((pool) => ({
       name: pool.name,
-      route: [...this.base(), 'drafts', pool.slug, 'draft'],
+      route: [...this.base(), 'pools', pool.slug, 'draft'],
     })),
   );
 
@@ -156,7 +156,7 @@ export class SettingsDashboardComponent {
           pool.status === 'PAUSED'
             ? `${pool.name} is paused`
             : `${pool.name} is drafting`,
-        route: [...base, 'manage', 'drafts', pool.slug, 'draft'],
+        route: [...base, 'manage', 'pools', pool.slug, 'draft'],
         tone: pool.status === 'PAUSED' ? 'urgent' : 'normal',
       });
     }

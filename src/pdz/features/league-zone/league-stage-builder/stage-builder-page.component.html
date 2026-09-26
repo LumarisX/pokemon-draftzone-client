@@ -116,7 +116,7 @@
                   />
                   <span class="teams__name">{{ row.team.teamName }}</span>
                   <span class="teams__pool">
-                    {{ row.team.draft?.name ?? "No draft pool" }}
+                    {{ row.team.pool?.name ?? "No pool" }}
                   </span>
                   <span class="teams__coach">{{ row.team.coachName }}</span>
                   @if (stageCountByTeam.get(row.team.id); as placed) {

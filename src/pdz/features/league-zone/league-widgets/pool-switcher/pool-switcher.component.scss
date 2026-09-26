@@ -1,7 +1,7 @@
 @use "pdz-theming" as pdz;
 @use "mixins" as *;
 
-.draft-switcher {
+.pool-switcher {
   display: flex;
   flex-wrap: wrap;
   gap: pdz.space(xs);

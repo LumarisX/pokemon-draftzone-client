@@ -5,7 +5,7 @@ import { By } from '@angular/platform-browser';
 
 import { LeagueManageDraftComponent } from './league-manage-draft.component';
 import { LeagueZoneService } from '../../league-zone.service';
-import { DraftDetails, LeagueManageService } from '../league-manage.service';
+import { PoolDetails, LeagueManageService } from '../league-manage.service';
 import { TierListService } from '../../../tier-lists/tier-list.service';
 import { LeagueNotificationService } from '../../league-notification.service';
 import { EventStreamService } from '@pdz/core/services/event-stream.service';
@@ -26,10 +26,10 @@ function makeTeam(id: string, name: string): League.LeagueTeam {
 
 const teams = [makeTeam('t1', 'Team One'), makeTeam('t2', 'Team Two')];
 
-function makeDetails(overrides: Partial<DraftDetails> = {}): DraftDetails {
+function makeDetails(overrides: Partial<PoolDetails> = {}): PoolDetails {
   return {
     leagueName: 'League',
-    draftName: 'Draft',
+    poolName: 'Draft',
     teamOrder: ['t1', 't2'],
     useRandomSeeding: true,
     channelId: undefined,
@@ -60,7 +60,7 @@ describe('LeagueManageDraftComponent', () => {
   let component: LeagueManageDraftComponent;
   let fixture: ComponentFixture<LeagueManageDraftComponent>;
 
-  async function setup(details: DraftDetails) {
+  async function setup(details: PoolDetails) {
     await TestBed.configureTestingModule({
       imports: [LeagueManageDraftComponent],
       providers: [
@@ -68,12 +68,12 @@ describe('LeagueManageDraftComponent', () => {
         {
           provide: LeagueZoneService,
           useValue: {
-            getDraftDetails: () => of(details),
-            draftSlug: () => 'draft-1',
+            getPoolDetails: () => of(details),
+            poolSlug: () => 'draft-1',
             leagueSlug: () => 'league-1',
             tournamentSlug: () => 'tournament-1',
             getLeagueInfo: () =>
-              of({ drafts: [{ name: 'Draft', draftSlug: 'draft-1' }] }),
+              of({ pools: [{ name: 'Draft', poolSlug: 'draft-1' }] }),
           },
         },
         {

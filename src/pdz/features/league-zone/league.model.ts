@@ -9,7 +9,7 @@ export type TournamentDetails = {
   tournamentSlug: string;
   leagueName: string;
   leagueSlug: string;
-  draftSlug?: string;
+  poolSlug?: string;
   teamId: string;
   teamSlug?: string;
   nextMatch?: string | null;

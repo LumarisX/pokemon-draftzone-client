@@ -98,15 +98,15 @@ export class TierListComponent implements OnInit, OnDestroy {
 
   localDraftedIds = input<string[]>([]);
   drafted = signal<{
-    [division: string]: { pokemonId: string; teamId?: string }[];
+    [pool: string]: { pokemonId: string; teamId?: string }[];
   }>({});
-  private sharedDivisions = new Set<string>();
+  private sharedPools = new Set<string>();
   private coachedTeamIds = new Set<string>();
   tiers = signal<LeagueTier[] | undefined>(undefined);
   ruleset = signal<string | undefined>(undefined);
   tierListName = signal<string>('Tier List');
   sortBy = signal<SortOption>('BST');
-  selectedDivision = signal<string | undefined>(undefined);
+  selectedPool = signal<string | undefined>(undefined);
   searchText = signal<string>('');
   selectedTypes = signal<Type[]>([]);
   filteredTypes = signal<Type[]>([...TYPES]);
@@ -141,10 +141,10 @@ export class TierListComponent implements OnInit, OnDestroy {
   });
 
   readonly draftedPokemonIds = computed(() => {
-    const selectedDivision = this.selectedDivision();
+    const selectedPool = this.selectedPool();
     const drafted = this.drafted();
-    const serverIds = selectedDivision
-      ? (drafted[selectedDivision]?.map((p) => p.pokemonId) ?? [])
+    const serverIds = selectedPool
+      ? (drafted[selectedPool]?.map((p) => p.pokemonId) ?? [])
       : [];
     return new Set([...serverIds, ...this.localDraftedIds()]);
   });
@@ -155,7 +155,7 @@ export class TierListComponent implements OnInit, OnDestroy {
     () => this.types.length - this.filteredTypes().length,
   );
 
-  get divisionNames() {
+  get poolNames() {
     return Object.keys(this.drafted());
   }
 
@@ -247,13 +247,13 @@ export class TierListComponent implements OnInit, OnDestroy {
       });
 
     this.tierListService
-      .getDraftedByDivision()
+      .getDraftedByPool()
       .pipe(first())
-      .subscribe(({ divisions, selected, sharedDivisions, coachedTeamIds }) => {
-        this.drafted.set(divisions);
-        this.sharedDivisions = new Set(sharedDivisions);
+      .subscribe(({ pools, selected, sharedPools, coachedTeamIds }) => {
+        this.drafted.set(pools);
+        this.sharedPools = new Set(sharedPools);
         this.coachedTeamIds = new Set(coachedTeamIds);
-        if (selected) this.selectedDivision.set(selected);
+        if (selected) this.selectedPool.set(selected);
       });
   }
 
@@ -261,7 +261,7 @@ export class TierListComponent implements OnInit, OnDestroy {
     this.eventStream
       .on<{
         pick: {
-          draft: string;
+          pool: string;
           pokemon?: League.LeaguePokemon;
           team: { id: string; name: string };
         };
@@ -276,9 +276,9 @@ export class TierListComponent implements OnInit, OnDestroy {
       .subscribe((data) => {
         const pokemon = data.pick.pokemon;
         if (!pokemon) return;
-        const division = data.pick.draft;
+        const pool = data.pick.pool;
         if (
-          this.sharedDivisions.has(division) &&
+          this.sharedPools.has(pool) &&
           !this.coachedTeamIds.has(data.pick.team.id)
         )
           return;
@@ -286,8 +286,8 @@ export class TierListComponent implements OnInit, OnDestroy {
         const currentDrafted = this.drafted();
         this.drafted.set({
           ...currentDrafted,
-          [division]: [
-            ...(currentDrafted[division] ?? []),
+          [pool]: [
+            ...(currentDrafted[pool] ?? []),
             { pokemonId: pokemon.id, teamId: data.pick.team.id },
           ],
         });

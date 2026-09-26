@@ -107,7 +107,7 @@ export class DraftSettingsPageComponent {
     if (confirmed) this.store.removePool(poolId).subscribe();
   }
 
-  protected draftControlLink(draftSlug: string): string[] {
+  protected draftControlLink(poolSlug: string): string[] {
     const leagueSlug = this.league.leagueSlug();
     const tournamentSlug = this.league.tournamentSlug();
     if (!leagueSlug || !tournamentSlug) return [];
@@ -117,8 +117,8 @@ export class DraftSettingsPageComponent {
       'tournaments',
       tournamentSlug,
       'manage',
-      'drafts',
-      draftSlug,
+      'pools',
+      poolSlug,
       'draft',
     ];
   }

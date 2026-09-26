@@ -1993,7 +1993,7 @@ Paths below are in `pokemon-draftzone-server/src/modules/` unless stated.
 | H6 | Cross-tournament references in reads and trades | P2 | **done** 2026-09-24 via A2 |
 | H7 | Small hardening items | P3 | **done** 2026-09-25 — see §14.14; the Auth0 audience stays deferred |
 | A1–A7 | Structure that limits future work | P2 | A1 policy + staff roles done 2026-09-24 (`migrate-tournament-staff.ts` applied to 3 tournaments, `--check` clean 2026-09-24); its request-guard phase folded into A4; A2 code done 2026-09-24 (run `backfill-matchup-tournament-ids.ts` before deploy); A6 **done** 2026-09-25 (§14.15); A5 **done** 2026-09-25 (§14.16); A4 query batching **done** 2026-09-25 (§14.17), request-scoped memo deferred; A7 **done** 2026-09-25 (§14.18); A3 **done** 2026-09-25 (§14.19), diagnose clean; A8 (websocket → SSE) **done** 2026-09-25 |
-| §14.5 | Smaller smells | P3 | swallowed errors, rules endpoint, roster rows **done** 2026-09-25 (§14.20); response DTOs, error codes, module wiring, naming open |
+| §14.5 | Smaller smells | P3 | swallowed errors, rules endpoint, roster rows **done** 2026-09-25 (§14.20); error codes, module wiring **done** 2026-09-25 (§14.21); response shapes + a team-page leak **done** 2026-09-25 (§14.22); "pool" naming **done** 2026-09-25 (§14.23) — §14.5 **complete** |
 
 ### 14.1 P0 — exploitable now
 
@@ -3924,3 +3924,203 @@ Verification:
   instead of a plain `Error`.
 - **Client:** `ng build` is clean.
 - **Not verified:** in a browser.
+
+### 14.21 Landed — 2026-09-25 (§14.5, error codes and module wiring)
+
+- **Error codes.**
+  - `LEAGUE` now holds only `NOT_FOUND` (LR-001), and it's used only for
+    leagues.
+  - Every tournament error moved to `TOURNAMENT` under new codes TRN-006 to
+    TRN-019. TRN-001 and TRN-002 were retired format/ruleset mismatch codes,
+    so they weren't reused.
+    - A tournament that isn't found is now `TOURNAMENT.NOT_FOUND`
+      (TRN-006). It used to be `LEAGUE.NOT_FOUND` with the message "League
+      not found".
+    - `TOURNAMENT_FULL` is renamed `TOURNAMENT.FULL`.
+    - The sign-up messages say "tournament" instead of "league".
+  - Deleted as unused: the whole `DIVISION` group (including "Division not
+    found in this league"), the whole `SCHEDULE` group, `LEAGUE.UNAUTHORIZED`,
+    `INVALID_KEY` and `COACH_HAS_TEAM`, `TEAM.NOT_IN_DIVISION` and
+    `INVALID_ROSTER`, and `STAGE.NO_TEAMS_TO_SEED` and `MATCHUPS_EXIST`.
+    None were referenced by constant or by code string, in either repo.
+  - The client never matches on error codes, and it shows `message` or
+    `details.reason`. The only visible change is the message wording.
+  - Other unused codes exist outside the tournament area (`SYSTEM`, `AUTH`,
+    `VALIDATION`, `LEAGUE_AD`, `REPLAY`, `FILE`, and two in `DRAFT`). They
+    were left alone because the error filter could refer to them.
+- **Module wiring.**
+  - New `StageCoreModule`, with the stage schema and `StageRepository`
+    only.
+  - `HostedTournamentCoreModule` imports it instead of the full
+    `StageModule`, which has five controllers. That removes the
+    `StageModule` ↔ `HostedTournamentCoreModule` cycle and both
+    `forwardRef`s.
+  - `DraftModule` and `HostedTournamentModule` import `StageCoreModule` too.
+    They only ever received `StageRepository` from `StageModule`.
+  - `ChatModule`'s `forwardRef` guarded the same cycle and is gone.
+  - `TeamModule`, `CoachModule` and `LeagueCoreModule` were already schema
+    plus repository.
+  - The core module still registers the tier-list schema itself, because
+    the repository injects that model. That's the normal `forFeature`
+    pattern, and the alternative is importing `TierListModule` along with
+    its controller.
+- **New `tournament/tournament-wiring.spec.ts`.**
+  - It compiles `StageModule`, `DraftModule`, `HostedTournamentModule`,
+    `ChatModule` and `LeagueModule` against a fake Mongoose connection, with
+    Agenda's ESM packages stubbed.
+  - `compile()` resolves every provider without running lifecycle hooks,
+    so nothing connects to Mongo or logs the Discord bot in.
+  - It was checked to fail when `StageCoreModule` is removed from
+    `DraftModule`.
+  - Until now nothing but a real boot caught Nest wiring mistakes, and a
+    real boot connects to the shared prod cluster.
+
+Verification: `tsc --noEmit` is clean. The server modules and core pass
+1600/1606. The failures are the four known suites: rulesets,
+data.repository, move.domain and external-tournament.
+`draft-stream.controller.spec` failed once in a full in-band run and passed
+alone, both with and without these changes, so it's flaky.
+
+Still open in §14.5:
+
+- response DTOs, and `{ message }` vs `{ success: true }`;
+- the division/draft/pool naming, a public API rename;
+- the unused `GET …/pokemon-list`.
+
+### 14.22 Landed — 2026-09-25 (§14.5, response shapes; a leak found)
+
+Decided with the user on 2026-09-25:
+
+- delete `pokemon-list`;
+- standardize write responses and type the tournament read endpoints;
+- do the full division/draft/pool rename across both repos (§14.23).
+
+- **Leak fixed: `GET …/teams/:teamSlug`.** This route uses optional auth,
+  so anyone can call it, and it returned `matchups: teamMatchups`: the raw
+  populated matchup documents. Each one carried:
+  - both teams' full coach records, including `auth0Id`, `discordName` and
+    `gameName`. The matchup page shows Discord names only to participants
+    and organizers;
+  - the pending coach `report`, which is held for organizer approval;
+  - both teams' full `pickLog`. That bypassed the H1 blind draft, because
+    `picksHidden` only blanked this team's own `draft` field, not the
+    opponents' teams inside `matchups`.
+
+  The client never read `matchups`; the team page's schedule comes from the
+  schedule widget. The field is gone.
+  - A new spec asserts the response has no `matchups` and doesn't contain a
+    rival's `auth0Id` anywhere.
+  - No other hosted-tournament service returns a repository result
+    unmapped. Checked by grep: the only direct returns are a private
+    helper, the caller's own archived tournaments, and the mapped rules.
+- **`pokemon-list` deleted:** the route, the service method and its
+  controller test.
+- **Write responses.** Every hosted-tournament and tier-list write returns
+  `{ message }`. The ones changed were settings, Discord unlink, draft pool
+  delete (`{ message, unassigned }`), and tier-list settings, delete and
+  update.
+  - The draft channel test message returned `{ success }` as a real
+    delivered-or-not flag. It's renamed `{ delivered }`, since it's data,
+    not a status.
+  - Client types and the one reader (`league-manage-draft`) were updated.
+  - External-matchup notes still return `success`. That's the planner, not
+    hosted tournaments.
+- **Typed reads.** New `hosted-tournament.responses.ts`. `getTeam`,
+  `getStandings`, `listTeams` and `listTeamsByDraft` now declare
+  `TeamPageResponse`, `StandingsResponse`, `TeamListResponse` and
+  `TeamsByDraftResponse`.
+  - `standings.ts` exports `StandingsRow`, `PokemonStanding` and
+    `PokemonRecord`, and the calculators declare their return types.
+  - Typing the standings view caught a mismatch straight away. It was
+    written against the internal `TeamStanding` (`teamId`), but the rows
+    actually sent are `id`, `streak` and `diffMode`. This is the §8 kind of
+    drift the item was about.
+  - The client's `getTeam` type drops `matchups` and `pokemonStandings`.
+    The server never sent the latter.
+
+Verification:
+
+- **Server:** `tsc --noEmit` is clean. `hosted-tournament.service.spec` is
+  102/102.
+- **Client:** `ng build` is clean. The league-zone and tier-list specs pass
+  163/163; `power-rankings` is on the baseline list.
+- **Not verified:** in a browser.
+
+### 14.23 Landed — 2026-09-25 (§14.5, "pool" everywhere)
+
+Decided with the user on 2026-09-25: **pool** is the one word for "one draft
+inside a tournament", in the API, the code and the UI copy. What stays:
+
+- the Mongo entity: `DraftEntity`, the `drafts` collection, and
+  `team.draftId` in the database;
+- everything about the act of drafting: the draft engine, the
+  `teams/:teamId/draft` pick route, the `draft-events` stream and its
+  `league.draft.*` event names, the draft board's `draftDetails` state, the
+  `draftStart`/`draftEnd` window, and a team's drafted roster
+  (`team.draft`).
+
+**Server:**
+
+- **Routes.** `…/pools` (list, create) and `…/pools/:poolSlug/...` (every
+  pool route plus delete).
+  - The old `…/drafts` and `…/drafts/:poolSlug` paths stay as aliases on the
+    same controllers. A draft board left open over the deploy can still post
+    picks.
+  - `teams/by-draft` is now `teams/by-pool`, with no alias: its payload
+    changed shape anyway.
+- **Payload fields:**
+  - `divisionKey` → `poolSlug` in the team-assignment DTO. An absent
+    `poolSlug` still unassigns, as before.
+  - `draftSlug` → `poolSlug` in pool list/create, league cards and SSE
+    events. `draftName` → `poolName` in pool details and the draft-completed
+    event.
+  - `drafts` → `pools` in tournament info, `/coaches` and by-pool.
+  - `draft: {…}` → `pool: {…}` in the signup profile and the teams list.
+    The `/coaches` signups carry a `poolSlug` string.
+  - `pick.draft` → `pick.pool` in `league.draft.added`. That includes the
+    blind-draft redaction in `DraftStreamService`, which the typecheck
+    couldn't see because it reads string keys; the stream spec caught it.
+- **Errors.** `DRAFT.NOT_IN_LEAGUE` ("Draft not found in this league") is
+  now `TOURNAMENT.POOL_NOT_FOUND` (TRN-020, "Pool not found in this
+  tournament"). `TEAM.NOT_IN_DRAFT` is now `TEAM.NOT_IN_POOL`.
+- **Links.** The bot's pick links point at `/pools/…/draft`.
+- **Renames:** `CreateDraftDto` → `CreatePoolDto`; `listTeamsByDraft` →
+  `listTeamsByPool`; `TeamsByDraftResponse` → `TeamsByPoolResponse`;
+  `calculateDivision*Standings` → `calculate*Standings`, since they were never
+  pool-scoped.
+- **Removed:** the tier list's always-empty `divisions: {}` field.
+
+**Client:**
+
+- **Routes.** `pools`, `pools/:poolSlug`, `pools/:poolSlug/draft`,
+  `/power-rankings`, `/tier-list`, and manage `pools/:poolSlug/draft` and
+  `/trades`. Every old `drafts/...` form redirects, so bookmarks and the
+  pick links the bot has already posted to Discord still land.
+- **Moved files.**
+  - `divisions/` → `pools/`, with `division-dashboard` → `pool-dashboard`.
+    `power-rankings` moved along; its lint exemption and the CLAUDE.md
+    baseline entry were updated.
+  - `tournament-drafts` → `tournament-pools`.
+  - `draft-switcher` → `pool-switcher`.
+- **Services:** `LeagueZoneService.poolSlug`, `getPoolDetails`,
+  `getTeamsByPool`; `LeagueManageService.createPool`, `deletePool` and
+  `PoolDetails`; the tier list's `getDraftedByPool` and `DraftedPools`.
+- **Copy:** "Division" becomes "Pool" (the tier-list filter, the teams
+  switcher, the pool dashboard's tab label, the empty states and the debug
+  gallery). The pools list is titled "Pools".
+- **Bug fixed on the way:** the archived-draft card's "View My Team" link
+  pointed at `drafts/<pool>/teams/<teamId>`. The legacy redirect sent that
+  to `teams/<teamId>`, but team pages are looked up by slug, so it never
+  resolved. It now links to `teams/<teamSlug>`.
+- **Deleted:** `manageDraftLinks`, which had no callers.
+
+Verification:
+
+- **Server:** `tsc --noEmit` is clean. The modules and core pass 1600/1606;
+  the failures are the four known suites. The draft suites pass 240/240.
+- **Client:** `ng build` and `lint:styles` are clean. The league-zone,
+  tier-list, core and drafts specs pass 222/222; `power-rankings` is on the
+  baseline list.
+- **Not verified:** in a browser. **Deploy client and server together.** The
+  pick routes are aliased, but by-pool, the payload keys and the SSE fields
+  are not.

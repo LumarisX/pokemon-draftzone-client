@@ -1,9 +1,9 @@
 <pdz-page-header
-  [title]="divisionName"
+  [title]="poolName"
   [eyebrow]="leagueName"
   [logo]="getLogoUrl(logo)"
 >
-  <pdz-tab-nav align="stretch" label="Division sections">
+  <pdz-tab-nav align="stretch" label="Pool sections">
     <a pdz-tab-link [routerLink]="['../../teams']" routerLinkActive>Teams</a>
     <a pdz-tab-link routerLink="./tier-list" routerLinkActive>Tier List</a>
     <a pdz-tab-link routerLink="./draft" routerLinkActive>Draft</a>
@@ -13,7 +13,7 @@
     (stageSelected)="onStageSelected($event)"
   ></pdz-stage-switcher>
 </pdz-page-header>
-<div class="division-body">
+<div class="pool-body">
   <div class="section section--matchups">
     <div class="section-header">
       <h3>Matchups</h3>

@@ -50,10 +50,10 @@ export type TierListBrowseQuery = {
   skip?: number;
 };
 
-export type DraftedDivisions = {
-  divisions: { [division: string]: { pokemonId: string; teamId: string }[] };
+export type DraftedPools = {
+  pools: { [pool: string]: { pokemonId: string; teamId: string }[] };
   selected?: string;
-  sharedDivisions?: string[];
+  sharedPools?: string[];
   coachedTeamIds?: string[];
 };
 
@@ -121,7 +121,7 @@ export class TierListService {
   }
 
   remove(tierListSlug: string) {
-    return this.apiService.delete<{ success: boolean }>(
+    return this.apiService.delete<{ message: string }>(
       `${ROOTPATH}/${tierListSlug}`,
     );
   }
@@ -150,7 +150,6 @@ export class TierListService {
       switchMap((tierListId) =>
         this.apiService.get<{
       tierList: LeagueTier[];
-      divisions: { [key: string]: { pokemonId: string; teamId: string }[] };
       format?: string;
       ruleset?: string;
       name?: string;
@@ -161,27 +160,27 @@ export class TierListService {
     );
   }
 
-  getDraftedByDivision(): Observable<DraftedDivisions> {
-    if (!this.leagueZoneService.tournamentSlug()) return of({ divisions: {} });
+  getDraftedByPool(): Observable<DraftedPools> {
+    if (!this.leagueZoneService.tournamentSlug()) return of({ pools: {} });
 
-    return this.leagueZoneService.getTeamsByDraft().pipe(
+    return this.leagueZoneService.getTeamsByPool().pipe(
       map((data) => {
-        const divisions: DraftedDivisions['divisions'] = {};
-        const routedDraftSlug = this.leagueZoneService.draftSlug();
+        const pools: DraftedPools['pools'] = {};
+        const routedPoolSlug = this.leagueZoneService.poolSlug();
         let routed: string | undefined;
         let coached: string | undefined;
-        const sharedDivisions: string[] = [];
+        const sharedPools: string[] = [];
         const coachedTeamIds: string[] = [];
 
-        const groups = routedDraftSlug
-          ? data.drafts.filter((group) => group.draftSlug === routedDraftSlug)
-          : data.drafts;
+        const groups = routedPoolSlug
+          ? data.pools.filter((group) => group.poolSlug === routedPoolSlug)
+          : data.pools;
 
         for (const group of groups) {
-          if (group.draftSlug === routedDraftSlug) routed = group.name;
-          if (group.allowDuplicates) sharedDivisions.push(group.name);
+          if (group.poolSlug === routedPoolSlug) routed = group.name;
+          if (group.allowDuplicates) sharedPools.push(group.name);
 
-          const held = (divisions[group.name] ??= []);
+          const held = (pools[group.name] ??= []);
           for (const team of group.teams) {
             if (team.isCoach) {
               coached = group.name;
@@ -195,13 +194,13 @@ export class TierListService {
         }
 
         return {
-          divisions,
-          selected: routed ?? coached ?? Object.keys(divisions)[0],
-          sharedDivisions,
+          pools,
+          selected: routed ?? coached ?? Object.keys(pools)[0],
+          sharedPools,
           coachedTeamIds,
         };
       }),
-      catchError(() => of({ divisions: {} })),
+      catchError(() => of({ pools: {} })),
     );
   }
 
@@ -219,7 +218,7 @@ export class TierListService {
   updateSettings(settings: { name?: string; description?: string }) {
     return this.resolveTierListId().pipe(
       switchMap((tierListId) =>
-        this.apiService.patch<{ success: boolean }>(
+        this.apiService.patch<{ message: string }>(
           `${ROOTPATH}/${tierListId}/settings`,
           settings,
         ),
@@ -232,7 +231,6 @@ export class TierListService {
       switchMap((tierListId) =>
         this.apiService.get<{
           tierList: LeagueTier[];
-          divisions: { [key: string]: { pokemonId: string; teamId: string }[] };
           name?: string;
           ruleset?: string;
         }>(`${ROOTPATH}/${tierListId}`, { params: { edit: true } }),
@@ -257,7 +255,7 @@ export class TierListService {
   ) {
     return this.resolveTierListId().pipe(
       switchMap((tierListId) =>
-        this.apiService.patch<{ success: boolean; message: string }>(
+        this.apiService.patch<{ message: string }>(
           `${ROOTPATH}/${tierListId}`,
           { tiers },
         ),

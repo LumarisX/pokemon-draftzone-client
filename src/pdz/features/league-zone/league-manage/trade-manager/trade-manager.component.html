@@ -1,18 +1,18 @@
 <div class="trade-manager">
   <pdz-page-header title="Trades" eyebrow="Manage">
-    <pdz-draft-switcher
+    <pdz-pool-switcher
       pdz-page-header-actions
-      [currentDraftSlug]="draftSlug"
-      (draftSelected)="onDraftSelected($event)"
-    ></pdz-draft-switcher>
+      [currentPoolSlug]="poolSlug"
+      (poolSelected)="onPoolSelected($event)"
+    ></pdz-pool-switcher>
   </pdz-page-header>
 
   @if (loading) {
     <div class="trade-manager__loading"><pdz-loading></pdz-loading></div>
-  } @else if (noDrafts) {
+  } @else if (noPools) {
     <section class="panel">
       <p class="panel__empty">
-        This tournament has no drafts yet. Assign coaches to one before
+        This tournament has no pools yet. Assign coaches to one before
         recording trades.
       </p>
       <a pdz-button class="trade-manager__cta"  [routerLink]="signUpsPath">

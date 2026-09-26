@@ -28,7 +28,7 @@ import { MenuItemComponent } from '@pdz/shared/menu/menu-item.component';
 import { MenuTriggerDirective } from '@pdz/shared/menu/menu-trigger.directive';
 
 interface DraftAddedEvent {
-  draftSlug: string;
+  poolSlug: string;
   pick: {
     pokemon?: League.LeaguePokemon;
   };
@@ -41,7 +41,7 @@ interface DraftAddedEvent {
 }
 
 interface DraftCounterEvent {
-  draftSlug: string;
+  poolSlug: string;
   currentPick: {
     round: number;
     position: number;
@@ -52,7 +52,7 @@ interface DraftCounterEvent {
 }
 
 interface DraftPickUpdatedEvent {
-  draftSlug: string;
+  poolSlug: string;
   round?: number;
   pokemon?: League.LeaguePokemon;
   previous?: League.LeaguePokemon;
@@ -65,7 +65,7 @@ interface DraftPickUpdatedEvent {
 }
 
 interface DraftStatusEvent {
-  draftSlug: string;
+  poolSlug: string;
   status: 'PRE_DRAFT' | 'IN_PROGRESS' | 'PAUSED' | 'COMPLETED';
   noTimer?: boolean;
   currentPick?: {
@@ -76,12 +76,12 @@ interface DraftStatusEvent {
 }
 
 interface DraftSkipEvent {
-  draftSlug: string;
+  poolSlug: string;
   teamName: string;
 }
 
 type DraftDetailsResponse =
-  ReturnType<LeagueZoneService['getDraftDetails']> extends Observable<infer T>
+  ReturnType<LeagueZoneService['getPoolDetails']> extends Observable<infer T>
     ? T
     : never;
 
@@ -129,7 +129,7 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
   isSubmitting: boolean = false;
 
   leagueName: string = '';
-  draftName: string = '';
+  poolName: string = '';
   points: number = 0;
   minDraftCount: number = 0;
   tierRequirements: { tierId: string; tierName: string; required: number }[] =
@@ -235,7 +235,7 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
   private applyDraftDetails(data: DraftDetailsResponse): void {
     this.teams = data.teams;
     this.leagueName = data.leagueName;
-    this.draftName = data.draftName;
+    this.poolName = data.poolName;
     this.currentPick = data.currentPick;
     this.canDraftCounts = data.canDraftCounts ?? {};
     this.noTimer = data.noTimer;
@@ -254,7 +254,7 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
 
   private loadDraftDetails(): void {
     this.leagueService
-      .getDraftDetails()
+      .getPoolDetails()
       .pipe(takeUntil(this.destroy$))
       .subscribe((data) => {
         const previouslySelectedTeamId = this.selectedTeam?.id;
@@ -286,7 +286,7 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
       .on<DraftAddedEvent>('league.draft.added')
       .pipe(takeUntil(this.destroy$))
       .subscribe((data) => {
-        if (this.leagueService.draftSlug() !== data.draftSlug) return;
+        if (this.leagueService.poolSlug() !== data.poolSlug) return;
 
         const pokemon = data.pick.pokemon;
         this.teams = this.teams.map((team) => {
@@ -330,7 +330,7 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
       .on<DraftPickUpdatedEvent>('league.draft.updated')
       .pipe(takeUntil(this.destroy$))
       .subscribe((data) => {
-        if (this.leagueService.draftSlug() !== data.draftSlug) return;
+        if (this.leagueService.poolSlug() !== data.poolSlug) return;
 
         const isViewedTeam = this.selectedTeam?.id === data.team.id;
         const droppedStagedPicks =
@@ -374,7 +374,7 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
       .on<DraftCounterEvent>('league.draft.counter')
       .pipe(takeUntil(this.destroy$))
       .subscribe((data) => {
-        if (this.leagueService.draftSlug() !== data.draftSlug) {
+        if (this.leagueService.poolSlug() !== data.poolSlug) {
           return;
         }
         this.currentPick = data.currentPick;
@@ -392,7 +392,7 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
       .on<DraftStatusEvent>('league.draft.status')
       .pipe(takeUntil(this.destroy$))
       .subscribe((data) => {
-        if (this.leagueService.draftSlug() !== data.draftSlug) {
+        if (this.leagueService.poolSlug() !== data.poolSlug) {
           return;
         }
         this.draftDetails.status = data.status;
@@ -417,10 +417,10 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
       });
 
     this.eventStream
-      .on<{ draftSlug: string }>('league.draft.completed')
+      .on<{ poolSlug: string }>('league.draft.completed')
       .pipe(takeUntil(this.destroy$))
       .subscribe((data) => {
-        if (this.leagueService.draftSlug() !== data.draftSlug) return;
+        if (this.leagueService.poolSlug() !== data.poolSlug) return;
         this.draftDetails.status = 'COMPLETED';
         this.countdownTick$.next();
         this.clearHalfwayReminder();
@@ -431,7 +431,7 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
       .on<DraftSkipEvent>('league.draft.skip')
       .pipe(takeUntil(this.destroy$))
       .subscribe((data) => {
-        if (this.leagueService.draftSlug() !== data.draftSlug) {
+        if (this.leagueService.poolSlug() !== data.poolSlug) {
           return;
         }
         this.notificationService.show(`${data.teamName} was skipped!`, 'info');

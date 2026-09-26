@@ -55,7 +55,7 @@ interface TeamOption {
   teamName: string;
   coachName: string;
   logo?: string;
-  draft: { draftSlug: string; name: string } | null;
+  pool: { poolSlug: string; name: string } | null;
 }
 
 @Component({
@@ -170,12 +170,12 @@ export class LeagueScheduleComponent implements OnInit {
     this.leagueService.getTournamentTeams().subscribe(({ teams }) => {
       this.teams = teams
         .filter((t) => t.status === 'approved')
-        .map(({ id, teamName, coachName, logo, draft }) => ({
+        .map(({ id, teamName, coachName, logo, pool }) => ({
           id,
           teamName,
           coachName,
           logo,
-          draft,
+          pool,
         }));
       if (this.formOpen) this.resetFormTeams();
     });

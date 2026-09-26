@@ -12,7 +12,7 @@ import { League } from '../../league.interface';
 import { getLeagueLogoUrl } from '../../league.util';
 
 @Component({
-  selector: 'pdz-division-dashboard',
+  selector: 'pdz-pool-dashboard',
   imports: [
     RouterModule,
     TabNavComponent,
@@ -22,17 +22,17 @@ import { getLeagueLogoUrl } from '../../league.util';
     StageSwitcherComponent,
     PageHeaderComponent,
   ],
-  templateUrl: './division-dashboard.component.html',
-  styleUrls: ['./division-dashboard.component.scss'],
+  templateUrl: './pool-dashboard.component.html',
+  styleUrls: ['./pool-dashboard.component.scss'],
 })
-export class DivisionDashboardComponent implements OnInit, OnDestroy {
+export class PoolDashboardComponent implements OnInit, OnDestroy {
   private leagueZoneService = inject(LeagueZoneService);
   private router = inject(Router);
   private destroy$ = new Subject<void>();
 
   team?: League.LeagueTeam;
   leagueName = '';
-  divisionName = '';
+  poolName = '';
   logo?: string;
   matchupStage?: League.Stage = undefined;
 
@@ -40,11 +40,11 @@ export class DivisionDashboardComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.leagueZoneService
-      .getDraftDetails()
+      .getPoolDetails()
       .pipe(takeUntil(this.destroy$))
       .subscribe((details) => {
         this.leagueName = details.leagueName;
-        this.divisionName = details.draftName;
+        this.poolName = details.poolName;
         this.logo = details.logo;
       });
 
@@ -62,8 +62,8 @@ export class DivisionDashboardComponent implements OnInit, OnDestroy {
     return this.leagueZoneService.tournamentSlug() || '';
   }
 
-  get draftSlug(): string {
-    return this.leagueZoneService.draftSlug() || '';
+  get poolSlug(): string {
+    return this.leagueZoneService.poolSlug() || '';
   }
 
   get stageSlug(): string | null {

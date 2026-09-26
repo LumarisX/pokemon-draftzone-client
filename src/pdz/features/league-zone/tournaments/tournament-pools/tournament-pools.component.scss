@@ -7,7 +7,7 @@
   min-height: 100%;
 }
 
-.drafts-container {
+.pools-container {
   display: flex;
   flex-direction: column;
   gap: pdz.space(md);
@@ -50,7 +50,7 @@
     font-family: pdz.font(display);
   }
 
-  &--division {
+  &--pool {
     background: pdz.color(surface-container-low);
     color: pdz.color(on-surface);
 

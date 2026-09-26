@@ -83,8 +83,8 @@ export class TournamentNavComponent implements OnInit, OnDestroy {
       .subscribe((profile) => {
         this.profile.set(profile);
         this.profileLoaded = true;
-        if (profile?.draft) {
-          this.loadDraftStatus(profile.draft.draftSlug);
+        if (profile?.pool) {
+          this.loadDraftStatus(profile.pool.poolSlug);
         }
       });
   }
@@ -107,9 +107,9 @@ export class TournamentNavComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  private loadDraftStatus(draftSlug: string): void {
+  private loadDraftStatus(poolSlug: string): void {
     this.leagueService
-      .getDraftDetails(draftSlug)
+      .getPoolDetails(poolSlug)
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (details) =>

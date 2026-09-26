@@ -33,7 +33,7 @@ introduced:
 ```
 tools/quick-draft/quick-draft-picks, tools/quick-draft/quick-draft-final,
 layout/top-navbar, layout/top-navbar/login-button,
-features/pages/homepage/news-core, league-zone/divisions/power-rankings
+features/pages/homepage/news-core, league-zone/pools/power-rankings
 ```
 
 It used to be roughly ten NG0201 scaffolds plus `chat.component.spec.ts`; the

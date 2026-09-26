@@ -1,0 +1,23 @@
+@if (leagueInfo) {
+  <div class="pools-container">
+    <pdz-page-header title="Pools" [eyebrow]="leagueInfo.name" />
+
+    @if (leagueInfo.pools.length) {
+      <div class="pools-container__grid">
+        @for (pool of leagueInfo.pools; track pool.poolSlug) {
+          <a [routerLink]="pool.poolSlug" class="button button--pool">
+            <span class="button__text">{{ pool.name }}</span>
+          </a>
+        }
+      </div>
+    } @else {
+      <p class="pools-container__empty">
+        No pools have been set up for this tournament yet.
+      </p>
+    }
+  </div>
+} @else {
+  <div class="loading-state">
+    <pdz-loading></pdz-loading>
+  </div>
+}

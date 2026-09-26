@@ -7,8 +7,8 @@ import { LeagueZoneService } from '../league-zone.service';
 import { League } from '../league.interface';
 import { LeagueTeamCardComponent } from './league-team-card/league-team-card.component';
 
-type DraftGroup = {
-  draftSlug: string | null;
+type PoolGroup = {
+  poolSlug: string | null;
   name: string;
   teams: League.LeagueTeam[];
 };
@@ -28,26 +28,24 @@ type DraftGroup = {
 export class LeagueTeamsComponent implements OnInit {
   leagueService = inject(LeagueZoneService);
 
-  readonly drafts = signal<DraftGroup[] | undefined>(undefined);
+  readonly pools = signal<PoolGroup[] | undefined>(undefined);
   readonly selected = signal<string | null>(null);
 
   readonly activeGroup = computed(() => {
-    const groups = this.drafts();
+    const groups = this.pools();
     if (!groups?.length) return undefined;
     const key = this.selected();
     return groups.find((group) => this.groupKey(group) === key) ?? groups[0];
   });
 
   ngOnInit(): void {
-    this.leagueService.getTeamsByDraft().subscribe((data) => {
-      this.drafts.set(data.drafts);
-      this.selected.set(
-        data.drafts.length ? this.groupKey(data.drafts[0]) : null,
-      );
+    this.leagueService.getTeamsByPool().subscribe((data) => {
+      this.pools.set(data.pools);
+      this.selected.set(data.pools.length ? this.groupKey(data.pools[0]) : null);
     });
   }
 
-  groupKey(group: DraftGroup): string {
-    return group.draftSlug ?? '';
+  groupKey(group: PoolGroup): string {
+    return group.poolSlug ?? '';
   }
 }

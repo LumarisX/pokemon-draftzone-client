@@ -219,36 +219,11 @@ export function manageAccessLink(base: string[]): TournamentLink | null {
   };
 }
 
-export function manageDraftLinks(
-  base: string[],
-  draft: { name: string; draftSlug: string },
-): TournamentLink[] {
-  if (!base.length) return [];
-  const manage = [...base, 'manage', 'drafts', draft.draftSlug];
-
-  return [
-    {
-      id: `draft-page-${draft.draftSlug}`,
-      label: 'Draft Page',
-      route: [...base, 'drafts', draft.draftSlug, 'draft'],
-      icon: 'dashboard',
-      description: 'The board coaches pick from',
-    },
-    {
-      id: `draft-control-${draft.draftSlug}`,
-      label: 'Draft Control',
-      route: [...manage, 'draft'],
-      icon: 'sports_esports',
-      description: 'Run the draft, skip and undo picks',
-    },
-  ];
-}
-
 function teamGroup(
   context: TournamentLinkContext,
 ): TournamentLinkGroup | null {
   const { base, profile, draftStatus } = context;
-  if (!profile?.draft || !profile.teamSlug) return null;
+  if (!profile?.pool || !profile.teamSlug) return null;
 
   return {
     id: 'team',
@@ -264,7 +239,7 @@ function teamGroup(
       {
         id: 'team-draft',
         label: 'Draft',
-        route: [...base, 'drafts', profile.draft.draftSlug, 'draft'],
+        route: [...base, 'pools', profile.pool.poolSlug, 'draft'],
         icon: 'sports_esports',
         description: 'Make your picks',
         ...(draftStatus ? { status: draftStatus } : {}),

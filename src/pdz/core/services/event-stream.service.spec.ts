@@ -103,7 +103,7 @@ describe('EventStreamService', () => {
     fetchMock.mockResolvedValue(
       streamResponse([
         ': keepalive\n\nevent: league.draft.sta',
-        'tus\ndata: {"draftSlug":"pool-a","status":"PAUSED"}\n\n',
+        'tus\ndata: {"poolSlug":"pool-a","status":"PAUSED"}\n\n',
         'event: league.draft.skip\ndata: {"teamName":"Team A"}\n\n',
       ]),
     );
@@ -115,7 +115,7 @@ describe('EventStreamService', () => {
     service.open(PATH);
     await flush();
 
-    expect(statuses).toEqual([{ draftSlug: 'pool-a', status: 'PAUSED' }]);
+    expect(statuses).toEqual([{ poolSlug: 'pool-a', status: 'PAUSED' }]);
     expect(skips).toEqual([{ teamName: 'Team A' }]);
   });
 

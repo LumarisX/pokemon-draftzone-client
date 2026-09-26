@@ -100,7 +100,7 @@
                 ]"
                 >View Tournament</a
               >
-              @if (tournament.draftSlug) {
+              @if (tournament.teamSlug) {
                 <a
                   pdz-button
                   size="sm"
@@ -111,10 +111,8 @@
                     tournament.leagueSlug,
                     'tournaments',
                     tournament.tournamentSlug,
-                    'drafts',
-                    tournament.draftSlug,
                     'teams',
-                    tournament.teamId,
+                    tournament.teamSlug,
                   ]"
                   >View My Team</a
                 >
@@ -241,16 +239,6 @@
           <div pdz-card-header>
             <div class="card-title">
               <h2 class="league-name">{{ archive.leagueName }}</h2>
-              <!-- @if (unresolvedWarning(archive); as warning) {
-              <a
-                class="draft-warning"
-                [routerLink]="['edit']"
-                [queryParams]="{ draft: archive.slug | json }"
-                [pdzTooltip]="warning"
-              >
-                <pdz-icon name="warning"></pdz-icon>
-              </a>
-            } -->
             </div>
             @if (archive.score) {
               <pdz-score [tone]="scoreTone(archive.score)">{{
@@ -278,14 +266,6 @@
                   Restore
                 </button>
               }
-              <!-- <button
-                pdz-menu-item
-                icon="delete_forever"
-                tone="danger"
-                (click)="confirmDelete(archives)"
-              >
-                Delete
-              </button> -->
             </pdz-menu>
           </div>
 

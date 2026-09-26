@@ -10,8 +10,8 @@ import { LEAGUE_MATCHUP_PAGE } from '../drafts/matchup-overview/matchup-page.con
 import { TierListFormComponent } from '../tier-lists/tier-list/tier-list-form/tier-list-form.component';
 import { unsavedChangesGuard } from '../tier-lists/tier-list/tier-list-form/unsaved-changes.guard';
 import { TierListComponent } from '../tier-lists/tier-list/tier-list.component';
-import { DivisionDashboardComponent } from './divisions/division-dashboard/division-dashboard.component';
-import { PowerRankingsComponent } from './divisions/power-rankings/power-rankings.component';
+import { PoolDashboardComponent } from './pools/pool-dashboard/pool-dashboard.component';
+import { PowerRankingsComponent } from './pools/power-rankings/power-rankings.component';
 import { LeagueBracketComponent } from './league-bracket/league-bracket.component';
 import { LeagueDraftComponent } from './league-drafting/league-drafting.component';
 import { LeagueLandingComponent } from './league-landing/league-landing.component';
@@ -25,7 +25,7 @@ import { LeagueTeamsComponent } from './league-teams/league-teams.component';
 import { LeagueTradesComponent } from './league-trades/league-trades.component';
 import { OrganizerInviteComponent } from './organizer-invite/organizer-invite.component';
 import { TournamentDraftComponent } from './tournaments/tournament-draft/tournament-draft.component';
-import { TournamentDraftsComponent } from './tournaments/tournament-drafts/tournament-drafts.component';
+import { TournamentPoolsComponent } from './tournaments/tournament-pools/tournament-pools.component';
 import { TournamentLandingComponent } from './tournaments/tournament-landing/tournament-landing.component';
 import { TournamentLayoutComponent } from './tournaments/tournament-layout/tournament-layout.component';
 
@@ -98,12 +98,12 @@ export const routes: Routes = [
         component: TournamentDraftComponent,
       },
       {
-        path: 'drafts',
-        component: TournamentDraftsComponent,
+        path: 'pools',
+        component: TournamentPoolsComponent,
       },
       {
-        path: 'drafts/:draftSlug',
-        component: DivisionDashboardComponent,
+        path: 'pools/:poolSlug',
+        component: PoolDashboardComponent,
       },
       {
         path: 'matchups/:matchupSlug',
@@ -119,27 +119,48 @@ export const routes: Routes = [
         component: LeagueStandingsComponent,
       },
       {
-        path: 'drafts/:draftSlug/draft',
+        path: 'pools/:poolSlug/draft',
         component: LeagueDraftComponent,
       },
       {
-        path: 'drafts/:draftSlug/power-rankings',
+        path: 'pools/:poolSlug/power-rankings',
         component: PowerRankingsComponent,
       },
       {
-        path: 'drafts/:draftSlug/teams',
+        path: 'pools/:poolSlug/tier-list',
+        component: TierListComponent,
+      },
+      {
+        path: 'drafts',
+        redirectTo: 'pools',
+        pathMatch: 'full',
+      },
+      {
+        path: 'drafts/:poolSlug',
+        redirectTo: 'pools/:poolSlug',
+        pathMatch: 'full',
+      },
+      {
+        path: 'drafts/:poolSlug/draft',
+        redirectTo: 'pools/:poolSlug/draft',
+      },
+      {
+        path: 'drafts/:poolSlug/power-rankings',
+        redirectTo: 'pools/:poolSlug/power-rankings',
+      },
+      {
+        path: 'drafts/:poolSlug/tier-list',
+        redirectTo: 'pools/:poolSlug/tier-list',
+      },
+      {
+        path: 'drafts/:poolSlug/teams',
         redirectTo: 'teams',
         pathMatch: 'full',
       },
       {
-        path: 'drafts/:draftSlug/teams/:teamSlug',
+        path: 'drafts/:poolSlug/teams/:teamSlug',
         redirectTo: 'teams/:teamSlug',
         pathMatch: 'full',
-      },
-
-      {
-        path: 'drafts/:draftSlug/tier-list',
-        component: TierListComponent,
       },
       {
         path: 'stages/:stageSlug/trades',

@@ -309,14 +309,14 @@ export class TournamentSettingsStore {
     })
       .pipe(
         switchMap((data) => {
-          const slugs = (data.coaches?.drafts ?? []).map(
-            (entry) => entry.draftSlug,
+          const slugs = (data.coaches?.pools ?? []).map(
+            (entry) => entry.poolSlug,
           );
           if (!slugs.length) return of({ ...data, details: [] });
           return forkJoin(
             slugs.map((slug) =>
               this.league
-                .getDraftDetails(slug)
+                .getPoolDetails(slug)
                 .pipe(catchError(() => of(null))),
             ),
           ).pipe(map((details) => ({ ...data, details })));
@@ -440,25 +440,25 @@ export class TournamentSettingsStore {
     }));
 
     const detailBySlug = new Map(
-      (coaches?.drafts ?? []).map((entry, index) => [
-        entry.draftSlug,
+      (coaches?.pools ?? []).map((entry, index) => [
+        entry.poolSlug,
         details[index] ?? null,
       ]),
     );
 
-    const pools: DraftPoolValue[] = (coaches?.drafts ?? []).map((entry) => {
-      const detail = detailBySlug.get(entry.draftSlug) ?? null;
+    const pools: DraftPoolValue[] = (coaches?.pools ?? []).map((entry) => {
+      const detail = detailBySlug.get(entry.poolSlug) ?? null;
       const members = signUps.filter(
         (signUp) =>
           !signUp.departed &&
           (coaches?.signups ?? []).find(
             (raw) => raw.applicationId === signUp.applicationId,
-          )?.draft === entry.draftSlug,
+          )?.poolSlug === entry.poolSlug,
       );
       return {
-        id: entry.draftSlug,
-        slug: entry.draftSlug,
-        name: detail?.draftName ?? entry.name,
+        id: entry.poolSlug,
+        slug: entry.poolSlug,
+        name: detail?.poolName ?? entry.name,
         channelId: detail?.channelId ?? '',
         status: detail?.status ?? 'PRE_DRAFT',
         draftStart: toLocalInput(detail?.draftStart),
@@ -845,7 +845,7 @@ export class TournamentSettingsStore {
         ? [
             {
               teamSlug: entry.teamSlug,
-              draft: pool.get(entry.id),
+              pool: pool.get(entry.id),
               status: entry.status,
             },
           ]
@@ -855,14 +855,14 @@ export class TournamentSettingsStore {
 
   private membershipPatch(): SignUpAssignment[] {
     const saved = this.poolBySignUp(this.savedPools());
-    const draft = this.poolBySignUp(this.pools());
+    const current = this.poolBySignUp(this.pools());
     return this.signUps().flatMap((entry) => {
       const coachId = entry.id;
       if (!coachId || !entry.teamSlug) return [];
-      const pool = draft.get(coachId);
+      const pool = current.get(coachId);
       return saved.get(coachId) === pool
         ? []
-        : [{ teamSlug: entry.teamSlug, draft: pool, status: entry.status }];
+        : [{ teamSlug: entry.teamSlug, pool, status: entry.status }];
     });
   }
 
@@ -985,12 +985,12 @@ export class TournamentSettingsStore {
   addPool(name: string): Observable<unknown> {
     this.saving.set(true);
     this.saveError.set(null);
-    return this.manage.createDraftPool({ name }).pipe(
+    return this.manage.createPool({ name }).pipe(
       tap({
         next: (created) => {
           const pool: DraftPoolValue = {
-            id: created.draftSlug,
-            slug: created.draftSlug,
+            id: created.poolSlug,
+            slug: created.poolSlug,
             name: created.name,
             channelId: '',
             status: 'PRE_DRAFT',
@@ -1027,7 +1027,7 @@ export class TournamentSettingsStore {
 
     this.saving.set(true);
     this.saveError.set(null);
-    return this.manage.deleteDraftPool(pool.slug).pipe(
+    return this.manage.deletePool(pool.slug).pipe(
       tap({
         next: () => {
           const without = (pools: DraftPoolValue[]) =>
@@ -1164,7 +1164,7 @@ export class TournamentSettingsStore {
 
 type SignUpAssignment = {
   teamSlug: string;
-  draft?: string;
+  pool?: string;
   status: League.SignUpStatus;
 };
 
@@ -1177,7 +1177,7 @@ type TierListResponse = {
 
 type CoachesResponse = {
   signups: League.LeagueSignUp[];
-  drafts: { name: string; draftSlug: string }[];
+  pools: { name: string; poolSlug: string }[];
 };
 
 type TradesResponse = {
@@ -1190,7 +1190,7 @@ type ScheduleResponse = {
 };
 
 type DraftDetailsResponse = {
-  draftName: string;
+  poolName: string;
   teamOrder: string[];
   useRandomSeeding: boolean;
   channelId?: string;

@@ -1,18 +1,18 @@
 <div class="teams">
   <pdz-page-header title="Teams">
-    @if (drafts()?.length === 1) {
+    @if (pools()?.length === 1) {
       <span pdz-page-header-detail>{{ activeGroup()?.name }}</span>
     }
 
-    @if (drafts() && drafts()!.length > 1) {
+    @if (pools() && pools()!.length > 1) {
       <pdz-segmented
-        class="teams__divisions"
+        class="teams__pools"
         size="sm"
-        aria-label="Division"
+        aria-label="Pool"
         [value]="selected()"
         (valueChange)="selected.set($any($event))"
       >
-        @for (group of drafts()!; track groupKey(group)) {
+        @for (group of pools()!; track groupKey(group)) {
           <pdz-segmented-option
             [value]="groupKey(group)"
             [label]="group.name"
@@ -23,13 +23,13 @@
   </pdz-page-header>
 
   <div class="teams__body">
-    @if (drafts()) {
+    @if (pools()) {
       @if (activeGroup(); as group) {
         <div class="teams__grid">
           @for (team of group.teams; track team.id) {
             <pdz-league-team-card [teamDetails]="team"></pdz-league-team-card>
           } @empty {
-            <div class="teams__empty">No teams added to this division</div>
+            <div class="teams__empty">No teams added to this pool</div>
           }
         </div>
       } @else {

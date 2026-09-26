@@ -21,7 +21,6 @@ export interface TradeProposeDialogData {
   teamId: string;
   teamName: string;
   roster: League.LeaguePokemon[];
-  /** Current roster cost, used with pointTotal for the budget check. */
   rosterCost: number;
   pointTotal?: number;
   roundIndex: number;
@@ -59,9 +58,7 @@ export class TradeProposeDialogComponent implements OnInit {
   loading = signal(true);
   loadError = signal('');
 
-  /** The coach's own roster, minus anything already staged to send. */
   sendOptions$ = new BehaviorSubject<DraftPokemon[]>([]);
-  /** Undrafted tier-list Pokémon, minus anything already staged to receive. */
   receiveOptions$ = new BehaviorSubject<DraftPokemon[]>([]);
 
   send: TradeOption[] = [];
@@ -72,8 +69,6 @@ export class TradeProposeDialogComponent implements OnInit {
 
   ngOnInit(): void {
     forkJoin({
-      // Which Pokémon are still free is a tournament question, not a tier-list
-      // one — the tier list is shared and says nothing about who holds what.
       tierList: this.tierListService.getTierList().pipe(
         take(1),
         catchError(() => of(null)),
@@ -90,12 +85,12 @@ export class TradeProposeDialogComponent implements OnInit {
       }
 
       const costById = new Map<string, { cost: number; tier: string }>();
-      const ownDraftSlug =
-        teams.teams.find((team) => team.id === this.data.teamId)?.draft
-          ?.draftSlug ?? null;
+      const ownPoolSlug =
+        teams.teams.find((team) => team.id === this.data.teamId)?.pool
+          ?.poolSlug ?? null;
       const drafted = new Set(
         teams.teams
-          .filter((team) => (team.draft?.draftSlug ?? null) === ownDraftSlug)
+          .filter((team) => (team.pool?.poolSlug ?? null) === ownPoolSlug)
           .flatMap((team) => team.roster.map((p) => p.id)),
       );
 

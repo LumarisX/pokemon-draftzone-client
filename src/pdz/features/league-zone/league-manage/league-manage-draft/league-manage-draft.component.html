@@ -1,5 +1,5 @@
 
-<pdz-page-header [title]="draftName || 'Draft Control'" eyebrow="Draft Control">
+<pdz-page-header [title]="poolName || 'Draft Control'" eyebrow="Draft Control">
   <span pdz-page-header-detail>
     <span
       class="page-header__status-badge"
@@ -87,10 +87,10 @@
       </button>
     }
   </div>
-  <pdz-draft-switcher
-    [currentDraftSlug]="draftSlug"
-    (draftSelected)="onDraftSelected($event)"
-  ></pdz-draft-switcher>
+  <pdz-pool-switcher
+    [currentPoolSlug]="poolSlug"
+    (poolSelected)="onPoolSelected($event)"
+  ></pdz-pool-switcher>
 </pdz-page-header>
 
 <div class="control-panels">
@@ -106,8 +106,8 @@
         id="draft-name"
         class="form-field__input"
         type="text"
-        [value]="pendingDraftName"
-        (input)="pendingDraftName = $any($event.target).value"
+        [value]="pendingPoolName"
+        (input)="pendingPoolName = $any($event.target).value"
       />
     </div>
 

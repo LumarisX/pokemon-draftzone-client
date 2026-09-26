@@ -236,7 +236,7 @@ export namespace League {
     teamName: string;
     logo?: string;
     signedUpAt: Date;
-    draft?: string;
+    poolSlug?: string;
     hasDiscordRole?: boolean;
     inDiscordServer?: boolean;
     hasValidTeam?: boolean;
@@ -345,7 +345,7 @@ export namespace League {
     seasonStart?: Date;
     seasonEnd?: Date;
     logo?: string;
-    drafts: { name: string; draftSlug: string }[];
+    pools: { name: string; poolSlug: string }[];
     discord?: string;
     tierListId?: string;
     draftCount?: { min: number; max: number };
@@ -388,7 +388,7 @@ export namespace League {
     signedUpAt: Date;
     teamId?: string;
     teamSlug?: string;
-    draft?: { draftSlug: string; name: string };
+    pool?: { poolSlug: string; name: string } | null;
     inDiscordServer: boolean;
   };
 

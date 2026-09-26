@@ -103,22 +103,22 @@
     </div>
   </pdz-menu>
 
-  @if (divisionNames.length > 1) {
-    <div pdz-field inline label="Division" class="toolbar__select">
+  @if (poolNames.length > 1) {
+    <div pdz-field inline label="Pool" class="toolbar__select">
       <pdz-select
         size="sm"
-        aria-label="Division"
-        [ngModel]="selectedDivision()"
-        (ngModelChange)="selectedDivision.set($event)"
+        aria-label="Pool"
+        [ngModel]="selectedPool()"
+        (ngModelChange)="selectedPool.set($event)"
       >
-        @for (div of divisionNames; track $index) {
-          <pdz-option [value]="div" [label]="div" />
+        @for (pool of poolNames; track $index) {
+          <pdz-option [value]="pool" [label]="pool" />
         }
       </pdz-select>
     </div>
   }
 
-  @if (divisionNames.length > 0) {
+  @if (poolNames.length > 0) {
     <button
       pdz-button
       size="sm"
@@ -147,7 +147,6 @@
   </button>
 </div>
 
-<!-- Tier List Main -->
 <div class="tier-main">
   @if (!sortedTiers()) {
     <pdz-loading></pdz-loading>

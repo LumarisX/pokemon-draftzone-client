@@ -16,42 +16,39 @@ export const routes: Routes = [
     component: LeagueRulesFormComponent,
   },
   {
-    path: 'drafts/:draftSlug/draft',
+    path: 'pools/:poolSlug/draft',
     component: LeagueManageDraftComponent,
   },
-  // Trades are scoped to a draft pool, not a stage: only teams that drafted
-  // together can trade, and free agency is whatever their pool left untaken.
+  {
+    path: 'drafts/:poolSlug/draft',
+    redirectTo: 'pools/:poolSlug/draft',
+  },
   {
     path: 'trades',
     component: TradeManagerComponent,
   },
   {
-    path: 'drafts/:draftSlug/trades',
+    path: 'pools/:poolSlug/trades',
     component: TradeManagerComponent,
+  },
+  {
+    path: 'drafts/:poolSlug/trades',
+    redirectTo: 'pools/:poolSlug/trades',
   },
   {
     path: 'schedule',
     component: LeagueScheduleComponent,
   },
-  // Tournament-scoped, not stage-scoped: the page loads every round from
-  // getSchedule() and groups matches by stage itself.
   {
     path: 'results',
     component: LeagueManageResultsComponent,
   },
   {
-    // Where the per-stage results editor used to live. Kept as a redirect so the
-    // hub's per-stage links and old bookmarks still land somewhere useful.
     path: 'stages/:stageSlug/schedule',
     redirectTo: 'results',
   },
   {
-    // The standalone stage list is gone: creating a stage and setting its
-    // visibility both belong with the matchups they describe, and are done on
-    // the builder itself.
     path: 'stages',
-    // Full match only: a prefix redirect here would swallow the stage-scoped
-    // routes above and append their segments onto the builder's path.
     pathMatch: 'full',
     redirectTo: 'schedule',
   },

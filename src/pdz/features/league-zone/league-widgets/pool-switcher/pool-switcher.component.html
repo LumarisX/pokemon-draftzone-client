@@ -1,0 +1,13 @@
+@if (pools.length > 1) {
+  <pdz-segmented
+    class="pool-switcher"
+    size="sm"
+    aria-label="Pool"
+    [value]="currentPoolSlug()"
+    (valueChange)="selectPool($any($event))"
+  >
+    @for (pool of pools; track pool.poolSlug) {
+      <pdz-segmented-option [value]="pool.poolSlug" [label]="pool.name" />
+    }
+  </pdz-segmented>
+}

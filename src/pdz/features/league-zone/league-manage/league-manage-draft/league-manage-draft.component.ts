@@ -13,7 +13,7 @@ import { DraftPokemon } from '../../../drafts/draft.model';
 import { PokemonSearchComponent } from '@pdz/shared/dropdowns/pokemon-search/pokemon-search.component';
 import { TierListService } from '../../../tier-lists/tier-list.service';
 import { LeagueNotificationService } from '../../league-notification.service';
-import { DraftDetails, LeagueManageService } from '../league-manage.service';
+import { PoolDetails, LeagueManageService } from '../league-manage.service';
 import { LeagueZoneService } from '../../league-zone.service';
 import { EventStreamService } from '@pdz/core/services/event-stream.service';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
@@ -24,10 +24,10 @@ import { League } from '../../league.interface';
 import { formatCountdown } from '../../league.util';
 import { ChoiceDirective } from '@pdz/shared/inputs/choice/choice.directive';
 import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
-import { DraftSwitcherComponent } from '../../league-widgets/draft-switcher/draft-switcher.component';
+import { PoolSwitcherComponent } from '../../league-widgets/pool-switcher/pool-switcher.component';
 
 interface DraftCounterEvent {
-  draftSlug: string;
+  poolSlug: string;
   currentPick: {
     round: number;
     position: number;
@@ -37,7 +37,7 @@ interface DraftCounterEvent {
 }
 
 interface DraftPickUpdatedEvent {
-  draftSlug: string;
+  poolSlug: string;
   round?: number;
   pokemon?: League.LeaguePokemon;
   previous?: League.LeaguePokemon;
@@ -70,7 +70,7 @@ export interface DraftTurnRound {
     CdkDrag,
     CdkDragHandle,
     ChoiceDirective,
-    DraftSwitcherComponent,
+    PoolSwitcherComponent,
     PageHeaderComponent,
   ],
   templateUrl: './league-manage-draft.component.html',
@@ -106,13 +106,13 @@ export class LeagueManageDraftComponent implements OnInit, OnDestroy {
   pendingOrder: string[] = [];
   orderSaving = false;
 
-  draftName = '';
+  poolName = '';
   channelId?: string;
   picksVisibleTo: League.PicksVisibleTo = 'everyone';
   allowDuplicates = false;
   allowRemovals = false;
 
-  pendingDraftName = '';
+  pendingPoolName = '';
   pendingChannelId = '';
   pendingOrderProgression: 'snake' | 'linear' = 'snake';
   pendingSequentialTurns = false;
@@ -169,7 +169,7 @@ export class LeagueManageDraftComponent implements OnInit, OnDestroy {
 
   get isSettingsDirty(): boolean {
     return (
-      this.pendingDraftName !== this.draftName ||
+      this.pendingPoolName !== this.poolName ||
       this.pendingChannelId !== (this.channelId ?? '') ||
       this.pendingOrderProgression !== this.orderProgression ||
       this.pendingSequentialTurns !== this.sequentialTurns ||
@@ -261,28 +261,28 @@ export class LeagueManageDraftComponent implements OnInit, OnDestroy {
 
     this.route.paramMap
       .pipe(
-        map((params) => params.get('draftSlug')),
+        map((params) => params.get('poolSlug')),
         distinctUntilChanged(),
         tap(() => this.resetPendingEdits()),
-        switchMap((draftSlug) =>
-          this.leagueZoneService.getDraftDetails(draftSlug ?? undefined),
+        switchMap((poolSlug) =>
+          this.leagueZoneService.getPoolDetails(poolSlug ?? undefined),
         ),
         takeUntil(this.destroy$),
       )
       .subscribe((data) => {
-        this.applyDraftDetails(data);
+        this.applyPoolDetails(data);
         this.startCountdown();
       });
 
     this.eventStream
       .on<{
-        draftSlug: string;
+        poolSlug: string;
         pick: { pokemon: League.LeaguePokemon };
         team: { id: string; name: string; draft: League.LeaguePokemon[] };
       }>('league.draft.added')
       .pipe(takeUntil(this.destroy$))
       .subscribe((data) => {
-        if (this.leagueZoneService.draftSlug() !== data.draftSlug) return;
+        if (this.leagueZoneService.poolSlug() !== data.poolSlug) return;
 
         const team = this.teams.find((team) => team.id === data.team.id);
         if (team) team.draft = data.team.draft;
@@ -296,7 +296,7 @@ export class LeagueManageDraftComponent implements OnInit, OnDestroy {
       .on<DraftPickUpdatedEvent>('league.draft.updated')
       .pipe(takeUntil(this.destroy$))
       .subscribe((data) => {
-        if (this.leagueZoneService.draftSlug() !== data.draftSlug) return;
+        if (this.leagueZoneService.poolSlug() !== data.poolSlug) return;
 
         const team = this.teams.find((team) => team.id === data.team.id);
         if (team) team.draft = data.team.draft;
@@ -306,7 +306,7 @@ export class LeagueManageDraftComponent implements OnInit, OnDestroy {
       .on<DraftCounterEvent>('league.draft.counter')
       .pipe(takeUntil(this.destroy$))
       .subscribe((data) => {
-        if (this.leagueZoneService.draftSlug() !== data.draftSlug) return;
+        if (this.leagueZoneService.poolSlug() !== data.poolSlug) return;
 
         this.currentPick = data.currentPick;
         this.startCountdown();
@@ -314,14 +314,14 @@ export class LeagueManageDraftComponent implements OnInit, OnDestroy {
 
     this.eventStream
       .on<{
-        draftSlug: string;
+        poolSlug: string;
         status: 'PRE_DRAFT' | 'IN_PROGRESS' | 'PAUSED' | 'COMPLETED';
         noTimer?: boolean;
         currentPick?: { round: number; position: number; skipTime?: Date };
       }>('league.draft.status')
       .pipe(takeUntil(this.destroy$))
       .subscribe((data) => {
-        if (this.leagueZoneService.draftSlug() !== data.draftSlug) return;
+        if (this.leagueZoneService.poolSlug() !== data.poolSlug) return;
 
         this.status = data.status;
         if (data.noTimer !== undefined) this.noTimer = data.noTimer;
@@ -358,19 +358,19 @@ export class LeagueManageDraftComponent implements OnInit, OnDestroy {
     this.pickTimeDisplay = diffMs > 0 ? formatCountdown(diffMs) : '0s';
   }
 
-  get draftSlug(): string | null {
-    return this.leagueZoneService.draftSlug();
+  get poolSlug(): string | null {
+    return this.leagueZoneService.poolSlug();
   }
 
-  onDraftSelected(draftSlug: string): void {
+  onPoolSelected(poolSlug: string): void {
     this.router.navigate([
       '/leagues',
       this.leagueZoneService.leagueSlug(),
       'tournaments',
       this.leagueZoneService.tournamentSlug(),
       'manage',
-      'drafts',
-      draftSlug,
+      'pools',
+      poolSlug,
       'draft',
     ]);
   }
@@ -383,7 +383,7 @@ export class LeagueManageDraftComponent implements OnInit, OnDestroy {
     this.testingMessage = false;
   }
 
-  private applyDraftDetails(data: DraftDetails): void {
+  private applyPoolDetails(data: PoolDetails): void {
     this.teams = data.teams;
     this.status = data.status;
     this.noTimer = data.noTimer;
@@ -397,13 +397,13 @@ export class LeagueManageDraftComponent implements OnInit, OnDestroy {
     this.pendingUseRandomSeeding = data.useRandomSeeding;
     this.pendingOrder = [...data.teamOrder];
 
-    this.draftName = data.draftName;
+    this.poolName = data.poolName;
     this.channelId = data.channelId;
     this.picksVisibleTo = data.picksVisibleTo;
     this.allowDuplicates = data.allowDuplicates;
     this.allowRemovals = data.allowRemovals;
 
-    this.pendingDraftName = data.draftName;
+    this.pendingPoolName = data.poolName;
     this.pendingChannelId = data.channelId ?? '';
     this.pendingOrderProgression = data.orderProgression;
     this.pendingSequentialTurns = data.sequentialTurns;
@@ -453,7 +453,7 @@ export class LeagueManageDraftComponent implements OnInit, OnDestroy {
       )
       .subscribe({
         next: (data) => {
-          this.applyDraftDetails(data);
+          this.applyPoolDetails(data);
           this.editingKey = null;
           this.notificationService.show(
             `Round ${turn.round + 1}: ${turn.team.name} set to ${pokemon.name}.`,
@@ -481,7 +481,7 @@ export class LeagueManageDraftComponent implements OnInit, OnDestroy {
       )
       .subscribe({
         next: (data) => {
-          this.applyDraftDetails(data);
+          this.applyPoolDetails(data);
           this.editingKey = null;
           this.notificationService.show(
             `Cleared ${pokemon.name} from ${turn.team.name}.`,
@@ -512,7 +512,7 @@ export class LeagueManageDraftComponent implements OnInit, OnDestroy {
       )
       .subscribe({
         next: (data) => {
-          this.applyDraftDetails(data);
+          this.applyPoolDetails(data);
           this.editingKey = null;
           this.notificationService.show(
             `Draft moved to round ${turn.round + 1}, pick ${turn.position + 1} (${turn.team.name}).`,
@@ -577,7 +577,7 @@ export class LeagueManageDraftComponent implements OnInit, OnDestroy {
       )
       .subscribe({
         next: (data) => {
-          this.applyDraftDetails(data);
+          this.applyPoolDetails(data);
           this.notificationService.show('Draft order saved.', 'success');
         },
         error: (error) =>
@@ -594,7 +594,7 @@ export class LeagueManageDraftComponent implements OnInit, OnDestroy {
 
     this.leagueManageService
       .updateDraftSettings({
-        name: this.pendingDraftName,
+        name: this.pendingPoolName,
         channelId: this.pendingChannelId.trim()
           ? this.pendingChannelId.trim()
           : null,
@@ -614,7 +614,7 @@ export class LeagueManageDraftComponent implements OnInit, OnDestroy {
       )
       .subscribe({
         next: (data) => {
-          this.applyDraftDetails(data);
+          this.applyPoolDetails(data);
           this.notificationService.show('Draft settings saved.', 'success');
         },
         error: (error) =>
@@ -638,10 +638,10 @@ export class LeagueManageDraftComponent implements OnInit, OnDestroy {
       .subscribe({
         next: (data) =>
           this.notificationService.show(
-            data.success
+            data.delivered
               ? 'Test message sent — check the channel.'
               : "Couldn't deliver a test message. Check the channel ID and bot permissions.",
-            data.success ? 'success' : 'error',
+            data.delivered ? 'success' : 'error',
           ),
         error: (error) =>
           this.notificationService.show(

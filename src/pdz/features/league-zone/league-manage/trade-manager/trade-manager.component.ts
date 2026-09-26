@@ -23,7 +23,7 @@ import {
   takeUntil,
 } from 'rxjs';
 import { LeagueZoneService } from '../../league-zone.service';
-import { DraftSwitcherComponent } from '../../league-widgets/draft-switcher/draft-switcher.component';
+import { PoolSwitcherComponent } from '../../league-widgets/pool-switcher/pool-switcher.component';
 import { TradeLog, TradeStatus } from '../../league.interface';
 import { TradeCardComponent } from '../../trade-card/trade-card.component';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
@@ -62,7 +62,7 @@ interface ManagedTeam {
     IconComponent,
     SpriteComponent,
     PokemonSearchComponent,
-    DraftSwitcherComponent,
+    PoolSwitcherComponent,
     SelectComponent,
     SelectOptionComponent,
     ButtonComponent,
@@ -101,16 +101,10 @@ export class TradeManagerComponent implements OnInit, OnDestroy {
   side1: SideState = this.blankSide();
   side2: SideState = this.blankSide();
 
-  /** Resolved from the route when present, else the tournament's first draft. */
-  draftSlug: string | null = null;
-  noDrafts = false;
+  poolSlug: string | null = null;
+  noPools = false;
 
-  /**
-   * Teams that drafted in {@link draftSlug}. Everything on this page is scoped
-   * to it: only these teams can trade with each other, only their spend counts
-   * against the ledger, and only Pokémon none of them hold are free agents.
-   */
-  private teamIdsInDraft = new Set<string>();
+  private teamIdsInPool = new Set<string>();
 
   get signUpsPath(): string {
     return `/leagues/${this.leagueService.leagueSlug()}/tournaments/${this.leagueService.tournamentSlug()}/manage/sign-ups`;
@@ -119,21 +113,21 @@ export class TradeManagerComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.route.paramMap
       .pipe(
-        map((params) => params.get('draftSlug')),
+        map((params) => params.get('poolSlug')),
         distinctUntilChanged(),
-        switchMap((routeDraftSlug) =>
-          routeDraftSlug
-            ? of(routeDraftSlug)
+        switchMap((routePoolSlug) =>
+          routePoolSlug
+            ? of(routePoolSlug)
             : this.leagueService
                 .getLeagueInfo()
-                .pipe(map((info) => info.drafts[0]?.draftSlug ?? null)),
+                .pipe(map((info) => info.pools[0]?.poolSlug ?? null)),
         ),
         takeUntil(this.destroy$),
       )
-      .subscribe((draftSlug) => {
-        this.draftSlug = draftSlug;
-        this.noDrafts = !draftSlug;
-        if (draftSlug) this.load();
+      .subscribe((poolSlug) => {
+        this.poolSlug = poolSlug;
+        this.noPools = !poolSlug;
+        if (poolSlug) this.load();
         else this.loading = false;
       });
   }
@@ -143,15 +137,15 @@ export class TradeManagerComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  onDraftSelected(draftSlug: string): void {
+  onPoolSelected(poolSlug: string): void {
     this.router.navigate([
       '/leagues',
       this.leagueService.leagueSlug(),
       'tournaments',
       this.leagueService.tournamentSlug(),
       'manage',
-      'drafts',
-      draftSlug,
+      'pools',
+      poolSlug,
       'trades',
     ]);
   }
@@ -185,19 +179,14 @@ export class TradeManagerComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: ({ tierList, teams, trades }) => {
-          // The teams endpoint is tournament-wide; a trade only ever happens
-          // inside one draft pool, so everything below works off this slice.
-          const inDraft = teams.teams.filter(
-            (team) => team.draft?.draftSlug === this.draftSlug,
+          const inPool = teams.teams.filter(
+            (team) => team.pool?.poolSlug === this.poolSlug,
           );
-          this.teamIdsInDraft = new Set(inDraft.map((team) => team.id));
+          this.teamIdsInPool = new Set(inPool.map((team) => team.id));
 
           this.applyTradesResponse(trades);
 
-          // Rosters come from the tournament, not the tier list: who holds what
-          // depends on this tournament's approved trades, and the same tier
-          // list can back several tournaments.
-          this.teams = inDraft
+          this.teams = inPool
             .map((team) => ({
               id: team.id,
               name: team.teamName,
@@ -213,10 +202,8 @@ export class TradeManagerComponent implements OnInit, OnDestroy {
             }))
             .sort((a, b) => a.name.localeCompare(b.name));
 
-          // Only this pool's rosters: pools draft the tier list independently,
-          // so a Pokémon another pool took is still a free agent here.
           const drafted = new Set(
-            inDraft.flatMap((team) => team.roster.map((p) => p.id)),
+            inPool.flatMap((team) => team.roster.map((p) => p.id)),
           );
 
           const freeAgents: TradeOption[] = [];
@@ -260,24 +247,19 @@ export class TradeManagerComponent implements OnInit, OnDestroy {
     this.rounds = trades.rounds
       .map((round) => ({
         ...round,
-        trades: round.trades.filter((trade) => this.inThisDraft(trade)),
+        trades: round.trades.filter((trade) => this.inThisPool(trade)),
       }))
       .filter((round) => round.trades.length)
       .reverse();
     this.tradePointLimit = trades.tradePoints?.limit ?? null;
     this.spentByTeam = (trades.tradePoints?.byTeam ?? []).filter((entry) =>
-      this.teamIdsInDraft.has(entry.teamId),
+      this.teamIdsInPool.has(entry.teamId),
     );
   }
 
-  /**
-   * Trades are tournament-wide, so the response carries every pool's. A trade
-   * belongs to this page if a team from this pool is on either side — the
-   * other side may be free agency, which has no team.
-   */
-  private inThisDraft(trade: TradeLog): boolean {
+  private inThisPool(trade: TradeLog): boolean {
     return [trade.side1, trade.side2].some(
-      (side) => side.team && this.teamIdsInDraft.has(side.team.id),
+      (side) => side.team && this.teamIdsInPool.has(side.team.id),
     );
   }
 
@@ -336,7 +318,6 @@ export class TradeManagerComponent implements OnInit, OnDestroy {
     return this.spentByTeam.find((e) => e.teamId === teamId)?.spent ?? 0;
   }
 
-  /** Projected spend if the staged trade were approved as entered. */
   projectedFor(key: SideKey): number | null {
     const side = this.side(key);
     if (!side.teamId || side.teamId === FREE_AGENCY) return null;
