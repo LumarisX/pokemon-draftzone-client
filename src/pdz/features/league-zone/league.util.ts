@@ -5,15 +5,8 @@ export function getLogoUrl(logoId: string | undefined) {
   return `https://${BUCKETPATH}/${logoId}`;
 }
 
-/**
- * League and tournament logos span two storage conventions: legacy rows hold a
- * bare filename that lived under `league-uploads/`, while uploads through the
- * presigned-URL flow store the full S3 key (folder included). The separator
- * tells them apart.
- */
 export function getLeagueLogoUrl(logoId: string | undefined): string | undefined {
   if (!logoId) return undefined;
-  // Some endpoints hand back an already-resolved public URL.
   if (/^https?:\/\//i.test(logoId)) return logoId;
   if (logoId.includes('/')) return `https://${BUCKETPATH}/${logoId}`;
   return `https://${BUCKETPATH}/league-uploads/${logoId}`;

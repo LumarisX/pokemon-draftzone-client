@@ -2,7 +2,11 @@
 import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { Subject, takeUntil } from 'rxjs';
+import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
+import { EmptyStateComponent } from '@pdz/shared/feedback/empty-state/empty-state.component';
 import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
+import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
+import { PageComponent } from '@pdz/shared/layout/page/page.component';
 import { LeagueZoneService } from '../league-zone.service';
 import { League } from '../league.interface';
 import { getLeagueLogoUrl } from '../league.util';
@@ -11,7 +15,15 @@ import { getLeagueLogoUrl } from '../league.util';
   selector: 'pdz-league-landing',
   templateUrl: './league-landing.component.html',
   styleUrl: './league-landing.component.scss',
-  imports: [CommonModule, RouterModule, LoadingComponent],
+  imports: [
+    CommonModule,
+    RouterModule,
+    ButtonComponent,
+    EmptyStateComponent,
+    LoadingComponent,
+    PageComponent,
+    PageHeaderComponent,
+  ],
 })
 export class LeagueLandingComponent implements OnInit, OnDestroy {
   private leagueService = inject(LeagueZoneService);

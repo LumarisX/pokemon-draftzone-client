@@ -20,10 +20,10 @@ the reasoning behind the step.
 | 6 | Organizer management + participant-drop flow | **done** |
 | 7 | Sweep the orphaned components and dead routes | **done** |
 | 8 | Smaller fixes: `tradeDeadline` enforcement, deadline editors, ~~nested anchor~~, N+1s, `archived` | **done** |
-| 9 | Participation model, sign-up flexibility, invite-only sign-ups — see §11 | **mostly done** — §11.10 steps 1–10b landed 2026-09-22; step 11 and the multi-coach flows remain (§11.14) |
-| 10 | Create leagues and tournaments through the product — see §12 | **not started** |
+| 9 | Participation model, sign-up flexibility, invite-only sign-ups — see §11 | **mostly done** — §11.10 steps 1–11 landed (step 11 applied 2026-09-23); the multi-coach flows (§11.14) and the §11.11 open decisions remain |
+| 10 | Create leagues and tournaments through the product — see §12 | **code done** 2026-09-25 — see §12.6; needs the Auth0 `league-creator` role before beta users can create |
 | 11 | Bug sweep from the 2026-09-23 review — see §13 | **done** — legacy data repaired, `TEAM_STATUSES` narrowed; step 11 applied (backup kept) |
-| 12 | Security, data-integrity and structure review — see §14 | **in progress** — **priority**: all five P0s landed 2026-09-23, D1–D4 2026-09-24 (D3/D4 scripts still to run); next A1, then A2, per §14.7 |
+| 12 | Security, data-integrity and structure review — see §14 | **code done** 2026-09-25 — every tracker row landed; deploy-time scripts and three deliberate deferrals remain (§14 tracker) |
 
 ---
 
@@ -1576,20 +1576,21 @@ or UI reaches them:
 
 ---
 
-## 12. Creating leagues and tournaments — not started
+## 12. Creating leagues and tournaments — code done
 
 There is still no create flow (see §7): `league-new/` was swept in step 7, and
-the server has no create endpoint for a league or a tournament. Draft pools
-*can* be created now (`POST …/drafts`, from the settings Draft section). Record
+the server has no create endpoint for a league or a tournament. Pools *can* be
+created now (`POST …/pools`, from the settings Draft section). Record
 requirements here as they are decided, so the form ships with them.
 
 ### 12.1 Required: the owner's organizer name
 
 Organizers are shown by a **per-tournament organizer name**, never by their
 account `username`, which is a real name for roughly 65% of users (Google
-logins). Names live in `HostedTournament.organizerNames` (`{ sub, name }[]`,
-alongside the plain `organizers` array). Decided 2026-09-23. A site-wide display
-name was considered and deferred.
+logins). Since A1 (§14.9) staff names live in `HostedTournament.staff`
+(`{ sub, name, role }[]`) and the owner's in `ownerName`; the old
+`organizers`/`organizerNames` pair is gone. Decided 2026-09-23. A site-wide
+display name was considered and deferred.
 
 Invitees pick theirs on the accept page and promoted coaches get their sign-up
 name, but **the owner has no step that sets theirs**. Until they rename
@@ -1603,8 +1604,7 @@ The create-tournament form must:
   control characters. The client check is `isValidOrganizerName` in
   `league.util.ts`; the server check is `OrganizerNameDto` in
   `hosted-tournament.dto.ts`. Reuse both; do not write a third copy.
-- Write it to `organizerNames` for the owner's sub in the same request that
-  creates the tournament. Do not leave it to a follow-up call.
+- Write it to `ownerName` in the same request that creates the tournament. Do not leave it to a follow-up call.
 - Prefill it from the owner's entry on the league's most recent tournament. The
   owner is the **league** owner (`HostedTournamentMapper` sets `owner:
   league.owner`), so it is the same person for every tournament in the league,
@@ -1612,6 +1612,134 @@ The create-tournament form must:
   prefill is a default, not a link.
 - Creating a league creates no tournament, so it needs no name field. Ask when
   the first tournament is created.
+
+### 12.2 Who can create — decided 2026-09-25
+
+League creation will eventually be open to any user. During the beta it is
+gated.
+
+- **A new site role, `league-creator`**, is assigned in the Auth0 dashboard.
+  The login Action syncs it like `admin`, and it's added to `UserRole`. Don't
+  reuse Auth0's `organizer` role, which is old and deprecated. The name would
+  also collide with the tournament staff role `organizer` (`STAFF_ROLES`),
+  which is a different thing.
+- **`LEAGUE_CREATION` env switch.** `beta` requires `league-creator`, `admin`
+  or `owner`, and is the default when the variable is unset. `open` lets any
+  logged-in user create a league. Ending the beta is a config change, not a
+  deploy.
+- **An owned-league cap applies in both modes.** `MAX_OWNED_LEAGUES` defaults to
+  3, and `admin`/`owner` are exempt. It limits the blast radius once creation
+  opens.
+- **Tournaments are created by the league owner only.** The gate is on
+  leagues; it doesn't apply again to each season.
+- The client asks the server (`GET leagues/capabilities` →
+  `{ canCreateLeague, reason }`) and doesn't re-derive the env or role logic.
+  Users who can't create a league see that creation is in beta.
+
+### 12.3 Creating a league
+
+`POST leagues` with the existing, previously unused `CreateLeagueDto` (`name`,
+`description`), behind `UserThrottlerGuard`. The logo is left to a later league
+edit page; none exists yet. The response is `{ leagueSlug }`, and the client
+goes straight to that league's new-tournament page.
+
+An owner with no participants had no way back to their league, because
+`GET leagues` lists only tournaments where the caller coaches. `GET
+leagues/owned` fixes that, and the Find a League page shows it as "Leagues you
+run" next to the "New league" button.
+
+### 12.4 Creating a tournament
+
+The form is minimal, and everything else is left to the settings workbench:
+
+- name
+- your organizer name (§12.1)
+- sign-up deadline
+- `diffMode`
+- draft count min/max
+
+It posts to `POST leagues/:leagueSlug/tournaments` and lands on `manage/`. The
+server fills the other required fields: `forfeit` defaults to 0/0, and
+**`signUpAccess` starts `closed`**, so a half-configured season can't take
+sign-ups. The owner opens them from the workbench.
+
+`getLeagueSummary` used to drop every tournament without a tier list, because
+format and ruleset come from the list. A freshly created tournament has no
+list yet, so the summary now returns `format`/`ruleset` as `null` instead of
+skipping the tournament.
+
+### 12.5 Copying settings from the last season
+
+This is opt-in. The form offers "Copy settings from <latest tournament in
+this league>", and the server re-checks that the source belongs to the same
+league.
+
+| Copied | Not copied |
+| --- | --- |
+| description, logo, Discord invite URL | dates |
+| rules, sign-up questions (archived ones dropped) | staff (owner re-invites) |
+| `maxTeams`, `forfeit`, `diffMode`, `standingsRules` | `ownerName` (the form's value wins) |
+| `draftCount`, `pointTotal`, `tradePointLimit`, `tierRequirements` | `discordSettings`: binding is per `/draftzone link` (S3) |
+| `prizeSplit`, `matchSettings`, `adSettings` (with `advertise: false`) | `signUpAccess` (starts `closed`), `signUpToken` |
+| the tier list, **forked** (private, owned by the creator, `copiedFrom` set) | stages, rounds, trades, pools, teams, `archived` |
+
+The fork keeps tier `_id`s, so the copied `tierRequirements` still resolve.
+Pools aren't copied yet, because they're their own entity with their own draft
+settings. That is a follow-up if organizers ask for it.
+
+### 12.6 Landed — 2026-09-25
+
+§12.2–12.5 are built as specified. Server:
+
+- `league/league-creation.ts` is the pure policy (`decideLeagueCreation`). The
+  mode and cap are read through `ConfigService`, so an unset `LEAGUE_CREATION`
+  means beta.
+- `POST leagues` (5 per hour per user), `GET leagues/capabilities`,
+  `GET leagues/owned`. `GET leagues/:leagueSlug` now takes optional auth and
+  returns `isOwner` and `newTournamentDefaults`.
+- `TournamentCreationService` and `TournamentCreationController` handle `POST
+  leagues/:leagueSlug/tournaments` (10 per hour per user). They're kept out of
+  `HostedTournamentService`, which is already the biggest file in the module.
+  The tier-list copy and the tournament insert share one transaction.
+  `assertRosterRules` checks the copied `tierRequirements` against the
+  fork's tier ids and the resulting draft count.
+- New error codes: `LR-002` restricted, `LR-003` owned limit, `LR-004` not
+  owner, and `TRN-021` copy source outside the league.
+- `IsOrganizerName()` is now a composed decorator. The three copies of the
+  organizer-name rules (`OrganizerNameDto`, `AcceptOrganizerInviteDto` and the
+  new `CreateTournamentDto`) all use it.
+- `findAllByLeague` sorts by `_id`, so "latest tournament" is well defined even
+  for tournaments inserted by hand without `createdAt`.
+
+Client:
+
+- `/leagues/new` and `/leagues/:leagueSlug/tournaments/new`, both behind
+  `AuthGuard`.
+- The league landing page now opens with `<pdz-page-header>` and replaces the
+  hand-rolled hero. It shows "New tournament" to the owner, with an empty-state
+  call to action when the league has no tournaments, and it hides the format
+  and ruleset rows for a tournament that has no tier list yet.
+- The Find a League page header is now `<pdz-page-header>` too, with "New
+  league" (only when `canCreateLeague`) and "Leagues you run".
+
+**Before this is usable on prod:**
+
+1. Create the `league-creator` role in the Auth0 dashboard, and check that the
+   login Action forwards it in the roles it reports. The server drops role names
+   it doesn't recognise (`KNOWN_ROLES`), so this is the only place the new name
+   has to be added.
+2. Leave `LEAGUE_CREATION` unset (beta). Set `MAX_OWNED_LEAGUES` only to change
+   the default of 3.
+3. Deploy the server before the client. The create pages need the new routes.
+   An old client against the new server is fine.
+
+Still open:
+
+- A league edit page (name, description, logo).
+- Copying pools.
+- A newly created tournament has no tier list until one is attached in the
+  settings Draft section. That's the same state hand-inserted tournaments
+  started in.
 
 ---
 
@@ -1980,19 +2108,19 @@ Paths below are in `pokemon-draftzone-server/src/modules/` unless stated.
 | S5 | Replaced and dropped coaches keep chat access | **P0** | **done** 2026-09-23 |
 | D1 | Multi-document writes without transactions | P1 | **done** 2026-09-24 — diagnose run 2026-09-24: 181 linked applications, 0 orphaned |
 | D2 | Trades: lost updates and check-then-act | P1 | **done** 2026-09-24 — versioned writes; own collection deferred |
-| D3 | Trades and name changes reference rounds by index | P1 | **code done** 2026-09-24 — backfill applied pre-deploy 2026-09-24 (206/206, 160 `_id`s assigned); re-run `--apply` after deploy |
-| D4 | Races on sign-up uniqueness and the team cap | P1 | **code done** 2026-09-24 — diagnose run 2026-09-24, 0 duplicates; `migrate-application-unique-index.ts --apply` still to run |
+| D3 | Trades and name changes reference rounds by index | P1 | **done** 2026-09-25 — backfill applied pre-deploy 2026-09-24 (206/206, 160 `_id`s assigned) and re-run after deploy |
+| D4 | Races on sign-up uniqueness and the team cap | P1 | **done** 2026-09-25 — diagnose run 2026-09-24, 0 duplicates; unique index applied |
 | D5 | Settings validated against the patch, not the result | P1 | **done** 2026-09-24 |
 | D6 | Matchup result fields can contradict each other | P1 | **done** 2026-09-24 — winner-vs-score left permissive by design |
 | D7 | Draft pick checks read pre-transaction state | P1 | **done** 2026-09-24 — confirmed real for non-sequential drafts |
-| H1 | "Coach only" draft visibility is client-side only | P1 | **code done** 2026-09-25 — blind draft + `allowDuplicates`; run `migrate-draft-pick-settings.ts --apply` **before** deploy |
+| H1 | "Coach only" draft visibility is client-side only | P1 | **done** 2026-09-25 — blind draft + `allowDuplicates`; `migrate-draft-pick-settings.ts` applied |
 | H2 | The draft websocket is unauthenticated | P1 | **done** 2026-09-24 |
 | H3 | Match result payloads are barely validated | P1 | **done** 2026-09-25 — see §14.12 |
-| H4 | Uploads: no size cap, keys not bound to uploader | P2 | **code done** 2026-09-25 — see §14.13; bucket CORS must allow `POST` **before** deploy, and deploy client and server together |
+| H4 | Uploads: no size cap, keys not bound to uploader | P2 | **deployed** 2026-09-25 — see §14.13; bucket CORS not yet confirmed to allow `POST` (earlier uploads were presigned `PUT`, so they don't prove it): upload a logo on prod to check |
 | H5 | Archived tournaments still accept writes | P2 | **done** 2026-09-24 — `TournamentOpenGuard` |
 | H6 | Cross-tournament references in reads and trades | P2 | **done** 2026-09-24 via A2 |
 | H7 | Small hardening items | P3 | **done** 2026-09-25 — see §14.14; the Auth0 audience stays deferred |
-| A1–A7 | Structure that limits future work | P2 | A1 policy + staff roles done 2026-09-24 (`migrate-tournament-staff.ts` applied to 3 tournaments, `--check` clean 2026-09-24); its request-guard phase folded into A4; A2 code done 2026-09-24 (run `backfill-matchup-tournament-ids.ts` before deploy); A6 **done** 2026-09-25 (§14.15); A5 **done** 2026-09-25 (§14.16); A4 query batching **done** 2026-09-25 (§14.17), request-scoped memo deferred; A7 **done** 2026-09-25 (§14.18); A3 **done** 2026-09-25 (§14.19), diagnose clean; A8 (websocket → SSE) **done** 2026-09-25 |
+| A1–A7 | Structure that limits future work | P2 | A1 policy + staff roles done 2026-09-24 (`migrate-tournament-staff.ts` applied to 3 tournaments, `--check` clean 2026-09-24); its request-guard phase folded into A4; A2 **done** 2026-09-25 (`backfill-matchup-tournament-ids.ts` applied); A6 **done** 2026-09-25 (§14.15); A5 **done** 2026-09-25 (§14.16); A4 query batching **done** 2026-09-25 (§14.17), request-scoped memo deferred; A7 **done** 2026-09-25 (§14.18); A3 **done** 2026-09-25 (§14.19), diagnose clean; A8 (websocket → SSE) **done** 2026-09-25 |
 | §14.5 | Smaller smells | P3 | swallowed errors, rules endpoint, roster rows **done** 2026-09-25 (§14.20); error codes, module wiring **done** 2026-09-25 (§14.21); response shapes + a team-page leak **done** 2026-09-25 (§14.22); "pool" naming **done** 2026-09-25 (§14.23) — §14.5 **complete** |
 
 ### 14.1 P0 — exploitable now

@@ -6,20 +6,41 @@
   padding: pdz.space(lg);
 }
 
-.page-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+.league-list__header {
   margin-bottom: pdz.space(lg);
+}
 
-  &__title {
-    @include text(headline);
+.owned {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(sm);
+  margin-bottom: pdz.space(xl);
+
+  &__heading {
+    @include pdz.text(title);
+    margin: 0;
   }
 
-  &__actions {
+  &__list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr));
+    gap: pdz.space(sm);
+  }
+
+  &__card {
     display: flex;
-    gap: pdz.space(md);
     align-items: center;
+    gap: pdz.space(sm);
+    color: pdz.color(on-surface);
+    text-decoration: none;
+  }
+
+  &__name {
+    @include pdz.text(body);
+    font-weight: pdz.font-weight(bold);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 }
 

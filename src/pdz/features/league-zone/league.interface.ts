@@ -358,8 +358,8 @@ export namespace League {
     name: string;
     tournamentSlug: string;
     description?: string;
-    format: string;
-    ruleset: string;
+    format: string | null;
+    ruleset: string | null;
     signUpDeadline: Date;
     draftStart?: Date;
     draftEnd?: Date;
@@ -375,6 +375,38 @@ export namespace League {
     description?: string;
     logo?: string;
     tournaments: TournamentSummary[];
+    isOwner: boolean;
+    newTournamentDefaults: NewTournamentDefaults | null;
+  };
+
+  export type NewTournamentDefaults = {
+    ownerName: string | null;
+    copyFrom: { tournamentSlug: string; name: string } | null;
+  };
+
+  export type LeagueCapabilities = {
+    canCreateLeague: boolean;
+    reason: 'restricted' | 'limit' | null;
+  };
+
+  export type OwnedLeague = {
+    name: string;
+    leagueSlug: string;
+    logo?: string;
+  };
+
+  export type CreateLeaguePayload = {
+    name: string;
+    description?: string;
+  };
+
+  export type CreateTournamentPayload = {
+    name: string;
+    ownerName: string;
+    signUpDeadline: string;
+    diffMode?: 'pokemon' | 'game';
+    draftCount?: { min: number; max: number };
+    copyFrom?: string;
   };
 
   export type CoachProfile = {

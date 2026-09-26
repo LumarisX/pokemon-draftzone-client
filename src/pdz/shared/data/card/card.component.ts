@@ -48,7 +48,6 @@ export class CardComponent {
   private readonly isControl =
     this.isButton || this.element.tagName === 'A';
 
-  /** A card rendered as a button or link is interactive whether or not it says so. */
   protected readonly isInteractive = computed(
     () => this.interactive() || this.isControl,
   );

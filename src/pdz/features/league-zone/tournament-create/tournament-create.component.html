@@ -1,0 +1,161 @@
+<pdz-page width="narrow">
+  <div class="create">
+    <pdz-page-header
+      title="New tournament"
+      [backLink]="leagueLink"
+      [backLabel]="league()?.name ?? 'League'"
+      subtitle="Start with the basics. Everything else lives in the tournament's settings."
+    />
+
+    @if (loadFailed()) {
+      <pdz-empty-state
+        bordered
+        icon="error"
+        heading="Couldn't load this league"
+        message="Reload the page to try again."
+      />
+    } @else if (league(); as league) {
+      @if (league.isOwner) {
+        <pdz-card padding="lg">
+          <form class="create__form" (ngSubmit)="submit()">
+            <label pdz-field label="Tournament name" required>
+              <input
+                pdz-input
+                type="text"
+                name="tournamentName"
+                placeholder="Season 3"
+                [maxlength]="nameMax"
+                [ngModel]="name()"
+                (ngModelChange)="name.set($event)"
+              />
+            </label>
+
+            <label
+              pdz-field
+              label="Your organizer name"
+              hint="What coaches and other organizers see. Your account name stays private."
+              required
+              [error]="
+                ownerName() && !ownerNameValid()
+                  ? '3–24 characters, starting and ending with a letter or number.'
+                  : null
+              "
+            >
+              <input
+                pdz-input
+                type="text"
+                name="ownerName"
+                [maxlength]="ownerNameMax"
+                [ngModel]="ownerName()"
+                (ngModelChange)="ownerName.set($event)"
+              />
+            </label>
+
+            <label pdz-field label="Sign-ups close" required>
+              <input
+                pdz-input
+                type="datetime-local"
+                name="signUpDeadline"
+                [ngModel]="signUpDeadline()"
+                (ngModelChange)="signUpDeadline.set($event)"
+              />
+            </label>
+
+            @if (copySource(); as source) {
+              <pdz-slide-toggle
+                [label]="'Copy settings from ' + source.name"
+                [checked]="copySettings()"
+                (checkedChange)="copySettings.set($event)"
+              />
+              @if (copySettings()) {
+                <p class="create__note">
+                  Rules, sign-up questions, roster and scoring settings, and a
+                  copy of the tier list carry over. Teams, stages, staff, dates
+                  and the Discord link don't.
+                </p>
+              }
+            }
+
+            @if (!copySettings()) {
+              <div pdz-field label="Differential">
+                <pdz-segmented
+                  aria-label="Differential"
+                  [value]="diffMode()"
+                  (valueChange)="diffMode.set($event!)"
+                >
+                  <pdz-segmented-option value="pokemon" label="Pokémon" />
+                  <pdz-segmented-option value="game" label="Games" />
+                </pdz-segmented>
+              </div>
+
+              <div class="create__pair">
+                <label pdz-field label="Minimum roster">
+                  <input
+                    pdz-input
+                    type="number"
+                    name="draftMin"
+                    min="0"
+                    [ngModel]="draftMin()"
+                    (ngModelChange)="draftMin.set($event)"
+                  />
+                </label>
+                <label
+                  pdz-field
+                  label="Maximum roster"
+                  [error]="
+                    draftCountValid()
+                      ? null
+                      : 'The maximum must be at least the minimum.'
+                  "
+                >
+                  <input
+                    pdz-input
+                    type="number"
+                    name="draftMax"
+                    min="0"
+                    [ngModel]="draftMax()"
+                    (ngModelChange)="draftMax.set($event)"
+                  />
+                </label>
+              </div>
+            }
+
+            <p class="create__note">
+              Sign-ups start closed. Open them from the tournament's settings
+              once the tier list and pools are ready.
+            </p>
+
+            <div class="create__actions">
+              <a pdz-button variant="outlined" [routerLink]="leagueLink"
+                >Cancel</a
+              >
+              <button
+                pdz-button
+                type="submit"
+                icon="add"
+                [disabled]="!canSubmit()"
+              >
+                Create tournament
+              </button>
+            </div>
+          </form>
+        </pdz-card>
+      } @else {
+        <pdz-empty-state
+          bordered
+          icon="lock"
+          heading="Only the league owner can add tournaments"
+          [message]="
+            'Ask the owner of ' + league.name + ' to set up the next season.'
+          "
+        >
+          <a pdz-empty-state-actions pdz-button [routerLink]="leagueLink">
+            Back to the league
+          </a>
+        </pdz-empty-state>
+      }
+    } @else {
+      <pdz-loading />
+    }
+  </div>
+</pdz-page>

@@ -1,0 +1,20 @@
+@use "pdz-theming" as pdz;
+
+.create {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(lg);
+
+  &__form {
+    display: flex;
+    flex-direction: column;
+    gap: pdz.space(md);
+  }
+
+  &__actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: pdz.space(sm);
+  }
+}

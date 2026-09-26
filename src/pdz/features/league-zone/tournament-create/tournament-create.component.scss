@@ -1,0 +1,32 @@
+@use "pdz-theming" as pdz;
+
+.create {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(lg);
+
+  &__form {
+    display: flex;
+    flex-direction: column;
+    gap: pdz.space(md);
+  }
+
+  &__pair {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
+    gap: pdz.space(md);
+  }
+
+  &__note {
+    @include pdz.text(body-sm);
+    color: pdz.color(on-surface-variant);
+    margin: 0;
+  }
+
+  &__actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: pdz.space(sm);
+  }
+}

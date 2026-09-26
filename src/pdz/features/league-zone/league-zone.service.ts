@@ -270,8 +270,31 @@ export class LeagueZoneService {
     );
   }
 
-  getLeague(): Observable<League.LeagueSummary> {
-    return this.apiService.get(`${ROOTPATH}/${this.leagueSlug()}`);
+  getLeague(
+    leagueSlug = this.leagueSlug(),
+  ): Observable<League.LeagueSummary> {
+    return this.apiService.get(`${ROOTPATH}/${leagueSlug}`);
+  }
+
+  getLeagueCapabilities(): Observable<League.LeagueCapabilities> {
+    return this.apiService.get(`${ROOTPATH}/capabilities`);
+  }
+
+  getOwnedLeagues(): Observable<{ leagues: League.OwnedLeague[] }> {
+    return this.apiService.get(`${ROOTPATH}/owned`);
+  }
+
+  createLeague(
+    payload: League.CreateLeaguePayload,
+  ): Observable<{ leagueSlug: string }> {
+    return this.apiService.post(ROOTPATH, payload);
+  }
+
+  createTournament(
+    leagueSlug: string,
+    payload: League.CreateTournamentPayload,
+  ): Observable<{ tournamentSlug: string }> {
+    return this.apiService.post([ROOTPATH, leagueSlug, 'tournaments'], payload);
   }
 
   getSignUps(): Observable<{

@@ -1,20 +1,52 @@
-<div class="page-header">
-  <h1 class="page-header__title">Open Leagues</h1>
-  <div class="page-header__actions">
-    <button
-      routerLink="manage/new"
+<pdz-page-header title="Open Leagues" class="league-list__header" compact>
+  <a
+    pdz-page-header-actions
+    pdz-button
+    iconOnly
+    icon="add"
+    color="neutral"
+    variant="tonal"
+    aria-label="New league ad"
+    routerLink="manage/new"
+  ></a>
+  <a
+    pdz-page-header-actions
+    pdz-button
+    color="neutral"
+    variant="tonal"
+    routerLink="manage"
+    >My League Ads</a
+  >
+  @if (canCreateLeague()) {
+    <a
+      pdz-page-header-actions
       pdz-button
-      iconOnly
-      color="neutral"
-      variant="tonal"
+      icon="add"
+      [routerLink]="newLeagueLink"
+      >New league</a
     >
-      <pdz-icon name="add"></pdz-icon>
-    </button>
-    <button routerLink="manage" pdz-button color="neutral" variant="tonal">
-      My League Ads
-    </button>
-  </div>
-</div>
+  }
+</pdz-page-header>
+
+@if (ownedLeagues().length) {
+  <section class="owned" aria-labelledby="owned-heading">
+    <h2 id="owned-heading" class="owned__heading">Leagues you run</h2>
+    <div class="owned__list">
+      @for (league of ownedLeagues(); track league.leagueSlug) {
+        <a
+          pdz-card
+          interactive
+          padding="sm"
+          class="owned__card"
+          [routerLink]="['/', leagueZonePath, league.leagueSlug]"
+        >
+          <pdz-icon name="emoji_events" [size]="20" aria-hidden="true" />
+          <span class="owned__name">{{ league.name }}</span>
+        </a>
+      }
+    </div>
+  </section>
+}
 
 <div class="toolbar">
   <div class="toolbar__results">
@@ -23,7 +55,6 @@
     }
   </div>
   <div class="toolbar__controls">
-    <!-- Filter Button -->
     <div class="menu-trigger">
       <pdz-icon
         (click)="toggleMenu('filter', $event)"
@@ -102,7 +133,6 @@
       }
     </div>
 
-    <!-- Sort Options -->
     <div class="menu-trigger">
       <pdz-icon (click)="toggleMenu('sort', $event)" name="sort"></pdz-icon>
       @if (menu === "sort") {
@@ -120,7 +150,6 @@
   </div>
 </div>
 
-<!-- League Ads Grid -->
 @if (filteredLeagues.length) {
   <div class="league-grid">
     @for (league of filteredLeagues; track league; let i = $index) {

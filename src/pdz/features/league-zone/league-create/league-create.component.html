@@ -1,0 +1,88 @@
+<pdz-page width="narrow">
+  <div class="create">
+    <pdz-page-header
+      title="New league"
+      eyebrow="Leagues"
+      subtitle="A league holds your seasons. You'll set up the first tournament next."
+    />
+
+    @if (loadFailed()) {
+      <pdz-empty-state
+        bordered
+        icon="error"
+        heading="Couldn't check league access"
+        message="Reload the page to try again."
+      />
+    } @else if (capabilities(); as access) {
+      @if (access.canCreateLeague) {
+        <pdz-card padding="lg">
+        <form class="create__form" (ngSubmit)="submit()">
+          <label pdz-field label="League name" required>
+            <input
+              pdz-input
+              type="text"
+              name="leagueName"
+              [maxlength]="nameMax"
+              [ngModel]="name()"
+              (ngModelChange)="name.set($event)"
+            />
+          </label>
+
+          <label
+            pdz-field
+            label="Description"
+            hint="Shown on the league page. You can change it later."
+          >
+            <textarea
+              pdz-input
+              name="leagueDescription"
+              rows="4"
+              [maxlength]="descriptionMax"
+              [ngModel]="description()"
+              (ngModelChange)="description.set($event)"
+            ></textarea>
+          </label>
+
+          <div class="create__actions">
+            <a pdz-button variant="outlined" [routerLink]="leagueListLink"
+              >Cancel</a
+            >
+            <button
+              pdz-button
+              type="submit"
+              icon="add"
+              [disabled]="!canSubmit()"
+            >
+              Create league
+            </button>
+          </div>
+        </form>
+        </pdz-card>
+      } @else if (access.reason === 'limit') {
+        <pdz-empty-state
+          bordered
+          icon="block"
+          heading="You've reached the league limit"
+          message="Each account can own a limited number of leagues. Run a new season inside one of your existing leagues instead."
+        >
+          <a pdz-empty-state-actions pdz-button [routerLink]="leagueListLink">
+            Your leagues
+          </a>
+        </pdz-empty-state>
+      } @else {
+        <pdz-empty-state
+          bordered
+          icon="science"
+          heading="League creation is in beta"
+          message="Hosting leagues on DraftZone is open to a small group for now. Ask in the DraftZone Discord if you'd like access."
+        >
+          <a pdz-empty-state-actions pdz-button [routerLink]="leagueListLink">
+            Find a league
+          </a>
+        </pdz-empty-state>
+      }
+    } @else {
+      <pdz-loading />
+    }
+  </div>
+</pdz-page>

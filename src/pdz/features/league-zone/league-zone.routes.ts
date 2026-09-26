@@ -14,6 +14,7 @@ import { PoolDashboardComponent } from './pools/pool-dashboard/pool-dashboard.co
 import { PowerRankingsComponent } from './pools/power-rankings/power-rankings.component';
 import { LeagueBracketComponent } from './league-bracket/league-bracket.component';
 import { LeagueDraftComponent } from './league-drafting/league-drafting.component';
+import { LeagueCreateComponent } from './league-create/league-create.component';
 import { LeagueLandingComponent } from './league-landing/league-landing.component';
 import { LeagueMatchupComponent } from './league-matchup/league-matchup.component';
 import { leagueRoleGuard } from './league-role.guard';
@@ -24,6 +25,7 @@ import { LeagueTeamComponent } from './league-team/league-team.component';
 import { LeagueTeamsComponent } from './league-teams/league-teams.component';
 import { LeagueTradesComponent } from './league-trades/league-trades.component';
 import { OrganizerInviteComponent } from './organizer-invite/organizer-invite.component';
+import { TournamentCreateComponent } from './tournament-create/tournament-create.component';
 import { TournamentDraftComponent } from './tournaments/tournament-draft/tournament-draft.component';
 import { TournamentPoolsComponent } from './tournaments/tournament-pools/tournament-pools.component';
 import { TournamentLandingComponent } from './tournaments/tournament-landing/tournament-landing.component';
@@ -36,8 +38,18 @@ export const routes: Routes = [
     pathMatch: 'full',
   },
   {
+    path: 'new',
+    component: LeagueCreateComponent,
+    canActivate: [AuthGuard],
+  },
+  {
     path: `:leagueSlug`,
     component: LeagueLandingComponent,
+  },
+  {
+    path: ':leagueSlug/tournaments/new',
+    component: TournamentCreateComponent,
+    canActivate: [AuthGuard],
   },
   {
     path: `:leagueSlug/tournaments/:tournamentSlug/${ORGANIZER_INVITE_PATH}`,

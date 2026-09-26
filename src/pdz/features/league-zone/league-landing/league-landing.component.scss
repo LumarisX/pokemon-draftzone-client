@@ -16,68 +16,9 @@
 }
 
 .landing {
-  max-width: 1100px;
-  margin: 0 auto;
-  padding: pdz.space(xl) pdz.space(md);
   display: flex;
   flex-direction: column;
-  gap: pdz.space(3xl);
-
-  @include respond-above(medium) {
-    padding: pdz.space(2xl) pdz.space(lg);
-  }
-}
-
-.hero {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: pdz.space(xl);
-  text-align: center;
-
-  @include respond-above(medium) {
-    flex-direction: row;
-    align-items: center;
-    gap: pdz.space(3xl);
-    text-align: left;
-  }
-
-  &__logo-wrap {
-    flex-shrink: 0;
-  }
-
-  &__logo {
-    width: 200px;
-    height: 200px;
-    object-fit: contain;
-    border-radius: pdz.shape(corner-lg);
-    filter: drop-shadow(0 4px 16px rgba(0, 0, 0, 0.2));
-
-    @include respond-above(medium) {
-      width: 260px;
-      height: 260px;
-    }
-  }
-
-  &__info {
-    display: flex;
-    flex-direction: column;
-    gap: pdz.space(sm);
-  }
-
-  &__title {
-    @include text(subtitle);
-    color: pdz.color(primary-accent);
-    margin: 0;
-    font-weight: 700;
-  }
-
-  &__description {
-    @include text(title);
-    color: pdz.color(on-surface-variant);
-    margin: 0;
-    max-width: 600px;
-  }
+  gap: pdz.space(2xl);
 }
 
 .tournaments {

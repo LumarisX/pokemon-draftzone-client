@@ -1,29 +1,44 @@
 @if (league) {
+  <pdz-page width="wide">
   <div class="landing">
-    <!-- Hero Section -->
-    <div class="hero">
-      @if (league.logo) {
-        <div class="hero__logo-wrap">
-          <img
-            [src]="getLogoUrl(league.logo)"
-            [alt]="league.name + ' logo'"
-            class="hero__logo"
-          />
-        </div>
+    <pdz-page-header
+      eyebrow="League"
+      [title]="league.name"
+      [subtitle]="league.description"
+      [logo]="league.logo ? getLogoUrl(league.logo) : undefined"
+      [logoAlt]="league.name + ' logo'"
+    >
+      @if (league.isOwner) {
+        <a
+          pdz-page-header-actions
+          pdz-button
+          icon="add"
+          [routerLink]="['tournaments', 'new']"
+          >New tournament</a
+        >
       }
-      <div class="hero__info">
-        <h1 class="hero__title">{{ league.name }}</h1>
-        @if (league.description) {
-          <p class="hero__description">{{ league.description }}</p>
-        }
-      </div>
-    </div>
+    </pdz-page-header>
 
-    <!-- Tournaments Section -->
     <div class="tournaments">
       <h2 class="tournaments__heading">Tournaments</h2>
       @if (league.tournaments.length === 0) {
-        <p class="tournaments__empty">No tournaments yet.</p>
+        @if (league.isOwner) {
+          <pdz-empty-state
+            bordered
+            icon="emoji_events"
+            heading="No tournaments yet"
+            message="Create the first season to start taking sign-ups."
+          >
+            <a
+              pdz-empty-state-actions
+              pdz-button
+              [routerLink]="['tournaments', 'new']"
+              >New tournament</a
+            >
+          </pdz-empty-state>
+        } @else {
+          <p class="tournaments__empty">No tournaments yet.</p>
+        }
       } @else {
         <div class="tournaments__list">
           @for (tournament of league.tournaments; track tournament.tournamentSlug) {
@@ -65,14 +80,18 @@
               }
 
               <div class="tournament-card__details">
-                <div class="tournament-card__detail">
-                  <span class="tournament-card__label">Format</span>
-                  <span class="tournament-card__value">{{ tournament.format }}</span>
-                </div>
-                <div class="tournament-card__detail">
-                  <span class="tournament-card__label">Ruleset</span>
-                  <span class="tournament-card__value">{{ tournament.ruleset }}</span>
-                </div>
+                @if (tournament.format) {
+                  <div class="tournament-card__detail">
+                    <span class="tournament-card__label">Format</span>
+                    <span class="tournament-card__value">{{ tournament.format }}</span>
+                  </div>
+                }
+                @if (tournament.ruleset) {
+                  <div class="tournament-card__detail">
+                    <span class="tournament-card__label">Ruleset</span>
+                    <span class="tournament-card__value">{{ tournament.ruleset }}</span>
+                  </div>
+                }
                 @if (tournament.seasonStart) {
                   <div class="tournament-card__detail">
                     <span class="tournament-card__label">Season</span>
@@ -117,6 +136,7 @@
       }
     </div>
   </div>
+  </pdz-page>
 } @else {
   <div class="loading-state">
     <pdz-loading></pdz-loading>
