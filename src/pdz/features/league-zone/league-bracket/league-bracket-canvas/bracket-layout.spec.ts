@@ -12,7 +12,9 @@ import {
   TEAM_H_FULL,
   computeBracketLayout,
   computePositionCenters,
+  advancingSideIndex,
   computeRoundTitles,
+  matchExit,
   matchHeight,
   resolveSlot,
 } from './bracket-layout';
@@ -22,7 +24,6 @@ const MATCH_H = matchHeight(TEAM_H_COMPACT);
 const seed = (n: number) => ({ type: 'seed', seed: n }) as const;
 const winnerOf = (from: string) => ({ type: 'winner', from }) as const;
 
-/** 4-team single-elim wiring: two semis feeding a final. */
 const fourTeamMatches = (): FlexBracketMatch[] => [
   { id: 's1', round: 0, position: 0, a: seed(1), b: seed(4) },
   { id: 's2', round: 0, position: 1, a: seed(2), b: seed(3) },
@@ -81,7 +82,7 @@ describe('resolveSlot', () => {
     const pending = resolveSlot(winnerOf('s1'), data.teams, data.matches);
     expect(pending.team).toBeNull();
 
-    data.matches[0].winner = 1; // Delta beats Alpha
+    data.matches[0].winner = 1;
     const decided = resolveSlot(winnerOf('s1'), data.teams, data.matches);
     expect(decided.team?.teamName).toBe('Delta');
   });
@@ -105,9 +106,6 @@ describe('resolveSlot', () => {
     ).toBe('Loser of Match 1');
   });
 
-  // A double forfeit reaches the client as "no winner, forfeited". Left as
-  // "Winner of Match 1" it reads as a result still to come, when in fact
-  // nothing will ever fill the slot.
   it('names a double forfeit rather than promising a winner that cannot come', () => {
     const labels = new Map([['s1', 'Match 1']]);
     const matches = fourTeamMatches();
@@ -116,7 +114,6 @@ describe('resolveSlot', () => {
     const resolved = resolveSlot(winnerOf('s1'), [], matches, labels);
     expect(resolved.team).toBeNull();
     expect(resolved.placeholder).toBe('Double forfeit in Match 1');
-    // Still points at the match to open, which is where the fix is made.
     expect(resolved.sourceId).toBe('s1');
   });
 
@@ -161,11 +158,8 @@ describe('resolveSlot', () => {
     ).toBe('No loser from Match 1');
   });
 
-  // The shape from a real bracket: two double forfeits feed one match, so that
-  // match has nobody to play it, and the match after *it* is stranded too.
-  // Stopping the deadness one hop short left the last one advertising a
-  // "Winner of Match 13" that could never arrive.
-  it('carries deadness through a match that itself can never be played', () => {
+  it('voids a match two double forfeits feed and walks its opponent through', () => {
+    const teams = [{ teamName: 'Echo', coachName: 'E', seed: 5 }];
     const matches: FlexBracketMatch[] = [
       {
         id: 'm2',
@@ -200,9 +194,57 @@ describe('resolveSlot', () => {
     expect(resolveSlot(winnerOf('m13'), [], matches, labels).placeholder).toBe(
       'No winner from Match 13',
     );
-    // The match one hop up still names the forfeit, which is the actionable one.
     expect(resolveSlot(winnerOf('m2'), [], matches, labels).placeholder).toBe(
       'Double forfeit in Match 2',
+    );
+    expect(matchExit(matches[2], matches).walkover).toBe('void');
+    expect(resolveSlot(winnerOf('m21'), teams, matches).team?.teamName).toBe(
+      'Echo',
+    );
+  });
+
+  it('gives the side still standing a walkover past a double forfeit', () => {
+    const data = fourTeamData();
+    data.matches[0].forfeit = true;
+    data.matches[1].winner = 0;
+    const final = data.matches[2];
+
+    expect(matchExit(final, data.matches)).toEqual({
+      winner: 1,
+      loser: null,
+      settled: true,
+      walkover: 1,
+    });
+    expect(advancingSideIndex(final, 'winner', data.matches)).toBe(1);
+  });
+
+  it('leaves the loser slot of a walkover empty for good', () => {
+    const labels = new Map([['f', 'Final']]);
+    const data = fourTeamData();
+    data.matches[0].forfeit = true;
+    data.matches.push({
+      id: 'third',
+      round: 2,
+      position: 0,
+      a: { type: 'loser', from: 'f' },
+      b: seed(4),
+    });
+
+    expect(
+      resolveSlot({ type: 'loser', from: 'f' }, data.teams, data.matches, labels)
+        .placeholder,
+    ).toBe('No loser from Final');
+    expect(matchExit(data.matches[3], data.matches).walkover).toBe(1);
+  });
+
+  it('lets a ruling on a walkover match stand', () => {
+    const data = fourTeamData();
+    data.matches[0].forfeit = true;
+    data.matches[2].advances = 'none';
+
+    expect(matchExit(data.matches[2], data.matches).walkover).toBeNull();
+    expect(advancingSideIndex(data.matches[2], 'winner', data.matches)).toBe(
+      null,
     );
   });
 
@@ -244,7 +286,6 @@ describe('resolveSlot', () => {
     );
   });
 
-  // Everything above must not make an ordinary unplayed match look dead.
   it('still calls an unplayed match pending, not dead', () => {
     const labels = new Map([['s1', 'Match 1']]);
     const matches: FlexBracketMatch[] = [
@@ -272,7 +313,7 @@ describe('resolveSlot', () => {
 
   it('overrules a recorded winner when an override disagrees', () => {
     const data = fourTeamData();
-    data.matches[0].winner = 0; // Alpha won on the sheet
+    data.matches[0].winner = 0;
     data.matches[0].advances = 'side2';
 
     expect(
@@ -317,7 +358,7 @@ describe('computeBracketLayout', () => {
     expect(layout.sections.length).toBe(1);
 
     const matchH = matchHeight(TEAM_H_FULL);
-    const round0Top = HEADER_H; // no section title, no lanes through the top margin
+    const round0Top = HEADER_H;
     const round1Top = round0Top + matchH + COL_GAP + HEADER_H;
     expect(section.columns.map((c) => c.cardsTop)).toEqual([
       round0Top,
@@ -345,21 +386,19 @@ describe('computeBracketLayout', () => {
 
   it('colors connectors by outcome type and anchors decided lines to the deciding port', () => {
     const data = fourTeamData();
-    data.matches[0].winner = 1; // s1 decided: slot B advances
+    data.matches[0].winner = 1;
     const layout = computeBracketLayout(data, false);
     const s1 = layout.matches.find((m) => m.id === 's1')!;
     const s2 = layout.matches.find((m) => m.id === 's2')!;
 
     expect(layout.connectors.every((c) => c.cls === 'winner')).toBe(true);
 
-    // Decided: solid line from the winning team's port (slot B).
     const fromS1 = layout.connectors.find(
       (c) => c.y1 === s1.y + s1.h && c.x1 !== s1.x + s1.w / 2,
     )!;
     expect(fromS1.decided).toBe(true);
     expect(fromS1.x1).toBeCloseTo(s1.portX[1]);
 
-    // Undecided: dashed line from the card's horizontal center.
     const fromS2 = layout.connectors.find((c) => c.x1 === s2.x + s2.w / 2)!;
     expect(fromS2.decided).toBe(false);
   });
@@ -389,14 +428,10 @@ describe('computeBracketLayout', () => {
     );
     const m3 = layout.matches.find((m) => m.id === 'm3')!;
     const m4 = layout.matches.find((m) => m.id === 'm4')!;
-    // m3 keeps the averaged center (lower position wins the tiebreak);
-    // m4 is pushed to its right by at least the minimum gap.
     expect(m4.x).toBeGreaterThanOrEqual(m3.x + m3.w + MATCH_GAP);
-    // Loser lines are red-classed, winner lines green-classed.
     expect(layout.connectors.filter((c) => c.cls === 'loser').length).toBe(2);
     expect(layout.connectors.filter((c) => c.cls === 'winner').length).toBe(2);
 
-    // Lines leaving the same undecided card are fanned apart at the origin...
     const m1 = layout.matches.find((m) => m.id === 'm1')!;
     const fromM1 = layout.connectors.filter(
       (c) => c.y1 === m1.y + m1.h && Math.abs(c.x1 - (m1.x + m1.w / 2)) <= 12,
@@ -404,7 +439,6 @@ describe('computeBracketLayout', () => {
     expect(fromM1.length).toBe(2);
     expect(fromM1[0].x1).not.toBe(fromM1[1].x1);
 
-    // ...and horizontal segments in the shared corridor never stack on one y.
     const laneCoords = layout.connectors
       .filter((c) => Math.abs(c.x2 - c.x1) >= 2)
       .map((c) => c.laneCoord);
@@ -416,7 +450,7 @@ describe('computeBracketLayout', () => {
     expect(layout.addMatchButtons.length).toBe(2);
     const addRound = layout.addRoundButtons;
     expect(addRound.length).toBe(1);
-    expect(addRound[0].round).toBe(2); // past the last existing round
+    expect(addRound[0].round).toBe(2);
     const lastColumn = layout.sections[0].columns[1];
     expect(addRound[0].y).toBeGreaterThan(lastColumn.cardsTop);
     expect(addRound[0].x).toBe(layout.sections[0].x);
@@ -452,7 +486,6 @@ describe('computeBracketLayout', () => {
   });
 
   it('sizes "Round of N" titles from wired seeds when no teams are bound (random seeding)', () => {
-    // Certified-random builder: seeds are wired but no team list is bound.
     const generated = generateSingleElimination(24);
     const layout = computeBracketLayout(
       { teams: [], matches: generated.matches, sections: generated.sections },

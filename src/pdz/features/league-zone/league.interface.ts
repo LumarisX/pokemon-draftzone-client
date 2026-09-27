@@ -120,7 +120,8 @@ export namespace League {
     notes?: string;
     winner?: MatchupWinner;
     advances?: 'side1' | 'side2' | 'none' | null;
-    advancementBlocked?: boolean;
+    walkover?: 'side1' | 'side2' | 'void' | null;
+    feedsBracket?: boolean;
     status?: 'pending' | 'approved';
     report?: {
       submittedByName: string;

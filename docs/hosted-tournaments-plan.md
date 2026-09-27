@@ -21,10 +21,10 @@ the reasoning behind the step.
 | 7 | Sweep the orphaned components and dead routes | **done** |
 | 8 | Smaller fixes: `tradeDeadline` enforcement, deadline editors, ~~nested anchor~~, N+1s, `archived` | **done** |
 | 9 | Participation model, sign-up flexibility, invite-only sign-ups — see §11 | **mostly done** — §11.10 steps 1–11 landed (step 11 applied 2026-09-23); the multi-coach flows (§11.14) and the §11.11 open decisions remain |
-| 10 | Create leagues and tournaments through the product — see §12 | **code done** 2026-09-25 (§12.6), uncommitted — **to be reworked by step 13** (§15.4 step 2); don't create the Auth0 role yet |
+| 10 | Create leagues and tournaments through the product — see §12 | **done** — committed `8c2dbaba`; after the step 13 reversal both are gated by the `tournament-creator` role (§15.11). Before prod: create that role in Auth0 and forward it from the login Action |
 | 11 | Bug sweep from the 2026-09-23 review — see §13 | **done** — legacy data repaired, `TEAM_STATUSES` narrowed; step 11 applied (backup kept) |
-| 12 | Security, data-integrity and structure review — see §14 | **code done** 2026-09-25 — every tracker row landed; deploy-time scripts and three deliberate deferrals remain (§14 tracker) |
-| 13 | Tournaments first, leagues optional — see §15 | **in progress** — step 1 done 2026-09-25 (§15.6); step 2 (routes → `/tournaments/:slug`) code done 2026-09-26 (§15.7); next: step 3, the create-flow rework |
+| 12 | Security, data-integrity and structure review — see §14 | **done** 2026-09-25 — every tracker row landed and every deploy script has run; open: confirm the S3 bucket CORS allows `POST` (H4); three deliberate deferrals remain (§14 tracker) |
+| 13 | Tournaments first, leagues optional — see §15 | **reversed** 2026-09-26 — back to league-first, `/leagues/:l/tournaments/:t` (§15.11, revert `bcb0fb9d`); the hosting role, the active-tournament cap and the league edit page were kept. Not yet checked in a browser. Next: league statistics (§15.4 step 5) |
 
 ---
 

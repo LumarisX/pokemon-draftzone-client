@@ -103,14 +103,18 @@
                   <div class="row__info">
                     <p class="row__teams">
                       <span class="row__name">{{ row.matchup.team1.name }}</span>
-                      <span class="row__coach"
-                        >{{ row.matchup.team1.coach }}</span
-                      >
+                      @if (row.matchup.team1.coach) {
+                        <span class="row__coach">{{
+                          row.matchup.team1.coach
+                        }}</span>
+                      }
                       <span class="row__vs">vs</span>
                       <span class="row__name">{{ row.matchup.team2.name }}</span>
-                      <span class="row__coach"
-                        >{{ row.matchup.team2.coach }}</span
-                      >
+                      @if (row.matchup.team2.coach) {
+                        <span class="row__coach">{{
+                          row.matchup.team2.coach
+                        }}</span>
+                      }
                     </p>
 
                     <p class="row__meta">
@@ -123,6 +127,9 @@
                       @if (outcomeLabel(row); as outcome) {
                         <span>{{ outcome }}</span>
                       }
+                      @if (rulingLabel(row); as ruling) {
+                        <span>{{ ruling }}</span>
+                      }
                     </p>
                   </div>
 
@@ -134,35 +141,30 @@
                       <pdz-chip tone="warning" variant="soft" size="xs">
                         Awaiting review
                       </pdz-chip>
+                    } @else if (row.walkover) {
+                      <pdz-chip tone="neutral" variant="soft" size="xs">
+                        Walkover
+                      </pdz-chip>
                     } @else if (!row.recorded) {
                       <pdz-chip tone="neutral" variant="soft" size="xs">
                         No result
                       </pdz-chip>
                     }
-                    @if (row.blocked) {
-                      <pdz-chip tone="danger" variant="soft" size="xs">
-                        Bracket stuck
-                      </pdz-chip>
-                    }
 
-                    <button
-                      pdz-button
-                      size="sm"
-                      class="row__action"
-                      [variant]="isRowOpen(row) ? 'outlined' : 'tonal'"
-                      [color]="isRowOpen(row) ? 'neutral' : 'primary'"
-                      [icon]="isRowOpen(row) ? 'close' : 'edit_note'"
-                      [attr.aria-expanded]="isRowOpen(row)"
-                      (click)="toggleRow(row)"
-                    >
-                      {{
-                        isRowOpen(row)
-                          ? "Close"
-                          : row.recorded || row.pending
-                            ? "Edit"
-                            : "Record"
-                      }}
-                    </button>
+                    @if (rowAction(row); as action) {
+                      <button
+                        pdz-button
+                        size="sm"
+                        class="row__action"
+                        [variant]="isRowOpen(row) ? 'outlined' : 'tonal'"
+                        [color]="isRowOpen(row) ? 'neutral' : 'primary'"
+                        [icon]="isRowOpen(row) ? 'close' : 'edit_note'"
+                        [attr.aria-expanded]="isRowOpen(row)"
+                        (click)="toggleRow(row)"
+                      >
+                        {{ action }}
+                      </button>
+                    }
                   </div>
                 </div>
 
@@ -202,55 +204,55 @@
                   </div>
                 }
 
-                @if (row.blocked) {
-                  <div class="advance">
-                    <p class="advance__hint">
-                      Nothing left this match, so the bracket below it is
-                      waiting. Say who moves on.
-                    </p>
-                    <label pdz-field class="advance__field" label="Advances">
-                      <pdz-select
-                        size="sm"
-                        aria-label="Which side advances"
-                        [value]="advancementValue(row)"
-                        [disabled]="advancingSlug() === row.matchup.slug"
-                        (valueChange)="setAdvancement(row, $any($event))"
-                      >
-                        <pdz-option value="" label="Undecided" />
-                        @if (row.matchup.team1.id) {
-                          <pdz-option
-                            value="side1"
-                            [label]="row.matchup.team1.name"
-                          />
-                        }
-                        @if (row.matchup.team2.id) {
-                          <pdz-option
-                            value="side2"
-                            [label]="row.matchup.team2.name"
-                          />
-                        }
-                        <pdz-option value="none" label="Nobody" />
-                      </pdz-select>
-                    </label>
-                  </div>
-                }
-
                 @if (errorFor(row); as error) {
                   <p class="row__error">{{ error }}</p>
                 }
 
                 @if (isRowOpen(row)) {
                   <div class="row__editor">
-                    @if (detailLoading()) {
-                      <pdz-loading />
-                    } @else if (detailError(); as error) {
-                      <p class="row__error">{{ error }}</p>
-                    } @else if (detail(); as matchup) {
-                      <pdz-matchup-report
-                        [matchup]="matchup"
-                        [matchupSlug]="row.matchup.slug"
-                        (submitted)="onRecorded()"
-                      />
+                    @if (row.matchup.feedsBracket) {
+                      <label
+                        pdz-field
+                        class="row__advance"
+                        label="Who advances"
+                        hint="Leave on Follow the result unless you are making a ruling."
+                      >
+                        <pdz-select
+                          size="sm"
+                          [value]="advancementValue(row)"
+                          [disabled]="advancingSlug() === row.matchup.slug"
+                          (valueChange)="setAdvancement(row, $any($event))"
+                        >
+                          <pdz-option value="" label="Follow the result" />
+                          @if (row.matchup.team1.id) {
+                            <pdz-option
+                              value="side1"
+                              [label]="row.matchup.team1.name"
+                            />
+                          }
+                          @if (row.matchup.team2.id) {
+                            <pdz-option
+                              value="side2"
+                              [label]="row.matchup.team2.name"
+                            />
+                          }
+                          <pdz-option value="none" label="Nobody" />
+                        </pdz-select>
+                      </label>
+                    }
+
+                    @if (row.playable) {
+                      @if (detailLoading()) {
+                        <pdz-loading />
+                      } @else if (detailError(); as error) {
+                        <p class="row__error">{{ error }}</p>
+                      } @else if (detail(); as matchup) {
+                        <pdz-matchup-report
+                          [matchup]="matchup"
+                          [matchupSlug]="row.matchup.slug"
+                          (submitted)="onRecorded()"
+                        />
+                      }
                     }
                   </div>
                 }

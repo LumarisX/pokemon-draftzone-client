@@ -5,45 +5,27 @@ import {
   FlexBracketMatch,
 } from '../bracket.model';
 
-// ─── Layout constants (world-space pixels at zoom 1) ─────────────────────────
-
-/** Width of a match card / round row. */
 export const COL_W = 240;
-/** Minimum vertical gap between round rows that connector paths travel through. */
 export const COL_GAP = 80;
-/** Minimum horizontal gap between cards spread across a round. */
 export const MATCH_GAP = 16;
-/** Horizontal gap between side-by-side sections. */
 export const SECTION_GAP = 32;
 
-// Card inner metrics. A card is: PAD, label row, gap, team row, gap, team row, PAD.
 export const CARD_PAD = 6;
 export const LABEL_H = 24;
 export const ROW_GAP = 4;
-/** Height of one placeholder slot row ("Seed 2", "Winner of Match 3", …). */
 export const TEAM_H_COMPACT = 24;
-/** Height of one team row when real teams are bound — fits logo + name + coach. */
 export const TEAM_H_FULL = 48;
-/** Height of one match card for a given team-row height. */
 export const matchHeight = (teamH: number): number =>
   CARD_PAD * 2 + LABEL_H + ROW_GAP * 2 + teamH * 2;
 
-/** Spacing between parallel connector lanes in a corridor or band. */
 export const LANE_STEP = 4;
-/** Padding between cards and the outermost connector lane in a corridor. */
 export const CORRIDOR_PAD = 14;
-/** Padding between section content and the outermost lane in a band. */
 export const BAND_PAD = 14;
 
-/** Section title text + padding + underline. */
 export const SECTION_TITLE_H = 28;
 export const SECTION_TITLE_GAP = 12;
-/** Round-title header row height. */
 export const HEADER_H = 26;
-/** Edit-mode "+ Match" / "+ Round" button height. */
 export const ADD_BTN_H = 34;
-
-// ─── Layout output model ──────────────────────────────────────────────────────
 
 export interface CanvasSlot extends ResolvedSlot {
   raw: BracketSlotFlex;
@@ -62,9 +44,7 @@ export interface CanvasMatch {
   y: number;
   w: number;
   h: number;
-  /** World-space y of each team row's top edge. */
   slotY: [number, number];
-  /** World-space x of each team row's connector port (bottom/top edge). */
   portX: [number, number];
   slots: [CanvasSlot, CanvasSlot];
 }
@@ -73,27 +53,20 @@ export interface CanvasColumn {
   section: string;
   round: number;
   title: string;
-  /** World-space x shared by every round in this section (rounds stack in y). */
   x: number;
-  /** World-space y of this round's header strip — distinct per round. */
   headerY: number;
-  /** World-space y where this round's card row begins. */
   cardsTop: number;
 }
 
 export interface CanvasSectionBlock {
   key: string;
   title: string;
-  /** World-space x where this section begins (sections sit side-by-side). */
   x: number;
-  /** Underlined title bar; absent when the section has no visible title. */
   titleY: number | null;
   headerY: number;
   cardsTop: number;
   columns: CanvasColumn[];
-  /** World-space y just past the section's last round (its own round count). */
   bottom: number;
-  /** Total width spanned by this section's cards (including edit-mode + Match button). */
   width: number;
 }
 
@@ -102,18 +75,9 @@ export interface CanvasConnector {
   y1: number;
   x2: number;
   y2: number;
-  /** Y of the first horizontal segment (its corridor lane). Unique per lane so
-   *  parallel lines never stack on one y. */
   laneCoord: number;
-  /** Which outcome this line carries — winner lines are green, loser lines red. */
   cls: 'winner' | 'loser';
-  /** True once the source match has a recorded winner: solid line anchored to
-   *  the advancing/eliminated team's port instead of a dashed line from the
-   *  card's center. */
   decided: boolean;
-  /** Orthogonal polyline the renderer traces (corners get rounded). Every
-   *  segment runs inside a corridor (gap between rounds) or a band (gap
-   *  between sections), never across cards. */
   points: { x: number; y: number }[];
 }
 
@@ -133,27 +97,10 @@ export interface CanvasLayout {
   matches: CanvasMatch[];
   connectors: CanvasConnector[];
   matchLabelById: Map<string, string>;
-  /** Edit-mode "+ Match" buttons, one per round row. */
   addMatchButtons: CanvasButton[];
-  /** Edit-mode "+ Round" buttons, one per section (round = the next round number). */
   addRoundButtons: CanvasButton[];
 }
 
-// ─── Horizontal centers (position within a round) ────────────────────────────
-
-/**
- * Assigns horizontal centers to all matches via row-by-row compaction.
- *
- * Each section's rounds are processed top to bottom; within a round, matches
- * (in `position` order) are placed at the average of their input centers, but
- * never left of the previous card plus the minimum gap. `position` values only
- * determine ordering, never absolute offsets — sparse or 1-indexed positions
- * (e.g. after bye compaction) don't leave holes in the row.
- *
- * Only same-section inputs pull on a match's center: sections are placed
- * side-by-side and normalized independently, so a cross-section reference (a
- * losers-bracket drop) must not drag the destination section's geometry around.
- */
 export function computePositionCenters(
   matches: FlexBracketMatch[],
   cardSize: number,
@@ -203,8 +150,6 @@ export function computePositionCenters(
     }
   }
 
-  // Normalize each section so its leftmost card sits flush with the section's
-  // card area even when every first-round match was pulled by inputs.
   for (const rounds of sections.values()) {
     const sectionCenters: number[] = [];
     for (const group of rounds.values()) {
@@ -221,78 +166,76 @@ export function computePositionCenters(
   return centers;
 }
 
-// ─── Slot resolution ─────────────────
-
-/** A slot's team, or what it is still waiting on. */
 export interface ResolvedSlot {
   team: BracketTeamFlex | null;
   placeholder: string | null;
-  /**
-   * The match the placeholder names, when it names one — the id behind
-   * "Winner of Match 4". Null for anything that is not waiting on a result,
-   * so a reader can be offered the source only where there is one to show.
-   */
   sourceId: string | null;
 }
 
-/**
- * Which side of a match leaves it, mirroring the server's `advancingSides`.
- *
- * `advances` is the organizer's override, and it answers a question `winner`
- * cannot: a double forfeit is a settled result with no winning side, so
- * without one there is nobody to draw into the next match's slot.
- */
+export interface MatchExit {
+  winner: 0 | 1 | null;
+  loser: 0 | 1 | null;
+  settled: boolean;
+  walkover: 0 | 1 | 'void' | null;
+}
+
+const OPEN: MatchExit = {
+  winner: null,
+  loser: null,
+  settled: false,
+  walkover: null,
+};
+const NOBODY: MatchExit = { ...OPEN, settled: true };
+
+function recordedWinner(match: FlexBracketMatch): 0 | 1 | null | undefined {
+  if (match.advances === 'none') return null;
+  if (match.advances === 'side1') return 0;
+  if (match.advances === 'side2') return 1;
+  if (match.winner !== undefined) return match.winner;
+  if (match.forfeit) return null;
+  return undefined;
+}
+
+export function matchExit(
+  match: FlexBracketMatch,
+  allMatches: FlexBracketMatch[] = [],
+  depth = 0,
+): MatchExit {
+  const recorded = recordedWinner(match);
+  if (recorded === null) return NOBODY;
+  if (recorded !== undefined)
+    return {
+      winner: recorded,
+      loser: recorded === 0 ? 1 : 0,
+      settled: true,
+      walkover: null,
+    };
+  if (depth > 20) return OPEN;
+
+  const isDead = (slot: BracketSlotFlex): boolean => {
+    if (slot.type !== 'winner' && slot.type !== 'loser') return false;
+    const src = allMatches.find((m) => m.id === slot.from);
+    if (!src) return false;
+    const exit = matchExit(src, allMatches, depth + 1);
+    return exit.settled && exit[slot.type] === null;
+  };
+
+  const deadA = isDead(match.a);
+  const deadB = isDead(match.b);
+  if (deadA && deadB) return { ...NOBODY, walkover: 'void' };
+  if (deadA) return { winner: 1, loser: null, settled: true, walkover: 1 };
+  if (deadB) return { winner: 0, loser: null, settled: true, walkover: 0 };
+  return OPEN;
+}
+
 export function advancingSideIndex(
   match: FlexBracketMatch,
   outcome: 'winner' | 'loser',
+  allMatches: FlexBracketMatch[] = [],
 ): 0 | 1 | null {
-  const winnerIndex =
-    match.advances === 'none'
-      ? null
-      : match.advances === 'side1'
-        ? 0
-        : match.advances === 'side2'
-          ? 1
-          : (match.winner ?? null);
-  if (winnerIndex === null) return null;
-  if (outcome === 'winner') return winnerIndex;
-  return winnerIndex === 0 ? 1 : 0;
+  return matchExit(match, allMatches)[outcome];
 }
 
-/**
- * Whether a match will never send anyone onward, as opposed to not having done
- * so yet. Mirrors the server's `yieldsNobody` + `isSettledOrDead`.
- *
- * The recursive half is the one that matters here. A double forfeit strands the
- * match after it, and that match then strands the one after *it* — nobody can
- * play it, so it can never produce a winner either. Checking only the source's
- * own result stops the deadness one hop short, and the match two rounds later
- * goes on advertising a "Winner of ..." that can never arrive.
- */
-function producesNobody(
-  match: FlexBracketMatch,
-  allMatches: FlexBracketMatch[],
-  depth = 0,
-): boolean {
-  if (depth > 20) return false;
-  if (advancingSideIndex(match, 'winner') !== null) return false;
-
-  // Ruled on by an organizer, or settled by a result with no winning side.
-  if (match.advances === 'none') return true;
-  if (match.winner === undefined && match.forfeit) return true;
-
-  // Unplayable: a side of it is fed by a slot nothing will ever arrive in.
-  return ([match.a, match.b] as const).some((slot) => {
-    if (slot.type !== 'winner' && slot.type !== 'loser') return false;
-    const src = allMatches.find((m) => m.id === slot.from);
-    return !!src && producesNobody(src, allMatches, depth + 1);
-  });
-}
-
-/**
- * Resolves a slot to its actual team by recursively following winner/loser chains.
- * Returns a placeholder when the source match has not yet been played.
- */
 export function resolveSlot(
   slot: BracketSlotFlex,
   teams: BracketTeamFlex[],
@@ -317,7 +260,8 @@ export function resolveSlot(
     const outcome = slot.type === 'winner' ? 'Winner' : 'Loser';
 
     if (src) {
-      const sideIndex = advancingSideIndex(src, slot.type);
+      const exit = matchExit(src, allMatches);
+      const sideIndex = exit[slot.type];
       if (sideIndex !== null) {
         return resolveSlot(
           sideIndex === 0 ? src.a : src.b,
@@ -327,15 +271,9 @@ export function resolveSlot(
           depth + 1,
         );
       }
-      // Nobody is leaving that match, ever. "Winner of Match 4" would read as a
-      // result still to come, when in fact the slot is empty for good unless an
-      // organizer says who advances.
-      if (producesNobody(src, allMatches)) {
-        // A double forfeit reaches the client as "no winner, forfeited". Naming
-        // it is more use than "no winner": it says what happened, and it is the
-        // match an organizer has to open to fix the chain.
+      if (exit.settled) {
         const reason =
-          src.winner === undefined && src.forfeit && src.advances !== 'none'
+          src.winner === undefined && src.forfeit && !src.advances
             ? `Double forfeit in ${label}`
             : `No ${outcome.toLowerCase()} from ${label}`;
         return { team: null, placeholder: reason, sourceId: slot.from };
@@ -356,13 +294,6 @@ export function resolveSlot(
   return { team: null, placeholder: null, sourceId: null };
 }
 
-// ─── Titles ──────────────────────────
-
-/**
- * `kind` is the section's structural role — for a bracket composed of several
- * configured blocks, section keys are namespaced (`playoffs--winners`) and
- * only `kind` still says what the section is.
- */
 export function computeRoundTitles(
   roundNums: number[],
   kind: string,
@@ -378,9 +309,6 @@ export function computeRoundTitles(
     if (overrides?.[rn]) return overrides[rn];
     const fromEnd = n - 1 - idx;
     if (isFinals) {
-      // First finals round is the Grand Finals; any later round is the reset.
-      // (The old DOM renderer had this reversed — kept correct here to match
-      // the server's roundName() ordering.)
       return idx === 0 ? 'Grand Finals' : 'Grand Finals Reset';
     }
     if (isWinners) {
@@ -392,8 +320,6 @@ export function computeRoundTitles(
       return `Round of ${roundOf}`;
     }
     if (isLosers) {
-      // Losers rounds alternate sizes instead of halving, so earlier rounds
-      // stay numbered — only the last two get end-anchored names.
       if (fromEnd === 0) return 'Finals';
       if (fromEnd === 1) return 'Semi-Finals';
       return `Round ${idx + 1}`;
@@ -414,39 +340,21 @@ export function autoSectionTitle(kind: string): string {
   return titles[kind] ?? kind.charAt(0).toUpperCase() + kind.slice(1);
 }
 
-// ─── Full layout computation ──────────────────────────────────────────────────
-
 function slotStatus(
   match: FlexBracketMatch,
   slotIndex: 0 | 1,
+  allMatches: FlexBracketMatch[],
 ): 'winner' | 'loser' | 'undecided' {
-  // Not `match.winner`: an organizer ruling who advances out of a stalled match
-  // settles it just as a played result does, and a card that ignored the ruling
-  // would keep drawing both sides as undecided.
-  const advancing = advancingSideIndex(match, 'winner');
+  const advancing = advancingSideIndex(match, 'winner', allMatches);
   if (advancing === null) return 'undecided';
   return advancing === slotIndex ? 'winner' : 'loser';
 }
 
-/**
- * Computes the complete world-space layout for a bracket: section blocks,
- * round rows, match card rects, connector line endpoints, and edit-mode
- * button rects. Pure — no DOM, no canvas.
- *
- * Rounds flow top-to-bottom: the round axis is y, matches within a round
- * spread out along x. Multi-section brackets (double-elim's winners/losers/
- * finals) sit side-by-side along x, sharing one global y-grid so cross-
- * section drop routes stay aligned and card-free — mirroring the old
- * left-to-right engine's shared x-grid across vertically-stacked sections.
- */
 export function computeBracketLayout(
   data: FlexBracketData,
   editable: boolean,
 ): CanvasLayout {
   const { teams, matches, sections: sectionCfgs } = data;
-  // Certified-random builder drafts (and read-only brackets served without a
-  // team list) have no teams bound, but the seeds wired into the matches still
-  // give the bracket size for "Round of N" titles.
   const maxSlotSeed = matches.reduce((mx, m) => {
     for (const slot of [m.a, m.b]) {
       if (slot.type === 'seed' || slot.type === 'bye') {
@@ -456,16 +364,11 @@ export function computeBracketLayout(
     return mx;
   }, 0);
   const totalTeams = Math.max(teams.length, maxSlotSeed);
-  // Rows grow to fit logo + coach when real teams are bound; placeholder-only
-  // brackets (builder drafts, unseeded) stay compact.
   const teamH = teams.length > 0 ? TEAM_H_FULL : TEAM_H_COMPACT;
   const matchH = matchHeight(teamH);
   const positionCenters = computePositionCenters(matches, COL_W);
   const matchLabelById = new Map<string, string>();
 
-  // Determine section keys and their ordering. In edit mode, sections
-  // configured but not yet holding any matches still need to render (with
-  // an "add first match" affordance) so an organizer can bootstrap one.
   const sectionKeys = [
     ...new Set([
       ...matches.map((m) => m.section ?? 'main'),
@@ -486,7 +389,6 @@ export function computeBracketLayout(
   const addMatchButtons: CanvasButton[] = [];
   const addRoundButtons: CanvasButton[] = [];
 
-  // ── Grid metadata ──────────────────────────────────────────────────────────
   const roundNumsBySection = new Map<string, number[]>();
   for (const sKey of sectionKeys) {
     roundNumsBySection.set(
@@ -503,8 +405,6 @@ export function computeBracketLayout(
   const sectionIdxByKey = new Map(sectionKeys.map((k, i) => [k, i] as const));
   const matchById = new Map(matches.map((m) => [m.id, m]));
 
-  // Labels must exist before slot resolution so a pending slot can render
-  // "Winner of <label>" even when its source match lays out later.
   for (const sKey of sectionKeys) {
     let matchNumber = 1;
     for (const rn of roundNumsBySection.get(sKey)!) {
@@ -520,20 +420,6 @@ export function computeBracketLayout(
   const colIdxOf = (m: FlexBracketMatch): number =>
     roundNumsBySection.get(m.section ?? 'main')!.indexOf(m.round);
 
-  // ── Connector routing ──────────────────────────────────────────────────────
-  // Classify every winner/loser edge before any geometry exists, so corridors
-  // (horizontal gaps between round rows) and bands (vertical gaps between
-  // sections) can size themselves to the number of lines they carry.
-  //
-  // - straight/elbow: same section, next round — the classic bracket line
-  //   through the corridor between the two rounds.
-  // - bus: everything else (cross-section drops, round skips, backward
-  //   links). Routed out of the source into the corridor below its round,
-  //   horizontally to the band left/right of the destination's section,
-  //   vertically to the corridor above the destination round, then to the
-  //   destination card. Every segment runs inside a corridor or a band, so
-  //   bus lines never cross cards. Rounds share one y-grid across all
-  //   sections, which keeps corridors card-free over the full canvas width.
   interface ConnectorRoute {
     fromId: string;
     destId: string;
@@ -542,21 +428,14 @@ export function computeBracketLayout(
     decided: boolean;
     kind: 'straight' | 'elbow' | 'bus';
     srcSection: string;
-    /** Corridor holding the segment that leaves the source (elbow: the only one). */
     corrOut: number;
     laneOut: number;
-    /** Corridor holding the segment that enters the destination (bus only). */
     corrIn: number;
     laneIn: number;
-    /** Section index whose band carries the vertical run (bus only). */
     bandSection: number;
     bandLane: number;
   }
 
-  /** Section-relative x offset of a team row's connector port, from the
-   *  section-relative match position-center. The two ports split the card's
-   *  width so a decided match's line still visibly anchors to the advancing
-   *  (or eliminated) team, even though the card isn't rotated. */
   const relPortOffset = (id: string, row: 0 | 1): number => {
     const center = positionCenters.get(id) ?? COL_W / 2;
     return center + (row === 0 ? -COL_W * 0.2 : COL_W * 0.2);
@@ -573,7 +452,7 @@ export function computeBracketLayout(
       const destSection = dest.section ?? 'main';
       const srcCol = colIdxOf(src);
       const destCol = colIdxOf(dest);
-      const advancing = advancingSideIndex(src, raw.type);
+      const advancing = advancingSideIndex(src, raw.type, matches);
       const decided = advancing !== null;
 
       const x1Rel = decided
@@ -604,9 +483,6 @@ export function computeBracketLayout(
     });
   }
 
-  // Lane bookkeeping: bus lines get globally unique lanes per corridor (their
-  // horizontal runs can span several sections), while elbow lanes are unique
-  // within a section but reused across sections, offset past the bus lanes.
   const busLaneCount = new Map<number, number>();
   for (const r of routes) {
     if (r.kind !== 'bus') continue;
@@ -643,18 +519,12 @@ export function computeBracketLayout(
     );
   }
 
-  // Corridor i sits above round-row i; its height grows with its lane count.
-  // Corridor 0 (top canvas margin) collapses to zero when unused.
   const corridorH = (c: number): number => {
     const lanes = laneTotals.get(c) ?? 0;
     const needed = lanes > 0 ? 2 * CORRIDOR_PAD + (lanes - 1) * LANE_STEP : 0;
     return c === 0 ? needed : Math.max(COL_GAP, needed);
   };
 
-  // Whether ANY section carries a title determines a uniform title band
-  // reserved above round 0 for every section — the round axis (y) must stay
-  // aligned across sections for cross-section bus routing, so this space
-  // can't vary per section even when only some sections show title text.
   const kindOf = (sKey: string): string =>
     sectionCfgs?.find((s) => s.key === sKey)?.kind ?? sKey;
   const sectionTitleOf = (sKey: string): string =>
@@ -663,9 +533,6 @@ export function computeBracketLayout(
   const hasAnyTitle = sectionKeys.some((sKey) => !!sectionTitleOf(sKey));
   const titleBandH = hasAnyTitle ? SECTION_TITLE_H + SECTION_TITLE_GAP : 0;
 
-  // Global round-axis (y) grid, shared by every section. Round i's header
-  // sits just above its cards; a corridor (sized to the lanes routing
-  // through it) sits above that header.
   const rowYCache: number[] = [];
   const rowTop = (c: number): number => {
     while (rowYCache.length <= c) {
@@ -684,8 +551,6 @@ export function computeBracketLayout(
     );
   };
 
-  // Vertical band runs share a lane when their y-spans don't overlap (greedy
-  // interval coloring), keeping band widths reasonable.
   const bandLaneCount = new Map<number, number>();
   {
     const runs = routes
@@ -742,9 +607,6 @@ export function computeBracketLayout(
     const roundTitles = computeRoundTitles(
       roundNums,
       cfg?.kind ?? sKey,
-      // Seeds are numbered across the whole bracket, so a composed section's
-      // size can only come from its own config; the global count is the
-      // fallback for single-block brackets that predate it.
       cfg?.teamCount ?? totalTeams,
       cfg?.roundTitles,
     );
@@ -754,7 +616,7 @@ export function computeBracketLayout(
     const titleY: number | null = title ? 0 : null;
 
     const columns: CanvasColumn[] = [];
-    let maxCardRight = sectionX + COL_W; // sections render at least one card wide
+    let maxCardRight = sectionX + COL_W;
 
     roundNums.forEach((rn, idx) => {
       const rowCardsTop = rowTop(idx);
@@ -800,8 +662,8 @@ export function computeBracketLayout(
           slotY: [slotAY, slotBY],
           portX: [x + COL_W * 0.3, x + COL_W * 0.7],
           slots: [
-            { raw: m.a, ...resolvedA, status: slotStatus(m, 0) },
-            { raw: m.b, ...resolvedB, status: slotStatus(m, 1) },
+            { raw: m.a, ...resolvedA, status: slotStatus(m, 0, matches) },
+            { raw: m.b, ...resolvedB, status: slotStatus(m, 1, matches) },
           ],
         });
 
@@ -862,7 +724,6 @@ export function computeBracketLayout(
     xCursor = sectionX + sectionWidth;
   }
 
-  /** Center x of a band lane (the vertical run of a bus route). */
   const bandLaneX = (s: number, lane: number): number => {
     const lanes = bandLaneCount.get(s) ?? 1;
     return (
@@ -872,8 +733,6 @@ export function computeBracketLayout(
     );
   };
 
-  // Connector endpoints: source card's bottom edge at its horizontal port →
-  // destination slot's top edge at the port's horizontal position.
   const matchLayoutById = new Map(layoutMatches.map((m) => [m.id, m]));
   const connectors: CanvasConnector[] = [];
   const routeByConnector: ConnectorRoute[] = [];
@@ -883,12 +742,10 @@ export function computeBracketLayout(
     const dest = matchLayoutById.get(r.destId);
     if (!src || !dest) continue;
 
-    // Undecided: line leaves from the card's horizontal center. Decided: it
-    // leaves from the port of the team actually advancing (or eliminated).
     let x1 = src.x + src.w / 2;
     if (r.decided) {
       const sourceMatch = matchById.get(r.fromId)!;
-      const rowIndex = advancingSideIndex(sourceMatch, r.cls);
+      const rowIndex = advancingSideIndex(sourceMatch, r.cls, matches);
       if (rowIndex !== null) x1 = src.portX[rowIndex];
     }
 
@@ -905,8 +762,6 @@ export function computeBracketLayout(
     routeByConnector.push(r);
   }
 
-  // Fan out lines that leave the same point (e.g. an undecided match feeding
-  // both a winner and a loser slot) so they don't overlap at the origin.
   const byOrigin = new Map<string, CanvasConnector[]>();
   for (const conn of connectors) {
     const key = `${Math.round(conn.x1)}:${conn.y1}`;
@@ -921,7 +776,6 @@ export function computeBracketLayout(
     });
   }
 
-  // Trace each route into its final polyline.
   connectors.forEach((conn, i) => {
     const r = routeByConnector[i];
     const { x1, y1, x2, y2 } = conn;
@@ -934,8 +788,6 @@ export function computeBracketLayout(
       return;
     }
     if (r.kind === 'elbow' || r.corrIn === r.corrOut) {
-      // A bus whose out- and in-corridors coincide (cross-section, next
-      // round) degenerates to a single horizontal run straight through the band.
       const vy = laneY(r.corrOut, r.laneOut);
       conn.laneCoord = vy;
       conn.points = [

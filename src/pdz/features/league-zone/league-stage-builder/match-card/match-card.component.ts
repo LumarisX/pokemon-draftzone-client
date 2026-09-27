@@ -77,7 +77,7 @@ export class MatchCardComponent {
   }
 
   private get advancing(): 0 | 1 | null {
-    return advancingSideIndex(this.match(), 'winner');
+    return advancingSideIndex(this.match(), 'winner', this.allMatches());
   }
 
   private get decided(): boolean {

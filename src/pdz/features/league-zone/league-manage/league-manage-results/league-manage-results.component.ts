@@ -29,7 +29,8 @@ type ResultRow = {
   stageName: string | null;
   pending: boolean;
   recorded: boolean;
-  blocked: boolean;
+  walkover: boolean;
+  playable: boolean;
 };
 
 type ResultRound = {
@@ -106,7 +107,7 @@ export class LeagueManageResultsComponent {
         live: index === this.currentRoundIndex(),
         rows,
         pendingCount: rows.filter((row) => row.pending).length,
-        openCount: rows.filter((row) => !row.recorded && !row.pending).length,
+        openCount: rows.filter((row) => this.isOpen(row)).length,
       };
     }),
   );
@@ -185,6 +186,10 @@ export class LeagueManageResultsComponent {
     this.openSlug.set(slug);
     this.detail.set(null);
     this.detailError.set(null);
+    if (!row.playable) {
+      this.detailLoading.set(false);
+      return;
+    }
     this.detailLoading.set(true);
 
     this.leagueService
@@ -291,13 +296,35 @@ export class LeagueManageResultsComponent {
     return `${report.submittedByName} reported ${report.score.team1}–${report.score.team2}${forfeit}${when}`;
   }
 
+  protected rowAction(row: ResultRow): string | null {
+    if (this.isRowOpen(row)) return 'Close';
+    if (!row.playable) return row.matchup.feedsBracket ? 'Ruling' : null;
+    return row.recorded || row.pending ? 'Edit' : 'Record';
+  }
+
+  protected rulingLabel(row: ResultRow): string | null {
+    const { advances, team1, team2 } = row.matchup;
+    switch (advances) {
+      case 'side1':
+        return `Ruling: ${team1.name} advances`;
+      case 'side2':
+        return `Ruling: ${team2.name} advances`;
+      case 'none':
+        return 'Ruling: nobody advances';
+      default:
+        return null;
+    }
+  }
+
   protected scoreLine(row: ResultRow): string | null {
     if (!row.recorded) return null;
     return `${row.matchup.team1.score ?? 0}–${row.matchup.team2.score ?? 0}`;
   }
 
   protected outcomeLabel(row: ResultRow): string | null {
-    const { winner, team1, team2 } = row.matchup;
+    const { winner, walkover, team1, team2 } = row.matchup;
+    if (walkover === 'side1') return `${team1.name} advances by walkover`;
+    if (walkover === 'side2') return `${team2.name} advances by walkover`;
     switch (winner) {
       case 'side1':
         return `${team1.name} won`;
@@ -325,8 +352,9 @@ export class LeagueManageResultsComponent {
       matchup,
       stageName: multiStage ? stage.name : null,
       pending: matchup.status === 'pending' && !!matchup.report,
-      recorded: this.isRecorded(matchup),
-      blocked: !!matchup.advancementBlocked || !!matchup.advances,
+      recorded: !matchup.walkover && this.isRecorded(matchup),
+      walkover: !!matchup.walkover,
+      playable: !!matchup.team1.id && !!matchup.team2.id,
     };
   }
 
@@ -339,15 +367,18 @@ export class LeagueManageResultsComponent {
     );
   }
 
+  private isOpen(row: ResultRow): boolean {
+    return !row.recorded && !row.pending && !row.walkover;
+  }
+
   private needsAttention(row: ResultRow): boolean {
-    return row.pending || row.blocked || !row.recorded;
+    return row.pending || this.isOpen(row);
   }
 
   private priority(row: ResultRow): number {
     if (row.pending) return 0;
-    if (row.blocked) return 1;
-    if (!row.recorded) return 2;
-    return 3;
+    if (this.isOpen(row)) return 1;
+    return 2;
   }
 
   private load(): void {

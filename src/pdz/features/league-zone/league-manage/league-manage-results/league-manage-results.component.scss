@@ -137,8 +137,15 @@
   }
 
   &__editor {
+    display: flex;
+    flex-direction: column;
+    gap: pdz.space(md);
     padding-top: pdz.space(sm);
     border-top: 1px solid pdz.color("outline-variant");
+  }
+
+  &__advance {
+    max-width: 24rem;
   }
 
   &__error {
@@ -190,25 +197,5 @@
         flex: 0 0 auto;
       }
     }
-  }
-}
-
-.advance {
-  display: flex;
-  flex-direction: column;
-  gap: pdz.space(xs);
-  padding: pdz.space(sm);
-  border: 1px solid pdz.color("danger-border");
-  border-radius: pdz.shape("corner-sm");
-  background: pdz.color("danger-container");
-
-  &__hint {
-    @include text(label);
-    margin: 0;
-    color: pdz.color("on-danger-container");
-  }
-
-  &__field {
-    max-width: 18rem;
   }
 }

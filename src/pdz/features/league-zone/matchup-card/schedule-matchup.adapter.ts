@@ -40,9 +40,9 @@ export function scheduleMatchupToCard(
   matchup: League.Matchup,
   base: string[],
 ): MatchupCard {
-  const viewLink = [...base, 'matchups', matchup.slug];
   const decided = !!matchup.winner;
   const bothKnown = !!matchup.team1.slug && !!matchup.team2.slug;
+  const viewLink = bothKnown ? [...base, 'matchups', matchup.slug] : null;
 
   return {
     id: matchup.id,
@@ -54,7 +54,7 @@ export function scheduleMatchupToCard(
       slotFor(matchup.team2, 1, matchup, base),
     ],
     viewLink,
-    breakdownLink: bothKnown && !decided ? [...viewLink, 'breakdown'] : null,
+    breakdownLink: viewLink && !decided ? [...viewLink, 'breakdown'] : null,
     replays: matchup.matches.map((match) => match.link).filter(Boolean),
   };
 }
