@@ -4,7 +4,6 @@ import {
   computed,
   inject,
 } from '@angular/core';
-import { tournamentRoute } from '@pdz/core/route-paths';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
@@ -40,9 +39,17 @@ export class TierListPanelComponent {
   private readonly league = inject(LeagueZoneService);
 
   protected readonly editRoute = computed(() => {
+    const leagueSlug = this.league.leagueSlug();
     const tournamentSlug = this.league.tournamentSlug();
-    if (!tournamentSlug) return [];
-    return [...tournamentRoute(tournamentSlug), 'tier-list', 'edit'];
+    if (!leagueSlug || !tournamentSlug) return [];
+    return [
+      '/leagues',
+      leagueSlug,
+      'tournaments',
+      tournamentSlug,
+      'tier-list',
+      'edit',
+    ];
   });
 
   protected readonly tierList = computed(() => this.store.artifacts().tierList);

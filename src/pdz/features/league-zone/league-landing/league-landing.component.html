@@ -12,6 +12,17 @@
         <a
           pdz-page-header-actions
           pdz-button
+          icon="edit"
+          color="neutral"
+          variant="tonal"
+          routerLink="edit"
+          >Edit league</a
+        >
+      }
+      @if (league.hosting?.canHost) {
+        <a
+          pdz-page-header-actions
+          pdz-button
           icon="add"
           [routerLink]="['tournaments', 'new']"
           >New tournament</a
@@ -22,7 +33,7 @@
     <div class="tournaments">
       <h2 class="tournaments__heading">Tournaments</h2>
       @if (league.tournaments.length === 0) {
-        @if (league.isOwner) {
+        @if (league.hosting?.canHost) {
           <pdz-empty-state
             bordered
             icon="emoji_events"
@@ -59,7 +70,7 @@
                   <h3 class="tournament-card__name">
                     <a
                       class="tournament-card__link"
-                      [routerLink]="['/tournaments', tournament.tournamentSlug]"
+                      [routerLink]="['tournaments', tournament.tournamentSlug]"
                     >
                       {{ tournament.name }}
                     </a>

@@ -336,10 +336,9 @@ export namespace League {
   export type LeagueInfo = {
     name: string;
     tournamentSlug: string;
-    league: { name: string; leagueSlug: string } | null;
     description?: string;
-    format: string | null;
-    ruleset: string | null;
+    format: string;
+    ruleset: string;
     signUpDeadline: Date;
     draftStart?: Date;
     draftEnd?: Date;
@@ -378,6 +377,13 @@ export namespace League {
     tournaments: TournamentSummary[];
     isOwner: boolean;
     newTournamentDefaults: NewTournamentDefaults | null;
+    hosting: HostingAccess | null;
+  };
+
+  export type HostingAccess = {
+    canHost: boolean;
+    canCreateTournament: boolean;
+    reason: 'restricted' | 'limit' | null;
   };
 
   export type NewTournamentDefaults = {
@@ -387,7 +393,7 @@ export namespace League {
 
   export type LeagueCapabilities = {
     canCreateLeague: boolean;
-    reason: 'restricted' | 'limit' | null;
+    reason: 'restricted' | null;
   };
 
   export type OwnedLeague = {
@@ -399,6 +405,12 @@ export namespace League {
   export type CreateLeaguePayload = {
     name: string;
     description?: string;
+  };
+
+  export type UpdateLeaguePayload = {
+    name?: string;
+    description?: string;
+    logo?: string | null;
   };
 
   export type CreateTournamentPayload = {

@@ -17,36 +17,7 @@
     routerLink="manage"
     >My League Ads</a
   >
-  @if (canCreateLeague()) {
-    <a
-      pdz-page-header-actions
-      pdz-button
-      icon="add"
-      [routerLink]="newLeagueLink"
-      >New league</a
-    >
-  }
 </pdz-page-header>
-
-@if (ownedLeagues().length) {
-  <section class="owned" aria-labelledby="owned-heading">
-    <h2 id="owned-heading" class="owned__heading">Leagues you run</h2>
-    <div class="owned__list">
-      @for (league of ownedLeagues(); track league.leagueSlug) {
-        <a
-          pdz-card
-          interactive
-          padding="sm"
-          class="owned__card"
-          [routerLink]="['/', leagueZonePath, league.leagueSlug]"
-        >
-          <pdz-icon name="emoji_events" [size]="20" aria-hidden="true" />
-          <span class="owned__name">{{ league.name }}</span>
-        </a>
-      }
-    </div>
-  </section>
-}
 
 <div class="toolbar">
   <div class="toolbar__results">

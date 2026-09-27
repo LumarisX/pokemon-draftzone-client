@@ -10,40 +10,6 @@
   margin-bottom: pdz.space(lg);
 }
 
-.owned {
-  display: flex;
-  flex-direction: column;
-  gap: pdz.space(sm);
-  margin-bottom: pdz.space(xl);
-
-  &__heading {
-    @include pdz.text(title);
-    margin: 0;
-  }
-
-  &__list {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(14rem, 1fr));
-    gap: pdz.space(sm);
-  }
-
-  &__card {
-    display: flex;
-    align-items: center;
-    gap: pdz.space(sm);
-    color: pdz.color(on-surface);
-    text-decoration: none;
-  }
-
-  &__name {
-    @include pdz.text(body);
-    font-weight: pdz.font-weight(bold);
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-}
-
 .toolbar {
   display: flex;
   justify-content: space-between;

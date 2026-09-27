@@ -1,11 +1,7 @@
 import { Component, HostListener, inject, OnInit } from '@angular/core';
 import { Meta } from '@angular/platform-browser';
 import { ActivatedRoute, Params, Router, RouterModule } from '@angular/router';
-import {
-  DRAFT_OVERVIEW_PATH,
-  TOURNAMENT_PATH,
-  tournamentRoute,
-} from '@pdz/core/route-paths';
+import { DRAFT_OVERVIEW_PATH, LEAGUE_ZONE_PATH } from '@pdz/core/route-paths';
 import { ErrorService } from '@pdz/layout/error/error.service';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 import { SkeletonComponent } from '@pdz/shared/data/skeleton/skeleton.component';
@@ -163,7 +159,7 @@ export class MatchupOverviewComponent implements OnInit {
 
   private resolveShareUrl(params: Params): string {
     if (this.config.source === 'league') {
-      return `${SITE_URL}/${TOURNAMENT_PATH}/${params['tournamentSlug']}/matchups/${this.matchupId}`;
+      return `${SITE_URL}/${LEAGUE_ZONE_PATH}/${params['leagueSlug']}/tournaments/${params['tournamentSlug']}/matchups/${this.matchupId}`;
     }
     return `${SITE_URL}/matchup/${this.matchupId}`;
   }
@@ -173,6 +169,7 @@ export class MatchupOverviewComponent implements OnInit {
       case 'league':
         return {
           source: 'league',
+          leagueSlug: params['leagueSlug'],
           tournamentSlug: params['tournamentSlug'],
           matchupSlug: this.matchupId,
         };
@@ -186,7 +183,10 @@ export class MatchupOverviewComponent implements OnInit {
   private resolveBackLink(params: Params): unknown[] {
     if (this.config.source === 'league') {
       return [
-        ...tournamentRoute(params['tournamentSlug']),
+        '/' + LEAGUE_ZONE_PATH,
+        params['leagueSlug'],
+        'tournaments',
+        params['tournamentSlug'],
         'matchups',
         this.matchupId,
       ];
@@ -199,6 +199,7 @@ export class MatchupOverviewComponent implements OnInit {
   private fetch(params: Params): Observable<MatchupData> {
     if (this.config.source === 'league') {
       return this.matchupService.getLeagueMatchup(
+        params['leagueSlug'],
         params['tournamentSlug'],
         this.matchupId,
       );

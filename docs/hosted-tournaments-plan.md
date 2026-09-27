@@ -1647,7 +1647,9 @@ goes straight to that league's new-tournament page.
 An owner with no participants had no way back to their league, because
 `GET leagues` lists only tournaments where the caller coaches. `GET
 leagues/owned` fixes that, and the Find a League page shows it as "Leagues you
-run" next to the "New league" button.
+run" next to the "New league" button. *(Both were removed from Find a League on
+2026-09-26, see §15.8. The settings League control still uses `GET
+leagues/owned`.)*
 
 ### 12.4 Creating a tournament
 
@@ -1738,7 +1740,7 @@ Client:
 
 Still open:
 
-- A league edit page (name, description, logo).
+- ~~A league edit page (name, description, logo).~~ Done 2026-09-26, §15.9.
 - Copying pools.
 - A newly created tournament has no tier list until one is attached in the
   settings Draft section. That's the same state hand-inserted tournaments
@@ -4258,7 +4260,12 @@ Verification:
 
 ---
 
-## 15. Tournaments first, leagues optional — planned 2026-09-25
+## 15. Tournaments first, leagues optional — planned 2026-09-25, REVERSED 2026-09-26
+
+> **Reversed.** On 2026-09-26 the user went back to league-first, with
+> league-scoped URLs. Every step below was reverted, including the committed
+> steps 1 and 2. §15.11 records what was kept and what the model is now. The
+> rest of §15 is kept as the record of what was tried.
 
 Step 10 (§12) made the league the entry point: create a league, then create
 tournaments inside it. On reflection that has it backwards. The tournament is
@@ -4350,7 +4357,8 @@ tournament.
    - Fix the server-built links (§15.1).
    - `LeagueZoneService` stops tracking `leagueSlug` for tournament pages.
 3. **Rework step 10's code.** Uses `tournament-creator` as the placeholder
-   role name (§15.5).
+   role name (§15.5). **Code done 2026-09-26**, see §15.8. The league-scoped
+   API aliases and client redirects were dropped the same day (§15.10).
    - Make `league` optional in the schema. `leagueId`, `leagueSlug` and
      `leagueName` become nullable in the domain. Drop the mapper's
      `league.owner` fallback and make `owner` required (every tournament is
@@ -4370,7 +4378,9 @@ tournament.
      long enough for open tabs to reload.
 4. **Display fallbacks.** The tournament nav's eyebrow, "My Drafts", the ads
    and the tournament landing's back link all need a version for a tournament
-   with no league.
+   with no league. **Covered in code 2026-09-26:** the nav and landing read
+   `info.league?.…` since step 2, and My Drafts and the ad card were fixed in
+   step 3 (§15.8). Not checked in a browser with a league-less tournament.
 5. **League statistics.** This is its own step, taken once standalone
    tournaments exist to group. The data supports it: coach seats carry the
    user's `auth0Id` and matchups hold per-game results. Candidates:
@@ -4498,3 +4508,230 @@ Verification:
   covers the URL rewrite.
 - **Not verified in a browser.** **Deploy the server first.** It serves both
   URL shapes, and the new client calls only the new ones.
+
+### 15.8 Landed — 2026-09-26 (step 3, creation rework)
+
+A tournament can now be created with no league, and moved into or out of one
+later.
+
+Server:
+
+- **Schema.** `HostedTournamentEntity.league` is optional and `owner` is
+  required. The mapper's `league.owner` fallback is gone. `leagueId`,
+  `leagueSlug` and `leagueName` are nullable in the domain.
+- **Lookups.** `findBySlug` and `findById` skip the league lookup when there
+  is none, and treat a dangling league id as no league. `findByParticipant`
+  used to drop a tournament whose league was missing. It now keeps it.
+  `getInfo` returns `league: null`, and ads keep a league-less tournament with
+  `hostedLinks.leagueSlug`/`leagueName` as `null`.
+- **The gate moved.** `tournament-creation.policy.ts` (was
+  `league/league-creation.ts`) decides tournament creation. The site role is
+  `tournament-creator` (`UserRole.TOURNAMENT_CREATOR`), the switch is
+  `TOURNAMENT_CREATION=beta|open`, and the cap is `MAX_ACTIVE_TOURNAMENTS`
+  (default 3). The cap counts owned tournaments that aren't archived, and
+  admins and site owners are exempt, as before.
+- **One hosting role.** `mayHost(mode, roles)` is true for site staff, for
+  anyone once `TOURNAMENT_CREATION=open`, and otherwise only with
+  `tournament-creator`. It gates both tournament and league creation (user
+  decided 2026-09-26). The active-tournament cap applies only to tournaments.
+- **`POST leagues`** needs `mayHost` and fails with LR-002 otherwise. LR-002
+  keeps its original meaning (league creation restricted). It keeps its
+  5-per-hour throttle and has no cap. `GET leagues/capabilities` and
+  `LeagueRepository.countByOwner` are gone. The league summary keeps
+  `isOwner` but drops `newTournamentDefaults`.
+- **`GET tournament-creation`** returns `canHost`, `canCreateTournament`, `reason`, the
+  latest `ownerName`, `copySources` (every tournament the caller owns, newest
+  first, with its league name) and the caller's `leagues`. It lives outside
+  `tournaments/` so it can't collide with `GET tournaments/:tournamentSlug`.
+- **`POST tournaments`** takes an optional `leagueSlug`, which must be a
+  league the caller owns (LR-004). `copyFrom` must be a tournament the caller
+  owns (TRN-021, message reworded).
+- **`PUT`/`DELETE tournaments/:t/league`** attach and detach. They need the
+  new owner-only policy action `manageLeague`, so organizers can't move a
+  tournament, and the target league must be the caller's. Both run in a
+  transaction that bumps `rosterVersion` before counting approved teams. That
+  is the same write-conflict lock team approval takes, so an approval can't
+  slip in between the check and the move. They fail with TRN-024 once any team
+  is approved.
+- **Error codes.** Added TRN-022 (creation restricted), TRN-023 (active
+  limit) and TRN-024 (league locked). **LR-003 is retired. Never reuse it.**
+
+Client:
+
+- **`/tournaments/new`** is the create page. `?league=<slug>` preselects one
+  of the caller's leagues, and a slug they don't own is ignored.
+  `/leagues/:l/tournaments/new` redirects there with the query set. The form
+  has an optional League select and a searchable "Settings" select listing
+  every copy source, which replaces the single "copy from last season" toggle.
+  Blocked users see the beta or limit empty state.
+- **Entry points** show only when `canHost` is true. A host at the cap still
+  sees them and gets the limit message on the create page.
+  - Find a League: nothing. The user had "New tournament", then "New league"
+    and the "Leagues you run" section, removed from it (2026-09-26). The page
+    keeps only its `<pdz-page-header>` conversion. `/leagues/new` is reached
+    from the "Create one" links on the new-tournament form and the settings
+    League control.
+  - My Drafts: "New tournament".
+  - League page: the owner's "New tournament" (to
+    `/tournaments/new?league=…`), which also needs `canHost`.
+- **League create** shows the beta empty state without `canHost`, and lands
+  on the new league's page.
+- **Settings.** Identity has a new "League" node (`pdz-league-field`). The
+  owner picks a league and confirms with "Move to …" or "Remove from league".
+  The control is disabled once the workbench shows an approved sign-up.
+  Anyone else sees the current league read-only.
+- **Nullable league.** My Drafts hides the league label when there is none,
+  the ad card drops its league link, and the drafts-v2 season id no longer
+  includes the league slug.
+
+Verification:
+
+- **Server.** `tsc --noEmit` is clean. The tournament, league, tournament-ad
+  and user specs pass 361/362, and the one failure is the pre-existing
+  `external-tournament.controller.spec`. New specs cover the gate and cap, a
+  league-less create, the league-ownership check, owner-scoped copy sources,
+  creation options, attach/detach (including the organizer refusal and the
+  approval lock), and league-less mapping and lookups.
+- **Client.** `ng build` and `lint:styles` are clean. The league-zone,
+  league-list, drafts and core specs pass, apart from `power-rankings`, which
+  is on the baseline list.
+- **Not verified in a browser.**
+
+**Before this is usable on prod:**
+
+1. Create the `tournament-creator` role in Auth0, and check that the login
+   Action forwards it. The server drops role names it doesn't recognise.
+   `league-creator` was never created, so there is nothing to clean up.
+2. Leave `TOURNAMENT_CREATION` unset (beta). Set `MAX_ACTIVE_TOURNAMENTS`
+   only to change the default of 3. `LEAGUE_CREATION` and `MAX_OWNED_LEAGUES`
+   are no longer read.
+3. **Deploy the server first.** The new client calls `tournament-creation`
+   and `POST tournaments`. An old client's `GET leagues/capabilities` will 404
+   until it reloads, which hides only its "New league" button.
+   The same role now covers leagues, so `tournament-creator` is also what a
+   user needs to create a league.
+4. `owner` is now `required` in the schema. All 5 prod tournaments have one
+   (§15.6 `--check`), so nothing needs backfilling.
+
+The league edit page landed next (§15.9), and the league-scoped aliases were
+dropped after that (§15.10).
+
+### 15.9 Landed — 2026-09-26 (league edit page)
+
+This closes the "league edit page" item left open in §12.6.
+
+- **Server.** `PATCH leagues/:leagueSlug` with `UpdateLeagueDto`: `name`,
+  `description` (an empty string unsets it) and `logo` (`null` unsets it).
+  Only the owner can call it (LR-004). A new logo is claimed with
+  `UploadsService.claimUpload` into `UploadFolder.LEAGUE_LOGOS`, bound to the
+  uploader, the same way tournament logos are. An unchanged logo isn't claimed
+  again, and an empty body writes nothing. Editing needs no hosting role,
+  because owning the league is enough.
+- **Client.** `/leagues/:leagueSlug/edit` (`LeagueEditComponent`, behind
+  `AuthGuard`) sends only the fields that changed. The league page shows
+  "Edit league" to its owner.
+- **Logo field.** It moved from `tournament-settings/` to
+  `league-zone/logo-field/` and no longer depends on the settings store. It
+  takes `value`, `folder` (`tournament-logos` | `league-logos`) and `label`,
+  and emits `valueChange`. The tournament settings slot binds it to the store.
+- **Verification.** Server `tsc` is clean, and the league specs plus
+  `tournament-wiring` pass (21/21), with new `updateLeague` specs. Client
+  `ng build` and `lint:styles` are clean. The league-zone specs pass apart from
+  the baseline `power-rankings`, and there is a new `league-edit` spec. **Not
+  verified in a browser**, including an actual upload into `league-logos`.
+  That depends on the same unconfirmed S3 POST CORS as H4.
+
+### 15.10 Landed — 2026-09-26 (league-scoped routes dropped)
+
+The user decided to drop them rather than wait out a deploy window.
+
+- **Server.** Every tournament controller is now mounted only at
+  `tournaments/:tournamentSlug/...`: hosted-tournament, organizer, Discord,
+  chat, stages, bracket, matchups, schedule, trades, pools, pool detail and
+  the SSE `draft-events` stream. The old `leagues/:l/tournaments/:t/drafts`
+  spelling went too, because it only existed under the league prefix. The
+  draft-stream spec now asserts the league URL 404s. The archive-guard
+  legacy-route spec was removed, and the chat throttle spec uses the new path.
+- **Client.** `legacyTournamentRedirect` (with its spec) and the
+  `/leagues/:l/tournaments/new` redirect are deleted. `league-zone.routes.ts`
+  holds only the league pages: `new`, `:leagueSlug` and `:leagueSlug/edit`.
+  The homepage news posts that linked to `/leagues/dods/…` and
+  `/leagues/pdbl/…` now point at `/tournaments/<same slug>`. That is the
+  rewrite the redirect used to do, so they resolve only if those slugs are
+  still live.
+- **Consequences.**
+  - Old links in Discord history, bookmarks and ads under
+    `/leagues/:l/tournaments/…` no longer resolve.
+  - A tab still running a pre-step-2 client breaks on its next API call.
+  - Deploy the client and server together.
+- **Kept.** The redirects inside the tournament tree (`divisions` → `pools`
+  and similar) and in `league-manage.routes.ts` aren't league aliases, so
+  they're untouched.
+- **Verification.** Server `tsc` is clean, and the chat, draft, stage,
+  tournament and league specs pass 858/859, with only the pre-existing
+  `external-tournament.controller.spec` failing. Client `ng build` is clean.
+  The league-zone and pages specs fail only the baseline `power-rankings`
+  and `news-core` suites.
+
+### 15.11 Reversed — 2026-09-26 (back to league-first)
+
+**Decision (user, 2026-09-26).** A tournament is a required part of a league
+again, and URLs are back to `/leagues/:leagueSlug/tournaments/:tournamentSlug`.
+The `tournament-creator` role stays as the lock on who can create leagues and
+tournaments.
+
+**How it was done.** Both repos ran `git revert --no-commit` of the step 2
+commit (client `2bc98a46`, server `eb85ec6`), and today's uncommitted work was
+discarded. Patches of that work are saved outside the repo. The step 2 commit
+also carried step 1, so the tournament's own `owner` field and its mapper
+spec are gone too. Every tournament is owned by its league's owner, as in §12.
+This doc was restored after the revert so §15.1–15.10 survive as history.
+
+**Kept and reapplied on top of the step 10 state:**
+
+- **Hosting role.** `UserRole.TOURNAMENT_CREATOR` (`tournament-creator`)
+  replaces `league-creator`. `tournament-creation.policy.ts` (`mayHost`,
+  `decideTournamentCreation`) replaces `league/league-creation.ts`. The env
+  switch is `TOURNAMENT_CREATION=beta|open`.
+- **`HostingAccessService`** (`hosting-access.module.ts`, imported by the
+  league and hosted-tournament modules) is the one place that decides:
+  - League creation needs `mayHost` (LR-002), and leagues are uncapped.
+  - Tournament creation needs league ownership (LR-004), `mayHost`
+    (TRN-022) and the active cap `MAX_ACTIVE_TOURNAMENTS` (default 3, TRN-023).
+  - The cap counts non-archived tournaments across every league the user
+    owns (`countActiveInLeagues`). With no tournament `owner` field, "yours"
+    means "in your leagues".
+  - Admins and site owners are exempt from the role and the cap.
+  - **LR-003 (owned-league limit) is retired.**
+- **League summary** now has `hosting: { canHost, canCreateTournament,
+  reason } | null`, set only for the owner. `GET leagues/capabilities`
+  returns `canCreateLeague = canHost` with `reason: 'restricted' | null`.
+- **League edit page** (§15.9) as built: `PATCH leagues/:leagueSlug`,
+  `/leagues/:leagueSlug/edit`, and the logo field moved to
+  `league-zone/logo-field/` and decoupled from the store.
+- **Find a League cleanup** (§15.8): no "New league", no "Leagues you run".
+
+**Client gating.**
+
+- League page: "Edit league" for the owner, and "New tournament" (header
+  and empty state) only when `hosting.canHost`.
+- The league-scoped create page shows the form only when
+  `hosting.canCreateTournament`. Otherwise it shows the limit or beta empty
+  state, and non-owners still see the "only the league owner" state.
+- `/leagues/new` shows the beta state without `canCreateLeague`. The old
+  league-limit branch is removed.
+
+**Gone with the reversal:** optional leagues, attach/detach and the settings
+League control, `GET tournament-creation`, `POST tournaments`,
+`/tournaments/:slug` URLs and their redirect, "New tournament" on My Drafts,
+and the nullable-league display fallbacks.
+
+**Verification.** Server `tsc` is clean. The league, tournament, chat, draft,
+stage and tournament-ad specs pass 850/851, with only the pre-existing
+`external-tournament.controller.spec` failing. There is a new
+`hosting-access.service.spec`. Client `ng build` and `lint:styles` are clean.
+The league-zone, league-list, drafts and core specs pass, apart from the
+baseline `power-rankings`. **Not verified in a browser.**
+
+**Before prod:** create `tournament-creator` in Auth0 and forward it from the
+login Action. `LEAGUE_CREATION` and `MAX_OWNED_LEAGUES` are no longer read.

@@ -1,0 +1,79 @@
+<pdz-page width="narrow">
+  <div class="edit">
+    <pdz-page-header
+      title="Edit league"
+      [backLink]="leagueLink"
+      [backLabel]="league()?.name ?? 'League'"
+    />
+
+    @if (loadFailed()) {
+      <pdz-empty-state
+        bordered
+        icon="error"
+        heading="Couldn't load this league"
+        message="Reload the page to try again."
+      />
+    } @else if (league(); as league) {
+      @if (league.isOwner) {
+        <pdz-card padding="lg">
+          <form class="edit__form" (ngSubmit)="submit()">
+            <label pdz-field label="League name" required>
+              <input
+                pdz-input
+                type="text"
+                name="leagueName"
+                [maxlength]="nameMax"
+                [ngModel]="name()"
+                (ngModelChange)="name.set($event)"
+              />
+            </label>
+
+            <label
+              pdz-field
+              label="Description"
+              hint="Shown on the league page."
+            >
+              <textarea
+                pdz-input
+                name="leagueDescription"
+                rows="4"
+                [maxlength]="descriptionMax"
+                [ngModel]="description()"
+                (ngModelChange)="description.set($event)"
+              ></textarea>
+            </label>
+
+            <pdz-logo-field
+              label="League logo"
+              folder="league-logos"
+              [value]="logo()"
+              [disabled]="saving()"
+              (valueChange)="logo.set($event)"
+            />
+
+            <div class="edit__actions">
+              <a pdz-button variant="outlined" [routerLink]="leagueLink"
+                >Cancel</a
+              >
+              <button pdz-button type="submit" [disabled]="!canSubmit()">
+                Save
+              </button>
+            </div>
+          </form>
+        </pdz-card>
+      } @else {
+        <pdz-empty-state
+          bordered
+          icon="lock"
+          heading="Only the league owner can edit it"
+        >
+          <a pdz-empty-state-actions pdz-button [routerLink]="leagueLink">
+            Back to the league
+          </a>
+        </pdz-empty-state>
+      }
+    } @else {
+      <pdz-loading />
+    }
+  </div>
+</pdz-page>

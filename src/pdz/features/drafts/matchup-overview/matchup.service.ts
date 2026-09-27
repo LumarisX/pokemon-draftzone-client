@@ -10,6 +10,7 @@ export type MatchupNotesTarget =
   | { source: 'draft'; matchupId: string }
   | {
       source: 'league';
+      leagueSlug: string;
       tournamentSlug: string;
       matchupSlug: string;
     };
@@ -31,9 +32,13 @@ export class MatchupService {
     });
   }
 
-  getLeagueMatchup(tournamentSlug: string, matchupSlug: string) {
+  getLeagueMatchup(
+    leagueSlug: string,
+    tournamentSlug: string,
+    matchupSlug: string,
+  ) {
     return this.apiService.get<MatchupData>(
-      `tournaments/${tournamentSlug}/matchups/${matchupSlug}/analysis`,
+      `leagues/${leagueSlug}/tournaments/${tournamentSlug}/matchups/${matchupSlug}/analysis`,
     );
   }
 
@@ -41,22 +46,27 @@ export class MatchupService {
     return this.apiService.post(`${matchupPath}/quick`, matchupData);
   }
 
+  //Currently Unused
   getSpeedchart(matchupId: string) {
     return this.apiService.get(`${matchupPath}/${matchupId}/speedchart`);
   }
 
+  //Currently Unused
   getsummary(matchupId: string) {
     return this.apiService.get(`${matchupPath}/${matchupId}/summary`);
   }
 
+  //Currently Unused
   getTypechart(matchupId: string) {
     return this.apiService.get(`${matchupPath}/${matchupId}/typechart`);
   }
 
+  //Currently Unused
   getMovechart(matchupId: string) {
     return this.apiService.get(`${matchupPath}/${matchupId}/movechart`);
   }
 
+  //Currently Unused
   getCoveragechart(matchupId: string) {
     return this.apiService.get(`${matchupPath}/${matchupId}/coveragechart`);
   }
@@ -70,7 +80,7 @@ export class MatchupService {
   saveNotes(target: MatchupNotesTarget, notes: string) {
     const payload = { notes: notes.trim() };
     if (target.source === 'league') {
-      const path = `tournaments/${target.tournamentSlug}/matchups/${target.matchupSlug}`;
+      const path = `leagues/${target.leagueSlug}/tournaments/${target.tournamentSlug}/matchups/${target.matchupSlug}`;
       return this.apiService.post(`${path}/notes`, payload, {
         invalidateCache: [`${path}/analysis`],
       });

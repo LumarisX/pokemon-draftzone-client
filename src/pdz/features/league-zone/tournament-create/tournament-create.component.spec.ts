@@ -18,6 +18,7 @@ function summary(
       ownerName: 'Host',
       copyFrom: { tournamentSlug: 'season01', name: 'Season 1' },
     },
+    hosting: { canHost: true, canCreateTournament: true, reason: null },
     ...overrides,
   };
 }
@@ -84,6 +85,8 @@ describe('TournamentCreateComponent', () => {
     });
     expect(navigate).toHaveBeenCalledWith([
       '/',
+      'leagues',
+      'league01',
       'tournaments',
       'season02',
       'manage',

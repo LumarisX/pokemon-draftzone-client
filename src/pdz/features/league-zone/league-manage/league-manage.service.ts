@@ -57,7 +57,7 @@ export class LeagueManageService {
       message: string;
       advances: 'side1' | 'side2' | 'none' | null;
     }>(
-      `tournaments/${this.leagueZoneService.tournamentSlug()}/matchups/${matchupSlug}/advancement`,
+      `leagues/${this.leagueZoneService.leagueSlug()}/tournaments/${this.leagueZoneService.tournamentSlug()}/matchups/${matchupSlug}/advancement`,
       { advances },
     );
   }
@@ -121,7 +121,7 @@ export class LeagueManageService {
   }
 
   private poolsPath(): string {
-    return `tournaments/${this.leagueZoneService.tournamentSlug()}/pools`;
+    return `leagues/${this.leagueZoneService.leagueSlug()}/tournaments/${this.leagueZoneService.tournamentSlug()}/pools`;
   }
 
   updateCoachDetails(
@@ -134,7 +134,7 @@ export class LeagueManageService {
     },
   ) {
     return this.apiService.patch<{ message: string }>(
-      `tournaments/${this.leagueZoneService.tournamentSlug()}/coaches/${coachId}`,
+      `leagues/${this.leagueZoneService.leagueSlug()}/tournaments/${this.leagueZoneService.tournamentSlug()}/coaches/${coachId}`,
       payload,
     );
   }
@@ -167,30 +167,32 @@ export class LeagueManageService {
   }
 
   private poolPath(poolSlug?: string): string {
-    return `tournaments/${this.leagueZoneService.tournamentSlug()}/pools/${poolSlug ?? this.leagueZoneService.poolSlug()}`;
+    return `leagues/${this.leagueZoneService.leagueSlug()}/tournaments/${this.leagueZoneService.tournamentSlug()}/pools/${poolSlug ?? this.leagueZoneService.poolSlug()}`;
   }
 
-  canManage(tournamentSlug: string) {
-    return this.apiService.get<string[]>(`tournaments/${tournamentSlug}/roles`);
+  canManage(leagueSlug: string, tournamentSlug: string) {
+    return this.apiService.get<string[]>(
+      `leagues/${leagueSlug}/tournaments/${tournamentSlug}/roles`,
+    );
   }
 
   setDraftState(state: string) {
     return this.apiService.post(
-      `tournaments/${this.leagueZoneService.tournamentSlug()}/pools/${this.leagueZoneService.poolSlug()}/state`,
+      `leagues/${this.leagueZoneService.leagueSlug()}/tournaments/${this.leagueZoneService.tournamentSlug()}/pools/${this.leagueZoneService.poolSlug()}/state`,
       { state },
     );
   }
 
   setNoTimer(noTimer: boolean) {
     return this.apiService.post(
-      `tournaments/${this.leagueZoneService.tournamentSlug()}/pools/${this.leagueZoneService.poolSlug()}/timer`,
+      `leagues/${this.leagueZoneService.leagueSlug()}/tournaments/${this.leagueZoneService.tournamentSlug()}/pools/${this.leagueZoneService.poolSlug()}/timer`,
       { noTimer },
     );
   }
 
   skipCurrentPick() {
     return this.apiService.post(
-      `tournaments/${this.leagueZoneService.tournamentSlug()}/pools/${this.leagueZoneService.poolSlug()}/skip`,
+      `leagues/${this.leagueZoneService.leagueSlug()}/tournaments/${this.leagueZoneService.tournamentSlug()}/pools/${this.leagueZoneService.poolSlug()}/skip`,
       '',
     );
   }
@@ -202,7 +204,7 @@ export class LeagueManageService {
         trades: TradeLog[];
       }[];
     }>(
-      `tournaments/${this.leagueZoneService.tournamentSlug()}/trades`,
+      `leagues/${this.leagueZoneService.leagueSlug()}/tournaments/${this.leagueZoneService.tournamentSlug()}/trades`,
     );
   }
 
@@ -211,7 +213,7 @@ export class LeagueManageService {
       rounds: League.ScheduleRound[];
       currentRoundIndex: number;
     }>(
-      `tournaments/${this.leagueZoneService.tournamentSlug()}/schedule`,
+      `leagues/${this.leagueZoneService.leagueSlug()}/tournaments/${this.leagueZoneService.tournamentSlug()}/schedule`,
     );
   }
 
@@ -229,7 +231,7 @@ export class LeagueManageService {
   }
 
   private discordPath(): string {
-    return `tournaments/${this.leagueZoneService.tournamentSlug()}/discord`;
+    return `leagues/${this.leagueZoneService.leagueSlug()}/tournaments/${this.leagueZoneService.tournamentSlug()}/discord`;
   }
 
   getTournamentSettings() {
@@ -279,7 +281,7 @@ export class LeagueManageService {
       matchSettings?: { chat: boolean; coachReporting: boolean };
       archived?: boolean;
     }>(
-      `tournaments/${this.leagueZoneService.tournamentSlug()}/settings`,
+      `leagues/${this.leagueZoneService.leagueSlug()}/tournaments/${this.leagueZoneService.tournamentSlug()}/settings`,
     );
   }
 
@@ -330,13 +332,13 @@ export class LeagueManageService {
     archived?: boolean;
   }) {
     return this.apiService.patch<{ message: string }>(
-      `tournaments/${this.leagueZoneService.tournamentSlug()}/settings`,
+      `leagues/${this.leagueZoneService.leagueSlug()}/tournaments/${this.leagueZoneService.tournamentSlug()}/settings`,
       settings,
     );
   }
 
   private get tournamentBracketUrl(): string {
-    return `tournaments/${this.leagueZoneService.tournamentSlug()}/bracket`;
+    return `leagues/${this.leagueZoneService.leagueSlug()}/tournaments/${this.leagueZoneService.tournamentSlug()}/bracket`;
   }
 
   getTournamentBracket() {

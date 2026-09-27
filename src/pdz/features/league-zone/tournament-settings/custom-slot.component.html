@@ -1,6 +1,12 @@
 @switch (slot()) {
   @case ('logo') {
-    <pdz-logo-field [disabled]="disabled()" />
+    <pdz-logo-field
+      label="Tournament logo"
+      folder="tournament-logos"
+      [value]="store.draft().logo"
+      [disabled]="disabled()"
+      (valueChange)="store.write('logo', $event)"
+    />
   }
 
   @case ('tier-requirements') {

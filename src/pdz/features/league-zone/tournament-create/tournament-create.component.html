@@ -15,7 +15,7 @@
         message="Reload the page to try again."
       />
     } @else if (league(); as league) {
-      @if (league.isOwner) {
+      @if (league.isOwner && league.hosting?.canCreateTournament) {
         <pdz-card padding="lg">
           <form class="create__form" (ngSubmit)="submit()">
             <label pdz-field label="Tournament name" required>
@@ -140,6 +140,28 @@
             </div>
           </form>
         </pdz-card>
+      } @else if (league.isOwner && league.hosting?.reason === "limit") {
+        <pdz-empty-state
+          bordered
+          icon="block"
+          heading="You're at the active tournament limit"
+          message="Archive a finished tournament from its settings to start another."
+        >
+          <a pdz-empty-state-actions pdz-button [routerLink]="leagueLink">
+            Back to the league
+          </a>
+        </pdz-empty-state>
+      } @else if (league.isOwner) {
+        <pdz-empty-state
+          bordered
+          icon="science"
+          heading="Hosting on DraftZone is in beta"
+          message="Running tournaments on DraftZone is open to a small group for now. Ask in the DraftZone Discord if you'd like access."
+        >
+          <a pdz-empty-state-actions pdz-button [routerLink]="leagueLink">
+            Back to the league
+          </a>
+        </pdz-empty-state>
       } @else {
         <pdz-empty-state
           bordered

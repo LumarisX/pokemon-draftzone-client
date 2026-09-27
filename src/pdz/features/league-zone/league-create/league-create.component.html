@@ -58,23 +58,12 @@
           </div>
         </form>
         </pdz-card>
-      } @else if (access.reason === 'limit') {
-        <pdz-empty-state
-          bordered
-          icon="block"
-          heading="You've reached the league limit"
-          message="Each account can own a limited number of leagues. Run a new season inside one of your existing leagues instead."
-        >
-          <a pdz-empty-state-actions pdz-button [routerLink]="leagueListLink">
-            Your leagues
-          </a>
-        </pdz-empty-state>
       } @else {
         <pdz-empty-state
           bordered
           icon="science"
-          heading="League creation is in beta"
-          message="Hosting leagues on DraftZone is open to a small group for now. Ask in the DraftZone Discord if you'd like access."
+          heading="Hosting on DraftZone is in beta"
+          message="Running leagues and tournaments on DraftZone is open to a small group for now. Ask in the DraftZone Discord if you'd like access."
         >
           <a pdz-empty-state-actions pdz-button [routerLink]="leagueListLink">
             Find a league

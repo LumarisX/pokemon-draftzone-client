@@ -4,7 +4,6 @@ import {
   computed,
   inject,
 } from '@angular/core';
-import { tournamentRoute } from '@pdz/core/route-paths';
 import { RouterLink } from '@angular/router';
 import { ChipComponent } from '@pdz/shared/data/chip/chip.component';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
@@ -58,8 +57,10 @@ export class SettingsDashboardComponent {
   });
 
   private readonly base = computed(() => {
+    const leagueSlug = this.league.leagueSlug();
     const tournamentSlug = this.league.tournamentSlug();
-    return tournamentSlug ? tournamentRoute(tournamentSlug) : [];
+    if (!leagueSlug || !tournamentSlug) return [];
+    return ['/leagues', leagueSlug, 'tournaments', tournamentSlug];
   });
 
   protected readonly sections = computed(() => {

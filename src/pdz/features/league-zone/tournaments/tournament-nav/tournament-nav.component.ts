@@ -9,7 +9,6 @@ import {
 } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { catchError, of, Subject, switchMap, takeUntil } from 'rxjs';
-import { tournamentRoute } from '@pdz/core/route-paths';
 import { AuthService } from '@pdz/core/services/auth0.service';
 import { SkeletonComponent } from '@pdz/shared/data/skeleton/skeleton.component';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
@@ -55,12 +54,17 @@ export class TournamentNavComponent implements OnInit, OnDestroy {
       .getLeagueInfo()
       .pipe(takeUntil(this.destroy$))
       .subscribe({
-        next: (info) => {
-          this.leagueInfo = info;
-          this.leagueName = info.league?.name ?? null;
-        },
+        next: (info) => (this.leagueInfo = info),
         error: (error) => console.error('Error fetching league info:', error),
       });
+
+    this.leagueService
+      .getLeague()
+      .pipe(
+        takeUntil(this.destroy$),
+        catchError(() => of(null)),
+      )
+      .subscribe((league) => (this.leagueName = league?.name ?? null));
 
     this.authService.isAuthenticated$
       .pipe(
@@ -86,10 +90,11 @@ export class TournamentNavComponent implements OnInit, OnDestroy {
   }
 
   private loadManageRoles(): void {
+    const leagueSlug = this.leagueSlug;
     const tournamentSlug = this.tournamentSlug;
-    if (!tournamentSlug) return;
+    if (!leagueSlug || !tournamentSlug) return;
     this.manageService
-      .canManage(tournamentSlug)
+      .canManage(leagueSlug, tournamentSlug)
       .pipe(
         takeUntil(this.destroy$),
         catchError(() => of([] as string[])),
@@ -131,12 +136,17 @@ export class TournamentNavComponent implements OnInit, OnDestroy {
     return this.profileLoaded && !!profile && !profile.inDiscordServer;
   }
 
+  private get leagueSlug() {
+    return this.leagueService.leagueSlug();
+  }
+
   private get tournamentSlug() {
     return this.leagueService.tournamentSlug();
   }
 
   tournamentBase(): string[] {
-    const { tournamentSlug } = this;
-    return tournamentSlug ? tournamentRoute(tournamentSlug) : [];
+    const { leagueSlug, tournamentSlug } = this;
+    if (!leagueSlug || !tournamentSlug) return [];
+    return ['/leagues', leagueSlug, 'tournaments', tournamentSlug];
   }
 }

@@ -1,7 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { HttpResponse } from '@angular/common/http';
 import { Component, inject, OnDestroy, OnInit } from '@angular/core';
-import { tournamentRoute } from '@pdz/core/route-paths';
 import {
   FormBuilder,
   FormGroup,
@@ -286,7 +285,9 @@ export class LeagueSignUpComponent implements OnInit, OnDestroy {
   }
 
   private navigateToTeam(teamSlug?: string): void {
-    const base = tournamentRoute(this.leagueService.tournamentSlug() ?? '');
+    const leagueSlug = this.leagueService.leagueSlug();
+    const tournamentSlug = this.leagueService.tournamentSlug();
+    const base = ['/leagues', leagueSlug, 'tournaments', tournamentSlug];
     this.router.navigate(teamSlug ? [...base, 'teams', teamSlug] : base);
   }
 

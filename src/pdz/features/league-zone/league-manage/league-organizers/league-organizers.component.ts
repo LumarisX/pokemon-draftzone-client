@@ -2,7 +2,10 @@ import { DatePipe } from '@angular/common';
 import { Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
-import { ORGANIZER_INVITE_PATH, TOURNAMENT_PATH } from '@pdz/core/route-paths';
+import {
+  LEAGUE_ZONE_PATH,
+  ORGANIZER_INVITE_PATH,
+} from '@pdz/core/route-paths';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 import { EmptyStateComponent } from '@pdz/shared/feedback/empty-state/empty-state.component';
 import { ToastService } from '@pdz/shared/feedback/toast/toast.service';
@@ -170,8 +173,9 @@ export class LeagueOrganizersComponent implements OnInit {
   }
 
   private inviteUrl(token: string): string {
+    const leagueSlug = this.leagueService.leagueSlug();
     const tournamentSlug = this.leagueService.tournamentSlug();
-    return `${window.location.origin}/${TOURNAMENT_PATH}/${tournamentSlug}/${ORGANIZER_INVITE_PATH}?token=${token}`;
+    return `${window.location.origin}/${LEAGUE_ZONE_PATH}/${leagueSlug}/tournaments/${tournamentSlug}/${ORGANIZER_INVITE_PATH}?token=${token}`;
   }
 
   private applyResult(

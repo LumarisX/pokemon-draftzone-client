@@ -1,10 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { ApiService } from '@pdz/core/services/api.service';
-import {
-  DRAFT_OVERVIEW_PATH,
-  TOURNAMENT_PATH,
-  tournamentRoute,
-} from '@pdz/core/route-paths';
+import { DRAFT_OVERVIEW_PATH, LEAGUE_ZONE_PATH } from '@pdz/core/route-paths';
 import { Archive } from '@pdz/features/drafts/draft-overview/archive.model';
 import {
   DraftService,
@@ -119,7 +115,12 @@ export class DraftsV2Service {
     }
 
     if (source.type === 'tournament') {
-      const base = [TOURNAMENT_PATH, source.tournamentSlug];
+      const base = [
+        'leagues',
+        source.leagueSlug,
+        'tournaments',
+        source.tournamentSlug,
+      ];
 
       const slug$ = source.teamSlug
         ? of(source.teamSlug)
@@ -158,6 +159,7 @@ export class DraftsV2Service {
                 matches: toTournamentMatches(
                   schedule?.rounds ?? [],
                   teamSlug,
+                  source.leagueSlug,
                   source.tournamentSlug,
                 ),
                 leaders: toRosterLeaders(team?.draft ?? []),
@@ -235,7 +237,13 @@ function toTournamentSeason(tournament: TournamentDetails): Season {
       teamId: tournament.teamId,
       teamSlug: tournament.teamSlug,
     },
-    homeLink: tournamentRoute(tournament.tournamentSlug),
+    homeLink: [
+      '/',
+      LEAGUE_ZONE_PATH,
+      tournament.leagueSlug,
+      'tournaments',
+      tournament.tournamentSlug,
+    ],
   };
 }
 
@@ -312,6 +320,7 @@ function toDraftGame(match: Match, index: number): MatchGame {
 function toTournamentMatches(
   rounds: League.ScheduleRound[],
   teamSlug: string,
+  leagueSlug: string,
   tournamentSlug: string,
 ): SeasonMatch[] {
   const matches: SeasonMatch[] = [];
@@ -326,6 +335,7 @@ function toTournamentMatches(
             matchup,
             round.name,
             first,
+            leagueSlug,
             tournamentSlug,
           ),
         );
@@ -340,6 +350,7 @@ function toTournamentMatch(
   matchup: League.Matchup,
   roundName: string,
   first: boolean,
+  leagueSlug: string,
   tournamentSlug: string,
 ): SeasonMatch {
   const ours = first ? matchup.team1 : matchup.team2;
@@ -368,7 +379,15 @@ function toTournamentMatch(
         replay: match.link,
       } satisfies MatchGame;
     }),
-    detailLink: [...tournamentRoute(tournamentSlug), 'matchups', matchup.slug],
+    detailLink: [
+      '/',
+      LEAGUE_ZONE_PATH,
+      leagueSlug,
+      'tournaments',
+      tournamentSlug,
+      'matchups',
+      matchup.slug,
+    ],
     scoreLink: null,
     editLink: null,
     actionParams: null,

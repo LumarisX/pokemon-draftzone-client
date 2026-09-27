@@ -3,7 +3,7 @@ import { catchError, map, Observable, of, shareReplay, switchMap } from 'rxjs';
 import { ApiService } from './api.service';
 import { AuthService } from './auth0.service';
 
-export type UserRole = 'owner' | 'admin' | 'dev' | 'league-creator';
+export type UserRole = 'owner' | 'admin' | 'dev' | 'tournament-creator';
 
 export interface Me {
   sub: string;

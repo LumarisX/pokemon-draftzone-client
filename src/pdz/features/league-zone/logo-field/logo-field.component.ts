@@ -5,6 +5,7 @@ import {
   computed,
   inject,
   input,
+  output,
   signal,
 } from '@angular/core';
 import { catchError, of, switchMap, tap } from 'rxjs';
@@ -14,7 +15,8 @@ import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { FieldComponent } from '@pdz/shared/inputs/field/field.component';
 import { getLeagueLogoUrl } from '../league.util';
-import { TournamentSettingsStore } from './tournament-settings.store';
+
+export type LogoFolder = 'tournament-logos' | 'league-logos';
 
 const MAX_LOGO_SIZE = 5 * 1024 * 1024;
 const ALLOWED_LOGO_TYPES = [
@@ -29,11 +31,11 @@ const ALLOWED_LOGO_TYPES = [
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [ButtonComponent, FieldComponent, IconComponent],
   template: `
-    <div pdz-field label="Tournament logo">
+    <div pdz-field [label]="label()">
       <div class="logo">
         <div class="logo__preview">
           @if (url(); as src) {
-            <img class="logo__image" [src]="src" alt="Tournament logo" />
+            <img class="logo__image" [src]="src" [alt]="label()" />
           } @else {
             <pdz-icon name="image" [size]="32" aria-hidden="true" />
           }
@@ -78,16 +80,19 @@ const ALLOWED_LOGO_TYPES = [
   styleUrl: './logo-field.component.scss',
 })
 export class LogoFieldComponent {
+  readonly value = input<string | null | undefined>(null);
+  readonly folder = input.required<LogoFolder>();
+  readonly label = input('Logo');
   readonly disabled = input(false);
+  readonly valueChange = output<string | null>();
 
-  private readonly store = inject(TournamentSettingsStore);
   private readonly uploads = inject(UploadService);
 
   protected readonly uploading = signal(false);
   protected readonly progress = signal(0);
   protected readonly error = signal<string | null>(null);
 
-  protected readonly key = computed(() => this.store.draft().logo);
+  protected readonly key = computed(() => this.value());
 
   protected readonly url = computed(() => {
     const key = this.key();
@@ -96,7 +101,7 @@ export class LogoFieldComponent {
 
   protected clear(): void {
     this.error.set(null);
-    this.store.write('logo', null);
+    this.valueChange.emit(null);
   }
 
   protected select(event: Event): void {
@@ -121,7 +126,7 @@ export class LogoFieldComponent {
     this.progress.set(0);
 
     this.uploads
-      .getPresignedUploadUrl(file.name, file.type, 'tournament-logos')
+      .getPresignedUploadUrl(file.name, file.type, this.folder())
       .pipe(
         switchMap((response) =>
           this.uploads.uploadToS3(response, file).pipe(
@@ -131,7 +136,7 @@ export class LogoFieldComponent {
                   Math.round((100 * event.loaded) / event.total),
                 );
               } else if (event instanceof HttpResponse && event.ok) {
-                this.store.write('logo', response.key);
+                this.valueChange.emit(response.key);
               }
             }),
           ),

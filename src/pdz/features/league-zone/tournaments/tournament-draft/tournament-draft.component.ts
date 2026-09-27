@@ -1,6 +1,5 @@
 import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { tournamentRoute } from '@pdz/core/route-paths';
 import { catchError, of, Subject, switchMap, take, takeUntil } from 'rxjs';
 import { AuthService } from '@pdz/core/services/auth0.service';
 import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
@@ -38,8 +37,15 @@ export class TournamentDraftComponent implements OnInit, OnDestroy {
   }
 
   private redirect(coachData: League.CoachProfile | null): void {
-    const tournamentSlug = this.leagueService.tournamentSlug() ?? '';
-    const poolsList = [...tournamentRoute(tournamentSlug), 'pools'];
+    const leagueSlug = this.leagueService.leagueSlug();
+    const tournamentSlug = this.leagueService.tournamentSlug();
+    const poolsList = [
+      '/leagues',
+      leagueSlug,
+      'tournaments',
+      tournamentSlug,
+      'pools',
+    ];
     const destination = coachData?.pool
       ? [...poolsList, coachData.pool.poolSlug]
       : poolsList;

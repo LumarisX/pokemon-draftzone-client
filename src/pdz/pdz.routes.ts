@@ -11,7 +11,6 @@ import {
   STATISTICS_PATH,
   TIER_LIST_PATH,
   TOOLS_PATH,
-  TOURNAMENT_PATH,
 } from '@pdz/core/route-paths';
 import { adminGuard } from '@pdz/core/guards/admin/admin.guard';
 import { SHARED_MATCHUP_PAGE } from '@pdz/features/drafts/matchup-overview/matchup-page.config';
@@ -44,13 +43,6 @@ export const routes: Routes = [
     path: LEAGUE_ZONE_PATH,
     loadChildren: () =>
       import('@pdz/features/league-zone/league-zone.routes').then(
-        (m) => m.routes,
-      ),
-  },
-  {
-    path: TOURNAMENT_PATH,
-    loadChildren: () =>
-      import('@pdz/features/league-zone/tournament.routes').then(
         (m) => m.routes,
       ),
   },

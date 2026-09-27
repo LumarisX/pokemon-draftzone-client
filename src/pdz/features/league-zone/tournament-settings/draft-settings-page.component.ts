@@ -4,7 +4,6 @@ import {
   computed,
   inject,
 } from '@angular/core';
-import { LEAGUE_ZONE_MANAGE_PATH, tournamentRoute } from '@pdz/core/route-paths';
 import { CardComponent } from '@pdz/shared/data/card/card.component';
 import { DialogService } from '@pdz/shared/dialogs/dialog/dialog.service';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
@@ -109,11 +108,15 @@ export class DraftSettingsPageComponent {
   }
 
   protected draftControlLink(poolSlug: string): string[] {
+    const leagueSlug = this.league.leagueSlug();
     const tournamentSlug = this.league.tournamentSlug();
-    if (!tournamentSlug) return [];
+    if (!leagueSlug || !tournamentSlug) return [];
     return [
-      ...tournamentRoute(tournamentSlug),
-      LEAGUE_ZONE_MANAGE_PATH,
+      '/leagues',
+      leagueSlug,
+      'tournaments',
+      tournamentSlug,
+      'manage',
       'pools',
       poolSlug,
       'draft',

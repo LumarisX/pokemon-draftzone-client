@@ -1,7 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, computed, inject, OnDestroy, signal } from '@angular/core';
 import { ActivatedRoute, RouterModule } from '@angular/router';
-import { tournamentRoute } from '@pdz/core/route-paths';
 import { getNameByPid } from '@pdz/shared/data/namedex';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { SkeletonComponent } from '@pdz/shared/data/skeleton/skeleton.component';
@@ -99,7 +98,10 @@ export class LeagueMatchupComponent implements OnDestroy {
 
   teamPath(teamSlug: string): string[] {
     return [
-      ...tournamentRoute(this.leagueService.tournamentSlug() ?? ''),
+      '/leagues',
+      this.leagueService.leagueSlug() ?? '',
+      'tournaments',
+      this.leagueService.tournamentSlug() ?? '',
       'teams',
       teamSlug,
     ];

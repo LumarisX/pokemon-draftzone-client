@@ -1,10 +1,5 @@
 import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import {
-  LEAGUE_ZONE_MANAGE_PATH,
-  TOURNAMENT_PATH,
-  tournamentRoute,
-} from '@pdz/core/route-paths';
 import { PokemonSearchComponent } from '@pdz/shared/dropdowns/pokemon-search/pokemon-search.component';
 import { SelectOptionComponent } from '@pdz/shared/dropdowns/select/select-option.component';
 import { SelectComponent } from '@pdz/shared/dropdowns/select/select.component';
@@ -112,7 +107,7 @@ export class TradeManagerComponent implements OnInit, OnDestroy {
   private teamIdsInPool = new Set<string>();
 
   get signUpsPath(): string {
-    return `/${TOURNAMENT_PATH}/${this.leagueService.tournamentSlug()}/${LEAGUE_ZONE_MANAGE_PATH}/sign-ups`;
+    return `/leagues/${this.leagueService.leagueSlug()}/tournaments/${this.leagueService.tournamentSlug()}/manage/sign-ups`;
   }
 
   ngOnInit(): void {
@@ -144,8 +139,11 @@ export class TradeManagerComponent implements OnInit, OnDestroy {
 
   onPoolSelected(poolSlug: string): void {
     this.router.navigate([
-      ...tournamentRoute(this.leagueService.tournamentSlug() ?? ''),
-      LEAGUE_ZONE_MANAGE_PATH,
+      '/leagues',
+      this.leagueService.leagueSlug(),
+      'tournaments',
+      this.leagueService.tournamentSlug(),
+      'manage',
       'pools',
       poolSlug,
       'trades',

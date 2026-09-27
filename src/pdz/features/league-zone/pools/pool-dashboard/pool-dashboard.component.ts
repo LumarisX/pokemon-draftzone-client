@@ -1,6 +1,5 @@
 import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
 import { Router, RouterModule } from '@angular/router';
-import { tournamentRoute } from '@pdz/core/route-paths';
 import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
 import { TabNavLinkComponent } from '@pdz/shared/layout/tab-nav/tab-nav-link.component';
 import { TabNavComponent } from '@pdz/shared/layout/tab-nav/tab-nav.component';
@@ -73,7 +72,13 @@ export class PoolDashboardComponent implements OnInit, OnDestroy {
 
   onStageSelected(stageSlug: string): void {
     this.selectedStageSlug.set(stageSlug);
-    this.router.navigate([...tournamentRoute(this.tournamentSlug), 'schedule']);
+    this.router.navigate([
+      '/leagues',
+      this.leagueZoneService.leagueSlug(),
+      'tournaments',
+      this.tournamentSlug,
+      'schedule',
+    ]);
   }
 
   navigateTo(route: string[]): void {

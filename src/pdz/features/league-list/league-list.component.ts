@@ -1,27 +1,14 @@
-import {
-  Component,
-  DestroyRef,
-  HostListener,
-  OnInit,
-  inject,
-  signal,
-} from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Component, HostListener, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { LEAGUE_ZONE_PATH } from '@pdz/core/route-paths';
-import { AuthService } from '@pdz/core/services/auth0.service';
 import { DataService } from '@pdz/core/services/data.service';
-import { LeagueZoneService } from '@pdz/features/league-zone/league-zone.service';
-import { League } from '@pdz/features/league-zone/league.interface';
 import { UnreadService } from '@pdz/features/pages/homepage/unread.service';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
-import { CardComponent } from '@pdz/shared/data/card/card.component';
 import { SelectOptionComponent } from '@pdz/shared/dropdowns/select/select-option.component';
 import { SelectComponent } from '@pdz/shared/dropdowns/select/select.component';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
-import { catchError, EMPTY, filter, forkJoin, switchMap } from 'rxjs';
+import { forkJoin } from 'rxjs';
 import { LeagueAdComponent } from './league-ad/league-ad.component';
 import { LeagueAd, LeagueAdsService } from './league-ads.service';
 
@@ -35,7 +22,6 @@ import { LeagueAd, LeagueAdsService } from './league-ads.service';
     RouterModule,
     IconComponent,
     ButtonComponent,
-    CardComponent,
     PageHeaderComponent,
     SelectComponent,
     SelectOptionComponent,
@@ -43,16 +29,8 @@ import { LeagueAd, LeagueAdsService } from './league-ads.service';
 })
 export class LeagueAdListComponent implements OnInit {
   private leagueService = inject(LeagueAdsService);
-  private leagueZoneService = inject(LeagueZoneService);
-  private auth = inject(AuthService);
   private dataService = inject(DataService);
   private unreadService = inject(UnreadService);
-  private destroyRef = inject(DestroyRef);
-
-  protected readonly leagueZonePath = LEAGUE_ZONE_PATH;
-  protected readonly newLeagueLink = ['/', LEAGUE_ZONE_PATH, 'new'];
-  protected readonly canCreateLeague = signal(false);
-  protected readonly ownedLeagues = signal<League.OwnedLeague[]>([]);
 
   leagues: LeagueAd[] = [];
   filteredLeagues: LeagueAd[] = [];
@@ -83,22 +61,6 @@ export class LeagueAdListComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.auth.isAuthenticated$
-      .pipe(
-        filter(Boolean),
-        switchMap(() =>
-          forkJoin([
-            this.leagueZoneService.getLeagueCapabilities(),
-            this.leagueZoneService.getOwnedLeagues(),
-          ]).pipe(catchError(() => EMPTY)),
-        ),
-        takeUntilDestroyed(this.destroyRef),
-      )
-      .subscribe(([capabilities, owned]) => {
-        this.canCreateLeague.set(capabilities.canCreateLeague);
-        this.ownedLeagues.set(owned.leagues);
-      });
-
     forkJoin([
       this.leagueService.getLeagueAds(),
       this.leagueService.getHostedLeagueAds(),
