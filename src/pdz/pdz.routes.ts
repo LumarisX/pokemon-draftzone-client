@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import {
+  ABOUT_PATH,
   ADMIN_PATH,
   DEBUG_PATH,
   DRAFT_OVERVIEW_PATH,
@@ -104,7 +105,7 @@ export const routes: Routes = [
       ),
   },
   {
-    path: 'about',
+    path: ABOUT_PATH,
     loadComponent: () =>
       import('@pdz/features/pages/about/about.component').then(
         (c) => c.AboutComponent,

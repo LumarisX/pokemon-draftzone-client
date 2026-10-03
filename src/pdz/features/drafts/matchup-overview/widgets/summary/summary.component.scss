@@ -4,9 +4,9 @@
   display: block;
   max-width: 100%;
 
-  --pdz-cmp-summary-border: #{pdz.color(primary-border)};
+  --pdz-cmp-summary-border: #{pdz.color(team1-border)};
 }
 
 :host(.alternate) {
-  --pdz-cmp-summary-border: #{pdz.color(secondary-border)};
+  --pdz-cmp-summary-border: #{pdz.color(team2-border)};
 }

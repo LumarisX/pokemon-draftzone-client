@@ -7,49 +7,14 @@
   gap: pdz.space(md);
 }
 
-label {
-  font-weight: 700;
-}
-
-input,
-textarea,
-button {
-  font: inherit;
-}
-
-input,
-select,
-textarea {
-  width: 100%;
-  padding: pdz.space(xs) pdz.space(sm);
-  border: 1px solid pdz.color(outline);
-  border-radius: pdz.shape(corner-sm);
-  background: pdz.color(surface);
-  color: pdz.color(on-surface);
-}
-
-button {
-  width: fit-content;
-  padding: pdz.space(xs) pdz.space(md);
-  border: 1px solid pdz.color(primary-border);
-  border-radius: pdz.shape(corner-sm);
-  color: pdz.color(on-primary-container);
-  cursor: pointer;
-}
-
-button:disabled {
-  opacity: 0.55;
-  cursor: not-allowed;
-}
-
 .pokemon-search {
   &__search-panel {
     display: grid;
     gap: pdz.space(sm);
     padding: pdz.space(md);
+    border: 1px solid pdz.color(border-subtle);
     border-radius: pdz.shape(corner-md);
-    background-color: pdz.color(surface-container-low);
-    box-shadow: var(--pdz-level-1);
+    background-color: pdz.color(raised);
   }
 
   &__controls {
@@ -63,7 +28,7 @@ button:disabled {
     display: grid;
     gap: pdz.space(2xs);
 
-    @media (min-width: 768px) {
+    @include pdz.respond-above(medium) {
       &--end {
         margin-left: auto;
       }
@@ -91,11 +56,8 @@ button:disabled {
   }
 
   &__field-menu-cat-label {
-    font-size: pdz.font-size(2xs);
-    font-weight: 700;
+    @include pdz.text(label-caps);
     color: pdz.color(on-surface-variant);
-    text-transform: uppercase;
-    letter-spacing: 0.07em;
     padding: 0 pdz.space(2xs);
   }
 
@@ -105,22 +67,12 @@ button:disabled {
 
   &__quick-input-row {
     display: flex;
-    align-items: stretch;
-    border: 1px solid pdz.color(outline);
-    border-radius: pdz.shape(corner-sm);
-    overflow: hidden;
-    background: pdz.color(surface);
+    align-items: center;
+    gap: pdz.space(xs);
 
-    input {
+    .pdz-input {
       flex: 1;
       min-width: 0;
-      border: none;
-      border-radius: 0;
-      background: transparent;
-
-      &:focus {
-        outline: none;
-      }
     }
   }
 }
@@ -159,9 +111,9 @@ button:disabled {
     display: inline-flex;
     align-items: center;
     gap: 0;
-    border: 1px solid pdz.color(outline-variant);
+    border: 1px solid pdz.color(border-control);
     border-radius: pdz.shape(corner-sm);
-    background: pdz.color(surface);
+    background: pdz.color(inset);
     overflow: hidden;
 
     select {
@@ -183,7 +135,7 @@ button:disabled {
     padding: pdz.space(2xs) pdz.space(xs);
     border: none;
     height: 100%;
-    border-left: 1px solid pdz.color(outline-variant);
+    border-left: 1px solid pdz.color(border-control);
     background: transparent;
     border-radius: 0;
     color: pdz.color(on-surface-variant);
@@ -202,7 +154,7 @@ button:disabled {
     }
 
     &:hover {
-      background: pdz.color(surface-container);
+      background: pdz.color(state-hover);
       color: pdz.color(on-surface);
     }
   }
@@ -213,7 +165,7 @@ button:disabled {
     }
 
     &:hover {
-      background: pdz.color(surface-container);
+      background: pdz.color(state-hover);
       color: pdz.color(on-surface);
     }
 
@@ -242,7 +194,7 @@ button:disabled {
   &__meta {
     margin: 0;
     color: pdz.color(on-surface-variant);
-    font-weight: 700;
+    font-weight: pdz.font-weight(bold);
   }
 
   &__error {
@@ -293,9 +245,9 @@ button:disabled {
     color: pdz.color(primary);
     cursor: pointer;
     transition:
-      background 120ms ease,
-      color 120ms ease,
-      opacity 120ms ease;
+      background pdz.duration(fast) pdz.easing(standard),
+      color pdz.duration(fast) pdz.easing(standard),
+      opacity pdz.duration(fast) pdz.easing(standard);
 
     pdz-icon {
       display: flex;
@@ -330,8 +282,8 @@ button:disabled {
   }
 
   &__card:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--pdz-level-2);
+    transform: translateY(-1px);
+    box-shadow: var(--pdz-elevation-2);
   }
 
   &__card-name {
@@ -342,7 +294,7 @@ button:disabled {
     justify-content: center;
     align-items: center;
     @include text(body-sm);
-    font-weight: 700;
+    font-weight: pdz.font-weight(bold);
   }
 
   &__sprite {
@@ -365,7 +317,7 @@ button:disabled {
     width: fit-content;
 
     &:hover {
-      box-shadow: var(--pdz-level-2);
+      box-shadow: var(--pdz-elevation-2);
     }
   }
 
@@ -386,12 +338,12 @@ button:disabled {
 
   &__list-name {
     flex: 0 0 9rem;
-    font-weight: 700;
+    font-weight: pdz.font-weight(bold);
     color: pdz.color(on-surface);
     overflow: hidden;
     text-overflow: ellipsis;
 
-    @media (max-width: 768px) {
+    @include pdz.respond-below(medium) {
       flex: 0 0 6rem;
     }
   }
@@ -411,7 +363,8 @@ button:disabled {
     flex-wrap: nowrap;
     gap: pdz.space(2xs);
     align-items: center;
-    @media (max-width: 768px) {
+
+    @include pdz.respond-below(medium) {
       width: 6rem;
     }
   }
@@ -436,51 +389,19 @@ button:disabled {
     align-items: center;
     padding: pdz.space(2xs) pdz.space(xs);
     border-radius: pdz.shape(corner-xs);
-    border: 1px solid pdz.color(outline-variant);
-    background: pdz.color(surface-container);
+    border: 1px solid pdz.color(border-subtle);
+    background: pdz.color(state-hover);
     min-width: 2.5rem;
   }
 
   &__stat-label {
-    font-size: pdz.font-size(2xs);
-    font-weight: 600;
+    @include pdz.text(label-caps);
     color: pdz.color(on-surface-variant);
-    text-transform: uppercase;
-    letter-spacing: 0.03em;
-    line-height: 1.2;
   }
 
   &__stat-value {
     @include pdz.text(field-label, $family: false);
     line-height: 1.2;
     color: pdz.color(on-surface);
-  }
-
-  &__empty {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: pdz.space(xs);
-    padding: pdz.space(2xl) pdz.space(md);
-    text-align: center;
-
-    pdz-icon {
-      font-size: 2.5rem;
-      color: pdz.color(on-surface-variant);
-      opacity: 0.35;
-    }
-  }
-
-  &__empty-title {
-    margin: 0;
-    font-weight: 700;
-    color: pdz.color(on-surface-variant);
-  }
-
-  &__empty-hint {
-    margin: 0;
-    font-size: pdz.font-size(sm);
-    color: pdz.color(on-surface-variant);
-    opacity: 0.65;
   }
 }

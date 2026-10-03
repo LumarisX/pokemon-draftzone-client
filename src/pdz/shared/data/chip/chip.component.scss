@@ -5,7 +5,7 @@ $tones: (
   neutral: (
     solid: surface-inverse,
     on-solid: on-surface-inverse,
-    soft: surface-container-high,
+    soft: state-pressed,
     on-soft: on-surface-variant,
     line: outline,
   ),
@@ -78,7 +78,7 @@ $sizes: (
 :host {
   --pdz-chip-solid: #{pdz.color(surface-inverse)};
   --pdz-chip-on-solid: #{pdz.color(on-surface-inverse)};
-  --pdz-chip-soft: #{pdz.color(surface-container-high)};
+  --pdz-chip-soft: #{pdz.color(state-pressed)};
   --pdz-chip-on-soft: #{pdz.color(on-surface-variant)};
   --pdz-chip-line: #{pdz.color(outline)};
 

@@ -1,5 +1,5 @@
 import { CdkTableModule } from '@angular/cdk/table';
-import { CommonModule } from '@angular/common';
+import { DecimalPipe } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { DRAFT_OVERVIEW_PATH } from '@pdz/core/route-paths';
@@ -14,6 +14,7 @@ import { EmptyStateComponent } from '@pdz/shared/feedback/empty-state/empty-stat
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
+import { TeamLogoComponent } from '@pdz/shared/images/team-logo/team-logo.component';
 import { MenuComponent } from '@pdz/shared/menu/menu.component';
 import { MenuItemComponent } from '@pdz/shared/menu/menu-item.component';
 import { MenuTriggerDirective } from '@pdz/shared/menu/menu-trigger.directive';
@@ -21,7 +22,7 @@ import { CountdownComponent } from '@pdz/shared/time/countdown/countdown.compone
 import { formatExactTime } from '@pdz/shared/time/timezone';
 import { TooltipDirective } from '@pdz/shared/tooltip/tooltip.directive';
 import { BehaviorSubject, catchError, forkJoin, of, take } from 'rxjs';
-import { DraftService, PokemonStat } from '../../draft-overview/draft.service';
+import { DraftService, PokemonStat } from '@pdz/features/drafts/draft-overview/draft.service';
 import {
   MatchTimeDialogComponent,
   MatchTimeDialogData,
@@ -41,9 +42,10 @@ type Matchup = Opponent & {
   templateUrl: './opponent-preview.component.html',
   styleUrl: './opponent-preview.component.scss',
   imports: [
-    CommonModule,
+    DecimalPipe,
     RouterModule,
     SpriteComponent,
+    TeamLogoComponent,
     LoadingComponent,
     IconComponent,
     SortDirective,

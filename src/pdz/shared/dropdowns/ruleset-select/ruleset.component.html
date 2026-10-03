@@ -1,10 +1,12 @@
 <div pdz-field label="Ruleset">
   <pdz-select
     aria-label="Ruleset"
-    [value]="selectedRuleset"
-    (valueChange)="onSelectionChange($any($event))"
+    searchable
+    [value]="selected()"
+    [disabled]="disabled()"
+    (valueChange)="select($any($event))"
   >
-    @for (group of rulesets; track group[0]) {
+    @for (group of rulesets(); track group[0]) {
       @for (ruleset of group[1]; track ruleset.id) {
         <pdz-option
           [value]="ruleset.id"

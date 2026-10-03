@@ -1,4 +1,4 @@
-@if (stages.length || allStagesLabel()) {
+@if (stages().length || allStagesLabel()) {
   <pdz-segmented
     class="stage-switcher"
     size="sm"
@@ -9,11 +9,8 @@
     @if (allStagesLabel(); as allLabel) {
       <pdz-segmented-option value="all" [label]="allLabel" />
     }
-    @for (stage of stages; track stage.slug) {
-      <pdz-segmented-option
-        [value]="stage.slug"
-        [label]="getStageLabel(stage)"
-      />
+    @for (stage of stages(); track stage.slug) {
+      <pdz-segmented-option [value]="stage.slug" [label]="stageLabel(stage)" />
     }
   </pdz-segmented>
 }

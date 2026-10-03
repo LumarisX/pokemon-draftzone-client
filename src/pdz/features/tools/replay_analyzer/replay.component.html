@@ -1,11 +1,12 @@
 <pdz-page>
   <div class="replay">
-    <header class="replay__header">
-      <h1 class="replay__title">Showdown Replay Analyzer</h1>
-    </header>
+    <pdz-page-header
+      title="Replay Analyzer"
+      subtitle="Paste a Showdown replay link to see kills, deaths and damage for every Pokémon."
+    />
 
     <form class="replay__form" (ngSubmit)="analyze()">
-      <label pdz-field class="replay__field" label="Replay link">
+      <label pdz-field class="replay__field" label="Replay Link">
         <input
           pdz-input
           name="replay"
@@ -69,7 +70,7 @@
           class="replay__history"
           fill
           padding="none"
-          label="Analyzed replays"
+          label="Analyzed Replays"
         >
           <button
             widget-options
@@ -105,7 +106,7 @@
                 <button
                   pdz-card
                   class="replay__history-entry"
-                  tone="lowest"
+                  tone="raised-high"
                   padding="sm"
                   [selected]="entry.uri === analyzedURI()"
                   (click)="load(entry)"
@@ -171,7 +172,7 @@
                 <pdz-card
                   class="replay__player"
                   padding="md"
-                  [color]="i === 0 ? 'primary' : 'secondary'"
+                  [attr.data-team]="i === 0 ? 'team1' : 'team2'"
                 >
                   <div class="replay__player-header">
                     <div class="replay__player-identity">
@@ -205,7 +206,7 @@
                       @for (mon of skeletonTeam; track $index) {
                         <pdz-card
                           class="replay__mon"
-                          tone="lowest"
+                          tone="raised-high"
                           padding="sm"
                         >
                           <div class="replay__mon-inner">
@@ -284,7 +285,7 @@
                       target="_blank"
                       rel="noopener noreferrer"
                     >
-                      Watch replay
+                      Watch Replay
                     </a>
                   </div>
                 </div>
@@ -294,7 +295,7 @@
                     <pdz-card
                       class="replay__player"
                       padding="md"
-                      [color]="i === 0 ? 'primary' : 'secondary'"
+                      [attr.data-team]="i === 0 ? 'team1' : 'team2'"
                     >
                       <div class="replay__player-header">
                         <div class="replay__player-identity">
@@ -417,7 +418,7 @@
                           @for (pokemon of player.team; track $index) {
                             <pdz-card
                               class="replay__mon"
-                              tone="lowest"
+                              tone="raised-high"
                               padding="sm"
                             >
                               <div class="replay__mon-inner">

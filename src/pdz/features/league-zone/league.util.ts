@@ -5,6 +5,12 @@ export function getLogoUrl(logoId: string | undefined) {
   return `https://${BUCKETPATH}/${logoId}`;
 }
 
+export function getTeamLogoSrc(logoId: string | null | undefined) {
+  if (!logoId) return undefined;
+  if (/^https?:\/\//i.test(logoId)) return logoId;
+  return `https://${BUCKETPATH}/${logoId}`;
+}
+
 export function getLeagueLogoUrl(logoId: string | undefined): string | undefined {
   if (!logoId) return undefined;
   if (/^https?:\/\//i.test(logoId)) return logoId;

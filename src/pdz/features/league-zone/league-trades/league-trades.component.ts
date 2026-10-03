@@ -1,16 +1,17 @@
-import { Component, signal } from '@angular/core';
-import { ChipComponent } from '@pdz/shared/data/chip/chip.component';
-import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
+import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import {
   LeagueTradeWidgetComponent,
   TradeSummary,
-} from '../league-widgets/league-trade-widget/league-trade-widget.component';
+} from '@pdz/features/league-zone/league-widgets/league-trade-widget/league-trade-widget.component';
+import { ChipComponent } from '@pdz/shared/data/chip/chip.component';
+import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
 
 @Component({
   selector: 'pdz-league-trades',
   imports: [ChipComponent, LeagueTradeWidgetComponent, PageHeaderComponent],
   templateUrl: './league-trades.component.html',
-  styleUrls: ['./league-trades.component.scss'],
+  styleUrl: './league-trades.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LeagueTradesComponent {
   readonly summary = signal<TradeSummary | undefined>(undefined);

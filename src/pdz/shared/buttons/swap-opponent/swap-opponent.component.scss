@@ -1,11 +1,9 @@
 @use "pdz-theming" as pdz;
 
-button {
-  pdz-icon {
-    transition: transform pdz.duration(slow) pdz.easing(standard);
-  }
+.swap-icon {
+  transition: transform pdz.duration(slow) pdz.easing(standard);
+}
 
-  &.opponent pdz-icon {
-    transform: rotate(180deg);
-  }
+.swap-icon--flipped {
+  transform: rotate(180deg);
 }

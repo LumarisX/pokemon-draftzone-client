@@ -1,185 +1,99 @@
-@use "../../league.mixins" as *;
 @use "pdz-theming" as pdz;
-@use "mixins" as *;
 
 :host {
   display: block;
   min-width: 0;
-  max-width: 100%;
-  height: 100%;
-  min-height: 0;
+  border: 1px solid pdz.color(border-subtle);
+  border-radius: pdz.shape(corner-lg);
+  overflow: hidden;
 }
 
-.standing-container {
-  border: 1px solid pdz.color(primary-border);
-  border-radius: pdz.shape(corner-sm);
-  overflow: hidden;
-  width: fit-content;
-  max-width: 100%;
-  height: 100%;
+.standings__caption {
+  @include pdz.text(section-title);
+  padding: pdz.space(md) pdz.space(lg) pdz.space(sm);
+  color: pdz.color(on-surface);
+  text-align: left;
+  caption-side: top;
+}
+
+.rank {
+  display: inline-flex;
+  align-items: center;
+  gap: pdz.space(3xs);
+  font-weight: pdz.font-weight(semibold);
+}
+
+.rank__move {
+  color: pdz.color(on-surface-variant);
+
+  &--up {
+    color: pdz.color(positive);
+  }
+
+  &--down {
+    color: pdz.color(negative);
+  }
+}
+
+.team {
   display: flex;
-  flex-direction: column;
-  .standing-header {
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    flex-shrink: 0;
-    .standing-header-title {
-      font-family: var(--pdz-font-display);
-      padding: 0.25rem 0.5rem;
-      background-color: pdz.color(primary);
-      color: pdz.color(on-primary);
-    }
+  align-items: center;
+  gap: pdz.space(sm);
+  min-width: 12rem;
+}
+
+.team__text {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  column-gap: pdz.space(xs);
+  min-width: 0;
+}
+
+.team__name {
+  @include pdz.text(body-sm-strong);
+  color: pdz.color(on-surface);
+  text-decoration: none;
+}
+
+.team__name--link:hover {
+  text-decoration: underline;
+}
+
+.team__name--link:focus-visible {
+  @include pdz.focus-ring;
+}
+
+.team__coach {
+  @include pdz.text(meta);
+  flex-basis: 100%;
+  color: pdz.color(on-surface-variant);
+}
+
+.form {
+  display: flex;
+  gap: pdz.space(2xs);
+}
+
+.form__result {
+  @include pdz.text(label-strong);
+  @include pdz.numeric;
+  display: inline-grid;
+  place-items: center;
+  width: pdz.control-height(xs);
+  height: pdz.control-height(xs);
+  border-radius: pdz.shape(corner-xs);
+  background: pdz.color(state-pressed);
+  color: pdz.color(on-surface);
+
+  &[data-outcome="w"] {
+    background: pdz.color(positive);
+    color: pdz.color(on-positive);
   }
 
-  .standing-table-wrapper {
-    flex: 1 1 auto;
-    min-height: 16rem;
-    overflow: auto;
-    background-color: pdz.color(surface);
-  }
-
-  .standing-table {
-    display: grid;
-    grid-template-columns: repeat(5, auto);
-    column-gap: 2px;
-    width: max-content;
-    max-width: 100%;
-  }
-
-  .standing-table__row {
-    display: contents;
-  }
-
-  .standing-table__cell {
-    padding: 0.125rem 0.5rem;
-    display: flex;
-    align-items: center;
-    overflow: hidden;
-  }
-
-  .standing-table__cell--head {
-    position: sticky;
-    top: 0;
-    z-index: pdz.z(sticky);
-    justify-content: center;
-    background-color: pdz.color(surface);
-    border-bottom: 2px solid pdz.color(primary-border);
-  }
-
-  .rank-cell {
-    display: flex;
-    align-items: center;
-    width: 100%;
-    span {
-      @include pdz.numeric;
-      width: 100%;
-      @include pdz.text(card-title, $family: false);
-      text-align: center;
-    }
-    pdz-icon {
-      height: fit-content;
-      overflow: hidden;
-      object-fit: contain;
-      font-size: 1.2rem;
-      font-weight: var(--pdz-font-weight-bold);
-      color: pdz.color(primary-accent);
-      &.positive {
-        color: pdz.color(positive);
-      }
-      &.negative {
-        color: pdz.color(negative);
-      }
-    }
-  }
-
-  .logo-cell {
-    @include pdz-league-logo(3rem);
-    padding: 0.25rem;
-  }
-
-  .team-cell {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
-
-    .team-name {
-      line-height: 1rem;
-    }
-    .coach-names {
-      color: pdz.color(secondary-accent);
-      font-size: pdz.font-size(sm);
-      line-height: 1rem;
-    }
-  }
-
-  .results-container {
-    display: flex;
-    column-gap: 0.5rem;
-    user-select: none;
-
-    .result-box {
-      @include pdz-league-record-box();
-      color: pdz.color(surface-container);
-
-      .hovered-content {
-        display: none;
-      }
-
-      &:hover {
-        .default-content {
-          display: none;
-        }
-
-        .hovered-content {
-          display: inline;
-        }
-      }
-    }
-  }
-
-  .records-container {
-    display: flex;
-    column-gap: 0.25rem;
-    user-select: none;
-    width: 100%;
-    justify-content: center;
-
-    .record-header {
-      width: 1.5rem;
-      height: 0.75rem;
-      text-align: center;
-      @include pdz.text(label-strong, $family: false);
-      &--big {
-        width: 2.5rem;
-      }
-      &--wide {
-        width: 3.5rem;
-      }
-    }
-  }
-
-  .record-cell {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.25rem;
-    width: 100%;
-
-    .record-box {
-      @include pdz-league-record-box();
-
-      &--big {
-        width: 2.5rem;
-      }
-      &--wide {
-        width: 3.5rem;
-      }
-      &--points {
-        @include pdz.numeric;
-        font-weight: var(--pdz-font-weight-bold);
-      }
-    }
+  &[data-outcome="l"],
+  &[data-outcome="ff"] {
+    background: pdz.color(negative);
+    color: pdz.color(on-negative);
   }
 }

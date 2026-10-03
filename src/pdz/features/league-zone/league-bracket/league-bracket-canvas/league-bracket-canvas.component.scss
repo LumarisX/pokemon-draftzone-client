@@ -2,221 +2,129 @@
 
 :host {
   display: block;
+}
 
-  .bracket-container {
-    width: 100%;
-    padding: pdz.space(lg);
+.bracket-container {
+  width: 100%;
+  padding: pdz.space(lg);
+}
 
-    h2 {
-      @include pdz.text(subtitle, $family: false);
-      line-height: pdz.leading(snug);
-      text-align: center;
-      color: pdz.color("on-surface");
-      margin: 0 0 pdz.space(xl) 0;
-    }
+.bracket-title {
+  @include pdz.text(section-title);
+  margin: 0 0 pdz.space(xl);
+  text-align: center;
+  color: pdz.color(on-surface);
+}
+
+.canvas-host {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  border: 1px solid pdz.color(border-subtle);
+  border-radius: pdz.shape(corner-md);
+  background: pdz.color(ground);
+
+  canvas {
+    display: block;
+    touch-action: none;
   }
+}
 
-  .canvas-host {
-    position: relative;
-    width: 100%;
-    overflow: hidden;
-    border: 1px solid pdz.color("outline-variant");
-    border-radius: pdz.shape(corner-md);
-    background: pdz.color("surface");
+.canvas-toolbar {
+  position: absolute;
+  top: pdz.space(sm);
+  right: pdz.space(sm);
+  z-index: 6;
+  display: flex;
+  gap: pdz.space(xs);
+}
 
-    canvas {
-      display: block;
-      // We handle all panning/zooming; stop the browser from scrolling on touch.
-      touch-action: none;
-    }
+.section-prompt {
+  position: absolute;
+  top: calc(#{pdz.space(sm)} + #{pdz.control-height(sm)} + #{pdz.space(xs)});
+  right: pdz.space(sm);
+  z-index: 6;
+  display: flex;
+  gap: pdz.space(xs);
+  padding: pdz.space(xs);
+  border: 1px solid pdz.color(border-subtle);
+  border-radius: pdz.shape(corner-sm);
+  background: pdz.color(floating);
+  box-shadow: var(--pdz-elevation-2);
+}
+
+.section-prompt__input {
+  width: 14rem;
+}
+
+.title-overlay {
+  @include pdz.text(body-sm-strong);
+  position: absolute;
+  z-index: 5;
+  text-align: center;
+}
+
+.editor-backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: 7;
+  background: color-mix(in srgb, #{pdz.color(scrim)} 35%, transparent);
+}
+
+.match-editor {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 8;
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(sm);
+  width: min(22.5rem, calc(100% - #{pdz.space(2xl)}));
+  padding: pdz.space(lg);
+  border: 1px solid pdz.color(border-subtle);
+  border-radius: pdz.shape(corner-md);
+  background: pdz.color(overlay);
+  box-shadow: var(--pdz-elevation-3);
+  transform: translate(-50%, -50%);
+}
+
+.match-editor__title {
+  @include pdz.text(card-title);
+  margin: 0;
+  color: pdz.color(on-surface);
+}
+
+.match-editor__slot {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(xs);
+  margin: 0;
+  padding: pdz.space(sm);
+  border: 1px solid pdz.color(border-subtle);
+  border-radius: pdz.shape(corner-sm);
+
+  legend {
+    @include pdz.text(label-caps);
+    padding: 0 pdz.space(2xs);
+    color: pdz.color(on-surface-muted);
   }
+}
 
-  .canvas-toolbar {
-    position: absolute;
-    top: pdz.space(sm);
-    right: pdz.space(sm);
-    display: flex;
-    gap: pdz.space(xs);
-    z-index: 6;
-  }
+.match-editor__hint {
+  @include pdz.text(label);
+  margin: 0;
+  color: pdz.color(on-surface-variant);
+}
 
-  .toolbar-btn {
-    padding: pdz.space(2xs) pdz.space(sm);
-    border: 1px solid pdz.color("outline-variant");
-    border-radius: pdz.shape(corner-full);
-    background: pdz.color("surface-container-low");
-    color: pdz.color("on-surface-variant");
-    font-size: pdz.font-size(xs);
-    line-height: pdz.leading(tight);
-    cursor: pointer;
-    transition: all pdz.duration(base) pdz.easing(standard);
+.match-editor__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: pdz.space(xs);
+  margin-top: pdz.space(2xs);
+}
 
-    &:hover {
-      border-color: pdz.color("primary");
-      color: pdz.color("primary");
-    }
-
-    &--danger:hover {
-      border-color: pdz.color("negative");
-      color: pdz.color("negative");
-    }
-
-    &--primary {
-      background: pdz.color("primary");
-      border-color: pdz.color("primary");
-      color: pdz.color("on-primary");
-
-      &:hover {
-        background: pdz.color("primary-hover");
-        border-color: pdz.color("primary-hover");
-        color: pdz.color("on-primary");
-      }
-
-      &:disabled {
-        opacity: 0.5;
-        cursor: not-allowed;
-        background: pdz.color("surface-container-low");
-        border-color: pdz.color("outline-variant");
-        color: pdz.color("on-surface-variant");
-      }
-    }
-  }
-
-  .section-prompt {
-    position: absolute;
-    top: calc(pdz.space(sm) + 2.2rem);
-    right: pdz.space(sm);
-    display: flex;
-    gap: pdz.space(xs);
-    padding: pdz.space(xs);
-    border: 1px solid pdz.color("outline-variant");
-    border-radius: pdz.shape(corner-sm);
-    background: pdz.color("surface-container");
-    z-index: 6;
-
-    input {
-      width: 220px;
-      padding: pdz.space(2xs) pdz.space(sm);
-      border: 1px solid pdz.color("outline-variant");
-      border-radius: pdz.shape(corner-sm);
-      background: pdz.color("surface");
-      color: pdz.color("on-surface");
-      font-size: pdz.font-size(sm);
-      line-height: pdz.leading(tight);
-    }
-  }
-
-  .title-overlay {
-    position: absolute;
-    z-index: 5;
-    border: 1px solid pdz.color("primary");
-    border-radius: pdz.shape(corner-sm);
-    background: pdz.color("surface-container");
-    color: pdz.color("on-surface");
-    font-size: pdz.font-size(sm);
-    line-height: pdz.leading(tight);
-    font-family: var(--pdz-font-display);
-    text-align: center;
-    padding: 0 pdz.space(xs);
-  }
-
-  .editor-backdrop {
-    position: absolute;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.35);
-    z-index: 7;
-  }
-
-  .match-editor {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: min(360px, calc(100% - 2rem));
-    display: flex;
-    flex-direction: column;
-    gap: pdz.space(sm);
-    padding: pdz.space(lg);
-    border: 1px solid pdz.color("outline-variant");
-    border-radius: pdz.shape(corner-md);
-    background: pdz.color("surface-container");
-    z-index: 8;
-
-    &__title {
-      margin: 0;
-      font-size: pdz.font-size(md);
-      line-height: pdz.leading(snug);
-      font-family: var(--pdz-font-display);
-      color: pdz.color("on-surface");
-    }
-
-    &__field {
-      display: flex;
-      flex-direction: column;
-      gap: pdz.space(2xs);
-
-      span {
-        font-size: pdz.font-size(xs);
-        line-height: pdz.leading(tight);
-        color: pdz.color("on-surface-variant");
-      }
-    }
-
-    &__slot {
-      display: flex;
-      flex-direction: column;
-      gap: pdz.space(xs);
-      padding: pdz.space(sm);
-      border: 1px solid pdz.color("outline-variant");
-      border-radius: pdz.shape(corner-sm);
-
-      legend {
-        font-size: pdz.font-size(xs);
-        line-height: pdz.leading(tight);
-        color: pdz.color("on-surface-variant");
-        font-family: var(--pdz-font-display);
-        padding: 0 pdz.space(2xs);
-      }
-    }
-
-    input,
-    select {
-      width: 100%;
-      padding: pdz.space(2xs) pdz.space(sm);
-      border: 1px solid pdz.color("outline-variant");
-      border-radius: pdz.shape(corner-sm);
-      background: pdz.color("surface");
-      color: pdz.color("on-surface");
-      font-size: pdz.font-size(sm);
-      line-height: pdz.leading(snug);
-
-      &:focus {
-        outline: none;
-        border-color: pdz.color("primary");
-      }
-    }
-
-    &__hint {
-      margin: 0;
-      font-size: pdz.font-size(xs);
-      line-height: pdz.leading(tight);
-      color: pdz.color("on-surface-variant");
-      font-style: italic;
-    }
-
-    &__actions {
-      display: flex;
-      justify-content: flex-end;
-      gap: pdz.space(xs);
-      margin-top: pdz.space(2xs);
-    }
-  }
-
-  .replay-overlay {
-    position: absolute;
-    z-index: 4;
-    // Invisible: the pill itself is drawn by the canvas underneath. This anchor
-    // exists so native link behaviors (middle-click, ctrl+click) keep working.
-    opacity: 0;
-  }
+.replay-overlay {
+  position: absolute;
+  z-index: 4;
+  opacity: 0;
 }

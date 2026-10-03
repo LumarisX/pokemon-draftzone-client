@@ -7,8 +7,6 @@
   min-width: 0;
 }
 
-// ─── Moves tab (learnset table) ───────────────────────────────────────────────
-
 .learnset {
   display: flex;
   flex-direction: column;
@@ -19,34 +17,11 @@
     align-items: center;
     gap: pdz.space(xs);
     padding: pdz.space(xs) pdz.space(sm);
-    border-bottom: 1px solid pdz.color(outline-variant);
-    background: pdz.color(surface-container-low);
+    border-bottom: 1px solid pdz.color(border-subtle);
 
-    input {
+    .pdz-input {
       flex: 1;
-      border: none;
-      background: transparent;
-      color: pdz.color(on-surface);
-      @include text(body-sm);
-      outline: none;
-
-      &::placeholder {
-        color: pdz.color(on-surface-placeholder);
-      }
-    }
-
-    button {
-      border: none;
-      background: transparent;
-      color: pdz.color(on-surface-variant);
-      cursor: pointer;
-      font-weight: 600;
-      padding: 0 pdz.space(2xs);
-      line-height: 1;
-
-      &:hover {
-        color: pdz.color(on-surface);
-      }
+      min-width: 0;
     }
   }
 
@@ -74,14 +49,14 @@
     align-items: center;
     gap: pdz.space(xs);
     padding: pdz.space(2xs) pdz.space(sm);
-    border-bottom: 1px solid pdz.color(outline-variant);
-    background: pdz.color(surface-container-high);
+    border-bottom: 1px solid pdz.color(border-control);
+    background: pdz.color(overlay);
     position: sticky;
     top: 0;
     z-index: 2;
     @include text(label);
-    font-weight: 600;
-    color: pdz.color(on-surface-variant);
+    font-weight: pdz.font-weight(semibold);
+    color: pdz.color(on-surface-muted);
     text-transform: uppercase;
     white-space: nowrap;
   }
@@ -102,29 +77,17 @@
     @include text(body-sm);
     white-space: nowrap;
     transition: background-color pdz.duration(fast) pdz.easing(standard);
-    border-top: 1px solid pdz.color(outline-variant);
+    border-top: 1px solid pdz.color(border-subtle);
 
     &:hover {
-      background: pdz.color(surface-container-low);
+      background: pdz.color(state-hover);
     }
 
     &--stab {
       .learnset__col--name {
-        font-weight: 700;
+        font-weight: pdz.font-weight(bold);
       }
     }
-  }
-
-  &__type-badge {
-    padding: 1px pdz.space(xs);
-    border-radius: pdz.shape(corner-xs);
-    @include text(label);
-    font-size: pdz.font-size(2xs);
-    font-weight: 700;
-    color: white;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
-    text-align: center;
-    white-space: nowrap;
   }
 
   &__col {
@@ -140,8 +103,8 @@
     }
 
     &--sorted {
-      background-color: pdz.color(surface-container-high);
-      font-weight: 600;
+      background-color: pdz.color(state-pressed);
+      font-weight: pdz.font-weight(semibold);
       border-radius: pdz.shape(corner-xs);
     }
 
@@ -181,8 +144,6 @@
   padding: pdz.space(lg);
 }
 
-// ─── Dialog shell ─────────────────────────────────────────────────────────────
-
 :host {
   display: block;
 }
@@ -199,7 +160,7 @@
   gap: pdz.space(sm);
   margin: calc(#{pdz.space(lg)} * -1) calc(#{pdz.space(lg)} * -1) 0;
   padding: 0 pdz.space(lg);
-  border-bottom: 1px solid pdz.color(outline-variant);
+  border-bottom: 1px solid pdz.color(border-subtle);
 }
 
 .dialog__nav {
@@ -222,8 +183,6 @@
   }
 }
 
-// ─── Hero (sprite + meta) ─────────────────────────────────────────────────────
-
 .pokemon-hero {
   display: flex;
   align-items: flex-start;
@@ -237,7 +196,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: pdz.color(surface-container-low);
+  background-color: pdz.color(inset);
   border-radius: pdz.shape(corner-md);
   overflow: hidden;
 }
@@ -250,8 +209,6 @@
   padding-top: pdz.space(2xs);
 }
 
-// ─── Badges ───────────────────────────────────────────────────────────────────
-
 .badge-row {
   display: flex;
   flex-wrap: wrap;
@@ -262,16 +219,15 @@
   display: inline-flex;
   align-items: center;
   gap: pdz.space(2xs);
-  padding: 2px pdz.space(sm);
+  padding: pdz.space(2xs) pdz.space(sm);
   border-radius: pdz.shape(corner-full);
   @include text(label);
-  font-weight: 600;
+  font-weight: pdz.font-weight(semibold);
   line-height: 1.6;
 
   &--tier {
     background-color: pdz.color(primary);
     color: pdz.color(on-primary);
-    font-family: var(--pdz-font-display);
   }
 
   &--cost {
@@ -284,8 +240,6 @@
     color: pdz.color(on-success-container);
   }
 }
-
-// ─── Type label override (icon + text inline) ───────────────────────────────
 
 .pdz-types {
   justify-content: flex-start;
@@ -301,8 +255,6 @@
     }
   }
 }
-
-// ─── Sections ─────────────────────────────────────────────────────────────────
 
 .section {
   display: flex;
@@ -321,8 +273,6 @@
   }
 }
 
-// ─── Abilities ────────────────────────────────────────────────────────────────
-
 .ability-list {
   display: flex;
   flex-wrap: wrap;
@@ -334,22 +284,19 @@
   align-items: center;
   gap: pdz.space(2xs);
   @include text(body-sm);
-  background-color: pdz.color(surface-container-low);
-  border: 1px solid pdz.color(outline-variant);
+  background-color: transparent;
+  border: 1px solid pdz.color(border-control);
   border-radius: pdz.shape(corner-xs);
-  padding: 2px pdz.space(sm);
+  padding: pdz.space(2xs) pdz.space(sm);
   font-size: var(--pdz-font-size-xs);
 
   &--banned {
-    background-color: pdz.color(surface-container-low);
     border-color: pdz.color(danger-border);
     color: pdz.color(danger);
     box-shadow: none;
     opacity: 0.7;
   }
 }
-
-// ─── Stat bars ────────────────────────────────────────────────────────────────
 
 .stat-list {
   display: flex;
@@ -372,10 +319,10 @@
 
   &__track {
     height: 0.875rem;
-    background-color: pdz.color(surface-container-high);
+    background-color: pdz.color(inset);
     border-radius: pdz.shape(corner-full);
     overflow: hidden;
-    border: 1px solid pdz.color(outline-variant);
+    border: 1px solid pdz.color(border-subtle);
   }
 
   &__bar {
@@ -383,17 +330,15 @@
     border-radius: pdz.shape(corner-full);
     transition: width pdz.duration(slow) pdz.easing(standard);
     min-width: 2px;
-    border-right: 1px solid pdz.color(outline-variant);
+    border-right: 1px solid pdz.color(border-subtle);
   }
 
   &__value {
     @include text(body-sm);
-    font-weight: 600;
+    font-weight: pdz.font-weight(semibold);
     text-align: left;
   }
 }
-
-// ─── Chips ─────────────────────────────────────────────────────────────────
 
 .chips {
   display: inline-flex;
@@ -420,8 +365,6 @@
   }
 }
 
-// ─── Info banners ─────────────────────────────────────────────────────────────
-
 .info-banner {
   display: flex;
   align-items: flex-start;
@@ -432,7 +375,7 @@
 
   pdz-icon {
     flex-shrink: 0;
-    margin-top: 2px;
+    margin-top: pdz.space(2xs);
   }
 
   &--addon {
@@ -447,6 +390,6 @@
 
   &__detail {
     margin-left: pdz.space(2xs);
-    font-weight: 700;
+    font-weight: pdz.font-weight(bold);
   }
 }

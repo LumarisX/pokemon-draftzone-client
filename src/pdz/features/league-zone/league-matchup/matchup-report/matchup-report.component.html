@@ -3,6 +3,7 @@
     [match]="match"
     [games]="games"
     [sideNames]="sideNames"
+    [viewerSide]="matchup().viewer.side"
     [notes]="reportNotes"
     notesLabel="Notes for the organizers (optional)"
     notesPlaceholder="Anything the organizers should know…"
@@ -14,6 +15,7 @@
         <pdz-score-entry-game
           [game]="game"
           [sideNames]="sideNames"
+          [viewerSide]="matchup().viewer.side"
           [label]="'Game ' + ($index + 1)"
           [analyzing]="analyzingIndex() === $index"
           [expectedRoster]="rosterSize"
@@ -27,46 +29,54 @@
     </div>
 
     @if (analysisError()) {
-      <p class="report__error">{{ analysisError() }}</p>
+      <p class="report__error" role="alert">{{ analysisError() }}</p>
     }
 
-    <div class="report__summary">
-      <pdz-disclosure
-        heading="Pokemon totals"
-        [open]="summaryOpen()"
-        (openChange)="toggleSummary()"
-      >
-        @if (summaryOpen()) {
-          <div class="report__summary-content">
-            @for (side of sides; track side) {
-              <div class="report__summary-team">
-                <div class="report__summary-team-title">
-                  {{ teamName(side) }}
-                </div>
-                <div class="report__summary-row report__summary-row--header">
-                  <span>Pokemon</span>
-                  <span>Kills</span>
-                  <span>Deaths</span>
-                </div>
-                @for (summary of getPokemonSummary(side); track summary.key) {
-                  <div class="report__summary-row">
-                    <span>{{ summary.name }}</span>
-                    <span>{{ summary.kills }}</span>
-                    <span>{{ summary.deaths }}</span>
-                  </div>
-                } @empty {
-                  <p class="report__summary-empty">No Pokemon reported yet.</p>
+    <pdz-disclosure
+      heading="Pokémon totals"
+      [open]="summaryOpen()"
+      (openChange)="toggleSummary()"
+    >
+      @if (summaryOpen()) {
+        <div class="report__summary-content">
+          @for (side of order(); track side) {
+            <div class="report__summary-team">
+              <span class="report__summary-team-title">{{
+                teamName(side)
+              }}</span>
+              @if (getPokemonSummary(side); as rows) {
+                @if (rows.length) {
+                  <table class="pdz-table" data-density="compact">
+                    <thead>
+                      <tr>
+                        <th>Pokémon</th>
+                        <th class="pdz-table__num">Kills</th>
+                        <th class="pdz-table__num">Deaths</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      @for (summary of rows; track summary.key) {
+                        <tr>
+                          <td>{{ summary.name }}</td>
+                          <td class="pdz-table__num">{{ summary.kills }}</td>
+                          <td class="pdz-table__num">{{ summary.deaths }}</td>
+                        </tr>
+                      }
+                    </tbody>
+                  </table>
+                } @else {
+                  <p class="report__summary-empty">No Pokémon reported yet.</p>
                 }
-              </div>
-            }
-          </div>
-        }
-      </pdz-disclosure>
-    </div>
+              }
+            </div>
+          }
+        </div>
+      }
+    </pdz-disclosure>
   }
 
   @if (saveError()) {
-    <p class="report__error">{{ saveError() }}</p>
+    <p class="report__error" role="alert">{{ saveError() }}</p>
   }
 
   <div class="report__footer">
@@ -76,16 +86,15 @@
         size="sm"
         color="neutral"
         variant="outlined"
-        type="button"
+        icon="add"
         (click)="addGame()"
       >
-        <pdz-icon name="add" [size]="16"></pdz-icon>
-        <span>Add game</span>
+        Add Game
       </button>
 
       <span class="report__series">
-        {{ teamName("side1") }} {{ seriesScore("side1") }} –
-        {{ seriesScore("side2") }} {{ teamName("side2") }}
+        {{ teamName(order()[0]) }} {{ seriesScore(order()[0]) }} –
+        {{ seriesScore(order()[1]) }} {{ teamName(order()[1]) }}
       </span>
     }
 

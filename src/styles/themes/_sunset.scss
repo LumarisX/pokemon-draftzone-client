@@ -4,40 +4,23 @@
 $theme-overrides: (
   light: accent.apply(
       (
-        // Surface Colors (Orange-tinted)
-        surface: "orange-25",
-        surface-variant: "orange-100",
-        surface-container-low: "orange-25",
-        surface-container: "orange-50",
-        surface-container-high: "orange-75",
-        surface-container-highest: "orange-100",
+        ground: "orange-50",
+        inset: "orange-50",
+        border-subtle: "orange-125",
+        border-control: "orange-200",
+
         on-surface: "orange-950",
-        on-surface-variant: "orange-900",
+        on-surface-variant: "orange-700",
+        on-surface-muted: "orange-600",
 
-        // Menu Theme (Orange)
-        menu: "orange-550",
-        menu-lighter: "orange-450",
-        menu-darker: "orange-650",
-        menu-container: "orange-50",
-        menu-container-low: "orange-25",
-        menu-container-high: "orange-125",
-        menu-container-hover: "orange-75",
-        on-menu-container: "orange-950",
-        menu-hover: "orange-400",
-        menu-border: "orange-200",
-        menu-subtle: "orange-50",
-
-        // Logo Colors
         logo-top: "purple-450",
         logo-bottom: "pink-450",
 
-        // Loading Colors
         loading-primary-high: "purple-550",
         loading-primary-low: "purple-300",
         loading-secondary-high: "pink-550",
         loading-secondary-low: "pink-300",
 
-        // Hero
         hero: url("/assets/images/hero/hero_sunset.webp"),
       ),
       "purple",
@@ -46,17 +29,14 @@ $theme-overrides: (
     ),
   dark: accent.apply(
       (
-        // Logo Colors
         logo-top: "purple-400",
         logo-bottom: "pink-400",
 
-        // Loading Colors
         loading-primary-high: "purple-350",
         loading-primary-low: "purple-550",
         loading-secondary-high: "pink-350",
         loading-secondary-low: "pink-550",
 
-        // Hero
         hero: linear-gradient(
             135deg,
             var(--pdz-color-purple-400),

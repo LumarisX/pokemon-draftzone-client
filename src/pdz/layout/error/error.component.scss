@@ -1,5 +1,4 @@
 @use "pdz-theming" as pdz;
-@use "mixins" as *;
 
 :host {
   display: contents;
@@ -10,7 +9,6 @@
   bottom: 0;
   right: 0;
   z-index: pdz.z(toast);
-  box-sizing: border-box;
   display: flex;
   flex-direction: column;
   align-items: flex-end;
@@ -21,7 +19,7 @@
   overflow-x: hidden;
   pointer-events: none;
 
-  @media (max-width: 640px) {
+  @include pdz.respond-below(small) {
     left: 0;
     align-items: stretch;
     padding: pdz.space(md);
@@ -29,19 +27,18 @@
 }
 
 .toast {
-  box-sizing: border-box;
-  width: 100%;
-  max-width: 24rem;
-  padding: pdz.space(md);
   display: flex;
   flex-direction: column;
   gap: pdz.space(sm);
-  background: pdz.color("surface-container-low");
-  color: pdz.color("on-surface");
-  border: 1px solid pdz.color("outline-variant");
-  border-left: 3px solid pdz.color("danger");
+  width: 100%;
+  max-width: 24rem;
+  padding: pdz.space(md);
+  background: pdz.color(floating);
+  color: pdz.color(on-surface);
+  border: 1px solid pdz.color(border-subtle);
+  border-left: 3px solid pdz.color(danger);
   border-radius: pdz.shape(corner-md);
-  box-shadow: var(--pdz-level-2);
+  box-shadow: var(--pdz-elevation-2);
   overflow-wrap: anywhere;
   pointer-events: auto;
   animation: toast-in pdz.duration(slow) pdz.easing(standard) forwards;
@@ -49,144 +46,129 @@
   &--leaving {
     animation: toast-out pdz.duration(slow) pdz.easing(exit) forwards;
   }
+}
 
-  // ---- Header -------------------------------------------------------------
-  &__head {
-    display: flex;
-    align-items: center;
-    gap: pdz.space(sm);
+.toast__head {
+  display: flex;
+  align-items: center;
+  gap: pdz.space(sm);
+}
+
+.toast__icon {
+  flex-shrink: 0;
+  color: pdz.color(danger);
+}
+
+.toast__titles {
+  display: flex;
+  align-items: center;
+  gap: pdz.space(sm);
+  flex: 1;
+  min-width: 0;
+}
+
+.toast__title {
+  @include pdz.text(card-title);
+}
+
+.toast__code {
+  @include pdz.text(label);
+  padding: pdz.space(3xs) pdz.space(xs);
+  background: pdz.color(state-pressed);
+  color: pdz.color(on-surface-variant);
+  border-radius: pdz.shape(corner-sm);
+  font-family: pdz.font(mono);
+  white-space: nowrap;
+}
+
+.toast__message {
+  @include pdz.text(body-sm);
+  color: pdz.color(on-surface);
+}
+
+.toast__uri {
+  @include pdz.text(label);
+  color: pdz.color(on-surface-muted);
+  font-family: pdz.font(mono);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.toast__toggle {
+  align-self: flex-start;
+}
+
+.toast__expand-chevron {
+  transition: transform pdz.duration(base) pdz.easing(standard);
+
+  &--open {
+    transform: rotate(180deg);
+  }
+}
+
+.toast__details {
+  @include pdz.text(body-sm);
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(sm);
+  padding: pdz.space(sm);
+  background: pdz.color(inset);
+  border-radius: pdz.shape(corner-sm);
+}
+
+.toast__detail-list {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: pdz.space(xs) pdz.space(sm);
+  margin: 0;
+
+  dt {
+    font-weight: pdz.font-weight(semibold);
+    color: pdz.color(on-surface-variant);
   }
 
-  &__icon {
-    flex-shrink: 0;
-    color: pdz.color("danger");
-  }
-
-  &__titles {
-    display: flex;
-    align-items: center;
-    gap: pdz.space(sm);
-    flex: 1;
-    min-width: 0;
-  }
-
-  &__title {
-    font-weight: 600;
-    @include text(label);
-  }
-
-  &__code {
-    padding: 0.0625rem pdz.space(xs);
-    background: pdz.color("surface-container-high");
-    color: pdz.color("on-surface-variant");
-    border-radius: pdz.shape(corner-sm);
-    font-family: var(--pdz-font-mono);
-    font-size: pdz.font-size(xs);
-    letter-spacing: 0.02em;
-    white-space: nowrap;
-  }
-  // ---- Body ---------------------------------------------------------------
-  &__message {
-    color: pdz.color("on-surface");
-    @include text(body);
-  }
-
-  &__uri {
-    color: pdz.color("on-surface-variant");
-    font-family: var(--pdz-font-mono);
-    font-size: pdz.font-size(xs);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  // ---- Details ------------------------------------------------------------
-  &__expand-chevron {
-    transition: transform pdz.duration(base) pdz.easing(standard);
-
-    &--open {
-      transform: rotate(180deg);
-    }
-  }
-
-  &__details {
-    display: flex;
-    flex-direction: column;
-    gap: pdz.space(sm);
-    padding: pdz.space(sm);
-    background: pdz.color("surface-container-low");
-    border-radius: pdz.shape(corner-sm);
-    font-size: pdz.font-size(sm);
-  }
-
-  &__detail-list {
-    display: grid;
-    grid-template-columns: auto 1fr;
-    gap: pdz.space(xs) pdz.space(sm);
+  dd {
     margin: 0;
-
-    dt {
-      font-weight: 600;
-      color: pdz.color("on-surface-variant");
-    }
-
-    dd {
-      margin: 0;
-      font-family: var(--pdz-font-mono);
-      white-space: pre-wrap;
-      word-break: break-word;
-    }
-  }
-
-  &__meta {
-    color: pdz.color("on-surface-variant");
-
-    code {
-      font-family: var(--pdz-font-mono);
-    }
-  }
-
-  &__stack {
-    margin: 0;
-    max-height: 12rem;
-    overflow: auto;
-    padding: pdz.space(sm);
-    background: pdz.color("surface-container-highest");
-    border-radius: pdz.shape(corner-sm);
-    font-family: var(--pdz-font-mono);
-    font-size: pdz.font-size(xs);
-    line-height: 1.45;
+    font-family: pdz.font(mono);
     white-space: pre-wrap;
     word-break: break-word;
   }
+}
 
-  // ---- Actions ------------------------------------------------------------
-  &__actions {
-    display: flex;
-    align-items: center;
-    gap: pdz.space(sm);
-    margin-top: pdz.space(xs);
+.toast__meta {
+  color: pdz.color(on-surface-variant);
+
+  code {
+    font-family: pdz.font(mono);
   }
+}
 
-  // The Report button keeps a done state that pdz-button has no color for.
-  &__btn--done {
-    border-color: pdz.color("outline-variant");
-    background: transparent;
-    color: pdz.color("on-surface-variant");
-    font-weight: 600;
+.toast__stack {
+  @include pdz.text(label);
+  margin: 0;
+  max-height: 12rem;
+  overflow: auto;
+  padding: pdz.space(sm);
+  background: pdz.color(inset);
+  border-radius: pdz.shape(corner-sm);
+  font-family: pdz.font(mono);
+  line-height: 1.45;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
 
-    &:hover {
-      background: transparent;
-      filter: none;
-    }
-  }
-
+.toast__actions {
+  display: flex;
+  align-items: center;
+  gap: pdz.space(sm);
+  margin-top: pdz.space(xs);
 }
 
 @keyframes toast-in {
   from {
     opacity: 0;
-    transform: translate3d(0, 12px, 0);
+    transform: translate3d(0, pdz.space(md), 0);
   }
   to {
     opacity: 1;
@@ -201,6 +183,6 @@
   }
   to {
     opacity: 0;
-    transform: translate3d(40px, 0, 0);
+    transform: translate3d(pdz.space(2xl), 0, 0);
   }
 }

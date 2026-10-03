@@ -3,6 +3,9 @@ module.exports = {
   maxWorkers: 4,
   workerIdleMemoryLimit: '1GB',
   setupFilesAfterEnv: ['<rootDir>/setup-jest.ts'],
+  transformIgnorePatterns: [
+    'node_modules/(?!(d3|d3-[^/]+|internmap|delaunator|robust-predicates|marked)/|.*\\.mjs$)',
+  ],
   moduleNameMapper: {
     '^@pdz/sets$': '<rootDir>/node_modules/@pdz/sets/build/cjs/index.js',
     '^@pdz/core/(.*)$': '<rootDir>/src/pdz/core/$1',

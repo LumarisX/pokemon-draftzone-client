@@ -12,7 +12,7 @@
   background-color: pdz.color(surface-inverse);
   color: pdz.color(on-surface-inverse);
   border-radius: pdz.shape(corner-xs);
-  box-shadow: var(--pdz-level-2);
+  box-shadow: var(--pdz-elevation-2);
   z-index: pdz.z(tooltip);
   pointer-events: none;
   white-space: pre-line;

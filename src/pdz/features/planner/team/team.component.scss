@@ -100,13 +100,13 @@
     gap: pdz.space(xs);
     min-height: var(--planner-row-control);
     padding: pdz.space(2xs) pdz.space(xs);
-    border: 1px solid pdz.color(outline-variant);
+    border: 1px solid pdz.color(border-subtle);
     border-radius: pdz.shape(corner-sm);
-    background: pdz.color(surface-container-lowest);
+    background: pdz.color(raised);
     overflow: hidden;
     transition:
-      border-color 0.15s ease-in-out,
-      background-color 0.15s ease-in-out;
+      border-color pdz.duration(fast) pdz.easing(standard),
+      background-color pdz.duration(fast) pdz.easing(standard);
 
     &::before {
       content: "";
@@ -119,7 +119,6 @@
 
     &:hover {
       border-color: pdz.color(outline);
-      background: pdz.color(surface-container-low);
     }
 
     &:focus-within {
@@ -127,7 +126,7 @@
     }
 
     &--reserve {
-      background: pdz.color(surface-container-low);
+      background: transparent;
       border-style: dashed;
     }
 
@@ -234,7 +233,7 @@
     padding: 0 pdz.space(2xs);
     border: 1px solid pdz.color(outline);
     border-radius: pdz.shape(corner-xs);
-    background: pdz.color(surface);
+    background: pdz.color(inset);
 
     &:focus-within {
       outline: 2px solid pdz.color(primary);
@@ -292,9 +291,9 @@
     gap: pdz.space(sm) pdz.space(lg);
     margin: pdz.space(sm) pdz.space(2xs) 0;
     padding: pdz.space(sm) pdz.space(md);
-    border: 1px solid pdz.color(outline-variant);
+    border: 1px solid pdz.color(border-subtle);
     border-radius: pdz.shape(corner-sm);
-    background: pdz.color(surface-container-low);
+    background: pdz.color(raised);
   }
 
   &__total {
@@ -318,6 +317,6 @@
     width: 4rem;
     height: 4rem;
     border-radius: pdz.shape(corner-xs);
-    box-shadow: var(--pdz-level-3);
+    box-shadow: var(--pdz-elevation-3);
   }
 }

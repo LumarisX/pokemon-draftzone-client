@@ -54,22 +54,41 @@ describe('ScoreEntryGameComponent', () => {
     expect(headers[1].classList).toContain('roster__header--mirrored');
   });
 
-  it('marks the container with the winning side so the border can follow it', () => {
+  it('marks the container with the winning team so the border can follow it', () => {
     const fixture = render();
     const disclosure = () =>
       fixture.nativeElement.querySelector('pdz-disclosure');
 
-    expect(disclosure().getAttribute('data-winner')).toBeNull();
+    expect(disclosure().getAttribute('data-team')).toBeNull();
 
-    setGameWinner(fixture.componentInstance.game(),'side2');
+    setGameWinner(fixture.componentInstance.game(), 'side2');
     fixture.detectChanges();
 
-    expect(disclosure().getAttribute('data-winner')).toBe('side2');
+    expect(disclosure().getAttribute('data-team')).toBe('team2');
 
-    setGameWinner(fixture.componentInstance.game(),null);
+    setGameWinner(fixture.componentInstance.game(), null);
     fixture.detectChanges();
 
-    expect(disclosure().getAttribute('data-winner')).toBeNull();
+    expect(disclosure().getAttribute('data-team')).toBeNull();
+  });
+
+  it('puts the viewer first as team 1 when they are stored as side 2', () => {
+    const fixture = render();
+    fixture.componentRef.setInput('viewerSide', 'side2');
+    fixture.detectChanges();
+    const headers = fixture.nativeElement.querySelectorAll('.roster__team');
+
+    expect(headers[0].textContent.trim()).toBe('Team B');
+    expect(headers[1].textContent.trim()).toBe('Team A');
+
+    setGameWinner(fixture.componentInstance.game(), 'side2');
+    fixture.detectChanges();
+
+    expect(
+      fixture.nativeElement
+        .querySelector('pdz-disclosure')
+        .getAttribute('data-team'),
+    ).toBe('team1');
   });
 
   it('reveals the analyze action inside the field only for a replay link', () => {

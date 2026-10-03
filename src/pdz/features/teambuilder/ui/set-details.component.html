@@ -46,7 +46,7 @@
           [value]="set.item ?? ''"
           (valueChange)="setItem($event)"
         >
-          <pdz-option [value]="''" label="No item" />
+          <pdz-option [value]="''" label="No Item" />
           @for (item of items(); track item.id) {
             <pdz-option
               [value]="item.id"

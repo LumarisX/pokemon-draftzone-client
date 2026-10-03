@@ -3,8 +3,8 @@ import { TooltipDirective } from '@pdz/shared/tooltip/tooltip.directive';
 import { ExtendedType } from '@pdz/shared/data';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
 import { PokemonTypeComponent } from '@pdz/shared/data/pokemon-type/pokemon-type.component';
-import { DraftPokemon } from '../../../../draft.model';
-import { CoverageChart, TypeChart } from '../../../matchup-interface';
+import { DraftPokemon } from '@pdz/features/drafts/draft.model';
+import { CoverageChart, TypeChart } from '@pdz/features/drafts/matchup-overview/matchup-interface';
 import { EffectivenessChartComponent } from './effectiveness-chart/effectiveness-chart.component';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 

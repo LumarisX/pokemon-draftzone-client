@@ -1,6 +1,5 @@
 import { BracketViewTransform } from './bracket-canvas-renderer';
 
-/** Allowed zoom range. */
 export const MIN_SCALE = 0.25;
 export const MAX_SCALE = 3;
 
@@ -20,10 +19,6 @@ export function screenToWorld(
   return { x: (sx - t.x) / t.k, y: (sy - t.y) / t.k };
 }
 
-/**
- * Transform that fits content of (contentW × contentH) into a viewport,
- * centered, never scaling past 100%.
- */
 export function fitToContent(
   contentW: number,
   contentH: number,

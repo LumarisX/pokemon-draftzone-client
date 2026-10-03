@@ -87,7 +87,6 @@ export class BarChartComponent implements AfterViewInit, OnChanges, OnDestroy {
       .range([0, innerH])
       .padding(0.28);
 
-    // Category labels.
     g.append('g')
       .attr('class', 'bar-labels')
       .selectAll('text')
@@ -99,7 +98,6 @@ export class BarChartComponent implements AfterViewInit, OnChanges, OnDestroy {
       .attr('text-anchor', 'end')
       .text((d) => d.label);
 
-    // Bars.
     g.selectAll('rect.bar')
       .data(rows)
       .join('rect')
@@ -111,7 +109,6 @@ export class BarChartComponent implements AfterViewInit, OnChanges, OnDestroy {
       .attr('fill', this.color())
       .attr('rx', 2);
 
-    // Value labels at the end of each bar.
     g.append('g')
       .attr('class', 'bar-values')
       .selectAll('text')

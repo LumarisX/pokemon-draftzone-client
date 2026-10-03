@@ -1,13 +1,18 @@
 <picture class="not-found__picture">
   <source
-    srcset="../../../assets/images/404/sleeping_pokemon_mobile.avif"
+    srcset="/assets/images/404/sleeping_pokemon_mobile.avif"
     media="(orientation: portrait)"
   />
   <img
-    src="../../../assets/images/404/sleeping_pokemon.avif"
-    alt="404 - Sleeping Pokemon resting up for future leagues"
     class="not-found__image"
+    src="/assets/images/404/sleeping_pokemon.avif"
+    alt="A sleeping Pokémon resting up for future leagues"
     fetchpriority="high"
     decoding="async"
   />
 </picture>
+
+<div class="not-found__message">
+  <h1 class="not-found__title">Page Not Found</h1>
+  <a pdz-button icon="home" routerLink="/">Back to Home</a>
+</div>

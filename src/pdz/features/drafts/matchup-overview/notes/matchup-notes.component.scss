@@ -5,7 +5,7 @@
   flex-direction: column;
   min-height: 0;
   height: 100%;
-  background: pdz.color(surface);
+  background: pdz.color(raised);
   color: pdz.color(on-surface);
 }
 
@@ -15,7 +15,7 @@
   align-items: center;
   gap: pdz.space(sm);
   padding: pdz.space(2xs) pdz.space(sm);
-  border-bottom: 1px solid pdz.color(outline-variant);
+  border-bottom: 1px solid pdz.color(border-subtle);
 }
 
 .notes__title {
@@ -41,8 +41,7 @@
   margin: 0;
   padding: pdz.space(2xs) pdz.space(sm);
   color: pdz.color(on-surface-variant);
-  background: pdz.color(surface-container-lowest);
-  border-bottom: 1px solid pdz.color(outline-variant);
+  border-bottom: 1px solid pdz.color(border-subtle);
   @include pdz.text(body-sm);
 }
 
@@ -58,34 +57,14 @@
 
 .notes__input {
   flex: 1 1 auto;
-  width: 100%;
   min-height: 100%;
   resize: none;
-  padding: pdz.space(sm);
-  border: 1px solid pdz.color(outline-variant);
-  border-radius: pdz.shape(corner-md);
-  background: pdz.color(surface-container-lowest);
-  color: inherit;
-  font-family: inherit;
-  outline: none;
-  transition: border-color pdz.duration(fast) pdz.easing(standard);
-  @include pdz.text(body-sm, $family: false);
-
-  &::placeholder {
-    color: pdz.color(on-surface-variant);
-    font-style: italic;
-  }
-
-  &:focus {
-    border-color: pdz.color(primary);
-  }
 }
 
 .notes__preview {
   display: block;
   padding: pdz.space(sm);
-  border: 1px solid pdz.color(outline-variant);
+  border: 1px solid pdz.color(border-subtle);
   border-radius: pdz.shape(corner-md);
-  background: pdz.color(surface-container-lowest);
   overflow-wrap: anywhere;
 }

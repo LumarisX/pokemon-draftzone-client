@@ -1,7 +1,6 @@
 <div class="pokemon-search__search-panel">
   <div class="pokemon-search__controls">
-    <div class="pokemon-search__field">
-      <label>Mode</label>
+    <div pdz-field label="Mode" class="pokemon-search__field">
       <pdz-segmented
         size="sm"
         aria-label="Search mode"
@@ -14,8 +13,7 @@
     </div>
 
     @if (searchMode === "advanced") {
-      <div class="pokemon-search__field">
-        <label>Match</label>
+      <div pdz-field label="Match" class="pokemon-search__field">
         <pdz-segmented
           size="sm"
           aria-label="Match mode"
@@ -27,10 +25,6 @@
         </pdz-segmented>
       </div>
     }
-
-    <!-- <div class="pokemon-search__field pokemon-search__field--end">
-        <pdz-format-select [(ngModel)]="selectedFormat"></pdz-format-select>
-      </div> -->
 
     @if (!rulesetId()) {
       <div class="pokemon-search__field pokemon-search__field--end">
@@ -45,8 +39,9 @@
     <div class="pokemon-search__quick-search">
       <div class="pokemon-search__quick-input-row">
         <input
-          id="quickName"
+          pdz-input
           type="text"
+          aria-label="Search Pokémon"
           [(ngModel)]="quickName"
           placeholder="Search by name, type, ability, or move"
           (keydown.enter)="quickSearch()"
@@ -65,7 +60,6 @@
       </div>
     </div>
   } @else if (searchMode === "advanced") {
-    <!-- Active filter pills -->
     <div class="pokemon-search__pill-bar" aria-label="Active filters">
       @for (filter of filters; track $index; let i = $index) {
         <pdz-chip
@@ -117,12 +111,11 @@
           (click)="resetFilters()"
           aria-label="Clear all filters"
         >
-          Clear all
+          Clear All
         </button>
       }
     </div>
 
-    <!-- Inline filter drawer -->
     @if (drawerOpen && draftFilter) {
       <pdz-filter-drawer
         [fields]="fields"
@@ -338,12 +331,10 @@
       </div>
     }
   } @else if (!isLoading) {
-    <div class="pokemon-results__empty">
-      <pdz-icon name="search_off"></pdz-icon>
-      <p class="pokemon-results__empty-title">No Pokémon found</p>
-      <p class="pokemon-results__empty-hint">
-        Try adjusting your search or filters
-      </p>
-    </div>
+    <pdz-empty-state
+      icon="search_off"
+      heading="No Pokémon found"
+      message="Try adjusting your search or filters."
+    />
   }
 </div>

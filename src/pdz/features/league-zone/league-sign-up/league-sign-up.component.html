@@ -1,335 +1,326 @@
-@if (isCheckingSignUp) {
-  <pdz-loading></pdz-loading>
-} @else if (leagueInfo) {
-  <form
-    [formGroup]="signupForm"
-    (ngSubmit)="onSubmit()"
-    class="sign-up__container"
-  >
-    <pdz-page-header
-      title="Sign Up"
-      [eyebrow]="leagueInfo.name"
-      [logo]="getLogoUrl(leagueInfo.logo)"
-      [logoAlt]="leagueInfo.name + ' logo'"
-    />
+@let info = leagueInfo();
 
-    <section class="form-section">
-      <div class="form-section__header">
-        <h2 class="form-section__title">Details</h2>
-      </div>
-      <div class="form-section__body">
-        <table class="details-table">
-          <tr>
-            <th>Format:</th>
-            <td>{{ leagueInfo.format }}</td>
-            @if (leagueInfo.draftStart && leagueInfo.draftEnd) {
-              <th>Draft Period:</th>
-              <td>
-                {{ leagueInfo.draftStart | date }} -
-                {{ leagueInfo.draftEnd | date }}
-              </td>
-            }
-          </tr>
-          <tr>
-            <th>Ruleset:</th>
-            <td>{{ leagueInfo.ruleset }}</td>
-            @if (leagueInfo.draftStart && leagueInfo.draftEnd) {
-              <th>Season:</th>
-              <td>
-                {{ leagueInfo.seasonStart | date }} -
-                {{ leagueInfo.seasonEnd | date }}
-              </td>
-            }
-          </tr>
-        </table>
-      </div>
-    </section>
+@if (isCheckingSignUp() || !info) {
+  <pdz-loading />
+} @else {
+  <pdz-page-header title="Sign Up" [eyebrow]="info.name" [logo]="logoUrl()" />
 
-    @if (closed && !wantsToSignUpAsSub) {
-      <div class="message-card">
-        <h2 class="message-card__title">The season has already started</h2>
-        <p class="message-card__text">
-          Would you like to sign up as a sub? Subs can fill in for players who
-          drop from the league.
-        </p>
-        <div class="message-card__actions">
-          <button pdz-button
-            type="button"
-            
-            (click)="confirmSignUpAsSub()"
-          >
-            Yes, Sign Up as a Sub
-          </button>
-          <a pdz-button color="neutral" variant="outlined" routerLink=".." > No, Thanks </a>
-        </div>
-        @if (leagueInfo.discord) {
-          <p class="message-card__text message-card__text--secondary">
-            Join the
-            <a
-              target="_blank"
-              [href]="'https://discord.gg/' + leagueInfo.discord"
-              class="link link--primary"
-            >
-              {{ leagueInfo.name }} Discord Server
-            </a>
-            to get notified for the next season!
-          </p>
-        }
-      </div>
-    }
-    <!-- ── Coach details ──────────────────────────────────────────── -->
-    <section class="form-section">
-      <div class="form-section__header">
-        <h2 class="form-section__title">Coach Details</h2>
-      </div>
-      <div class="form-section__body">
-        <div class="form-row">
-          <label pdz-field class="form-field" label="Display Name" required>
-            <input
-              id="name"
-              type="text"
-              pdz-input
-              placeholder="Deoxys"
-              [attr.maxlength]="limits.name"
-              formControlName="name"
-            />
-            @if (
-              signupForm.get("name")?.hasError("required") &&
-              signupForm.get("name")?.touched
-            ) {
-              <span pdz-error>Required</span>
-            }
-          </label>
-
-          <label pdz-field class="form-field" label="Showdown Name" required>
-            <input
-              id="gameName"
-              type="text"
-              pdz-input
-              placeholder="Deoxys-II"
-              [attr.maxlength]="limits.gameName"
-              formControlName="gameName"
-            />
-            @if (
-              signupForm.get("gameName")?.hasError("required") &&
-              signupForm.get("gameName")?.touched
-            ) {
-              <span pdz-error>Required</span>
-            }
-          </label>
-        </div>
-
-        <div class="form-row">
-          <label pdz-field class="form-field" label="Discord Username" required>
-            <input
-              id="discordName"
-              type="text"
-              pdz-input
-              placeholder="Deoxys#0386"
-              [attr.maxlength]="limits.discordName"
-              formControlName="discordName"
-            />
-            @if (
-              signupForm.get("discordName")?.hasError("required") &&
-              signupForm.get("discordName")?.touched
-            ) {
-              <span pdz-error>Required</span>
-            }
-          </label>
-
-          <label pdz-field class="form-field" label="Time Zone" required>
-            <pdz-select
-              searchable
-              aria-label="Timezone"
-              placeholder="Select a timezone"
-              formControlName="timezone"
-            >
-              @for (tz of timezones; track $index) {
-                <pdz-option [value]="tz" [label]="tz" />
-              }
-            </pdz-select>
-          </label>
-        </div>
-
-        @for (question of visibleQuestions(); track question.id) {
-          <div class="form-field" [formGroupName]="'answers'">
-            @switch (question.type) {
-              @case ("boolean") {
-                <div
-                  pdz-field
-                  class="form-field"
-                  [label]="question.label"
-                  [hint]="question.help"
-                >
-                  <div class="radio-group">
-                    <label class="radio-label">
-                      <input
-                        pdz-radio
-                        type="radio"
-                        [name]="question.id"
-                        class="radio-input"
-                        value="true"
-                        [formControlName]="question.id"
-                      />
-                      <span>Yes</span>
-                    </label>
-                    <label class="radio-label">
-                      <input
-                        pdz-radio
-                        type="radio"
-                        [name]="question.id"
-                        class="radio-input"
-                        value="false"
-                        [formControlName]="question.id"
-                      />
-                      <span>No</span>
-                    </label>
-                  </div>
-                </div>
-              }
-              @case ("choice") {
-                <label
-                  pdz-field
-                  [label]="question.label"
-                  [hint]="question.help"
-                  [required]="question.required"
-                >
-                  <pdz-select
-                    [attr.aria-label]="question.label"
-                    [formControlName]="question.id"
-                  >
-                    @for (option of question.options; track option) {
-                      <pdz-option [value]="option" [label]="option" />
-                    }
-                  </pdz-select>
-                </label>
-              }
-              @case ("long") {
-                <label
-                  pdz-field
-                  [label]="question.label"
-                  [hint]="question.help"
-                  [required]="question.required"
-                >
-                  <textarea
-                    pdz-input
-                    rows="4"
-                    [attr.maxlength]="question.maxLength ?? limits.answer"
-                    [formControlName]="question.id"
-                  ></textarea>
-                </label>
-              }
-              @default {
-                <label
-                  pdz-field
-                  [label]="question.label"
-                  [hint]="question.help"
-                  [required]="question.required"
-                >
-                  <input
-                    pdz-input
-                    [attr.maxlength]="question.maxLength ?? limits.answer"
-                    [formControlName]="question.id"
-                  />
-                </label>
-              }
-            }
-            @if (answerInvalid(question)) {
-              <span pdz-error>Required</span>
-            }
+  <form class="sign-up" [formGroup]="signupForm" (ngSubmit)="onSubmit()">
+    <pdz-card padding="lg">
+      <section class="section" aria-labelledby="sign-up-details">
+        <h2 class="section__title" id="sign-up-details">Details</h2>
+        <dl class="details">
+          <div class="details__item">
+            <dt>Format</dt>
+            <dd>{{ info.format }}</dd>
           </div>
-        }
-      </div>
-    </section>
+          <div class="details__item">
+            <dt>Ruleset</dt>
+            <dd>{{ info.ruleset }}</dd>
+          </div>
+          @if (info.draftStart && info.draftEnd) {
+            <div class="details__item">
+              <dt>Draft</dt>
+              <dd>{{ info.draftStart | date }} – {{ info.draftEnd | date }}</dd>
+            </div>
+          }
+          @if (info.seasonStart && info.seasonEnd) {
+            <div class="details__item">
+              <dt>Season</dt>
+              <dd>
+                {{ info.seasonStart | date }} – {{ info.seasonEnd | date }}
+              </dd>
+            </div>
+          }
+        </dl>
+      </section>
+    </pdz-card>
 
-    <!-- ── Team details ──────────────────────────────────────────── -->
-    <section class="form-section">
-      <div class="form-section__header">
-        <h2 class="form-section__title">Team Details</h2>
-      </div>
-      <div class="form-section__body">
-        <div class="form-row">
-          <label pdz-field class="form-field" label="Team Name" required>
-            <input
-              id="teamName"
-              type="text"
-              pdz-input
-              placeholder="The Double Helixes"
-              [attr.maxlength]="limits.teamName"
-              formControlName="teamName"
-            />
-            @if (
-              signupForm.get("teamName")?.hasError("required") &&
-              signupForm.get("teamName")?.touched
-            ) {
-              <span pdz-error>Required</span>
-            }
-          </label>
-
-          <div pdz-field class="form-field" label="Team Logo">
-            <input
-              #logoInput
-              id="logo"
-              type="file"
-              class="file-input-hidden"
-              accept="image/*"
-              (change)="onLogoUpload($event)"
-            />
+    @if (closed() && !wantsToSignUpAsSub()) {
+      <pdz-card color="info" padding="lg">
+        <section class="closed" aria-labelledby="sign-up-closed">
+          <h2 class="section__title" id="sign-up-closed">
+            The season has already started
+          </h2>
+          <p class="closed__text">
+            Would you like to sign up as a sub? Subs fill in for players who
+            drop from the league.
+          </p>
+          <div class="closed__actions">
             <button
               pdz-button
               type="button"
-              color="neutral"
-              variant="outlined"
-              class="file-input-button"
-              [disabled]="isSubmitting"
-              (click)="logoInput.click()"
+              (click)="wantsToSignUpAsSub.set(true)"
             >
-              {{ logoFileName || "Choose File" }}
+              Sign Up as a Sub
             </button>
-            <span pdz-hint
-              >You can submit one later if you need to</span
+            <a pdz-button color="neutral" variant="outlined" routerLink=".."
+              >No, Thanks</a
             >
           </div>
+          @if (info.discord) {
+            <p class="closed__text">
+              Join the
+              <a
+                class="link"
+                target="_blank"
+                rel="noopener"
+                [href]="'https://discord.gg/' + info.discord"
+                >{{ info.name }} Discord server</a
+              >
+              to hear about the next season.
+            </p>
+          }
+        </section>
+      </pdz-card>
+    }
+
+    <pdz-card padding="lg">
+      <section class="section" aria-labelledby="sign-up-coach">
+        <h2 class="section__title" id="sign-up-coach">Coach Details</h2>
+        <div class="section__grid">
+          <label pdz-field label="Display Name" required>
+            <input
+              pdz-input
+              type="text"
+              placeholder="Deoxys"
+              formControlName="name"
+              [attr.maxlength]="limits.name"
+            />
+            @if (showError("name")) {
+              <span pdz-error>Required</span>
+            }
+          </label>
+
+          <label pdz-field label="Showdown Name" required>
+            <input
+              pdz-input
+              type="text"
+              placeholder="Deoxys-II"
+              formControlName="gameName"
+              [attr.maxlength]="limits.gameName"
+            />
+            @if (showError("gameName")) {
+              <span pdz-error>Required</span>
+            }
+          </label>
+
+          <label pdz-field label="Discord Username" required>
+            <input
+              pdz-input
+              type="text"
+              placeholder="deoxys"
+              formControlName="discordName"
+              [attr.maxlength]="limits.discordName"
+            />
+            @if (showError("discordName")) {
+              <span pdz-error>Required</span>
+            }
+          </label>
+
+          <div pdz-field label="Time Zone" required>
+            <pdz-select
+              searchable
+              aria-label="Time Zone"
+              placeholder="Select a time zone"
+              formControlName="timezone"
+            >
+              @for (tz of timezones; track tz) {
+                <pdz-option [value]="tz" [label]="tz" />
+              }
+            </pdz-select>
+          </div>
         </div>
-      </div>
-    </section>
 
-    <!-- ── Confirm & submit ──────────────────────────────────────── -->
-    <div class="form-field">
-      <label class="checkbox-label">
-        <input
-          pdz-checkbox type="checkbox"
-          class="checkbox-input"
-          formControlName="confirm"
-        />
-        <span>
-          I have read and accept the
-          <a
-            target="_blank"
-            [href]="
-              'https://pokemondraftzone.com/leagues/' +
-              leagueService.leagueSlug() +
-              '/tournaments/' +
-              leagueInfo.tournamentSlug +
-              '/rules'
-            "
-            class="link"
-            >league rules</a
-          >
-          and commit to playing for the entire season.
-        </span>
-      </label>
+        @if (visibleQuestions().length) {
+          <div class="section__questions" formGroupName="answers">
+            @for (question of visibleQuestions(); track question.id) {
+              @switch (question.type) {
+                @case ("boolean") {
+                  <div
+                    pdz-field
+                    [label]="question.label"
+                    [hint]="question.help"
+                    [required]="question.required"
+                  >
+                    <div class="choices choices--row">
+                      <label pdz-check label="Yes">
+                        <input
+                          pdz-radio
+                          type="radio"
+                          value="true"
+                          [name]="question.id"
+                          [formControlName]="question.id"
+                        />
+                      </label>
+                      <label pdz-check label="No">
+                        <input
+                          pdz-radio
+                          type="radio"
+                          value="false"
+                          [name]="question.id"
+                          [formControlName]="question.id"
+                        />
+                      </label>
+                    </div>
+                    @if (answerInvalid(question)) {
+                      <span pdz-error>Required</span>
+                    }
+                  </div>
+                }
+                @case ("choice") {
+                  <div
+                    pdz-field
+                    [label]="question.label"
+                    [hint]="question.help"
+                    [required]="question.required"
+                  >
+                    <pdz-select
+                      [attr.aria-label]="question.label"
+                      [formControlName]="question.id"
+                    >
+                      @for (option of question.options; track option) {
+                        <pdz-option [value]="option" [label]="option" />
+                      }
+                    </pdz-select>
+                    @if (answerInvalid(question)) {
+                      <span pdz-error>Required</span>
+                    }
+                  </div>
+                }
+                @case ("multi") {
+                  <div
+                    pdz-field
+                    [label]="question.label"
+                    [hint]="question.help"
+                    [required]="question.required"
+                  >
+                    <div class="choices">
+                      @for (option of question.options; track option) {
+                        <label pdz-check [label]="option">
+                          <input
+                            pdz-checkbox
+                            type="checkbox"
+                            [checked]="isMultiChecked(question, option)"
+                            (change)="toggleMulti(question, option)"
+                          />
+                        </label>
+                      }
+                    </div>
+                    @if (answerInvalid(question)) {
+                      <span pdz-error>Pick at least one</span>
+                    }
+                  </div>
+                }
+                @case ("long") {
+                  <label
+                    pdz-field
+                    [label]="question.label"
+                    [hint]="question.help"
+                    [required]="question.required"
+                  >
+                    <textarea
+                      pdz-input
+                      rows="4"
+                      [attr.maxlength]="question.maxLength ?? limits.answer"
+                      [formControlName]="question.id"
+                    ></textarea>
+                    @if (answerInvalid(question)) {
+                      <span pdz-error>Required</span>
+                    }
+                  </label>
+                }
+                @default {
+                  <label
+                    pdz-field
+                    [label]="question.label"
+                    [hint]="question.help"
+                    [required]="question.required"
+                  >
+                    <input
+                      pdz-input
+                      type="text"
+                      [attr.maxlength]="question.maxLength ?? limits.answer"
+                      [formControlName]="question.id"
+                    />
+                    @if (answerInvalid(question)) {
+                      <span pdz-error>Required</span>
+                    }
+                  </label>
+                }
+              }
+            }
+          </div>
+        }
+      </section>
+    </pdz-card>
+
+    <pdz-card padding="lg">
+      <section class="section" aria-labelledby="sign-up-team">
+        <h2 class="section__title" id="sign-up-team">Team Details</h2>
+        <div class="section__grid">
+          <label pdz-field label="Team Name" required>
+            <input
+              pdz-input
+              type="text"
+              placeholder="The Double Helixes"
+              formControlName="teamName"
+              [attr.maxlength]="limits.teamName"
+            />
+            @if (showError("teamName")) {
+              <span pdz-error>Required</span>
+            }
+          </label>
+
+          <div pdz-field label="Team Logo">
+            <div class="logo">
+              <pdz-team-logo
+                size="lg"
+                decorative
+                [src]="logoPreview()"
+                [name]="signupForm.controls.teamName.value || '?'"
+              />
+              <label pdz-button color="neutral" variant="outlined" icon="upload">
+                {{ logoFile()?.name || "Choose file" }}
+                <input
+                  class="logo__input"
+                  type="file"
+                  accept="image/*"
+                  [disabled]="isSubmitting()"
+                  (change)="onLogoUpload($event)"
+                />
+              </label>
+            </div>
+            <span pdz-hint>You can add one later if you need to.</span>
+          </div>
+        </div>
+      </section>
+    </pdz-card>
+
+    <label pdz-check class="sign-up__confirm">
+      <input pdz-checkbox type="checkbox" formControlName="confirm" />
+      <span pdz-check-label>
+        I have read and accept the
+        <a class="link" target="_blank" [routerLink]="rulesLink()"
+          >league rules</a
+        >
+        and commit to playing for the entire season.
+      </span>
+    </label>
+
+    @if (submitError(); as error) {
+      <p class="sign-up__error" role="alert">{{ error }}</p>
+    }
+
+    <div class="sign-up__actions">
+      <button
+        pdz-button
+        type="submit"
+        [loading]="isSubmitting()"
+        [disabled]="signupForm.invalid"
+      >
+        {{ wantsToSignUpAsSub() ? "Sign Up as a Sub" : "Sign Up" }}
+      </button>
     </div>
-
-    <button
-      pdz-button
-      type="submit"
-      [loading]="isSubmitting"
-      [disabled]="!signupForm.valid || isSubmitting"
-    >
-      {{ isSubmitting ? "Submitting..." : "Submit" }}
-    </button>
   </form>
-} @else {
-  <pdz-loading></pdz-loading>
 }

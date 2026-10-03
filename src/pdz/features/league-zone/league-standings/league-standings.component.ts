@@ -1,68 +1,112 @@
-import { CommonModule } from '@angular/common';
-import { Component, OnInit, inject } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+  signal,
+} from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { LEAGUE_ZONE_PATH } from '@pdz/core/route-paths';
+import { AuthService } from '@pdz/core/services/auth0.service';
+import { LeagueZoneService } from '@pdz/features/league-zone/league-zone.service';
+import { League } from '@pdz/features/league-zone/league.interface';
+import { StageSwitcherComponent } from '@pdz/features/league-zone/league-widgets/stage-switcher/stage-switcher.component';
 import { SkeletonComponent } from '@pdz/shared/data/skeleton/skeleton.component';
+import { EmptyStateComponent } from '@pdz/shared/feedback/empty-state/empty-state.component';
 import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
-import { LeagueZoneService } from '../league-zone.service';
-import { StageSwitcherComponent } from '../league-widgets/stage-switcher/stage-switcher.component';
-import { League } from '../league.interface';
+import { catchError, map, of, switchMap } from 'rxjs';
 import { PokemonStandingsComponent } from './pokemon-standings/pokemon-standings.component';
 import { TeamStandingsComponent } from './team-standings/team-standings.component';
+
+type StandingsState =
+  | { status: 'loading' }
+  | { status: 'error' }
+  | {
+      status: 'ready';
+      filters: League.StandingsFilter[];
+      views: Record<string, League.StandingsView>;
+    };
 
 @Component({
   selector: 'pdz-league-standings',
   imports: [
-    CommonModule,
-    TeamStandingsComponent,
+    EmptyStateComponent,
+    PageHeaderComponent,
     PokemonStandingsComponent,
-    RouterModule,
     SkeletonComponent,
     StageSwitcherComponent,
-    PageHeaderComponent,
+    TeamStandingsComponent,
   ],
   templateUrl: './league-standings.component.html',
-  styleUrls: ['./league-standings.component.scss'],
+  styleUrl: './league-standings.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class LeagueStandingsComponent implements OnInit {
-  private leagueService = inject(LeagueZoneService);
+export class LeagueStandingsComponent {
+  private readonly leagueService = inject(LeagueZoneService);
+  private readonly auth = inject(AuthService);
 
-  filters: League.StandingsFilter[] = [];
-  views: Record<string, League.StandingsView> = {};
-  isLoading = true;
-  error: string | null = null;
+  readonly skeletonRows = [0, 1, 2, 3, 4, 5];
 
-  // Independent filters: a coach may want the "All Stages" team standings
-  // next to just the playoffs' Pokémon standings, or vice versa.
-  teamFilter = 'all';
-  pokemonFilter = 'all';
+  readonly teamFilter = signal('all');
+  readonly pokemonFilter = signal('all');
 
-  readonly skeletonTables = [0, 1];
-  readonly skeletonRows = [0, 1, 2, 3, 4, 5, 6, 7];
+  readonly state = toSignal(
+    this.leagueService.getStandings().pipe(
+      map(
+        (data): StandingsState => ({
+          status: 'ready',
+          filters: data.filters,
+          views: data.views,
+        }),
+      ),
+      catchError(() => of<StandingsState>({ status: 'error' })),
+    ),
+    { initialValue: { status: 'loading' } as StandingsState },
+  );
 
-  ngOnInit() {
-    this.loadStandings();
-  }
+  private readonly profile = toSignal(
+    this.auth.isAuthenticated$.pipe(
+      switchMap((isAuthenticated) =>
+        isAuthenticated
+          ? this.leagueService
+              .getCoachData({ suppressStatuses: [404] })
+              .pipe(catchError(() => of(null)))
+          : of(null),
+      ),
+    ),
+    { initialValue: null },
+  );
 
-  private loadStandings() {
-    this.leagueService.getStandings().subscribe({
-      next: (data) => {
-        this.filters = data.filters;
-        this.views = data.views;
-        this.isLoading = false;
-      },
-      error: (err) => {
-        console.error('Error loading standings:', err);
-        this.error = 'Failed to load standings';
-        this.isLoading = false;
-      },
-    });
-  }
+  readonly ownTeamId = computed(() => this.profile()?.teamId ?? null);
 
-  get teamStandings(): League.TeamStandingsTable | null {
-    return this.views[this.teamFilter]?.teamStandings ?? null;
-  }
+  readonly teamLinkBase = computed(() => {
+    const leagueSlug = this.leagueService.leagueSlug();
+    const tournamentSlug = this.leagueService.tournamentSlug();
+    if (!leagueSlug || !tournamentSlug) return null;
+    return [
+      '/',
+      LEAGUE_ZONE_PATH,
+      leagueSlug,
+      'tournaments',
+      tournamentSlug,
+      'teams',
+    ];
+  });
 
-  get pokemonStandings(): League.PokemonStanding[] {
-    return this.views[this.pokemonFilter]?.pokemonStandings ?? [];
-  }
+  readonly showSwitchers = computed(() => {
+    const state = this.state();
+    return state.status === 'ready' && state.filters.length > 1;
+  });
+
+  readonly teamStandings = computed(() => {
+    const state = this.state();
+    if (state.status !== 'ready') return null;
+    return state.views[this.teamFilter()]?.teamStandings ?? null;
+  });
+
+  readonly pokemonStandings = computed(() => {
+    const state = this.state();
+    if (state.status !== 'ready') return [];
+    return state.views[this.pokemonFilter()]?.pokemonStandings ?? [];
+  });
 }

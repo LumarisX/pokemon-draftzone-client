@@ -2,17 +2,18 @@
   <div class="browse">
     <pdz-page-header
       title="Tier Lists"
-      eyebrow="Draft Zone"
       subtitle="Build your own, or start from one the community has already priced."
     >
-      <div pdz-page-header-actions>
-        @if (isAuthenticated()) {
-          <a pdz-button [routerLink]="['/', tierListPath, 'new']">
-            <pdz-icon name="add" [size]="18" aria-hidden="true" />
-            New tier list
-          </a>
-        }
-      </div>
+      @if (isAuthenticated()) {
+        <a
+          pdz-page-header-actions
+          pdz-button
+          icon="add"
+          [routerLink]="['/', tierListPath, 'new']"
+        >
+          New Tier List
+        </a>
+      }
     </pdz-page-header>
 
     <div class="browse__controls">
@@ -51,7 +52,7 @@
           (ngModelChange)="format.set($event)"
           [ngModelOptions]="{ standalone: true }"
         >
-          <pdz-option value="" label="Any format" />
+          <pdz-option value="" label="Any Format" />
           @for (option of formats(); track option) {
             <pdz-option [value]="option" [label]="option" />
           }
@@ -68,17 +69,16 @@
           (ngModelChange)="ruleset.set($event)"
           [ngModelOptions]="{ standalone: true }"
         >
-          <pdz-option value="" label="Any ruleset" />
+          <pdz-option value="" label="Any Ruleset" />
           @for (option of rulesets(); track option) {
             <pdz-option [value]="option" [label]="option" />
           }
         </pdz-select>
       </div>
 
-      @if (hasFilters) {
+      @if (hasFilters()) {
         <button
           pdz-button
-          type="button"
           size="sm"
           variant="ghost"
           color="neutral"
@@ -96,7 +96,7 @@
         </p>
         <div class="browse__grid">
           @for (list of page.tierLists; track list.id) {
-            <pdz-card padding="lg" tone="lowest" class="list-card">
+            <pdz-card padding="lg" class="list-card">
               <div class="list-card__inner">
                 <div class="list-card__top">
                   <a
@@ -123,7 +123,7 @@
                   @if (!list.isPublic) {
                     <span aria-hidden="true">·</span>
                     <span class="list-card__private">
-                      <pdz-icon name="lock" [size]="13" aria-hidden="true" />
+                      <pdz-icon name="lock" [size]="14" aria-hidden="true" />
                       Private
                     </span>
                   }
@@ -143,13 +143,13 @@
                   @if (isAuthenticated()) {
                     <button
                       pdz-button
-                      type="button"
                       size="sm"
+                      variant="tonal"
                       [loading]="forking() === list.slug"
                       [disabled]="!!forking()"
                       (click)="forkList(list)"
                     >
-                      Use as template
+                      Use as Template
                     </button>
                   }
                   <span class="list-card__owner-actions">
@@ -167,18 +167,16 @@
                     @if (list.isOwner) {
                       <button
                         pdz-button
-                        type="button"
                         size="sm"
                         variant="ghost"
                         color="danger"
                         iconOnly
+                        icon="delete"
                         [attr.aria-label]="'Delete ' + list.name"
                         [loading]="deleting() === list.slug"
                         [disabled]="!!deleting()"
                         (click)="deleteList(list)"
-                      >
-                        <pdz-icon name="delete" [size]="18" aria-hidden="true" />
-                      </button>
+                      ></button>
                     }
                   </span>
                 </div>
@@ -187,16 +185,18 @@
           }
         </div>
       } @else {
-        <pdz-card padding="lg" tone="lowest">
-          <p class="browse__empty">
-            @if (scope() === "mine") {
-              You haven't made a tier list yet. Create one, or use a public
-              list as a template.
-            } @else {
-              No public tier lists match that search.
-            }
-          </p>
-        </pdz-card>
+        <pdz-empty-state
+          bordered
+          icon="format_list_bulleted"
+          [heading]="
+            scope() === 'mine' ? 'No tier lists yet' : 'No tier lists match'
+          "
+          [message]="
+            scope() === 'mine'
+              ? 'Create one, or use a public list as a template.'
+              : 'No public tier lists match that search.'
+          "
+        />
       }
     } @else {
       <div class="browse__loading">

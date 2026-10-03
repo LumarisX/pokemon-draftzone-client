@@ -1,96 +1,101 @@
 import { Location } from '@angular/common';
-import { Component, OnInit, inject } from '@angular/core';
-import { IconComponent } from '@pdz/shared/images/icon/icon.component';
-import { ActivatedRoute, Router } from '@angular/router';
-import { PageComponent } from '@pdz/shared/layout/page/page.component';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+} from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { ActivatedRoute } from '@angular/router';
+import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 import { CardComponent } from '@pdz/shared/data/card/card.component';
+import { IconComponent } from '@pdz/shared/images/icon/icon.component';
+import { PageComponent } from '@pdz/shared/layout/page/page.component';
+import { map } from 'rxjs';
+
+interface UrlAnalysis {
+  url: string;
+  valid: boolean;
+  warnings: string[];
+}
+
+const SUSPICIOUS_KEYWORDS = [
+  'login',
+  'secure',
+  'account',
+  'verify',
+  'update',
+  'confirm',
+];
+const IP_PATTERN = /^(\d{1,3}\.){3}\d{1,3}$/;
+const LONG_URL = 200;
+const MANY_ENCODED = 5;
+
+function analyzeUrl(url: string): UrlAnalysis {
+  const warnings: string[] = [];
+  try {
+    const parsed = new URL(url);
+    const valid = ['http:', 'https:'].includes(parsed.protocol);
+    const hostname = parsed.hostname.toLowerCase();
+
+    if (parsed.protocol === 'http:') {
+      warnings.push('This site uses HTTP, which is not secure.');
+    }
+    if (IP_PATTERN.test(hostname)) {
+      warnings.push('This link uses an IP address instead of a domain name.');
+    }
+    if (
+      !hostname.includes('pokemon') &&
+      SUSPICIOUS_KEYWORDS.some((keyword) => hostname.includes(keyword))
+    ) {
+      warnings.push('The address contains words often used in phishing.');
+    }
+    if (url.length > LONG_URL) {
+      warnings.push('This is an unusually long link.');
+    }
+    if ((url.match(/%/g) ?? []).length > MANY_ENCODED) {
+      warnings.push('The link contains many encoded characters.');
+    }
+    return { url, valid, warnings };
+  } catch {
+    return {
+      url,
+      valid: false,
+      warnings: ['This does not look like a valid link.'],
+    };
+  }
+}
 
 @Component({
   selector: 'pdz-external-link',
-  imports: [IconComponent, PageComponent, CardComponent],
+  imports: [ButtonComponent, CardComponent, IconComponent, PageComponent],
   templateUrl: './external-link.component.html',
   styleUrl: './external-link.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ExternalLinkComponent implements OnInit {
-  private route = inject(ActivatedRoute);
-  private router = inject(Router);
-  private location = inject(Location);
+export class ExternalLinkComponent {
+  private readonly route = inject(ActivatedRoute);
+  private readonly location = inject(Location);
 
-  externalUrl: string | null = null;
-  displayUrl: string | null = null;
-  isValidUrl = false;
-  urlWarnings: string[] = [];
+  private readonly rawUrl = toSignal(
+    this.route.queryParamMap.pipe(map((params) => params.get('url'))),
+  );
 
-  ngOnInit(): void {
-    this.route.queryParams.subscribe((params) => {
-      const url = params['url'];
-      if (url) {
-        this.externalUrl = decodeURIComponent(url);
-        this.analyzeUrl(this.externalUrl);
-      }
-    });
-  }
+  readonly analysis = computed(() => {
+    const url = this.rawUrl();
+    return url ? analyzeUrl(decodeURIComponent(url)) : null;
+  });
 
-  private analyzeUrl(url: string): void {
-    try {
-      const parsedUrl = new URL(url);
-      this.displayUrl = parsedUrl.hostname + parsedUrl.pathname;
-      this.isValidUrl = ['http:', 'https:'].includes(parsedUrl.protocol);
-
-      this.urlWarnings = [];
-
-      if (parsedUrl.protocol === 'http:') {
-        this.urlWarnings.push('This site uses HTTP (not secure)');
-      }
-
-      const ipPattern = /^(\d{1,3}\.){3}\d{1,3}$/;
-      if (ipPattern.test(parsedUrl.hostname)) {
-        this.urlWarnings.push(
-          'This URL uses an IP address instead of a domain name',
-        );
-      }
-
-      const suspiciousPatterns = [
-        'login',
-        'secure',
-        'account',
-        'verify',
-        'update',
-        'confirm',
-      ];
-      const hostnameLower = parsedUrl.hostname.toLowerCase();
-      for (const pattern of suspiciousPatterns) {
-        if (
-          hostnameLower.includes(pattern) &&
-          !hostnameLower.includes('pokemon')
-        ) {
-          this.urlWarnings.push('URL contains potentially suspicious keywords');
-          break;
-        }
-      }
-
-      if (url.length > 200) {
-        this.urlWarnings.push('This is an unusually long URL');
-      }
-      if (url.includes('%') && (url.match(/%/g) || []).length > 5) {
-        this.urlWarnings.push('URL contains many encoded characters');
-      }
-    } catch {
-      this.isValidUrl = false;
-      this.displayUrl = url;
-      this.urlWarnings.push('This does not appear to be a valid URL');
-    }
-  }
+  readonly tips = [
+    'Check that the domain matches the site you expect.',
+    'Look for HTTPS in the address.',
+    "Never enter sensitive information on a site you don't recognize.",
+    'When in doubt, search for the site directly.',
+    'Repels have no use once in battle!',
+  ];
 
   goBack(): void {
-    if (window.history.length > 1) {
-      this.location.back();
-    } else {
-      window.close();
-    }
-  }
-
-  goHome(): void {
-    this.router.navigate(['/']);
+    if (window.history.length > 1) this.location.back();
+    else window.close();
   }
 }

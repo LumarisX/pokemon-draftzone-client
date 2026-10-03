@@ -5,7 +5,7 @@
   flex-direction: column;
   min-height: 0;
   height: 100%;
-  background: pdz.color(surface);
+  background: pdz.color(ground);
   color: pdz.color(on-surface);
 }
 
@@ -15,7 +15,7 @@
   align-items: center;
   gap: pdz.space(sm);
   padding: pdz.space(2xs) pdz.space(sm);
-  border-bottom: 1px solid pdz.color(outline-variant);
+  border-bottom: 1px solid pdz.color(border-subtle);
 }
 
 .tb__title {
@@ -49,8 +49,8 @@
   overflow-x: auto;
   overflow-y: hidden;
   scroll-snap-type: x proximity;
-  border-bottom: 1px solid pdz.color(outline-variant);
-  background: pdz.color(surface-container-lowest);
+  border-bottom: 1px solid pdz.color(border-subtle);
+  background: pdz.color(raised);
 }
 
 .tb__slot {
@@ -83,7 +83,7 @@
 .tb__add {
   flex: 0 0 auto;
   padding: pdz.space(2xs) pdz.space(sm);
-  border-bottom: 1px solid pdz.color(outline-variant);
+  border-bottom: 1px solid pdz.color(border-subtle);
 }
 
 .tb__active {
@@ -92,7 +92,7 @@
   align-items: center;
   gap: pdz.space(2xs);
   padding-bottom: pdz.space(2xs);
-  border-bottom: 1px solid pdz.color(outline-variant);
+  border-bottom: 1px solid pdz.color(border-subtle);
 }
 
 .tb__active-name {

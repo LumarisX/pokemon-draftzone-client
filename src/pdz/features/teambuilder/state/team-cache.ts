@@ -1,3 +1,4 @@
+import { safeStorage } from '@pdz/core/utils/storage';
 import { createSet, PokemonSet, toID } from '@pdz/sets';
 import type { SaveTeamPayload, TeamContext } from '../data/teambuilder.models';
 
@@ -11,20 +12,11 @@ export interface PendingWrite {
 }
 
 function read<T>(key: string): T | null {
-  try {
-    const raw = localStorage.getItem(key);
-    return raw ? (JSON.parse(raw) as T) : null;
-  } catch {
-    return null;
-  }
+  return safeStorage.getJson<T>(key);
 }
 
 function write(key: string, value: unknown): void {
-  try {
-    localStorage.setItem(key, JSON.stringify(value));
-  } catch {
-    return;
-  }
+  safeStorage.setJson(key, value);
 }
 
 export function readPending(): Record<string, PendingWrite> {
@@ -83,11 +75,7 @@ export function readLegacyTeams(): LegacyTeam[] {
 }
 
 export function clearLegacyTeams(): void {
-  try {
-    localStorage.removeItem(LEGACY_KEY);
-  } catch {
-    return;
-  }
+  safeStorage.remove(LEGACY_KEY);
 }
 
 export function legacySetToPokemonSet(

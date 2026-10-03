@@ -18,33 +18,43 @@
       </time>
     }
     <div class="trade-card__actions">
-      <ng-content select="[tradeActions]"></ng-content>
+      <ng-content select="[tradeActions]" />
     </div>
   </div>
 
   <div class="trade-card__body">
-    @for (side of sides(); track $index; let sideIndex = $index) {
-      <section class="trade-side">
+    @for (side of sides(); track side.slot) {
+      @let participant = side.value;
+      <section class="trade-side" [attr.data-team]="side.slot">
         <div class="trade-side__team">
-          @if (side.team) {
-            <img class="trade-side__logo" [src]="logo(side)" alt="" />
+          @if (participant.team; as team) {
+            <pdz-team-logo
+              size="sm"
+              shape="circle"
+              decorative
+              [src]="logo(participant)"
+              [name]="team.name"
+            />
           } @else {
-            <span class="trade-side__logo trade-side__logo--free">
-              <pdz-icon name="public" [size]="18" aria-hidden="true"></pdz-icon>
+            <span class="trade-side__free">
+              <pdz-icon name="public" [size]="18" />
             </span>
           }
           <span class="trade-side__identity">
-            <span class="trade-side__name">{{
-              side.team?.name ?? "Free Agency"
-            }}</span>
+            <span class="trade-side__name">
+              {{ participant.team?.name ?? "Free agency" }}
+              @if (side.you) {
+                <span class="pdz-you-tag">You</span>
+              }
+            </span>
             <span class="trade-side__coach">{{
-              side.team?.coach ?? "Draft pool"
+              participant.team?.coach ?? "Draft pool"
             }}</span>
           </span>
         </div>
 
         <ul class="pick-list">
-          @for (pokemon of side.pokemon; track pokemon.id) {
+          @for (pokemon of participant.pokemon; track pokemon.id) {
             <li class="pick">
               @if (pickValue(pokemon); as value) {
                 <span class="pick__value" [title]="value">{{ value }}</span>
@@ -52,16 +62,16 @@
               <pdz-sprite
                 class="pick__sprite"
                 [pokemon]="pokemon"
-                [flipped]="sideIndex === 0"
-              ></pdz-sprite>
+                [flipped]="side.slot === 'team1'"
+              />
               <span class="pick__name">{{ pokemon.name }}</span>
               @if (pokemon.tera) {
                 <pdz-icon
                   class="pick__tera"
                   name="tera"
+                  ariaLabel="Tera captain"
                   [size]="14"
-                  aria-hidden="true"
-                ></pdz-icon>
+                />
               }
             </li>
           } @empty {
@@ -72,7 +82,7 @@
     }
 
     <div class="trade-card__swap" aria-hidden="true">
-      <pdz-icon name="sync_alt" [size]="16"></pdz-icon>
+      <pdz-icon name="sync_alt" [size]="16" />
     </div>
   </div>
 </pdz-card>

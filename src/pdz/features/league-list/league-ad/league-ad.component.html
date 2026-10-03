@@ -1,8 +1,7 @@
 <pdz-card
   class="league-ad-card"
   padding="sm"
-  [ngClass]="teamClass"
-  [color]="teamClass === 'team-a' ? 'primary' : 'secondary'"
+  [class]="teamClass"
 >
   <div class="card-header" pdz-card-header>
     <div class="card-heading">
@@ -21,7 +20,7 @@
     </div>
     <div class="header-right">
       @if (mode() === "manage") {
-        <div class="status-badge" [ngClass]="getStatusClass(league().status)">
+        <div class="status-badge" [class]="getStatusClass(league().status)">
           {{ league().status | titlecase }}
         </div>
       } @else {

@@ -1,17 +1,13 @@
 @use "pdz-theming" as pdz;
 
-.user-info-container {
+.user {
   display: flex;
   align-items: center;
   gap: pdz.space(sm);
-  .user-icon {
-    width: 1.5rem;
-    height: 1.5rem;
-    border-radius: pdz.shape(corner-full);
-  }
-  .username-text {
-    max-width: 4rem;
-    text-overflow: clip;
-    overflow: hidden;
-  }
+}
+
+.user__name {
+  max-width: 4rem;
+  overflow: hidden;
+  text-overflow: clip;
 }

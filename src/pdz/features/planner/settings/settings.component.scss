@@ -29,9 +29,9 @@
     align-items: center;
     gap: pdz.space(2xs);
     padding: pdz.space(2xs);
-    border: 1px solid pdz.color(outline);
+    border: 1px solid pdz.color(border-control);
     border-radius: pdz.shape(corner-sm);
-    background: pdz.color(surface);
+    background: pdz.color(inset);
   }
 
   &__seg-btn {
@@ -54,7 +54,7 @@
     }
 
     &:hover:not(.is-active) {
-      background: pdz.color(surface-container);
+      background: pdz.color(state-hover);
     }
   }
 
@@ -74,7 +74,7 @@
     color: pdz.color(on-primary-container);
     text-decoration: none;
     font: inherit;
-    font-weight: 700;
+    font-weight: pdz.font-weight(bold);
     cursor: pointer;
     transition: background pdz.duration(fast) pdz.easing(standard);
 
@@ -89,13 +89,12 @@ label {
   color: pdz.color(on-surface-variant);
 }
 
-input,
-select {
+input {
   width: 100%;
   padding: pdz.space(xs) pdz.space(sm);
   border: 1px solid pdz.color(outline);
   border-radius: pdz.shape(corner-sm);
-  background: pdz.color(surface);
+  background: pdz.color(inset);
   color: pdz.color(on-surface);
   font: inherit;
 

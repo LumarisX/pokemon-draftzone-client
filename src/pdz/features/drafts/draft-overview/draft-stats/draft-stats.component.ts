@@ -1,95 +1,91 @@
-import { CdkTableModule } from '@angular/cdk/table';
-import { CommonModule } from '@angular/common';
-import { Component, OnInit, inject } from '@angular/core';
+import { DecimalPipe } from '@angular/common';
 import {
-  Sort,
-  SortDirective,
-} from '@pdz/shared/data/sort/sort.directive';
-import { SortHeaderComponent } from '@pdz/shared/data/sort/sort-header.component';
-import { ActivatedRoute, RouterModule } from '@angular/router';
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+  signal,
+} from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { ActivatedRoute } from '@angular/router';
 import { DRAFT_OVERVIEW_PATH } from '@pdz/core/route-paths';
-import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
+import {
+  DraftService,
+  PokemonStat,
+} from '@pdz/features/drafts/draft-overview/draft.service';
+import { SortHeaderComponent } from '@pdz/shared/data/sort/sort-header.component';
+import { Sort, SortDirective } from '@pdz/shared/data/sort/sort.directive';
+import { EmptyStateComponent } from '@pdz/shared/feedback/empty-state/empty-state.component';
 import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
-import { BehaviorSubject } from 'rxjs';
-import { DraftService, PokemonStat } from '../draft.service';
+import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
+import { PageComponent } from '@pdz/shared/layout/page/page.component';
+import { catchError, map, of } from 'rxjs';
+
+type SortKey = 'name' | 'gb' | 'dk' | 'ik' | 'deaths' | 'kdr' | 'kpg';
+
+const SORT_VALUES: Record<SortKey, (stat: PokemonStat) => number | string> = {
+  name: (stat) => stat.pokemon.name,
+  gb: (stat) => stat.brought,
+  dk: (stat) => stat.kills,
+  ik: (stat) => stat.indirect,
+  deaths: (stat) => stat.deaths,
+  kdr: (stat) => stat.kdr,
+  kpg: (stat) => stat.kpg,
+};
 
 @Component({
   selector: 'pdz-draft-stats',
   templateUrl: './draft-stats.component.html',
   styleUrl: './draft-stats.component.scss',
   imports: [
-    CommonModule,
-    RouterModule,
-    SpriteComponent,
+    DecimalPipe,
+    EmptyStateComponent,
     LoadingComponent,
-    CdkTableModule,
+    PageComponent,
+    PageHeaderComponent,
     SortDirective,
     SortHeaderComponent,
-    ButtonComponent,
+    SpriteComponent,
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class DraftStatsComponent implements OnInit {
-  private draftService = inject(DraftService);
-  private route = inject(ActivatedRoute);
+export class DraftStatsComponent {
+  private readonly draftService = inject(DraftService);
+  private readonly route = inject(ActivatedRoute);
 
-  readonly draftPath = DRAFT_OVERVIEW_PATH;
-  teamStats = new BehaviorSubject<PokemonStat[]>([]);
-  displayedColumns: string[] = [
-    'sprite',
-    'name',
-    'gb',
-    'dk',
-    'ik',
-    'deaths',
-    'kdr',
-    'kpg',
-  ];
+  readonly backLink = ['/', DRAFT_OVERVIEW_PATH];
 
-  ngOnInit(): void {
-    const teamId = this.route.snapshot.paramMap.get('teamId') || '';
+  private readonly stats = toSignal(this.loadStats());
+
+  readonly sort = signal<Sort>({ active: '', direction: '' });
+
+  readonly rows = computed(() => {
+    const stats = this.stats();
+    if (!stats) return null;
+    const { active, direction } = this.sort();
+    const value = SORT_VALUES[active as SortKey];
+    if (!value || !direction) return stats;
+    const factor = direction === 'asc' ? 1 : -1;
+    return [...stats].sort((a, b) => {
+      const left = value(a);
+      const right = value(b);
+      if (typeof left === 'string' && typeof right === 'string') {
+        return left.localeCompare(right) * factor;
+      }
+      return ((left as number) - (right as number)) * factor;
+    });
+  });
+
+  private loadStats() {
+    const teamId = this.route.snapshot.paramMap.get('teamId') ?? '';
     const archived = this.route.snapshot.data['archived'] === true;
     const stats$ = archived
       ? this.draftService.getArchiveStats(teamId)
       : this.draftService.getStats(teamId);
-    stats$.subscribe((data) => {
-      this.teamStats.next(data.pokemon);
-    });
-  }
-
-  sort(sort: Sort) {
-    const isAsc = sort.direction === 'asc';
-    const compare = (
-      a: number | string | null | undefined,
-      b: number | string | null | undefined,
-    ) => {
-      if (a == null) return 1;
-      if (b == null) return -1;
-      return typeof a === 'string' && typeof b === 'string'
-        ? a.localeCompare(b) * (isAsc ? 1 : -1)
-        : (a < b ? -1 : 1) * (isAsc ? 1 : -1);
-    };
-    this.teamStats.next(
-      this.teamStats.value.sort((a, b) => {
-        switch (sort.active) {
-          case 'name':
-            return compare(a.pokemon.name, b.pokemon.name);
-          case 'gb':
-            return compare(a.brought, b.brought);
-          case 'dk':
-            return compare(a.kills, b.kills);
-          case 'ik':
-            return compare(a.indirect, b.indirect);
-          case 'deaths':
-            return compare(a.deaths, b.deaths);
-          case 'kdr':
-            return compare(a.kdr, b.kdr);
-          case 'kpg':
-            return compare(a.kpg, b.kpg);
-          default:
-            return 0;
-        }
-      }),
+    return stats$.pipe(
+      map((data) => data.pokemon),
+      catchError(() => of<PokemonStat[]>([])),
     );
   }
 }

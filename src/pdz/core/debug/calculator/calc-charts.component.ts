@@ -17,7 +17,7 @@ const HEIGHT = 230;
 
 const INK = 'var(--pdz-color-on-surface)';
 const MUTED = 'var(--pdz-color-on-surface-variant)';
-const GRID = 'var(--pdz-color-outline-variant)';
+const GRID = 'var(--pdz-color-border-subtle)';
 const SERIES = 'var(--pdz-color-primary)';
 const LETHAL = 'var(--pdz-color-danger)';
 
@@ -308,7 +308,7 @@ export class CalcChartsComponent implements AfterViewInit, OnChanges, OnDestroy 
         .attr('cy', y(mark.probability))
         .attr('r', 4.5)
         .attr('fill', LETHAL)
-        .attr('stroke', 'var(--pdz-color-surface-container-low)')
+        .attr('stroke', 'var(--pdz-color-raised)')
         .attr('stroke-width', 2);
 
       plot

@@ -10,7 +10,7 @@ import {
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
 import { FieldComponent } from '@pdz/shared/inputs/field/field.component';
 import { InputDirective } from '@pdz/shared/inputs/field/input.directive';
-import { LeagueTier } from '../../../tier-list.model';
+import { LeagueTier } from '@pdz/features/tier-lists/tier-list.model';
 import { EditTierPokemon } from '../tier-list-form.component';
 import { SelectOptionComponent } from '@pdz/shared/dropdowns/select/select-option.component';
 import { SelectComponent } from '@pdz/shared/dropdowns/select/select.component';
@@ -61,11 +61,8 @@ export class PokemonEditDialogComponent implements OnInit {
     notes: [this.data.pokemon.notes ?? ''],
   });
 
-  /** Every forme the ruleset knows for this species. */
   availableFormes: Pokemon[] = [];
   formesLoading = false;
-  /** The base pokemon carrying the currently selected formes as `draftFormes`,
-   * so the preview sprite renders (and rotates through) them live. */
   spritePokemon!: Pokemon<DraftOptions>;
 
   private selectedAbilities = new Set<string>();
@@ -104,8 +101,6 @@ export class PokemonEditDialogComponent implements OnInit {
     });
   }
 
-  /** Rebuilds the preview pokemon with the selected formes as `draftFormes`.
-   * A fresh reference is required for the OnPush sprite to pick up the change. */
   private rebuildSpritePokemon(): void {
     const draftFormes = this.availableFormes.filter((forme) =>
       this.selectedFormes.has(forme.id),

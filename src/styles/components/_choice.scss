@@ -10,7 +10,7 @@
   margin: 0;
   border: 1px solid pdz.color(outline);
   border-radius: pdz.shape(corner-xs);
-  background: pdz.color(surface);
+  background: pdz.color(inset);
   cursor: inherit;
   transition: background-color pdz.duration(fast) pdz.easing(standard),
     border-color pdz.duration(fast) pdz.easing(standard);
@@ -42,7 +42,7 @@
 
   &:disabled {
     cursor: not-allowed;
-    background: pdz.color(surface-container);
+    background: pdz.color(surface-disabled);
   }
 }
 
@@ -69,7 +69,7 @@
     width: 0.6rem;
     height: 2px;
     clip-path: none;
-    border-radius: 1px;
+    border-radius: pdz.shape(corner-xxxs);
     transform: scale(1);
   }
 }

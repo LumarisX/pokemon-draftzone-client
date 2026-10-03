@@ -1,13 +1,12 @@
 <div class="league-form-container">
-  <header class="form-header">
-    <h1>Create League Advertisement</h1>
-    <p class="form-description">
-      Fill out the form below to advertise your league to potential players
-    </p>
-  </header>
+  <pdz-page-header
+    title="New League Ad"
+    backLabel="My League Ads"
+    backLink="../"
+    subtitle="Advertise your league to coaches looking for one."
+  />
 
   <form [formGroup]="leagueForm" (ngSubmit)="onSubmit()" class="league-form">
-    <!-- League Name -->
     <label pdz-field class="form-field" label="League Name" required>
       <input
         pdz-input
@@ -24,7 +23,6 @@
       }
     </label>
 
-    <!-- Description -->
     <label pdz-field class="form-field" label="Description" required>
       <textarea
         pdz-input
@@ -42,7 +40,6 @@
     </label>
 
     <div class="form-row">
-      <!-- Signup Link -->
       <label pdz-field class="form-field" label="Signup Link" required>
         <input
           pdz-input
@@ -56,7 +53,6 @@
         }
       </label>
 
-      <!-- Prize Value -->
       <div pdz-field class="form-field" label="Prize Value">
         <pdz-select aria-label="Prize Value" formControlName="prizeValue">
           <pdz-option value="0" label="None" />
@@ -68,7 +64,6 @@
     </div>
 
     <div class="form-row">
-      <!-- Server Link -->
       <label pdz-field class="form-field" label="Server Link">
         <input
           pdz-input
@@ -78,7 +73,6 @@
         />
       </label>
 
-      <!-- League Documents Link -->
       <label pdz-field class="form-field" label="League Documents">
         <input
           pdz-input
@@ -90,7 +84,6 @@
       </label>
     </div>
 
-    <!-- Skill Level Range -->
     <div formGroupName="skillLevelRange">
       <label class="form-label"> Skill Level Range </label>
       <div class="form-row">
@@ -114,9 +107,7 @@
       </div>
     </div>
 
-    <!-- Multi-Select Game Settings -->
     <div class="form-row form-row--three">
-      <!-- Platforms -->
       <div pdz-field class="form-field" label="Platform(s)" required>
         <div
           class="checkbox-group"
@@ -135,7 +126,6 @@
         }
       </div>
 
-      <!-- Formats -->
       <div pdz-field class="form-field" label="Format(s)" required>
         <div
           class="checkbox-group"
@@ -154,7 +144,6 @@
         }
       </div>
 
-      <!-- Rulesets -->
       <div pdz-field class="form-field" label="Ruleset(s)" required>
         <div
           class="checkbox-group"
@@ -174,9 +163,7 @@
       </div>
     </div>
 
-    <!-- Dates Section -->
     <div class="form-row form-row--three">
-      <!-- Closes At -->
       <label pdz-field class="form-field" label="Registration Closes" required>
         <input pdz-input type="date" formControlName="closesAt" />
         @if (isFieldInvalid("closesAt")) {
@@ -184,29 +171,20 @@
         }
       </label>
 
-      <!-- Season Start -->
       <label pdz-field class="form-field" label="Season Start Date">
         <input pdz-input type="date" formControlName="seasonStart" />
       </label>
-      <!-- Season End -->
       <label pdz-field class="form-field" label="Season End Date">
         <input pdz-input type="date" formControlName="seasonEnd" />
       </label>
     </div>
 
-    <!-- Form Actions -->
     <div class="form-actions">
-      <button
-        pdz-button
-        color="neutral"
-        variant="outlined"
-        routerLink="/league-list"
-        [disabled]="isSubmitting"
+      <a pdz-button color="neutral" variant="outlined" routerLink="../"
+        >Cancel</a
       >
-        Cancel
-      </button>
       <button pdz-button type="submit" [loading]="isSubmitting">
-        {{ isSubmitting ? "Creating..." : "Create League Ad" }}
+        Post Ad
       </button>
     </div>
   </form>

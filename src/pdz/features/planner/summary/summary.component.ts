@@ -1,7 +1,7 @@
 import { Component, input } from '@angular/core';
 import { SummaryCoreComponent } from '@pdz/shared/widgets/summary-core/summary-core.component';
 import { WidgetComponent } from '@pdz/shared/layout/widget/widget.component';
-import { Summary } from '../../drafts/matchup-overview/matchup-interface';
+import { Summary } from '@pdz/features/drafts/matchup-overview/matchup-interface';
 
 @Component({
   selector: 'pdz-planner-summary',

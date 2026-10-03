@@ -4,19 +4,19 @@
   display: block;
   max-width: 100%;
 
-  --pdz-cmp-movechart-color: #{pdz.color(primary)};
-  --pdz-cmp-movechart-on-container: #{pdz.color(on-primary-container)};
-  --pdz-cmp-movechart-container: #{pdz.color(primary-container)};
-  --pdz-cmp-movechart-hover: #{pdz.color(primary-container-low)};
-  --pdz-cmp-movechart-border: #{pdz.color(primary-border)};
+  --pdz-cmp-movechart-color: #{pdz.color(team1)};
+  --pdz-cmp-movechart-on-container: #{pdz.color(on-team1-container)};
+  --pdz-cmp-movechart-container: #{pdz.color(team1-container)};
+  --pdz-cmp-movechart-hover: #{pdz.color(team1-container-low)};
+  --pdz-cmp-movechart-border: #{pdz.color(team1-border)};
 }
 
 :host(.alternate) {
-  --pdz-cmp-movechart-color: #{pdz.color(secondary)};
-  --pdz-cmp-movechart-on-container: #{pdz.color(on-secondary-container)};
-  --pdz-cmp-movechart-container: #{pdz.color(secondary-container)};
-  --pdz-cmp-movechart-hover: #{pdz.color(secondary-container-low)};
-  --pdz-cmp-movechart-border: #{pdz.color(secondary-border)};
+  --pdz-cmp-movechart-color: #{pdz.color(team2)};
+  --pdz-cmp-movechart-on-container: #{pdz.color(on-team2-container)};
+  --pdz-cmp-movechart-container: #{pdz.color(team2-container)};
+  --pdz-cmp-movechart-hover: #{pdz.color(team2-container-low)};
+  --pdz-cmp-movechart-border: #{pdz.color(team2-border)};
 }
 
 .movechart-wrapper {

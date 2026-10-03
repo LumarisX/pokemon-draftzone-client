@@ -1,11 +1,14 @@
 import { Component, HostListener, inject, OnInit } from '@angular/core';
 import { Meta } from '@angular/platform-browser';
-import { ActivatedRoute, Params, Router, RouterModule } from '@angular/router';
+import { ActivatedRoute, Params, Router } from '@angular/router';
 import { DRAFT_OVERVIEW_PATH, LEAGUE_ZONE_PATH } from '@pdz/core/route-paths';
 import { ErrorService } from '@pdz/layout/error/error.service';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 import { SkeletonComponent } from '@pdz/shared/data/skeleton/skeleton.component';
+import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
 import { DialogService } from '@pdz/shared/dialogs/dialog/dialog.service';
+import { IconComponent } from '@pdz/shared/images/icon/icon.component';
+import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
 import { CountdownComponent } from '@pdz/shared/time/countdown/countdown.component';
 import { Observable, combineLatest } from 'rxjs';
 import { MatchupData, Summary } from './matchup-interface';
@@ -33,13 +36,15 @@ type PanelTool = 'teambuilder' | 'notes';
   templateUrl: 'matchup-overview.component.html',
   styleUrls: ['./matchup-overview.component.scss'],
   imports: [
-    SkeletonComponent,
-    MatchupComponent,
-    RouterModule,
-    TeambuilderComponent,
-    MatchupNotesComponent,
     ButtonComponent,
     CountdownComponent,
+    IconComponent,
+    MatchupComponent,
+    MatchupNotesComponent,
+    PageHeaderComponent,
+    SkeletonComponent,
+    SpriteComponent,
+    TeambuilderComponent,
   ],
 })
 export class MatchupOverviewComponent implements OnInit {
@@ -50,7 +55,6 @@ export class MatchupOverviewComponent implements OnInit {
   private meta = inject(Meta);
   private dialogs = inject(DialogService);
 
-  readonly skeletonDetails = [0, 1, 2, 3];
   readonly skeletonWidgets = ['14rem', '10rem', '18rem', '12rem'];
 
   config: MatchupPageConfig = DRAFT_MATCHUP_PAGE;
@@ -88,6 +92,11 @@ export class MatchupOverviewComponent implements OnInit {
 
   closePanel(): void {
     this.panelTool = null;
+  }
+
+  matchupTitle(): string {
+    const [team1, team2] = this.matchupData?.summary ?? [];
+    return team1 && team2 ? `${team1.teamName} vs ${team2.teamName}` : '';
   }
 
   scheduledLabel(): string | null {
@@ -129,9 +138,13 @@ export class MatchupOverviewComponent implements OnInit {
     this.isResizing = false;
   }
 
+  @HostListener('window:resize')
+  checkIfMobile(): void {
+    this.isMobile = window.innerWidth < 768;
+  }
+
   ngOnInit(): void {
     this.checkIfMobile();
-    window.addEventListener('resize', () => this.checkIfMobile());
 
     combineLatest([this.route.data, this.route.params]).subscribe(
       ([data, params]) => {
@@ -248,7 +261,7 @@ export class MatchupOverviewComponent implements OnInit {
     this.dialogs.open<ShareDialogComponent, void, ShareDialogData>(
       ShareDialogComponent,
       {
-        heading: 'Share your matchup',
+        heading: 'Share Your Matchup',
         size: 'lg',
         data: { shareUrl: this.shareUrl, matchupData: this.matchupData },
       },
@@ -278,9 +291,5 @@ export class MatchupOverviewComponent implements OnInit {
         tiers: pokemon.tiers,
       })),
     };
-  }
-
-  private checkIfMobile(): void {
-    this.isMobile = window.innerWidth < 768;
   }
 }

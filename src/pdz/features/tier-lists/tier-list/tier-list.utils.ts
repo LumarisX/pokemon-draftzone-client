@@ -45,17 +45,12 @@ function matchesStatFilter(
   }
 }
 
-// Matches: type=fire, type=fire/water (all listed types must be present)
 function parseTypeFilter(search: string): { types: string[] } | null {
   const match = search.match(/^type=(.+)$/);
   if (!match) return null;
   return { types: match[1].split('/').filter(Boolean) };
 }
 
-/**
- * Matches a pokemon against comma-separated search tokens (name, ability, stat filters, type= filters).
- * Does NOT apply the type-panel filter — use filterBySearch for that.
- */
 export function matchesSearchText(
   pokemon: TierPokemon,
   searchText: string = '',
@@ -92,9 +87,6 @@ export function filterBySearch(
   );
 }
 
-/**
- * Creates a ban string for Pokemon with restrictions
- */
 export function makeBanString(banned?: TierPokemon['banned']): string {
   if (!banned) return '';
   const bans: string[] = [];
@@ -126,9 +118,6 @@ export const SORT_OPTIONS: readonly SortOption[] = [
   'SPE',
 ] as const;
 
-/**
- * Sort map for Pokemon by various stats
- */
 export const SORT_MAP: Record<
   SortOption,
   (x: TierPokemon, y: TierPokemon) => number

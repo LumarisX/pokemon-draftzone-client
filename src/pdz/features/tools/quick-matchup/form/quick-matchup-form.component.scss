@@ -17,16 +17,12 @@
     flex: 1;
   }
 
-  // -------------------------------------------------------------------------
-  // Header
-  // -------------------------------------------------------------------------
-
   &__header {
     position: sticky;
     top: 0;
     z-index: pdz.z(sticky);
     padding: pdz.space(sm) pdz.space(lg);
-    background: pdz.color(background);
+    background: pdz.color(ground);
   }
 
   &__header-inner {
@@ -44,9 +40,6 @@
     line-height: 1.2;
     white-space: nowrap;
   }
-  // -------------------------------------------------------------------------
-  // Body layout
-  // -------------------------------------------------------------------------
 
   &__body {
     flex: 1;
@@ -61,10 +54,9 @@
   }
 
   &__panel {
-    background: pdz.color(surface);
-    border: 1px solid pdz.color(outline-variant);
+    background: pdz.color(raised);
+    border: 1px solid pdz.color(border-subtle);
     border-radius: pdz.shape(corner-lg);
-    box-shadow: var(--pdz-level-1);
     padding: pdz.space(lg);
 
     &--team {
@@ -93,7 +85,7 @@
     @include pdz.text(label-strong, $family: false);
     min-width: 1.5rem;
     text-align: center;
-    padding: 0.125rem pdz.space(xs);
+    padding: pdz.space(2xs) pdz.space(xs);
     border-radius: pdz.shape(corner-full);
     background: pdz.color(primary-subtle);
     color: pdz.color(on-primary-container);
@@ -105,47 +97,9 @@
   }
 }
 
-// ---------------------------------------------------------------------------
-// Fields
-// ---------------------------------------------------------------------------
-
 .form-field {
   display: grid;
   gap: pdz.space(2xs);
-
-  &__label {
-    @include pdz.text(field-label, $family: false);
-    color: pdz.color(on-surface-variant);
-  }
-
-  &__input {
-    width: 100%;
-    padding: pdz.space(xs) pdz.space(sm);
-    border: 1px solid pdz.color(outline);
-    border-radius: pdz.shape(corner-sm);
-    background: pdz.color(surface);
-    color: pdz.color(on-surface);
-    font: inherit;
-    transition: border-color pdz.duration(base) pdz.easing(standard);
-
-    &::placeholder {
-      color: pdz.color(on-surface-placeholder);
-    }
-
-    &:focus {
-      outline: 2px solid pdz.color(primary-accent);
-      outline-offset: 1px;
-      border-color: pdz.color(primary-accent);
-    }
-
-    &--invalid {
-      border-color: pdz.color(danger);
-
-      &:focus {
-        outline-color: pdz.color(danger);
-      }
-    }
-  }
 
   &__error {
     @include pdz.text(label, $family: false);
@@ -153,11 +107,7 @@
   }
 }
 
-// ---------------------------------------------------------------------------
-// Responsive
-// ---------------------------------------------------------------------------
-
-@media (max-width: 960px) {
+@include pdz.respond-below(large) {
   .draft-builder__body {
     grid-template-columns: minmax(0, 1fr);
     align-content: start;
@@ -168,7 +118,7 @@
   }
 }
 
-@media (max-width: 640px) {
+@include pdz.respond-below(small) {
   .draft-builder__header {
     padding: pdz.space(sm);
   }
@@ -190,8 +140,4 @@
   .draft-builder__panel {
     padding: pdz.space(md);
   }
-}
-
-.draft-builder__title {
-  font-family: var(--pdz-font-display);
 }

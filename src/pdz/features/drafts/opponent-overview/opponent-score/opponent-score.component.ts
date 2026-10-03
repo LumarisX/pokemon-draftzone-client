@@ -50,8 +50,9 @@ import {
 } from '@pdz/shared/widgets/score-entry/score-entry.replay';
 import { Subject, takeUntil } from 'rxjs';
 import { ReplayService } from '@pdz/features/tools/replay_analyzer/replay.service';
-import { DraftService } from '../../draft-overview/draft.service';
-import { DraftPokemon } from '../../draft.model';
+import { DraftService } from '@pdz/features/drafts/draft-overview/draft.service';
+import { DraftPokemon } from '@pdz/features/drafts/draft.model';
+import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
 import {
   ForfeitSide,
   MatchSide,
@@ -60,7 +61,7 @@ import {
   MatchTeam,
   ScorePatch,
   MatchStatTuple,
-} from '../../matchup-overview/matchup.model';
+} from '@pdz/features/drafts/matchup-overview/matchup.model';
 
 const SIDE_OF: Record<ScoreEntrySide, MatchSide> = { side1: 'a', side2: 'b' };
 
@@ -76,6 +77,7 @@ const SIDE_OF: Record<ScoreEntrySide, MatchSide> = { side1: 'a', side2: 'b' };
     LoadingComponent,
     ScoreEntryGameComponent,
     ScoreEntryMatchComponent,
+    PageHeaderComponent,
   ],
 })
 export class OpponentScoreComponent implements OnInit, OnDestroy {

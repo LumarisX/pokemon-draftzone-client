@@ -9,8 +9,8 @@
   align-items: flex-start;
   gap: pdz.space(sm);
   padding: pdz.space(md);
-  background: pdz.color(surface-container-low);
-  border: 1px solid pdz.color(outline-variant);
+  background: pdz.color(raised);
+  border: 1px solid pdz.color(border-subtle);
   border-left: 3px solid pdz.color(warning-border);
   border-radius: pdz.shape(corner-lg);
   color: pdz.color(on-surface-variant);

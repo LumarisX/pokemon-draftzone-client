@@ -6,17 +6,6 @@
   margin-bottom: pdz.space(lg);
 }
 
-.sprites__title {
-  @include pdz.text(title);
-  color: pdz.color(on-surface);
-}
-
-.sprites__note {
-  @include pdz.text(body-sm);
-  color: pdz.color(on-surface-variant);
-  max-width: 60ch;
-}
-
 .sprites__controls {
   display: flex;
   flex-wrap: wrap;
@@ -25,9 +14,8 @@
 }
 
 .sprites__count {
-  @include pdz.caps;
-  font-size: pdz.font-size(xs);
-  color: pdz.color(on-surface-variant);
+  @include pdz.text(label-caps);
+  color: pdz.color(on-surface-muted);
 }
 
 .sprite-grid {
@@ -41,10 +29,9 @@
   justify-items: center;
   gap: pdz.space(2xs);
   padding: pdz.space(sm);
-  border: 1px solid pdz.color(outline-variant);
+  border: 1px solid pdz.color(border-subtle);
   border-radius: pdz.shape(corner-sm);
   overflow: hidden;
-
 }
 
 .sprite-grid[data-filter="missing"]
@@ -56,7 +43,7 @@
 
 .sprite-grid__id {
   @include pdz.text(label);
-  font-size: pdz.font-size(3xs);
+  font-size: pdz.font-size(2xs);
   color: pdz.color(on-surface-variant);
   max-width: 100%;
   overflow: hidden;
@@ -65,14 +52,12 @@
 }
 
 .sprite-grid__step {
-  @include pdz.caps;
-  font-size: pdz.font-size(2xs);
-  font-weight: 700;
+  @include pdz.text(label-caps);
   line-height: 1.5;
   padding: 0 pdz.space(2xs);
   border-radius: pdz.shape(corner-xxs);
   color: pdz.color(on-surface-variant);
-  background-color: pdz.color(surface-container-high);
+  background-color: pdz.color(state-pressed);
 
   &[data-step="primary"] {
     color: pdz.color(on-success-container);

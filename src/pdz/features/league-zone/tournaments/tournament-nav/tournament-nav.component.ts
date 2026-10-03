@@ -1,42 +1,57 @@
-import { CommonModule } from '@angular/common';
 import {
+  ChangeDetectionStrategy,
   Component,
+  DestroyRef,
   computed,
   inject,
-  OnDestroy,
-  OnInit,
   signal,
 } from '@angular/core';
-import { RouterModule } from '@angular/router';
-import { catchError, of, Subject, switchMap, takeUntil } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { RouterLink, RouterLinkActive } from '@angular/router';
+import { LEAGUE_ZONE_PATH } from '@pdz/core/route-paths';
 import { AuthService } from '@pdz/core/services/auth0.service';
+import { LeagueManageService } from '@pdz/features/league-zone/league-manage/league-manage.service';
+import { LeagueZoneService } from '@pdz/features/league-zone/league-zone.service';
+import { League } from '@pdz/features/league-zone/league.interface';
+import { getLeagueLogoUrl } from '@pdz/features/league-zone/league.util';
 import { SkeletonComponent } from '@pdz/shared/data/skeleton/skeleton.component';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
-import { LeagueZoneService } from '../../league-zone.service';
-import { LeagueManageService } from '../../league-manage/league-manage.service';
-import { League } from '../../league.interface';
-import { getLeagueLogoUrl } from '../../league.util';
+import { TeamLogoComponent } from '@pdz/shared/images/team-logo/team-logo.component';
+import { catchError, of, switchMap } from 'rxjs';
 import { tournamentLinkGroups } from '../tournament-links';
 
 @Component({
   selector: 'pdz-tournament-nav',
   templateUrl: './tournament-nav.component.html',
   styleUrl: './tournament-nav.component.scss',
-  imports: [CommonModule, RouterModule, IconComponent, SkeletonComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    RouterLink,
+    RouterLinkActive,
+    IconComponent,
+    SkeletonComponent,
+    TeamLogoComponent,
+  ],
 })
-export class TournamentNavComponent implements OnInit, OnDestroy {
-  readonly leagueService = inject(LeagueZoneService);
+export class TournamentNavComponent {
+  private readonly leagueService = inject(LeagueZoneService);
   private readonly authService = inject(AuthService);
   private readonly manageService = inject(LeagueManageService);
-  private readonly destroy$ = new Subject<void>();
+  private readonly destroyRef = inject(DestroyRef);
 
-  leagueInfo: League.LeagueInfo | null = null;
-  leagueName: string | null = null;
-  profileLoaded = false;
-
+  readonly leagueInfo = signal<League.LeagueInfo | null>(null);
+  readonly leagueName = signal<string | null>(null);
+  readonly profileLoaded = signal(false);
   readonly profile = signal<League.CoachProfile | null>(null);
   readonly canManage = signal(false);
   readonly draftStatus = signal<string | null>(null);
+
+  readonly tournamentBase = computed(() => {
+    const leagueSlug = this.leagueService.leagueSlug();
+    const tournamentSlug = this.leagueService.tournamentSlug();
+    if (!leagueSlug || !tournamentSlug) return [];
+    return ['/', LEAGUE_ZONE_PATH, leagueSlug, 'tournaments', tournamentSlug];
+  });
 
   readonly linkGroups = computed(() =>
     tournamentLinkGroups({
@@ -47,28 +62,32 @@ export class TournamentNavComponent implements OnInit, OnDestroy {
     }),
   );
 
-  getTournamentLogoUrl = getLeagueLogoUrl;
+  readonly logoSrc = computed(() => getLeagueLogoUrl(this.leagueInfo()?.logo));
 
-  ngOnInit(): void {
+  readonly notJoinedDiscord = computed(() => {
+    const profile = this.profile();
+    return this.profileLoaded() && !!profile && !profile.inDiscordServer;
+  });
+
+  constructor() {
     this.leagueService
       .getLeagueInfo()
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed())
       .subscribe({
-        next: (info) => (this.leagueInfo = info),
-        error: (error) => console.error('Error fetching league info:', error),
+        next: (info) => this.leagueInfo.set(info),
+        error: () => this.leagueInfo.set(null),
       });
 
     this.leagueService
       .getLeague()
       .pipe(
-        takeUntil(this.destroy$),
         catchError(() => of(null)),
+        takeUntilDestroyed(),
       )
-      .subscribe((league) => (this.leagueName = league?.name ?? null));
+      .subscribe((league) => this.leagueName.set(league?.name ?? null));
 
     this.authService.isAuthenticated$
       .pipe(
-        takeUntil(this.destroy$),
         switchMap((isAuthenticated) => {
           if (!isAuthenticated) {
             this.canManage.set(false);
@@ -79,38 +98,32 @@ export class TournamentNavComponent implements OnInit, OnDestroy {
             .getCoachData({ suppressStatuses: [404] })
             .pipe(catchError(() => of(null)));
         }),
+        takeUntilDestroyed(),
       )
       .subscribe((profile) => {
         this.profile.set(profile);
-        this.profileLoaded = true;
-        if (profile?.pool) {
-          this.loadDraftStatus(profile.pool.poolSlug);
-        }
+        this.profileLoaded.set(true);
+        if (profile?.pool) this.loadDraftStatus(profile.pool.poolSlug);
       });
   }
 
   private loadManageRoles(): void {
-    const leagueSlug = this.leagueSlug;
-    const tournamentSlug = this.tournamentSlug;
+    const leagueSlug = this.leagueService.leagueSlug();
+    const tournamentSlug = this.leagueService.tournamentSlug();
     if (!leagueSlug || !tournamentSlug) return;
     this.manageService
       .canManage(leagueSlug, tournamentSlug)
       .pipe(
-        takeUntil(this.destroy$),
         catchError(() => of([] as string[])),
+        takeUntilDestroyed(this.destroyRef),
       )
       .subscribe((roles) => this.canManage.set(roles.includes('organizer')));
-  }
-
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
   }
 
   private loadDraftStatus(poolSlug: string): void {
     this.leagueService
       .getPoolDetails(poolSlug)
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (details) =>
           this.draftStatus.set(this.ongoingDraftLabel(details.status)),
@@ -129,24 +142,5 @@ export class TournamentNavComponent implements OnInit, OnDestroy {
       default:
         return null;
     }
-  }
-
-  get notJoinedDiscord(): boolean {
-    const profile = this.profile();
-    return this.profileLoaded && !!profile && !profile.inDiscordServer;
-  }
-
-  private get leagueSlug() {
-    return this.leagueService.leagueSlug();
-  }
-
-  private get tournamentSlug() {
-    return this.leagueService.tournamentSlug();
-  }
-
-  tournamentBase(): string[] {
-    const { leagueSlug, tournamentSlug } = this;
-    if (!leagueSlug || !tournamentSlug) return [];
-    return ['/leagues', leagueSlug, 'tournaments', tournamentSlug];
   }
 }

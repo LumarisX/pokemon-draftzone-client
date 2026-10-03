@@ -1,78 +1,89 @@
-﻿import { CommonModule } from '@angular/common';
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
-import { RouterModule } from '@angular/router';
-import { Subject, takeUntil } from 'rxjs';
+import { DatePipe } from '@angular/common';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+} from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { RouterLink } from '@angular/router';
+import { LeagueZoneService } from '@pdz/features/league-zone/league-zone.service';
+import { League } from '@pdz/features/league-zone/league.interface';
+import { getLeagueLogoUrl } from '@pdz/features/league-zone/league.util';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
+import { CardComponent } from '@pdz/shared/data/card/card.component';
+import { ChipComponent, ChipTone } from '@pdz/shared/data/chip/chip.component';
 import { EmptyStateComponent } from '@pdz/shared/feedback/empty-state/empty-state.component';
+import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
+import { TeamLogoComponent } from '@pdz/shared/images/team-logo/team-logo.component';
 import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
 import { PageComponent } from '@pdz/shared/layout/page/page.component';
-import { LeagueZoneService } from '../league-zone.service';
-import { League } from '../league.interface';
-import { getLeagueLogoUrl } from '../league.util';
+import { catchError, of } from 'rxjs';
+
+type TournamentStatus = 'upcoming' | 'active' | 'completed';
+
+const STATUS: Record<TournamentStatus, { label: string; tone: ChipTone }> = {
+  upcoming: { label: 'Upcoming', tone: 'info' },
+  active: { label: 'In Season', tone: 'success' },
+  completed: { label: 'Completed', tone: 'neutral' },
+};
 
 @Component({
   selector: 'pdz-league-landing',
   templateUrl: './league-landing.component.html',
   styleUrl: './league-landing.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    CommonModule,
-    RouterModule,
+    DatePipe,
+    RouterLink,
     ButtonComponent,
+    CardComponent,
+    ChipComponent,
     EmptyStateComponent,
+    IconComponent,
     LoadingComponent,
     PageComponent,
     PageHeaderComponent,
+    TeamLogoComponent,
   ],
 })
-export class LeagueLandingComponent implements OnInit, OnDestroy {
-  private leagueService = inject(LeagueZoneService);
-  private destroy$ = new Subject<void>();
+export class LeagueLandingComponent {
+  readonly getLogoUrl = getLeagueLogoUrl;
 
-  league: League.LeagueSummary | null = null;
-
-  getLogoUrl = getLeagueLogoUrl;
-
-  ngOnInit(): void {
-    this.leagueService
+  readonly league = toSignal(
+    inject(LeagueZoneService)
       .getLeague()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (league) => {
-          this.league = league;
-        },
-        error: (err) => {
-          console.error('Error loading league:', err);
-        },
-      });
-  }
+      .pipe(catchError(() => of(null))),
+  );
 
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
-  }
+  readonly tournaments = computed(() => {
+    const now = Date.now();
+    return (this.league()?.tournaments ?? []).map((tournament) => {
+      const status = this.statusOf(tournament, now);
+      const over = status === 'completed';
+      return {
+        tournament,
+        status: STATUS[status],
+        over,
+        signUpOpen:
+          !over &&
+          !!tournament.signUpDeadline &&
+          now <= new Date(tournament.signUpDeadline).getTime(),
+      };
+    });
+  });
 
-  isSeasonOver(tournament: League.TournamentSummary): boolean {
-    if (!tournament.seasonEnd) return false;
-    return new Date() > new Date(tournament.seasonEnd);
-  }
-
-  isSignUpOpen(tournament: League.TournamentSummary): boolean {
-    if (!tournament.signUpDeadline) return false;
-    const now = new Date();
-    return (
-      now <= new Date(tournament.signUpDeadline) &&
-      !this.isSeasonOver(tournament)
-    );
-  }
-
-  getTournamentStatus(
+  private statusOf(
     tournament: League.TournamentSummary,
-  ): 'upcoming' | 'active' | 'completed' {
-    const now = new Date();
-    if (tournament.seasonEnd && now > new Date(tournament.seasonEnd))
+    now: number,
+  ): TournamentStatus {
+    if (tournament.seasonEnd && now > new Date(tournament.seasonEnd).getTime())
       return 'completed';
-    if (tournament.seasonStart && now >= new Date(tournament.seasonStart))
+    if (
+      tournament.seasonStart &&
+      now >= new Date(tournament.seasonStart).getTime()
+    )
       return 'active';
     return 'upcoming';
   }

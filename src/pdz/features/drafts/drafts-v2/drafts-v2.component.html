@@ -1,40 +1,30 @@
 <pdz-page width="wide">
-  <header class="dz-head">
-    <div class="dz-head__titles">
-      <p class="dz-head__eyebrow">Draft Zone</p>
-      <h1 class="dz-head__title">My Drafts</h1>
-      @if (seasons(); as list) {
-        <p class="dz-head__summary">
-          <span>{{ activeCount() }} in progress · {{ list.length }} total</span>
-          @if (lifetime().wins || lifetime().losses) {
-            <span class="dz-head__sep" aria-hidden="true">·</span>
-            <span
-              >{{ lifetime().wins }}–{{ lifetime().losses }} lifetime
-              record</span
-            >
-          }
-        </p>
-      }
-    </div>
-
-    <div class="dz-head__actions">
+  <pdz-page-header class="dz-head" title="My Drafts" wash>
+    @if (seasons(); as list) {
+      <span pdz-page-header-detail class="dz-head__summary">
+        <span>{{ activeCount() }} in progress · {{ list.length }} total</span>
+        @if (lifetime().wins || lifetime().losses) {
+          <span
+            >· {{ lifetime().wins }}–{{ lifetime().losses }} lifetime
+            record</span
+          >
+        }
+      </span>
+    }
+    <div pdz-page-header-actions class="dz-head__actions">
       <a
         pdz-button
         variant="outlined"
-        color="primary"
+        color="neutral"
         icon="event_list"
         [routerLink]="['/', plannerPath]"
         >Planner</a
       >
-      <a
-        pdz-button
-        color="primary"
-        icon="add"
-        [routerLink]="['/', draftPath, 'new']"
-        >New draft</a
+      <a pdz-button icon="add" [routerLink]="['/', draftPath, 'new']"
+        >New Draft</a
       >
     </div>
-  </header>
+  </pdz-page-header>
 
   @if (loadFailed()) {
     <p class="dz-error" role="alert">
@@ -166,7 +156,7 @@
           >
             <div pdz-empty-state-actions>
               <a pdz-button icon="add" [routerLink]="['/', draftPath, 'new']"
-                >Add first draft</a
+                >Add First Draft</a
               >
             </div>
           </pdz-empty-state>

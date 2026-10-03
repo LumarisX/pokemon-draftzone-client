@@ -9,8 +9,8 @@
   flex-direction: column;
   gap: pdz.space(md);
   padding: pdz.space(md);
-  background: pdz.color(surface-container-lowest);
-  border: 1px solid pdz.color(outline-variant);
+  background: pdz.color(raised-high);
+  border: 1px solid pdz.color(border-subtle);
   border-radius: pdz.shape(corner-lg);
 }
 
@@ -69,32 +69,9 @@
   gap: pdz.space(xs);
 }
 
-.tlp__table {
-  width: 100%;
-  border-collapse: collapse;
-
-  th,
-  td {
-    padding: pdz.space(2xs) pdz.space(xs);
-    text-align: left;
-  }
-
-  thead th {
-    color: pdz.color(on-surface-variant);
-    border-bottom: 1px solid pdz.color(outline-variant);
-    @include pdz.caps;
-  }
-
-  tbody tr + tr th,
-  tbody tr + tr td {
-    border-top: 1px solid pdz.color(outline-variant);
-  }
-}
-
 .tlp__tier {
+  @include pdz.text(body-sm-strong);
   color: pdz.color(on-surface);
-  font-weight: 500;
-  @include pdz.text(body-sm);
 }
 
 .tlp__cost {
@@ -104,6 +81,10 @@
 
 .tlp__number {
   max-width: 5rem;
+
+  @include pdz.respond-below(small) {
+    max-width: 4rem;
+  }
 }
 
 .tlp__total {
@@ -114,17 +95,4 @@
 
 .tlp__total--over {
   color: pdz.color(danger);
-}
-
-@media (max-width: 600px) {
-  .tlp__table {
-    th,
-    td {
-      padding: pdz.space(2xs) pdz.space(3xs);
-    }
-  }
-
-  .tlp__number {
-    max-width: 4rem;
-  }
 }

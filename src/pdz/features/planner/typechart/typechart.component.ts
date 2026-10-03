@@ -4,7 +4,7 @@ import { SlideToggleComponent } from '@pdz/shared/inputs/slide-toggle/slide-togg
 import { TypechartCoreComponent } from '@pdz/shared/widgets/typechart/typechart-core/typechart-core.component';
 import { TypestatsCoreComponent } from '@pdz/shared/widgets/typechart/typestats-core/typestats-core.component';
 import { WidgetComponent } from '@pdz/shared/layout/widget/widget.component';
-import { TypeChart } from '../../drafts/matchup-overview/matchup-interface';
+import { TypeChart } from '@pdz/features/drafts/matchup-overview/matchup-interface';
 
 @Component({
   selector: 'pdz-planner-typechart',

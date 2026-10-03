@@ -9,11 +9,6 @@ import { MatchupService } from '@pdz/features/drafts/matchup-overview/matchup.se
 export class OwnershipService {
   private matchupService = inject(MatchupService);
 
-  /**
-   * Checks if the current authenticated user owns the specified matchup.
-   * @param matchupId The matchup ID from the query params.
-   * @returns Observable<boolean> indicating ownership status.
-   */
   checkMatchupOwnership(matchupId: string): Observable<boolean> {
     return this.matchupService
       .getMatchupOwnership(matchupId)

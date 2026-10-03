@@ -73,7 +73,7 @@ let nextTabsId = 0;
         [id]="panelId(selectedIndex())"
         [attr.aria-labelledby]="tabId(selectedIndex())"
       >
-        <ng-container [ngTemplateOutlet]="tab.content" />
+        <ng-container [ngTemplateOutlet]="tab.content()" />
       </div>
     }
   `,

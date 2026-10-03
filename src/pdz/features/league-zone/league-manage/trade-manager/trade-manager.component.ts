@@ -1,17 +1,40 @@
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import {
+  Component,
+  DestroyRef,
+  OnInit,
+  computed,
+  effect,
+  inject,
+  signal,
+} from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import {
+  LEAGUE_ZONE_MANAGE_PATH,
+  LEAGUE_ZONE_PATH,
+} from '@pdz/core/route-paths';
+import { DraftPokemon } from '@pdz/features/drafts/draft.model';
+import { PoolSwitcherComponent } from '@pdz/features/league-zone/league-widgets/pool-switcher/pool-switcher.component';
+import { LeagueZoneService } from '@pdz/features/league-zone/league-zone.service';
+import {
+  TradeLog,
+  TradeStatus,
+} from '@pdz/features/league-zone/league.interface';
+import { TradeCardComponent } from '@pdz/features/league-zone/trade-card/trade-card.component';
+import { TierListService } from '@pdz/features/tier-lists/tier-list.service';
+import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
+import { CardComponent } from '@pdz/shared/data/card/card.component';
 import { PokemonSearchComponent } from '@pdz/shared/dropdowns/pokemon-search/pokemon-search.component';
 import { SelectOptionComponent } from '@pdz/shared/dropdowns/select/select-option.component';
 import { SelectComponent } from '@pdz/shared/dropdowns/select/select.component';
-import { DraftPokemon } from '@pdz/features/drafts/draft.model';
-import { TierListService } from '@pdz/features/tier-lists/tier-list.service';
-import { IconComponent } from '@pdz/shared/images/icon/icon.component';
+import { EmptyStateComponent } from '@pdz/shared/feedback/empty-state/empty-state.component';
 import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
+import { FieldComponent } from '@pdz/shared/inputs/field/field.component';
+import { InputDirective } from '@pdz/shared/inputs/field/input.directive';
 import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
 import {
   BehaviorSubject,
-  Subject,
   catchError,
   distinctUntilChanged,
   finalize,
@@ -19,14 +42,7 @@ import {
   map,
   of,
   switchMap,
-  take,
-  takeUntil,
 } from 'rxjs';
-import { LeagueZoneService } from '../../league-zone.service';
-import { PoolSwitcherComponent } from '../../league-widgets/pool-switcher/pool-switcher.component';
-import { TradeLog, TradeStatus } from '../../league.interface';
-import { TradeCardComponent } from '../../trade-card/trade-card.component';
-import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 
 const FREE_AGENCY = 'free-agency';
 
@@ -34,11 +50,10 @@ type TradeOption = DraftPokemon & { cost: number; tier: string };
 
 type SideKey = 'side1' | 'side2';
 
-interface SideState {
+interface SideDraft {
   teamId: string;
   picks: TradeOption[];
   tradePoints: number;
-  options$: BehaviorSubject<DraftPokemon[]>;
 }
 
 interface TeamSpend {
@@ -54,60 +69,115 @@ interface ManagedTeam {
   roster: TradeOption[];
 }
 
+interface TradesResponse {
+  rounds: { name: string; trades: TradeLog[] }[];
+  currentRoundIndex: number;
+  tradePoints?: { limit: number | null; byTeam: TeamSpend[] };
+}
+
+const BLANK_SIDE: SideDraft = { teamId: '', picks: [], tradePoints: 0 };
+
 @Component({
   selector: 'pdz-trade-manager',
   imports: [
-    RouterModule,
+    RouterLink,
+    ButtonComponent,
+    CardComponent,
+    EmptyStateComponent,
+    FieldComponent,
+    InputDirective,
     LoadingComponent,
-    IconComponent,
-    SpriteComponent,
+    PageHeaderComponent,
     PokemonSearchComponent,
     PoolSwitcherComponent,
     SelectComponent,
     SelectOptionComponent,
-    ButtonComponent,
+    SpriteComponent,
     TradeCardComponent,
-    PageHeaderComponent,
   ],
   templateUrl: './trade-manager.component.html',
   styleUrl: './trade-manager.component.scss',
 })
-export class TradeManagerComponent implements OnInit, OnDestroy {
+export class TradeManagerComponent implements OnInit {
   private readonly leagueService = inject(LeagueZoneService);
   private readonly tierListService = inject(TierListService);
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
-  private readonly destroy$ = new Subject<void>();
+  private readonly destroyRef = inject(DestroyRef);
 
-  loading = true;
-  submitting = false;
-  submitError = '';
-  resolvingTradeId: string | null = null;
-  resolveErrorById: Record<string, string> = {};
-
-  teams: ManagedTeam[] = [];
-  rounds: { name: string; trades: TradeLog[] }[] = [];
-  roundNames: string[] = [];
-  currentRoundIndex = 0;
-  roundIndex = 0;
-
-  tradePointLimit: number | null = null;
-  spentByTeam: TeamSpend[] = [];
-
-  private freeAgents: TradeOption[] = [];
-
+  readonly sideKeys: SideKey[] = ['side1', 'side2'];
   readonly freeAgency = FREE_AGENCY;
 
-  side1: SideState = this.blankSide();
-  side2: SideState = this.blankSide();
+  readonly loading = signal(true);
+  readonly submitting = signal(false);
+  readonly submitError = signal('');
+  readonly resolvingTradeId = signal<string | null>(null);
+  readonly resolveErrors = signal<Record<string, string>>({});
 
-  poolSlug: string | null = null;
-  noPools = false;
+  readonly poolSlug = signal<string | null>(null);
+  readonly noPools = signal(false);
 
+  readonly teams = signal<ManagedTeam[]>([]);
+  readonly rounds = signal<{ name: string; trades: TradeLog[] }[]>([]);
+  readonly roundNames = signal<string[]>([]);
+  readonly currentRoundIndex = signal(0);
+  readonly roundIndex = signal(0);
+  readonly tradePointLimit = signal<number | null>(null);
+  readonly spentByTeam = signal<TeamSpend[]>([]);
+
+  private readonly freeAgents = signal<TradeOption[]>([]);
   private teamIdsInPool = new Set<string>();
 
-  get signUpsPath(): string {
-    return `/leagues/${this.leagueService.leagueSlug()}/tournaments/${this.leagueService.tournamentSlug()}/manage/sign-ups`;
+  readonly sides = signal<Record<SideKey, SideDraft>>({
+    side1: BLANK_SIDE,
+    side2: BLANK_SIDE,
+  });
+
+  readonly options: Record<SideKey, BehaviorSubject<DraftPokemon[]>> = {
+    side1: new BehaviorSubject<DraftPokemon[]>([]),
+    side2: new BehaviorSubject<DraftPokemon[]>([]),
+  };
+
+  readonly signUpsPath = computed(() => [
+    '/',
+    LEAGUE_ZONE_PATH,
+    this.leagueService.leagueSlug(),
+    'tournaments',
+    this.leagueService.tournamentSlug(),
+    LEAGUE_ZONE_MANAGE_PATH,
+    'sign-ups',
+  ]);
+
+  readonly canSubmit = computed(() => {
+    const { side1, side2 } = this.sides();
+    const bothChosen = Boolean(side1.teamId && side2.teamId);
+    const notBothFree = !(
+      side1.teamId === FREE_AGENCY && side2.teamId === FREE_AGENCY
+    );
+    const distinct =
+      side1.teamId !== side2.teamId || side1.teamId === FREE_AGENCY;
+    const hasPokemon = side1.picks.length > 0 || side2.picks.length > 0;
+    return (
+      !this.submitting() &&
+      bothChosen &&
+      notBothFree &&
+      distinct &&
+      hasPokemon &&
+      !this.overLimit('side1') &&
+      !this.overLimit('side2')
+    );
+  });
+
+  constructor() {
+    effect(() => {
+      for (const key of this.sideKeys) {
+        const side = this.sides()[key];
+        const taken = new Set(side.picks.map((pick) => pick.id));
+        this.options[key].next(
+          this.poolFor(side.teamId).filter((pick) => !taken.has(pick.id)),
+        );
+      }
+    });
   }
 
   ngOnInit(): void {
@@ -122,90 +192,185 @@ export class TradeManagerComponent implements OnInit, OnDestroy {
                 .getLeagueInfo()
                 .pipe(map((info) => info.pools[0]?.poolSlug ?? null)),
         ),
-        takeUntil(this.destroy$),
+        takeUntilDestroyed(this.destroyRef),
       )
       .subscribe((poolSlug) => {
-        this.poolSlug = poolSlug;
-        this.noPools = !poolSlug;
-        if (poolSlug) this.load();
-        else this.loading = false;
+        this.poolSlug.set(poolSlug);
+        this.noPools.set(!poolSlug);
+        if (poolSlug) this.load(poolSlug);
+        else this.loading.set(false);
       });
-  }
-
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
   }
 
   onPoolSelected(poolSlug: string): void {
     this.router.navigate([
-      '/leagues',
+      '/',
+      LEAGUE_ZONE_PATH,
       this.leagueService.leagueSlug(),
       'tournaments',
       this.leagueService.tournamentSlug(),
-      'manage',
+      LEAGUE_ZONE_MANAGE_PATH,
       'pools',
       poolSlug,
       'trades',
     ]);
   }
 
-  private blankSide(): SideState {
-    return {
-      teamId: '',
-      picks: [],
-      tradePoints: 0,
-      options$: new BehaviorSubject<DraftPokemon[]>([]),
-    };
+  side(key: SideKey): SideDraft {
+    return this.sides()[key];
   }
 
-  private load(): void {
-    this.loading = true;
+  onTeamChange(key: SideKey, teamId: string): void {
+    this.updateSide(key, (side) => ({
+      teamId,
+      picks: [],
+      tradePoints: teamId === FREE_AGENCY ? 0 : side.tradePoints,
+    }));
+  }
+
+  onTradePointsChange(key: SideKey, value: string): void {
+    const parsed = Number(value);
+    const tradePoints = Number.isFinite(parsed)
+      ? Math.max(0, Math.trunc(parsed))
+      : 0;
+    this.updateSide(key, (side) => ({ ...side, tradePoints }));
+  }
+
+  addPick(key: SideKey, option: DraftPokemon): void {
+    const side = this.side(key);
+    const match = this.poolFor(side.teamId).find((p) => p.id === option.id);
+    if (!match || side.picks.some((p) => p.id === option.id)) return;
+    this.updateSide(key, (current) => ({
+      ...current,
+      picks: [...current.picks, match],
+    }));
+  }
+
+  removePick(key: SideKey, id: string): void {
+    this.updateSide(key, (side) => ({
+      ...side,
+      picks: side.picks.filter((p) => p.id !== id),
+    }));
+  }
+
+  sideCost(key: SideKey): number {
+    return this.side(key).picks.reduce((total, p) => total + p.cost, 0);
+  }
+
+  spentFor(teamId: string): number {
+    return this.spentByTeam().find((e) => e.teamId === teamId)?.spent ?? 0;
+  }
+
+  projectedFor(key: SideKey): number | null {
+    const side = this.side(key);
+    if (!side.teamId || side.teamId === FREE_AGENCY) return null;
+    return this.spentFor(side.teamId) + side.tradePoints;
+  }
+
+  overLimit(key: SideKey): boolean {
+    const projected = this.projectedFor(key);
+    const limit = this.tradePointLimit();
+    return limit !== null && projected !== null && projected > limit;
+  }
+
+  isOverLimit(spent: number): boolean {
+    const limit = this.tradePointLimit();
+    return limit !== null && spent > limit;
+  }
+
+  submitTrade(): void {
+    if (!this.canSubmit()) return;
+
+    this.submitting.set(true);
+    this.submitError.set('');
+
+    this.leagueService
+      .sendTrade({
+        side1: this.payloadFor('side1'),
+        side2: this.payloadFor('side2'),
+        roundIndex: this.roundIndex(),
+      })
+      .pipe(
+        finalize(() => this.submitting.set(false)),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe({
+        next: () => {
+          this.resetForm();
+          this.refreshTrades();
+        },
+        error: (err) =>
+          this.submitError.set(err?.message || 'Could not submit the trade.'),
+      });
+  }
+
+  resolveTrade(trade: TradeLog, status: Exclude<TradeStatus, 'PENDING'>): void {
+    this.patchTrade(trade, { status });
+  }
+
+  changeRound(trade: TradeLog, activeRound: number): void {
+    if (activeRound === trade.activeRound) return;
+    this.patchTrade(trade, { activeRound });
+  }
+
+  resolveError(trade: TradeLog): string {
+    return trade.id ? (this.resolveErrors()[trade.id] ?? '') : '';
+  }
+
+  private updateSide(key: SideKey, change: (side: SideDraft) => SideDraft) {
+    this.sides.update((sides) => ({ ...sides, [key]: change(sides[key]) }));
+  }
+
+  private poolFor(teamId: string): TradeOption[] {
+    if (!teamId) return [];
+    if (teamId === FREE_AGENCY) return this.freeAgents();
+    return this.teams().find((team) => team.id === teamId)?.roster ?? [];
+  }
+
+  private load(poolSlug: string): void {
+    this.loading.set(true);
     this.resetForm();
 
     forkJoin({
-      tierList: this.tierListService.getTierList().pipe(
-        take(1),
-        catchError(() => of(null)),
-      ),
-      teams: this.leagueService.getTournamentTeams().pipe(
-        take(1),
-        catchError(() => of({ teams: [] })),
-      ),
-      trades: this.leagueService
-        .getTrades()
-        .pipe(take(1)),
+      tierList: this.tierListService
+        .getTierList()
+        .pipe(catchError(() => of(null))),
+      teams: this.leagueService
+        .getTournamentTeams()
+        .pipe(catchError(() => of({ teams: [] }))),
+      trades: this.leagueService.getTrades(),
     })
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
+        error: () => this.loading.set(false),
         next: ({ tierList, teams, trades }) => {
           const inPool = teams.teams.filter(
-            (team) => team.pool?.poolSlug === this.poolSlug,
+            (team) => team.pool?.poolSlug === poolSlug,
           );
           this.teamIdsInPool = new Set(inPool.map((team) => team.id));
-
           this.applyTradesResponse(trades);
 
-          this.teams = inPool
-            .map((team) => ({
-              id: team.id,
-              name: team.teamName,
-              coachName: team.coachName,
-              roster: team.roster
-                .map((pokemon) => ({
-                  id: pokemon.id,
-                  name: pokemon.name,
-                  cost: pokemon.cost ?? 0,
-                  tier: pokemon.tier ?? '—',
-                }))
-                .sort((a, b) => a.name.localeCompare(b.name)),
-            }))
-            .sort((a, b) => a.name.localeCompare(b.name));
+          this.teams.set(
+            inPool
+              .map((team) => ({
+                id: team.id,
+                name: team.teamName,
+                coachName: team.coachName,
+                roster: team.roster
+                  .map((pokemon) => ({
+                    id: pokemon.id,
+                    name: pokemon.name,
+                    cost: pokemon.cost ?? 0,
+                    tier: pokemon.tier ?? '—',
+                  }))
+                  .sort((a, b) => a.name.localeCompare(b.name)),
+              }))
+              .sort((a, b) => a.name.localeCompare(b.name)),
+          );
 
           const drafted = new Set(
             inPool.flatMap((team) => team.roster.map((p) => p.id)),
           );
-
           const freeAgents: TradeOption[] = [];
           for (const tier of tierList?.tierList ?? []) {
             if (tier.cost === undefined) continue;
@@ -219,41 +384,36 @@ export class TradeManagerComponent implements OnInit, OnDestroy {
               });
             }
           }
-          this.freeAgents = freeAgents.sort((a, b) =>
-            a.name.localeCompare(b.name),
+          this.freeAgents.set(
+            freeAgents.sort((a, b) => a.name.localeCompare(b.name)),
           );
-
-          this.refreshOptions('side1');
-          this.refreshOptions('side2');
-          this.loading = false;
-        },
-        error: () => {
-          this.loading = false;
+          this.loading.set(false);
         },
       });
   }
 
-  private applyTradesResponse(trades: {
-    rounds: { name: string; trades: TradeLog[] }[];
-    currentRoundIndex: number;
-    tradePoints?: { limit: number | null; byTeam: TeamSpend[] };
-  }): void {
-    this.roundNames = trades.rounds.map((round) => round.name);
-    this.currentRoundIndex = Math.max(trades.currentRoundIndex ?? 0, 0);
-    this.roundIndex = Math.min(
-      this.currentRoundIndex,
-      Math.max(this.roundNames.length - 1, 0),
+  private applyTradesResponse(trades: TradesResponse): void {
+    const roundNames = trades.rounds.map((round) => round.name);
+    const currentRoundIndex = Math.max(trades.currentRoundIndex ?? 0, 0);
+    this.roundNames.set(roundNames);
+    this.currentRoundIndex.set(currentRoundIndex);
+    this.roundIndex.set(
+      Math.min(currentRoundIndex, Math.max(roundNames.length - 1, 0)),
     );
-    this.rounds = trades.rounds
-      .map((round) => ({
-        ...round,
-        trades: round.trades.filter((trade) => this.inThisPool(trade)),
-      }))
-      .filter((round) => round.trades.length)
-      .reverse();
-    this.tradePointLimit = trades.tradePoints?.limit ?? null;
-    this.spentByTeam = (trades.tradePoints?.byTeam ?? []).filter((entry) =>
-      this.teamIdsInPool.has(entry.teamId),
+    this.rounds.set(
+      trades.rounds
+        .map((round) => ({
+          ...round,
+          trades: round.trades.filter((trade) => this.inThisPool(trade)),
+        }))
+        .filter((round) => round.trades.length)
+        .reverse(),
+    );
+    this.tradePointLimit.set(trades.tradePoints?.limit ?? null);
+    this.spentByTeam.set(
+      (trades.tradePoints?.byTeam ?? []).filter((entry) =>
+        this.teamIdsInPool.has(entry.teamId),
+      ),
     );
   }
 
@@ -261,126 +421,6 @@ export class TradeManagerComponent implements OnInit, OnDestroy {
     return [trade.side1, trade.side2].some(
       (side) => side.team && this.teamIdsInPool.has(side.team.id),
     );
-  }
-
-  side(key: SideKey): SideState {
-    return key === 'side1' ? this.side1 : this.side2;
-  }
-
-  onTeamChange(key: SideKey, teamId: string): void {
-    const side = this.side(key);
-    side.teamId = teamId;
-    side.picks = [];
-    if (teamId === FREE_AGENCY) side.tradePoints = 0;
-    this.refreshOptions(key);
-  }
-
-  onTradePointsChange(key: SideKey, value: string): void {
-    const parsed = Number(value);
-    this.side(key).tradePoints = Number.isFinite(parsed)
-      ? Math.max(0, Math.trunc(parsed))
-      : 0;
-  }
-
-  addPick(key: SideKey, option: DraftPokemon): void {
-    const side = this.side(key);
-    const pool = this.poolFor(key);
-    const match = pool.find((p) => p.id === option.id);
-    if (!match || side.picks.some((p) => p.id === option.id)) return;
-    side.picks = [...side.picks, match];
-    this.refreshOptions(key);
-  }
-
-  removePick(key: SideKey, id: string): void {
-    const side = this.side(key);
-    side.picks = side.picks.filter((p) => p.id !== id);
-    this.refreshOptions(key);
-  }
-
-  private poolFor(key: SideKey): TradeOption[] {
-    const side = this.side(key);
-    if (!side.teamId) return [];
-    if (side.teamId === FREE_AGENCY) return this.freeAgents;
-    return this.teams.find((team) => team.id === side.teamId)?.roster ?? [];
-  }
-
-  private refreshOptions(key: SideKey): void {
-    const side = this.side(key);
-    const taken = new Set(side.picks.map((p) => p.id));
-    side.options$.next(this.poolFor(key).filter((p) => !taken.has(p.id)));
-  }
-
-  sideCost(key: SideKey): number {
-    return this.side(key).picks.reduce((total, p) => total + p.cost, 0);
-  }
-
-  spentFor(teamId: string): number {
-    return this.spentByTeam.find((e) => e.teamId === teamId)?.spent ?? 0;
-  }
-
-  projectedFor(key: SideKey): number | null {
-    const side = this.side(key);
-    if (!side.teamId || side.teamId === FREE_AGENCY) return null;
-    return this.spentFor(side.teamId) + side.tradePoints;
-  }
-
-  overLimit(key: SideKey): boolean {
-    const projected = this.projectedFor(key);
-    return (
-      this.tradePointLimit !== null &&
-      projected !== null &&
-      projected > this.tradePointLimit
-    );
-  }
-
-  get canSubmit(): boolean {
-    const bothChosen = Boolean(this.side1.teamId && this.side2.teamId);
-    const notBothFree = !(
-      this.side1.teamId === FREE_AGENCY && this.side2.teamId === FREE_AGENCY
-    );
-    const distinct =
-      this.side1.teamId !== this.side2.teamId ||
-      this.side1.teamId === FREE_AGENCY;
-    const hasPokemon = this.side1.picks.length > 0 || this.side2.picks.length > 0;
-    return (
-      !this.submitting &&
-      bothChosen &&
-      notBothFree &&
-      distinct &&
-      hasPokemon &&
-      !this.overLimit('side1') &&
-      !this.overLimit('side2')
-    );
-  }
-
-  submitTrade(): void {
-    if (!this.canSubmit) return;
-
-    this.submitting = true;
-    this.submitError = '';
-
-    this.leagueService
-      .sendTrade({
-        side1: this.payloadFor('side1'),
-        side2: this.payloadFor('side2'),
-        roundIndex: this.roundIndex,
-      })
-      .pipe(
-        take(1),
-        finalize(() => {
-          this.submitting = false;
-        }),
-        takeUntil(this.destroy$),
-      )
-      .subscribe({
-        next: () => {
-          this.resetForm();
-          this.refreshTrades();
-        },
-        error: (err) => {
-          this.submitError = err?.message || 'Could not submit the trade.';
-        },
-      });
   }
 
   private payloadFor(key: SideKey) {
@@ -393,61 +433,48 @@ export class TradeManagerComponent implements OnInit, OnDestroy {
     };
   }
 
-  resolveTrade(trade: TradeLog, status: Exclude<TradeStatus, 'PENDING'>): void {
-    this.patchTrade(trade, { status });
-  }
-
-  changeRound(trade: TradeLog, activeRound: number): void {
-    if (activeRound === trade.activeRound) return;
-    this.patchTrade(trade, { activeRound });
-  }
-
   private patchTrade(
     trade: TradeLog,
     patch: { status?: Exclude<TradeStatus, 'PENDING'>; activeRound?: number },
   ): void {
-    if (!trade.id || this.resolvingTradeId) return;
+    if (!trade.id || this.resolvingTradeId()) return;
 
     const tradeId = trade.id;
-    this.resolvingTradeId = tradeId;
-    this.resolveErrorById[tradeId] = '';
+    this.resolvingTradeId.set(tradeId);
+    this.setResolveError(tradeId, '');
 
     this.leagueService
       .updateTrade(tradeId, patch)
       .pipe(
-        take(1),
-        finalize(() => {
-          this.resolvingTradeId = null;
-        }),
-        takeUntil(this.destroy$),
+        finalize(() => this.resolvingTradeId.set(null)),
+        takeUntilDestroyed(this.destroyRef),
       )
       .subscribe({
         next: () => this.refreshTrades(),
-        error: (err) => {
-          this.resolveErrorById[tradeId] =
+        error: (err) =>
+          this.setResolveError(
+            tradeId,
             err?.message ||
-            (patch.status
-              ? `Could not ${patch.status.toLowerCase()} the trade.`
-              : 'Could not move the trade.');
-        },
+              (patch.status
+                ? `Could not ${patch.status.toLowerCase()} the trade.`
+                : 'Could not move the trade.'),
+          ),
       });
+  }
+
+  private setResolveError(tradeId: string, message: string): void {
+    this.resolveErrors.update((errors) => ({ ...errors, [tradeId]: message }));
   }
 
   private refreshTrades(): void {
     this.leagueService
       .getTrades()
-      .pipe(take(1), takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((trades) => this.applyTradesResponse(trades));
   }
 
   private resetForm(): void {
-    this.side1 = this.blankSide();
-    this.side2 = this.blankSide();
-    this.submitError = '';
-  }
-
-  teamName(teamId: string): string {
-    if (teamId === FREE_AGENCY) return 'Free Agency';
-    return this.teams.find((team) => team.id === teamId)?.name ?? '';
+    this.sides.set({ side1: BLANK_SIDE, side2: BLANK_SIDE });
+    this.submitError.set('');
   }
 }

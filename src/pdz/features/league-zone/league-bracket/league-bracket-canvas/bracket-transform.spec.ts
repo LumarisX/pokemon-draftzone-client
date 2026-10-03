@@ -16,7 +16,7 @@ describe('bracket-transform', () => {
 
   it('fits large content by scaling down and centering', () => {
     const t = fitToContent(2000, 1000, 800, 600, 0);
-    expect(t.k).toBeCloseTo(0.4); // width-bound
+    expect(t.k).toBeCloseTo(0.4);
     expect(t.x).toBeCloseTo(0);
     expect(t.y).toBeCloseTo((600 - 1000 * 0.4) / 2);
   });

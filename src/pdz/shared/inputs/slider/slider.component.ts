@@ -1,12 +1,12 @@
 import {
-  booleanAttribute,
+  ChangeDetectionStrategy,
   Component,
+  booleanAttribute,
   computed,
-  EventEmitter,
   forwardRef,
-  Output,
-  signal,
   input,
+  output,
+  signal,
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
@@ -22,7 +22,8 @@ export interface SliderTick {
 @Component({
   selector: 'pdz-slider',
   templateUrl: './slider.component.html',
-  styleUrls: ['./slider.component.scss'],
+  styleUrl: './slider.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
@@ -42,10 +43,24 @@ export class SliderComponent implements ControlValueAccessor {
   readonly tickTones = input<readonly SliderTickTone[]>();
   readonly snapValues = input<readonly number[]>();
   readonly maxTicks = input(96);
+  readonly ariaLabel = input<string>();
+
+  readonly valueChange = output<number>();
+
+  readonly value = signal(0);
+  private readonly formDisabled = signal(false);
+  readonly isDisabled = computed(() => this.disabled() || this.formDisabled());
 
   readonly effectiveStep = computed(() => {
     const stops = this.snapValues();
     return stops && stops.length > 0 ? 1 : this.step();
+  });
+
+  readonly fillPercent = computed(() => {
+    const range = this.max() - this.min();
+    if (range <= 0) return 0;
+    const clamped = Math.min(Math.max(this.value(), this.min()), this.max());
+    return ((clamped - this.min()) / range) * 100;
   });
 
   readonly tickMarks = computed<SliderTick[]>(() => {
@@ -75,25 +90,11 @@ export class SliderComponent implements ControlValueAccessor {
     }));
   });
 
-  private readonly formDisabled = signal(false);
-  readonly isDisabled = computed(() => this.disabled() || this.formDisabled());
-
-  @Output() valueChange = new EventEmitter<number>();
-
-  value = 0;
-
   private onChange: (value: number) => void = () => {};
   private onTouched: () => void = () => {};
 
-  get fillPercent(): number {
-    const range = this.max() - this.min();
-    if (range <= 0) return 0;
-    const clamped = Math.min(Math.max(this.value, this.min()), this.max());
-    return ((clamped - this.min()) / range) * 100;
-  }
-
   writeValue(value: number): void {
-    this.value = value ?? this.min();
+    this.value.set(value ?? this.min());
   }
 
   registerOnChange(fn: (value: number) => void): void {
@@ -120,7 +121,7 @@ export class SliderComponent implements ControlValueAccessor {
     if (!stops || stops.length === 0 || this.isDisabled()) return;
 
     const last = stops.length - 1;
-    const from = this.stopIndex(stops, this.value);
+    const from = this.stopIndex(stops, this.value());
     let to: number;
 
     switch (event.key) {
@@ -153,9 +154,13 @@ export class SliderComponent implements ControlValueAccessor {
     if (next !== undefined) this.commit(next);
   }
 
+  onBlur(): void {
+    this.onTouched();
+  }
+
   private commit(value: number): void {
-    if (value === this.value) return;
-    this.value = value;
+    if (value === this.value()) return;
+    this.value.set(value);
     this.onChange(value);
     this.valueChange.emit(value);
   }
@@ -177,9 +182,5 @@ export class SliderComponent implements ControlValueAccessor {
       }
     }
     return best;
-  }
-
-  onBlur(): void {
-    this.onTouched();
   }
 }

@@ -34,7 +34,6 @@ export class LeagueAdsService {
       invalidateCache: [[ROOTPATH]],
     });
   }
-  //Currently Unused
   getUnreadCount(counts: { [key: string]: number }) {
     return this.apiService.get<{ [key: string]: number }>(
       [ROOTPATH, 'unread'],

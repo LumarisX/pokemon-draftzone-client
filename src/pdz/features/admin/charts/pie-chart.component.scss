@@ -38,7 +38,7 @@
 .pie-slice {
   transition: opacity pdz.duration(base) pdz.easing(standard);
   cursor: default;
-  stroke: pdz.color(surface);
+  stroke: pdz.color(raised);
   stroke-width: 1;
 }
 
@@ -47,8 +47,6 @@
   list-style: none;
   margin: 0;
   padding: 0;
-  // One shared grid so swatches, labels and values line up in columns while
-  // staying close together (li uses `display: contents`).
   display: grid;
   grid-template-columns: auto auto auto;
   align-items: center;
@@ -70,7 +68,7 @@
   }
 
   .legend-label {
-    font-weight: 600;
+    font-weight: pdz.font-weight(semibold);
   }
 
   .legend-value {

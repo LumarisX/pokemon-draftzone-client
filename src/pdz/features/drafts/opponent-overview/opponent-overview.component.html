@@ -1,70 +1,64 @@
 <div class="opponent-main">
-  <div class="draft-header">
-    <button
-      class="back-btn"
-      pdz-button
-      variant="tonal"
-      [routerLink]="['/', draftPath]"
+  @if (draft(); as draft) {
+    <pdz-page-header
+      compact
+      wash
+      class="opponent-main__header"
+      backLabel="My Drafts"
+      [title]="draft.teamName"
+      [backLink]="backLink"
     >
-      Back
-    </button>
-    @if (draft | async; as draft) {
-      <div class="draft-flex">
-        <div class="draft-info-container">
-          <h2>
-            {{ draft.leagueName }}
-          </h2>
-          <div class="details-container">
-            <h4 class="stat">
-              {{ draft.format }}
-            </h4>
-            <h4 class="stat">
-              {{ draft.ruleset }}
-            </h4>
-          </div>
-        </div>
-        <div class="team-info-container">
-          <h3>
-            {{ draft.teamName }}
-          </h3>
-          @if (draft.score) {
-            <h4 class="stat">
-              {{ draft.score.wins }} - {{ draft.score.losses }} |
-              {{ draft.score.diff }}
-            </h4>
-          }
-        </div>
-        <div class="draft-bar">
-          @for (pokemon of draft.team; track $index) {
-            <pdz-sprite
-              [pokemon]="pokemon"
-              [class.unresolved-sprite]="pokemon.unresolved"
-            >
-            </pdz-sprite>
-          }
-        </div>
-      </div>
-      <div class="draft-buttons">
-        <button
-          routerLink="../edit"
-          pdz-button
-          iconOnly
-          variant="tonal"
-          [queryParams]="{ draft: draft.slug | json }"
-        >
-          <pdz-icon name="edit"></pdz-icon>
-        </button>
+      <span pdz-page-header-detail class="opponent-main__facts">
+        <span>{{ draft.leagueName }}</span>
+        <span>{{ draft.format }}</span>
+        <span>{{ draft.ruleset }}</span>
+      </span>
+      @if (draft.score) {
+        <span pdz-page-header-meta class="opponent-main__record">
+          <pdz-record
+            size="sm"
+            [wins]="draft.score.wins"
+            [losses]="draft.score.losses"
+          />
+          <span class="opponent-main__diff">{{ draft.score.diff }}</span>
+        </span>
+      }
+      <div pdz-page-header-actions class="opponent-main__actions">
         <a
-          [href]="draft.doc"
-          target="_blank"
           pdz-button
           iconOnly
-          variant="tonal"
-          [class.disabled]="!draft.doc"
-          ><pdz-icon name="dataset_linked"></pdz-icon
+          icon="edit"
+          variant="outlined"
+          color="neutral"
+          aria-label="Edit draft"
+          pdzTooltip="Edit draft"
+          routerLink="../edit"
+          [queryParams]="{ draft: draftParam(draft.slug) }"
         ></a>
+        @if (draft.doc) {
+          <a
+            pdz-button
+            iconOnly
+            icon="dataset_linked"
+            variant="outlined"
+            color="neutral"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Open league document"
+            pdzTooltip="Open league document"
+            [href]="draft.doc"
+          ></a>
+        }
       </div>
-    }
-  </div>
-  <router-outlet pdzRouteEnter></router-outlet>
+      <div class="draft-bar" aria-label="Your team">
+        @for (pokemon of draft.team; track $index) {
+          <pdz-sprite
+            [pokemon]="pokemon"
+            [class.unresolved-sprite]="pokemon.unresolved"
+          />
+        }
+      </div>
+    </pdz-page-header>
+  }
+  <router-outlet pdzRouteEnter />
 </div>

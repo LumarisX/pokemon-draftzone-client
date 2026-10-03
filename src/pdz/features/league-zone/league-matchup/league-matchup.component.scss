@@ -1,6 +1,4 @@
 @use "pdz-theming" as pdz;
-@use "mixins" as *;
-@use "../league.mixins" as *;
 
 :host {
   display: block;
@@ -14,372 +12,282 @@
   gap: pdz.space(md);
   height: 100%;
   overflow: auto;
-
-  &__message {
-    @include pdz-league-section-message();
-
-    &--error {
-      color: pdz.color(danger);
-    }
-  }
-
-  &__header-skeleton {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: pdz.space(md);
-    padding: pdz.space(md) pdz.space(lg);
-    border: 1px solid pdz.color(outline-variant);
-    border-radius: pdz.shape(corner-lg);
-    background: pdz.color(surface-container-low);
-  }
-
-  &__status {
-    @include text(label);
-    padding: pdz.space(2xs) pdz.space(sm);
-    border-radius: pdz.shape("corner-full");
-    background: pdz.color("surface-container-highest");
-    color: pdz.color("on-surface-variant");
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-    white-space: nowrap;
-
-    &--final {
-      background: pdz.color("positive-container");
-      color: pdz.color("on-positive-container");
-    }
-
-    &--pending {
-      background: pdz.color("info-container");
-      color: pdz.color("on-info-container");
-    }
-
-    &--forfeit {
-      background: pdz.color("warning-container");
-      color: pdz.color("on-warning-container");
-    }
-  }
-
-  &__notes {
-    @include text(body-sm);
-    margin: 0;
-    padding: 0;
-    color: pdz.color("on-surface-variant");
-    font-style: italic;
-  }
 }
 
-.breakdown-cta {
+.matchup__header-skeleton {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
-  gap: pdz.space(sm);
-  padding: pdz.space(sm) pdz.space(md);
-  border: none;
-  border-radius: pdz.shape("corner-md");
-  background: pdz.color("primary-gradient");
-  color: pdz.color("on-primary");
-  text-decoration: none;
-  transition:
-    transform pdz.duration(fast) pdz.easing(standard),
-    box-shadow pdz.duration(fast) pdz.easing(standard);
+  gap: pdz.space(md);
+  padding: pdz.space(md) 0;
+}
 
-  &:hover {
-    box-shadow: var(--pdz-level-3);
-  }
-
-  &:active {
-    transform: scale(0.99);
-  }
-
-  &__icon {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    flex: none;
-    width: 2.75rem;
-    height: 2.75rem;
-    border-radius: pdz.shape("corner-full");
-    background: rgb(255 255 255 / 18%);
-  }
-
-  &__text {
-    display: flex;
-    flex-direction: column;
-    min-width: 0;
-    flex: 1;
-  }
-
-  &__title {
-    @include text(title);
-    font-weight: var(--pdz-font-weight-bold);
-  }
-
-  &__subtitle {
-    @include text(label);
-    color: rgb(255 255 255 / 85%);
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  &__arrow {
-    flex: none;
-    transition: transform pdz.duration(fast) pdz.easing(standard);
-  }
-
-  &:hover &__arrow {
-    transform: translateX(0.25rem);
-  }
+.matchup__notes {
+  @include pdz.text(body-sm);
+  margin: 0;
+  color: pdz.color(on-surface-variant);
+  font-style: italic;
 }
 
 .scoreboard {
   display: grid;
   grid-template-columns: 1fr;
-  gap: pdz.space(sm);
+  gap: pdz.space(md);
+  padding: pdz.space(md);
+  border: 1px solid pdz.color(border-subtle);
+  border-radius: pdz.shape(corner-lg);
+  background-color: pdz.color(raised);
+  background-image: pdz.color(versus-wash-vertical);
 
-  @include respond-above(medium) {
+  @include pdz.respond-above(medium) {
     grid-template-columns: 1fr auto 1fr;
     align-items: center;
     gap: pdz.space(lg);
-  }
-
-  &__side {
-    display: flex;
-    flex-direction: column;
-    gap: pdz.space(2xs);
-    padding: pdz.space(sm);
-    border: 1px solid pdz.color("outline-variant");
-    border-radius: pdz.shape("corner-md");
-    background: pdz.color("surface-container-lowest");
-
-    &--winner {
-      border-color: pdz.color("positive");
-      background: pdz.color("positive-container");
-      color: pdz.color("on-positive-container");
-    }
-
-    @include respond-above(medium) {
-      &--right {
-        align-items: flex-end;
-        text-align: right;
-      }
-    }
-  }
-
-  &__identity {
-    display: flex;
-    align-items: center;
-    gap: pdz.space(sm);
-    color: inherit;
-    text-decoration: none;
-    min-width: 0;
-  }
-
-  &__side--right &__identity {
-    @include respond-above(medium) {
-      flex-direction: row-reverse;
-    }
-  }
-
-  &__logo {
-    width: 3rem;
-    height: 3rem;
-    object-fit: contain;
-    flex: none;
-  }
-
-  &__names {
-    display: flex;
-    flex-direction: column;
-    min-width: 0;
-  }
-
-  &__team {
-    @include text(subtitle);
-    font-weight: var(--pdz-font-weight-semibold);
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  &__coach {
-    @include text(label);
-    color: pdz.color("on-surface-variant");
-  }
-
-  &__side--winner &__coach {
-    color: pdz.color("on-positive-container");
-  }
-
-  &__contact {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: pdz.space(2xs);
-  }
-
-  &__handle {
-    text-transform: none;
-    max-width: 12rem;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  &__copy {
-    opacity: 0.7;
-  }
-
-  &__time {
-    display: inline-flex;
-    align-items: center;
-    gap: pdz.space(3xs);
-    @include text(label);
-    color: pdz.color("on-surface-variant");
-  }
-
-  &__side--winner &__time {
-    color: pdz.color("on-positive-container");
-  }
-
-  &__center {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: pdz.space(3xs);
-  }
-
-  &__score {
-    display: flex;
-    align-items: center;
-    gap: pdz.space(sm);
-  }
-
-  &__points {
-    @include text(title);
-    font-variant-numeric: tabular-nums;
-    font-weight: var(--pdz-font-weight-bold);
-    color: pdz.color("on-surface-variant");
-
-    &--winner {
-      color: pdz.color("primary");
-    }
-  }
-
-  &__dash {
-    @include text(headline);
-    color: pdz.color("on-surface-disabled");
-  }
-
-  &__format,
-  &__when {
-    display: inline-flex;
-    align-items: center;
-    gap: pdz.space(3xs);
-    @include text(label);
-    color: pdz.color("on-surface-variant");
-  }
-
-  &__when {
-    border-radius: pdz.shape(corner-xs);
-    cursor: help;
-
-    &:focus-visible {
-      outline: 2px solid pdz.color("primary-accent");
-      outline-offset: 2px;
-    }
-  }
-
-  &__schedule {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: pdz.space(3xs);
-  }
-
-  &__schedule-error {
-    @include text(label);
-    margin: 0;
-    color: pdz.color("on-danger-container");
+    padding: pdz.space(lg);
+    background-image: pdz.color(versus-wash);
   }
 }
 
-.review {
+.scoreboard__side {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: pdz.space(xs);
+  min-width: 0;
+}
+
+.scoreboard__side--end {
+  @include pdz.respond-above(medium) {
+    align-items: flex-end;
+    text-align: right;
+  }
+}
+
+.scoreboard__identity {
+  display: flex;
+  align-items: center;
+  gap: pdz.space(sm);
+  min-width: 0;
+  color: inherit;
+  text-decoration: none;
+  border-radius: pdz.shape(corner-sm);
+
+  &:hover .scoreboard__team {
+    text-decoration: underline;
+  }
+
+  &:focus-visible {
+    @include pdz.focus-ring;
+  }
+}
+
+.scoreboard__side--end .scoreboard__identity {
+  @include pdz.respond-above(medium) {
+    flex-direction: row-reverse;
+  }
+}
+
+.scoreboard__names {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(2xs);
+  min-width: 0;
+}
+
+.scoreboard__team {
+  @include pdz.text(section-title);
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: pdz.space(xs);
+  color: pdz.color(on-surface);
+  overflow-wrap: anywhere;
+}
+
+.scoreboard__coach {
+  @include pdz.text(meta);
+  color: pdz.color(on-surface-variant);
+}
+
+.scoreboard__contact {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: pdz.space(2xs);
+}
+
+.scoreboard__handle {
+  max-width: 12rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.scoreboard__copy {
+  opacity: 0.7;
+}
+
+.scoreboard__time {
+  @include pdz.text(meta);
+  display: inline-flex;
+  align-items: center;
+  gap: pdz.space(3xs);
+  color: pdz.color(on-surface-variant);
+}
+
+.scoreboard__center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: pdz.space(xs);
+}
+
+.scoreboard__score {
+  display: flex;
+  align-items: center;
+  gap: pdz.space(md);
+}
+
+.scoreboard__points {
+  @include pdz.text(display);
+  @include pdz.numeric;
+}
+
+.scoreboard__points--team1 {
+  color: pdz.color(team1-accent);
+}
+
+.scoreboard__points--team2 {
+  color: pdz.color(team2-accent);
+}
+
+.scoreboard__dash {
+  @include pdz.text(headline);
+  color: pdz.color(on-surface-muted);
+}
+
+.scoreboard__when {
+  @include pdz.text(meta);
+  display: inline-flex;
+  align-items: center;
+  gap: pdz.space(3xs);
+  color: pdz.color(on-surface-variant);
+  border-radius: pdz.shape(corner-xs);
+  cursor: help;
+
+  &:focus-visible {
+    @include pdz.focus-ring;
+  }
+}
+
+.scoreboard__schedule {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: pdz.space(3xs);
+}
+
+.scoreboard__schedule-error {
+  @include pdz.text(label);
+  margin: 0;
+  color: pdz.color(danger);
+}
+
+.breakdown-cta__inner {
+  display: flex;
+  align-items: center;
+  gap: pdz.space(md);
+}
+
+.breakdown-cta__icon {
+  display: inline-grid;
+  flex: none;
+  place-items: center;
+  width: pdz.control-height(lg);
+  height: pdz.control-height(lg);
+  border-radius: pdz.shape(corner-full);
+  background: pdz.color(primary-container);
+  color: pdz.color(on-primary-container);
+}
+
+.breakdown-cta__text {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: pdz.space(3xs);
+  min-width: 0;
+}
+
+.breakdown-cta__title {
+  @include pdz.text(card-title);
+  color: pdz.color(on-surface);
+}
+
+.breakdown-cta__subtitle {
+  @include pdz.text(meta);
+  color: pdz.color(on-surface-variant);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.breakdown-cta__arrow {
+  flex: none;
+  color: pdz.color(on-surface-muted);
+  transition:
+    color pdz.duration(fast) pdz.easing(standard),
+    transform pdz.duration(fast) pdz.easing(standard);
+}
+
+.breakdown-cta:hover .breakdown-cta__arrow {
+  color: pdz.color(primary-accent);
+  transform: translateX(pdz.space(2xs));
+}
+
+.review__inner {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   gap: pdz.space(sm);
-  padding: pdz.space(sm) pdz.space(md);
-  border: 1px solid pdz.color("info");
-  border-radius: pdz.shape("corner-md");
-  background: pdz.color("info-container");
-  color: pdz.color("on-info-container");
+}
 
-  &--waiting {
-    border-color: pdz.color("outline-variant");
-    background: pdz.color("surface-container-low");
-    color: pdz.color("on-surface-variant");
-  }
+.review__body {
+  display: flex;
+  align-items: center;
+  gap: pdz.space(sm);
+  min-width: 0;
+}
 
-  &__body {
-    display: flex;
-    align-items: center;
-    gap: pdz.space(sm);
-    min-width: 0;
-  }
+.review__text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
 
-  &__text {
-    display: flex;
-    flex-direction: column;
-    min-width: 0;
-  }
+.review__title {
+  @include pdz.text(body-sm-strong);
+}
 
-  &__title {
-    @include text(label);
-    font-weight: var(--pdz-font-weight-semibold);
-  }
+.review__summary {
+  @include pdz.text(meta);
+}
 
-  &__summary {
-    @include text(label);
-  }
+.review__note {
+  @include pdz.text(meta);
+  font-style: italic;
+}
 
-  &__note {
-    @include text(label);
-    font-style: italic;
-  }
+.review__actions {
+  display: flex;
+  gap: pdz.space(2xs);
+}
 
-  &__actions {
-    display: flex;
-    gap: pdz.space(2xs);
-  }
-
-  &__action {
-    padding: pdz.space(3xs) pdz.space(md);
-    border: 1px solid pdz.color("outline-variant");
-    border-radius: pdz.shape("corner-full");
-    background: pdz.color("surface-container-lowest");
-    color: pdz.color("on-surface");
-    cursor: pointer;
-    @include text(label);
-
-    &:disabled {
-      opacity: 0.6;
-      cursor: default;
-    }
-
-    &--approve {
-      border-color: pdz.color("positive");
-      background: pdz.color("positive");
-      color: pdz.color("on-positive");
-    }
-  }
-
-  &__error {
-    @include text(label);
-    flex-basis: 100%;
-    margin: 0;
-    color: pdz.color("danger");
-  }
+.review__error {
+  @include pdz.text(label);
+  flex-basis: 100%;
+  margin: 0;
+  color: pdz.color(danger);
 }
 
 .games {
@@ -387,177 +295,139 @@
   flex-direction: column;
   gap: pdz.space(sm);
   padding: pdz.space(md);
-  border: 1px solid pdz.color("outline-variant");
-  border-radius: pdz.shape("corner-md");
-  background: pdz.color("surface-container-lowest");
+  border: 1px solid pdz.color(border-subtle);
+  border-radius: pdz.shape(corner-lg);
+  background: pdz.color(raised);
+}
 
-  &__header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: pdz.space(sm);
-  }
+.games__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: pdz.space(sm);
+}
 
-  &__title {
-    @include text(subtitle);
-    margin: 0;
-    color: pdz.color("on-surface");
-  }
+.games__title {
+  @include pdz.text(section-title);
+  margin: 0;
+  color: pdz.color(on-surface);
+}
 
-  &__tabs {
-    display: flex;
-    flex-wrap: wrap;
-    gap: pdz.space(2xs);
-  }
+.games__body {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: pdz.space(md);
 
-  &__body {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: pdz.space(md);
-
-    @include respond-above(medium) {
-      grid-template-columns: 1fr 1fr;
-    }
-  }
-
-  &__team {
-    display: flex;
-    flex-direction: column;
-    gap: pdz.space(2xs);
-    min-width: 0;
-  }
-
-  &__team-header {
-    display: flex;
-    align-items: center;
-    gap: pdz.space(2xs);
-  }
-
-  &__team--right &__team-header {
-    @include respond-above(medium) {
-      justify-content: flex-end;
-    }
-  }
-
-  &__team-name {
-    @include text(label);
-    font-weight: var(--pdz-font-weight-semibold);
-    color: pdz.color("on-surface");
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  &__won {
-    @include text(label);
-    padding: 0 pdz.space(2xs);
-    border-radius: pdz.shape("corner-full");
-    background: pdz.color("positive-container");
-    color: pdz.color("on-positive-container");
-    text-transform: uppercase;
-  }
-
-  &__roster {
-    display: flex;
-    flex-wrap: wrap;
-    gap: pdz.space(2xs);
-  }
-
-  &__team--right &__roster {
-    @include respond-above(medium) {
-      justify-content: flex-end;
-    }
-  }
-
-  &__slot {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 4rem;
-    padding: pdz.space(3xs);
-    border: 1px solid transparent;
-    border-radius: pdz.shape("corner-sm");
-    background: pdz.color("surface-container-low");
-
-    pdz-sprite {
-      width: 3rem;
-      height: 3rem;
-    }
-
-    &--survived {
-      border-color: pdz.color("positive");
-    }
-
-    &--fainted {
-      border-color: pdz.color("negative");
-      opacity: 0.6;
-
-      pdz-sprite {
-        filter: grayscale(100%);
-      }
-    }
-  }
-
-  &__kills {
-    display: inline-flex;
-    align-items: baseline;
-    gap: 0.15rem;
-    @include text(label);
-    font-variant-numeric: tabular-nums;
-    color: pdz.color("on-surface-variant");
-  }
-
-  &__kills-label {
-    @include text(label);
-    color: pdz.color("on-surface-disabled");
-  }
-
-  &__replay {
-    display: inline-flex;
-    align-self: flex-start;
-    align-items: center;
-    gap: pdz.space(3xs);
-    padding: pdz.space(3xs) pdz.space(sm);
-    border: 1px solid pdz.color("secondary-border");
-    border-radius: pdz.shape("corner-full");
-    background: pdz.color("surface-container-lowest");
-    color: pdz.color("on-secondary-container");
-    text-decoration: none;
-    @include text(label);
-
-    &:hover {
-      background: pdz.color("secondary");
-      color: pdz.color("on-secondary");
-    }
-  }
-
-  &__empty {
-    @include pdz-league-section-message();
+  @include pdz.respond-above(medium) {
+    grid-template-columns: 1fr 1fr;
   }
 }
 
-.matchup-skeleton {
-  &__title {
-    flex: 1;
-    min-width: 8rem;
-    max-width: 18rem;
-  }
+.games__team {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(2xs);
+  min-width: 0;
+}
 
-  &__cta {
-    margin: 0;
-  }
+.games__team-header {
+  display: flex;
+  align-items: center;
+  gap: pdz.space(xs);
+}
 
-  &__identity {
-    display: flex;
-    align-items: center;
-    gap: pdz.space(sm);
+.games__team--end .games__team-header,
+.games__team--end .games__roster {
+  @include pdz.respond-above(medium) {
+    justify-content: flex-end;
   }
+}
 
-  &__names {
-    display: flex;
-    flex-direction: column;
-    gap: pdz.space(2xs);
-    flex: 1;
-    min-width: 0;
+.games__team-name {
+  @include pdz.text(body-sm-strong);
+  color: pdz.color(on-surface);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.games__roster {
+  display: flex;
+  flex-wrap: wrap;
+  gap: pdz.space(2xs);
+}
+
+.games__slot {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 4rem;
+  padding: pdz.space(3xs);
+  border: 1px solid transparent;
+  border-radius: pdz.shape(corner-sm);
+  background: pdz.color(inset);
+
+  pdz-sprite {
+    width: 3rem;
+    height: 3rem;
   }
+}
+
+.games__slot--survived {
+  border-color: pdz.color(positive);
+}
+
+.games__slot--fainted {
+  border-color: pdz.color(negative);
+  opacity: 0.6;
+
+  pdz-sprite {
+    filter: grayscale(100%);
+  }
+}
+
+.games__kills {
+  @include pdz.text(label);
+  @include pdz.numeric;
+  display: inline-flex;
+  align-items: baseline;
+  gap: pdz.space(3xs);
+  color: pdz.color(on-surface-variant);
+}
+
+.games__kills-label {
+  @include pdz.text(label);
+  color: pdz.color(on-surface-muted);
+}
+
+.games__replay {
+  align-self: flex-start;
+}
+
+.games__empty {
+  @include pdz.text(body-sm);
+  margin: 0;
+  padding: pdz.space(md) 0;
+  color: pdz.color(on-surface-variant);
+  text-align: center;
+}
+
+.matchup-skeleton__title {
+  flex: 1;
+  min-width: 8rem;
+  max-width: 18rem;
+}
+
+.matchup-skeleton__identity {
+  display: flex;
+  align-items: center;
+  gap: pdz.space(sm);
+}
+
+.matchup-skeleton__names {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: pdz.space(2xs);
+  min-width: 0;
 }

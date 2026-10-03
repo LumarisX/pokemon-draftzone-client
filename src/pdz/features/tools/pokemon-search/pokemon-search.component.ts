@@ -1,4 +1,3 @@
-import { CommonModule } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { SaveSearchesServices, SavedSearch } from './save-searches.service';
@@ -10,6 +9,7 @@ import {
   SearchFilter,
 } from './pokemon-search.types';
 import { PageComponent } from '@pdz/shared/layout/page/page.component';
+import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 import { CardComponent } from '@pdz/shared/data/card/card.component';
 
@@ -18,10 +18,10 @@ import { CardComponent } from '@pdz/shared/data/card/card.component';
   templateUrl: './pokemon-search.component.html',
   styleUrl: './pokemon-search.component.scss',
   imports: [
-    CommonModule,
     PokemonSearchCoreComponent,
     IconComponent,
     PageComponent,
+    PageHeaderComponent,
     ButtonComponent,
     CardComponent,
   ],

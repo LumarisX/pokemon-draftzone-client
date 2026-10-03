@@ -1,12 +1,12 @@
 <pdz-page width="narrow">
   <div class="invite">
     <pdz-page-header
-      title="Organizer invite"
+      title="Organizer Invite"
       [eyebrow]="preview()?.leagueName ?? ''"
     />
 
     @if (loading()) {
-      <pdz-loading></pdz-loading>
+      <pdz-loading />
     } @else if (preview(); as invite) {
       @if (invite.alreadyOrganizer) {
         <pdz-empty-state
@@ -16,7 +16,7 @@
           [message]="'You can already manage ' + invite.tournamentName + '.'"
         >
           <a pdz-empty-state-actions pdz-button [routerLink]="manageLink">
-            Open manage
+            Open Manage
           </a>
         </pdz-empty-state>
       } @else {
@@ -42,7 +42,8 @@
                 type="text"
                 name="organizerName"
                 [maxlength]="nameMax"
-                [(ngModel)]="name"
+                [ngModel]="name()"
+                (ngModelChange)="name.set($event)"
               />
             </label>
           </form>
@@ -54,7 +55,8 @@
             pdz-button
             type="submit"
             form="accept-invite"
-            [disabled]="accepting() || !isValidName(name)"
+            [loading]="accepting()"
+            [disabled]="!isValidName(name())"
           >
             Accept
           </button>
@@ -64,7 +66,7 @@
             variant="outlined"
             [routerLink]="tournamentLink"
           >
-            Not now
+            Not Now
           </a>
         </pdz-empty-state>
       }
@@ -81,7 +83,7 @@
           variant="outlined"
           [routerLink]="tournamentLink"
         >
-          Go to the tournament
+          Go to the Tournament
         </a>
       </pdz-empty-state>
     }

@@ -1,40 +1,30 @@
-import { CommonModule } from '@angular/common';
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
-import { RouterModule } from '@angular/router';
-import { Subject, takeUntil } from 'rxjs';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { RouterLink } from '@angular/router';
+import { LeagueZoneService } from '@pdz/features/league-zone/league-zone.service';
+import { CardComponent } from '@pdz/shared/data/card/card.component';
+import { EmptyStateComponent } from '@pdz/shared/feedback/empty-state/empty-state.component';
 import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
 import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
-import { LeagueZoneService } from '../../league-zone.service';
-import { League } from '../../league.interface';
+import { catchError, of } from 'rxjs';
 
 @Component({
   selector: 'pdz-tournament-pools',
   templateUrl: './tournament-pools.component.html',
   styleUrl: './tournament-pools.component.scss',
-  imports: [CommonModule, RouterModule, LoadingComponent, PageHeaderComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    RouterLink,
+    CardComponent,
+    EmptyStateComponent,
+    LoadingComponent,
+    PageHeaderComponent,
+  ],
 })
-export class TournamentPoolsComponent implements OnInit, OnDestroy {
-  private leagueService = inject(LeagueZoneService);
-  private destroy$ = new Subject<void>();
-
-  leagueInfo: League.LeagueInfo | null = null;
-
-  ngOnInit(): void {
-    this.leagueService
+export class TournamentPoolsComponent {
+  readonly leagueInfo = toSignal(
+    inject(LeagueZoneService)
       .getLeagueInfo()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (leagueInfo) => {
-          this.leagueInfo = leagueInfo;
-        },
-        error: (error) => {
-          console.error('Error fetching league info:', error);
-        },
-      });
-  }
-
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
-  }
+      .pipe(catchError(() => of(null))),
+  );
 }

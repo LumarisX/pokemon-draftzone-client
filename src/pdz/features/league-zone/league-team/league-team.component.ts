@@ -1,44 +1,52 @@
-import { CommonModule } from '@angular/common';
 import { HttpEventType, HttpResponse } from '@angular/common/http';
-import { Component, inject, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute, RouterModule } from '@angular/router';
-import { UploadService } from '@pdz/core/services/upload.service';
-import { DialogService } from '@pdz/shared/dialogs/dialog/dialog.service';
-import { EmptyStateComponent } from '@pdz/shared/feedback/empty-state/empty-state.component';
-import { IconComponent } from '@pdz/shared/images/icon/icon.component';
-import { TooltipDirective } from '@pdz/shared/tooltip/tooltip.directive';
-import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
-import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
-import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
-import { interval, Observable, of, Subject, switchMap } from 'rxjs';
 import {
-  distinctUntilChanged,
-  filter,
-  finalize,
-  map,
-  takeUntil,
-} from 'rxjs/operators';
-import { LeagueScheduleWidgetComponent } from '../league-widgets/league-schedule-widget/league-schedule-widget.component';
-import { LeagueTradeWidgetComponent } from '../league-widgets/league-trade-widget/league-trade-widget.component';
-import { LeagueZoneService } from '../league-zone.service';
-import { League, TradeLog } from '../league.interface';
-import { getLogoUrl } from '../league.util';
+  Component,
+  DestroyRef,
+  OnInit,
+  computed,
+  inject,
+  signal,
+  viewChild,
+} from '@angular/core';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
+import { ActivatedRoute } from '@angular/router';
+import { UploadService } from '@pdz/core/services/upload.service';
 import {
   CoachEditDialogComponent,
   CoachEditDialogData,
   CoachEditDialogResult,
-} from '../dialogs/coach-edit-dialog/coach-edit-dialog.component';
+} from '@pdz/features/league-zone/dialogs/coach-edit-dialog/coach-edit-dialog.component';
 import {
   TeamEditDialogComponent,
   TeamEditDialogData,
   TeamEditDialogResult,
-} from '../dialogs/team-edit-dialog/team-edit-dialog.component';
+} from '@pdz/features/league-zone/dialogs/team-edit-dialog/team-edit-dialog.component';
+import { LeagueScheduleWidgetComponent } from '@pdz/features/league-zone/league-widgets/league-schedule-widget/league-schedule-widget.component';
+import { LeagueTradeWidgetComponent } from '@pdz/features/league-zone/league-widgets/league-trade-widget/league-trade-widget.component';
+import { LeagueZoneService } from '@pdz/features/league-zone/league-zone.service';
+import { League } from '@pdz/features/league-zone/league.interface';
+import {
+  getLogoUrl,
+  getTeamLogoSrc,
+} from '@pdz/features/league-zone/league.util';
+import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
+import { CardComponent } from '@pdz/shared/data/card/card.component';
+import { ChipComponent } from '@pdz/shared/data/chip/chip.component';
+import { RecordComponent } from '@pdz/shared/data/record/record.component';
+import { DialogService } from '@pdz/shared/dialogs/dialog/dialog.service';
+import { EmptyStateComponent } from '@pdz/shared/feedback/empty-state/empty-state.component';
+import { IconComponent } from '@pdz/shared/images/icon/icon.component';
+import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
+import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
+import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
+import { TooltipDirective } from '@pdz/shared/tooltip/tooltip.directive';
+import { Observable, catchError, interval, map, of, startWith, switchMap } from 'rxjs';
+import { distinctUntilChanged, filter, finalize } from 'rxjs/operators';
 import {
   TradeProposeDialogComponent,
   TradeProposeDialogData,
   TradeProposeDialogResult,
 } from './trade-propose-dialog/trade-propose-dialog.component';
-import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 
 const MAX_LOGO_SIZE = 5 * 1024 * 1024;
 const ALLOWED_LOGO_TYPES = [
@@ -47,142 +55,111 @@ const ALLOWED_LOGO_TYPES = [
   'image/gif',
   'image/webp',
 ];
+const CLOCK_TICK_MS = 30_000;
 
 @Component({
   selector: 'pdz-league-team',
   imports: [
-    CommonModule,
     ButtonComponent,
-    RouterModule,
-    LoadingComponent,
+    CardComponent,
+    ChipComponent,
     EmptyStateComponent,
     IconComponent,
-    TooltipDirective,
-    SpriteComponent,
-    LeagueTradeWidgetComponent,
     LeagueScheduleWidgetComponent,
+    LeagueTradeWidgetComponent,
+    LoadingComponent,
     PageHeaderComponent,
+    RecordComponent,
+    SpriteComponent,
+    TooltipDirective,
   ],
   templateUrl: './league-team.component.html',
-  styleUrls: ['./league-team.component.scss'],
+  styleUrl: './league-team.component.scss',
 })
-export class LeagueTeamComponent implements OnInit, OnDestroy {
+export class LeagueTeamComponent implements OnInit {
   private readonly leagueService = inject(LeagueZoneService);
   private readonly route = inject(ActivatedRoute);
   private readonly dialogs = inject(DialogService);
   private readonly uploadService = inject(UploadService);
+  private readonly destroyRef = inject(DestroyRef);
 
-  teamData?: League.LeagueTeam;
-  scheduleRounds!: League.ScheduleRound[];
-  tradeRounds?: { name: string; trades: TradeLog[] }[];
-  getLogoUrl = getLogoUrl;
-  coachCurrentTime = '';
+  private readonly tradeWidget = viewChild(LeagueTradeWidgetComponent);
 
-  saving = false;
-  saveError = '';
+  readonly teamData = signal<League.LeagueTeam | null>(null);
+  readonly stageSlug = signal<string | null>(null);
+  readonly saving = signal(false);
+  readonly saveError = signal('');
 
-  stageSlug: string | null = null;
-  currentRoundIndex = 0;
+  private readonly scheduleRounds = signal<League.ScheduleRound[]>([]);
+  private readonly currentRoundIndex = signal(0);
 
-  @ViewChild(LeagueTradeWidgetComponent)
-  private tradeWidget?: LeagueTradeWidgetComponent;
+  private readonly now = toSignal(
+    interval(CLOCK_TICK_MS).pipe(
+      startWith(0),
+      map(() => new Date()),
+    ),
+    { initialValue: new Date() },
+  );
 
-  get currentRoundName(): string | undefined {
-    return this.scheduleRounds?.[this.currentRoundIndex]?.name;
-  }
-
-  total = {
-    cost: 0,
-    kill: 0,
-    deaths: 0,
-  };
-
-  private readonly destroy$ = new Subject<void>();
-
-  getCurrentTimeInTimezone(timezone?: string): string {
+  readonly coachCurrentTime = computed(() => {
+    const timezone = this.teamData()?.timezone;
     if (!timezone) return '';
     try {
-      const now = new Date();
-      const formatter = new Intl.DateTimeFormat('en-US', {
+      return new Intl.DateTimeFormat('en-US', {
         timeZone: timezone,
         hour: 'numeric',
         minute: '2-digit',
         hour12: true,
-      });
-      return formatter.format(now);
-    } catch (error) {
+      }).format(this.now());
+    } catch {
       return timezone;
     }
-  }
+  });
+
+  readonly logoSrc = computed(() => getLogoUrl(this.teamData()?.logo));
+
+  readonly totals = computed(() =>
+    (this.teamData()?.draft ?? []).reduce(
+      (sum, pokemon) => ({
+        cost: sum.cost + pokemon.cost,
+        kills: sum.kills + (pokemon.record?.kills ?? 0),
+        deaths: sum.deaths + (pokemon.record?.deaths ?? 0),
+      }),
+      { cost: 0, kills: 0, deaths: 0 },
+    ),
+  );
 
   ngOnInit(): void {
-    this.startCoachClock();
-
     this.leagueService
       .listStages()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((stages) => {
-        this.stageSlug = stages[0]?.slug ?? null;
+      .pipe(
+        catchError(() => of([])),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe((stages) => this.stageSlug.set(stages[0]?.slug ?? null));
 
-        this.route.paramMap
-          .pipe(
-            map((params) => params.get('teamSlug')),
-            distinctUntilChanged(),
-            takeUntil(this.destroy$),
-          )
-          .subscribe(() => {
-            this.teamData = undefined;
-
-            this.loadTeam();
-            this.loadSchedule();
-            this.loadTrades();
-          });
-      });
-  }
-
-  private startCoachClock(): void {
-    interval(30_000)
-      .pipe(takeUntil(this.destroy$))
+    this.route.paramMap
+      .pipe(
+        map((params) => params.get('teamSlug')),
+        distinctUntilChanged(),
+        takeUntilDestroyed(this.destroyRef),
+      )
       .subscribe(() => {
-        this.updateCoachCurrentTime();
+        this.teamData.set(null);
+        this.loadTeam();
+        this.loadSchedule();
       });
   }
 
-  private updateCoachCurrentTime(): void {
-    this.coachCurrentTime = this.getCurrentTimeInTimezone(
-      this.teamData?.timezone,
-    );
-  }
-
-  private loadTeam(): void {
-    this.leagueService
-      .getTeam()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (data) => {
-          this.teamData = data;
-          this.updateCoachCurrentTime();
-          this.total = data.draft.reduce(
-            (sum, p) => ({
-              cost: sum.cost + p.cost,
-              kill: sum.kill + (p.record?.kills ?? 0),
-              deaths: sum.deaths + (p.record?.deaths ?? 0),
-            }),
-            {
-              cost: 0,
-              kill: 0,
-              deaths: 0,
-            },
-          );
-        },
-        error: (error) => {
-          console.error('Error loading team data:', error);
-        },
-      });
+  killRatio(pokemon: League.LeaguePokemon): string {
+    const kills = pokemon.record?.kills ?? 0;
+    const deaths = pokemon.record?.deaths ?? 0;
+    if (deaths) return (kills / deaths).toFixed(1);
+    return kills > 0 ? `${kills}` : '—';
   }
 
   async openTeamEdit(): Promise<void> {
-    const team = this.teamData;
+    const team = this.teamData();
     if (!team?.isCoach) return;
 
     const result = await this.dialogs.open<
@@ -191,17 +168,14 @@ export class LeagueTeamComponent implements OnInit, OnDestroy {
       TeamEditDialogData
     >(TeamEditDialogComponent, {
       heading: 'Edit Team Info',
-      data: {
-        teamName: team.name,
-        logoUrl: this.getLogoUrl(team.logo),
-      },
+      data: { teamName: team.name, logoUrl: getTeamLogoSrc(team.logo) },
     }).closed;
 
-    if (result) this.saveTeamEdit(result);
+    if (result) this.saveTeamEdit(team, result);
   }
 
   async openCoachEdit(): Promise<void> {
-    const team = this.teamData;
+    const team = this.teamData();
     if (!team?.isCoach) return;
 
     const result = await this.dialogs.open<
@@ -218,13 +192,14 @@ export class LeagueTeamComponent implements OnInit, OnDestroy {
       },
     }).closed;
 
-    if (result) this.saveCoachEdit(result);
+    if (result) this.saveCoachEdit(team, result);
   }
 
   async openTradePropose(): Promise<void> {
-    const team = this.teamData;
+    const team = this.teamData();
     if (!team?.isCoach) return;
 
+    const roundIndex = this.currentRoundIndex();
     const result = await this.dialogs.open<
       TradeProposeDialogComponent,
       TradeProposeDialogResult,
@@ -236,19 +211,46 @@ export class LeagueTeamComponent implements OnInit, OnDestroy {
         teamId: team.id,
         teamName: team.name,
         roster: team.draft,
-        rosterCost: this.total.cost,
+        rosterCost: this.totals().cost,
         pointTotal: team.pointTotal,
-        roundIndex: this.currentRoundIndex,
-        roundName: this.currentRoundName,
+        roundIndex,
+        roundName: this.scheduleRounds()[roundIndex]?.name,
       },
     }).closed;
 
     if (result) this.submitTrade(team.id, result);
   }
 
+  private patchTeam(patch: Partial<League.LeagueTeam>): void {
+    this.teamData.update((team) => (team ? { ...team, ...patch } : team));
+  }
+
+  private loadTeam(): void {
+    this.leagueService
+      .getTeam()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (data) => this.teamData.set(data),
+        error: () => this.saveError.set('Could not load this team.'),
+      });
+  }
+
+  private loadSchedule(): void {
+    this.leagueService
+      .getSchedule()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: (data) => {
+          this.scheduleRounds.set(data.rounds);
+          this.currentRoundIndex.set(Math.max(data.currentRoundIndex, 0));
+        },
+        error: () => this.scheduleRounds.set([]),
+      });
+  }
+
   private submitTrade(teamId: string, result: TradeProposeDialogResult): void {
-    this.saving = true;
-    this.saveError = '';
+    this.saving.set(true);
+    this.saveError.set('');
 
     this.leagueService
       .sendTrade({
@@ -257,22 +259,22 @@ export class LeagueTeamComponent implements OnInit, OnDestroy {
         roundIndex: result.roundIndex,
       })
       .pipe(
-        finalize(() => {
-          this.saving = false;
-        }),
-        takeUntil(this.destroy$),
+        finalize(() => this.saving.set(false)),
+        takeUntilDestroyed(this.destroyRef),
       )
       .subscribe({
-        next: () => this.tradeWidget?.reload(),
-        error: (error) => {
-          this.saveError = error?.message || 'Could not submit the trade.';
-        },
+        next: () => this.tradeWidget()?.reload(),
+        error: (error) =>
+          this.saveError.set(error?.message || 'Could not submit the trade.'),
       });
   }
 
-  private saveTeamEdit(result: TeamEditDialogResult): void {
-    const team = this.teamData;
-    if (!team?.slug) return;
+  private saveTeamEdit(
+    team: League.LeagueTeam,
+    result: TeamEditDialogResult,
+  ): void {
+    if (!team.slug) return;
+    const teamSlug = team.slug;
 
     const renamed = result.teamName !== team.name;
     if (!renamed && !result.logoFile) return;
@@ -280,95 +282,86 @@ export class LeagueTeamComponent implements OnInit, OnDestroy {
     if (result.logoFile) {
       const invalid = this.validateLogo(result.logoFile);
       if (invalid) {
-        this.saveError = invalid;
+        this.saveError.set(invalid);
         return;
       }
     }
 
-    this.saving = true;
-    this.saveError = '';
+    this.saving.set(true);
+    this.saveError.set('');
 
     const rename$: Observable<unknown> = renamed
-      ? this.leagueService.updateTeam(team.slug, { teamName: result.teamName })
+      ? this.leagueService.updateTeam(teamSlug, { teamName: result.teamName })
       : of(null);
 
     rename$
       .pipe(
         switchMap(() => {
-          if (renamed) team.name = result.teamName;
+          if (renamed) this.patchTeam({ name: result.teamName });
           return result.logoFile
-            ? this.uploadLogo(result.logoFile)
+            ? this.uploadLogo(teamSlug, result.logoFile)
             : of<string | null>(null);
         }),
-        finalize(() => {
-          this.saving = false;
-        }),
-        takeUntil(this.destroy$),
+        finalize(() => this.saving.set(false)),
+        takeUntilDestroyed(this.destroyRef),
       )
       .subscribe({
         next: (logoKey) => {
-          if (logoKey) team.logo = logoKey;
+          if (logoKey) this.patchTeam({ logo: logoKey });
         },
-        error: (error) => {
-          this.saveError = error?.message || 'Could not save team info.';
-        },
+        error: (error) =>
+          this.saveError.set(error?.message || 'Could not save team info.'),
       });
   }
 
-  private saveCoachEdit(result: CoachEditDialogResult): void {
-    const team = this.teamData;
-    const coachId = team?.coachId;
-    if (!team || !coachId) return;
+  private saveCoachEdit(
+    team: League.LeagueTeam,
+    result: CoachEditDialogResult,
+  ): void {
+    if (!team.coachId) return;
 
-    this.saving = true;
-    this.saveError = '';
+    this.saving.set(true);
+    this.saveError.set('');
 
     this.leagueService
-      .updateCoachProfile(coachId, result)
-      .pipe(takeUntil(this.destroy$))
+      .updateCoachProfile(team.coachId, result)
+      .pipe(
+        finalize(() => this.saving.set(false)),
+        takeUntilDestroyed(this.destroyRef),
+      )
       .subscribe({
-        next: () => {
-          team.coach = result.name;
-          team.gameName = result.gameName;
-          team.discordName = result.discordName;
-          team.timezone = result.timezone;
-          this.updateCoachCurrentTime();
-          this.saving = false;
-        },
-        error: (error) => {
-          this.saveError = error?.message || 'Could not save coach info.';
-          this.saving = false;
-        },
+        next: () =>
+          this.patchTeam({
+            coach: result.name,
+            gameName: result.gameName,
+            discordName: result.discordName,
+            timezone: result.timezone,
+          }),
+        error: (error) =>
+          this.saveError.set(error?.message || 'Could not save coach info.'),
       });
   }
 
   private validateLogo(file: File): string | null {
     if (!ALLOWED_LOGO_TYPES.includes(file.type))
-      return `Invalid file type. Allowed: ${ALLOWED_LOGO_TYPES.join(', ')}`;
+      return 'Use a JPEG, PNG, GIF or WebP image.';
     if (file.size > MAX_LOGO_SIZE)
-      return `File size exceeds ${MAX_LOGO_SIZE / 1024 / 1024}MB`;
+      return `Logos must be under ${MAX_LOGO_SIZE / 1024 / 1024}MB.`;
     return null;
   }
 
-  private uploadLogo(file: File): Observable<string | null> {
-    const teamSlug = this.teamData?.slug;
-    if (!teamSlug) return of(null);
-
+  private uploadLogo(teamSlug: string, file: File): Observable<string | null> {
     return this.leagueService
       .getLeagueUploadPresignedUrl(file.name, file.type || 'image/png')
       .pipe(
         switchMap((presigned) => {
-          if (!presigned?.url)
-            throw new Error('Failed to get pre-signed URL from server');
+          if (!presigned?.url) throw new Error('Could not start the upload.');
           return this.uploadService.uploadToS3(presigned, file).pipe(
             filter((event) => event.type !== HttpEventType.UploadProgress),
             switchMap((event) => {
               if (!(event instanceof HttpResponse))
                 return of<string | null>(null);
-              if (!event.ok)
-                throw new Error(
-                  `S3 upload failed with status: ${event.status}`,
-                );
+              if (!event.ok) throw new Error('The logo upload failed.');
               return this.leagueService
                 .updateTeam(teamSlug, { logo: presigned.key })
                 .pipe(map(() => presigned.key));
@@ -376,37 +369,5 @@ export class LeagueTeamComponent implements OnInit, OnDestroy {
           );
         }),
       );
-  }
-
-  private loadSchedule(): void {
-    this.leagueService
-      .getSchedule()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (data) => {
-          this.scheduleRounds = data.rounds;
-          this.currentRoundIndex = Math.max(data.currentRoundIndex, 0);
-        },
-        error: (error) => {
-          console.error('Error loading schedule:', error);
-        },
-      });
-  }
-
-  private loadTrades(): void {
-    if (!this.stageSlug) return;
-    this.leagueService
-      .getTrades()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (data) => {
-          this.tradeRounds = data.rounds;
-        },
-      });
-  }
-
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
   }
 }

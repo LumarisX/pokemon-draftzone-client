@@ -1,9 +1,9 @@
 import { Component, OnInit, inject, input } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DRAFT_OVERVIEW_PATH } from '@pdz/core/route-paths';
-import { Draft } from '../../draft.model';
+import { Draft } from '@pdz/features/drafts/draft.model';
 import { Opponent } from '../opponent.model';
-import { DraftService } from '../../draft-overview/draft.service';
+import { DraftService } from '@pdz/features/drafts/draft-overview/draft.service';
 import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
 import {
   OpponentFormCoreComponent,

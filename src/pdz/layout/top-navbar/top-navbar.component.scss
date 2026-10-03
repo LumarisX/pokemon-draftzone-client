@@ -1,11 +1,8 @@
-@use "tokens/breakpoints" as *;
-@use "mixins" as *;
 @use "mixins/menu" as *;
 @use "pdz-theming" as pdz;
 
 :host {
   display: block;
-  box-shadow: var(--pdz-level-2);
   z-index: pdz.z(navbar);
 }
 
@@ -15,8 +12,8 @@
   gap: pdz.space(2xs);
   min-height: var(--pdz-navbar-height);
   padding: 0 pdz.space(sm);
-  box-sizing: border-box;
-  background-color: pdz.color(surface);
+  background-color: pdz.color(raised);
+  border-bottom: 1px solid pdz.color(border-subtle);
   color: pdz.color(on-surface);
 }
 
@@ -49,7 +46,7 @@
   display: none;
 }
 
-@include respond-above(medium) {
+@include pdz.respond-above(medium) {
   .mobile-menu {
     display: none;
   }

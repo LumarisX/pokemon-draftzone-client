@@ -5,9 +5,9 @@
       intent, or waitlist one, and they will appear here.
     </p>
   } @else {
-    <label pdz-field label="Replacement coach" required>
+    <label pdz-field label="Replacement Coach" required>
       <pdz-select
-        aria-label="Replacement coach"
+        aria-label="Replacement Coach"
         placeholder="Choose a sub"
         [ngModel]="applicationId()"
         (ngModelChange)="pick($event)"
@@ -23,7 +23,7 @@
     </label>
 
     @if (selected()) {
-      <label pdz-field label="Team name">
+      <label pdz-field label="Team Name">
         <input
           pdz-input
           [ngModel]="teamName()"

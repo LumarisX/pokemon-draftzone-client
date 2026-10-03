@@ -1,21 +1,19 @@
 <pdz-page>
   <div class="pokemon-search">
-    <div class="toolbar">
-      <h2 class="toolbar__title">Pokémon Search</h2>
-      <div class="toolbar__spacer"></div>
+    <pdz-page-header title="Pokémon Search">
       <button
-        type="button"
+        pdz-page-header-actions
         pdz-button
-        iconOnly
-        size="sm"
-        [variant]="bookmarksPanelOpen ? 'tonal' : 'ghost'"
-        [color]="bookmarksPanelOpen ? 'primary' : 'neutral'"
+        type="button"
+        icon="bookmarks"
+        variant="outlined"
+        color="neutral"
+        [attr.aria-pressed]="bookmarksPanelOpen"
         (click)="openBookmarksPanel()"
-        aria-label="Saved searches"
       >
-        <pdz-icon name="bookmarks"></pdz-icon>
+        Saved Searches
       </button>
-    </div>
+    </pdz-page-header>
 
     <pdz-pokemon-search-core></pdz-pokemon-search-core>
   </div>

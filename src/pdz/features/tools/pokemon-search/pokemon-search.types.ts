@@ -4,8 +4,6 @@ export type SearchLogicalMode = 'and' | 'or';
 
 export type SearchFieldType = 'string' | 'number' | 'boolean';
 
-// ─── Operators ────────────────────────────────────────────────────────────────
-
 export const OPERATOR_DEFINITIONS = [
   { key: 'eq', symbol: '=', label: 'Equals' },
   { key: 'ne', symbol: '≠', label: 'Not Equals' },
@@ -74,16 +72,11 @@ export type SearchField =
   | 'learns'
   | 'coverage';
 
-// ─── Operator groups ──────────────────────────────────────────────────────────
-
-// Text search: partial match
 const CONTAINS_OPERATORS: readonly SearchOperator[] = [
   'contains',
   'notContains',
 ];
-// Categorical: exact match
 const EXACT_OPERATORS: readonly SearchOperator[] = ['eq', 'ne'];
-// Numeric: full comparison range (no multi-value in/nin — no UI for it)
 const NUMERIC_OPERATORS: readonly SearchOperator[] = [
   'eq',
   'ne',
@@ -92,10 +85,7 @@ const NUMERIC_OPERATORS: readonly SearchOperator[] = [
   'lt',
   'lte',
 ];
-// Boolean: yes/no chips already cover both states via eq
 const BOOLEAN_OPERATORS: readonly SearchOperator[] = ['eq'];
-
-// ─── Field categories ─────────────────────────────────────────────────────────
 
 export const FIELD_CATEGORIES = [
   'Identity',
@@ -120,7 +110,6 @@ export type FieldDefinition = {
 };
 
 export const FIELD_DEFINITIONS: FieldDefinition[] = [
-  // Identity
   {
     key: 'name',
     label: 'Name',
@@ -128,13 +117,6 @@ export const FIELD_DEFINITIONS: FieldDefinition[] = [
     operators: CONTAINS_OPERATORS,
     category: 'Identity',
   },
-  // {
-  //   key: 'baseSpecies',
-  //   label: 'Base Species',
-  //   type: 'string',
-  //   operators: CONTAINS_OPERATORS,
-  //   category: 'Identity',
-  // },
   {
     key: 'num',
     label: 'Dex Number',
@@ -149,7 +131,6 @@ export const FIELD_DEFINITIONS: FieldDefinition[] = [
     operators: NUMERIC_OPERATORS,
     category: 'Identity',
   },
-  // Typing
   {
     key: 'types',
     label: 'Types',
@@ -182,7 +163,6 @@ export const FIELD_DEFINITIONS: FieldDefinition[] = [
     category: 'Typing',
     valueType: 'type',
   },
-  // Stats
   {
     key: 'hp',
     label: 'HP',
@@ -246,7 +226,6 @@ export const FIELD_DEFINITIONS: FieldDefinition[] = [
     operators: NUMERIC_OPERATORS,
     category: 'Stats',
   },
-  // Abilities
   {
     key: 'abilities',
     label: 'Abilities',
@@ -254,14 +233,6 @@ export const FIELD_DEFINITIONS: FieldDefinition[] = [
     operators: CONTAINS_OPERATORS,
     category: 'Abilities',
   },
-  // {
-  //   key: 'requiredAbility',
-  //   label: 'Required Ability',
-  //   type: 'string',
-  //   operators: CONTAINS_OPERATORS,
-  //   category: 'Abilities',
-  // },
-  // Tier / Meta
   {
     key: 'tier',
     label: 'Tier',
@@ -283,20 +254,6 @@ export const FIELD_DEFINITIONS: FieldDefinition[] = [
     operators: EXACT_OPERATORS,
     category: 'Tier / Meta',
   },
-  // {
-  //   key: 'isNonstandard',
-  //   label: 'Nonstandard',
-  //   type: 'string',
-  //   operators: EXACT_OPERATORS,
-  //   category: 'Tier / Meta',
-  // },
-  // {
-  //   key: 'nfe',
-  //   label: 'Not Fully Evolved',
-  //   type: 'boolean',
-  //   operators: BOOLEAN_OPERATORS,
-  //   category: 'Tags',
-  // },
   {
     key: 'evolved',
     label: 'Fully Evolved',
@@ -369,7 +326,7 @@ export const FIELD_DEFINITIONS: FieldDefinition[] = [
   },
   {
     key: 'prevo',
-    label: 'Pre-evolution',
+    label: 'Pre-Evolution',
     type: 'string',
     operators: CONTAINS_OPERATORS,
     category: 'Evolution',
@@ -381,20 +338,6 @@ export const FIELD_DEFINITIONS: FieldDefinition[] = [
     operators: CONTAINS_OPERATORS,
     category: 'Evolution',
   },
-  // {
-  //   key: 'requiredItem',
-  //   label: 'Required Item',
-  //   type: 'string',
-  //   operators: CONTAINS_OPERATORS,
-  //   category: 'Evolution',
-  // },
-  // {
-  //   key: 'requiredMove',
-  //   label: 'Required Move',
-  //   type: 'string',
-  //   operators: CONTAINS_OPERATORS,
-  //   category: 'Evolution',
-  // },
   {
     key: 'learns',
     label: 'Learnset',
@@ -411,8 +354,6 @@ export const FIELD_DEFINITIONS: FieldDefinition[] = [
     category: 'Moves',
   },
 ];
-
-// ─── Move fields ──────────────────────────────────────────────────────────────
 
 export const MOVE_FIELD_DEFINITIONS = [
   {
@@ -468,8 +409,6 @@ export type MoveFieldDefinition = {
   type: SearchFieldType;
   operators: readonly SearchOperator[];
 };
-
-// ─── Filter types ─────────────────────────────────────────────────────────────
 
 export type MoveFilter = {
   field: MoveField;

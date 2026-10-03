@@ -6,24 +6,30 @@
         <div
           class="summary__header summary__header--name summary__header--sortable"
           [class.summary__header--sorted]="currentSort.active === 'name'"
-          [class.summary__header--reversed]="
-            currentSort.active === 'name' && currentSort.direction === 'asc'
-          "
-          (click)="toggleSort('name')"
         >
-          Name
+          <button
+            type="button"
+            class="summary__sort"
+            [attr.aria-pressed]="currentSort.active === 'name'"
+            (click)="toggleSort('name')"
+          >
+            Name
+          </button>
         </div>
         <div class="summary__header summary__header--abilities">Abilities</div>
         @for (col of statColumns; track col.key) {
           <div
             class="summary__header summary__header--stat summary__header--sortable"
             [class.summary__header--sorted]="currentSort.active === col.key"
-            [class.summary__header--reversed]="
-              currentSort.active === col.key && currentSort.direction === 'asc'
-            "
-            (click)="toggleSort(col.key)"
           >
-            {{ col.label }}
+            <button
+              type="button"
+              class="summary__sort"
+              [attr.aria-pressed]="currentSort.active === col.key"
+              (click)="toggleSort(col.key)"
+            >
+              {{ col.label }}
+            </button>
           </div>
         }
       </div>

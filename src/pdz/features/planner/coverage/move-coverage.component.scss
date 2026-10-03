@@ -11,7 +11,7 @@
   gap: pdz.space(md);
   max-width: 100%;
 
-  @media (max-width: 640px) {
+  @include pdz.respond-below(small) {
     flex-direction: column;
     align-items: center;
   }
@@ -24,7 +24,7 @@
     max-height: 18rem;
     overflow-y: auto;
 
-    @media (max-width: 640px) {
+    @include pdz.respond-below(small) {
       grid-template-columns: repeat(auto-fit, 6rem);
       max-height: none;
       justify-content: center;
@@ -45,7 +45,7 @@
       background-color pdz.duration(fast) pdz.easing(standard);
 
     &:hover:not(&--selected) {
-      background: pdz.color(surface-container-high);
+      background: pdz.color(state-hover);
     }
 
     &:focus-visible {
@@ -67,12 +67,14 @@
 }
 
 .chart-tooltip {
+  @include pdz.text(meta);
   position: fixed;
-  background-color: pdz.color(secondary);
-  color: pdz.color(on-secondary);
   padding: pdz.space(3xs) pdz.space(xs);
+  border: 1px solid pdz.color(border-subtle);
   border-radius: pdz.shape(corner-xs);
-  font-size: pdz.font-size(xs);
+  background-color: pdz.color(floating);
+  box-shadow: var(--pdz-elevation-2);
+  color: pdz.color(on-surface);
   pointer-events: none;
   opacity: 0;
 }

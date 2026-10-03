@@ -1,7 +1,7 @@
 <pdz-page width="narrow">
   <div class="edit">
     <pdz-page-header
-      title="Edit league"
+      title="Edit League"
       [backLink]="leagueLink"
       [backLabel]="league()?.name ?? 'League'"
     />
@@ -17,7 +17,7 @@
       @if (league.isOwner) {
         <pdz-card padding="lg">
           <form class="edit__form" (ngSubmit)="submit()">
-            <label pdz-field label="League name" required>
+            <label pdz-field label="League Name" required>
               <input
                 pdz-input
                 type="text"
@@ -44,7 +44,7 @@
             </label>
 
             <pdz-logo-field
-              label="League logo"
+              label="League Logo"
               folder="league-logos"
               [value]="logo()"
               [disabled]="saving()"
@@ -68,7 +68,7 @@
           heading="Only the league owner can edit it"
         >
           <a pdz-empty-state-actions pdz-button [routerLink]="leagueLink">
-            Back to the league
+            Back to the League
           </a>
         </pdz-empty-state>
       }

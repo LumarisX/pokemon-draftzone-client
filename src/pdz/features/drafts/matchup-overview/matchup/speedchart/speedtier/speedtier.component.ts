@@ -6,7 +6,7 @@ import {
 } from '@angular/core';
 import { ChipComponent, ChipTone } from '@pdz/shared/data/chip/chip.component';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
-import { Speedtier } from '../../../matchup-interface';
+import { Speedtier } from '@pdz/features/drafts/matchup-overview/matchup-interface';
 
 @Component({
   selector: 'pdz-speedtier',

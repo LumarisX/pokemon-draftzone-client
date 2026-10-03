@@ -23,12 +23,12 @@ import { BinderStore, CARDS_PER_SHEET } from './binder-store';
         (valueChange)="store.setPrintScope($any($event))"
         aria-label="Which cards to print"
       >
-        <pdz-segmented-option value="missing" label="Missing only" />
-        <pdz-segmented-option value="all" label="All cards" />
+        <pdz-segmented-option value="missing" label="Missing Only" />
+        <pdz-segmented-option value="all" label="All Cards" />
       </pdz-segmented>
 
       <div class="print-dialog__range">
-        <label pdz-field label="From page" inline>
+        <label pdz-field label="From Page" inline>
           <input
             #from
             pdz-input
@@ -40,7 +40,7 @@ import { BinderStore, CARDS_PER_SHEET } from './binder-store';
             (change)="setRange(from.value, to.value)"
           />
         </label>
-        <label pdz-field label="To page" inline>
+        <label pdz-field label="To Page" inline>
           <input
             #to
             pdz-input
@@ -89,19 +89,19 @@ import { BinderStore, CARDS_PER_SHEET } from './binder-store';
       .print-dialog {
         display: flex;
         flex-direction: column;
-        gap: 1rem;
+        gap: var(--pdz-space-lg);
       }
 
       .print-dialog__range {
         display: flex;
         flex-wrap: wrap;
-        gap: 0.75rem;
+        gap: var(--pdz-space-md);
       }
 
       .print-dialog__summary,
       .print-dialog__hint {
         margin: 0;
-        font-size: 0.875rem;
+        font-size: var(--pdz-font-size-sm);
       }
 
       .print-dialog__hint {

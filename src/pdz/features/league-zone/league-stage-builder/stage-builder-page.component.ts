@@ -1,9 +1,13 @@
-import { CommonModule } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { apiErrorMessage } from '@pdz/core/services/api.service';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
+import { CardComponent } from '@pdz/shared/data/card/card.component';
+import { DialogService } from '@pdz/shared/dialogs/dialog/dialog.service';
 import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
+import { CheckComponent } from '@pdz/shared/inputs/choice/check.component';
+import { FieldComponent } from '@pdz/shared/inputs/field/field.component';
+import { InputDirective } from '@pdz/shared/inputs/field/input.directive';
 import {
   GeneratedBracket,
   fullRoundRobinCycle,
@@ -61,9 +65,12 @@ interface TeamOption {
 @Component({
   selector: 'pdz-stage-builder-page',
   imports: [
-    CommonModule,
     FormsModule,
     ButtonComponent,
+    CardComponent,
+    CheckComponent,
+    FieldComponent,
+    InputDirective,
     LoadingComponent,
     StageBuilderComponent,
     SelectComponent,
@@ -77,6 +84,7 @@ interface TeamOption {
 export class LeagueScheduleComponent implements OnInit {
   private readonly leagueService = inject(LeagueZoneService);
   private readonly manageService = inject(LeagueManageService);
+  private readonly dialogs = inject(DialogService);
 
   protected readonly formatLabels = FORMAT_LABELS;
   protected readonly formats = Object.keys(FORMAT_LABELS) as StageFormat[];
@@ -387,7 +395,7 @@ export class LeagueScheduleComponent implements OnInit {
     return unique;
   }
 
-  save(): void {
+  async save(): Promise<void> {
     if (this.isSaving) return;
     this.errorMessage = null;
     this.statusMessage = null;
@@ -434,17 +442,16 @@ export class LeagueScheduleComponent implements OnInit {
     );
     if (randomStages.length > 0) {
       const summary = randomStages
-        .map((s) => `  • ${s.name}: ${s.teamIds.length} teams, random seeding`)
-        .join('\n');
-      if (
-        !confirm(
-          `Save this bracket?\n\n${summary}\n\nRandom stages are seeded by ` +
-            'DraftZone, exactly once — there is no re-roll, and every ' +
-            'randomization is permanently recorded.',
-        )
-      ) {
-        return;
-      }
+        .map((s) => `${s.name} (${s.teamIds.length} teams)`)
+        .join(', ');
+      const confirmed = await this.dialogs.confirm('Save this bracket?', {
+        message:
+          `Random seeding: ${summary}. DraftZone seeds random stages exactly ` +
+          'once. There is no re-roll, and every randomization is permanently ' +
+          'recorded.',
+        confirmLabel: 'Save and Seed',
+      });
+      if (!confirmed) return;
     }
 
     this.isSaving = true;
@@ -463,17 +470,23 @@ export class LeagueScheduleComponent implements OnInit {
     });
   }
 
-  clearBracket(): void {
+  async clearBracket(): Promise<void> {
     if (!this.hasBracket || this.isSaving) return;
     const certified = (this.bracket?.stages ?? []).some(
       (stage) => stage.seeding?.method === 'certified-random',
     );
-    const confirmation = certified
-      ? 'Delete every match in this tournament?\n\nThe certified seeding ' +
-        'record is permanent: if you re-randomize, the stage will publicly ' +
-        'show it was seeded more than once.'
-      : 'Delete every match in this tournament?';
-    if (!confirm(confirmation)) return;
+    const confirmed = await this.dialogs.confirm(
+      'Delete every match in this tournament?',
+      {
+        message: certified
+          ? 'The certified seeding record is permanent: if you re-randomize, ' +
+            'the stage will publicly show it was seeded more than once.'
+          : 'This removes every stage and matchup.',
+        confirmLabel: 'Delete Matchups',
+        confirmColor: 'danger',
+      },
+    );
+    if (!confirmed) return;
 
     this.isSaving = true;
     this.manageService

@@ -1,7 +1,7 @@
 import { Component, input } from '@angular/core';
 import { MoveCoreComponent } from '@pdz/shared/widgets/movechart-core/moves.component';
 import { WidgetComponent } from '@pdz/shared/layout/widget/widget.component';
-import { MoveChart } from '../../drafts/matchup-overview/matchup-interface';
+import { MoveChart } from '@pdz/features/drafts/matchup-overview/matchup-interface';
 
 @Component({
   selector: 'pdz-planner-moves',

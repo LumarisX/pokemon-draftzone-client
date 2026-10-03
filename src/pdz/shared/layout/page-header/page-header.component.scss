@@ -10,9 +10,9 @@
   align-items: center;
   gap: pdz.space(sm) pdz.space(md);
   padding: pdz.space(md);
-  border: 1px solid pdz.color(outline-variant);
+  border: 1px solid pdz.color(border-subtle);
   border-radius: pdz.shape(corner-lg);
-  background: pdz.color(surface-container-low);
+  background: pdz.color(raised);
 
   @include pdz.respond-above(medium) {
     flex-wrap: nowrap;
@@ -31,12 +31,17 @@
   padding: pdz.space(sm) pdz.space(md);
 }
 
+:host(.pdz-page-header--wash) .pdz-page-header__bar {
+  padding: pdz.space(md) pdz.space(lg);
+  border-radius: pdz.shape(corner-lg);
+  background: pdz.color(versus-wash);
+}
+
 .pdz-page-header__logo {
   flex: none;
   width: 3rem;
   height: 3rem;
   object-fit: contain;
-  filter: drop-shadow(0 0.125rem 0.25rem pdz.color(outline-variant));
 }
 
 .pdz-page-header__text {
@@ -47,10 +52,32 @@
   min-width: 0;
 }
 
+.pdz-page-header__center {
+  display: flex;
+  flex: 1 1 100%;
+  justify-content: center;
+  min-width: 0;
+  order: 1;
+
+  &:empty {
+    display: none;
+  }
+
+  @include pdz.respond-above(medium) {
+    flex: 1 1 auto;
+    order: 0;
+  }
+}
+
+.pdz-page-header__bar:has(.pdz-page-header__center:not(:empty)) .pdz-page-header__text {
+  @include pdz.respond-above(medium) {
+    flex: 0 1 auto;
+  }
+}
+
 .pdz-page-header__eyebrow {
-  @include pdz.text(label);
-  @include pdz.caps;
-  color: pdz.color(on-surface-variant);
+  @include pdz.text(label-caps);
+  color: pdz.color(on-surface-muted);
   overflow-wrap: anywhere;
 }
 
@@ -62,27 +89,34 @@
   text-decoration: none;
   transition: color pdz.duration(fast) pdz.easing(standard);
 
-  &:hover,
+  &:hover {
+    color: pdz.color(primary-accent);
+  }
+
   &:focus-visible {
+    @include pdz.focus-ring;
     color: pdz.color(primary-accent);
   }
 }
 
 .pdz-page-header__title {
-  @include pdz.text(subtitle, $family: false);
+  @include pdz.text(title, $family: false);
   font-family: pdz.font(display);
   margin: 0;
   color: pdz.color(on-surface);
   overflow-wrap: anywhere;
 
   @include pdz.respond-above(medium) {
-    font-size: pdz.font-size(xl);
+    @include pdz.text(headline);
   }
 }
 
 :host(.pdz-page-header--compact) .pdz-page-header__title {
+  @include pdz.text(subtitle, $family: false);
+  font-family: pdz.font(display);
+
   @include pdz.respond-above(medium) {
-    font-size: pdz.font-size(lg);
+    @include pdz.text(title, $family: false);
   }
 }
 

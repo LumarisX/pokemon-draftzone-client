@@ -136,7 +136,7 @@
                         icon="badge"
                         (click)="editCoach(entry)"
                       >
-                        Edit coach info
+                        Edit Coach Info
                       </button>
                       @if (entry.teamId && !entry.departed) {
                         <button
@@ -145,7 +145,7 @@
                           icon="shield"
                           (click)="editTeam(entry)"
                         >
-                          Edit team info
+                          Edit Team Info
                         </button>
                         <button
                           pdz-menu-item
@@ -153,7 +153,7 @@
                           icon="swap_horiz"
                           (click)="replaceCoach(entry)"
                         >
-                          Replace coach
+                          Replace Coach
                         </button>
                       }
                       @if (!entry.departed) {
@@ -163,7 +163,7 @@
                           icon="delete"
                           (click)="remove(entry)"
                         >
-                          Remove participant
+                          Remove Participant
                         </button>
                       }
                     </pdz-menu>

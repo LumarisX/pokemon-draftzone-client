@@ -13,8 +13,8 @@
   width: 5rem;
   height: 5rem;
   overflow: hidden;
-  background: pdz.color(surface-container-lowest);
-  border: 1px solid pdz.color(outline-variant);
+  background: pdz.color(inset);
+  border: 1px solid pdz.color(border-subtle);
   border-radius: pdz.shape(corner-lg);
   color: pdz.color(on-surface-variant);
 }

@@ -40,7 +40,268 @@
 </header>
 
 <section class="section">
-  <h2 class="section__title">Button — variant × color</h2>
+  <h2 class="section__title">Elevation</h2>
+  <p class="section__hint">
+    Surfaces rise toward you: each layer is lighter in dark mode and carries a
+    hairline and shadow in light mode. Only inputs and tracks sink, down to the
+    ground.
+  </p>
+
+  <div class="elevation__roles">
+    @for (role of elevationRoles; track role) {
+      <div class="elevation__role" [attr.data-role]="role">
+        <span class="elevation__role-name">{{ role }}</span>
+      </div>
+    }
+  </div>
+
+  <div class="elevation__text">
+    <span class="elevation__text-ink">Cerulean Surfers</span>
+    <span class="elevation__text-variant">misty_w · joined Aug 12</span>
+    <span class="elevation__text-muted">Pool A · week 3</span>
+    <span class="elevation__muted">on-surface · variant · muted</span>
+  </div>
+
+  <div class="elevation__stage">
+    <pdz-card>
+      <div class="elevation__card-body">
+        <div class="elevation__card-head">
+          <strong>Kanto Classic S4</strong>
+          <span class="elevation__muted">raised · card</span>
+        </div>
+        <label pdz-field label="Search Teams">
+          <input pdz-input type="text" placeholder="Inset sinks to the ground" />
+        </label>
+        <pdz-card tone="raised-high" padding="sm">
+          <strong>Week 3</strong>
+          <p class="elevation__muted">raised-high · a card inside a card</p>
+        </pdz-card>
+        <pdz-segmented aria-label="View" [value]="'roster'">
+          <pdz-segmented-option value="roster" label="Roster" />
+          <pdz-segmented-option value="types" label="Types" />
+        </pdz-segmented>
+      </div>
+    </pdz-card>
+
+    <div class="elevation__stack">
+      <button pdz-card interactive padding="sm">
+        <strong>Interactive card</strong>
+        <p class="elevation__muted">Hover lifts it; the fill never darkens</p>
+      </button>
+      <div class="elevation__mock elevation__mock--overlay">
+        <strong>Dialog</strong>
+        <span class="elevation__muted">overlay · elevation-3</span>
+      </div>
+      <div class="elevation__mock elevation__mock--floating">
+        <span class="elevation__mock-item">Edit tournament</span>
+        <span class="elevation__mock-item elevation__mock-item--hover">
+          Export schedule
+        </span>
+        <span class="elevation__muted">floating · elevation-2</span>
+      </div>
+    </div>
+  </div>
+
+  <h3 class="ground-compare__title">Light Ground: gray-50 vs gray-25</h3>
+  <p class="section__hint">
+    Open decision (plan §11.3). Switch the theme mode to light to compare; dark
+    mode keeps its own ladder, so both panels match there.
+  </p>
+  <div class="ground-compare">
+    @for (option of groundOptions; track option.step) {
+      <div
+        class="ground-compare__page"
+        [class.ground-compare__page--25]="option.step === 'gray-25'"
+      >
+        <span class="elevation__muted">ground · {{ option.label }}</span>
+        <pdz-card>
+          <div class="elevation__card-body">
+            <strong>Shady People Draft League</strong>
+            <span class="elevation__muted">Champions MB · VGC</span>
+            <label pdz-field label="Search Teams">
+              <input pdz-input type="text" placeholder="Inset matches the ground" />
+            </label>
+          </div>
+        </pdz-card>
+        <button pdz-button size="sm">New Draft</button>
+      </div>
+    }
+  </div>
+</section>
+
+<section class="section">
+  <h2 class="section__title">Two Colors</h2>
+  <p class="section__hint">
+    Primary is team 1 and secondary is team 2, for every viewer. When you are
+    in a match, your team is team 1. Team color lives in a soft half wash and in
+    the score numerals; names stay ink and logos are never ringed.
+  </p>
+
+  <h3 class="section__sub">Head-to-Head, Played</h3>
+  <div class="versus">
+    <div class="versus__side">
+      <pdz-team-logo size="lg" name="Cerulean Surfers" decorative />
+      <div class="versus__names">
+        <span class="versus__team">
+          Cerulean Surfers <span class="pdz-you-tag">You</span>
+        </span>
+        <span class="versus__coach">misty_w</span>
+      </div>
+    </div>
+    <div class="versus__score" aria-label="Score 3 to 1">
+      <span class="versus__points versus__points--team1">3</span>
+      <span class="versus__dash">–</span>
+      <span class="versus__points versus__points--team2">1</span>
+    </div>
+    <div class="versus__side versus__side--end">
+      <pdz-team-logo size="lg" name="Rocket Grunts" decorative />
+      <div class="versus__names">
+        <span class="versus__team">Rocket Grunts</span>
+        <span class="versus__coach">giovanni</span>
+      </div>
+    </div>
+  </div>
+
+  <h3 class="section__sub">Head-to-head, upcoming — the wash carries the color alone</h3>
+  <div class="versus">
+    <div class="versus__side">
+      <pdz-team-logo size="md" name="Pewter Rockslides" decorative />
+      <span class="versus__team">Pewter Rockslides</span>
+    </div>
+    <div class="versus__score">
+      <span class="versus__vs">vs</span>
+      <span class="versus__when">Sat 8:00 PM</span>
+    </div>
+    <div class="versus__side versus__side--end">
+      <pdz-team-logo size="md" name="Vermilion Volts" decorative />
+      <span class="versus__team">Vermilion Volts</span>
+    </div>
+  </div>
+
+  <h3 class="section__sub">
+    Single-focus pages (H1, provisional) — primary marks what you do, secondary
+    marks what you should notice
+  </h3>
+  <div class="h1-demo">
+    <div class="h1-demo__toolbar">
+      <button pdz-button icon="add">Add Pokémon</button>
+      <pdz-segmented size="sm" aria-label="View" [value]="'roster'">
+        <pdz-segmented-option value="roster" label="Roster" />
+        <pdz-segmented-option value="coverage" label="Coverage" />
+      </pdz-segmented>
+      <pdz-chip tone="primary" size="sm" removable>Fairy</pdz-chip>
+      <pdz-chip tone="primary" size="sm" removable>Speed ≥ 100</pdz-chip>
+      <span class="h1-demo__spacer"></span>
+      <pdz-chip tone="secondary" variant="soft" size="sm">
+        24 results
+      </pdz-chip>
+    </div>
+    <ul class="h1-demo__list">
+      <li class="h1-demo__row">
+        <span class="h1-demo__name">Iron Valiant</span>
+        <pdz-chip tone="secondary" variant="soft" size="xs" icon="auto_awesome">
+          Suggested
+        </pdz-chip>
+        <pdz-icon class="h1-demo__star" name="star" [size]="18" fill />
+      </li>
+      <li class="h1-demo__row h1-demo__row--selected">
+        <span class="h1-demo__name">Great Tusk</span>
+        <span class="h1-demo__meta">Selected</span>
+      </li>
+      <li class="h1-demo__row">
+        <span class="h1-demo__name">Gholdengo</span>
+        <pdz-chip tone="secondary" variant="outline" size="xs">New</pdz-chip>
+      </li>
+    </ul>
+  </div>
+
+  <h3 class="section__sub">Lists of many teams highlight only your row</h3>
+  <div class="pdz-table-wrapper versus__table">
+    <table class="pdz-table" data-density="compact">
+      <thead>
+        <tr>
+          <th class="pdz-table__num">#</th>
+          <th>Team</th>
+          <th class="pdz-table__center">Record</th>
+          <th class="pdz-table__num">Diff</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="pdz-table__num">1</td>
+          <td>Rocket Grunts</td>
+          <td class="pdz-table__center">
+            <pdz-record size="sm" [wins]="5" [losses]="0" />
+          </td>
+          <td class="pdz-table__num">+14</td>
+        </tr>
+        <tr class="pdz-table__row--you">
+          <td class="pdz-table__num">2</td>
+          <td>Cerulean Surfers <span class="pdz-you-tag">You</span></td>
+          <td class="pdz-table__center">
+            <pdz-record size="sm" [wins]="4" [losses]="1" />
+          </td>
+          <td class="pdz-table__num">+9</td>
+        </tr>
+        <tr>
+          <td class="pdz-table__num">3</td>
+          <td>Pewter Rockslides</td>
+          <td class="pdz-table__center">
+            <pdz-record size="sm" [wins]="2" [draws]="1" [losses]="2" />
+          </td>
+          <td class="pdz-table__num">0</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3 class="section__sub">Brand Moment — Versus Gradient</h3>
+  <div class="versus__brand">
+    <pdz-icon name="logo" [size]="40" />
+    <span class="versus__brand-title">Draft night</span>
+  </div>
+</section>
+
+<section class="section">
+  <h2 class="section__title">Team Logo</h2>
+  <p class="section__hint">
+    One logo primitive. No ring or plate; a missing or broken image falls back
+    to initials. Set <code>team</code> to tint the initials as team 1 or team 2
+    (your team, or the opponent on a page about your team).
+  </p>
+  <div class="row">
+    @for (size of logoSizes; track size) {
+      <pdz-team-logo
+        [size]="size"
+        name="Cerulean Surfers"
+        src="/assets/images/battle-zone/default_logo.png"
+      />
+    }
+  </div>
+  <div class="row">
+    @for (size of logoSizes; track size) {
+      <pdz-team-logo [size]="size" name="Rocket Grunts" />
+    }
+    <pdz-team-logo size="lg" shape="circle" name="Vermilion Volts" />
+  </div>
+  <div class="row">
+    <pdz-team-logo size="lg" team="team1" name="Lumaris" />
+    <pdz-team-logo size="lg" team="team2" name="MetalGearZubat" />
+  </div>
+</section>
+
+<section class="section">
+  <h2 class="section__title">Record</h2>
+  <div class="row">
+    <pdz-record [wins]="4" [losses]="1" />
+    <pdz-record [wins]="2" [draws]="1" [losses]="2" />
+    <pdz-record size="sm" [wins]="4" [losses]="1" />
+    <pdz-record variant="inline" [wins]="4" [draws]="1" [losses]="1" />
+  </div>
+</section>
+
+<section class="section">
+  <h2 class="section__title">Button — Variant × Color</h2>
   <div class="matrix">
     <div class="matrix__row matrix__row--head">
       <span class="matrix__label"></span>
@@ -77,7 +338,7 @@
 </section>
 
 <section class="section">
-  <h2 class="section__title">Icon only</h2>
+  <h2 class="section__title">Icon Only</h2>
   <div class="row">
     @for (s of sizes; track s) {
       <button pdz-button iconOnly [size]="s" aria-label="Add">
@@ -108,38 +369,38 @@
   <div class="row">
     <button pdz-button>Default</button>
     <button pdz-button disabled>Disabled</button>
-    <button pdz-button variant="outlined" disabled>Disabled outlined</button>
+    <button pdz-button variant="outlined" disabled>Disabled Outlined</button>
     <button pdz-button [loading]="true">Saving</button>
-    <button pdz-button variant="tonal" [loading]="true">Loading tonal</button>
+    <button pdz-button variant="tonal" [loading]="true">Loading Tonal</button>
     <button pdz-button color="danger" (click)="toggleLoading()">
-      Toggle demo
+      Toggle Demo
     </button>
     <button pdz-button color="secondary" [loading]="loadingDemo()">
-      Demo target
+      Demo Target
     </button>
   </div>
   <p class="section__hint">Tab through the row above to check focus rings.</p>
 </section>
 
 <section class="section">
-  <h2 class="section__title">Anchor + block</h2>
+  <h2 class="section__title">Anchor + Block</h2>
   <div class="row">
-    <a pdz-button href="/tools">Anchor as button</a>
-    <a pdz-button variant="link" href="/tools">Anchor as link</a>
+    <a pdz-button href="/tools">Anchor as Button</a>
+    <a pdz-button variant="link" href="/tools">Anchor as Link</a>
   </div>
   <div class="stack">
-    <button pdz-button block>Block filled</button>
+    <button pdz-button block>Block Filled</button>
     <button pdz-button block variant="outlined" color="neutral">
-      Block outlined
+      Block Outlined
     </button>
   </div>
 </section>
 
 <section class="section">
-  <h2 class="section__title">On elevated surfaces</h2>
+  <h2 class="section__title">On Elevated Surfaces</h2>
   <div class="surfaces">
     @for (
-      surface of ["surface", "surface-container", "surface-container-high"];
+      surface of ["ground", "raised", "raised-high", "overlay", "floating"];
       track surface
     ) {
       <div
@@ -161,7 +422,7 @@
 <section class="section">
   <h2 class="section__title">Field</h2>
   <div class="fields">
-    <label pdz-field label="League name" hint="Shown publicly">
+    <label pdz-field label="League Name" hint="Shown publicly">
       <input pdz-input type="text" placeholder="Sunday Draft League" />
     </label>
 
@@ -180,7 +441,7 @@
       <textarea pdz-input rows="3" placeholder="House rules..."></textarea>
     </label>
 
-    <label pdz-field label="Team name" error="This field is required." required>
+    <label pdz-field label="Team Name" error="This field is required." required>
       <input pdz-input type="text" />
     </label>
 
@@ -188,7 +449,7 @@
       <input pdz-input type="text" value="Locked" disabled />
     </label>
 
-    <label pdz-field label="Auto-validated" required>
+    <label pdz-field label="Auto-Validated" required>
       <input pdz-input type="text" [formControl]="requiredCtrl" />
     </label>
 
@@ -196,7 +457,7 @@
       <input pdz-input size="sm" type="text" placeholder="Compact" />
     </label>
 
-    <label pdz-field label="Extra small" hint="size=xs, pairs with button xs">
+    <label pdz-field label="Extra Small" hint="size=xs, pairs with button xs">
       <input pdz-input size="xs" type="text" placeholder="Compact" />
     </label>
 
@@ -263,7 +524,7 @@
       </pdz-select>
     </div>
 
-    <div pdz-field label="With descriptions">
+    <div pdz-field label="With Descriptions">
       <pdz-select aria-label="Descriptive select" value="swiss">
         <pdz-option
           value="swiss"
@@ -272,12 +533,12 @@
         />
         <pdz-option
           value="rr"
-          label="Round robin"
+          label="Round Robin"
           description="Everyone plays everyone"
         />
         <pdz-option
           value="single"
-          label="Single elimination"
+          label="Single Elimination"
           description="One loss and you are out"
         />
       </pdz-select>
@@ -285,8 +546,8 @@
 
     <div pdz-field label="Small" hint="size=sm">
       <pdz-select size="sm" aria-label="Small select" value="a">
-        <pdz-option value="a" label="Compact option" />
-        <pdz-option value="b" label="Another option" />
+        <pdz-option value="a" label="Compact Option" />
+        <pdz-option value="b" label="Another Option" />
       </pdz-select>
     </div>
 
@@ -308,11 +569,11 @@
 </section>
 
 <section class="section">
-  <h2 class="section__title">Checkbox &amp; radio</h2>
+  <h2 class="section__title">Checkbox &amp; Radio</h2>
   <div class="choices">
     <div class="choices__col">
       <span class="surfaces__name">Checkbox</span>
-      <label pdz-check label="Include shinies">
+      <label pdz-check label="Include Shinies">
         <input pdz-checkbox type="checkbox" />
       </label>
       <label pdz-check label="Captain" description="Only one per team.">
@@ -324,10 +585,10 @@
       <label pdz-check label="Disabled">
         <input pdz-checkbox type="checkbox" disabled />
       </label>
-      <label pdz-check label="Disabled + checked">
+      <label pdz-check label="Disabled + Checked">
         <input pdz-checkbox type="checkbox" checked disabled />
       </label>
-      <label pdz-check label="Label before" labelBefore>
+      <label pdz-check label="Label Before" labelBefore>
         <input pdz-checkbox type="checkbox" />
       </label>
     </div>
@@ -336,18 +597,18 @@
       <span class="surfaces__name">Radio</span>
       <label
         pdz-check
-        label="Snake draft"
+        label="Snake Draft"
         description="Order reverses each round."
       >
         <input pdz-radio type="radio" name="order" value="snake" checked />
       </label>
-      <label pdz-check label="Linear draft">
+      <label pdz-check label="Linear Draft">
         <input pdz-radio type="radio" name="order" value="linear" />
       </label>
-      <label pdz-check label="Random each round">
+      <label pdz-check label="Random Each Round">
         <input pdz-radio type="radio" name="order" value="random" />
       </label>
-      <label pdz-check label="Disabled option">
+      <label pdz-check label="Disabled Option">
         <input pdz-radio type="radio" name="order" value="none" disabled />
       </label>
     </div>
@@ -370,7 +631,7 @@
 
 <section class="section">
   <h2 class="section__title">Chip</h2>
-  <h3 class="section__sub">Tones × variants</h3>
+  <h3 class="section__sub">Tones × Variants</h3>
   <div class="row">
     @for (v of chipVariants; track v) {
       @for (t of chipTones; track t) {
@@ -379,7 +640,7 @@
     }
   </div>
 
-  <h3 class="section__sub">Sizes, icons and state</h3>
+  <h3 class="section__sub">Sizes, Icons and State</h3>
   <div class="row">
     <pdz-chip size="xs">Extra small</pdz-chip>
     <pdz-chip size="sm">Small</pdz-chip>
@@ -425,7 +686,7 @@
 </section>
 
 <section class="section">
-  <h2 class="section__title">Pokémon type</h2>
+  <h2 class="section__title">Pokémon Type</h2>
 
   <h3 class="section__sub">
     Sizes — text, icon, and both. The label holds a fixed width per size so a
@@ -504,13 +765,20 @@
   <h2 class="section__title">Card</h2>
 
   <h3 class="section__sub">
-    Tones — resting surfaces use border + tint, no shadow
+    Tones — <code>raised</code> sits on the page;
+    <code>raised-high</code> is a card inside a card
   </h3>
   <div class="cards">
     @for (t of tones; track t) {
       <pdz-card [tone]="t">
         <strong>{{ t }}</strong>
-        <p class="cards__text">A resting surface. No shadow by design.</p>
+        <p class="cards__text">
+          {{
+            t === "raised"
+              ? "Border, no shadow."
+              : "One rung up, with a soft shadow in light mode."
+          }}
+        </p>
       </pdz-card>
     }
   </div>
@@ -539,19 +807,16 @@
   </p>
 
   <h3 class="section__sub">
-    Colors — <code>color</code> tints container, header and border; it
-    overrides <code>tone</code>
+    Alerts — <code>color</code> tints the whole card. Only for messages where
+    the block is the message; team and brand color never tint a card
   </h3>
   <div class="cards">
     @for (c of cardColors; track c) {
-      <pdz-card [color]="c" interactive>
+      <pdz-card [color]="c" role="status">
         <div pdz-card-header>{{ c }}</div>
         <p class="cards__text">
-          Header picks up the tint, body stays on the container step.
+          The tint says what kind of message this is before you read it.
         </p>
-        <div pdz-card-footer>
-          <a pdz-button size="sm" variant="ghost" color="neutral">Details</a>
-        </div>
       </pdz-card>
     }
   </div>
@@ -565,7 +830,7 @@
     }
   </div>
 
-  <h3 class="section__sub">Header / footer</h3>
+  <h3 class="section__sub">Header / Footer</h3>
   <div class="cards">
     <pdz-card>
       <div pdz-card-header>
@@ -596,14 +861,7 @@
     <pdz-card interactive>
       <strong>Interactive</strong>
       <p class="cards__text">
-        Hover and tab to me — border shifts, focus ring shows.
-      </p>
-    </pdz-card>
-
-    <pdz-card elevated>
-      <strong>Elevated</strong>
-      <p class="cards__text">
-        Opt-in shadow. Only for surfaces that actually float.
+        Hover lifts it 1px with a shadow; the fill never darkens.
       </p>
     </pdz-card>
   </div>
@@ -646,7 +904,7 @@
 
   <h3 class="section__sub">Inside a card, near the viewport edge</h3>
   <div class="cards">
-    <pdz-card color="primary" padding="none">
+    <pdz-card padding="none">
       <div pdz-card-header>
         <span>Clipping check</span>
         <span class="cards__spacer"></span>
@@ -801,9 +1059,9 @@
     </div>
   }
 
-  <h3 class="section__sub">Primary header, zebra rows, totals footer</h3>
+  <h3 class="section__sub">Totals Footer</h3>
   <div class="pdz-table-wrapper tables__demo">
-    <table class="pdz-table" data-header="primary" data-zebra>
+    <table class="pdz-table">
       <thead>
         <tr>
           <th>Pokémon</th>
@@ -836,7 +1094,7 @@
     </table>
   </div>
 
-  <h3 class="section__sub">Sortable headers</h3>
+  <h3 class="section__sub">Sortable Headers</h3>
   <p class="section__hint">
     <code>pdzSort</code> on the table, <code>pdzSortHeader</code> on the cells
     that sort. The arrow only ghosts in on hover until a column is active, so an
@@ -847,7 +1105,6 @@
   <div class="pdz-table-wrapper tables__demo">
     <table
       class="pdz-table"
-      data-zebra
       pdzSort
       pdzSortActive="kills"
       pdzSortDirection="desc"
@@ -886,14 +1143,14 @@
     {{ sortState().direction || "cleared" }}
   </p>
 
-  <h3 class="section__sub">Sticky header</h3>
+  <h3 class="section__sub">Sticky Header</h3>
   <p class="section__hint">
     Identical to the table above apart from <code>data-sticky</code>, plus a
     <code>--pdz-table-max-height</code> on the wrapper to give it something to
     scroll against.
   </p>
   <div class="pdz-table-wrapper tables__demo tables__demo--scroll">
-    <table class="pdz-table" data-header="primary" data-zebra data-sticky>
+    <table class="pdz-table" data-sticky>
       <thead>
         <tr>
           <th>Pokémon</th>
@@ -919,7 +1176,7 @@
 </section>
 
 <section class="section">
-  <h2 class="section__title">Slide toggle</h2>
+  <h2 class="section__title">Slide Toggle</h2>
   <p class="section__note">
     Wraps a native <code>input[type=checkbox][role=switch]</code>: focusable,
     Space-togglable, and label-clickable for free.
@@ -927,7 +1184,7 @@
   <div class="row">
     <pdz-slide-toggle [(checked)]="abilities">Abilities</pdz-slide-toggle>
     <pdz-slide-toggle size="sm" [(checked)]="abilities">Small</pdz-slide-toggle>
-    <pdz-slide-toggle label="Label input" [(checked)]="abilities" />
+    <pdz-slide-toggle label="Label Input" [(checked)]="abilities" />
     <pdz-slide-toggle labelBefore [(checked)]="abilities">
       Label before
     </pdz-slide-toggle>
@@ -1027,7 +1284,7 @@
     <code>step</code>.
   </p>
 
-  <h3 class="section__sub">Colour and disabled</h3>
+  <h3 class="section__sub">Colour and Disabled</h3>
   <div class="row">
     <pdz-slider
       color="var(--pdz-color-success)"
@@ -1043,17 +1300,49 @@
 </section>
 
 <section class="section">
-  <h2 class="section__title">Page header</h2>
+  <h2 class="section__title">Page Header</h2>
   <p class="section__note">
     The banner every routed page opens with: optional logo, an eyebrow that
     <code>backLink</code> turns into a link out of the section, the title, then
     projected <code>[pdz-page-header-detail]</code>,
     <code>[pdz-page-header-meta]</code> and
-    <code>[pdz-page-header-actions]</code>. Default content lands below the bar
-    for tab navs and switchers.
+    <code>[pdz-page-header-actions]</code>.
+    <code>[pdz-page-header-center]</code> fills the space between the title
+    and the actions on wide screens and drops to its own row on narrow ones.
+    Default content lands below the bar for tab navs and switchers.
   </p>
   <div class="stack">
     <pdz-page-header title="Standings" />
+
+    <pdz-page-header title="Lumaris vs MetalGearZubat" eyebrow="SPDL" compact>
+      <div pdz-page-header-center class="versus-demo" aria-hidden="true">
+        <div class="versus-demo__side versus-demo__side--team1">
+          @for (pokemon of versusTeams[0]; track pokemon.id) {
+            <pdz-sprite size="2.5rem" [interactive]="false" [pokemon]="pokemon" />
+          }
+        </div>
+        <span class="versus-demo__vs">vs</span>
+        <div class="versus-demo__side">
+          @for (pokemon of versusTeams[1]; track pokemon.id) {
+            <pdz-sprite
+              size="2.5rem"
+              flipped
+              [interactive]="false"
+              [pokemon]="pokemon"
+            />
+          }
+        </div>
+      </div>
+      <button
+        pdz-page-header-actions
+        pdz-button
+        icon="share"
+        variant="outlined"
+        color="neutral"
+      >
+        Share
+      </button>
+    </pdz-page-header>
 
     <pdz-page-header title="Trades">
       <div pdz-page-header-meta>
@@ -1092,20 +1381,20 @@
   <h2 class="section__title">Widget</h2>
   <p class="section__note">
     Card shell for a board panel: header label, projected
-    <code>[widget-options]</code> controls, body. Border-defined — no shadow
-    unless <code>elevated</code> is set.
+    <code>[widget-options]</code> controls, body. A raised panel defined by its
+    border, with no shadow.
   </p>
   <div class="row">
     <pdz-widget label="Draft Summary">
-      <div style="padding: 0.5rem 0">Sizes to its content by default.</div>
+      <p class="cards__text">Sizes to its content by default.</p>
     </pdz-widget>
 
     <pdz-widget label="Type Chart">
       <pdz-segmented widget-options size="sm" variant="tonal" [(value)]="winner">
-        <pdz-segmented-option value="side1" label="Team A" />
-        <pdz-segmented-option value="side2" label="Team B" />
+        <pdz-segmented-option value="side1" label="Team 1" />
+        <pdz-segmented-option value="side2" label="Team 2" />
       </pdz-segmented>
-      <div style="padding: 0.5rem 0">With header controls.</div>
+      <p class="cards__text">With header controls.</p>
     </pdz-widget>
   </div>
 </section>
@@ -1207,16 +1496,16 @@
 </section>
 
 <section class="section">
-  <h2 class="section__title">Tab nav</h2>
+  <h2 class="section__title">Tab Nav</h2>
   <p class="section__note">
     Real links with <code>aria-current="page"</code> — not a tablist, because
     these navigate. Use <code>pdz-tabs</code> for in-place panels.
   </p>
   <pdz-tab-nav label="Debug sections">
-    <a pdz-tab-link routerLink="/debug/components" routerLinkActive>
+    <a pdz-tab-link routerLink="../components" routerLinkActive>
       Components
     </a>
-    <a pdz-tab-link routerLink="/debug/sprites" routerLinkActive>Sprites</a>
+    <a pdz-tab-link routerLink="../sprites" routerLinkActive>Sprites</a>
   </pdz-tab-nav>
 </section>
 
@@ -1281,7 +1570,7 @@
     </button>
   </div>
 
-  <h3 class="section__sub">Viewport edges</h3>
+  <h3 class="section__sub">Viewport Edges</h3>
   <p class="section__hint">
     Flips to the opposite side when the requested one will not fit, then clamps
     on the cross axis. The middle trigger asks for <code>below</code> — scroll
@@ -1318,7 +1607,7 @@
     </button>
   </div>
 
-  <h3 class="section__sub">Inside a clipped container</h3>
+  <h3 class="section__sub">Inside a Clipped Container</h3>
   <p class="section__hint">
     The scroller has <code>overflow: hidden</code> on the cross axis — a
     positioned <code>div</code> would be cut off here.
@@ -1338,7 +1627,7 @@
     }
   </div>
 
-  <h3 class="section__sub">Icon-only and keyboard</h3>
+  <h3 class="section__sub">Icon-Only and Keyboard</h3>
   <p class="section__hint">
     Tab through these — <code>:focus-visible</code> opens the tooltip, a mouse
     click does not. Each control keeps its own <code>aria-label</code>; the
@@ -1359,7 +1648,7 @@
     }
   </div>
 
-  <h3 class="section__sub">Above a modal</h3>
+  <h3 class="section__sub">Above a Modal</h3>
   <p class="section__hint">
     The regression that killed the old tooltip: a modal
     <code>&lt;dialog&gt;</code> renders in the top layer, where no
@@ -1367,7 +1656,7 @@
   </p>
   <div class="row">
     <button pdz-button (click)="tooltipDialogOpen.set(true)">
-      Open a dialog
+      Open a Dialog
     </button>
   </div>
 
@@ -1501,7 +1790,7 @@
     </div>
   </div>
 
-  <h3 class="section__sub">Tooltip positions</h3>
+  <h3 class="section__sub">Tooltip Positions</h3>
   <div class="sprites">
     @for (pos of ["above", "below", "before", "after"]; track pos) {
       <div class="sprites__demo">
@@ -1527,7 +1816,7 @@
 </section>
 
 <section class="section">
-  <h2 class="section__title">Score entry</h2>
+  <h2 class="section__title">Score Entry</h2>
   <p class="section__hint">
     One game of a match report: a compact replay link plus analyze in the header,
     an overridable winner and score, and a roster per side where each Pokémon
@@ -1547,7 +1836,7 @@
 </section>
 
 <section class="section">
-  <h2 class="section__title">Score entry — match header</h2>
+  <h2 class="section__title">Score Entry — Match Header</h2>
   <p class="section__hint">
     The match-level row above the games: a team link and an overridable series
     score per side, a forfeit toggle that hands the win to the other team and
@@ -1567,7 +1856,7 @@
 </section>
 
 <section class="section">
-  <h2 class="section__title">Score entry — submit checks</h2>
+  <h2 class="section__title">Score Entry — Submit Checks</h2>
   <p class="section__hint">
     What `scoreEntryWarnings` collects while you fill a report, raised once on
     submit instead of nagging inline. Grouped by where each problem came from,
@@ -1576,7 +1865,7 @@
   </p>
 
   <button pdz-button (click)="openScoreEntryChecks()">
-    Open submit checks
+    Open Submit Checks
   </button>
 </section>
 
@@ -1599,7 +1888,7 @@
 </section>
 
 <section class="section">
-  <h2 class="section__title">Discord timestamp</h2>
+  <h2 class="section__title">Discord Timestamp</h2>
   <p class="section__hint">
     Copyable <code>&lt;t:…&gt;</code> stamp — pasted into Discord it renders in
     each reader's own zone, which is the point.
@@ -1609,7 +1898,7 @@
 </section>
 
 <section class="section">
-  <h2 class="section__title">Time converter</h2>
+  <h2 class="section__title">Time Converter</h2>
   <p class="section__hint">
     Two-sided scheduler: pick a moment on either side and the other follows.
     Backs both the /tools time converter and the draft "Set Match Time" dialog.

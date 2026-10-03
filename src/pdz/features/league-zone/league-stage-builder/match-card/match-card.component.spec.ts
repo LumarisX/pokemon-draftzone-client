@@ -3,7 +3,7 @@ import { provideRouter } from '@angular/router';
 import {
   BracketTeamFlex,
   FlexBracketMatch,
-} from '../../league-bracket/bracket.model';
+} from '@pdz/features/league-zone/league-bracket/bracket.model';
 import { MatchCardComponent } from './match-card.component';
 
 const teams: BracketTeamFlex[] = [
@@ -11,7 +11,6 @@ const teams: BracketTeamFlex[] = [
   { teamName: 'Katana Paper Kutters', coachName: 'Aceman', seed: 2 },
 ];
 
-/** The card is a pure getter over its inputs, so nothing needs rendering. */
 function cardFor(
   match: FlexBracketMatch,
   allMatches: FlexBracketMatch[] = [match],
@@ -21,7 +20,7 @@ function cardFor(
   fixture.componentRef.setInput('allMatches', allMatches);
   fixture.componentRef.setInput('teams', teams);
   fixture.componentRef.setInput('labels', new Map([['m13', 'Match 13']]));
-  return fixture.componentInstance.card;
+  return fixture.componentInstance.card();
 }
 
 const seed = (n: number) => ({ type: 'seed' as const, seed: n });
@@ -53,9 +52,6 @@ describe('MatchCardComponent', () => {
     expect(card.slots[0].score).toBe(2);
   });
 
-  // The stalled-bracket fix: an organizer rules who advances out of a match
-  // that has no result. The card has to show that ruling, or the advanced side
-  // looks exactly like an undecided one.
   it('shows an organizer-advanced side as the winner', () => {
     const stranded: FlexBracketMatch = {
       id: 'm13',
@@ -86,8 +82,6 @@ describe('MatchCardComponent', () => {
     expect(card.forfeit).toBe(false);
   });
 
-  // An override carries no result, so the 0-0 default must not be printed as
-  // though the match had been played to it.
   it('prints no score for a side advanced without a result', () => {
     const card = cardFor({
       id: 'm13',

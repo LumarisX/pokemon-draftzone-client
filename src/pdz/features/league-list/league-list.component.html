@@ -27,12 +27,19 @@
   </div>
   <div class="toolbar__controls">
     <div class="menu-trigger">
-      <pdz-icon
-        (click)="toggleMenu('filter', $event)"
-        name="filter_list"
-      ></pdz-icon>
+      <button
+        pdz-button
+        iconOnly
+        icon="filter_list"
+        size="sm"
+        variant="ghost"
+        color="neutral"
+        aria-label="Filter leagues"
+        [attr.aria-expanded]="menu === 'filter'"
+        (click)="toggleMenu('filter')"
+      ></button>
       @if (menu === "filter") {
-        <div class="dropdown" (click)="$event.stopPropagation()">
+        <div class="dropdown">
           <h3 class="dropdown__title">Filter Options</h3>
 
           <div class="filter-group">
@@ -105,9 +112,19 @@
     </div>
 
     <div class="menu-trigger">
-      <pdz-icon (click)="toggleMenu('sort', $event)" name="sort"></pdz-icon>
+      <button
+        pdz-button
+        iconOnly
+        icon="sort"
+        size="sm"
+        variant="ghost"
+        color="neutral"
+        aria-label="Sort leagues"
+        [attr.aria-expanded]="menu === 'sort'"
+        (click)="toggleMenu('sort')"
+      ></button>
       @if (menu === "sort") {
-        <div class="dropdown" (click)="$event.stopPropagation()">
+        <div class="dropdown">
           <div class="filter-group">
             <label class="filter-group__label">Sort</label>
             <pdz-select size="sm" aria-label="Sort" [(ngModel)]="sortOption">
@@ -128,9 +145,9 @@
     }
   </div>
 } @else {
-  <div class="empty-state">
-    <p class="empty-state__message">
-      No leagues looking for players right now. Check back later!
-    </p>
-  </div>
+  <pdz-empty-state
+    icon="search_off"
+    heading="No open leagues"
+    message="No leagues are looking for players right now. Check back later!"
+  />
 }

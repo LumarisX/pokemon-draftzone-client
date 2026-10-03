@@ -101,7 +101,7 @@ export class DraftSettingsPageComponent {
       message: pool.teams.length
         ? `Its ${pool.teams.length} ${pool.teams.length === 1 ? 'team goes' : 'teams go'} back to the unassigned list. Their rosters are not deleted.`
         : undefined,
-      confirmLabel: 'Delete pool',
+      confirmLabel: 'Delete Pool',
       confirmColor: 'danger',
     });
     if (confirmed) this.store.removePool(poolId).subscribe();
@@ -128,7 +128,7 @@ export class DraftSettingsPageComponent {
     if (risk?.effect === 'block') {
       const confirmed = await this.dialog.confirm('Save draft settings?', {
         message: risk.because,
-        confirmLabel: 'Save anyway',
+        confirmLabel: 'Save Anyway',
         confirmColor: 'danger',
       });
       if (!confirmed) return;

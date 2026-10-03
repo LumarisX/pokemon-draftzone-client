@@ -1,12 +1,33 @@
 @use "sass:map";
 @use "tokens/breakpoints" as bp-tokens;
 
+@function -breakpoint($breakpoint) {
+  @if not map.has-key(bp-tokens.$breakpoints, $breakpoint) {
+    @error "Breakpoint '#{$breakpoint}' not found. Available breakpoints: #{map.keys(bp-tokens.$breakpoints)}";
+  }
+  @return map.get(bp-tokens.$breakpoints, $breakpoint);
+}
+
 @mixin respond-above($breakpoint) {
-  @if map.has-key(bp-tokens.$breakpoints, $breakpoint) {
-    @media (min-width: #{map.get(bp-tokens.$breakpoints, $breakpoint)}) {
+  @media (min-width: #{-breakpoint($breakpoint)}) {
+    @content;
+  }
+}
+
+@mixin respond-below($breakpoint) {
+  @media (max-width: #{-breakpoint($breakpoint) - 0.02px}) {
+    @content;
+  }
+}
+
+@mixin container-above($breakpoint, $name: null) {
+  @if $name {
+    @container #{$name} (min-width: #{-breakpoint($breakpoint)}) {
       @content;
     }
   } @else {
-    @error "Breakpoint '#{$breakpoint}' not found. Available breakpoints: #{map.keys(bp-tokens.$breakpoints)}";
+    @container (min-width: #{-breakpoint($breakpoint)}) {
+      @content;
+    }
   }
 }

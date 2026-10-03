@@ -1,294 +1,285 @@
-<div class="header">
-  <h1 class="title">My Drafts</h1>
-  <div class="actions">
-    <button
-      pdz-button
-      iconOnly
-      color="primary"
-      variant="tonal"
-      aria-label="New draft"
-      [routerLink]="['/', draftPath, 'new']"
-    >
-      <pdz-icon name="add"></pdz-icon>
-    </button>
-  </div>
-</div>
-<div class="drafts-container">
-  @if (!drafts) {
-    <div class="drafts-grid" role="status" aria-label="Loading your drafts">
-      @for (card of skeletonCards; track $index) {
-        <pdz-card class="draft-card--skeleton" color="primary" padding="sm">
-          <div pdz-card-header>
-            <pdz-skeleton
-              variant="block"
-              width="70%"
-              height="1.125rem"
-            ></pdz-skeleton>
-          </div>
-          <pdz-skeleton
-            class="body-header"
-            variant="block"
-            width="9rem"
-            height="0.75rem"
-          ></pdz-skeleton>
-          <div class="sprites">
-            @for (sprite of skeletonSprites; track $index) {
-              <pdz-skeleton variant="circle" width="2.25rem"></pdz-skeleton>
-            }
-          </div>
-          <div pdz-card-footer>
-            <pdz-skeleton
-              variant="block"
-              width="4.5rem"
-              height="1.5rem"
-            ></pdz-skeleton>
-            <pdz-skeleton
-              variant="block"
-              width="3.5rem"
-              height="1.5rem"
-            ></pdz-skeleton>
-          </div>
-        </pdz-card>
-      }
-    </div>
-  } @else {
-    @if (loadError) {
-      <div class="load-error">
-        <pdz-icon name="error"></pdz-icon>
-        <span
-          >Something went wrong loading your drafts. Please refresh and try
-          again.</span
-        >
-      </div>
-    }
-    @if (hasAnyDrafts()) {
-      <div class="drafts-grid">
-        @for (tournament of tournaments; track tournament.tournamentSlug) {
-          <pdz-card color="primary" padding="sm">
+<pdz-page>
+  <div class="drafts">
+    <pdz-page-header title="My Drafts" wash>
+      <a
+        pdz-page-header-actions
+        pdz-button
+        icon="add"
+        [routerLink]="['/', draftPath, 'new']"
+      >
+        New Draft
+      </a>
+    </pdz-page-header>
+
+    @if (drafts() === undefined) {
+      <div class="drafts-grid" role="status" aria-label="Loading your drafts">
+        @for (card of skeletonCards; track $index) {
+          <pdz-card class="draft-card--skeleton" padding="sm">
             <div pdz-card-header>
-              <div class="card-title">
-                <span class="league-label">{{ tournament.leagueName }}</span>
-                <h2 class="league-name">{{ tournament.tournamentName }}</h2>
-              </div>
-              @if (tournament.score) {
-                <pdz-score [tone]="scoreTone(tournament.score)">{{
-                  scoreString(tournament.score)
-                }}</pdz-score>
-              }
+              <pdz-skeleton
+                variant="block"
+                width="70%"
+                height="1.125rem"
+              ></pdz-skeleton>
             </div>
-
-            <p class="body-header">
-              {{ tournament.ruleset }} - {{ tournament.format }}
-            </p>
+            <pdz-skeleton
+              class="body-header"
+              variant="block"
+              width="9rem"
+              height="0.75rem"
+            ></pdz-skeleton>
             <div class="sprites">
-              @for (pokemon of tournament.draft; track pokemon.name) {
-                <pdz-sprite [pokemon]="pokemon"></pdz-sprite>
+              @for (sprite of skeletonSprites; track $index) {
+                <pdz-skeleton variant="circle" width="2.25rem"></pdz-skeleton>
               }
             </div>
-
             <div pdz-card-footer>
-              <a
-                pdz-button
-                size="sm"
-                variant="ghost"
-                color="primary"
-                [routerLink]="[
-                  '/leagues',
-                  tournament.leagueSlug,
-                  'tournaments',
-                  tournament.tournamentSlug,
-                ]"
-                >View Tournament</a
-              >
-              @if (tournament.teamSlug) {
-                <a
-                  pdz-button
-                  size="sm"
-                  variant="ghost"
-                  color="primary"
-                  [routerLink]="[
-                    '/leagues',
-                    tournament.leagueSlug,
-                    'tournaments',
-                    tournament.tournamentSlug,
-                    'teams',
-                    tournament.teamSlug,
-                  ]"
-                  >View My Team</a
-                >
-              }
-            </div>
-          </pdz-card>
-        }
-        @for (draft of drafts; track draft.slug) {
-          <pdz-card class="draft-card" color="primary" padding="sm">
-            <div pdz-card-header>
-              <div class="card-title">
-                <h2 class="league-name">{{ draft.leagueName }}</h2>
-                @if (unresolvedWarning(draft); as warning) {
-                  <a
-                    class="draft-warning"
-                    [routerLink]="['edit']"
-                    [queryParams]="{ draft: draft.slug | json }"
-                    [pdzTooltip]="warning"
-                  >
-                    <pdz-icon name="warning"></pdz-icon>
-                  </a>
-                }
-              </div>
-              @if (draft.score) {
-                <pdz-score [tone]="scoreTone(draft.score)">{{
-                  scoreString(draft.score)
-                }}</pdz-score>
-              }
-              <pdz-menu aria-label="Draft actions">
-                <button
-                  pdz-button
-                  iconOnly
-                  size="sm"
-                  variant="ghost"
-                  color="primary"
-                  pdz-menu-trigger
-                  [attr.aria-label]="'Actions for ' + draft.leagueName"
-                >
-                  <pdz-icon name="more_vert"></pdz-icon>
-                </button>
-                <a
-                  pdz-menu-item
-                  icon="edit_document"
-                  [routerLink]="['edit']"
-                  [queryParams]="{ draft: draft.slug | json }"
-                  >Edit Team</a
-                >
-                <a
-                  pdz-menu-item
-                  icon="event_list"
-                  routerLink="/planner"
-                  [queryParams]="{ draft: toPlanner(draft) }"
-                  >Open in Planner</a
-                >
-                <button
-                  pdz-menu-item
-                  icon="archive"
-                  (click)="confirmArchive(draft)"
-                >
-                  Archive
-                </button>
-                <button
-                  pdz-menu-item
-                  icon="delete_forever"
-                  tone="danger"
-                  (click)="confirmDelete(draft)"
-                >
-                  Delete
-                </button>
-              </pdz-menu>
-            </div>
-
-            <p class="body-header">{{ draft.ruleset }} - {{ draft.format }}</p>
-            <div class="sprites">
-              @for (pokemon of draft.team; track pokemon.name) {
-                <pdz-sprite
-                  [pokemon]="pokemon"
-                  [class.unresolved-sprite]="pokemon.unresolved"
-                ></pdz-sprite>
-              }
-            </div>
-
-            <div pdz-card-footer>
-              <a
-                pdz-button
-                size="sm"
-                variant="ghost"
-                color="primary"
-                [routerLink]="['/', draftPath, draft.slug]"
-                >Matches</a
-              >
-              <a
-                pdz-button
-                size="sm"
-                variant="ghost"
-                color="primary"
-                [routerLink]="[draft.slug, 'stats']"
-                >Stats</a
-              >
+              <pdz-skeleton
+                variant="block"
+                width="4.5rem"
+                height="1.5rem"
+              ></pdz-skeleton>
+              <pdz-skeleton
+                variant="block"
+                width="3.5rem"
+                height="1.5rem"
+              ></pdz-skeleton>
             </div>
           </pdz-card>
         }
       </div>
     } @else {
-      <pdz-empty-state
-        bordered
-        icon="note_stack_add"
-        heading="No Drafts Yet"
-        message="Add your first draft to start prepping against opponents and track your season details!"
-      >
-        <div pdz-empty-state-actions>
-          <a pdz-button [routerLink]="['/', draftPath, 'new']">
-            <pdz-icon name="add"></pdz-icon>
-            Add First Draft
-          </a>
-        </div>
-      </pdz-empty-state>
-    }
-  }
-  <pdz-disclosure heading="Archived Drafts">
-    <div class="drafts-grid">
-      @for (archive of archives; track archive._id) {
-        <pdz-card class="draft-card" color="primary" padding="sm">
-          <div pdz-card-header>
-            <div class="card-title">
-              <h2 class="league-name">{{ archive.leagueName }}</h2>
-            </div>
-            @if (archive.score) {
-              <pdz-score [tone]="scoreTone(archive.score)">{{
-                scoreString(archive.score)
-              }}</pdz-score>
-            }
-            <pdz-menu aria-label="Archive actions">
-              <button
-                pdz-button
-                iconOnly
-                size="sm"
-                variant="ghost"
-                color="primary"
-                pdz-menu-trigger
-                [attr.aria-label]="'Actions for ' + archive.leagueName"
-              >
-                <pdz-icon name="more_vert"></pdz-icon>
-              </button>
-              @if (archive.slug) {
-                <button
-                  pdz-menu-item
-                  icon="unarchive"
-                  (click)="restore(archive)"
-                >
-                  Restore
-                </button>
-              }
-            </pdz-menu>
-          </div>
-
-          <p class="body-header">
-            {{ archive.ruleset }} - {{ archive.format }}
-          </p>
-          <div class="sprites">
-            @for (pokemon of archive.team; track pokemon.name) {
-              <pdz-sprite [pokemon]="pokemon"></pdz-sprite>
-            }
-          </div>
-          <div pdz-card-footer>
-            <a
-              pdz-button
-              size="sm"
-              variant="ghost"
-              color="primary"
-              [routerLink]="['archives', archive._id, 'stats']"
-              >Stats</a
-            >
-          </div>
+      @if (loadError()) {
+        <pdz-card color="danger" padding="sm" role="alert">
+          <span class="load-error">
+            <pdz-icon name="error" [size]="18" aria-hidden="true" />
+            Something went wrong loading your drafts. Please refresh and try
+            again.
+          </span>
         </pdz-card>
       }
-    </div>
-  </pdz-disclosure>
-</div>
+      @if (hasAnyDrafts()) {
+        <div class="drafts-grid">
+          @for (tournament of tournaments(); track tournament.tournamentSlug) {
+            <pdz-card padding="sm">
+              <div pdz-card-header>
+                <div class="card-title">
+                  <span class="league-label">{{ tournament.leagueName }}</span>
+                  <h2 class="league-name">{{ tournament.tournamentName }}</h2>
+                </div>
+                @if (tournament.score) {
+                  <pdz-score [tone]="scoreTone(tournament.score)">{{
+                    scoreString(tournament.score)
+                  }}</pdz-score>
+                }
+              </div>
+
+              <p class="body-header">
+                {{ tournament.ruleset }} · {{ tournament.format }}
+              </p>
+              <div class="sprites">
+                @for (pokemon of tournament.draft; track pokemon.name) {
+                  <pdz-sprite [pokemon]="pokemon"></pdz-sprite>
+                }
+              </div>
+
+              <div pdz-card-footer>
+                <a
+                  pdz-button
+                  size="sm"
+                  variant="ghost"
+                  [routerLink]="tournamentPath(tournament)"
+                  >View Tournament</a
+                >
+                @if (tournament.teamSlug) {
+                  <a
+                    pdz-button
+                    size="sm"
+                    variant="ghost"
+                    [routerLink]="[
+                      ...tournamentPath(tournament),
+                      'teams',
+                      tournament.teamSlug,
+                    ]"
+                    >View My Team</a
+                  >
+                }
+              </div>
+            </pdz-card>
+          }
+          @for (draft of drafts(); track draft.slug) {
+            <pdz-card class="draft-card" padding="sm">
+              <div pdz-card-header>
+                <div class="card-title">
+                  <h2 class="league-name">{{ draft.leagueName }}</h2>
+                  @if (unresolvedWarning(draft); as warning) {
+                    <a
+                      class="draft-warning"
+                      [routerLink]="['edit']"
+                      [queryParams]="{ draft: draft.slug | json }"
+                      [pdzTooltip]="warning"
+                      [attr.aria-label]="warning"
+                    >
+                      <pdz-icon name="warning" [size]="18" />
+                    </a>
+                  }
+                </div>
+                @if (draft.score) {
+                  <pdz-score [tone]="scoreTone(draft.score)">{{
+                    scoreString(draft.score)
+                  }}</pdz-score>
+                }
+                <pdz-menu aria-label="Draft actions">
+                  <button
+                    pdz-button
+                    iconOnly
+                    icon="more_vert"
+                    size="sm"
+                    variant="ghost"
+                    color="neutral"
+                    pdz-menu-trigger
+                    [attr.aria-label]="'Actions for ' + draft.leagueName"
+                  ></button>
+                  <a
+                    pdz-menu-item
+                    icon="edit_document"
+                    [routerLink]="['edit']"
+                    [queryParams]="{ draft: draft.slug | json }"
+                    >Edit Team</a
+                  >
+                  <a
+                    pdz-menu-item
+                    icon="event_list"
+                    [routerLink]="['/', plannerPath]"
+                    [queryParams]="{ draft: toPlanner(draft) }"
+                    >Open in Planner</a
+                  >
+                  <button
+                    pdz-menu-item
+                    icon="archive"
+                    (click)="confirmArchive(draft)"
+                  >
+                    Archive
+                  </button>
+                  <button
+                    pdz-menu-item
+                    icon="delete_forever"
+                    tone="danger"
+                    (click)="confirmDelete(draft)"
+                  >
+                    Delete
+                  </button>
+                </pdz-menu>
+              </div>
+
+              <p class="body-header">
+                {{ draft.ruleset }} · {{ draft.format }}
+              </p>
+              <div class="sprites">
+                @for (pokemon of draft.team; track pokemon.name) {
+                  <pdz-sprite
+                    [pokemon]="pokemon"
+                    [class.unresolved-sprite]="pokemon.unresolved"
+                  ></pdz-sprite>
+                }
+              </div>
+
+              <div pdz-card-footer>
+                <a
+                  pdz-button
+                  size="sm"
+                  variant="ghost"
+                  [routerLink]="['/', draftPath, draft.slug]"
+                  >Matches</a
+                >
+                <a
+                  pdz-button
+                  size="sm"
+                  variant="ghost"
+                  [routerLink]="[draft.slug, 'stats']"
+                  >Stats</a
+                >
+              </div>
+            </pdz-card>
+          }
+        </div>
+      } @else {
+        <pdz-empty-state
+          bordered
+          icon="note_stack_add"
+          heading="No drafts yet"
+          message="Add your first draft to start prepping against opponents and track your season."
+        >
+          <a
+            pdz-empty-state-actions
+            pdz-button
+            icon="add"
+            [routerLink]="['/', draftPath, 'new']"
+          >
+            Add First Draft
+          </a>
+        </pdz-empty-state>
+      }
+    }
+
+    @if (archives().length) {
+      <pdz-disclosure heading="Archived drafts">
+        <div class="drafts-grid">
+          @for (archive of archives(); track archive._id) {
+            <pdz-card class="draft-card" tone="raised-high" padding="sm">
+              <div pdz-card-header>
+                <div class="card-title">
+                  <h2 class="league-name">{{ archive.leagueName }}</h2>
+                </div>
+                @if (archive.score) {
+                  <pdz-score [tone]="scoreTone(archive.score)">{{
+                    scoreString(archive.score)
+                  }}</pdz-score>
+                }
+                @if (archive.slug) {
+                  <pdz-menu aria-label="Archive actions">
+                    <button
+                      pdz-button
+                      iconOnly
+                      icon="more_vert"
+                      size="sm"
+                      variant="ghost"
+                      color="neutral"
+                      pdz-menu-trigger
+                      [attr.aria-label]="'Actions for ' + archive.leagueName"
+                    ></button>
+                    <button
+                      pdz-menu-item
+                      icon="unarchive"
+                      (click)="restore(archive)"
+                    >
+                      Restore
+                    </button>
+                  </pdz-menu>
+                }
+              </div>
+
+              <p class="body-header">
+                {{ archive.ruleset }} · {{ archive.format }}
+              </p>
+              <div class="sprites">
+                @for (pokemon of archive.team; track pokemon.name) {
+                  <pdz-sprite [pokemon]="pokemon"></pdz-sprite>
+                }
+              </div>
+              <div pdz-card-footer>
+                <a
+                  pdz-button
+                  size="sm"
+                  variant="ghost"
+                  [routerLink]="['archives', archive._id, 'stats']"
+                  >Stats</a
+                >
+              </div>
+            </pdz-card>
+          }
+        </div>
+      </pdz-disclosure>
+    }
+  </div>
+</pdz-page>

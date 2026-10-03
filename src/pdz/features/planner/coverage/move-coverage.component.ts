@@ -3,7 +3,7 @@ import { getNameByPid } from '@pdz/shared/data/namedex';
 import {
   Coverage,
   CoveragePokemon,
-} from '../../drafts/matchup-overview/matchup-interface';
+} from '@pdz/features/drafts/matchup-overview/matchup-interface';
 import { WidgetComponent } from '@pdz/shared/layout/widget/widget.component';
 import { CoverageChartComponent } from './charts/coverage-chart.component';
 

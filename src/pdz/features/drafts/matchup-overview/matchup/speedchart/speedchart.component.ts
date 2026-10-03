@@ -17,8 +17,8 @@ import { NonNullableFormBuilder } from '@angular/forms';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { WidgetComponent } from '@pdz/shared/layout/widget/widget.component';
-import { DraftPokemon } from '../../../draft.model';
-import { SpeedChart, Speedtier } from '../../matchup-interface';
+import { DraftPokemon } from '@pdz/features/drafts/draft.model';
+import { SpeedChart, Speedtier } from '@pdz/features/drafts/matchup-overview/matchup-interface';
 import {
   ModifierForms,
   SpeedchartFiltersComponent,

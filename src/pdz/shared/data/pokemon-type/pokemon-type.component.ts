@@ -86,13 +86,7 @@ export class PokemonTypeComponent {
   readonly direction = input<PokemonTypeDirection>('horizontal');
   readonly disabled = input(false, { transform: booleanAttribute });
 
-  /** Overrides the glyph size the `size`/`direction` pair would pick. */
   readonly iconSize = input<IconSize>();
-
-  /**
-   * The label holds a fixed width per size so a row of badges lines up. Pass a
-   * length to widen it, or `auto` to let it shrink to the type name.
-   */
   readonly labelWidth = input<string>();
 
   protected readonly iconName = computed(() => {

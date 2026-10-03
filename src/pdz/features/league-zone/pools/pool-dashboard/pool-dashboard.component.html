@@ -1,7 +1,7 @@
 <pdz-page-header
-  [title]="poolName"
-  [eyebrow]="leagueName"
-  [logo]="getLogoUrl(logo)"
+  [title]="details()?.poolName ?? ''"
+  [eyebrow]="details()?.leagueName ?? ''"
+  [logo]="logoUrl()"
 >
   <pdz-tab-nav align="stretch" label="Pool sections">
     <a pdz-tab-link [routerLink]="['../../teams']" routerLinkActive>Teams</a>
@@ -9,32 +9,24 @@
     <a pdz-tab-link routerLink="./draft" routerLinkActive>Draft</a>
   </pdz-tab-nav>
   <pdz-stage-switcher
-    [currentStageSlug]="stageSlug"
+    [currentStageSlug]="stageSlug()"
     (stageSelected)="onStageSelected($event)"
-  ></pdz-stage-switcher>
+  />
 </pdz-page-header>
-<div class="pool-body">
-  <div class="section section--matchups">
-    <div class="section-header">
-      <h3>Matchups</h3>
-    </div>
-    <div class="section-body">
-      @if (stageSlug) {
-        <pdz-league-schedule-widget></pdz-league-schedule-widget>
-      }
-    </div>
-  </div>
-  <div class="section section--trades">
-    <div class="section-header">
-      <h3>Active Trades</h3>
-    </div>
-    <div class="section-body">
-      @if (stageSlug) {
-        <pdz-league-trade-widget
-          [stageSlug]="stageSlug"
-        ></pdz-league-trade-widget>
-      }
-    </div>
-  </div>
 
-</div>
+@if (stageSlug(); as slug) {
+  <div class="pool-body">
+    <pdz-card padding="lg">
+      <section class="section" aria-labelledby="pool-matchups">
+        <h2 class="section__title" id="pool-matchups">Matchups</h2>
+        <pdz-league-schedule-widget />
+      </section>
+    </pdz-card>
+    <pdz-card padding="lg">
+      <section class="section" aria-labelledby="pool-trades">
+        <h2 class="section__title" id="pool-trades">Active Trades</h2>
+        <pdz-league-trade-widget [stageSlug]="slug" />
+      </section>
+    </pdz-card>
+  </div>
+}

@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { DatePipe, TitleCasePipe } from '@angular/common';
 import {
   Component,
   EventEmitter,
@@ -25,7 +25,13 @@ export type LeagueAdMode = 'public' | 'manage';
   selector: 'pdz-league-ad',
   templateUrl: './league-ad.component.html',
   styleUrls: ['./league-ad.component.scss'],
-  imports: [CommonModule, RouterModule, MarkdownModule, BallSVG, CoinSVG,
+  imports: [
+    DatePipe,
+    TitleCasePipe,
+    RouterModule,
+    MarkdownModule,
+    BallSVG,
+    CoinSVG,
     CardComponent,
   ],
 })
@@ -78,7 +84,6 @@ export class LeagueAdComponent implements OnInit {
   }
 
   private setTeamClass(): void {
-    // this.teamClass = this.index % 2 === 0 ? 'team-a' : 'team-b';
   }
 
   getTeamClass(): TeamType {

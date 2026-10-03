@@ -51,20 +51,13 @@ export class TimeSeriesChartComponent
   readonly data = input<SeriesPoint[]>([]);
   readonly type = input<'line' | 'bar'>('line');
   readonly bucket = input<BucketUnit>('day');
-  /** A CSS color or variable for the primary series. */
   readonly color = input('var(--pdz-color-primary)');
-  /** A CSS color or variable for the (secondary) trendline. */
   readonly trendColor = input('var(--pdz-color-secondary)');
-  /** Fit a trendline through the data. */
   readonly trend = input<TrendKind>('none');
-  /** Degree used when `trend === 'polynomial'`. */
   readonly trendDegree = input(3);
-  /** Window size (in buckets) used when `trend === 'movingAverage'`. */
   readonly trendWindow = input(4);
   readonly valueLabel = input('Users');
 
-  // `width` tracks the container so the chart fills its card at a constant
-  // height instead of scaling its height up on very wide layouts.
   width = WIDTH;
   readonly height = HEIGHT;
 
@@ -97,8 +90,6 @@ export class TimeSeriesChartComponent
 
   private render(): void {
     const svg = d3.select(this.svgRef.nativeElement);
-    // Keep the viewBox in sync with the measured width here: ResizeObserver
-    // fires outside Angular, so the template binding may not have updated yet.
     svg.attr('viewBox', `0 0 ${this.width} ${this.height}`);
     svg.selectAll('*').remove();
 
@@ -144,7 +135,6 @@ export class TimeSeriesChartComponent
       .nice()
       .range([innerH, 0]);
 
-    // Axes.
     const tickFormat = this.axisFormat();
     g.append('g')
       .attr('transform', `translate(0,${innerH})`)
@@ -320,18 +310,6 @@ export class TimeSeriesChartComponent
   }
 }
 
-/**
- * Returns a predicted value for each point using a least-squares fit against
- * the point index (0..n-1).
- *
- * - `linear` fits `y = m·x + c`.
- * - `polynomial` fits a degree-`degree` curve — a good general choice for
- *   cumulative growth that accelerates then decelerates, since it follows the
- *   actual shape over the observed range rather than extrapolating a constant
- *   rate.
- * - `exponential` fits `y = a·e^(b·x)` by regressing on `ln(y)`. Note this
- *   overweights small early values, so it overshoots decelerating data.
- */
 function fitTrend(
   points: ChartPoint[],
   kind: TrendKind,
@@ -364,8 +342,6 @@ function fitTrend(
   }
 
   if (kind === 'polynomial') {
-    // Normalize x to [0, 1] for numerical stability, then solve the normal
-    // equations for the polynomial coefficients.
     const deg = Math.max(1, Math.min(degree, n - 1));
     const xs = points.map((_, i) => i / (n - 1));
     const coeffs = polyfit(
@@ -384,10 +360,8 @@ function fitTrend(
   return points.map((_, i) => intercept + slope * i);
 }
 
-/** Least-squares polynomial fit via the normal equations. */
 function polyfit(xs: number[], ys: number[], degree: number): number[] | null {
   const cols = degree + 1;
-  // Powers of x up to 2*degree for the normal-equation matrix.
   const sumsX: number[] = new Array(2 * degree + 1).fill(0);
   for (const x of xs) {
     let p = 1;
@@ -416,7 +390,6 @@ function polyval(coeffs: number[], x: number): number {
   return coeffs.reduce((acc, c, i) => acc + c * Math.pow(x, i), 0);
 }
 
-/** Solves an augmented [n x (n+1)] system with partial pivoting. */
 function gaussianSolve(m: number[][]): number[] | null {
   const n = m.length;
   for (let col = 0; col < n; col++) {

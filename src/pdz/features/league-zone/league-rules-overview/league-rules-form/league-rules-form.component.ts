@@ -1,138 +1,122 @@
-import { Component, inject, OnDestroy, OnInit, signal } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { League } from '../../league.interface';
-import { LeagueZoneService } from '../../league-zone.service';
-import { Subject, takeUntil } from 'rxjs';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  OnInit,
+  computed,
+  inject,
+  signal,
+} from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { GuardsUnsavedChanges } from '@pdz/core/guards/unsaved-changes/unsaved-changes.guard';
+import { LeagueZoneService } from '@pdz/features/league-zone/league-zone.service';
+import { League } from '@pdz/features/league-zone/league.interface';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
+import { CardComponent } from '@pdz/shared/data/card/card.component';
+import { DialogService } from '@pdz/shared/dialogs/dialog/dialog.service';
+import { EmptyStateComponent } from '@pdz/shared/feedback/empty-state/empty-state.component';
+import { ToastService } from '@pdz/shared/feedback/toast/toast.service';
+import { FieldComponent } from '@pdz/shared/inputs/field/field.component';
+import { InputDirective } from '@pdz/shared/inputs/field/input.directive';
 import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
 
 @Component({
   selector: 'pdz-league-rules-form',
-  imports: [CommonModule, FormsModule, ButtonComponent, PageHeaderComponent],
+  imports: [
+    ButtonComponent,
+    CardComponent,
+    EmptyStateComponent,
+    FieldComponent,
+    InputDirective,
+    PageHeaderComponent,
+  ],
   templateUrl: './league-rules-form.component.html',
-  styleUrls: ['./league-rules-form.component.scss'],
+  styleUrl: './league-rules-form.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  host: { '(window:beforeunload)': 'onBeforeUnload($event)' },
 })
-export class LeagueRulesFormComponent implements OnInit, OnDestroy {
-  private leagueZoneService = inject(LeagueZoneService);
-  private destroy$ = new Subject<void>();
+export class LeagueRulesFormComponent implements OnInit, GuardsUnsavedChanges {
+  private readonly leagueZoneService = inject(LeagueZoneService);
+  private readonly dialogs = inject(DialogService);
+  private readonly toast = inject(ToastService);
+  private readonly destroyRef = inject(DestroyRef);
 
-  rules = signal<League.RuleSection[]>([]);
-  originalRules = signal<League.RuleSection[]>([]);
-  hasUnsavedChanges = signal(false);
-  isSaving = signal(false);
-  saveMessage = signal<{ type: 'success' | 'error'; text: string } | null>(
-    null,
+  readonly rules = signal<League.RuleSection[]>([]);
+  private readonly savedRules = signal<League.RuleSection[]>([]);
+  readonly isSaving = signal(false);
+
+  readonly hasUnsavedChanges = computed(
+    () => JSON.stringify(this.rules()) !== JSON.stringify(this.savedRules()),
   );
 
   ngOnInit(): void {
     this.leagueZoneService
       .getRules()
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((ruleSections) => {
         const normalized = ruleSections.map((section) => ({
-          ...section,
+          title: section.title,
           body: section.body.replace(/\t/g, '  '),
         }));
         this.rules.set(normalized);
-        this.originalRules.set(JSON.parse(JSON.stringify(normalized)));
-        this.hasUnsavedChanges.set(false);
+        this.savedRules.set(normalized);
       });
-
-    window.addEventListener('beforeunload', this.onBeforeUnload);
   }
 
-  ngOnDestroy(): void {
-    window.removeEventListener('beforeunload', this.onBeforeUnload);
-    this.destroy$.next();
-    this.destroy$.complete();
+  onBeforeUnload(event: BeforeUnloadEvent): void {
+    if (this.hasUnsavedChanges()) event.preventDefault();
   }
 
-  private onBeforeUnload = (e: BeforeUnloadEvent) => {
-    if (this.hasUnsavedChanges()) {
-      e.preventDefault();
-      e.returnValue = '';
-    }
-  };
-
-  onRuleChange(): void {
-    this.hasUnsavedChanges.set(
-      JSON.stringify(this.rules()) !== JSON.stringify(this.originalRules()),
+  updateSection(index: number, patch: Partial<League.RuleSection>): void {
+    this.rules.update((rules) =>
+      rules.map((section, i) => (i === index ? { ...section, ...patch } : section)),
     );
-    this.saveMessage.set(null);
   }
 
   addSection(): void {
-    const newSection: League.RuleSection = {
-      title: 'New Section',
-      body: '',
-    };
-    this.rules.set([...this.rules(), newSection]);
-    this.onRuleChange();
+    this.rules.update((rules) => [...rules, { title: 'New Section', body: '' }]);
   }
 
   deleteSection(index: number): void {
-    const updatedRules = this.rules().filter((_, i) => i !== index);
-    this.rules.set(updatedRules);
-    this.onRuleChange();
+    this.rules.update((rules) => rules.filter((_, i) => i !== index));
   }
 
-  moveUp(index: number): void {
-    if (index === 0) return;
-    const rulesArray = [...this.rules()];
-    [rulesArray[index - 1], rulesArray[index]] = [
-      rulesArray[index],
-      rulesArray[index - 1],
-    ];
-    this.rules.set(rulesArray);
-    this.onRuleChange();
-  }
-
-  moveDown(index: number): void {
-    const rulesArray = this.rules();
-    if (index === rulesArray.length - 1) return;
-    const updatedRules = [...rulesArray];
-    [updatedRules[index], updatedRules[index + 1]] = [
-      updatedRules[index + 1],
-      updatedRules[index],
-    ];
-    this.rules.set(updatedRules);
-    this.onRuleChange();
+  move(index: number, offset: -1 | 1): void {
+    const target = index + offset;
+    this.rules.update((rules) => {
+      if (target < 0 || target >= rules.length) return rules;
+      const next = [...rules];
+      [next[index], next[target]] = [next[target], next[index]];
+      return next;
+    });
   }
 
   saveRules(): void {
+    if (this.isSaving()) return;
     this.isSaving.set(true);
+    const rules = this.rules();
     this.leagueZoneService
-      .saveRules(this.rules())
-      .pipe(takeUntil(this.destroy$))
+      .saveRules(rules)
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: () => {
-          this.originalRules.set(JSON.parse(JSON.stringify(this.rules())));
-          this.hasUnsavedChanges.set(false);
-          this.saveMessage.set({
-            type: 'success',
-            text: 'Rules saved successfully!',
-          });
+          this.savedRules.set(rules);
           this.isSaving.set(false);
-          setTimeout(() => this.saveMessage.set(null), 3000);
+          this.toast.success('Rules saved.');
         },
-        error: (err) => {
-          this.saveMessage.set({
-            type: 'error',
-            text: 'Failed to save rules. Please try again.',
-          });
+        error: () => {
           this.isSaving.set(false);
-          console.error('Error saving rules:', err);
+          this.toast.error('Could not save the rules. Try again.');
         },
       });
   }
 
-  canDeactivate(): boolean {
-    if (this.hasUnsavedChanges()) {
-      return confirm(
-        'You have unsaved changes. Are you sure you want to leave? You will lose your progress.',
-      );
-    }
-    return true;
+  canDeactivate(): boolean | Promise<boolean> {
+    if (!this.hasUnsavedChanges()) return true;
+    return this.dialogs.confirm('Leave without saving?', {
+      message: 'Your rule changes have not been saved.',
+      confirmLabel: 'Leave',
+      confirmColor: 'danger',
+    });
   }
 }

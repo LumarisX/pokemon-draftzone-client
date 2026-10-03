@@ -15,14 +15,7 @@
               </div>
               <div class="pdz-types">
                 @for (type of pokemon.types; track $index) {
-                  <div
-                    class="pdz-type"
-                    [style.background-color]="typeColor(type)"
-                  >
-                    <div class="pdz-type__text">
-                      {{ type }}
-                    </div>
-                  </div>
+                  <pdz-pokemon-type size="sm" [type]="type" />
                 }
               </div>
               <div class="option-abilities">
@@ -90,11 +83,10 @@
               padding="sm"
               class="draft-option qd-option"
               [selected]="$index == selectedOption"
-              [ngClass]="{
-                'draft-option--exit': optionExits[$index] !== null,
-                'draft-option--exit-selected':
-                  optionExits[$index] === 'selected',
-              }"
+              [class.draft-option--exit]="optionExits[$index] !== null"
+              [class.draft-option--exit-selected]="
+                optionExits[$index] === 'selected'
+              "
               (click)="clickOption($index)"
             >
               <div class="sprite-wrapper">
@@ -106,14 +98,7 @@
                 </div>
                 <div class="pdz-types">
                   @for (type of draftOption.types; track $index) {
-                    <div
-                      class="pdz-type"
-                      [style.background-color]="typeColor(type)"
-                    >
-                      <div class="pdz-type__text">
-                        {{ type }}
-                      </div>
-                    </div>
+                    <pdz-pokemon-type size="sm" [type]="type" />
                   }
                 </div>
                 <div class="option-tier">Tier: {{ draftOption.tier }}</div>
@@ -133,7 +118,7 @@
         @for (pokemon of draft; track $index) {
           <div
             class="drafted-pokemon"
-            [ngClass]="{ 'active-pick': $index === currentPick }"
+            [class.active-pick]="$index === currentPick"
           >
             <div class="sprite-wrapper">
               <pdz-sprite
@@ -149,14 +134,7 @@
                 </div>
                 <div class="pdz-types">
                   @for (type of pokemon.types; track $index) {
-                    <div
-                      class="pdz-type"
-                      [style.background-color]="typeColor(type)"
-                    >
-                      <div class="pdz-type__text">
-                        {{ type }}
-                      </div>
-                    </div>
+                    <pdz-pokemon-type size="sm" [type]="type" />
                   }
                 </div>
               } @else {

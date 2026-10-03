@@ -1,11 +1,11 @@
 @use "pdz-theming" as pdz;
 
 :host {
-  --speedchart-line: #{pdz.color(primary-border)};
-  --speedchart-line-strong: #{pdz.color(primary-soft)};
-  --speedchart-ink: #{pdz.color(on-primary-container)};
-  --speedchart-accent: #{pdz.color(primary-accent)};
-  --speedchart-wash: #{pdz.color-rgba(primary, 0.09)};
+  --speedchart-line: #{pdz.color(team1-border)};
+  --speedchart-line-strong: #{pdz.color(team1-soft)};
+  --speedchart-ink: #{pdz.color(on-team1-container)};
+  --speedchart-accent: #{pdz.color(team1-accent)};
+  --speedchart-wash: #{pdz.color(team1-wash)};
 
   display: flex;
   flex-direction: column;
@@ -18,11 +18,11 @@
 }
 
 :host(.speedtier-group--opponent) {
-  --speedchart-line: #{pdz.color(secondary-border)};
-  --speedchart-line-strong: #{pdz.color(secondary-soft)};
-  --speedchart-ink: #{pdz.color(on-secondary-container)};
-  --speedchart-accent: #{pdz.color(secondary-accent)};
-  --speedchart-wash: #{pdz.color-rgba(secondary, 0.09)};
+  --speedchart-line: #{pdz.color(team2-border)};
+  --speedchart-line-strong: #{pdz.color(team2-soft)};
+  --speedchart-ink: #{pdz.color(on-team2-container)};
+  --speedchart-accent: #{pdz.color(team2-accent)};
+  --speedchart-wash: #{pdz.color(team2-wash)};
 }
 
 :host(.speedtier-group--collapsible) {

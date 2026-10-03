@@ -4,11 +4,12 @@ import {
   ElementRef,
   OnChanges,
   SimpleChanges,
+  ViewEncapsulation,
   inject,
   input,
 } from '@angular/core';
+import { ReplayPlayer } from '@pdz/features/tools/replay_analyzer/replay.interface';
 import * as d3 from 'd3';
-import { ReplayPlayer } from '../replay.interface';
 
 type DataType = {
   turn: number;
@@ -20,6 +21,7 @@ type DataType = {
   selector: 'pdz-replay-chart',
   template: `<svg class="replay-chart__svg"></svg>`,
   styleUrl: './replay-chart.component.scss',
+  encapsulation: ViewEncapsulation.None,
 })
 export class ReplayChartComponent implements AfterViewInit, OnChanges {
   private readonly el = inject<ElementRef<HTMLElement>>(ElementRef);
@@ -28,7 +30,7 @@ export class ReplayChartComponent implements AfterViewInit, OnChanges {
     'var(--pdz-color-secondary)',
   ];
   private readonly axisColor = 'var(--pdz-color-on-surface)';
-  private readonly gridColor = 'var(--pdz-color-outline-variant)';
+  private readonly gridColor = 'var(--pdz-color-border-subtle)';
   private isViewInitialized = false;
 
   private svg!: d3.Selection<SVGGElement, unknown, null, undefined>;

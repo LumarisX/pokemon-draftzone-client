@@ -34,8 +34,9 @@
   max-width: 64rem;
   margin-inline: auto;
   padding: pdz.space(md) pdz.space(lg);
+  border: 1px solid pdz.color(border-subtle);
   border-radius: pdz.shape(corner-md);
-  background-color: pdz.color(surface-container-lowest);
+  background-color: pdz.color(raised);
   touch-action: pan-y;
 
   @include pdz.respond-above(medium) {
@@ -131,9 +132,9 @@
   width: 100%;
   gap: pdz.space(xs);
   padding: pdz.space(2xs) pdz.space(xs);
-  border: 1px solid pdz.color(outline-variant);
+  border: 1px solid pdz.color(border-control);
   border-radius: pdz.shape(corner-sm);
-  background-color: pdz.color(surface-container-low);
+  background-color: pdz.color(raised-high);
   cursor: grab;
   touch-action: none;
   user-select: none;
@@ -142,8 +143,7 @@
     background-color pdz.duration(fast) pdz.easing(standard);
 
   &:focus-visible {
-    outline: 2px solid pdz.color(primary-accent);
-    outline-offset: 2px;
+    @include pdz.focus-ring;
   }
 
   &[data-state="benched"] {
@@ -159,13 +159,11 @@
   }
 
   &[data-state="played"] {
-    border-color: pdz.color(primary-border);
-    background-color: pdz.color(surface-container);
+    border-color: pdz.color(team1-border);
   }
 
   &[data-state="fainted"] {
     border-color: pdz.color(danger);
-    background-color: pdz.color(surface-container);
 
     .mon__sprite {
       opacity: 0.65;
@@ -177,18 +175,18 @@
   }
 
   &--source {
-    border-color: pdz.color(primary-accent);
+    border-color: pdz.color(team1-accent);
   }
 
   &--target {
-    border-color: pdz.color(primary-accent);
-    background-color: pdz.color(primary-container-low);
-    box-shadow: 0 0 0 2px pdz.color(primary-accent);
+    border-color: pdz.color(team1-accent);
+    background-color: pdz.color(team1-container-low);
+    box-shadow: 0 0 0 1px pdz.color(team1-accent);
   }
 }
 
 .column[data-side="side2"] .mon[data-state="played"] {
-  border-color: pdz.color(secondary-border);
+  border-color: pdz.color(team2-border);
 }
 
 .mon__sprite {
@@ -226,10 +224,15 @@
   margin-inline-start: auto;
   padding-inline: pdz.space(xs);
   border-radius: pdz.shape(corner-full);
-  background-color: pdz.color(primary-accent);
-  color: pdz.color(on-primary);
+  background-color: pdz.color(team1);
+  color: pdz.color(on-team1);
   pointer-events: none;
   @include pdz.text(label-strong);
+}
+
+.column[data-side="side2"] .mon__kos {
+  background-color: pdz.color(team2);
+  color: pdz.color(on-team2);
 }
 
 .mon__preview {
@@ -257,11 +260,11 @@
 
 .wires__head {
   &[data-tone="side1"] {
-    fill: pdz.color(primary-accent);
+    fill: pdz.color(team1-accent);
   }
 
   &[data-tone="side2"] {
-    fill: pdz.color(secondary-accent);
+    fill: pdz.color(team2-accent);
   }
 
   &[data-tone="team"] {
@@ -289,11 +292,11 @@
   transition: stroke-width pdz.duration(fast) pdz.easing(standard);
 
   &[data-tone="side1"] {
-    stroke: pdz.color(primary-accent);
+    stroke: pdz.color(team1-accent);
   }
 
   &[data-tone="side2"] {
-    stroke: pdz.color(secondary-accent);
+    stroke: pdz.color(team2-accent);
   }
 
   &[data-tone="team"] {
@@ -333,22 +336,22 @@
   align-items: center;
   gap: pdz.space(3xs);
   padding: pdz.space(3xs) pdz.space(2xs);
-  border: 1px solid pdz.color(outline-variant);
+  border: 1px solid pdz.color(border-subtle);
   border-radius: pdz.shape(corner-full);
-  background-color: pdz.color(surface-container-high);
+  background-color: pdz.color(floating);
   transform: translate(-50%, -50%);
   pointer-events: auto;
   white-space: nowrap;
   transition: opacity pdz.duration(fast) pdz.easing(standard);
 
   &[data-tone="side1"] {
-    border-color: pdz.color(primary-accent);
-    color: pdz.color(primary-accent);
+    border-color: pdz.color(team1-accent);
+    color: pdz.color(team1-accent);
   }
 
   &[data-tone="side2"] {
-    border-color: pdz.color(secondary-accent);
-    color: pdz.color(secondary-accent);
+    border-color: pdz.color(team2-accent);
+    color: pdz.color(team2-accent);
   }
 
   &[data-tone="team"] {
@@ -358,7 +361,7 @@
 
   &--active {
     border-color: pdz.color(outline);
-    box-shadow: var(--pdz-level-2);
+    box-shadow: var(--pdz-elevation-2);
   }
 
   &--empty:not(.chip--active) {
@@ -405,11 +408,11 @@
   border-top: 2px solid pdz.color(on-surface-variant);
 
   &--side1 {
-    border-color: pdz.color(primary-accent);
+    border-color: pdz.color(team1-accent);
   }
 
   &--side2 {
-    border-color: pdz.color(secondary-accent);
+    border-color: pdz.color(team2-accent);
   }
 
   &--team {

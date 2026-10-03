@@ -22,7 +22,7 @@
   padding: pdz.space(2xs) pdz.space(sm);
   border-inline-start: 3px solid pdz.color(warning);
   border-radius: pdz.shape(corner-sm);
-  background: pdz.color(surface-container-low);
+  background: pdz.color(state-hover);
 }
 
 .checks__where {
@@ -48,7 +48,7 @@
 
   pdz-icon {
     flex: none;
-    margin-top: 2px;
+    margin-top: pdz.space(2xs);
     color: pdz.color(warning);
   }
 }

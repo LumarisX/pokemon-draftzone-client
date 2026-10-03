@@ -1,9 +1,10 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
+import { MatchupData } from '@pdz/features/drafts/matchup-overview/matchup-interface';
+import { MatchupService } from '@pdz/features/drafts/matchup-overview/matchup.service';
+import { MatchupComponent } from '@pdz/features/drafts/matchup-overview/matchup/matchup.component';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
-import { MatchupData } from '../../drafts/matchup-overview/matchup-interface';
-import { MatchupService } from '../../drafts/matchup-overview/matchup.service';
-import { MatchupComponent } from '../../drafts/matchup-overview/matchup/matchup.component';
+import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
 import {
   QuickForm,
   QuickMatchupFormComponent,
@@ -16,27 +17,25 @@ import {
     MatchupComponent,
     ButtonComponent,
     LoadingComponent,
+    PageHeaderComponent,
   ],
   templateUrl: './quick-matchup-base.component.html',
   styleUrl: './quick-matchup-base.component.scss',
 })
-export class QuickMatchupBaseComponent implements OnInit {
+export class QuickMatchupBaseComponent {
   private matchupService = inject(MatchupService);
 
-  matchupData?: MatchupData;
-  editing: boolean = true;
-  formData?: QuickForm;
-
-  ngOnInit() {}
+  readonly matchupData = signal<MatchupData | undefined>(undefined);
+  readonly editing = signal(true);
+  readonly formData = signal<QuickForm | undefined>(undefined);
 
   getMatchupData(formData: QuickForm) {
-    this.formData = formData;
+    this.formData.set(formData);
     this.matchupService
       .getQuickMatchup(formData.toValue())
       .subscribe((data) => {
-        console.log('data', data);
-        this.matchupData = data;
-        this.editing = false;
+        this.matchupData.set(data);
+        this.editing.set(false);
       });
   }
 }

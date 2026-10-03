@@ -14,7 +14,7 @@ import { FieldComponent } from '@pdz/shared/inputs/field/field.component';
 import { FieldErrorDirective } from '@pdz/shared/inputs/field/field-message.directive';
 import { InputDirective } from '@pdz/shared/inputs/field/input.directive';
 import { first } from 'rxjs/operators';
-import { TierListService } from '../../tier-list.service';
+import { TierListService } from '@pdz/features/tier-lists/tier-list.service';
 
 export interface TierListSettingsDialogData {
   name: string;

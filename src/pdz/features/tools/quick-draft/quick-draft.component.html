@@ -1,9 +1,12 @@
-<h1>Quick Draft</h1>
+<pdz-page-header title="Quick Draft">
+  @if (draftSettings; as settings) {
+    <span pdz-page-header-detail
+      >{{ settings.ruleset }} · {{ settings.format }} · Team of
+      {{ getTotalPicks() }}</span
+    >
+  }
+</pdz-page-header>
 @if (draftSettings) {
-  <h3>
-    {{ draftSettings.ruleset }} | {{ draftSettings.format }} | Team of
-    {{ getTotalPicks() }}
-  </h3>
   @if (finalDraft) {
     <pdz-quick-draft-final
       [draft]="finalDraft"

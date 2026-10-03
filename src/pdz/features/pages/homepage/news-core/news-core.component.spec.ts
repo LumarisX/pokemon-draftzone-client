@@ -1,5 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { provideRouter } from '@angular/router';
+import { provideMarkdown } from 'ngx-markdown';
 import { NewsCoreComponent } from './news-core.component';
 
 describe('NewsCoreComponent', () => {
@@ -9,6 +10,7 @@ describe('NewsCoreComponent', () => {
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [NewsCoreComponent],
+      providers: [provideRouter([]), provideMarkdown()],
     }).compileComponents();
 
     fixture = TestBed.createComponent(NewsCoreComponent);

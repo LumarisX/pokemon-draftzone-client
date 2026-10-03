@@ -10,7 +10,7 @@ $gutter-width: var(--gutter-width, 11rem);
 
 .builder {
   overflow: auto;
-  background: pdz.color("background");
+  background: pdz.color("ground");
   height: 100%;
   max-height: 100dvh;
 
@@ -54,9 +54,9 @@ $gutter-width: var(--gutter-width, 11rem);
     flex-direction: column;
     gap: pdz.space(sm);
     padding: pdz.space(sm);
-    border: 1px solid pdz.color("outline-variant");
+    border: 1px solid pdz.color("border-subtle");
     border-radius: pdz.shape("corner-lg");
-    background: pdz.color("surface-container-low");
+    background: pdz.color("raised");
 
     &--current {
       border-color: pdz.color("primary-border");
@@ -88,7 +88,7 @@ $gutter-width: var(--gutter-width, 11rem);
     gap: pdz.space(xs);
     padding: pdz.space(3xs) pdz.space(sm);
     border-radius: pdz.shape("corner-full");
-    background: pdz.color("surface-container-high");
+    background: pdz.color("state-pressed");
     color: pdz.color("on-surface-variant");
     @include text(label);
 
@@ -109,9 +109,9 @@ $gutter-width: var(--gutter-width, 11rem);
     flex-direction: column;
     gap: pdz.space(sm);
     padding: pdz.space(sm);
-    border: 1px solid pdz.color("outline-variant");
+    border: 1px solid pdz.color("border-subtle");
     border-radius: pdz.shape("corner-md");
-    background: pdz.color("surface-container-lowest");
+    background: pdz.color("raised");
   }
 
   &__stage-head {
@@ -122,8 +122,7 @@ $gutter-width: var(--gutter-width, 11rem);
   }
 
   &__stage-title {
-    @include text(body-sm);
-    font-weight: var(--pdz-font-weight-semibold);
+    @include text(body-sm-strong);
     color: pdz.color("on-surface");
   }
 
@@ -166,7 +165,7 @@ $gutter-width: var(--gutter-width, 11rem);
   left: 0;
   z-index: 3;
   pointer-events: none;
-  background: pdz.color("background");
+  background: pdz.color("ground");
   margin-top: calc(-1 * #{pdz.space(3xl)});
   margin-bottom: calc(-1 * #{pdz.space(lg)});
 }
@@ -179,7 +178,7 @@ $gutter-width: var(--gutter-width, 11rem);
   position: sticky;
   left: 0;
   z-index: 4;
-  background: pdz.color("background");
+  background: pdz.color("ground");
 
   &__row {
     display: flex;
@@ -187,10 +186,10 @@ $gutter-width: var(--gutter-width, 11rem);
     gap: pdz.space(sm);
     width: 100%;
     padding: pdz.space(sm);
-    border: 1px solid pdz.color("outline-variant");
+    border: 1px solid pdz.color("border-subtle");
     border-radius: pdz.shape("corner-md");
-    background: pdz.color("menu-container");
-    color: pdz.color("on-menu-container");
+    background: pdz.color("raised");
+    color: pdz.color("on-surface");
   }
 
   &--current &__row {
@@ -206,14 +205,12 @@ $gutter-width: var(--gutter-width, 11rem);
   }
 
   &__badge {
-    @include text(label);
+    @include text(label-caps);
     flex: none;
     padding: pdz.space(2xs) pdz.space(sm);
     border-radius: pdz.shape("corner-full");
     background: pdz.color("primary");
     color: pdz.color("on-primary");
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
   }
 
   &__name {
@@ -249,7 +246,7 @@ $gutter-width: var(--gutter-width, 11rem);
     display: flex;
     gap: pdz.space(3xs);
     padding-top: pdz.space(xs);
-    border-top: 1px solid pdz.color-rgba("outline-variant", 0.7);
+    border-top: 1px solid pdz.color("border-subtle");
   }
 
 }
@@ -260,7 +257,7 @@ $gutter-width: var(--gutter-width, 11rem);
   height: 0;
   margin-top: calc(var(--row-gap, #{pdz.space(3xl)}) / -2);
   margin-left: calc(-1 * var(--col-gap, 2.5rem));
-  border-top: 1px solid pdz.color("outline-variant");
+  border-top: 1px solid pdz.color("border-subtle");
   position: relative;
   z-index: 1;
   opacity: 0.45;
@@ -272,9 +269,9 @@ $stage-header-height: 2.25rem;
 .stage {
   position: relative;
   pointer-events: none;
-  border: 1px solid pdz.color("outline-variant");
+  border: 1px solid pdz.color("border-subtle");
   border-radius: pdz.shape("corner-lg");
-  background: pdz.color-rgba("surface-container-lowest", 0.6);
+  background: pdz.color-rgba("raised", 0.6);
   display: flex;
   flex-direction: column;
   margin: (-$stage-header-height) calc(-1 * #{pdz.space(md)}) 0;
@@ -290,8 +287,8 @@ $stage-header-height: 2.25rem;
     gap: pdz.space(2xs);
     padding: 0 pdz.space(md);
     border-radius: pdz.shape("corner-lg") pdz.shape("corner-lg") 0 0;
-    background: pdz.color("primary-subtle");
-    border-bottom: 1px solid pdz.color("primary-border");
+    background: pdz.color("raised");
+    border-bottom: 1px solid pdz.color("border-subtle");
     pointer-events: auto;
   }
 
@@ -305,22 +302,20 @@ $stage-header-height: 2.25rem;
 
   &__icon {
     flex: none;
-    color: pdz.color("primary");
+    color: pdz.color("on-surface-muted");
   }
 
   &__title {
-    @include text(subtitle);
-    color: pdz.color("on-primary-container");
+    @include text(card-title);
+    color: pdz.color("on-surface");
     margin: 0;
     white-space: nowrap;
   }
 
   &__type {
-    @include text(label);
+    @include text(label-caps);
     flex: none;
-    color: pdz.color("on-surface-variant");
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
+    color: pdz.color("on-surface-muted");
     white-space: nowrap;
   }
 
@@ -331,7 +326,7 @@ $stage-header-height: 2.25rem;
     padding: pdz.space(2xs) pdz.space(xs);
     text-align: center;
     border-radius: pdz.shape("corner-full");
-    background: pdz.color("surface-container-lowest");
+    background: pdz.color("state-pressed");
     color: pdz.color("on-surface-variant");
   }
 
@@ -378,7 +373,7 @@ $stage-header-height: 2.25rem;
     flex: none;
 
     &.cdk-drag-preview {
-      box-shadow: 0 8px 24px pdz.color-rgba("shadow", 0.3);
+      box-shadow: var(--pdz-elevation-2);
       border-radius: pdz.shape("corner-sm");
     }
 
@@ -411,7 +406,7 @@ $stage-header-height: 2.25rem;
     gap: pdz.space(2xs);
     align-self: center;
     padding: pdz.space(xs) pdz.space(sm);
-    border: 1px dashed pdz.color("outline-variant");
+    border: 1px dashed pdz.color("border-control");
     border-radius: pdz.shape("corner-sm");
     background: none;
     color: pdz.color("on-surface-variant");
@@ -422,7 +417,11 @@ $stage-header-height: 2.25rem;
 
     &:hover {
       border-color: pdz.color("primary-border");
-      color: pdz.color("primary");
+      color: pdz.color("primary-accent");
+    }
+
+    &:focus-visible {
+      @include pdz.focus-ring;
     }
   }
 
@@ -436,7 +435,7 @@ $stage-header-height: 2.25rem;
   align-self: center;
   justify-self: start;
   margin-left: pdz.space(lg);
-  border: 1px dashed pdz.color("outline-variant");
+  border: 1px dashed pdz.color("border-control");
   white-space: nowrap;
   opacity: 0;
   transition: opacity pdz.duration(fast) pdz.easing(standard);

@@ -23,6 +23,7 @@ import { InputDirective } from '@pdz/shared/inputs/field/input.directive';
 import { SegmentedOptionComponent } from '@pdz/shared/inputs/segmented/segmented-option.component';
 import { SegmentedComponent } from '@pdz/shared/inputs/segmented/segmented.component';
 import { PageComponent } from '@pdz/shared/layout/page/page.component';
+import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
 import { DraftsV2Service } from './drafts-v2.service';
 import {
   Season,
@@ -34,8 +35,8 @@ import { SeasonCardComponent } from './season-card/season-card.component';
 import { SeasonDetailComponent } from './season-detail/season-detail.component';
 
 const GROUP_ORDER: { status: SeasonStatus; label: string }[] = [
-  { status: 'active', label: 'In progress' },
-  { status: 'upcoming', label: 'Not started' },
+  { status: 'active', label: 'In Progress' },
+  { status: 'upcoming', label: 'Not Started' },
   { status: 'archived', label: 'Archived' },
 ];
 
@@ -49,6 +50,7 @@ const GROUP_ORDER: { status: SeasonStatus; label: string }[] = [
     IconComponent,
     InputDirective,
     PageComponent,
+    PageHeaderComponent,
     SeasonCardComponent,
     SeasonDetailComponent,
     SegmentedComponent,

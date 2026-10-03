@@ -1,121 +1,112 @@
 @use "pdz-theming" as pdz;
 
 :host {
-  display: block;
-}
-
-.organizers {
   display: flex;
   flex-direction: column;
-  gap: pdz.space(lg);
-  max-width: 48rem;
+  gap: pdz.layout(section-gap);
+  max-width: pdz.content-width(narrow);
 }
 
 .panel {
-  background: pdz.color(surface-container-low);
-  border: 1px solid pdz.color(outline-variant);
-  border-radius: pdz.shape(corner-lg);
-  padding: pdz.space(lg);
+  display: flex;
+  flex-direction: column;
+  gap: pdz.layout(stack);
+}
 
-  &__title {
-    @include pdz.caps;
-    color: pdz.color(on-surface-variant);
-    margin: 0 0 pdz.space(md);
-  }
+.panel__title {
+  @include pdz.text(section-title);
+  margin: 0;
+  color: pdz.color(on-surface);
+}
 
-  &__subtitle {
-    @include pdz.caps;
-    color: pdz.color(on-surface-variant);
-    margin: pdz.space(lg) 0 pdz.space(sm);
-  }
+.panel__subtitle {
+  @include pdz.text(label-caps);
+  margin: pdz.space(sm) 0 0;
+  color: pdz.color(on-surface-variant);
+}
 
-  &__lead {
-    @include pdz.text(body-sm);
-    color: pdz.color(on-surface-variant);
-    margin: 0 0 pdz.space(md);
-  }
-
-  &__hint {
-    @include pdz.text(body-sm);
-    color: pdz.color(on-surface-variant);
-    margin: 0;
-  }
+.panel__lead {
+  @include pdz.text(body-sm);
+  margin: 0;
+  color: pdz.color(on-surface-variant);
 }
 
 .invite-form {
   display: flex;
-  align-items: flex-end;
   flex-wrap: wrap;
+  align-items: flex-end;
   gap: pdz.space(sm);
-
-  &__field {
-    flex: 1 1 16rem;
-  }
 }
 
-.rename {
-  display: flex;
-  align-items: center;
-  gap: pdz.space(sm);
-  flex: 1 1 auto;
-  min-width: 0;
+.invite-form__field {
+  flex: 1 1 16rem;
+}
 
-  &__field {
+.invite-created__row {
+  display: flex;
+  gap: pdz.space(sm);
+
+  [pdz-input] {
     flex: 1 1 auto;
     min-width: 0;
   }
 }
 
-.invite-created {
+.rename {
   display: flex;
-  flex-direction: column;
+  flex: 1 1 auto;
+  align-items: center;
   gap: pdz.space(sm);
-  margin-top: pdz.space(md);
+  min-width: 0;
+}
 
-  &__actions {
-    display: flex;
-    gap: pdz.space(sm);
-  }
+.rename__field {
+  flex: 1 1 auto;
+  min-width: 0;
 }
 
 .people {
-  list-style: none;
-  margin: 0;
-  padding: 0;
   display: flex;
   flex-direction: column;
   gap: pdz.space(xs);
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
 
 .person {
   display: flex;
   align-items: center;
   gap: pdz.space(sm);
-  padding: pdz.space(sm);
+  padding: pdz.space(sm) pdz.space(md);
+  border: 1px solid pdz.color(border-subtle);
   border-radius: pdz.shape(corner-sm);
-  background: pdz.color(surface-container);
+  background: pdz.color(raised-high);
+}
 
-  &__icon {
-    display: flex;
-    color: pdz.color(on-surface-variant);
-  }
+.person__icon {
+  flex-shrink: 0;
+  color: pdz.color(on-surface-variant);
+}
 
-  &__body {
-    display: flex;
-    flex-direction: column;
-    min-width: 0;
-    flex: 1 1 auto;
-  }
+.person__body {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-width: 0;
+}
 
-  &__name {
-    @include pdz.text(body-sm-strong);
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
+.person__name {
+  @include pdz.text(body-sm-strong);
+  display: flex;
+  align-items: center;
+  gap: pdz.space(xs);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 
-  &__note {
-    @include pdz.text(body-sm);
-    color: pdz.color(on-surface-variant);
-  }
+.person__note {
+  @include pdz.text(meta);
+  color: pdz.color(on-surface-variant);
 }

@@ -11,7 +11,6 @@ export type MatchupOutcome =
 
 export type MatchupSideDetail = {
   id: string;
-  /** URL identifier for the team's page. */
   slug: string;
   name: string;
   coach: string;
@@ -56,9 +55,7 @@ export type MatchupReport = {
 };
 
 export type MatchupDetail = {
-  /** The matchup's ObjectId — what the chat room keys its `target` on. */
   id: string;
-  /** URL identifier for this page. */
   slug: string;
   team1: MatchupSideDetail;
   team2: MatchupSideDetail;

@@ -42,8 +42,8 @@
     [disabled]="reviewOnly()"
     (valueChange)="scope.set($any($event))"
   >
-    <pdz-segmented-option value="attention" label="Needs attention" />
-    <pdz-segmented-option value="all" label="All matches" />
+    <pdz-segmented-option value="attention" label="Needs Attention" />
+    <pdz-segmented-option value="all" label="All Matches" />
   </pdz-segmented>
 </pdz-page-header>
 
@@ -98,7 +98,7 @@
         @if (isRoundOpen(round)) {
           <div class="round__rows">
             @for (row of round.rows; track row.matchup.id) {
-              <pdz-card class="row" tone="lowest" padding="md">
+              <pdz-card class="row" tone="raised-high" padding="md">
                 <div class="row__main">
                   <div class="row__info">
                     <p class="row__teams">
@@ -214,7 +214,7 @@
                       <label
                         pdz-field
                         class="row__advance"
-                        label="Who advances"
+                        label="Who Advances"
                         hint="Leave on Follow the result unless you are making a ruling."
                       >
                         <pdz-select
@@ -223,7 +223,7 @@
                           [disabled]="advancingSlug() === row.matchup.slug"
                           (valueChange)="setAdvancement(row, $any($event))"
                         >
-                          <pdz-option value="" label="Follow the result" />
+                          <pdz-option value="" label="Follow the Result" />
                           @if (row.matchup.team1.id) {
                             <pdz-option
                               value="side1"

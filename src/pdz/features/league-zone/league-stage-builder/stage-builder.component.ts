@@ -6,33 +6,32 @@ import {
   CdkDropListGroup,
 } from '@angular/cdk/drag-drop';
 import { CdkScrollable } from '@angular/cdk/scrolling';
-import { CommonModule } from '@angular/common';
+import { DatePipe } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
   ElementRef,
-  EventEmitter,
   NgZone,
   OnChanges,
   OnDestroy,
-  Output,
-  ViewChild,
   inject,
   input,
   model,
+  output,
   signal,
+  viewChild,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { IconComponent } from '@pdz/shared/images/icon/icon.component';
-import {
-  BracketTeamFlex,
-  FlexBracketMatch,
-} from '../league-bracket/bracket.model';
 import {
   addMatchToRound,
   deleteMatch,
   moveMatch,
-} from '../league-bracket/bracket-generator';
+} from '@pdz/features/league-zone/league-bracket/bracket-generator';
+import {
+  BracketTeamFlex,
+  FlexBracketMatch,
+} from '@pdz/features/league-zone/league-bracket/bracket.model';
+import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { MatchCardComponent } from './match-card/match-card.component';
 import {
   BuilderDraft,
@@ -121,7 +120,7 @@ const STAGE_TYPES: Record<string, { label: string; icon: string }> = {
 @Component({
   selector: 'pdz-stage-builder',
   imports: [
-    CommonModule,
+    DatePipe,
     FormsModule,
     CdkDrag,
     CdkDragPlaceholder,
@@ -147,11 +146,11 @@ export class StageBuilderComponent implements OnChanges, OnDestroy {
   readonly currentRoundIndex = input(-1);
   readonly canSetCurrentRound = input(false);
 
-  @Output() editMatch = new EventEmitter<string>();
-  @Output() addStage = new EventEmitter<number>();
-  @Output() setCurrentRound = new EventEmitter<number>();
+  readonly editMatch = output<string>();
+  readonly addStage = output<number>();
+  readonly setCurrentRound = output<number>();
 
-  @ViewChild('grid') private gridRef?: ElementRef<HTMLElement>;
+  private readonly gridRef = viewChild<ElementRef<HTMLElement>>('grid');
 
   protected stages: StageBox[] = [];
   protected columnCount = 1;
@@ -183,7 +182,7 @@ export class StageBuilderComponent implements OnChanges, OnDestroy {
   }
 
   protected onFocusMatch(matchId: string): void {
-    const grid = this.gridRef?.nativeElement;
+    const grid = this.gridRef()?.nativeElement;
     if (!grid) return;
 
     const node = Array.from(

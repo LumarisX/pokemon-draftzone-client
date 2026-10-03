@@ -24,65 +24,77 @@ $fab-stack-clearance: calc(
   overflow-y: auto;
 }
 
-.matchup__header {
-  display: flex;
+.matchup__main > pdz-page-header {
+  padding: pdz.space(sm) pdz.space(sm) 0;
+
+  @include pdz.respond-above(medium) {
+    padding: pdz.space(lg) pdz.space(lg) 0;
+  }
+}
+
+.matchup__facts {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: pdz.space(xs);
+
+  span:not(:first-child)::before {
+    content: "·";
+    padding-inline-end: pdz.space(xs);
+  }
+}
+
+.versus {
+  --versus-sprite: 2rem;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
   align-items: center;
-  column-gap: pdz.space(lg);
-  padding: pdz.space(sm);
-  pointer-events: none;
+  gap: pdz.space(sm);
+  width: 100%;
+  max-width: 64rem;
+  padding: pdz.space(xs) pdz.space(sm);
+  border-radius: pdz.shape(corner-lg);
+  background: pdz.color(versus-wash);
 
   @include pdz.respond-above(medium) {
-    position: sticky;
-    top: 0;
-    z-index: pdz.z(sticky);
+    --versus-sprite: 2.5rem;
   }
 }
 
-.matchup__action {
-  max-width: 4rem;
-  pointer-events: auto;
-
-  @include pdz.respond-above(medium) {
-    max-width: 5rem;
-  }
-}
-
-.matchup__details {
-  display: flex;
-  flex-grow: 1;
-  justify-content: center;
-}
-
-.matchup__details-card {
-  position: relative;
-  z-index: 1;
+.versus__side {
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-evenly;
-  width: fit-content;
-  padding: pdz.space(sm) pdz.space(lg);
-  column-gap: pdz.space(2xl);
-  row-gap: pdz.space(xs);
-  border-radius: pdz.shape(corner-sm);
-  background-color: pdz.color(surface-container);
-  pointer-events: auto;
+  align-items: center;
+  gap: pdz.space(3xs);
+  min-width: 0;
+
+  &--team1 {
+    justify-content: flex-end;
+  }
+
+  &--team2 {
+    justify-content: flex-start;
+  }
 }
 
-.matchup__detail {
+.versus__vs {
+  @include pdz.text(label-caps);
+  color: pdz.color(on-surface-muted);
+}
+
+.matchup__when {
+  @include pdz.text(meta);
+  @include pdz.numeric;
+  display: inline-flex;
+  align-items: center;
+  gap: pdz.space(xs);
+  color: pdz.color(on-surface-variant);
+}
+
+.matchup__header-skeleton {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: pdz.space(2xs);
-  text-align: center;
-  color: pdz.color(on-surface);
-}
-
-.matchup__detail-label {
-  @include pdz.text(field-label, $family: false);
-}
-
-.matchup__detail-value {
-  @include pdz.text(card-title, $family: false);
+  gap: pdz.space(xs);
+  padding: pdz.space(lg);
 }
 
 .matchup__body {
@@ -114,8 +126,8 @@ $fab-stack-clearance: calc(
   overflow: hidden;
   visibility: hidden;
   pointer-events: none;
-  background-color: pdz.color(surface);
-  box-shadow: var(--pdz-level-2);
+  background-color: pdz.color(overlay);
+  box-shadow: var(--pdz-elevation-2);
   transition:
     width $panel-transition,
     visibility pdz.duration(none) pdz.easing(standard) pdz.duration(base);
@@ -166,7 +178,7 @@ $fab-stack-clearance: calc(
       width: 4px;
       height: 40px;
       border-radius: pdz.shape(corner-full);
-      background-color: pdz.color(outline-variant);
+      background-color: pdz.color(border-control);
       opacity: 0;
       transition: opacity $panel-transition;
     }
@@ -219,18 +231,18 @@ $fab-stack-clearance: calc(
 }
 
 .matchup__fab {
-  box-shadow: var(--pdz-level-3);
+  box-shadow: var(--pdz-elevation-2);
   transition:
     background-color pdz.duration(base) pdz.easing(standard),
     color pdz.duration(base) pdz.easing(standard),
     box-shadow pdz.duration(base) pdz.easing(standard);
 
   &:hover:not(:disabled) {
-    box-shadow: var(--pdz-level-4);
+    box-shadow: var(--pdz-elevation-3);
   }
 
   &:active:not(:disabled) {
-    box-shadow: var(--pdz-level-1);
+    box-shadow: var(--pdz-elevation-1);
   }
 }
 
@@ -246,14 +258,14 @@ $fab-stack-clearance: calc(
     display: flex;
     flex-direction: column;
     overflow: hidden;
-    border: 1px solid pdz.color(outline-variant);
+    border: 1px solid pdz.color(border-subtle);
     border-radius: pdz.shape(corner-md);
-    background-color: pdz.color(surface-container-lowest);
+    background-color: pdz.color(raised);
   }
 
   &__widget-head {
     padding: pdz.space(sm) pdz.space(md);
-    border-bottom: 1px solid pdz.color(outline-variant);
+    border-bottom: 1px solid pdz.color(border-subtle);
   }
 
   &__widget-body {

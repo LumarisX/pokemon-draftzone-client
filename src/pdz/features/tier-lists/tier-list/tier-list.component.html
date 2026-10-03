@@ -90,12 +90,12 @@
               [checked]="selectedTypes().includes(type)"
               (change)="updateFilter(typeBox.checked, i)"
             />
-            <label
-              class="pdz-type"
-              [attr.for]="'filter-type-' + type"
-              [style.background-color]="typeColor(type)"
-            >
-              <span class="pdz-type__text">{{ type }}</span>
+            <label [attr.for]="'filter-type-' + type">
+              <pdz-pokemon-type
+                size="sm"
+                [type]="type"
+                [variant]="selectedTypes().includes(type) ? 'solid' : 'outline'"
+              />
             </label>
           </div>
         }
@@ -203,49 +203,51 @@
             }
             @if (compact) {
               @for (pokemon of visiblePokemon; track pokemon.id) {
-                <div
+                <button
+                  type="button"
                   class="pokemon-tile"
                   [class.is-drafted]="isPokemonDrafted(pokemon)"
                   [pdzTooltip]="pokemon.name"
+                  [attr.aria-label]="pokemon.name"
                   (click)="openPokemonDetails(pokemon, tier)"
                 >
                   <pdz-sprite
                     [pokemon]="spriteFor(pokemon)"
                     [tooltipPosition]="null"
                   ></pdz-sprite>
-                </div>
+                </button>
               }
             } @else {
               @for (pokemon of visiblePokemon; track pokemon.id) {
-                <div
+                <button
+                  type="button"
                   class="pokemon-entry"
                   [class.is-drafted]="isPokemonDrafted(pokemon)"
                   (click)="openPokemonDetails(pokemon, tier)"
                 >
-                  <div class="pokemon-entry__sprite">
+                  <span class="pokemon-entry__sprite">
                     <pdz-sprite
                       [pokemon]="spriteFor(pokemon)"
                       [tooltipPosition]="null"
                     ></pdz-sprite>
-                  </div>
-                  <div class="pokemon-entry__info">
+                  </span>
+                  <span class="pokemon-entry__info">
                     <span class="pokemon-entry__name">{{ pokemon.name }}</span>
-
-                    <div class="pdz-types">
+                    <span class="pdz-types">
                       @for (type of pokemon.types; track $index) {
                         <pdz-pokemon-type
                           [type]="type"
                           content="icon"
                         ></pdz-pokemon-type>
                       }
-                    </div>
-                  </div>
-                  <div class="pokemon-entry__side">
+                    </span>
+                  </span>
+                  <span class="pokemon-entry__side">
                     @if (pokemon.addons?.length) {
-                      <div class="pokemon-entry__tera">
+                      <span class="pokemon-entry__tera">
                         <span>{{ pokemon.addons![0].cost }}</span>
                         <pdz-icon name="tera" [height]="16"></pdz-icon>
-                      </div>
+                      </span>
                     }
                     @if (pokemon.banned || pokemon.notes) {
                       <pdz-icon
@@ -255,8 +257,8 @@
                         name="warning"
                       ></pdz-icon>
                     }
-                  </div>
-                </div>
+                  </span>
+                </button>
               }
             }
           </div>

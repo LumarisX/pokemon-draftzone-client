@@ -14,7 +14,7 @@
   padding: pdz.space(xs) pdz.space(md);
   border: 1px solid var(--pdz-select-border, #{pdz.color(outline)});
   border-radius: pdz.shape(corner-sm);
-  background-color: var(--pdz-select-surface, #{pdz.color(surface-container)});
+  background-color: var(--pdz-select-surface, #{pdz.color(inset)});
   color: var(--pdz-select-on-surface, #{pdz.color(on-surface)});
   cursor: pointer;
   text-align: left;
@@ -88,11 +88,11 @@
   position: fixed;
   margin: 0;
   padding: 0;
-  border: 1px solid pdz.color(outline-variant);
+  border: 1px solid pdz.color(border-subtle);
   border-radius: pdz.shape(corner-sm);
-  background-color: pdz.color(surface-container-low);
+  background-color: pdz.color(floating);
   color: pdz.color(on-surface);
-  box-shadow: var(--pdz-level-3);
+  box-shadow: var(--pdz-elevation-2);
   overflow: hidden;
   inset: auto;
 
@@ -114,7 +114,7 @@
   gap: pdz.space(sm);
   flex: none;
   padding: pdz.space(sm) pdz.space(md);
-  border-bottom: 1px solid pdz.color(outline-variant);
+  border-bottom: 1px solid pdz.color(border-subtle);
   color: pdz.color(on-surface-variant);
 }
 
@@ -140,7 +140,7 @@
   @include pdz.caps;
   margin: 0;
   padding: pdz.space(sm) pdz.space(sm) pdz.space(2xs);
-  color: pdz.color(on-surface-variant);
+  color: pdz.color(on-surface-muted);
 }
 
 .pdz-select__option {
@@ -155,7 +155,7 @@
 }
 
 .pdz-select__option--active {
-  background-color: pdz.color(surface-container-highest);
+  background-color: pdz.color(state-hover);
 }
 
 .pdz-select__option--selected {

@@ -1,13 +1,18 @@
-@let user = auth.user$ | async;
-@if (authenticated && user) {
+@if (authenticated() && user(); as user) {
   <pdz-menu aria-label="Open user menu">
     <button pdz-button color="neutral" variant="outlined" pdz-menu-trigger>
-      <div class="user-info-container">
-        <img class="user-icon" [src]="user.picture" alt="" />
-        @if (user.username && user.username !== "") {
-          <span class="username-text">{{ user.username }}</span>
+      <span class="user">
+        <pdz-team-logo
+          size="xs"
+          shape="circle"
+          decorative
+          [src]="user.picture"
+          [name]="user.username || user.name || ''"
+        />
+        @if (user.username) {
+          <span class="user__name">{{ user.username }}</span>
         }
-      </div>
+      </span>
     </button>
 
     <button pdz-menu-item icon="settings" (click)="openSettings()">
@@ -17,8 +22,13 @@
     <button pdz-menu-item icon="logout" (click)="logout()">Log Out</button>
   </pdz-menu>
 } @else {
-  <button pdz-button color="neutral" variant="outlined" (click)="login()">
-    Log in
-    <pdz-icon name="login" [height]="20"></pdz-icon>
+  <button
+    pdz-button
+    color="neutral"
+    variant="outlined"
+    icon="login"
+    (click)="login()"
+  >
+    Log In
   </button>
 }

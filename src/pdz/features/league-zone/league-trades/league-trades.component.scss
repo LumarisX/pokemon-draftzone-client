@@ -1,21 +1,13 @@
 @use "pdz-theming" as pdz;
 
 :host {
-  display: block;
-  width: 100%;
-  height: 100%;
-}
-
-.trades {
   display: flex;
   flex-direction: column;
-  gap: pdz.space(md);
-  height: 100%;
-  overflow: auto;
+  gap: pdz.layout(section-gap);
+}
 
-  &__body {
-    display: flex;
-    flex-direction: column;
-    gap: pdz.space(lg);
-  }
+.trades__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: pdz.space(xs);
 }

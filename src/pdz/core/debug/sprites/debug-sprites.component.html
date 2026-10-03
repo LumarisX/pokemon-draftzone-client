@@ -1,6 +1,6 @@
 <pdz-page>
   <header class="sprites__head">
-    <h1 class="sprites__title">Sprite Coverage</h1>
+    <pdz-page-header title="Sprite Coverage" />
 
     <div class="sprites__controls">
       <label pdz-field label="Search">
@@ -9,7 +9,7 @@
 
       <pdz-segmented [(value)]="filter" aria-label="Filter by resolution">
         <pdz-segmented-option value="all" label="All" />
-        <pdz-segmented-option value="fallback" label="Fell back" />
+        <pdz-segmented-option value="fallback" label="Fell Back" />
         <pdz-segmented-option value="missing" label="Missing" />
       </pdz-segmented>
 

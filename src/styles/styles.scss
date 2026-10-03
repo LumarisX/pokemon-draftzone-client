@@ -24,8 +24,6 @@
   --pdz-scrollbar-size-thin: 0.375rem;
   --pdz-scrollbar-size-expanded: 0.375rem;
   --pdz-scrollbar-thumb-radius: 999px;
-  // Interpolated: Sass passes custom-property values through verbatim, so an
-  // un-#{}'d pdz.color() would reach the browser as literal text.
   --pdz-scrollbar-thumb-idle: #{color-mix(
       in srgb,
       pdz.color(on-surface) 22%,
@@ -39,11 +37,6 @@
   --pdz-scrollbar-thumb-active: #{color-mix(
       in srgb,
       pdz.color(on-surface) 52%,
-      transparent
-    )};
-  --pdz-scrollbar-track: #{color-mix(
-      in srgb,
-      pdz.color(surface-container-high) 45%,
       transparent
     )};
   --pdz-scrollbar-thumb-gap-idle: 0.125rem;
@@ -206,106 +199,15 @@
 @keyframes pdz-route-enter {
   from {
     opacity: 0;
-    transform: translateY(8px);
   }
   to {
     opacity: 1;
-    transform: none;
-  }
-}
-
-$option-lineheight: 3rem;
-
-.pokemon-viewport {
-  height: 15rem;
-  width: 100%;
-  background-color: pdz.color(surface-container-low);
-  color: pdz.color(on-surface);
-  border-radius: 0 0 0.25rem 0.25rem;
-  box-shadow: var(--pdz-level-2);
-
-  .cdk-virtual-scroll-content-wrapper {
-    width: 100%;
-    .pokemon-item {
-      height: $option-lineheight;
-      display: flex;
-      width: 100%;
-      max-width: 100%;
-
-      align-items: center;
-
-      &:hover,
-      &.highlighted-option {
-        background-color: pdz.color(surface-container-highest);
-        color: pdz.color(on-surface);
-        cursor: pointer;
-      }
-
-      .sprite-wrapper {
-        height: $option-lineheight;
-        width: $option-lineheight;
-        padding: pdz.space(xs);
-        flex-shrink: 0;
-      }
-
-      .pokemon-text {
-        padding-left: 0.125rem;
-        text-overflow: ellipsis;
-        overflow: hidden;
-        white-space: nowrap;
-      }
-    }
   }
 }
 
 .pdz-types {
   display: flex;
-  gap: 0.25rem;
-}
-
-// .pdz-types {
-//   justify-content: flex-start;
-
-//   .pdz-type {
-//     width: auto;
-//     padding: 0 pdz.space(xs);
-//     gap: pdz.space(2xs);
-//   }
-// }
-
-.pdz-type {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: pdz.space(2xs);
-  height: 1rem;
-  border-radius: pdz.shape(corner-xs);
-  box-shadow: var(--pdz-level-1);
-  overflow: hidden;
-
-  &__icon {
-    object-fit: contain;
-    height: 100%;
-    // filter: drop-shadow(0 -1px 0 rgba(0, 0, 0, 0.4))
-    //   drop-shadow(0 1px 0 rgba(255, 255, 255, 0.2));
-  }
-
-  &__text {
-    color: white;
-    font-size: 0.6rem;
-    line-height: 1;
-    position: relative;
-    // top: 1px;
-    // text-transform: uppercase;
-    // text-shadow:
-    //   0 -1px 0 rgba(0, 0, 0, 0.4),
-    //   0 1px 0 rgba(255, 255, 255, 0.2);
-    user-select: none;
-    font-family: var(--pdz-font-body);
-    font-weight: 700;
-    width: 2.5rem;
-    text-align: center;
-  }
+  gap: pdz.space(xs);
 }
 
 .pdz-hidden-on-small {
@@ -323,14 +225,12 @@ $option-lineheight: 3rem;
 }
 
 markdown {
-  // Unordered lists
   ul {
     list-style: none;
     padding-left: 0;
     margin: 0;
   }
 
-  // Ordered lists
   ol {
     list-style: decimal;
     padding-left: pdz.space(xl);
@@ -356,24 +256,22 @@ markdown {
       content: "•";
       position: absolute;
       left: pdz.space(sm);
-      font-weight: bold;
+      font-weight: pdz.font-weight(bold);
     }
   }
 
-  // Remove bullet for ordered list items
   ol li {
     &::before {
       content: "";
     }
   }
 
-  // Unordered lists nested in ordered lists
   ol li ul li {
     padding-left: pdz.space(xl);
 
     &::before {
       content: "•";
-      font-weight: bold;
+      font-weight: pdz.font-weight(bold);
       font-size: 1em;
     }
   }
@@ -400,7 +298,7 @@ markdown {
   }
 
   strong {
-    font-weight: 700;
+    font-weight: pdz.font-weight(bold);
   }
 
   a {
@@ -413,8 +311,8 @@ markdown {
   }
 
   code {
-    background: pdz.color(surface-container-high);
-    padding: 0.125rem 0.25rem;
+    background: pdz.color(inset);
+    padding: pdz.space(2xs) pdz.space(xs);
     border-radius: pdz.shape(corner-xs);
     font-family: var(--pdz-font-mono);
     font-size: 0.875em;
@@ -433,8 +331,4 @@ markdown {
     @include pdz.text(body);
     font-weight: pdz.font-weight(semibold);
   }
-}
-
-input[type="text"] {
-  background-color: pdz.color(surface);
 }

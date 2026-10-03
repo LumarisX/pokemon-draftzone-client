@@ -1,51 +1,45 @@
-import {
-  Component,
-  OnDestroy,
-  OnInit,
-  inject,
-  HostListener,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { LeagueZoneService } from '@pdz/features/league-zone/league-zone.service';
+import { CardComponent } from '@pdz/shared/data/card/card.component';
+import { EmptyStateComponent } from '@pdz/shared/feedback/empty-state/empty-state.component';
+import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
 import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
 import { MarkdownModule } from 'ngx-markdown';
-import { Subject, takeUntil } from 'rxjs';
-import { LeagueZoneService } from '../league-zone.service';
-import { League } from '../league.interface';
+import { catchError, map, of } from 'rxjs';
 
 @Component({
   selector: 'pdz-league-rules-overview',
-  imports: [MarkdownModule, PageHeaderComponent],
+  imports: [
+    CardComponent,
+    EmptyStateComponent,
+    LoadingComponent,
+    MarkdownModule,
+    PageHeaderComponent,
+  ],
   templateUrl: './league-rules-overview.component.html',
-  styleUrls: ['./league-rules-overview.component.scss'],
+  styleUrl: './league-rules-overview.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class LeagueRulesOverviewComponent implements OnInit, OnDestroy {
-  private leagueZoneService = inject(LeagueZoneService);
-  private destroy$ = new Subject<void>();
+export class LeagueRulesOverviewComponent {
+  private readonly leagueZoneService = inject(LeagueZoneService);
 
-  rules: League.RuleSection[] = [];
-  activeSection = 0;
-
-  ngOnInit(): void {
-    this.leagueZoneService
-      .getRules()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((ruleSections) => {
-        this.rules = ruleSections.map((section) => ({
+  readonly rules = toSignal(
+    this.leagueZoneService.getRules().pipe(
+      map((sections) =>
+        sections.map((section) => ({
           ...section,
           body: section.body.replace(/\t/g, '  '),
-        }));
-      });
-  }
+        })),
+      ),
+      catchError(() => of([])),
+    ),
+  );
 
   scrollToSection(event: Event, index: number): void {
     event.preventDefault();
-    const element = document.getElementById(`section-${index}`);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-  }
-
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
+    document
+      .getElementById(`section-${index}`)
+      ?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 }

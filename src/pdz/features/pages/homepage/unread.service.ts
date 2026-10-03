@@ -1,49 +1,42 @@
-import { Injectable, inject } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
-import { ApiService } from '@pdz/core/services/api.service';
+import { Injectable, signal } from '@angular/core';
+import { safeStorage } from '@pdz/core/utils/storage';
 import { CHANGELOG } from '@pdz/features/pages/homepage/changelog-core/changelog.data';
 import { NEWS } from '@pdz/features/pages/homepage/news-core/news.data';
+
+const NEWS_KEY = 'newsTime';
+const LEAGUE_KEY = 'leagueTime';
+
+function capCount(value: number): string {
+  if (value > 9) return '9+';
+  if (value > 0) return value.toString();
+  return '';
+}
 
 @Injectable({
   providedIn: 'root',
 })
 export class UnreadService {
-  private api = inject(ApiService);
+  private readonly news = signal(this.unreadNews());
+  private readonly leagues = signal('');
 
-  leagueCount = new BehaviorSubject<string>('');
-  newsCount = new BehaviorSubject<string>('');
+  readonly newsCount = this.news.asReadonly();
+  readonly leagueCount = this.leagues.asReadonly();
 
-  constructor() {
-    // TODO: if the user is logged in, check lastCheckedAdsAt from the server
-    // instead of/in addition to this, falling back to localStorage for
-    // logged-out users (lastCheckedAdsAt currently exists on the backend but
-    // is never updated or read for this purpose).
-    const lastLeagueTime = +(localStorage.getItem('leagueTime') || 0);
-    const lastNewsTime = +(localStorage.getItem('newsTime') || 0);
-
-    const newsUnread = NEWS.filter(
-      (n) => new Date(n.date).getTime() > lastNewsTime,
-    ).length;
-    const changelogUnread = CHANGELOG.filter(
-      (entry) => new Date(entry.date).getTime() > lastNewsTime,
-    ).length;
-    this.newsCount.next(this.capNumber(newsUnread + changelogUnread));
-
-    // this.getUnreadCount({ leagueAd: lastLeagueTime }).subscribe((count) => {
-    //   this.leagueCount.next(this.capNumber(count['leagueAd']));
-    // });
+  markNewsRead(): void {
+    safeStorage.set(NEWS_KEY, Date.now().toString());
+    this.news.set('');
   }
 
-  //Currently Unused
-  getUnreadCount(counts: { [key: string]: number }) {
-    return this.api.get<typeof counts>(['user', 'unread-counts'], {
-      params: counts,
-    });
+  markLeaguesRead(): void {
+    safeStorage.set(LEAGUE_KEY, Date.now().toString());
+    this.leagues.set('');
   }
 
-  private capNumber(value: number): string {
-    if (value > 9) return '9+';
-    if (value > 0) return value.toString();
-    return '';
+  private unreadNews(): string {
+    const lastRead = +(safeStorage.get(NEWS_KEY) || 0);
+    const unread = [...NEWS, ...CHANGELOG].filter(
+      (entry) => new Date(entry.date).getTime() > lastRead,
+    ).length;
+    return capCount(unread);
   }
 }

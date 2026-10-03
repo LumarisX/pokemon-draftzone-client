@@ -4,14 +4,6 @@
 $theme-overrides: (
   light: accent.apply(
       (
-        // Status Colors (Shiny-specific)
-        warning: "mint-225",
-        on-warning: "mint-800",
-        warning-border: "mint-250",
-        warning-container: "mint-100",
-        on-warning-container: "mint-725",
-
-        // Logo Colors
         logo-ring-1: "yellow-175",
         logo-ring-2: "yellow-250",
         logo-ring-3: "yellow-300",
@@ -22,19 +14,16 @@ $theme-overrides: (
         logo-top: "mint-450",
         logo-bottom: "yellow-450",
 
-        // Loading Colors
         loading-primary-high: "mint-550",
         loading-primary-low: "mint-300",
         loading-secondary-high: "yellow-550",
         loading-secondary-low: "yellow-300",
 
-        // Semantic Data Colors (Shiny uses green instead of mint)
         positive: "green-175",
         on-positive: "green-800",
         positive-container: "green-75",
         on-positive-container: "green-725",
 
-        // Scale Colors (Shiny uses green instead of mint)
         scale-positive: "green-125",
         scale-positive-1: "green-50",
         scale-positive-2: "green-75",
@@ -44,7 +33,6 @@ $theme-overrides: (
         scale-positive-6: "green-300",
         scale-positive-7: "green-400",
 
-        // Hero
         hero: linear-gradient(
             135deg,
             var(--pdz-color-mint-350),
@@ -57,14 +45,6 @@ $theme-overrides: (
     ),
   dark: accent.apply(
       (
-        // Status Colors (Shiny-specific)
-        warning: "mint-250",
-        on-warning: "mint-900",
-        warning-border: "mint-700",
-        warning-container: "mint-825",
-        on-warning-container: "mint-100",
-
-        // Logo Colors
         logo-ring-1: "yellow-175",
         logo-ring-2: "yellow-250",
         logo-ring-3: "yellow-300",
@@ -75,19 +55,16 @@ $theme-overrides: (
         logo-top: "mint-400",
         logo-bottom: "yellow-400",
 
-        // Loading Colors
         loading-primary-high: "mint-350",
         loading-primary-low: "mint-550",
         loading-secondary-high: "yellow-350",
         loading-secondary-low: "yellow-550",
 
-        // Semantic Data Colors (Shiny uses green instead of mint)
         positive: "green-300",
         on-positive: "green-800",
         positive-container: "green-725",
         on-positive-container: "green-50",
 
-        // Scale Colors (Shiny uses green instead of mint)
         scale-positive: "green-650",
         scale-positive-1: "green-800",
         scale-positive-2: "green-725",
@@ -97,7 +74,6 @@ $theme-overrides: (
         scale-positive-6: "green-400",
         scale-positive-7: "green-350",
 
-        // Hero
         hero: linear-gradient(
             135deg,
             var(--pdz-color-mint-400),

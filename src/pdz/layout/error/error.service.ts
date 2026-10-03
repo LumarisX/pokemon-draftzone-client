@@ -3,13 +3,11 @@ import {
   HttpErrorResponse,
   HttpHeaders,
 } from '@angular/common/http';
-import { Injectable, inject } from '@angular/core';
+import { Injectable, inject, signal } from '@angular/core';
 import { RumService } from '@pdz/core/services/rum.service';
 import { environment } from '@pdz/environments/environment';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 
-// Server error bodies should carry string messages, but a malformed one may
-// hold an object or array; render those as JSON instead of "[object Object]".
 function toMessageString(value: unknown): string {
   if (typeof value === 'string') return value;
   if (Array.isArray(value) && value.every((v) => typeof v === 'string')) {
@@ -39,6 +37,16 @@ export interface PDZErrorResponse {
   meta?: PDZErrorMeta;
 }
 
+type ErrorBody = {
+  error?: {
+    code?: string;
+    message?: unknown;
+    details?: Record<string, unknown>;
+    stack?: string;
+  };
+  meta?: PDZErrorMeta;
+};
+
 function isClientError(value: unknown): value is ClientError {
   return (
     !!value &&
@@ -65,8 +73,10 @@ export class ErrorService {
   private rumService = inject(RumService);
   private http = inject(HttpClient);
   private readonly MAX_ERRORS = 5;
-  private errorsSubject = new BehaviorSubject<ClientError[]>([]);
+  private readonly errorList = signal<ClientError[]>([]);
   private errorIdCounter = 0;
+
+  readonly errors = this.errorList.asReadonly();
 
   private serverUrl = `${environment.tls ? 'https' : 'http'}://${
     environment.apiUrl
@@ -76,7 +86,6 @@ export class ErrorService {
     const payload = {
       status: error.status,
       code: error.error?.code,
-      // /error-report validates message as a string of max 2000 chars.
       message: toMessageString(
         error.error?.message ?? error.statusText ?? error.message,
       ).slice(0, 2000),
@@ -96,66 +105,40 @@ export class ErrorService {
     );
   }
 
-  getErrorsObservable() {
-    return this.errorsSubject.asObservable();
-  }
-
   reportError(error: unknown): void {
     const clientError = this.toClientError(error);
-
-    const currentErrors = this.errorsSubject.value;
-
-    const isDuplicate = currentErrors.some((existingError) =>
-      this.areErrorsEquivalent(existingError, clientError),
-    );
-
-    if (!isDuplicate) {
-      const updatedErrors = [clientError, ...currentErrors].slice(
-        0,
-        this.MAX_ERRORS,
-      );
-      this.errorsSubject.next(updatedErrors);
-      this.rumService.recordClientError(clientError);
+    const current = this.errorList();
+    if (current.some((existing) => this.areEquivalent(existing, clientError))) {
+      return;
     }
-  }
-
-  private areErrorsEquivalent(
-    error1: ClientError,
-    error2: ClientError,
-  ): boolean {
-    return (
-      error1.message === error2.message &&
-      error1.status === error2.status &&
-      error1.statusText === error2.statusText &&
-      error1.url === error2.url &&
-      error1.error?.code === error2.error?.code &&
-      error1.error?.message === error2.error?.message &&
-      JSON.stringify(error1.error?.details) ===
-        JSON.stringify(error2.error?.details)
-    );
+    this.errorList.set([clientError, ...current].slice(0, this.MAX_ERRORS));
+    this.rumService.recordClientError(clientError);
   }
 
   dismissError(errorId: string): void {
-    const currentErrors = this.errorsSubject.value;
-    const updatedErrors = currentErrors.filter((e) => e.id !== errorId);
-    this.errorsSubject.next(updatedErrors);
+    this.errorList.update((errors) => errors.filter((e) => e.id !== errorId));
   }
 
   clearAllErrors(): void {
-    this.errorsSubject.next([]);
+    this.errorList.set([]);
+  }
+
+  private areEquivalent(a: ClientError, b: ClientError): boolean {
+    return (
+      a.message === b.message &&
+      a.status === b.status &&
+      a.statusText === b.statusText &&
+      a.url === b.url &&
+      a.error?.code === b.error?.code &&
+      a.error?.message === b.error?.message &&
+      JSON.stringify(a.error?.details) === JSON.stringify(b.error?.details)
+    );
   }
 
   private nextErrorId(): string {
     return `error-${++this.errorIdCounter}-${Date.now()}`;
   }
 
-  /**
-   * Anything that reaches an HTTP error callback lands here, and not all of it
-   * is an `HttpErrorResponse` — the Auth0 interceptor throws its own SDK errors
-   * while fetching a token, before a request is ever sent. Those only reliably
-   * carry a message, so normalise rather than casting and reading fields that
-   * are not there.
-   */
   private toClientError(error: unknown): ClientError {
     if (error instanceof HttpErrorResponse) return this.parseHttpError(error);
 
@@ -181,23 +164,21 @@ export class ErrorService {
     };
 
     if (httpError.error && typeof httpError.error === 'object') {
-      const errorBody = httpError.error as any;
+      const body = httpError.error as ErrorBody;
 
-      if (errorBody.error) {
+      if (body.error) {
         clientError.error = {
-          code: errorBody.error.code || 'UNKNOWN_ERROR',
-          message: toMessageString(
-            errorBody.error.message || httpError.statusText,
-          ),
-          details: errorBody.error.details,
-          stack: errorBody.error.stack,
+          code: body.error.code || 'UNKNOWN_ERROR',
+          message: toMessageString(body.error.message || httpError.statusText),
+          details: body.error.details,
+          stack: body.error.stack,
         };
       }
 
-      if (errorBody.meta) {
+      if (body.meta) {
         clientError.meta = {
-          requestId: errorBody.meta.requestId,
-          timestamp: errorBody.meta.timestamp,
+          requestId: body.meta.requestId,
+          timestamp: body.meta.timestamp,
         };
       }
     }

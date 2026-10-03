@@ -1,34 +1,37 @@
-import { CommonModule } from '@angular/common';
+import { DatePipe } from '@angular/common';
 import { HttpResponse } from '@angular/common/http';
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  OnInit,
+  computed,
+  inject,
+  signal,
+} from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   FormBuilder,
   FormGroup,
-  FormsModule,
   ReactiveFormsModule,
   Validators,
 } from '@angular/forms';
-import { Router, RouterModule } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
+import { LEAGUE_ZONE_PATH } from '@pdz/core/route-paths';
 import { AuthService } from '@pdz/core/services/auth0.service';
-import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
-import {
-  catchError,
-  filter,
-  firstValueFrom,
-  map,
-  of,
-  Subject,
-  take,
-  takeUntil,
-} from 'rxjs';
-
 import { UploadService } from '@pdz/core/services/upload.service';
-import { LeagueZoneService } from '../league-zone.service';
-import { League } from '../league.interface';
-import { getLeagueLogoUrl, SIGN_UP_LIMITS } from '../league.util';
+import { LeagueZoneService } from '@pdz/features/league-zone/league-zone.service';
+import { League } from '@pdz/features/league-zone/league.interface';
+import {
+  SIGN_UP_LIMITS,
+  getLeagueLogoUrl,
+} from '@pdz/features/league-zone/league.util';
+import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
+import { CardComponent } from '@pdz/shared/data/card/card.component';
 import { SelectOptionComponent } from '@pdz/shared/dropdowns/select/select-option.component';
 import { SelectComponent } from '@pdz/shared/dropdowns/select/select.component';
-import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
+import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
+import { TeamLogoComponent } from '@pdz/shared/images/team-logo/team-logo.component';
+import { CheckComponent } from '@pdz/shared/inputs/choice/check.component';
 import { ChoiceDirective } from '@pdz/shared/inputs/choice/choice.directive';
 import {
   FieldErrorDirective,
@@ -37,217 +40,194 @@ import {
 import { FieldComponent } from '@pdz/shared/inputs/field/field.component';
 import { InputDirective } from '@pdz/shared/inputs/field/input.directive';
 import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
+import { catchError, filter, firstValueFrom, map, of, take } from 'rxjs';
+
+type AnswerValue = string | string[];
 
 @Component({
   selector: 'pdz-league-sign-up',
   templateUrl: './league-sign-up.component.html',
-  styleUrls: ['./league-sign-up.component.scss'],
+  styleUrl: './league-sign-up.component.scss',
   imports: [
-    CommonModule,
-    FormsModule,
+    DatePipe,
     ReactiveFormsModule,
-    RouterModule,
-    LoadingComponent,
-    SelectComponent,
-    SelectOptionComponent,
-    ChoiceDirective,
+    RouterLink,
     ButtonComponent,
+    CardComponent,
+    CheckComponent,
+    ChoiceDirective,
     FieldComponent,
-    InputDirective,
     FieldErrorDirective,
     FieldHintDirective,
+    InputDirective,
+    LoadingComponent,
     PageHeaderComponent,
+    SelectComponent,
+    SelectOptionComponent,
+    TeamLogoComponent,
   ],
 })
-export class LeagueSignUpComponent implements OnInit, OnDestroy {
-  private fb = inject(FormBuilder);
-  leagueService = inject(LeagueZoneService);
-  private router = inject(Router);
-  private uploadService = inject(UploadService);
-  private authService = inject(AuthService);
-  private destroy$ = new Subject<void>();
+export class LeagueSignUpComponent implements OnInit {
+  private readonly fb = inject(FormBuilder);
+  private readonly leagueService = inject(LeagueZoneService);
+  private readonly router = inject(Router);
+  private readonly uploadService = inject(UploadService);
+  private readonly authService = inject(AuthService);
+  private readonly destroyRef = inject(DestroyRef);
 
-  signupForm!: FormGroup;
-  added = false;
-  closed = false;
-  wantsToSignUpAsSub = false;
-  timezones = Intl.supportedValuesOf('timeZone');
   protected readonly limits = SIGN_UP_LIMITS;
-  signUpDeadline?: Date;
-  logoFile: File | null = null;
-  logoFileName: string = '';
-  isUploading = false;
-  isSubmitting = false;
-  uploadError: string | null = null;
-
-  leagueInfo: League.LeagueInfo | null = null;
+  protected readonly timezones = Intl.supportedValuesOf('timeZone');
   private readonly invite =
     new URLSearchParams(window.location.search).get('invite') ?? undefined;
-  isCheckingSignUp = true;
+
+  readonly signupForm = this.fb.nonNullable.group({
+    name: ['', Validators.required],
+    gameName: ['', Validators.required],
+    discordName: ['', Validators.required],
+    timezone: [
+      Intl.DateTimeFormat().resolvedOptions().timeZone,
+      Validators.required,
+    ],
+    teamName: ['', Validators.required],
+    confirm: [false, Validators.requiredTrue],
+    answers: this.fb.group({}),
+  });
+
+  readonly leagueInfo = signal<League.LeagueInfo | null>(null);
+  readonly isCheckingSignUp = signal(true);
+  readonly wantsToSignUpAsSub = signal(false);
+  readonly isSubmitting = signal(false);
+  readonly submitError = signal<string | null>(null);
+  readonly logoFile = signal<File | null>(null);
+  readonly logoPreview = signal<string | null>(null);
+
+  readonly closed = computed(() => {
+    const deadline = this.leagueInfo()?.signUpDeadline;
+    return !!deadline && Date.now() > new Date(deadline).getTime();
+  });
+
+  readonly logoUrl = computed(() => getLeagueLogoUrl(this.leagueInfo()?.logo));
+
+  readonly rulesLink = computed(() => [
+    '/',
+    LEAGUE_ZONE_PATH,
+    this.leagueService.leagueSlug(),
+    'tournaments',
+    this.leagueInfo()?.tournamentSlug ?? this.leagueService.tournamentSlug(),
+    'rules',
+  ]);
+
+  private get answerGroup(): FormGroup {
+    return this.signupForm.controls.answers;
+  }
+
+  private get questions(): League.SignUpQuestion[] {
+    return this.leagueInfo()?.signUpQuestions ?? [];
+  }
+
+  constructor() {
+    this.destroyRef.onDestroy(() => this.revokePreview());
+  }
 
   ngOnInit(): void {
     this.leagueService
       .getCoachData({ suppressStatuses: [404] })
       .pipe(
-        takeUntil(this.destroy$),
         catchError(() => of(null)),
+        takeUntilDestroyed(this.destroyRef),
       )
       .subscribe((coachData) => {
-        if (coachData) {
-          this.navigateToTeam(coachData.teamSlug);
-        } else {
-          this.isCheckingSignUp = false;
-        }
+        if (coachData) this.navigateToTeam(coachData.teamSlug);
+        else this.isCheckingSignUp.set(false);
       });
 
     this.leagueService
       .getLeagueInfo()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (leagueInfo) => {
-          this.leagueInfo = leagueInfo;
-          this.updateClosedStatus();
-          this.buildAnswerControls();
-        },
-        error: (error) => {
-          console.error('Error fetching league info:', error);
-        },
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((leagueInfo) => {
+        this.leagueInfo.set(leagueInfo);
+        this.buildAnswerControls();
       });
 
-    this.createForm().subscribe((form) => {
-      this.signupForm = form;
-      this.buildAnswerControls();
-      this.manageFormLogic();
-    });
+    this.authService.user$
+      .pipe(take(1), takeUntilDestroyed(this.destroyRef))
+      .subscribe((user) => {
+        if (user?.sub?.startsWith('oauth2|discord') && user.username) {
+          this.signupForm.controls.discordName.setValue(user.username);
+        }
+      });
+
+    this.answerGroup.valueChanges
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => this.syncAnswerValidators());
   }
 
-  private updateClosedStatus(): void {
-    if (this.leagueInfo?.signUpDeadline) {
-      const now = new Date();
-      const deadline = new Date(this.leagueInfo.signUpDeadline);
-      this.closed = now > deadline;
-    }
-  }
-
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
-  }
-
-  createForm() {
-    return this.authService.user$.pipe(
-      take(1),
-      map((user) => {
-        const discordName = user?.sub?.startsWith('oauth2|discord')
-          ? user.username
-          : '';
-
-        return this.fb.group({
-          name: ['', Validators.required],
-          gameName: ['', Validators.required],
-          discordName: [discordName, Validators.required],
-          timezone: [
-            Intl.DateTimeFormat().resolvedOptions().timeZone,
-            Validators.required,
-          ],
-          teamName: ['', Validators.required],
-          confirm: [false, Validators.requiredTrue],
-          answers: this.fb.group({}),
-        });
-      }),
-    );
-  }
-
-  private get answerGroup(): FormGroup | null {
-    return (this.signupForm?.get('answers') as FormGroup) ?? null;
-  }
-
-  private get questions(): League.SignUpQuestion[] {
-    return this.leagueInfo?.signUpQuestions ?? [];
-  }
-
-  private buildAnswerControls(): void {
-    const group = this.answerGroup;
-    if (!group) return;
-
-    for (const question of this.questions) {
-      if (group.contains(question.id)) continue;
-      group.addControl(
-        question.id,
-        this.fb.control(question.type === 'multi' ? [] : ''),
-      );
-    }
-    this.syncAnswerValidators();
+  protected showError(control: 'name' | 'gameName' | 'discordName' | 'teamName') {
+    const field = this.signupForm.controls[control];
+    return field.touched && field.hasError('required');
   }
 
   protected visibleQuestions(): League.SignUpQuestion[] {
-    const group = this.answerGroup;
-    if (!group) return [];
     return this.questions.filter((question) => {
       if (!question.dependsOn) return true;
       return (
-        String(group.get(question.dependsOn.questionId)?.value ?? '') ===
+        String(this.answerGroup.get(question.dependsOn.questionId)?.value ?? '') ===
         question.dependsOn.equals
       );
     });
   }
 
   protected answerInvalid(question: League.SignUpQuestion): boolean {
-    const control = this.answerGroup?.get(question.id);
+    const control = this.answerGroup.get(question.id);
     return !!control && control.touched && control.invalid;
   }
 
-  private syncAnswerValidators(): void {
-    const group = this.answerGroup;
-    if (!group) return;
+  protected isMultiChecked(question: League.SignUpQuestion, option: string) {
+    const value = this.answerGroup.get(question.id)?.value as AnswerValue;
+    return Array.isArray(value) && value.includes(option);
+  }
 
-    const visible = new Set(
-      this.visibleQuestions().map((question) => question.id),
+  protected toggleMulti(question: League.SignUpQuestion, option: string) {
+    const control = this.answerGroup.get(question.id);
+    if (!control) return;
+    const current = (control.value as string[]) ?? [];
+    control.setValue(
+      current.includes(option)
+        ? current.filter((entry) => entry !== option)
+        : [...current, option],
     );
-
-    for (const question of this.questions) {
-      const control = group.get(question.id);
-      if (!control) continue;
-      if (question.required && visible.has(question.id)) {
-        control.setValidators(Validators.required);
-      } else {
-        control.clearValidators();
-      }
-      control.updateValueAndValidity({ emitEvent: false });
-    }
+    control.markAsTouched();
   }
 
-  private manageFormLogic(): void {
-    this.answerGroup
-      ?.valueChanges.pipe(takeUntil(this.destroy$))
-      .subscribe(() => this.syncAnswerValidators());
+  protected onLogoUpload(event: Event): void {
+    const file = (event.target as HTMLInputElement).files?.[0] ?? null;
+    this.revokePreview();
+    this.logoFile.set(file);
+    this.logoPreview.set(file ? URL.createObjectURL(file) : null);
   }
 
-  async onSubmit() {
-    if (this.isSubmitting) return;
+  async onSubmit(): Promise<void> {
+    if (this.isSubmitting()) return;
 
     const tournamentSlug = this.leagueService.tournamentSlug();
-    if (!this.signupForm.valid || !tournamentSlug) {
-      console.error('Sign Up form is not valid: ', this.signupForm.errors);
+    if (this.signupForm.invalid || !tournamentSlug) {
+      this.signupForm.markAllAsTouched();
       return;
     }
 
+    this.isSubmitting.set(true);
+    this.submitError.set(null);
+
     try {
-      this.isSubmitting = true;
-      this.uploadError = null;
-      let logoFileKey: string | undefined;
+      const logoFile = this.logoFile();
+      const logoFileKey = logoFile
+        ? await this.uploadLogoAndGetFileKey(logoFile)
+        : undefined;
 
-      if (this.logoFile) {
-        this.isUploading = true;
-        logoFileKey = await this.uploadLogoAndGetFileKey(this.logoFile);
-      }
-
-      const { answers: rawAnswers, ...fields } = this.signupForm.value;
-      const visible = new Set(
-        this.visibleQuestions().map((question) => question.id),
-      );
+      const { answers: rawAnswers, ...fields } = this.signupForm.getRawValue();
+      const visible = new Set(this.visibleQuestions().map((q) => q.id));
       const answers: League.SignUpAnswer[] = Object.entries(
-        (rawAnswers ?? {}) as Record<string, string | string[]>,
+        (rawAnswers ?? {}) as Record<string, AnswerValue>,
       )
         .filter(([questionId]) => visible.has(questionId))
         .map(([questionId, value]) => ({
@@ -258,50 +238,73 @@ export class LeagueSignUpComponent implements OnInit, OnDestroy {
         }))
         .filter((answer) => answer.values.length > 0);
 
-      const signupPayload = {
-        ...fields,
-        intent: this.wantsToSignUpAsSub ? 'sub' : 'team',
-        answers,
-        ...(logoFileKey ? { logo: logoFileKey } : {}),
-      };
-
       await firstValueFrom(
-        this.leagueService
-          .signUp(signupPayload, this.invite)
-          .pipe(takeUntil(this.destroy$), take(1)),
+        this.leagueService.signUp(
+          {
+            ...fields,
+            intent: this.wantsToSignUpAsSub() ? 'sub' : 'team',
+            answers,
+            ...(logoFileKey ? { logo: logoFileKey } : {}),
+          },
+          this.invite,
+        ),
       );
 
-      this.added = true;
       this.navigateToTeam();
-    } catch (error: any) {
-      console.error('Sign up failed:', error);
-      if (this.logoFile && !this.uploadError) {
-        this.uploadError = error?.message || 'Upload failed. Please try again.';
-      }
+    } catch (error) {
+      this.submitError.set(
+        (error as { message?: string })?.message ||
+          'Sign up failed. Please try again.',
+      );
     } finally {
-      this.isUploading = false;
-      this.isSubmitting = false;
+      this.isSubmitting.set(false);
+    }
+  }
+
+  private buildAnswerControls(): void {
+    for (const question of this.questions) {
+      if (this.answerGroup.contains(question.id)) continue;
+      this.answerGroup.addControl(
+        question.id,
+        this.fb.control<AnswerValue>(question.type === 'multi' ? [] : ''),
+      );
+    }
+    this.syncAnswerValidators();
+  }
+
+  private syncAnswerValidators(): void {
+    const visible = new Set(this.visibleQuestions().map((q) => q.id));
+    for (const question of this.questions) {
+      const control = this.answerGroup.get(question.id);
+      if (!control) continue;
+      if (question.required && visible.has(question.id)) {
+        control.setValidators(
+          question.type === 'multi' ? Validators.minLength(1) : Validators.required,
+        );
+      } else {
+        control.clearValidators();
+      }
+      control.updateValueAndValidity({ emitEvent: false });
     }
   }
 
   private navigateToTeam(teamSlug?: string): void {
-    const leagueSlug = this.leagueService.leagueSlug();
-    const tournamentSlug = this.leagueService.tournamentSlug();
-    const base = ['/leagues', leagueSlug, 'tournaments', tournamentSlug];
+    const base = [
+      '/',
+      LEAGUE_ZONE_PATH,
+      this.leagueService.leagueSlug(),
+      'tournaments',
+      this.leagueService.tournamentSlug(),
+    ];
     this.router.navigate(teamSlug ? [...base, 'teams', teamSlug] : base);
   }
 
-  confirmSignUpAsSub(): void {
-    this.wantsToSignUpAsSub = true;
-  }
-
-  cancelSignUp(): void {
-    this.wantsToSignUpAsSub = false;
+  private revokePreview(): void {
+    const preview = this.logoPreview();
+    if (preview) URL.revokeObjectURL(preview);
   }
 
   private async uploadLogoAndGetFileKey(originalFile: File): Promise<string> {
-    this.uploadError = null;
-
     const buffer = await originalFile.arrayBuffer();
     const hashBuffer = await crypto.subtle.digest('SHA-256', buffer);
     const hashHex = Array.from(new Uint8Array(hashBuffer))
@@ -315,39 +318,24 @@ export class LeagueSignUpComponent implements OnInit, OnDestroy {
     });
 
     const presigned = await firstValueFrom(
-      this.leagueService
-        .getLeagueUploadPresignedUrl(file.name, file.type || 'image/png')
-        .pipe(takeUntil(this.destroy$), take(1)),
+      this.leagueService.getLeagueUploadPresignedUrl(
+        file.name,
+        file.type || 'image/png',
+      ),
     );
 
     await firstValueFrom(
       this.uploadService.uploadToS3(presigned, file).pipe(
         filter((response) => response instanceof HttpResponse),
-        map((response) => response as HttpResponse<object>),
-        take(1),
         map((response) => {
-          if (!response.ok) {
-            throw new Error(`S3 upload failed with status: ${response.status}`);
+          if (!(response as HttpResponse<object>).ok) {
+            throw new Error('The logo upload failed. Please try again.');
           }
           return response;
         }),
-        takeUntil(this.destroy$),
       ),
     );
 
     return presigned.key;
   }
-
-  onLogoUpload(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    if (input.files && input.files.length > 0) {
-      this.logoFile = input.files[0];
-      this.logoFileName = this.logoFile.name;
-    } else {
-      this.logoFile = null;
-      this.logoFileName = '';
-    }
-  }
-
-  getLogoUrl = getLeagueLogoUrl;
 }

@@ -1,4 +1,3 @@
-import { CommonModule } from '@angular/common';
 import {
   Component,
   EventEmitter,
@@ -14,7 +13,7 @@ import { DataService } from '@pdz/core/services/data.service';
 import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
 import { QDSettings } from '../quick-draft-setting/quick-draft-setting.component';
-import { typeColor } from '@pdz/core/utils/styling';
+import { PokemonTypeComponent } from '@pdz/shared/data/pokemon-type/pokemon-type.component';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 import { CardComponent } from '@pdz/shared/data/card/card.component';
 
@@ -34,12 +33,12 @@ export type QDPokemon = Pokemon<{
 @Component({
   selector: 'pdz-quick-draft-picks',
   imports: [
-    CommonModule,
     IconComponent,
     SpriteComponent,
     LoadingComponent,
     ButtonComponent,
     CardComponent,
+    PokemonTypeComponent,
   ],
   templateUrl: './quick-draft-picks.component.html',
   styleUrls: [
@@ -76,7 +75,6 @@ export class QuickDraftPicksComponent implements OnInit {
     this.getRandomOptions();
   }
 
-  typeColor = typeColor;
 
   clickOption(index: number) {
     this.selectedOption = this.selectedOption === index ? null : index;

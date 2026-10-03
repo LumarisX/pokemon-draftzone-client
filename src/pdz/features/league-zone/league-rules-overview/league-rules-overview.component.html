@@ -1,33 +1,45 @@
 <pdz-page-header title="Rules" />
 
-<div class="rules-page">
-  <aside class="rules-nav">
-    <h2 class="rules-nav__title">Jump to Section</h2>
-    <nav class="rules-nav__list">
-      @for (rule of rules; track rule.title; let i = $index) {
-        <a
-          class="rules-nav__item"
-          [href]="'#section-' + i"
-          (click)="scrollToSection($event, i)"
-        >
-          {{ rule.title }}
-        </a>
-      }
-    </nav>
-  </aside>
+@if (rules(); as sections) {
+  @if (sections.length) {
+    <div class="rules">
+      <nav class="rules__nav" aria-label="Rule sections">
+        <h2 class="rules__nav-title">Sections</h2>
+        @for (rule of sections; track $index) {
+          <a
+            class="rules__nav-link"
+            [href]="'#section-' + $index"
+            (click)="scrollToSection($event, $index)"
+            >{{ rule.title }}</a
+          >
+        }
+      </nav>
 
-  <main class="rules-content">
-    @for (rule of rules; track rule.title; let i = $index) {
-      <section
-        class="rules-section"
-        [id]="'section-' + i"
-        [attr.data-section]="i"
-      >
-        <h2 class="rules-section__title">{{ rule.title }}</h2>
-        <div class="rules-section__content">
-          <markdown class="markdown-content" [data]="rule.body"></markdown>
-        </div>
-      </section>
-    }
-  </main>
-</div>
+      <div class="rules__content">
+        @for (rule of sections; track $index) {
+          <pdz-card padding="lg">
+            <section
+              class="rules__section"
+              [id]="'section-' + $index"
+              [attr.aria-labelledby]="'section-title-' + $index"
+            >
+              <h2 class="rules__section-title" [id]="'section-title-' + $index">
+                {{ rule.title }}
+              </h2>
+              <markdown class="markdown-content" [data]="rule.body" />
+            </section>
+          </pdz-card>
+        }
+      </div>
+    </div>
+  } @else {
+    <pdz-empty-state
+      bordered
+      icon="gavel"
+      heading="No rules yet"
+      message="The organizers haven't posted rules for this tournament."
+    />
+  }
+} @else {
+  <pdz-loading />
+}

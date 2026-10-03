@@ -1,211 +1,120 @@
 @use "pdz-theming" as pdz;
-@use "mixins" as *;
-@use "../league.mixins" as *;
 
 :host {
   display: flex;
   flex-direction: column;
-  gap: pdz.space(md);
+  gap: pdz.layout(section-gap);
 }
 
-.team-header {
-  &__coach {
-    min-width: 0;
-  }
-
-  &__coach-name {
-    @include text(body-sm-strong);
-    color: pdz.color(on-surface);
-  }
-
-  &__time {
-    @include pdz.numeric;
-    color: pdz.color(secondary-accent);
-  }
-
-  &__error {
-    color: pdz.color(danger);
-  }
-
-  &__record {
-    margin: 0;
-    font-weight: 600;
-    display: inline-flex;
-    align-items: center;
-    gap: pdz.space(xs);
-  }
-
-  &__wins {
-    @include pdz-league-record-box();
-    font-size: pdz.font-size(lg);
-    background-color: pdz.color(positive);
-    color: pdz.color(on-positive);
-    line-height: 2rem;
-    width: 2rem;
-    height: 2rem;
-  }
-
-  &__draws {
-    @include pdz-league-record-box();
-    background-color: pdz.color(secondary-container);
-    font-size: pdz.font-size(lg);
-    color: pdz.color(on-secondary-container);
-    line-height: 2rem;
-    width: 2rem;
-    height: 2rem;
-  }
-
-  &__losses {
-    @include pdz-league-record-box();
-    background-color: pdz.color(negative);
-    font-size: pdz.font-size(lg);
-    color: pdz.color(on-negative);
-    line-height: 2rem;
-    width: 2rem;
-    height: 2rem;
-  }
-}
-
-.team-body {
-  display: flex;
+.team-header__coach {
+  display: inline-flex;
   flex-wrap: wrap;
-  gap: pdz.space(md);
-  justify-content: center;
+  align-items: center;
+  gap: pdz.space(xs);
+  min-width: 0;
 }
 
-.section {
-  padding: pdz.space(md) pdz.space(xs);
-  background-color: pdz.color(surface-container-low);
-  border: 1px solid pdz.color(outline-variant);
-  border-radius: pdz.shape(corner-lg);
-  display: flex;
-  flex-direction: column;
-  gap: pdz.space(sm);
-  height: fit-content;
-  max-width: 100%;
-  min-width: min(20rem, 100%);
-  &--matchups {
-    width: fit-content;
-  }
-
-  &-message {
-    @include pdz-league-section-message();
-
-    &--error {
-      color: pdz.color(danger);
-      font-style: normal;
-    }
-  }
-
-  &-header {
-    @include text(title);
-    border-bottom: 2px solid pdz.color(primary-accent);
-    padding: 0 pdz.space(xs);
-
-    &--actionable {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: pdz.space(sm);
-    }
-
-    &__action {
-      @include text(label);
-      display: inline-flex;
-      align-items: center;
-      gap: pdz.space(2xs);
-      padding: pdz.space(2xs) pdz.space(sm);
-      border: 1px solid pdz.color(outline-variant);
-      border-radius: pdz.shape(corner-full);
-      background: transparent;
-      color: pdz.color(primary-accent);
-      font-weight: 600;
-      cursor: pointer;
-      white-space: nowrap;
-      transition:
-        background pdz.duration(base) pdz.easing(standard),
-        border-color pdz.duration(base) pdz.easing(standard);
-
-      &:hover,
-      &:focus-visible {
-        background: pdz.color(surface-container-high);
-        border-color: pdz.color(primary-accent);
-      }
-    }
-  }
-
-  &-body {
-    max-height: 40rem;
-    width: 100%;
-    overflow: auto;
-    scrollbar-gutter: stable both-edges;
-    padding: 0 pdz.space(xs);
-    @include respond-above(medium) {
-      max-height: calc(100vh - 17rem);
-    }
-  }
+.team-header__coach-name {
+  @include pdz.text(body-sm-strong);
+  color: pdz.color(on-surface);
 }
 
-.stats-table-wrapper {
-  .stats-table {
-    th.col-sprite {
-      width: 5rem;
-    }
-
-    th.col-stat {
-      width: 4rem;
-    }
-
-    td.cell-sprite {
-      width: 5rem;
-
-      pdz-sprite {
-        display: inline-block;
-        width: 3rem;
-        height: 3rem;
-      }
-    }
-
-    td.cell-name .name-cell {
-      display: flex;
-      flex-direction: column;
-      gap: pdz.space(2xs);
-
-      .name {
-        @include text(body);
-        font-weight: 600;
-        color: pdz.color(on-surface);
-      }
-
-      .details {
-        display: flex;
-        align-items: center;
-        color: pdz.color(primary-accent);
-        gap: pdz.space(2xs);
-      }
-
-      .cost {
-        @include text(label);
-        font-weight: 600;
-      }
-    }
-
-    td.cell-stat {
-      @include text(body);
-      font-weight: 600;
-      color: pdz.color(on-surface-variant);
-    }
-  }
-}
-
-.off-list {
-  @include pdz.text(body-sm);
+.team-header__time {
+  @include pdz.text(meta);
+  @include pdz.numeric;
   display: inline-flex;
   align-items: center;
   gap: pdz.space(3xs);
-  padding: 0 pdz.space(xs);
-  border: 1px solid pdz.color(danger);
-  border-radius: pdz.shape(corner-full);
+  color: pdz.color(on-surface-variant);
+}
+
+.team-error {
+  @include pdz.text(body-sm);
+  margin: 0;
   color: pdz.color(danger);
-  white-space: nowrap;
+}
+
+.team-body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-areas:
+    "roster"
+    "schedule"
+    "trades";
+  gap: pdz.layout(section-gap);
+  align-items: start;
+
+  @include pdz.respond-above(large) {
+    grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+    grid-template-areas:
+      "schedule roster"
+      "trades trades";
+  }
+}
+
+.team-body__schedule {
+  grid-area: schedule;
+}
+
+.team-body__roster {
+  grid-area: roster;
+}
+
+.team-body__trades {
+  grid-area: trades;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.layout(stack);
+  min-width: 0;
+}
+
+.section__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: pdz.space(sm);
+}
+
+.section__title {
+  @include pdz.text(section-title);
+  margin: 0;
+  color: pdz.color(on-surface);
+}
+
+.section__title--padded {
+  padding: pdz.space(lg) pdz.space(lg) 0;
+}
+
+.mon {
+  display: flex;
+  align-items: center;
+  gap: pdz.space(sm);
+}
+
+.mon__text {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(3xs);
+  min-width: 0;
+}
+
+.mon__name {
+  @include pdz.text(body-sm-strong);
+  color: pdz.color(on-surface);
+}
+
+.mon__details {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: pdz.space(xs);
+  color: pdz.color(on-surface-variant);
+}
+
+.mon__cost {
+  @include pdz.text(meta);
+  @include pdz.numeric;
 }

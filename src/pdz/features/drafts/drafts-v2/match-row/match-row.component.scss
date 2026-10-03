@@ -2,9 +2,9 @@
 
 :host {
   display: block;
-  border: 1px solid pdz.color(outline-variant);
+  border: 1px solid pdz.color(border-subtle);
   border-radius: pdz.shape(corner-md);
-  background-color: pdz.color(surface-container-lowest);
+  background-color: pdz.color(raised);
   overflow: hidden;
   transition: border-color pdz.duration(fast) pdz.easing(standard);
 
@@ -55,25 +55,6 @@
   color: pdz.color(primary-accent);
 }
 
-.dz-match__crest {
-  display: grid;
-  place-items: center;
-  width: 2.25rem;
-  height: 2.25rem;
-  border-radius: pdz.shape(corner-sm);
-  background-color: pdz.color(surface-container-high);
-  color: pdz.color(on-surface-variant);
-  @include pdz.text(label-strong);
-}
-
-.dz-match__logo {
-  width: 2.25rem;
-  height: 2.25rem;
-  border-radius: pdz.shape(corner-sm);
-  object-fit: contain;
-  background-color: pdz.color(surface-container-high);
-}
-
 .dz-match__who {
   display: flex;
   flex-direction: column;
@@ -105,7 +86,7 @@
   @include pdz.numeric;
   padding: pdz.space(2xs) pdz.space(md);
   border-radius: pdz.shape(corner-full);
-  background-color: pdz.color(surface-container-high);
+  background-color: pdz.color(state-pressed);
   color: pdz.color(on-surface);
 
   &[data-result="win"] {
@@ -200,7 +181,8 @@
   gap: pdz.space(sm);
   padding: pdz.space(xs) pdz.space(sm);
   border-radius: pdz.shape(corner-sm);
-  background-color: pdz.color(surface-container-low);
+  background-color: pdz.color(raised-high);
+  border: 1px solid pdz.color(border-subtle);
 
   &[data-result="win"] pdz-icon {
     color: pdz.color(success);
@@ -229,7 +211,7 @@
   flex-wrap: wrap;
   gap: pdz.space(sm);
   padding-block-start: pdz.space(sm);
-  border-block-start: 1px solid pdz.color(outline-variant);
+  border-block-start: 1px solid pdz.color(border-subtle);
 }
 
 @include pdz.respond-above(medium) {
@@ -238,7 +220,7 @@
   }
 }
 
-@media (max-width: 47.99rem) {
+@include pdz.respond-below(medium) {
   .dz-match__summary {
     grid-template-columns: auto minmax(0, 1fr) auto auto;
     gap: pdz.space(sm);

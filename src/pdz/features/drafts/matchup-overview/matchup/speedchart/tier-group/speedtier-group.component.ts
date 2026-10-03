@@ -6,8 +6,8 @@ import {
   signal,
 } from '@angular/core';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
-import { DraftPokemon } from '../../../../draft.model';
-import { Speedtier } from '../../../matchup-interface';
+import { DraftPokemon } from '@pdz/features/drafts/draft.model';
+import { Speedtier } from '@pdz/features/drafts/matchup-overview/matchup-interface';
 import { SpeedtierComponent } from '../speedtier/speedtier.component';
 
 export type SpeedtierGroup = {

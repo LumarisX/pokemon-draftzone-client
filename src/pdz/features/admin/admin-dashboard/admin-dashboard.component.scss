@@ -7,14 +7,6 @@
   gap: pdz.space(xl);
 }
 
-.admin-header {
-  h1 {
-    margin: 0;
-    @include pdz.text(title, $family: false);
-    color: pdz.color(on-surface);
-  }
-}
-
 .summary-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
@@ -27,8 +19,8 @@
   gap: pdz.space(2xs);
   padding: pdz.space(lg);
   border-radius: pdz.shape(corner-lg);
-  background: pdz.color(surface-container);
-  border: 1px solid pdz.color(outline-variant);
+  background: pdz.color(raised);
+  border: 1px solid pdz.color(border-subtle);
 
   .value {
     @include pdz.text(title, $family: false);
@@ -63,33 +55,26 @@
 .charts-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  // Stretch cards so every card in a row shares the tallest height, and let
-  // smaller cards backfill the space beside a wide card.
   align-items: stretch;
   grid-auto-flow: row dense;
   gap: pdz.space(xl);
 }
 
 .chart-card {
-  // Allow the chart SVGs to shrink with the grid track.
   min-width: 0;
   display: flex;
   flex-direction: column;
   padding: pdz.space(lg) pdz.space(xl) pdz.space(xl);
   border-radius: pdz.shape(corner-lg);
-  background: pdz.color(surface-container);
-  border: 1px solid pdz.color(outline-variant);
+  background: pdz.color(raised);
+  border: 1px solid pdz.color(border-subtle);
 
-  // Time-series charts take roughly twice the width of a distribution card so
-  // they read well, but stay capped and wrap beside each other when there's
-  // room rather than each hogging a full row.
   &--wide {
     grid-column: span 2;
     max-width: 900px;
   }
 
-  // Avoid a 2-track span overflowing when only one column fits.
-  @media (max-width: 680px) {
+  @include pdz.respond-below(medium) {
     &--wide {
       grid-column: auto;
     }
@@ -113,8 +98,6 @@
     }
   }
 
-  // Chart fills the remaining card height and stays vertically centred, so
-  // shorter charts (donuts/bars) don't leave a ragged gap beneath them.
   pdz-time-series-chart,
   pdz-pie-chart,
   pdz-bar-chart,

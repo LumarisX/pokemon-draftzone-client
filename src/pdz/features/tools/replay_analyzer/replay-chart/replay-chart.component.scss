@@ -1,29 +1,25 @@
 @use "pdz-theming" as pdz;
 
-:host {
+pdz-replay-chart {
   display: block;
   width: 100%;
-}
 
-.replay-chart {
-  &__svg {
+  .replay-chart__svg {
+    display: block;
     width: 100%;
     height: auto;
-    display: block;
   }
-}
 
-:host ::ng-deep {
   .replay-chart__x-axis,
   .replay-chart__y-axis {
     text {
-      fill: pdz.color("on-surface");
       @include pdz.text(body-sm);
+      fill: pdz.color(on-surface);
     }
 
     path,
     line {
-      stroke: pdz.color("outline");
+      stroke: pdz.color(outline);
     }
   }
 }

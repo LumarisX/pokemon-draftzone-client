@@ -1,4 +1,5 @@
 import { Injectable, signal } from '@angular/core';
+import { safeStorage } from '@pdz/core/utils/storage';
 import { ReplayAnalysis, ReplayAnalyzerVersion } from './replay.interface';
 
 const STORAGE_KEY = 'pdz.replayAnalyzer.history';
@@ -96,24 +97,12 @@ export class ReplayHistoryService {
 }
 
 function read(): ReplayHistoryEntry[] {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (!raw) {
-      return [];
-    }
-    const parsed: unknown = JSON.parse(raw);
-    return Array.isArray(parsed) ? parsed.filter(isEntry).slice(0, MAX_ENTRIES) : [];
-  } catch {
-    return [];
-  }
+  const parsed = safeStorage.getJson<unknown>(STORAGE_KEY);
+  return Array.isArray(parsed) ? parsed.filter(isEntry).slice(0, MAX_ENTRIES) : [];
 }
 
 function write(entries: ReplayHistoryEntry[]): void {
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(entries));
-  } catch {
-    return;
-  }
+  safeStorage.setJson(STORAGE_KEY, entries);
 }
 
 function isEntry(value: unknown): value is ReplayHistoryEntry {

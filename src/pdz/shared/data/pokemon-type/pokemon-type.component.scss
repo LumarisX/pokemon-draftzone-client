@@ -1,27 +1,24 @@
 @use "sass:map";
 @use "pdz-theming" as pdz;
 
-// `label` is the resting width of the text, so a row of badges lines up
-// regardless of how long the type name is. It is wide enough for "Fighting",
-// the longest name, at that step's font size.
 $sizes: (
   xs: (
-    height: 0.75rem,
-    font: 4xs,
+    height: 0.875rem,
+    font: 2xs,
     pad-x: 2xs,
     pad-y: 3xs,
     gap: 2xs,
     gap-y: xs,
-    label: 2rem,
+    label: 2.75rem,
   ),
   sm: (
     height: 1rem,
-    font: 3xs,
+    font: 2xs,
     pad-x: xs,
     pad-y: 2xs,
     gap: 2xs,
     gap-y: xs,
-    label: 2.5rem,
+    label: 2.75rem,
   ),
   md: (
     height: 1.25rem,
@@ -53,7 +50,7 @@ $sizes: (
 );
 
 :host {
-  --pdz-pokemon-type-fill: #{pdz.color(surface-variant)};
+  --pdz-pokemon-type-fill: #{pdz.color(state-pressed)};
   --pdz-pokemon-type-ink: #{pdz.color(on-surface-variant)};
   --pdz-pokemon-type-on-fill: #{pdz.color(on-primary, white)};
 
@@ -104,7 +101,7 @@ $sizes: (
 }
 
 :host([data-variant="outline"]) {
-  background: pdz.color(surface);
+  background: transparent;
   border-color: var(--pdz-pokemon-type-ink);
   color: var(--pdz-pokemon-type-ink);
 }

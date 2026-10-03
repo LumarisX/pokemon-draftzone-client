@@ -14,9 +14,9 @@
   flex-direction: column;
   gap: pdz.space(md);
   padding: pdz.space(xl);
-  border: 1px solid pdz.color(outline-variant);
+  border: 1px solid pdz.color(border-subtle);
   border-radius: pdz.shape(corner-lg);
-  background-color: pdz.color(surface-container-lowest);
+  background-color: pdz.color(raised);
   background-image: radial-gradient(
     120% 100% at 100% 0%,
     pdz.color-rgba(primary, 0.14),
@@ -69,25 +69,6 @@
   margin: 0;
 }
 
-.dz-detail__crest {
-  display: grid;
-  place-items: center;
-  width: 2rem;
-  height: 2rem;
-  border-radius: pdz.shape(corner-sm);
-  background-color: pdz.color(primary-container);
-  color: pdz.color(on-primary-container);
-  @include pdz.text(label-strong);
-}
-
-.dz-detail__logo {
-  width: 2.25rem;
-  height: 2.25rem;
-  border-radius: pdz.shape(corner-sm);
-  object-fit: contain;
-  background-color: pdz.color(surface-container-high);
-}
-
 .dz-detail__team-name {
   @include pdz.text(subtitle);
 }
@@ -119,7 +100,7 @@
   gap: pdz.space(sm);
   margin: 0;
   padding-block-start: pdz.space(sm);
-  border-block-start: 1px solid pdz.color(outline-variant);
+  border-block-start: 1px solid pdz.color(border-subtle);
 }
 
 .dz-detail__stat {
@@ -226,7 +207,7 @@
 .dz-detail__draft-count {
   padding-inline: pdz.space(xs);
   border-radius: pdz.shape(corner-full);
-  background-color: pdz.color(surface-container-high);
+  background-color: pdz.color(state-pressed);
   color: pdz.color(on-surface-variant);
 }
 
@@ -251,8 +232,9 @@
   align-items: center;
   gap: pdz.space(md);
   padding: pdz.space(sm) pdz.space(md);
+  border: 1px solid pdz.color(border-subtle);
   border-radius: pdz.shape(corner-md);
-  background-color: pdz.color(surface-container-low);
+  background-color: pdz.color(raised);
 }
 
 .dz-detail__leader-name {
@@ -266,7 +248,7 @@
   display: block;
   height: 0.5rem;
   border-radius: pdz.shape(corner-full);
-  background-color: pdz.color(surface-container-highest);
+  background-color: pdz.color(inset);
   overflow: hidden;
 }
 
@@ -283,7 +265,7 @@
   white-space: nowrap;
 }
 
-@media (max-width: 47.99rem) {
+@include pdz.respond-below(medium) {
   .dz-detail__hero {
     padding: pdz.space(lg);
   }

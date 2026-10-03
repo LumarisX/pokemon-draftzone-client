@@ -28,7 +28,7 @@
         aria-label="Filter by format"
         [(value)]="format"
       >
-        <pdz-option [value]="''" label="Any format" />
+        <pdz-option [value]="''" label="Any Format" />
         @for (option of formats(); track option) {
           <pdz-option [value]="option" [label]="option" />
         }
@@ -40,7 +40,7 @@
 <section class="landing__results">
   <div class="landing__results-inner">
     <div class="landing__results-header">
-      <h2 class="landing__section-title">Open for signups</h2>
+      <h2 class="landing__section-title">Open for Sign-Ups</h2>
       @if (!loading() && !failed()) {
         <span class="landing__count">
           {{ matches().length }}
@@ -49,23 +49,38 @@
       }
       <span class="landing__spacer"></span>
       @if (filtering()) {
-        <button pdz-button variant="ghost" color="neutral" size="sm" (click)="clearFilters()">
-          Clear filters
+        <button
+          pdz-button
+          variant="ghost"
+          color="neutral"
+          size="sm"
+          (click)="clearFilters()"
+        >
+          Clear Filters
         </button>
       }
       <a pdz-button variant="outlined" size="sm" [routerLink]="leagueListPath">
-        Browse all
+        Browse All
       </a>
     </div>
 
     @if (loading()) {
       <div class="landing__grid">
         @for (slot of previewSlots; track $index) {
-          <pdz-card tone="lowest" padding="lg">
+          <pdz-card padding="lg">
             <div class="landing__league-skeleton">
-              <pdz-skeleton variant="block" width="2.75rem" height="2.75rem" radius="0.625rem" />
+              <pdz-skeleton
+                variant="block"
+                width="2.75rem"
+                height="2.75rem"
+                radius="var(--pdz-shape-corner-sm)"
+              />
               <pdz-skeleton [lines]="2" />
-              <pdz-skeleton variant="block" height="1.5rem" radius="999px" />
+              <pdz-skeleton
+                variant="block"
+                height="1.5rem"
+                radius="var(--pdz-shape-corner-full)"
+              />
             </div>
           </pdz-card>
         }
@@ -77,8 +92,14 @@
         heading="Could not load leagues"
         message="Something went wrong reaching the league list. Please refresh and try again."
       >
-        <a pdz-button variant="outlined" size="md" [routerLink]="leagueListPath" pdz-empty-state-actions>
-          Open the league list
+        <a
+          pdz-button
+          variant="outlined"
+          size="md"
+          [routerLink]="leagueListPath"
+          pdz-empty-state-actions
+        >
+          Open the League List
         </a>
       </pdz-empty-state>
     } @else if (!preview().length) {
@@ -93,46 +114,60 @@
         "
       >
         @if (filtering()) {
-          <button pdz-button variant="outlined" size="md" (click)="clearFilters()" pdz-empty-state-actions>
-            Clear filters
+          <button
+            pdz-button
+            variant="outlined"
+            size="md"
+            (click)="clearFilters()"
+            pdz-empty-state-actions
+          >
+            Clear Filters
           </button>
         }
       </pdz-empty-state>
     } @else {
       <div class="landing__grid">
         @for (league of preview(); track league._id) {
-          <a class="landing__league-link" [routerLink]="leagueListPath">
-            <pdz-card tone="lowest" padding="lg" interactive>
-              <div class="landing__league">
-                <div class="landing__league-head">
-                  <span class="landing__league-mark" aria-hidden="true">
-                    <pdz-icon name="trophy" [size]="22" />
+          <a pdz-card padding="lg" [routerLink]="leagueListPath">
+            <div class="landing__league">
+              <div class="landing__league-head">
+                <span class="landing__league-mark" aria-hidden="true">
+                  <pdz-icon name="trophy" [size]="22" />
+                </span>
+                <div class="landing__league-ident">
+                  <h3 class="landing__league-name">{{ league.leagueName }}</h3>
+                  <span class="landing__league-host">
+                    Hosted by {{ league.organizer }}
                   </span>
-                  <div class="landing__league-ident">
-                    <h3 class="landing__league-name">{{ league.leagueName }}</h3>
-                    <span class="landing__league-host">
-                      Hosted by {{ league.organizer }}
-                    </span>
-                  </div>
-                </div>
-
-                <div class="landing__league-chips">
-                  @if (league.hosted) {
-                    <pdz-badge tone="primary" variant="soft" size="sm" label="On DraftZone" />
-                  }
-                  @for (chip of chipsFor(league); track chip) {
-                    <pdz-badge tone="neutral" variant="soft" size="sm" [label]="chip" />
-                  }
-                </div>
-
-                <span class="landing__spacer"></span>
-
-                <div class="landing__league-meta">
-                  <pdz-icon name="event" [size]="16" aria-hidden="true" />
-                  <span>Signups close {{ league.closesAt | date: "MMM d" }}</span>
                 </div>
               </div>
-            </pdz-card>
+
+              <div class="landing__league-chips">
+                @if (league.hosted) {
+                  <pdz-badge
+                    tone="primary"
+                    variant="soft"
+                    size="sm"
+                    label="On DraftZone"
+                  />
+                }
+                @for (chip of chipsFor(league); track chip) {
+                  <pdz-badge
+                    tone="neutral"
+                    variant="soft"
+                    size="sm"
+                    [label]="chip"
+                  />
+                }
+              </div>
+
+              <span class="landing__spacer"></span>
+
+              <div class="landing__league-meta">
+                <pdz-icon name="event" [size]="16" aria-hidden="true" />
+                <span>Signups close {{ league.closesAt | date: "MMM d" }}</span>
+              </div>
+            </div>
           </a>
         }
       </div>
@@ -142,9 +177,12 @@
 
 <section class="landing__promos">
   <div class="landing__promos-inner">
-    <pdz-card tone="lowest" padding="lg">
+    <pdz-card tone="raised-high" padding="lg">
       <div class="landing__promo">
-        <span class="landing__promo-mark landing__promo-mark--primary" aria-hidden="true">
+        <span
+          class="landing__promo-mark landing__promo-mark--primary"
+          aria-hidden="true"
+        >
           <pdz-icon name="draft" [size]="26" />
         </span>
         <div class="landing__promo-copy">
@@ -160,9 +198,12 @@
       </div>
     </pdz-card>
 
-    <pdz-card tone="lowest" padding="lg">
+    <pdz-card tone="raised-high" padding="lg">
       <div class="landing__promo">
-        <span class="landing__promo-mark landing__promo-mark--secondary" aria-hidden="true">
+        <span
+          class="landing__promo-mark landing__promo-mark--secondary"
+          aria-hidden="true"
+        >
           <pdz-icon name="groups" [size]="26" />
         </span>
         <div class="landing__promo-copy">
@@ -172,8 +213,8 @@
           </p>
         </div>
         <span class="landing__spacer"></span>
-        <a pdz-button variant="outlined" color="secondary" size="md" [routerLink]="newAdPath">
-          List a league
+        <a pdz-button variant="outlined" size="md" [routerLink]="newAdPath">
+          List a League
         </a>
       </div>
     </pdz-card>

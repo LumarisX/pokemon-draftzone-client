@@ -2,6 +2,7 @@ import { DecimalPipe } from '@angular/common';
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
 import { PageComponent } from '@pdz/shared/layout/page/page.component';
+import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
 import {
   AdminService,
   AgeSegment,
@@ -61,6 +62,7 @@ function titleCase(value: string): string {
     PieChartComponent,
     BarChartComponent,
     PageComponent,
+    PageHeaderComponent,
     SegmentedComponent,
     SegmentedOptionComponent,
   ],
@@ -103,8 +105,6 @@ export class AdminDashboardComponent implements OnInit {
     this.bucket.set(bucket);
     this.loadSeries();
   }
-
-  // --- Derived chart data -------------------------------------------------
 
   get providerData(): PieDatum[] {
     return (this.providers() ?? []).map((p) => ({
@@ -152,28 +152,26 @@ export class AdminDashboardComponent implements OnInit {
     const s = this.summary();
     if (!s) return [];
     return [
-      { label: 'Total users', value: s.totalUsers, hint: 'All time' },
-      { label: 'New users', value: s.newUsersLast7Days, hint: 'Last 7 days' },
-      { label: 'New users', value: s.newUsersLast30Days, hint: 'Last 30 days' },
+      { label: 'Total Users', value: s.totalUsers, hint: 'All time' },
+      { label: 'New Users', value: s.newUsersLast7Days, hint: 'Last 7 days' },
+      { label: 'New Users', value: s.newUsersLast30Days, hint: 'Last 30 days' },
       {
-        label: 'Active users',
+        label: 'Active Users',
         value: s.activeUsersLast7Days,
         hint: 'Logged in · 7 days',
       },
       {
-        label: 'Active users',
+        label: 'Active Users',
         value: s.activeUsersLast30Days,
         hint: 'Logged in · 30 days',
       },
       {
-        label: 'Active users',
+        label: 'Active Users',
         value: s.activeUsersLast90Days,
         hint: 'Logged in · 90 days',
       },
     ];
   }
-
-  // --- Loaders ------------------------------------------------------------
 
   private loadSummary(): void {
     this.summaryLoading.set(true);

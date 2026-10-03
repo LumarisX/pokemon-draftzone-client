@@ -1,4 +1,3 @@
-import { CommonModule } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -8,6 +7,7 @@ import {
   signal,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { safeStorage } from '@pdz/core/utils/storage';
 import { MoveChart } from '@pdz/features/drafts/matchup-overview/matchup-interface';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
@@ -17,6 +17,7 @@ import { PokemonTypeComponent } from '@pdz/shared/data/pokemon-type/pokemon-type
 import { SegmentedOptionComponent } from '@pdz/shared/inputs/segmented/segmented-option.component';
 import { SegmentedComponent } from '@pdz/shared/inputs/segmented/segmented.component';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
+import { InputDirective } from '@pdz/shared/inputs/field/input.directive';
 
 type MoveView = 'list' | 'cards';
 type TagMode = 'enable' | 'disable';
@@ -27,7 +28,6 @@ type TagMode = 'enable' | 'disable';
   styleUrl: './moves.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    CommonModule,
     FormsModule,
     SpriteComponent,
     IconComponent,
@@ -35,6 +35,7 @@ type TagMode = 'enable' | 'disable';
     SegmentedComponent,
     SegmentedOptionComponent,
     ButtonComponent,
+    InputDirective,
   ],
 })
 export class MoveCoreComponent {
@@ -43,8 +44,7 @@ export class MoveCoreComponent {
   private static readonly VIEW_KEY = 'matchup_moves_view';
 
   readonly view = signal<MoveView>(
-    (localStorage.getItem(MoveCoreComponent.VIEW_KEY) as MoveView | null) ??
-      'cards',
+    (safeStorage.get(MoveCoreComponent.VIEW_KEY) as MoveView | null) ?? 'cards',
   );
   readonly searchQuery = signal('');
   readonly selectedTags = signal<ReadonlyMap<string, TagMode>>(new Map());
@@ -83,7 +83,7 @@ export class MoveCoreComponent {
   typeColor = typeInk;
 
   constructor() {
-    effect(() => localStorage.setItem(MoveCoreComponent.VIEW_KEY, this.view()));
+    effect(() => safeStorage.set(MoveCoreComponent.VIEW_KEY, this.view()));
   }
 
   search(query: string): void {

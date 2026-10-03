@@ -348,7 +348,6 @@ export class PokemonSearchComponent
     }
   }
 
-  /** Next selectable index in `direction`, wrapping and skipping taken ones. */
   private step(from: number, direction: number): number | undefined {
     const options = this.filteredOptions.value;
     if (!options.length) return undefined;

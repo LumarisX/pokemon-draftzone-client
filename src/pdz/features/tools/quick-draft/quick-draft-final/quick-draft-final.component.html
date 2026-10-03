@@ -1,46 +1,43 @@
-<h2>Draft Complete!</h2>
+<h2>Draft Complete</h2>
 <div class="qd-options-bar">
-  <button
+  <a
     pdz-button
     [routerLink]="['/', draftPath, 'new']"
     [queryParams]="{
-      team: teamIds,
+      team: teamIds(),
       format: settings().format,
       ruleset: settings().ruleset,
     }"
   >
-    Save To New League
-  </button>
+    Save to New League
+  </a>
   <form
-    #pokepasteForm
-    id="pokepasteForm"
-    style="display: inline"
+    class="pokepaste-form"
     method="post"
     action="https://pokepast.es/create"
     target="_blank"
   >
     <input type="hidden" name="title" value="Quick Draft" />
-    <input type="hidden" name="paste" [value]="teamPaste" />
+    <input type="hidden" name="paste" [value]="teamPaste()" />
     <input
       type="hidden"
       name="author"
-      id="pasteAuthor"
       [value]="(loggedInUser | async)?.username ?? 'Pokemon DraftZone'"
     />
     <input type="hidden" name="notes" [value]="notes" />
     <button pdz-button type="submit">To PokePaste</button>
   </form>
-  <button
+  <a
     pdz-button
     [routerLink]="['/', toolsPath, 'quick-matchup']"
     [queryParams]="{
-      team1: teamIds,
+      team1: teamIds(),
       format: settings().format,
       ruleset: settings().ruleset,
     }"
   >
-    Save To Quick Matchup
-  </button>
+    Save to Quick Matchup
+  </a>
 </div>
 
 <div class="draft-container-wrapper">
@@ -55,11 +52,7 @@
           <div class="draft-name">{{ pokemon.name }}</div>
           <div class="pdz-types">
             @for (type of pokemon.types; track $index) {
-              <div class="pdz-type" [style.background-color]="typeColor(type)">
-                <div class="pdz-type__text">
-                  {{ type }}
-                </div>
-              </div>
+              <pdz-pokemon-type size="sm" [type]="type" />
             }
           </div>
           <div class="option-tier">Tier: {{ pokemon.tier }}</div>
@@ -68,4 +61,4 @@
     }
   </div>
 </div>
-<button pdz-button (click)="restart()">Draft Again</button>
+<button pdz-button type="button" (click)="restart()">Draft Again</button>

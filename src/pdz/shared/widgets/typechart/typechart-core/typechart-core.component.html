@@ -47,11 +47,11 @@
               class="type-cell"
               (mouseenter)="columnHovered.next(type)"
               (mouseleave)="columnHovered.next(null)"
-              [ngClass]="{ 'column-hovered': type === columnHovered.value }"
+              [class.column-hovered]="type === columnHovered.value"
             >
               <div
                 class="type-wrapper"
-                [ngClass]="
+                [class]="
                   weaknessColor(activeWeak(pokemon)[type], pokemon.disabled!)
                 "
               >

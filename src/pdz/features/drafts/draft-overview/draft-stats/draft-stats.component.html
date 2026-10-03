@@ -1,130 +1,74 @@
-<div class="title-bar">
-  <button pdz-button [routerLink]="'/' + draftPath" class="back-button">
-    Back
-  </button>
-  <div class="stats-title-wrapper">
-    <h1 class="stats-title">Team Statistics</h1>
+<pdz-page width="wide">
+  <div class="stats">
+    <pdz-page-header
+      title="Team Statistics"
+      backLabel="My Drafts"
+      [backLink]="backLink"
+    />
+
+    @if (rows(); as stats) {
+      @if (stats.length) {
+        <div class="pdz-table-wrapper stats__table">
+          <table
+            class="pdz-table"
+            data-sticky
+            data-density="compact"
+            pdzSort
+            pdzSortDisableClear
+            (pdzSortChange)="sort.set($event)"
+          >
+            <thead>
+              <tr>
+                <th scope="col" aria-label="Sprite"></th>
+                <th scope="col" pdzSortHeader="name">Pokémon</th>
+                <th class="pdz-table__num" scope="col" pdzSortHeader="gb" start="desc">
+                  Brought
+                </th>
+                <th class="pdz-table__num" scope="col" pdzSortHeader="dk" start="desc">
+                  Direct Kills
+                </th>
+                <th class="pdz-table__num" scope="col" pdzSortHeader="ik" start="desc">
+                  Indirect Kills
+                </th>
+                <th class="pdz-table__num" scope="col" pdzSortHeader="deaths" start="desc">
+                  Deaths
+                </th>
+                <th class="pdz-table__num" scope="col" pdzSortHeader="kdr" start="desc">
+                  K/D
+                </th>
+                <th class="pdz-table__num" scope="col" pdzSortHeader="kpg" start="desc">
+                  Kills/game
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (stat of stats; track stat.pokemon.id) {
+                <tr>
+                  <td class="stats__sprite">
+                    <pdz-sprite size="3rem" flipped [pokemon]="stat.pokemon" />
+                  </td>
+                  <td class="stats__name">{{ stat.pokemon.name }}</td>
+                  <td class="pdz-table__num">{{ stat.brought }}</td>
+                  <td class="pdz-table__num">{{ stat.kills }}</td>
+                  <td class="pdz-table__num">{{ stat.indirect }}</td>
+                  <td class="pdz-table__num">{{ stat.deaths }}</td>
+                  <td class="pdz-table__num">{{ stat.kdr | number: "1.0-2" }}</td>
+                  <td class="pdz-table__num">{{ stat.kpg | number: "1.0-2" }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      } @else {
+        <pdz-empty-state
+          bordered
+          icon="query_stats"
+          heading="No stats yet"
+          message="Record a match result and your team's numbers will show up here."
+        />
+      }
+    } @else {
+      <pdz-loading />
+    }
   </div>
-</div>
-@if (teamStats.value.length > 0) {
-  <div class="content-container">
-    <div class="table-container">
-      <div class="pdz-table-wrapper table-wrapper">
-        <table
-          class="pdz-table"
-          data-zebra
-          data-sticky
-          cdk-table
-          [dataSource]="teamStats"
-          pdzSort
-          pdzSortDisableClear
-          (pdzSortChange)="sort($event)"
-        >
-          <ng-container cdkColumnDef="sprite">
-            <th class="pdz-table__center" cdk-header-cell *cdkHeaderCellDef></th>
-            <td class="pdz-table__center" cdk-cell *cdkCellDef="let element">
-              <div class="sprite-wrapper">
-                <pdz-sprite flipped [pokemon]="element.pokemon"></pdz-sprite>
-              </div>
-            </td>
-          </ng-container>
-          <ng-container cdkColumnDef="name">
-            <th pdzSortHeader="name" cdk-header-cell *cdkHeaderCellDef>
-              Name
-            </th>
-            <td cdk-cell *cdkCellDef="let element">
-              {{ element.pokemon.name }}
-            </td>
-          </ng-container>
-
-          <ng-container cdkColumnDef="gb">
-            <th
-              class="pdz-table__num"
-              pdzSortHeader="gb"
-              start="desc"
-              cdk-header-cell
-              *cdkHeaderCellDef
-            >
-              Games Brought
-            </th>
-            <td class="pdz-table__num" cdk-cell *cdkCellDef="let element">{{ element.brought }}</td>
-          </ng-container>
-
-          <ng-container cdkColumnDef="dk">
-            <th
-              class="pdz-table__num"
-              pdzSortHeader="dk"
-              start="desc"
-              cdk-header-cell
-              *cdkHeaderCellDef
-            >
-              Direct Kills
-            </th>
-            <td class="pdz-table__num" cdk-cell *cdkCellDef="let element">{{ element.kills }}</td>
-          </ng-container>
-
-          <ng-container cdkColumnDef="ik">
-            <th
-              class="pdz-table__num"
-              pdzSortHeader="ik"
-              start="desc"
-              cdk-header-cell
-              *cdkHeaderCellDef
-            >
-              Indirect Kills
-            </th>
-            <td class="pdz-table__num" cdk-cell *cdkCellDef="let element">{{ element.indirect }}</td>
-          </ng-container>
-
-          <ng-container cdkColumnDef="deaths">
-            <th
-              class="pdz-table__num"
-              pdzSortHeader="deaths"
-              start="desc"
-              cdk-header-cell
-              *cdkHeaderCellDef
-            >
-              Deaths
-            </th>
-            <td class="pdz-table__num" cdk-cell *cdkCellDef="let element">{{ element.deaths }}</td>
-          </ng-container>
-
-          <ng-container cdkColumnDef="kdr">
-            <th
-              class="pdz-table__num"
-              pdzSortHeader="kdr"
-              start="desc"
-              cdk-header-cell
-              *cdkHeaderCellDef
-            >
-              Kills/Deaths
-            </th>
-            <td class="pdz-table__num" cdk-cell *cdkCellDef="let element">
-              {{ element.kdr | number: "1.0-2" }}
-            </td>
-          </ng-container>
-
-          <ng-container cdkColumnDef="kpg">
-            <th
-              class="pdz-table__num"
-              pdzSortHeader="kpg"
-              start="desc"
-              cdk-header-cell
-              *cdkHeaderCellDef
-            >
-              Kills/Game
-            </th>
-            <td class="pdz-table__num" cdk-cell *cdkCellDef="let element">
-              {{ element.kpg | number: "1.0-2" }}
-            </td>
-          </ng-container>
-
-          <tr cdk-header-row *cdkHeaderRowDef="displayedColumns"></tr>
-          <tr cdk-row *cdkRowDef="let row; columns: displayedColumns"></tr>
-        </table>
-      </div>
-    </div>
-  </div>
-} @else {
-  <pdz-loading></pdz-loading>
-}
+</pdz-page>

@@ -3,11 +3,11 @@ import {
   Component,
   Directive,
   TemplateRef,
-  ViewChild,
   booleanAttribute,
   contentChild,
   inject,
   input,
+  viewChild,
 } from '@angular/core';
 import { PDZ_TABS } from './tabs.token';
 
@@ -31,6 +31,5 @@ export class TabComponent {
 
   readonly labelTemplate = contentChild(TabLabelDirective);
 
-  @ViewChild(TemplateRef, { static: true })
-  readonly content!: TemplateRef<unknown>;
+  readonly content = viewChild.required(TemplateRef);
 }

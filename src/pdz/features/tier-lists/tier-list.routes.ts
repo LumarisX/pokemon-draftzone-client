@@ -4,7 +4,7 @@ import { TierListBrowseComponent } from './tier-list-browse/tier-list-browse.com
 import { TierListCreateComponent } from './tier-list-create/tier-list-create.component';
 import { TierListShellComponent } from './tier-list-shell.component';
 import { TierListFormComponent } from './tier-list/tier-list-form/tier-list-form.component';
-import { unsavedChangesGuard } from './tier-list/tier-list-form/unsaved-changes.guard';
+import { unsavedChangesGuard } from '@pdz/core/guards/unsaved-changes/unsaved-changes.guard';
 import { TierListComponent } from './tier-list/tier-list.component';
 
 export const routes: Routes = [

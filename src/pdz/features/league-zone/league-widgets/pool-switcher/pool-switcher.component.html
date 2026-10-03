@@ -1,4 +1,4 @@
-@if (pools.length > 1) {
+@if (pools().length > 1) {
   <pdz-segmented
     class="pool-switcher"
     size="sm"
@@ -6,7 +6,7 @@
     [value]="currentPoolSlug()"
     (valueChange)="selectPool($any($event))"
   >
-    @for (pool of pools; track pool.poolSlug) {
+    @for (pool of pools(); track pool.poolSlug) {
       <pdz-segmented-option [value]="pool.poolSlug" [label]="pool.name" />
     }
   </pdz-segmented>

@@ -78,7 +78,6 @@ export class CoverageTeamChartComponent implements OnDestroy {
     this.chartGroup.append('g').attr('class', 'x-axis');
     this.chartGroup.append('g').attr('class', 'y-axis');
 
-    // **Initialize the scales**
     this.xScale = d3
       .scaleBand()
       .range([this.margin.left, this.width - this.margin.right])
@@ -92,7 +91,6 @@ export class CoverageTeamChartComponent implements OnDestroy {
     const filteredData = this.chartData;
     filteredData.sort((a, b) => b.value - a.value);
 
-    // Update scales
     this.xScale.domain(filteredData.map((d) => d.type));
     this.yScale.domain([0, d3.max(filteredData, (d) => d.value) || 1]);
 
@@ -141,7 +139,6 @@ export class CoverageTeamChartComponent implements OnDestroy {
           .remove(),
     );
 
-    // Update x-axis
     this.chartGroup
       .select('.x-axis')
       .transition()
@@ -149,10 +146,9 @@ export class CoverageTeamChartComponent implements OnDestroy {
       .attr('transform', `translate(0,${this.height - this.margin.bottom})`)
       .call(d3.axisBottom(this.xScale).tickSizeOuter(0))
       .selection()
-      .selectAll('text') // Select text elements
-      .style('opacity', 0); // Hide the text labels instead of removing them
+      .selectAll('text')
+      .style('opacity', 0);
 
-    // Update y-axis
     this.chartGroup
       .select('.y-axis')
       .transition()
@@ -165,18 +161,15 @@ export class CoverageTeamChartComponent implements OnDestroy {
           .tickFormat(d3.format('d')),
       );
 
-    // === ICONS ON X-AXIS ===
-    // Mimic the pdz-type chip: a typeColor-filled rounded box with the
-    // (white) type icon centered on top, so the icons are legible.
     const bw = this.xScale.bandwidth();
-    const iconY = 10; // Slightly below axis
+    const iconY = 10;
     const pad = bw * 0.15;
     const radius = Math.min(4, bw * 0.2);
 
     const icons = this.chartGroup
       .select('.x-axis')
       .selectAll('.type-icon')
-      .data(filteredData, (d) => d.type); // Match icons to types
+      .data(filteredData, (d) => d.type);
 
     icons.join(
       (enter) => {
@@ -190,7 +183,7 @@ export class CoverageTeamChartComponent implements OnDestroy {
           .attr('height', bw)
           .attr('rx', radius)
           .attr('ry', radius)
-          .attr('fill', (d) => typeColor(d.type) ?? 'var(--pdz-color-surface)');
+          .attr('fill', (d) => typeColor(d.type) ?? 'var(--pdz-color-inset)');
         group
           .append('image')
           .attr('class', 'type-icon-img')
@@ -214,7 +207,7 @@ export class CoverageTeamChartComponent implements OnDestroy {
             .attr('y', iconY)
             .attr('width', bw)
             .attr('height', bw)
-            .attr('fill', (d) => typeColor(d.type) ?? 'var(--pdz-color-surface)');
+            .attr('fill', (d) => typeColor(d.type) ?? 'var(--pdz-color-inset)');
           update
             .select('.type-icon-img')
             .transition()

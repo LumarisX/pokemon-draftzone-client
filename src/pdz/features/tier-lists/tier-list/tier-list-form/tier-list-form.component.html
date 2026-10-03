@@ -120,25 +120,20 @@
     </div>
   </div>
 
-  <!-- Main tier list editor -->
   <div class="tier-main">
     @if (isLoading()) {
       <pdz-loading></pdz-loading>
     } @else if (tiers()) {
-      <!-- Side Panel: Untiered + Banned (Fixed on Left) -->
       <div
         class="tier-container--null"
         [class.is-resizing]="isResizingNullPanel()"
       >
-        <!-- Untiered Section -->
         @if (untiered()) {
           <div class="tier tier--null" [style.flex]="untieredPanelFlex()">
-            <!-- Tier Header -->
             <div class="tier__header tier__header--null">
               <span class="tier__name">{{ untiered()!.name }}</span>
             </div>
 
-            <!-- Pokemon List (Drop Zone) -->
             <div
               class="tier__pokemon-list"
               (dragover)="onDragOver($event, untiered()!)"
@@ -281,11 +276,9 @@
           </div>
         }
       </div>
-      <!-- Regular Tiers (scrollable) -->
       <div class="tiers-container">
         @for (tier of tiers(); track $index; let tierIndex = $index) {
           <div class="tier">
-            <!-- Tier Header -->
             <div class="tier__header">
               <div class="tier__info">
                 <div class="tier__name-row">
@@ -352,7 +345,6 @@
               </div>
             </div>
 
-            <!-- Pokemon List (Drop Zone) -->
             <div
               class="tier__pokemon-list"
               (dragover)="onDragOver($event, tier)"

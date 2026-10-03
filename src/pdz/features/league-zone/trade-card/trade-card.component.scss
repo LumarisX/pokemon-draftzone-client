@@ -19,22 +19,22 @@
   flex-shrink: 0;
   padding: pdz.space(2xs) pdz.space(xs);
   border-radius: pdz.shape(corner-full);
-  background: pdz.color(surface-container-high);
+  background: pdz.color(state-pressed);
   color: pdz.color(on-surface);
 }
 
 .trade-card__time {
-  @include pdz.text(label);
+  @include pdz.text(meta);
   @include pdz.numeric;
-  color: inherit;
   margin-inline-start: auto;
+  color: inherit;
 }
 
 .trade-card__actions {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: pdz.space(xs);
-  flex-wrap: wrap;
 
   &:empty {
     display: none;
@@ -53,21 +53,19 @@
     grid-template-columns: minmax(0, max-content) auto minmax(0, max-content);
     grid-template-areas: "left swap right";
     justify-content: center;
-    gap: pdz.space(sm);
   }
 }
 
 .trade-card__swap {
   grid-area: swap;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: grid;
+  place-items: center;
   align-self: center;
   justify-self: center;
-  width: 1.5rem;
-  height: 1.5rem;
+  width: pdz.control-height(xs);
+  height: pdz.control-height(xs);
   border-radius: pdz.shape(corner-full);
-  background: pdz.color(surface-container-high);
+  background: pdz.color(state-pressed);
   color: pdz.color(on-surface-variant);
 
   pdz-icon {
@@ -87,56 +85,59 @@
   gap: pdz.space(2xs);
   min-width: 0;
 
-  &:first-of-type {
+  &[data-team="team1"] {
     grid-area: left;
+    --trade-side-fill: #{pdz.color(team1)};
+    --trade-side-on: #{pdz.color(on-team1)};
   }
 
-  &:last-of-type {
+  &[data-team="team2"] {
     grid-area: right;
+    --trade-side-fill: #{pdz.color(team2)};
+    --trade-side-on: #{pdz.color(on-team2)};
   }
 }
 
 .trade-side__team {
   display: flex;
   align-items: center;
-  gap: pdz.space(2xs);
+  gap: pdz.space(xs);
   min-width: 0;
   padding-bottom: pdz.space(2xs);
-  border-bottom: 1px solid pdz.color(outline-variant);
+  border-bottom: 1px solid pdz.color(border-subtle);
 }
 
-.trade-side__logo {
-  width: 1.75rem;
-  height: 1.75rem;
+.trade-side__free {
+  display: inline-grid;
   flex-shrink: 0;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
   border-radius: pdz.shape(corner-full);
-  object-fit: contain;
-}
-
-.trade-side__logo--free {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  background: pdz.color(surface-container-high);
+  background: pdz.color(state-pressed);
   color: pdz.color(on-surface-variant);
 }
 
 .trade-side__identity {
   display: flex;
-  flex-direction: column;
   flex: 1 1 auto;
+  flex-direction: column;
   min-width: 0;
 }
 
 .trade-side__name {
   @include pdz.text(body-sm-strong);
+  display: flex;
+  align-items: center;
+  gap: pdz.space(xs);
+  min-width: 0;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .trade-side__coach {
-  @include pdz.text(label);
+  @include pdz.text(meta);
   color: pdz.color(on-surface-variant);
   overflow: hidden;
   text-overflow: ellipsis;
@@ -146,9 +147,9 @@
 .pick-list {
   display: flex;
   flex-direction: column;
-  list-style: none;
   margin: 0;
   padding: 0;
+  list-style: none;
 }
 
 .pick {
@@ -162,32 +163,28 @@
 }
 
 .pick__value {
-  @include pdz.text(label-strong, $family: false);
+  @include pdz.text(label-strong);
+  @include pdz.numeric;
   display: inline-block;
   flex-shrink: 0;
-  min-width: 1.5rem;
+  min-width: pdz.control-height(xs);
   max-width: 6rem;
-  height: 1.5rem;
-  line-height: 1.5rem;
+  height: pdz.control-height(xs);
+  line-height: pdz.control-height(xs);
   padding-inline: pdz.space(2xs);
   border-radius: pdz.shape(corner-xs);
-  background: pdz.color(primary);
-  color: pdz.color(on-primary);
+  background: var(--trade-side-fill);
+  color: var(--trade-side-on);
   text-align: center;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.trade-side:last-of-type .pick__value {
-  background: pdz.color(secondary);
-  color: pdz.color(on-secondary);
-}
-
 .pick__sprite {
+  flex-shrink: 0;
   width: 1.75rem;
   height: 1.75rem;
-  flex-shrink: 0;
 }
 
 .pick__name {
@@ -200,7 +197,7 @@
 
 .pick__tera {
   flex-shrink: 0;
-  color: pdz.color(secondary-accent);
+  color: pdz.color(on-surface-variant);
 }
 
 .pick-list__empty {
@@ -211,13 +208,17 @@
 }
 
 @container trade-card (min-width: 24rem) {
-  .trade-side:last-of-type {
+  .trade-side[data-team="team2"] {
     .trade-side__team {
       flex-direction: row-reverse;
     }
 
     .trade-side__identity {
       align-items: flex-end;
+    }
+
+    .trade-side__name {
+      flex-direction: row-reverse;
     }
 
     .pick {

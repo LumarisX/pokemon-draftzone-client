@@ -21,12 +21,11 @@ pdz-card {
   gap: pdz.space(sm);
   width: 100%;
   padding: pdz.space(sm) pdz.space(md);
-  border-bottom: 1px solid pdz.color(outline-variant);
+  border-bottom: 1px solid pdz.color(border-subtle);
 }
 
 .pdz-widget__label {
-  font-family: pdz.font(display);
-  @include pdz.text(card-title, $family: false);
+  @include pdz.text(card-title);
   color: pdz.color(on-surface);
 }
 
@@ -51,8 +50,6 @@ pdz-card {
   padding: 0;
 }
 
-// The card fills its grid cell, but the content keeps its natural width and
-// centres — stretching a stat table or type grid pulls its columns apart.
 :host([data-align="center"]) .pdz-widget__body {
   display: grid;
   justify-content: center;

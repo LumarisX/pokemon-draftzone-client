@@ -1,23 +1,17 @@
-<div class="trades">
-  <pdz-page-header title="Trades">
-    <div pdz-page-header-meta>
-      @if (summary(); as summary) {
-        @if (summary.currentRoundName; as roundName) {
-          <pdz-chip tone="primary" icon="play_arrow">{{ roundName }}</pdz-chip>
-        }
-        <pdz-chip icon="sync_alt">{{ summary.total }} trades</pdz-chip>
-        @if (summary.pending; as pending) {
-          <pdz-chip tone="warning" icon="schedule">
-            {{ pending }} pending
-          </pdz-chip>
-        }
+<pdz-page-header title="Trades">
+  @if (summary(); as summary) {
+    <div pdz-page-header-meta class="trades__meta">
+      @if (summary.currentRoundName; as roundName) {
+        <pdz-chip size="sm" icon="play_arrow">{{ roundName }}</pdz-chip>
+      }
+      <pdz-chip size="sm" icon="sync_alt">{{ summary.total }} trades</pdz-chip>
+      @if (summary.pending; as pending) {
+        <pdz-chip size="sm" tone="warning" icon="schedule"
+          >{{ pending }} pending</pdz-chip
+        >
       }
     </div>
-  </pdz-page-header>
+  }
+</pdz-page-header>
 
-  <div class="trades__body">
-    <pdz-league-trade-widget
-      (summaryChange)="summary.set($event)"
-    ></pdz-league-trade-widget>
-  </div>
-</div>
+<pdz-league-trade-widget (summaryChange)="summary.set($event)" />

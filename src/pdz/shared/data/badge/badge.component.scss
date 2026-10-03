@@ -5,7 +5,7 @@ $tones: (
   neutral: (
     solid: surface-inverse,
     on-solid: on-surface-inverse,
-    soft: surface-container-high,
+    soft: state-pressed,
     on-soft: on-surface-variant,
     line: outline,
   ),
@@ -123,7 +123,7 @@ $tones: (
   top: 0;
   inset-inline-end: 0;
   transform: translate(35%, -35%);
-  box-shadow: 0 0 0 2px pdz.color(background);
+  box-shadow: 0 0 0 2px pdz.color(raised);
 }
 
 :host(.pdz-badge--dot.pdz-badge--floating) {

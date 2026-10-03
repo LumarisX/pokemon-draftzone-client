@@ -1,12 +1,26 @@
 import { DatePipe } from '@angular/common';
-import { Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  OnInit,
+  inject,
+  signal,
+} from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import {
   LEAGUE_ZONE_PATH,
   ORGANIZER_INVITE_PATH,
 } from '@pdz/core/route-paths';
+import { LeagueZoneService } from '@pdz/features/league-zone/league-zone.service';
+import { League } from '@pdz/features/league-zone/league.interface';
+import {
+  ORGANIZER_NAME_MAX,
+  isValidOrganizerName,
+} from '@pdz/features/league-zone/league.util';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
+import { CardComponent } from '@pdz/shared/data/card/card.component';
 import { EmptyStateComponent } from '@pdz/shared/feedback/empty-state/empty-state.component';
 import { ToastService } from '@pdz/shared/feedback/toast/toast.service';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
@@ -15,9 +29,6 @@ import { FieldComponent } from '@pdz/shared/inputs/field/field.component';
 import { InputDirective } from '@pdz/shared/inputs/field/input.directive';
 import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
 import { TooltipDirective } from '@pdz/shared/tooltip/tooltip.directive';
-import { LeagueZoneService } from '../../league-zone.service';
-import { League } from '../../league.interface';
-import { isValidOrganizerName, ORGANIZER_NAME_MAX } from '../../league.util';
 
 @Component({
   selector: 'pdz-league-organizers',
@@ -27,6 +38,7 @@ import { isValidOrganizerName, ORGANIZER_NAME_MAX } from '../../league.util';
     DatePipe,
     FormsModule,
     ButtonComponent,
+    CardComponent,
     EmptyStateComponent,
     IconComponent,
     LoadingComponent,
@@ -35,6 +47,7 @@ import { isValidOrganizerName, ORGANIZER_NAME_MAX } from '../../league.util';
     PageHeaderComponent,
     TooltipDirective,
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LeagueOrganizersComponent implements OnInit {
   private readonly leagueService = inject(LeagueZoneService);
@@ -53,9 +66,9 @@ export class LeagueOrganizersComponent implements OnInit {
   );
 
   protected readonly editingSub = signal<string | null>(null);
+  protected readonly inviteName = signal('');
+  protected readonly draftName = signal('');
 
-  protected inviteName = '';
-  protected draftName = '';
   protected readonly nameMax = ORGANIZER_NAME_MAX;
   protected readonly isValidName = isValidOrganizerName;
 
@@ -90,7 +103,7 @@ export class LeagueOrganizersComponent implements OnInit {
   }
 
   protected startRename(organizer: League.TournamentOrganizer): void {
-    this.draftName = organizer.name ?? '';
+    this.draftName.set(organizer.name ?? '');
     this.editingSub.set(organizer.sub);
   }
 
@@ -99,10 +112,11 @@ export class LeagueOrganizersComponent implements OnInit {
   }
 
   protected saveRename(organizer: League.TournamentOrganizer): void {
-    if (!isValidOrganizerName(this.draftName)) return;
+    const name = this.draftName();
+    if (!isValidOrganizerName(name)) return;
     this.busyId.set(organizer.sub);
     this.leagueService
-      .renameOrganizer(organizer.sub, this.draftName.trim())
+      .renameOrganizer(organizer.sub, name.trim())
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (result) => {
@@ -114,15 +128,16 @@ export class LeagueOrganizersComponent implements OnInit {
   }
 
   protected createInvite(): void {
-    if (!isValidOrganizerName(this.inviteName)) return;
+    const name = this.inviteName();
+    if (!isValidOrganizerName(name)) return;
     this.creatingInvite.set(true);
     this.leagueService
-      .createOrganizerInvite(this.inviteName.trim())
+      .createOrganizerInvite(name.trim())
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (result) => {
           this.creatingInvite.set(false);
-          this.inviteName = '';
+          this.inviteName.set('');
           this.createdLink.set({
             id: result.created.id,
             url: this.inviteUrl(result.created.token),
@@ -164,12 +179,6 @@ export class LeagueOrganizersComponent implements OnInit {
   protected label(organizer: League.TournamentOrganizer): string {
     if (organizer.name) return organizer.name;
     return organizer.isOwner ? 'Tournament owner' : 'Unnamed organizer';
-  }
-
-  protected note(organizer: League.TournamentOrganizer): string {
-    return [organizer.isOwner && 'Owner', organizer.isYou && 'You']
-      .filter(Boolean)
-      .join(' · ');
   }
 
   private inviteUrl(token: string): string {

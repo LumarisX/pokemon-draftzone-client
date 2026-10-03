@@ -1,43 +1,43 @@
-<div class="trade-manager">
-  <pdz-page-header title="Trades" eyebrow="Manage">
-    <pdz-pool-switcher
-      pdz-page-header-actions
-      [currentPoolSlug]="poolSlug"
-      (poolSelected)="onPoolSelected($event)"
-    ></pdz-pool-switcher>
-  </pdz-page-header>
+<pdz-page-header title="Trades" eyebrow="Manage">
+  <pdz-pool-switcher
+    [currentPoolSlug]="poolSlug()"
+    (poolSelected)="onPoolSelected($event)"
+  />
+</pdz-page-header>
 
-  @if (loading) {
-    <div class="trade-manager__loading"><pdz-loading></pdz-loading></div>
-  } @else if (noPools) {
-    <section class="panel">
-      <p class="panel__empty">
-        This tournament has no pools yet. Assign coaches to one before
-        recording trades.
-      </p>
-      <a pdz-button class="trade-manager__cta"  [routerLink]="signUpsPath">
-        Go to Sign-ups
-      </a>
-    </section>
-  } @else {
-    <section class="panel">
-      <h2 class="panel__title">Send a Trade</h2>
+@if (loading()) {
+  <pdz-loading />
+} @else if (noPools()) {
+  <pdz-empty-state
+    bordered
+    icon="groups"
+    heading="No pools yet"
+    message="Assign coaches to a pool before recording trades."
+  >
+    <a pdz-button pdz-empty-state-actions [routerLink]="signUpsPath()"
+      >Go to Sign-Ups</a
+    >
+  </pdz-empty-state>
+} @else {
+  <pdz-card padding="lg">
+    <section class="panel" aria-labelledby="trade-compose-title">
+      <h2 class="panel__title" id="trade-compose-title">Send a Trade</h2>
 
       <div class="compose">
-        @for (key of ["side1", "side2"]; track key) {
-          <div class="side">
-            <label class="field">
-              <span class="field__label">Side {{ $index + 1 }}</span>
+        @for (key of sideKeys; track key) {
+          @let draft = side(key);
+          <div class="side" [attr.data-team]="$index === 0 ? 'team1' : 'team2'">
+            <div pdz-field [label]="'Side ' + ($index + 1)">
               <pdz-select
                 searchable
-                aria-label="Team"
                 placeholder="Select a team…"
-                [value]="side($any(key)).teamId"
-                (valueChange)="onTeamChange($any(key), $any($event))"
+                [attr.aria-label]="'Side ' + ($index + 1) + ' team'"
+                [value]="draft.teamId"
+                (valueChange)="onTeamChange(key, $any($event))"
               >
                 <pdz-option value="" label="Select a team…" />
                 <pdz-option [value]="freeAgency" label="Free Agency" />
-                @for (team of teams; track team.id) {
+                @for (team of teams(); track team.id) {
                   <pdz-option
                     [value]="team.id"
                     [label]="team.name"
@@ -45,17 +45,17 @@
                   />
                 }
               </pdz-select>
-            </label>
+            </div>
 
-            @if (side($any(key)).teamId) {
+            @if (draft.teamId) {
               <pdz-pokemon-search
-                [options$]="side($any(key)).options$"
                 placeholder="Add Pokémon…"
-                (pokemonSelected)="addPick($any(key), $event)"
-              ></pdz-pokemon-search>
+                [options$]="options[key]"
+                (pokemonSelected)="addPick(key, $event)"
+              />
 
               <ul class="pick-list">
-                @for (pokemon of side($any(key)).picks; track pokemon.id) {
+                @for (pokemon of draft.picks; track pokemon.id) {
                   <li class="pick">
                     <span class="pick__cost">{{ pokemon.cost }}</span>
                     <pdz-sprite class="pick__sprite" [pokemon]="pokemon" />
@@ -64,14 +64,13 @@
                     <button
                       pdz-button
                       iconOnly
+                      icon="close"
                       size="xs"
                       variant="ghost"
                       color="danger"
                       [attr.aria-label]="'Remove ' + pokemon.name"
-                      (click)="removePick($any(key), pokemon.id)"
-                    >
-                      <pdz-icon name="close" [size]="16"></pdz-icon>
-                    </button>
+                      (click)="removePick(key, pokemon.id)"
+                    ></button>
                   </li>
                 } @empty {
                   <li class="pick-list__empty">Nothing selected.</li>
@@ -79,41 +78,36 @@
               </ul>
 
               <div class="side__footer">
-                <span class="side__cost"
-                  >Roster cost {{ sideCost($any(key)) }}</span
-                >
+                <span class="side__cost">Roster cost {{ sideCost(key) }}</span>
 
-                @if (side($any(key)).teamId !== freeAgency) {
-                  <label class="field field--inline">
-                    <span class="field__label">Trade points</span>
+                @if (draft.teamId !== freeAgency) {
+                  <label pdz-field class="side__points" label="Trade Points">
                     <input
-                      class="field__input field__input--number"
+                      pdz-input
                       type="number"
                       min="0"
                       step="1"
-                      [value]="side($any(key)).tradePoints"
+                      [value]="draft.tradePoints"
                       (input)="
-                        onTradePointsChange(
-                          $any(key),
-                          $any($event.target).value
-                        )
+                        onTradePointsChange(key, $any($event.target).value)
                       "
                     />
                   </label>
                 }
               </div>
 
-              @if (projectedFor($any(key)) !== null) {
+              @let projected = projectedFor(key);
+              @if (projected !== null) {
                 <p
                   class="side__spend"
-                  [class.side__spend--over]="overLimit($any(key))"
+                  [class.side__spend--over]="overLimit(key)"
                 >
-                  Spend after this trade: {{ projectedFor($any(key)) }}
-                  @if (tradePointLimit !== null) {
-                    / {{ tradePointLimit }}
+                  Spend after this trade: {{ projected }}
+                  @if (tradePointLimit() !== null) {
+                    / {{ tradePointLimit() }}
                   }
-                  @if (overLimit($any(key))) {
-                    <span class="side__spend-flag">over limit</span>
+                  @if (overLimit(key)) {
+                    · over limit
                   }
                 </p>
               }
@@ -123,127 +117,132 @@
       </div>
 
       <div class="compose__actions">
-        <label class="field field--inline">
-          <span class="field__label">Takes effect in</span>
+        <div pdz-field class="compose__round" label="Takes effect in">
           <pdz-select
             aria-label="Round"
-            [value]="roundIndex"
-            (valueChange)="roundIndex = +$any($event)"
+            [value]="roundIndex()"
+            (valueChange)="roundIndex.set(+$any($event))"
           >
-            @for (name of roundNames; track $index) {
+            @for (name of roundNames(); track $index) {
               <pdz-option [value]="$index" [label]="name" />
             }
           </pdz-select>
-        </label>
+        </div>
 
-        <button pdz-button
+        <button
+          pdz-button
           type="button"
-          
-          [disabled]="!canSubmit"
+          icon="swap_horiz"
+          [loading]="submitting()"
+          [disabled]="!canSubmit()"
           (click)="submitTrade()"
         >
-          {{ submitting ? "Sending…" : "Send Trade" }}
+          Send Trade
         </button>
       </div>
 
-      @if (submitError) {
-        <p class="panel__error">{{ submitError }}</p>
+      @if (submitError()) {
+        <p class="panel__error" role="alert">{{ submitError() }}</p>
       }
     </section>
+  </pdz-card>
 
-    @if (spentByTeam.length) {
-      <section class="panel">
-        <h2 class="panel__title">
-          Trade Points
-          @if (tradePointLimit !== null) {
-            <span class="panel__hint"
-              >Limit {{ tradePointLimit }} per team</span
-            >
-          } @else {
-            <span class="panel__hint">No limit set</span>
-          }
-        </h2>
+  @if (spentByTeam().length) {
+    <pdz-card padding="lg">
+      <section class="panel" aria-labelledby="trade-points-title">
+        <div class="panel__header">
+          <h2 class="panel__title" id="trade-points-title">Trade Points</h2>
+          <span class="panel__hint">
+            @if (tradePointLimit() !== null) {
+              Limit {{ tradePointLimit() }} per team
+            } @else {
+              No limit set
+            }
+          </span>
+        </div>
         <ul class="ledger">
-          @for (entry of spentByTeam; track entry.teamId) {
+          @for (entry of spentByTeam(); track entry.teamId) {
             <li class="ledger__row">
               <span class="ledger__team">{{ entry.teamName }}</span>
               <span
                 class="ledger__spent"
-                [class.ledger__spent--over]="
-                  tradePointLimit !== null && entry.spent > tradePointLimit
-                "
+                [class.ledger__spent--over]="isOverLimit(entry.spent)"
               >
                 {{ entry.spent }}
-                @if (tradePointLimit !== null) {
-                  / {{ tradePointLimit }}
+                @if (tradePointLimit() !== null) {
+                  / {{ tradePointLimit() }}
                 }
               </span>
             </li>
           }
         </ul>
       </section>
-    }
-
-    <section class="panel">
-      <h2 class="panel__title">Submitted Trades</h2>
-
-      @for (round of rounds; track round.name) {
-        <div class="round">
-          <h3 class="round__name">{{ round.name }}</h3>
-          <div class="round__trades">
-            @for (trade of round.trades; track trade.id ?? $index) {
-              <div class="round__trade">
-                <pdz-trade-card
-                  [trade]="trade"
-                  [currentRoundIndex]="currentRoundIndex"
-                >
-                  <div tradeActions>
-                    @if (trade.status === "PENDING" && trade.id) {
-                      <pdz-select
-                        class="round__trade-round"
-                        aria-label="Round this trade takes effect in"
-                        [value]="trade.activeRound"
-                        [disabled]="resolvingTradeId === trade.id"
-                        (valueChange)="changeRound(trade, +$any($event))"
-                      >
-                        @for (name of roundNames; track $index) {
-                          <pdz-option [value]="$index" [label]="name" />
-                        }
-                      </pdz-select>
-                      <button
-                        pdz-button
-                        size="xs"
-                        [disabled]="resolvingTradeId === trade.id"
-                        (click)="resolveTrade(trade, 'APPROVED')"
-                      >
-                        Approve
-                      </button>
-                      <button
-                        pdz-button
-                        size="xs"
-                        color="danger"
-                        variant="outlined"
-                        [disabled]="resolvingTradeId === trade.id"
-                        (click)="resolveTrade(trade, 'REJECTED')"
-                      >
-                        Reject
-                      </button>
-                    }
-                  </div>
-                </pdz-trade-card>
-
-                @if (resolveErrorById[trade.id ?? ""]) {
-                  <p class="panel__error">
-                    {{ resolveErrorById[trade.id ?? ""] }}
-                  </p>
-                }
-              </div>
-            }
-          </div>
-        </div>
-      } @empty {
-        <p class="panel__empty">No trades yet.</p>
-      }
-    </section>
+    </pdz-card>
   }
-</div>
+
+  <section class="panel" aria-labelledby="trade-log-title">
+    <h2 class="panel__title" id="trade-log-title">Submitted Trades</h2>
+
+    @for (round of rounds(); track round.name) {
+      <div class="round">
+        <h3 class="round__name">{{ round.name }}</h3>
+        <div class="round__trades">
+          @for (trade of round.trades; track trade.id ?? $index) {
+            <div class="round__trade">
+              <pdz-trade-card
+                [trade]="trade"
+                [currentRoundIndex]="currentRoundIndex()"
+              >
+                <div tradeActions class="round__actions">
+                  @if (trade.status === "PENDING" && trade.id) {
+                    <pdz-select
+                      class="round__trade-round"
+                      size="sm"
+                      aria-label="Round this trade takes effect in"
+                      [value]="trade.activeRound"
+                      [disabled]="resolvingTradeId() === trade.id"
+                      (valueChange)="changeRound(trade, +$any($event))"
+                    >
+                      @for (name of roundNames(); track $index) {
+                        <pdz-option [value]="$index" [label]="name" />
+                      }
+                    </pdz-select>
+                    <button
+                      pdz-button
+                      size="xs"
+                      [disabled]="resolvingTradeId() === trade.id"
+                      (click)="resolveTrade(trade, 'APPROVED')"
+                    >
+                      Approve
+                    </button>
+                    <button
+                      pdz-button
+                      size="xs"
+                      color="danger"
+                      variant="outlined"
+                      [disabled]="resolvingTradeId() === trade.id"
+                      (click)="resolveTrade(trade, 'REJECTED')"
+                    >
+                      Reject
+                    </button>
+                  }
+                </div>
+              </pdz-trade-card>
+
+              @if (resolveError(trade); as error) {
+                <p class="panel__error" role="alert">{{ error }}</p>
+              }
+            </div>
+          }
+        </div>
+      </div>
+    } @empty {
+      <pdz-empty-state
+        bordered
+        size="sm"
+        icon="swap_horiz"
+        message="No trades yet."
+      />
+    }
+  </section>
+}

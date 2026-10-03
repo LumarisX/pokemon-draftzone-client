@@ -1,84 +1,72 @@
-import { Component, OnChanges, SimpleChanges, input } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  input,
+  signal,
+} from '@angular/core';
+import { League } from '@pdz/features/league-zone/league.interface';
+import { BadgeTone } from '@pdz/shared/data/badge/badge.component';
+import { ScoreComponent } from '@pdz/shared/data/score/score.component';
+import { SortHeaderComponent } from '@pdz/shared/data/sort/sort-header.component';
+import { Sort, SortDirective } from '@pdz/shared/data/sort/sort.directive';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
+import { CheckComponent } from '@pdz/shared/inputs/choice/check.component';
+import { ChoiceDirective } from '@pdz/shared/inputs/choice/choice.directive';
 import { PlusSignPipe } from '@pdz/shared/pipes/plus-sign.pipe';
-import { League } from '../../league.interface';
-import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 
 type SortKey = 'brought' | 'kills' | 'deaths' | 'diff';
 
+const SORT_KEYS: SortKey[] = ['brought', 'kills', 'deaths', 'diff'];
+
 @Component({
   selector: 'pdz-pokemon-standings',
-  imports: [IconComponent, SpriteComponent, ButtonComponent, PlusSignPipe],
+  imports: [
+    CheckComponent,
+    ChoiceDirective,
+    IconComponent,
+    PlusSignPipe,
+    ScoreComponent,
+    SortDirective,
+    SortHeaderComponent,
+    SpriteComponent,
+  ],
   templateUrl: './pokemon-standings.component.html',
-  styleUrls: ['./pokemon-standings.component.scss'],
+  styleUrl: './pokemon-standings.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class PokemonStandingsComponent implements OnChanges {
+export class PokemonStandingsComponent {
   readonly standingData = input.required<League.PokemonStanding[]>();
-  sortedData: League.PokemonStanding[] = [];
   readonly showCount = input<number>(100);
-  activeSort: SortKey = 'diff';
-  isSortDescending: boolean = true;
-  combineTeams = false;
 
-  ngOnChanges(changes: SimpleChanges) {
-    if (
-      (changes['standingData'] || changes['showCount']) &&
-      this.standingData().length > 0
-    ) {
-      this.applySort();
-    }
-  }
+  readonly sort = signal<{ key: SortKey; descending: boolean }>({
+    key: 'diff',
+    descending: true,
+  });
+  readonly combineTeams = signal(false);
 
-  sortData(sort: SortKey) {
-    if (this.activeSort === sort) {
-      this.isSortDescending = !this.isSortDescending;
-    } else {
-      this.activeSort = sort;
-      this.isSortDescending = true;
-    }
-
-    this.applySort();
-  }
-
-  toggleCombineTeams() {
-    this.combineTeams = !this.combineTeams;
-    this.applySort();
-  }
-
-  private applySort() {
-    const data = this.combineTeams
+  readonly rows = computed(() => {
+    const data = this.combineTeams()
       ? combineByPokemon(this.standingData())
-      : this.standingData().slice();
-
-    this.sortedData = data
-      .sort((a, b) => {
-        switch (this.activeSort) {
-          case 'brought':
-            return compare(
-              a.record.brought,
-              b.record.brought,
-              this.isSortDescending,
-            );
-          case 'kills':
-            return compare(
-              a.record.kills,
-              b.record.kills,
-              this.isSortDescending,
-            );
-          case 'deaths':
-            return compare(
-              a.record.deaths,
-              b.record.deaths,
-              this.isSortDescending,
-            );
-          case 'diff':
-            return compare(a.record.diff, b.record.diff, this.isSortDescending);
-          default:
-            return 0;
-        }
-      })
+      : [...this.standingData()];
+    const { key, descending } = this.sort();
+    const direction = descending ? -1 : 1;
+    return data
+      .sort((a, b) => (a.record[key] - b.record[key]) * direction)
       .slice(0, this.showCount());
+  });
+
+  onSort(sort: Sort): void {
+    const key = SORT_KEYS.find((candidate) => candidate === sort.active);
+    if (!key) return;
+    this.sort.set({ key, descending: sort.direction !== 'asc' });
+  }
+
+  diffTone(diff: number): BadgeTone {
+    if (diff > 0) return 'success';
+    if (diff < 0) return 'danger';
+    return 'neutral';
   }
 }
 
@@ -88,11 +76,8 @@ function combineByPokemon(
   const groups = new Map<string, League.PokemonStanding[]>();
   for (const pokemon of standingData) {
     const group = groups.get(pokemon.id);
-    if (group) {
-      group.push(pokemon);
-    } else {
-      groups.set(pokemon.id, [pokemon]);
-    }
+    if (group) group.push(pokemon);
+    else groups.set(pokemon.id, [pokemon]);
   }
 
   return Array.from(groups.values()).map((group) => {
@@ -111,20 +96,4 @@ function combineByPokemon(
       record: { brought, kills, deaths, diff: kills - deaths },
     };
   });
-}
-
-function compare(
-  a: number | string,
-  b: number | string,
-  isDescending: boolean,
-) {
-  if (a === b) {
-    return 0;
-  }
-
-  if (isDescending) {
-    return a < b ? 1 : -1;
-  }
-
-  return a < b ? -1 : 1;
 }

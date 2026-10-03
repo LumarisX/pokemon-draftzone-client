@@ -1,12 +1,8 @@
 @use "pdz-theming" as pdz;
 
 :host {
-  --pdz-skeleton-base: #{pdz.color(surface-container-high)};
-  --pdz-skeleton-sheen: #{color-mix(
-      in srgb,
-      pdz.color(on-surface) 8%,
-      pdz.color(surface-container-highest)
-    )};
+  --pdz-skeleton-base: #{pdz.color(state-pressed)};
+  --pdz-skeleton-sheen: #{pdz.color(state-hover)};
   --pdz-skeleton-sheen-width: 40vw;
   --pdz-skeleton-sheen-duration: 1.6s;
   --pdz-skeleton-sheen-travel: 130vw;

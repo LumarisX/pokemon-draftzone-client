@@ -1,4 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
+import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
+import { QuickDraftFinalComponent } from './quick-draft-final/quick-draft-final.component';
 import {
   QDPokemon,
   QuickDraftPicksComponent,
@@ -7,23 +9,21 @@ import {
   QDSettings,
   QuickDraftSettingComponent,
 } from './quick-draft-setting/quick-draft-setting.component';
-import { QuickDraftFinalComponent } from './quick-draft-final/quick-draft-final.component';
 
 @Component({
   selector: 'pdz-quick-draft',
   imports: [
-    QuickDraftSettingComponent,
-    QuickDraftPicksComponent,
+    PageHeaderComponent,
     QuickDraftFinalComponent,
+    QuickDraftPicksComponent,
+    QuickDraftSettingComponent,
   ],
   templateUrl: './quick-draft.component.html',
   styleUrl: './quick-draft.component.scss',
 })
-export class QuickDraftComponent implements OnInit {
+export class QuickDraftComponent {
   draftSettings?: QDSettings | null = null;
   finalDraft?: QDPokemon[] | null = null;
-
-  ngOnInit(): void {}
 
   updateSettings(event: QDSettings | undefined) {
     this.draftSettings = event;
@@ -34,9 +34,10 @@ export class QuickDraftComponent implements OnInit {
   }
 
   getTotalPicks() {
-    return this.draftSettings?.tiers.reduce((count, tier) => {
-      return count + tier[1];
-    }, 0);
+    return this.draftSettings?.tiers.reduce(
+      (count, tier) => count + tier[1],
+      0,
+    );
   }
 
   restartDraft() {

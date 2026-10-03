@@ -1,5 +1,4 @@
 @use "pdz-theming" as pdz;
-@use "mixins" as *;
 
 $row-height: 3rem;
 $mark-width: 3px;
@@ -12,274 +11,267 @@ $mark-width: 3px;
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  border: 1px solid pdz.color("outline-variant");
-  border-radius: pdz.shape("corner-lg");
-  background: pdz.color("surface-container-lowest");
+  border: 1px solid pdz.color(border-subtle);
+  border-radius: pdz.shape(corner-lg);
+  background: pdz.color(raised);
   transition:
     box-shadow pdz.duration(base) pdz.easing(standard),
     border-color pdz.duration(base) pdz.easing(standard);
 
   &:hover {
-    box-shadow: var(--pdz-level-2);
-    border-color: pdz.color("primary-border");
+    box-shadow: var(--pdz-elevation-1);
+    border-color: pdz.color(border-control);
+  }
+}
+
+.card__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: pdz.space(xs);
+  min-height: pdz.control-height(sm);
+  padding: pdz.space(3xs) pdz.space(sm);
+  border-bottom: 1px solid pdz.color(border-subtle);
+}
+
+.card__label {
+  @include pdz.text(label-strong);
+  color: pdz.color(on-surface-variant);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.card__status {
+  @include pdz.text(label-caps);
+  flex: none;
+  padding: pdz.space(xs) pdz.space(sm);
+  line-height: 1;
+  border-radius: pdz.shape(corner-full);
+  background: pdz.color(warning-container);
+  color: pdz.color(on-warning-container);
+  white-space: nowrap;
+}
+
+.card__actions {
+  display: flex;
+  align-items: center;
+  gap: pdz.space(3xs);
+  opacity: 0;
+  transition: opacity pdz.duration(fast) pdz.easing(standard);
+}
+
+.card:hover .card__actions,
+.card:focus-within .card__actions {
+  opacity: 1;
+}
+
+.card__slot {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: pdz.space(sm);
+  width: 100%;
+  height: $row-height;
+  padding: 0 pdz.space(sm) 0 calc(#{pdz.space(sm)} + #{$mark-width});
+  border: none;
+  background: none;
+  font: inherit;
+  text-align: left;
+  color: pdz.color(on-surface);
+  text-decoration: none;
+  transition: background-color pdz.duration(fast) pdz.easing(standard);
+
+  & + & {
+    border-top: 1px solid pdz.color(border-subtle);
   }
 
-  &__header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: pdz.space(xs);
-    min-height: 1.75rem;
-    padding: pdz.space(3xs) pdz.space(sm);
-    background: pdz.color("surface-container-low");
-    border-bottom: 1px solid pdz.color("outline-variant");
+  &:focus-visible {
+    @include pdz.focus-ring(-2px);
+  }
+}
+
+.card__slot--linked {
+  cursor: pointer;
+
+  &:hover {
+    background: pdz.color(state-hover);
+  }
+}
+
+.card__slot--winner {
+  background: color-mix(
+    in srgb,
+    #{pdz.color(positive-container)} 40%,
+    transparent
+  );
+
+  &.card__slot--linked:hover {
+    background: color-mix(
+      in srgb,
+      #{pdz.color(positive-container)} 65%,
+      transparent
+    );
   }
 
-  &__label {
-    @include text(label);
-    font-weight: var(--pdz-font-weight-semibold);
-    letter-spacing: 0.06em;
-    color: pdz.color("on-surface-variant");
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: $mark-width;
+    background: pdz.color(positive);
+  }
+}
+
+.card__slot--loser {
+  color: pdz.color(on-surface-disabled);
+
+  .card__logo {
+    opacity: 0.55;
+  }
+}
+
+.card__logo {
+  flex: none;
+}
+
+.card__logo--empty {
+  width: 2rem;
+  height: 2rem;
+  border: 1px dashed pdz.color(border-control);
+  border-radius: pdz.shape(corner-full);
+}
+
+.card__names {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  justify-content: center;
+  min-width: 0;
+}
+
+.card__team {
+  @include pdz.text(body-sm);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.card__slot--winner .card__team {
+  font-weight: pdz.font-weight(semibold);
+}
+
+.card__slot--pending .card__team {
+  font-style: italic;
+  color: pdz.color(on-surface-variant);
+}
+
+.card__slot--pending.card__slot--linked .card__team {
+  color: pdz.color(primary-accent);
+}
+
+.card__coach {
+  @include pdz.text(meta);
+  color: pdz.color(on-surface-variant);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.card__slot--loser .card__coach {
+  color: pdz.color(on-surface-disabled);
+}
+
+.card__score {
+  @include pdz.text(subtitle);
+  @include pdz.numeric;
+  flex: none;
+  min-width: 1.25rem;
+  text-align: right;
+  color: inherit;
+}
+
+.card__footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: pdz.space(2xs);
+  padding: pdz.space(2xs) pdz.space(sm);
+  border-top: 1px solid pdz.color(border-subtle);
+}
+
+.card__link {
+  @include pdz.text(label-strong);
+  display: inline-flex;
+  align-items: center;
+  gap: pdz.space(3xs);
+  height: pdz.control-height(xs);
+  padding: 0 pdz.space(sm);
+  border: 1px solid pdz.color(border-control);
+  border-radius: pdz.shape(corner-full);
+  background: transparent;
+  color: pdz.color(on-surface-variant);
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  transition:
+    background-color pdz.duration(fast) pdz.easing(standard),
+    border-color pdz.duration(fast) pdz.easing(standard),
+    color pdz.duration(fast) pdz.easing(standard);
+
+  &:hover {
+    background: pdz.color(state-hover);
+    color: pdz.color(on-surface);
   }
 
-  &__status {
-    @include text(label);
-    flex: none;
-    padding: pdz.space(xs) pdz.space(sm);
-    line-height: 1;
-    border-radius: pdz.shape("corner-full");
-    background: pdz.color("warning-container");
-    color: pdz.color("on-warning-container");
-    letter-spacing: 0.08em;
-    white-space: nowrap;
+  &:focus-visible {
+    @include pdz.focus-ring;
+  }
+}
+
+.card__link--primary {
+  border-color: pdz.color(primary-border);
+  background: pdz.color(primary-container);
+  color: pdz.color(on-primary-container);
+
+  &:hover {
+    background: pdz.color(primary);
+    border-color: pdz.color(primary);
+    color: pdz.color(on-primary);
+  }
+}
+
+.card__replays {
+  display: inline-flex;
+  align-items: center;
+  gap: pdz.space(3xs);
+  height: pdz.control-height(xs);
+  padding: 0 pdz.space(2xs);
+  border: 1px solid pdz.color(border-control);
+  border-radius: pdz.shape(corner-full);
+  color: pdz.color(on-surface-variant);
+}
+
+.card__replay {
+  @include pdz.text(label);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.125rem;
+  height: 1.125rem;
+  border-radius: pdz.shape(corner-full);
+  background: pdz.color(state-pressed);
+  color: pdz.color(on-surface);
+  text-decoration: none;
+  transition:
+    background-color pdz.duration(fast) pdz.easing(standard),
+    color pdz.duration(fast) pdz.easing(standard);
+
+  &:hover {
+    background: pdz.color(state-strong);
   }
 
-  &__actions {
-    display: flex;
-    align-items: center;
-    gap: pdz.space(3xs);
-    opacity: 0;
-    transition: opacity pdz.duration(fast) pdz.easing(standard);
-  }
-
-  &:hover &__actions,
-  &:focus-within &__actions {
-    opacity: 1;
-  }
-  &__slot {
-    position: relative;
-    display: flex;
-    align-items: center;
-    gap: pdz.space(sm);
-    width: 100%;
-    height: $row-height;
-    padding: 0 pdz.space(sm) 0 calc(#{pdz.space(sm)} + #{$mark-width});
-    border: none;
-    background: none;
-    font: inherit;
-    text-align: left;
-    color: pdz.color("on-surface");
-    text-decoration: none;
-    box-sizing: border-box;
-    transition: background-color pdz.duration(fast) pdz.easing(standard);
-
-    & + & {
-      border-top: 1px solid pdz.color("outline-variant");
-    }
-
-    &--linked {
-      cursor: pointer;
-
-      &:hover {
-        background: pdz.color("surface-container");
-      }
-    }
-
-    &--winner {
-      background: pdz.color-rgba("positive-container", 0.4);
-
-      &.card__slot--linked:hover {
-        background: pdz.color-rgba("positive-container", 0.65);
-      }
-
-      &::before {
-        content: "";
-        position: absolute;
-        inset: 0 auto 0 0;
-        width: $mark-width;
-        background: pdz.color("positive");
-      }
-    }
-
-    &--loser {
-      color: pdz.color("on-surface-disabled");
-
-      .card__logo {
-        opacity: 0.55;
-      }
-    }
-  }
-
-  &__logo {
-    flex: none;
-    width: 2rem;
-    height: 2rem;
-    object-fit: contain;
-
-    &--empty {
-      border: 1px dashed pdz.color("outline-variant");
-      border-radius: pdz.shape("corner-full");
-    }
-  }
-
-  &__names {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    flex: 1;
-    min-width: 0;
-  }
-
-  &__team {
-    @include text(body-sm);
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  &__slot--winner &__team {
-    font-weight: var(--pdz-font-weight-semibold);
-  }
-
-  &__slot--pending {
-    .card__team {
-      font-style: italic;
-      color: pdz.color("on-surface-variant");
-    }
-
-    &.card__slot--linked .card__team {
-      color: pdz.color("primary");
-    }
-  }
-
-  &__coach {
-    @include text(body-sm);
-    color: pdz.color("on-surface-variant");
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
-  &__slot--loser &__coach {
-    color: pdz.color("on-surface-disabled");
-  }
-
-  &__score {
-    @include text(subtitle);
-    flex: none;
-    min-width: 1.25rem;
-    text-align: right;
-    font-variant-numeric: tabular-nums;
-    color: inherit;
-  }
-
-  &__slot--winner &__score {
-    font-weight: var(--pdz-font-weight-semibold);
-  }
-
-  &__footer {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: pdz.space(2xs);
-    padding: pdz.space(2xs) pdz.space(sm);
-    border-top: 1px solid pdz.color("outline-variant");
-    background: pdz.color("surface-container-low");
-  }
-
-  &__link {
-    display: inline-flex;
-    align-items: center;
-    gap: pdz.space(3xs);
-    height: 1.4rem;
-    padding: 0 pdz.space(sm);
-    border: 1px solid pdz.color("outline-variant");
-    border-radius: pdz.shape("corner-full");
-    background: pdz.color("surface-container-lowest");
-    color: pdz.color("on-surface-variant");
-    @include text(label);
-    font-weight: var(--pdz-font-weight-semibold);
-    letter-spacing: 0.06em;
-    text-decoration: none;
-    white-space: nowrap;
-    cursor: pointer;
-    transition:
-      background-color pdz.duration(fast) pdz.easing(standard),
-      border-color pdz.duration(fast) pdz.easing(standard),
-      color pdz.duration(fast) pdz.easing(standard);
-
-    &:hover {
-      border-color: pdz.color("primary-border");
-      color: pdz.color("primary");
-    }
-
-    &--primary {
-      border-color: pdz.color("primary-border");
-      background: pdz.color("primary-container");
-      color: pdz.color("on-primary-container");
-
-      &:hover {
-        background: pdz.color("primary");
-        border-color: pdz.color("primary");
-        color: pdz.color("on-primary");
-      }
-    }
-
-    &--replay {
-      border-color: pdz.color("secondary-border");
-      color: pdz.color("on-secondary-container");
-
-      &:hover {
-        background: pdz.color("secondary");
-        border-color: pdz.color("secondary");
-        color: pdz.color("on-secondary");
-      }
-    }
-  }
-
-  &__replays {
-    display: inline-flex;
-    align-items: center;
-    gap: pdz.space(3xs);
-    height: 1.4rem;
-    padding: 0 pdz.space(2xs);
-    border: 1px solid pdz.color("secondary-border");
-    border-radius: pdz.shape("corner-full");
-    background: pdz.color("surface-container-lowest");
-    color: pdz.color("on-secondary-container");
-  }
-
-  &__replay {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 1.1rem;
-    height: 1.1rem;
-    border-radius: pdz.shape("corner-full");
-    background: pdz.color("secondary-container");
-    color: pdz.color("on-secondary-container");
-    text-decoration: none;
-    @include text(label);
-    transition:
-      background-color pdz.duration(fast) pdz.easing(standard),
-      color pdz.duration(fast) pdz.easing(standard);
-
-    &:hover {
-      background: pdz.color("secondary");
-      color: pdz.color("on-secondary");
-    }
+  &:focus-visible {
+    @include pdz.focus-ring;
   }
 }

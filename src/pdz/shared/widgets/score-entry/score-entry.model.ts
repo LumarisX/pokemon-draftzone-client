@@ -107,6 +107,12 @@ export const SCORE_ENTRY_KILL_FIELDS: readonly {
 
 export const SCORE_ENTRY_SIDES: readonly ScoreEntrySide[] = ['side1', 'side2'];
 
+export function scoreEntryOrder(
+  viewerSide: ScoreEntrySide | null | undefined,
+): readonly ScoreEntrySide[] {
+  return viewerSide === 'side2' ? ['side2', 'side1'] : SCORE_ENTRY_SIDES;
+}
+
 export const REPLAY_URL_PATTERN = /^replay\.pokemonshowdown\.com\/.+$/i;
 
 export function isReplayUrl(url: string): boolean {

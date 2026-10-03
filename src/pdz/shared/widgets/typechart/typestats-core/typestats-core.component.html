@@ -32,7 +32,7 @@
             [class.column-hovered]="type === columnHovered.value"
           >
             <div class="flex-wrapper">
-              <div class="stat-wrapper" [ngClass]="countColor(counts[$index])">
+              <div class="stat-wrapper" [class]="countColor(counts[$index])">
                 {{ counts[$index] | number: "1.0-0" }}
               </div>
             </div>
@@ -50,12 +50,12 @@
             class="stat-cell"
             (mouseenter)="columnHovered.next(type)"
             (mouseleave)="columnHovered.next(null)"
-            [ngClass]="{ 'column-hovered': type === columnHovered.value }"
+            [class.column-hovered]="type === columnHovered.value"
           >
             <div class="flex-wrapper">
               <div
                 class="stat-wrapper"
-                [ngClass]="weakColor(weaknesses[$index])"
+                [class]="weakColor(weaknesses[$index])"
               >
                 {{ weaknesses[$index] | number: "1.0-0" }}
               </div>
@@ -77,12 +77,12 @@
             class="stat-cell"
             (mouseenter)="columnHovered.next(type)"
             (mouseleave)="columnHovered.next(null)"
-            [ngClass]="{ 'column-hovered': type === columnHovered.value }"
+            [class.column-hovered]="type === columnHovered.value"
           >
             <div class="flex-wrapper">
               <div
                 class="stat-wrapper"
-                [ngClass]="resistColor(resistances[$index])"
+                [class]="resistColor(resistances[$index])"
               >
                 {{ resistances[$index] | number: "1.0-0" }}
               </div>
@@ -104,10 +104,10 @@
             class="stat-cell"
             (mouseenter)="columnHovered.next(type)"
             (mouseleave)="columnHovered.next(null)"
-            [ngClass]="{ 'column-hovered': type === columnHovered.value }"
+            [class.column-hovered]="type === columnHovered.value"
           >
             <div class="flex-wrapper">
-              <div class="stat-wrapper" [ngClass]="diffColor(delta[$index])">
+              <div class="stat-wrapper" [class]="diffColor(delta[$index])">
                 {{ delta[$index] | number: "1.0-0" }}
               </div>
             </div>
@@ -128,10 +128,10 @@
             class="stat-cell"
             (mouseenter)="columnHovered.next(type)"
             (mouseleave)="columnHovered.next(null)"
-            [ngClass]="{ 'column-hovered': type === columnHovered.value }"
+            [class.column-hovered]="type === columnHovered.value"
           >
             <div class="flex-wrapper">
-              <div class="stat-wrapper" [ngClass]="diffColor(logDelta[$index])">
+              <div class="stat-wrapper" [class]="diffColor(logDelta[$index])">
                 {{ logDelta[$index] | number: "1.0-0" }}
               </div>
             </div>

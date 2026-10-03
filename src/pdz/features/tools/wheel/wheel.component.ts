@@ -18,6 +18,7 @@ import { WheelOptionsComponent } from './wheel-options/wheel-options.component';
 import { WheelSoundService } from './wheel-sound.service';
 import { WheelStorageService } from './wheel-storage.service';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
+import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
 import {
   clampWeight,
   defaultItems,
@@ -167,7 +168,10 @@ function drumSqueeze(angle: number, shape: DrumShape): number {
     CdkDragHandle,
     CdkDropList,
     IconComponent,
-    WheelOptionsComponent, ButtonComponent],
+    WheelOptionsComponent,
+    ButtonComponent,
+    PageHeaderComponent,
+  ],
   templateUrl: './wheel.component.html',
   styleUrl: './wheel.component.scss',
   providers: [WheelSoundService],

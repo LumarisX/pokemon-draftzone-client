@@ -77,6 +77,11 @@ import {
   ChipTone,
   ChipVariant,
 } from '@pdz/shared/data/chip/chip.component';
+import { RecordComponent } from '@pdz/shared/data/record/record.component';
+import {
+  TeamLogoComponent,
+  TeamLogoSize,
+} from '@pdz/shared/images/team-logo/team-logo.component';
 import { ScoreEntryGameComponent } from '@pdz/shared/widgets/score-entry/score-entry-game.component';
 import { ScoreEntryMatchComponent } from '@pdz/shared/widgets/score-entry/score-entry-match.component';
 import { confirmScoreEntry } from '@pdz/shared/widgets/score-entry/score-entry-warnings-dialog.component';
@@ -133,6 +138,8 @@ const MODE_ATTR = 'pdz-theme-mode';
     CountdownComponent,
     DiscordTimestampComponent,
     TimeConverterComponent,
+    TeamLogoComponent,
+    RecordComponent,
   ],
   templateUrl: './debug-components.component.html',
   styleUrl: './debug-components.component.scss',
@@ -151,6 +158,24 @@ export class DebugComponentsComponent {
   );
 
   protected readonly spriteBasic = { id: 'charizard', name: 'Charizard' };
+  protected readonly groundOptions = [
+    { step: 'gray-50', label: 'gray-50 (current)' },
+    { step: 'gray-25', label: 'gray-25 (quieter)' },
+  ];
+  protected readonly versusTeams = [
+    [
+      { id: 'tyranitar', name: 'Tyranitar' },
+      { id: 'rotomheat', name: 'Rotom-Heat' },
+      { id: 'klefki', name: 'Klefki' },
+      { id: 'starmie', name: 'Starmie' },
+    ],
+    [
+      { id: 'gholdengo', name: 'Gholdengo' },
+      { id: 'houndoom', name: 'Houndoom' },
+      { id: 'samurott', name: 'Samurott' },
+      { id: 'torterra', name: 'Torterra' },
+    ],
+  ];
   protected readonly spriteShiny = {
     id: 'charizard',
     name: 'Charizard',
@@ -378,13 +403,17 @@ export class DebugComponentsComponent {
     { id: 'single', name: 'Single elim', detail: 'One loss and you are out.' },
   ];
 
-  readonly tones: CardTone[] = ['lowest', 'low', 'default', 'high'];
-  readonly cardColors: CardColor[] = [
-    'surface',
-    'primary',
-    'secondary',
-    'danger',
+  readonly elevationRoles = [
+    'inset',
+    'ground',
+    'raised',
+    'raised-high',
+    'overlay',
+    'floating',
   ];
+  readonly tones: CardTone[] = ['raised', 'raised-high'];
+  readonly logoSizes: TeamLogoSize[] = ['xs', 'sm', 'md', 'lg', 'xl', '2xl'];
+  readonly cardColors: CardColor[] = ['danger', 'warning', 'info', 'success'];
   readonly paddings: CardPadding[] = ['none', 'sm', 'md', 'lg'];
 
   indeterminate = true;
@@ -561,7 +590,7 @@ export class DebugComponentsComponent {
     { icon: 'undo', label: 'Undo', tip: 'Undo (Ctrl+Z)' },
     { icon: 'redo', label: 'Redo', tip: 'Redo (Ctrl+Y)' },
     { icon: 'save', label: 'Save', tip: 'Save changes (Ctrl+S)' },
-    { icon: 'delete', label: 'Delete tier', tip: 'Delete tier' },
+    { icon: 'delete', label: 'Delete Tier', tip: 'Delete tier' },
   ];
 
   readonly tooltipDialogOpen = signal(false);

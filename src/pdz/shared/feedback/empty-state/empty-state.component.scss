@@ -33,7 +33,7 @@ $sizes: (
 }
 
 :host(.pdz-empty-state--bordered) {
-  border: 1px dashed pdz.color(outline-variant);
+  border: 1px dashed pdz.color(border-control);
   border-radius: pdz.shape(corner-md);
 }
 

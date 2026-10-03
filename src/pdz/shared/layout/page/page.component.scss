@@ -17,16 +17,10 @@
   }
 }
 
-:host([data-width="narrow"]) .pdz-page__inner {
-  max-width: 40rem;
-}
-
-:host([data-width="default"]) .pdz-page__inner {
-  max-width: 64rem;
-}
-
-:host([data-width="wide"]) .pdz-page__inner {
-  max-width: 96rem;
+@each $width in (narrow, default, wide) {
+  :host([data-width="#{$width}"]) .pdz-page__inner {
+    max-width: pdz.content-width($width);
+  }
 }
 
 :host([data-width="full"]) .pdz-page__inner {

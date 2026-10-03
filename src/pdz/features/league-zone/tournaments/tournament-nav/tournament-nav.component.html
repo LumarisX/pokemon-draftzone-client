@@ -1,22 +1,22 @@
-@if (leagueInfo) {
+@if (leagueInfo(); as info) {
   <a
     class="hero"
-    [routerLink]="tournamentBase()"
     routerLinkActive="active"
+    [routerLink]="tournamentBase()"
     [routerLinkActiveOptions]="{ exact: true }"
   >
-    @if (leagueInfo.logo) {
-      <img
-        class="hero__logo"
-        [src]="getTournamentLogoUrl(leagueInfo.logo)"
-        [alt]="leagueInfo.name + ' logo'"
-      />
-    }
+    <pdz-team-logo
+      class="hero__logo"
+      size="xl"
+      decorative
+      [src]="logoSrc()"
+      [name]="info.name"
+    />
     <span class="hero__text">
-      @if (leagueName) {
-        <span class="hero__league">{{ leagueName }}</span>
+      @if (leagueName(); as league) {
+        <span class="hero__league">{{ league }}</span>
       }
-      <span class="hero__title">{{ leagueInfo.name }}</span>
+      <span class="hero__title">{{ info.name }}</span>
     </span>
   </a>
 } @else {
@@ -29,7 +29,7 @@
   </div>
 }
 
-<nav class="links">
+<nav class="links" aria-label="Tournament">
   @for (group of linkGroups(); track group.id) {
     <div class="group">
       <span class="group__title">
@@ -37,10 +37,11 @@
       </span>
       @for (link of group.links; track link.id) {
         <a
-          [routerLink]="link.route"
-          routerLinkActive="active"
-          [routerLinkActiveOptions]="{ exact: !!link.exact }"
           class="link-button"
+          routerLinkActive="active"
+          ariaCurrentWhenActive="page"
+          [routerLink]="link.route"
+          [routerLinkActiveOptions]="{ exact: !!link.exact }"
         >
           <span class="link-button__label">{{ link.label }}</span>
           @if (link.status) {
@@ -52,16 +53,16 @@
   }
 </nav>
 
-@if (leagueInfo?.discord) {
+@if (leagueInfo()?.discord; as discord) {
   <a
-    [href]="'https://discord.gg/' + leagueInfo!.discord"
+    class="external"
     target="_blank"
     rel="noopener noreferrer"
-    class="external"
+    [href]="'https://discord.gg/' + discord"
   >
-    <pdz-icon name="discord" [size]="18" aria-hidden="true" />
+    <pdz-icon name="discord" [size]="18" />
     <span class="external__label">Discord</span>
-    @if (notJoinedDiscord) {
+    @if (notJoinedDiscord()) {
       <span class="external__status">Not Joined</span>
     }
   </a>

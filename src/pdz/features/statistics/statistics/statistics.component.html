@@ -1,13 +1,16 @@
 <section class="statistics">
-  <header class="statistics__header">
-    <h1 class="statistics__title">Draft Usage Statistics</h1>
-  </header>
+  <pdz-page-header title="Draft Usage Statistics" />
 
   <div class="statistics__formats">
     @if (singlesLoading) {
-      <div class="format-panel__empty"><pdz-loading></pdz-loading></div>
+      <pdz-loading></pdz-loading>
     } @else if (!singlesData) {
-      <div class="format-panel__empty">No Singles draft data found.</div>
+      <pdz-empty-state
+        bordered
+        icon="query_stats"
+        heading="No singles data yet"
+        message="Usage appears once singles drafts have been saved."
+      />
     } @else {
       <article class="bucket-card">
         <header class="bucket-card__header">
@@ -45,9 +48,14 @@
     }
 
     @if (vgcLoading) {
-      <div class="format-panel__empty">Loading VGC statistics...</div>
+      <pdz-loading></pdz-loading>
     } @else if (!vgcData) {
-      <div class="format-panel__empty">No VGC draft data found.</div>
+      <pdz-empty-state
+        bordered
+        icon="query_stats"
+        heading="No VGC data yet"
+        message="Usage appears once VGC drafts have been saved."
+      />
     } @else {
       <article class="bucket-card">
         <header class="bucket-card__header">

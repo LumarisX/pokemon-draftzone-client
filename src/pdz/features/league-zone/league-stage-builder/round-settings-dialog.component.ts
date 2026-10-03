@@ -24,7 +24,7 @@ export interface RoundSettingsData {
   imports: [ButtonComponent, FieldComponent, InputDirective],
   template: `
     <div class="round-settings">
-      <label pdz-field label="Round name">
+      <label pdz-field label="Round Name">
         <input
           pdz-input
           type="text"
@@ -33,7 +33,7 @@ export interface RoundSettingsData {
         />
       </label>
 
-      <label pdz-field label="Match deadline">
+      <label pdz-field label="Match Deadline">
         <input
           pdz-input
           type="datetime-local"
@@ -42,7 +42,7 @@ export interface RoundSettingsData {
         />
       </label>
 
-      <label pdz-field label="Trade deadline">
+      <label pdz-field label="Trade Deadline">
         <input
           pdz-input
           type="datetime-local"
@@ -61,14 +61,14 @@ export interface RoundSettingsData {
       >
         Cancel
       </button>
-      <button pdz-button (click)="save()">Save round</button>
+      <button pdz-button (click)="save()">Save Round</button>
     </div>
   `,
   styles: `
     .round-settings {
       display: flex;
       flex-direction: column;
-      gap: 0.75rem;
+      gap: var(--pdz-space-md);
     }
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,

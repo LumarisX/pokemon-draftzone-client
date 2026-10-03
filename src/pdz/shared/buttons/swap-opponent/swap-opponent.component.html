@@ -3,8 +3,13 @@
   iconOnly
   variant="ghost"
   color="neutral"
+  [attr.aria-pressed]="showingOpponent()"
+  [attr.aria-label]="showingOpponent() ? 'Show your team' : 'Show the opponent'"
   (click)="toggleOpponent()"
-  [ngClass]="{ opponent: opponent() }"
 >
-  <pdz-icon name="cycle"></pdz-icon>
+  <pdz-icon
+    name="cycle"
+    class="swap-icon"
+    [class.swap-icon--flipped]="showingOpponent()"
+  />
 </button>

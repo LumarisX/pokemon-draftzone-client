@@ -1,5 +1,4 @@
 <div class="dialog">
-  <!-- Tabs + prev/next -->
   <div class="dialog__toolbar">
     <pdz-segmented
       class="dialog__tabs"
@@ -44,10 +43,8 @@
     }
   </div>
 
-  <!-- Body -->
   <div class="dialog__body">
     @if (activeTab === "overview") {
-      <!-- Hero: sprite + meta badges -->
       <div class="pokemon-hero">
         <div class="pokemon-hero__sprite">
           <pdz-sprite
@@ -59,7 +56,6 @@
         </div>
 
         <div class="pokemon-hero__meta">
-          <!-- Types -->
           <div class="section">
             <div class="section__title">Types</div>
             <div class="pdz-types">
@@ -71,7 +67,6 @@
               }
             </div>
           </div>
-          <!-- Abilities -->
           @if (data.pokemon.abilities?.length) {
             <div class="section">
               <div class="section__title">Abilities</div>
@@ -90,7 +85,6 @@
               </div>
             </div>
           }
-          <!-- Tiering -->
           @if (data.tier) {
             <div class="section">
               <div class="section__title">Tier</div>
@@ -117,7 +111,6 @@
         </div>
       </div>
 
-      <!-- Base Stats -->
       <div class="section">
         <div class="section__header">
           <div class="section__title">Base Stats</div>
@@ -162,7 +155,6 @@
         </div>
       </div>
 
-      <!-- Tera Captain addon -->
       @if (data.pokemon.addons?.length) {
         <div class="info-banner info-banner--addon">
           <pdz-icon name="tera" [height]="18"></pdz-icon>
@@ -175,7 +167,6 @@
         </div>
       }
 
-      <!-- Restrictions / Bans -->
       @if (data.pokemon.banned) {
         <div class="info-banner info-banner--ban">
           <pdz-icon name="warning" [height]="18"></pdz-icon>
@@ -186,17 +177,27 @@
 
     @if (activeTab === "moves") {
       <div class="learnset">
-        <!-- Search bar -->
         <div class="learnset__search">
           <pdz-icon name="search" size="sm"></pdz-icon>
           <input
+            pdz-input
+            size="sm"
             type="text"
             placeholder="Search moves…"
+            aria-label="Search moves"
             [(ngModel)]="moveSearch"
-            (click)="$event.stopPropagation()"
           />
           @if (moveSearch) {
-            <button (click)="moveSearch = ''">✕</button>
+            <button
+              pdz-button
+              iconOnly
+              icon="close"
+              size="xs"
+              variant="ghost"
+              color="neutral"
+              aria-label="Clear search"
+              (click)="moveSearch = ''"
+            ></button>
           }
         </div>
 
@@ -211,7 +212,6 @@
         } @else {
           <div class="learnset__table-wrapper">
             <div class="learnset__table">
-              <!-- Header -->
               <div class="learnset__header">
                 <span
                   class="learnset__col learnset__col--type"
@@ -256,7 +256,6 @@
                 >
               </div>
 
-              <!-- Rows -->
               <ul class="learnset__list">
                 @for (move of sortedMoves; track move.id ?? move.name) {
                   <li
@@ -300,7 +299,6 @@
     }
   </div>
 
-  <!-- Action Buttons -->
   @if (data.buttons?.length) {
     <div class="pdz-dialog-actions">
       @for (btn of data.buttons!; track $index) {

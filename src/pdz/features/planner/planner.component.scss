@@ -25,14 +25,14 @@
     padding: pdz.space(sm) pdz.space(sm) 0;
     max-width: 100%;
     overflow-y: clip;
-    background-color: pdz.color(surface);
-    border-bottom: 1px solid pdz.color(outline-variant);
+    background-color: pdz.color(raised);
+    border-bottom: 1px solid pdz.color(border-subtle);
   }
 
   &__draft-list {
     display: flex;
     align-items: flex-end;
-    gap: 2px;
+    gap: pdz.space(2xs);
     overflow-x: auto;
     overflow-y: clip;
   }
@@ -45,42 +45,40 @@
     height: 1.75rem;
     margin-bottom: -1px;
     padding: 0 pdz.space(2xs) 0 pdz.space(sm);
-    border: 1px solid pdz.color(outline-variant);
+    border: 1px solid pdz.color(border-subtle);
     border-bottom-color: transparent;
     border-radius: pdz.shape(corner-sm) pdz.shape(corner-sm) 0 0;
-    background-color: pdz.color(surface-container-low);
+    background-color: transparent;
     color: pdz.color(on-surface-variant);
     cursor: pointer;
-    font-family: pdz.font(display);
     font-size: pdz.font-size(sm);
     line-height: 1.1rem;
     transition:
-      color 0.15s ease,
-      background-color 0.15s ease,
-      height 0.15s ease,
-      border-color 0.15s ease;
+      color pdz.duration(fast) pdz.easing(standard),
+      background-color pdz.duration(fast) pdz.easing(standard),
+      height pdz.duration(fast) pdz.easing(standard),
+      border-color pdz.duration(fast) pdz.easing(standard);
 
     &:hover {
-      background-color: pdz.color(surface-container);
+      background-color: pdz.color(state-hover);
       color: pdz.color(on-surface);
     }
 
     &:focus-visible {
       z-index: 1;
-      outline: 2px solid pdz.color(primary);
-      outline-offset: -2px;
+      @include pdz.focus-ring(-2px);
     }
 
     &--active {
       height: 2rem;
 
       z-index: 1;
-      background-color: pdz.color(background);
+      background-color: pdz.color(ground);
       color: pdz.color(on-surface);
       font-weight: var(--pdz-font-weight-bold);
 
       &:hover {
-        background-color: pdz.color(background);
+        background-color: pdz.color(ground);
       }
 
       &::after {
@@ -156,10 +154,8 @@
     grid-column: 1;
     justify-self: start;
     flex-shrink: 0;
-    font-family: pdz.font(display);
-    @include pdz.caps;
 
-    @media (max-width: 480px) {
+    @include pdz.respond-below(small) {
       padding-inline: pdz.space(2xs);
 
       span {
@@ -173,7 +169,6 @@
     justify-self: center;
     max-width: 100%;
     align-self: center;
-    font-family: pdz.font(display);
   }
 
   &__save-state {
@@ -186,14 +181,14 @@
     padding: pdz.space(3xs) pdz.space(sm);
     border-radius: pdz.shape(corner-full);
     color: pdz.color(on-surface-variant);
-    background-color: pdz.color(surface-container-high);
+    background-color: pdz.color(state-pressed);
     white-space: nowrap;
     @include pdz.text(label);
     @include pdz.caps;
     font-size: pdz.font-size(2xs);
     transition:
-      color 0.2s ease,
-      background-color 0.2s ease;
+      color pdz.duration(base) pdz.easing(standard),
+      background-color pdz.duration(base) pdz.easing(standard);
 
     pdz-icon {
       animation: planner-save-spin 0.9s linear infinite;
@@ -270,12 +265,12 @@
     position: absolute;
     inset: 0;
     z-index: pdz.z(drawer-backdrop);
-    background: rgba(0, 0, 0, 0.5);
+    background: color-mix(in srgb, #{pdz.color(scrim)} 50%, transparent);
     opacity: 0;
     visibility: hidden;
     transition:
-      opacity 0.25s ease,
-      visibility 0.25s ease;
+      opacity pdz.duration(slow) pdz.easing(standard),
+      visibility pdz.duration(slow) pdz.easing(standard);
 
     &--open {
       opacity: 1;
@@ -291,14 +286,14 @@
     display: flex;
     flex-direction: column;
     width: min(24rem, 88%);
-    background-color: pdz.color(surface);
-    border-inline-end: 1px solid pdz.color(outline-variant);
-    box-shadow: var(--pdz-level-3);
+    background-color: pdz.color(overlay);
+    border-inline-end: 1px solid pdz.color(border-subtle);
+    box-shadow: var(--pdz-elevation-3);
     transform: translateX(-100%);
     visibility: hidden;
     transition:
-      transform 0.25s ease,
-      visibility 0.25s ease;
+      transform pdz.duration(slow) pdz.easing(standard),
+      visibility pdz.duration(slow) pdz.easing(standard);
 
     &--open {
       transform: translateX(0);
@@ -317,15 +312,12 @@
     justify-content: space-between;
     gap: pdz.space(sm);
     padding: pdz.space(xs) pdz.space(xs) pdz.space(xs) pdz.space(md);
-    border-bottom: 1px solid pdz.color(outline-variant);
-    background-color: pdz.color(surface-container-low);
+    border-bottom: 1px solid pdz.color(border-subtle);
   }
 
   &__drawer-title {
     color: pdz.color(on-surface);
-    font-family: pdz.font(display);
-    @include pdz.text(field-label, $family: false);
-    @include pdz.caps;
+    @include pdz.text(label-caps);
   }
 
   &__drawer-close {
@@ -353,7 +345,7 @@
       gap: pdz.space(md);
     }
 
-    @media (max-width: 768px) {
+    @include pdz.respond-below(medium) {
       padding: pdz.space(sm);
     }
 
@@ -369,7 +361,7 @@
     width: 100%;
     padding: pdz.space(lg) pdz.space(md);
 
-    @media (max-width: 768px) {
+    @include pdz.respond-below(medium) {
       padding: pdz.space(sm);
     }
   }
@@ -410,7 +402,7 @@
       top: 0;
       bottom: 0;
       width: 1px;
-      background-color: pdz.color(outline-variant);
+      background-color: pdz.color(border-subtle);
     }
 
     &:hover,

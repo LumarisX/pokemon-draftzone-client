@@ -70,7 +70,7 @@ export class SignupSettingsPageComponent {
     if (risk?.effect === 'block') {
       const confirmed = await this.dialog.confirm('Save sign-up settings?', {
         message: risk.because,
-        confirmLabel: 'Save anyway',
+        confirmLabel: 'Save Anyway',
         confirmColor: 'danger',
       });
       if (!confirmed) return;

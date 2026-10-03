@@ -1,5 +1,4 @@
 @use "pdz-theming" as pdz;
-@use "mixins" as *;
 
 :host {
   display: flex;
@@ -12,62 +11,57 @@
   align-items: center;
   gap: pdz.space(sm);
   padding: pdz.space(xs) pdz.space(sm) pdz.space(md);
-  border-bottom: 1px solid pdz.color(outline-variant);
+  border-bottom: 1px solid pdz.color(border-subtle);
   text-decoration: none;
+  border-radius: pdz.shape(corner-sm) pdz.shape(corner-sm) 0 0;
 
-  &__logo {
-    width: 3.25rem;
-    height: 3.25rem;
-    flex-shrink: 0;
-    object-fit: contain;
+  &:focus-visible {
+    @include pdz.focus-ring(-2px);
   }
+}
 
-  &__text {
-    display: flex;
-    flex-direction: column;
-    gap: pdz.space(3xs);
-    min-width: 0;
-  }
+.hero__text {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(3xs);
+  min-width: 0;
+}
 
-  &__league {
-    display: -webkit-box;
-    -webkit-box-orient: vertical;
-    -webkit-line-clamp: 2;
-    line-clamp: 2;
-    overflow: hidden;
-    @include pdz.text(label);
-    line-height: 1.25;
-    color: pdz.color(on-surface-variant);
-    text-transform: uppercase;
-    letter-spacing: 0.02em;
-    overflow-wrap: anywhere;
-  }
+.hero--loading .hero__text {
+  flex: 1 1 auto;
+  gap: pdz.space(2xs);
+}
 
-  &__title {
-    @include text(subtitle);
-    font-family: var(--pdz-font-display);
-    color: pdz.color(on-primary-container);
-    overflow-wrap: anywhere;
-    transition: color pdz.duration(fast) pdz.easing(standard);
-  }
+.hero__league {
+  @include pdz.text(label-caps);
+  display: -webkit-box;
+  overflow: hidden;
+  color: pdz.color(on-surface-muted);
+  overflow-wrap: anywhere;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+}
 
-  &:hover &__title,
-  &.active &__title {
-    color: pdz.color(primary-accent);
-  }
+.hero__title {
+  @include pdz.text(subtitle, $family: false);
+  font-family: pdz.font(display);
+  color: pdz.color(on-surface);
+  overflow-wrap: anywhere;
+  transition: color pdz.duration(fast) pdz.easing(standard);
+}
 
-  &--loading .hero__text {
-    flex: 1 1 auto;
-    gap: pdz.space(2xs);
-  }
+.hero:hover .hero__title,
+.hero.active .hero__title {
+  color: pdz.color(primary-accent);
 }
 
 .links {
   display: flex;
-  flex-direction: column;
   flex: 1 1 auto;
-  min-height: 0;
+  flex-direction: column;
   gap: pdz.space(lg);
+  min-height: 0;
   overflow-y: auto;
 }
 
@@ -75,93 +69,84 @@
   display: flex;
   flex-direction: column;
   gap: pdz.space(3xs);
-
-  &__title {
-    @include pdz.text(label-strong, $family: false);
-    font-family: var(--pdz-font-display);
-    font-size: pdz.font-size(3xs);
-    display: flex;
-    align-items: center;
-    gap: pdz.space(sm);
-    padding: 0 pdz.space(sm) pdz.space(2xs);
-    color: pdz.color(outline);
-    text-transform: uppercase;
-    letter-spacing: 0.12em;
-
-    &::before,
-    &::after {
-      content: "";
-      flex: 1 1 auto;
-      height: 1px;
-      background: pdz.color(outline);
-    }
-  }
-
-  &__label {
-    min-width: 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
 }
 
-.link-button {
+.group__title {
+  @include pdz.text(label-caps);
   display: flex;
   align-items: center;
   gap: pdz.space(sm);
+  padding: 0 pdz.space(sm) pdz.space(2xs);
+  color: pdz.color(on-surface-muted);
+
+  &::before,
+  &::after {
+    content: "";
+    flex: 1 1 auto;
+    height: 1px;
+    background: pdz.color(border-subtle);
+  }
+}
+
+.group__label {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.link-button {
+  @include pdz.text(body-sm-strong);
   position: relative;
+  display: flex;
+  align-items: center;
+  gap: pdz.space(sm);
   padding: pdz.space(xs) pdz.space(sm);
   border-radius: pdz.shape(corner-sm);
-  background-color: transparent;
-  @include pdz.text(card-title);
   color: pdz.color(on-surface-variant);
   text-decoration: none;
   transition:
     background-color pdz.duration(fast) pdz.easing(standard),
     color pdz.duration(fast) pdz.easing(standard);
 
-  &__label {
-    flex: 1 1 auto;
-    min-width: 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  &__status {
-    @include text(label);
-    flex-shrink: 0;
-    color: pdz.color(primary-accent);
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-  }
-
   &:hover {
-    background-color: pdz.color(surface-container-high);
+    background-color: pdz.color(state-hover);
     color: pdz.color(on-surface);
   }
 
-  &.active {
-    background-color: pdz.color(primary-container);
-    color: pdz.color(on-primary-container);
-    font-weight: pdz.font-weight(bold);
+  &:focus-visible {
+    @include pdz.focus-ring(-2px);
+  }
 
-    &:hover {
-      background-color: pdz.color(primary-container);
-      color: pdz.color(on-primary-container);
-    }
+  &.active {
+    --pdz-icon-fill: 1;
+    background-color: pdz.color(state-selected);
+    color: pdz.color(primary-accent);
   }
 }
 
+.link-button__label {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.link-button__status {
+  @include pdz.text(label-caps);
+  flex-shrink: 0;
+  color: pdz.color(primary-accent);
+}
+
 .external {
+  @include pdz.text(body-sm-strong);
   display: flex;
   align-items: center;
   gap: pdz.space(sm);
   padding: pdz.space(sm);
-  border: 1px solid pdz.color(outline-variant);
+  border: 1px solid pdz.color(border-control);
   border-radius: pdz.shape(corner-sm);
-  @include pdz.text(card-title);
   color: pdz.color(on-surface-variant);
   text-decoration: none;
   transition:
@@ -169,21 +154,22 @@
     border-color pdz.duration(fast) pdz.easing(standard);
 
   &:hover {
-    background-color: pdz.color(surface-container-high);
+    background-color: pdz.color(state-hover);
     border-color: pdz.color(outline);
   }
 
-  &__label {
-    flex: 1 1 auto;
-    min-width: 0;
+  &:focus-visible {
+    @include pdz.focus-ring;
   }
+}
 
-  &__status {
-    @include text(label);
-    flex-shrink: 0;
-    color: pdz.color(danger);
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-  }
+.external__label {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.external__status {
+  @include pdz.text(label-caps);
+  flex-shrink: 0;
+  color: pdz.color(danger);
 }

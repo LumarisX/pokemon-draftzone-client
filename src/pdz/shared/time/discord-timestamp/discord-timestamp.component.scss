@@ -5,9 +5,9 @@
   align-items: center;
   gap: pdz.space(sm);
   padding: pdz.space(xs) pdz.space(sm);
-  background: pdz.color(surface-container);
+  background: pdz.color(state-hover);
   color: pdz.color(on-surface);
-  border: 1px solid pdz.color(outline-variant);
+  border: 1px solid pdz.color(border-subtle);
   border-radius: pdz.shape(corner-sm);
 }
 

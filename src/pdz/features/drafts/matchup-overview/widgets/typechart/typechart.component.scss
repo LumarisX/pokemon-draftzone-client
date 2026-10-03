@@ -4,11 +4,11 @@
   display: block;
   max-width: 100%;
 
-  --pdz-cmp-typechart-stat-hover: #{pdz.color(primary-container)};
-  --pdz-cmp-typechart-border-hover: #{pdz.color(primary-border)};
+  --pdz-cmp-typechart-stat-hover: #{pdz.color(team1-container)};
+  --pdz-cmp-typechart-border-hover: #{pdz.color(team1-border)};
 }
 
 :host(.alternate) {
-  --pdz-cmp-typechart-stat-hover: #{pdz.color(secondary-container)};
-  --pdz-cmp-typechart-border-hover: #{pdz.color(secondary-border)};
+  --pdz-cmp-typechart-stat-hover: #{pdz.color(team2-container)};
+  --pdz-cmp-typechart-border-hover: #{pdz.color(team2-border)};
 }

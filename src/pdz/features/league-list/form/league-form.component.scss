@@ -10,26 +10,16 @@
 }
 
 .league-form-container {
-  max-width: 900px;
+  display: flex;
+  flex-direction: column;
+  gap: pdz.layout(section-gap);
+  max-width: pdz.content-width(default);
   margin: 0 auto;
 }
 
-.form-header {
-  margin-bottom: pdz.space(lg);
-  text-align: center;
-
-  h1 {
-    @include text(title);
-  }
-
-  .form-description {
-    @include text(body-sm);
-  }
-}
-
 .league-form {
-  background-color: pdz.color(surface);
-  border: 1px solid pdz.color(menu-border);
+  background-color: pdz.color(raised);
+  border: 1px solid pdz.color(border-subtle);
   border-radius: pdz.shape(corner-lg);
   padding: pdz.space(xl);
 
@@ -49,11 +39,11 @@
   @include text(label);
   color: pdz.color(on-surface);
   margin-bottom: pdz.space(xs);
-  font-weight: 600;
+  font-weight: pdz.font-weight(semibold);
 
   .required {
     color: pdz.color(danger);
-    margin-left: 2px;
+    margin-left: pdz.space(2xs);
   }
 }
 
@@ -62,8 +52,8 @@
   flex-direction: column;
   gap: pdz.space(xs);
   padding: pdz.space(sm);
-  background-color: pdz.color(menu-container);
-  border: 1px solid pdz.color(menu-border);
+  background-color: pdz.color(inset);
+  border: 1px solid pdz.color(border-control);
   border-radius: pdz.shape(corner-sm);
   max-height: 8rem;
   overflow-y: auto;
@@ -83,12 +73,12 @@
   transition: background-color pdz.duration(base) pdz.easing(standard);
 
   &:hover {
-    background-color: pdz.color(menu-container-hover);
+    background-color: pdz.color(state-hover);
   }
 
   .checkbox-label {
     @include text(body-sm);
-    color: pdz.color(on-menu-container);
+    color: pdz.color(on-surface);
     user-select: none;
   }
 }
@@ -127,7 +117,7 @@
   justify-content: flex-end;
   margin-top: pdz.space(xl);
   padding-top: pdz.space(lg);
-  border-top: 1px solid pdz.color(menu-border);
+  border-top: 1px solid pdz.color(border-subtle);
 
   @media (max-width: map.get($breakpoints, medium)) {
     flex-direction: column-reverse;

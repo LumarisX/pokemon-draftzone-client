@@ -1,18 +1,21 @@
 import {
+  ChangeDetectionStrategy,
   Component,
+  DestroyRef,
+  OnInit,
   computed,
   inject,
-  OnDestroy,
-  OnInit,
   input,
   output,
   signal,
 } from '@angular/core';
-import { Subject, takeUntil } from 'rxjs';
-import { LeagueZoneService } from '../../league-zone.service';
-import { MatchupCardComponent } from '../../matchup-card/matchup-card.component';
-import { MatchupCard } from '../../matchup-card/matchup-card.model';
-import { scheduleMatchupToCard } from '../../matchup-card/schedule-matchup.adapter';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { LEAGUE_ZONE_PATH } from '@pdz/core/route-paths';
+import { LeagueZoneService } from '@pdz/features/league-zone/league-zone.service';
+import { MatchupCardComponent } from '@pdz/features/league-zone/matchup-card/matchup-card.component';
+import { MatchupCard } from '@pdz/features/league-zone/matchup-card/matchup-card.model';
+import { scheduleMatchupToCard } from '@pdz/features/league-zone/matchup-card/schedule-matchup.adapter';
+import { EmptyStateComponent } from '@pdz/shared/feedback/empty-state/empty-state.component';
 
 interface ScheduleStageView {
   id: string;
@@ -54,24 +57,22 @@ function promoteTeam(
 
 @Component({
   selector: 'pdz-league-schedule-widget',
-  imports: [MatchupCardComponent],
+  imports: [EmptyStateComponent, MatchupCardComponent],
   templateUrl: './league-schedule-widget.component.html',
   styleUrl: './league-schedule-widget.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class LeagueScheduleWidgetComponent implements OnInit, OnDestroy {
-  leagueService = inject(LeagueZoneService);
-  private readonly destroy$ = new Subject<void>();
+export class LeagueScheduleWidgetComponent implements OnInit {
+  private readonly leagueService = inject(LeagueZoneService);
+  private readonly destroyRef = inject(DestroyRef);
 
   private readonly loadedRounds = signal<ScheduleRoundView[] | undefined>(
     undefined,
   );
 
   readonly roundFilter = input<'current' | 'past'>();
-
   readonly showRoundTitle = input(true);
-
   readonly highlightTeamSlug = input<string | null>(null);
-
   readonly roundsLoaded = output<ScheduleRoundView[]>();
 
   readonly scheduleRounds = computed(() => {
@@ -96,11 +97,12 @@ export class LeagueScheduleWidgetComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.leagueService
       .getSchedule({ round: this.roundFilter() })
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (data) => {
           const base = [
-            '/leagues',
+            '/',
+            LEAGUE_ZONE_PATH,
             this.leagueService.leagueSlug() ?? '',
             'tournaments',
             this.leagueService.tournamentSlug() ?? '',
@@ -120,12 +122,10 @@ export class LeagueScheduleWidgetComponent implements OnInit, OnDestroy {
           this.loadedRounds.set(rounds);
           this.roundsLoaded.emit(rounds);
         },
-        error: () => this.roundsLoaded.emit([]),
+        error: () => {
+          this.loadedRounds.set([]);
+          this.roundsLoaded.emit([]);
+        },
       });
-  }
-
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
   }
 }

@@ -1,15 +1,16 @@
-import { NgClass } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
-  OnDestroy,
+  DestroyRef,
   inject,
   signal,
 } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { safeStorage } from '@pdz/core/utils/storage';
 import { DraftPokemon } from '@pdz/features/drafts/draft.model';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
+import { CardComponent } from '@pdz/shared/data/card/card.component';
 import { DialogRef } from '@pdz/shared/dialogs/dialog/dialog.service';
 import { SelectOptionComponent } from '@pdz/shared/dropdowns/select/select-option.component';
 import { SelectComponent } from '@pdz/shared/dropdowns/select/select.component';
@@ -20,12 +21,53 @@ import { SegmentedOptionComponent } from '@pdz/shared/inputs/segmented/segmented
 import { SegmentedComponent } from '@pdz/shared/inputs/segmented/segmented.component';
 import { Settings, SettingsService } from '../settings.service';
 
+type ThemeOption = { id: string; name: string; team1: string; team2: string };
+
+const SPRITE_SETS = [
+  {
+    name: 'Pokemon Showdown - Home',
+    id: 'home',
+    creditLink: 'https://github.com/smogon/sprites',
+  },
+  { name: 'Serebii', id: 'serebii', creditLink: 'https://www.serebii.net/' },
+  {
+    name: 'Pokemon Showdown - SV',
+    id: 'sv',
+    creditLink: 'https://github.com/smogon/sprites',
+  },
+  {
+    name: 'Pokemon Showdown - BW',
+    id: 'bw',
+    creditLink: 'https://github.com/smogon/sprites',
+  },
+  {
+    name: 'Pokemon Showdown - AFD',
+    id: 'afd',
+    creditLink: 'https://github.com/smogon/sprites',
+  },
+  {
+    name: 'Pokemon Showdown - Animated',
+    id: 'ani',
+    creditLink: 'https://github.com/smogon/sprites',
+  },
+  {
+    name: 'PMD Sprite Project',
+    id: 'pmd',
+    creditLink: 'https://sprites.pmdcollab.org/#/Contributors',
+  },
+  {
+    name: 'PokeAPI - Official Artwork',
+    id: 'pokeapi',
+    creditLink: 'https://github.com/PokeAPI/sprites',
+  },
+];
+
 @Component({
   selector: 'pdz-settings-dialog',
   imports: [
-    NgClass,
     ReactiveFormsModule,
     ButtonComponent,
+    CardComponent,
     FieldComponent,
     IconComponent,
     SegmentedComponent,
@@ -38,9 +80,8 @@ import { Settings, SettingsService } from '../settings.service';
   styleUrl: './settings-dialog.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SettingsDialogComponent implements OnDestroy {
+export class SettingsDialogComponent {
   private readonly settingsService = inject(SettingsService);
-  private readonly fb = inject(FormBuilder);
   protected readonly ref = inject(DialogRef) as DialogRef<void>;
 
   protected readonly example: DraftPokemon = {
@@ -48,70 +89,41 @@ export class SettingsDialogComponent implements OnDestroy {
     name: 'Deoxys-Attack',
   };
 
-  protected readonly themes: { id: string; name: string }[] = [
-    { id: 'classic', name: 'Classic' },
-    { id: 'sunset', name: 'Sunset' },
-    { id: 'fern', name: 'Fern' },
-    { id: 'classic-reverse', name: 'Classic Reversed' },
-    ...(this.isShinyUnlocked() ? [{ id: 'shiny', name: 'Shiny' }] : []),
+  protected readonly spriteSets = SPRITE_SETS;
+
+  protected readonly themes: ThemeOption[] = [
+    { id: 'classic', name: 'Classic', team1: 'cyan', team2: 'orange' },
+    { id: 'sunset', name: 'Sunset', team1: 'purple', team2: 'pink' },
+    { id: 'fern', name: 'Fern', team1: 'jade', team2: 'blue' },
+    {
+      id: 'classic-reverse',
+      name: 'Classic Reversed',
+      team1: 'orange',
+      team2: 'cyan',
+    },
+    ...(this.isShinyUnlocked()
+      ? [{ id: 'shiny', name: 'Shiny', team1: 'mint', team2: 'yellow' }]
+      : []),
   ];
 
-  protected readonly spriteSets: {
-    name: string;
-    id: string;
-    creditLink: string;
-  }[] = [
-    {
-      name: 'Pokemon Showdown - Home',
-      id: 'home',
-      creditLink: 'https://github.com/smogon/sprites',
-    },
-    {
-      name: 'Serebii',
-      id: 'serebii',
-      creditLink: 'https://www.serebii.net/',
-    },
-    {
-      name: 'Pokemon Showdown - SV',
-      id: 'sv',
-      creditLink: 'https://github.com/smogon/sprites',
-    },
-    {
-      name: 'Pokemon Showdown - BW',
-      id: 'bw',
-      creditLink: 'https://github.com/smogon/sprites',
-    },
-    {
-      name: 'Pokemon Showdown - AFD',
-      id: 'afd',
-      creditLink: 'https://github.com/smogon/sprites',
-    },
-    {
-      name: 'Pokemon Showdown - Animated',
-      id: 'ani',
-      creditLink: 'https://github.com/smogon/sprites',
-    },
-    {
-      name: 'PMD Sprite Project',
-      id: 'pmd',
-      creditLink: 'https://sprites.pmdcollab.org/#/Contributors',
-    },
-    {
-      name: 'PokeAPI - Official Artwork',
-      id: 'pokeapi',
-      creditLink: 'https://github.com/PokeAPI/sprites',
-    },
-  ];
-
-  private orgSettings: Settings = JSON.parse(
-    JSON.stringify(this.settingsService.settingsData || {}),
+  private original: Settings = structuredClone(
+    this.settingsService.settingsData ?? {},
   );
 
-  protected readonly settingsForm = this.fb.group({
-    theme: this.orgSettings.theme || 'classic',
-    ldMode: this.orgSettings.ldMode || 'device',
-    spriteSet: this.orgSettings.spriteSet || 'home',
+  protected readonly settingsForm = inject(FormBuilder).nonNullable.group({
+    theme: this.original.theme || 'classic',
+    ldMode: this.original.ldMode || 'device',
+    spriteSet: this.original.spriteSet || 'home',
   });
+
+  protected readonly theme = toSignal(
+    this.settingsForm.controls.theme.valueChanges,
+    { initialValue: this.settingsForm.controls.theme.value },
+  );
+  protected readonly spriteSet = toSignal(
+    this.settingsForm.controls.spriteSet.valueChanges,
+    { initialValue: this.settingsForm.controls.spriteSet.value },
+  );
 
   protected readonly saving = signal(false);
   protected readonly saveError = signal<string | null>(null);
@@ -119,63 +131,55 @@ export class SettingsDialogComponent implements OnDestroy {
   constructor() {
     this.settingsForm.valueChanges
       .pipe(takeUntilDestroyed())
-      .subscribe((value: Settings) => {
-        this.settingsService.setSettings(value, { source: 'local' });
-      });
+      .subscribe((value) => this.settingsService.setSettings(value));
 
-    this.settingsForm.controls.ldMode.valueChanges
-      .pipe(takeUntilDestroyed())
-      .subscribe((value) => {
-        if (value) this.settingsService.updateLDMode(value);
-      });
-  }
-
-  ngOnDestroy(): void {
-    this.settingsService.setSettings(this.orgSettings, { source: 'local' });
-  }
-
-  protected isShinyUnlocked() {
-    return (
-      localStorage.getItem('shinyunlocked') ||
-      this.settingsService.settingsData.shinyUnlock
+    inject(DestroyRef).onDestroy(() =>
+      this.settingsService.setSettings(this.original),
     );
+  }
+
+  protected swatch(hue: string): string {
+    return `var(--pdz-color-${hue}-450)`;
   }
 
   protected selectTheme(themeId: string) {
     this.settingsForm.controls.theme.setValue(themeId);
   }
 
-  protected getCreditLink() {
-    const value = this.settingsForm.controls.spriteSet.value;
-    return this.spriteSets.find((set) => set.id === value)?.creditLink ?? '';
+  protected creditLink(): string {
+    return (
+      this.spriteSets.find((set) => set.id === this.spriteSet())?.creditLink ??
+      ''
+    );
   }
 
   protected save() {
     this.saveError.set(null);
     this.saving.set(true);
-    const newSettings = this.settingsForm.value as Settings;
-    this.orgSettings = JSON.parse(JSON.stringify(newSettings));
-
-    this.settingsService.setSettings(newSettings, { source: 'local' });
+    const next = this.settingsForm.getRawValue() as Settings;
+    this.original = structuredClone(next);
+    this.settingsService.setSettings(next);
 
     this.settingsService.saveToServer().subscribe({
-      next: (resp) => {
+      next: (response) => {
         this.saving.set(false);
-        if (resp) {
-          try {
-            this.settingsService.setSettings(resp as Settings, {
-              source: 'server',
-            });
-            this.orgSettings = JSON.parse(JSON.stringify(resp));
-          } catch (e) {}
+        if (response) {
+          this.settingsService.setSettings(response as Settings);
+          this.original = structuredClone(response as Settings);
         }
         this.ref.close();
       },
-      error: (err) => {
+      error: () => {
         this.saving.set(false);
         this.saveError.set('Failed to save settings. Please try again.');
-        console.error('Settings save failed', err);
       },
     });
+  }
+
+  private isShinyUnlocked(): boolean {
+    return (
+      !!safeStorage.get('shinyunlocked') ||
+      !!this.settingsService.settingsData.shinyUnlock
+    );
   }
 }

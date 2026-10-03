@@ -11,7 +11,7 @@
   color: pdz.color(on-surface);
 
   &::backdrop {
-    background: rgb(0 0 0 / 55%);
+    background: pdz.color-rgba(scrim, 0.5);
   }
 
   &__panel {
@@ -19,10 +19,10 @@
     flex-direction: column;
     gap: pdz.space(lg);
     padding: pdz.space(lg);
-    border: 1px solid pdz.color(outline-variant);
+    border: 1px solid pdz.color(border-subtle);
     border-radius: pdz.shape(corner-lg);
-    background: pdz.color(surface);
-    box-shadow: var(--pdz-level-3);
+    background: pdz.color(overlay);
+    box-shadow: var(--pdz-elevation-3);
   }
 
   &__header {
@@ -60,7 +60,7 @@
     code {
       padding: 0 pdz.space(2xs);
       border-radius: pdz.shape(corner-xs);
-      background: pdz.color(surface-container-high);
+      background: pdz.color(inset);
     }
   }
 
@@ -68,9 +68,9 @@
     @include text(body-sm);
     width: 100%;
     padding: pdz.space(sm);
-    border: 1px solid pdz.color(outline-variant);
+    border: 1px solid pdz.color(border-control);
     border-radius: pdz.shape(corner-sm);
-    background: pdz.color(surface-container-lowest);
+    background: pdz.color(inset);
     color: pdz.color(on-surface);
     font-family: ui-monospace, "Cascadia Code", "Consolas", monospace;
     resize: vertical;

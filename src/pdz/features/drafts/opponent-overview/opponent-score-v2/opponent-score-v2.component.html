@@ -1,23 +1,20 @@
 @if (matchup()) {
   <div class="score">
-    <header class="score__bar">
+    <pdz-page-header
+      compact
+      backLabel="Back to Draft"
+      [title]="sideNames().side1 + ' vs ' + sideNames().side2"
+      [backLink]="['/', draftPath, teamId]"
+    >
       <button
+        pdz-page-header-actions
         pdz-button
-        size="sm"
-        color="neutral"
-        variant="outlined"
-        type="button"
-        [routerLink]="['/', draftPath, teamId]"
+        [loading]="saving()"
+        (click)="submit()"
       >
-        Cancel
+        Save Result
       </button>
-      <h1 class="score__title">
-        {{ sideNames().side1 }} vs {{ sideNames().side2 }}
-      </h1>
-      <button pdz-button size="sm" [loading]="saving()" (click)="submit()">
-        {{ saving() ? "Saving…" : "Submit" }}
-      </button>
-    </header>
+    </pdz-page-header>
 
     <div class="score__series">
       <span class="score__series-value"
@@ -33,7 +30,7 @@
         [routerLink]="['/', draftPath, teamId, 'score']"
         [queryParams]="{ matchup: matchupId }"
       >
-        Classic entry
+        Classic Entry
       </a>
     </div>
 

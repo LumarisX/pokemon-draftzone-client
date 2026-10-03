@@ -45,6 +45,7 @@ import { PlannerSummaryComponent } from './summary/summary.component';
 import { PlannerTeamComponent } from './team/team.component';
 import { PlannerTypechartComponent } from './typechart/typechart.component';
 import { DEFAULT_RULESET } from '@pdz/core/rulesets';
+import { safeStorage } from '@pdz/core/utils/storage';
 
 interface LSTeamData {
   id: string;
@@ -204,11 +205,6 @@ export class PlannerComponent implements OnInit, OnDestroy {
     );
   }
 
-  /**
-   * Autosave is debounced, so edits made in the last moment before the tab goes
-   * away would otherwise be dropped. `visibilitychange` covers mobile, where
-   * `beforeunload` is unreliable.
-   */
   @HostListener('window:beforeunload')
   @HostListener('document:visibilitychange')
   flushPendingSave(): void {
@@ -314,27 +310,14 @@ export class PlannerComponent implements OnInit, OnDestroy {
     this.tabRefs()[nextIndex]?.nativeElement.focus();
   }
 
-  /**
-   * The rename input fills most of the tab, so a plain click to switch tabs
-   * also focuses it — select-on-focus would make every tab switch look like
-   * it entered rename mode. Only double-click (an explicit "let me rename
-   * this") selects the text for a fast overwrite.
-   */
   selectNameText(event: MouseEvent): void {
     (event.target as HTMLInputElement).select();
   }
 
-  /** Keeps the rename input hugging its text instead of leaving dead space. */
   nameWidthCh(name: string | null | undefined): number {
     return Math.min(Math.max((name ?? '').length, 4), 22) + 1;
   }
 
-  /**
-   * Delete is a two-step confirm: the first click arms the tab (icon swaps
-   * to confirm/cancel) and the second click within the window commits it.
-   * There's no undo once a plan is removed, so a stray click shouldn't be
-   * able to destroy one.
-   */
   requestDelete(index: number): void {
     if (this.pendingDeleteIndex() === index) {
       this.confirmDelete(index);
@@ -600,14 +583,9 @@ export class PlannerComponent implements OnInit, OnDestroy {
   }
 
   private getStoredPlannerData(): Partial<LSDraftData>[] {
-    const storedPlannerData = localStorage.getItem('plannerData');
-    try {
-      const parsedData = JSON.parse(storedPlannerData!);
-      if (Array.isArray(parsedData) && parsedData.length > 0) {
-        return parsedData.map((data) => this.sanitizeDraftData(data));
-      }
-    } catch {
-      console.warn('Invalid plannerData format in localStorage');
+    const parsedData = safeStorage.getJson<unknown>('plannerData');
+    if (Array.isArray(parsedData) && parsedData.length > 0) {
+      return parsedData.map((data) => this.sanitizeDraftData(data));
     }
     return [{}];
   }
@@ -659,12 +637,9 @@ export class PlannerComponent implements OnInit, OnDestroy {
             pokemonData.id !== '' && this.isValidTeamData(pokemonData),
         ),
     }));
-    // `valueChanges` fires for edits that serialize identically (typing a digit
-    // then deleting it, toggling a checkbox back). Comparing is ~10x cheaper
-    // than the write, so skip those rather than round-trip localStorage.
     const json = JSON.stringify(lsData);
     if (json !== this.lastSavedJson) {
-      localStorage.setItem('plannerData', json);
+      safeStorage.set('plannerData', json);
       this.lastSavedJson = json;
     }
     this.hasUnsavedEdits.set(false);

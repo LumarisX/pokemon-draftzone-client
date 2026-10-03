@@ -29,13 +29,12 @@
         />
         <button
           pdz-button
-          type="button"
           variant="outlined"
           color="neutral"
+          icon="upload_file"
           class="logo-edit__picker"
           (click)="logoInput.click()"
         >
-          <pdz-icon aria-hidden="true" name="upload_file" [size]="16" />
           <span class="logo-edit__filename">{{
             logoFileName() || "Choose file"
           }}</span>

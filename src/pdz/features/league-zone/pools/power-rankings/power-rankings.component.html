@@ -1,181 +1,133 @@
-<pdz-page-header title="Power Rankings" />
-
-@if (selectedTeam) {
-  <div class="team-header">
-    <div class="info-card">
-      <div class="label">Position</div>
-      <div class="value">{{ selectedTeam.info.index + 1 }}</div>
-    </div>
-    <div class="team-name">
-      <pdz-menu align="start" aria-label="Select team">
-        <button
-          pdz-button
-          pdz-menu-trigger
-          color="neutral"
-          variant="ghost"
-          class="draft-section-title"
+<pdz-page-header title="Power Rankings">
+  @if (teams()?.length) {
+    <div class="toolbar">
+      <div pdz-field class="toolbar__team" label="Team">
+        <pdz-select
+          searchable
+          aria-label="Team"
+          [value]="selectedId()"
+          (valueChange)="selectedId.set($any($event))"
         >
-          {{ selectedTeam.info.name }}
-          <pdz-icon name="arrow_drop_down"></pdz-icon>
-        </button>
-        @for (team of teams; track team) {
-          <button pdz-menu-item (click)="selectTeamAndClose(team)">
-            {{ team.info.name }}
-          </button>
-        }
-      </pdz-menu>
-    </div>
-    <div class="info-card">
-      <div class="label">Score</div>
-      <div class="value">
-        <input
-          type="number"
-          [ngModel]="selectedTeam.score"
-          (ngModelChange)="onScoreChange($event)"
-        />
+          @for (team of teams(); track team.info.id) {
+            <pdz-option
+              [value]="team.info.id"
+              [label]="team.info.index + 1 + '. ' + team.info.name"
+            />
+          }
+        </pdz-select>
       </div>
+      @if (selectedTeam(); as team) {
+        <label pdz-field class="toolbar__score" label="Your Score">
+          <input
+            pdz-input
+            type="number"
+            inputmode="decimal"
+            [value]="scoreFor(team) ?? ''"
+            (input)="setScore($any($event.target).value)"
+          />
+        </label>
+      }
+    </div>
+  }
+</pdz-page-header>
+
+@if (!teams()) {
+  <pdz-loading />
+} @else if (selectedTeam(); as team) {
+  <div class="analysis">
+    <pdz-card padding="md" class="analysis__roster">
+      <section class="roster" aria-labelledby="pr-roster">
+        <h2 class="roster__title" id="pr-roster">{{ team.info.name }}</h2>
+        <ul class="roster__list">
+          @for (pokemon of team.summary.team; track $index) {
+            <li class="roster__row">
+              <pdz-sprite size="2.5rem" flipped [pokemon]="pokemon" />
+              <span class="roster__name">
+                {{ pokemon.name }}
+                @if (pokemon.capt?.tera) {
+                  <pdz-icon
+                    name="tera"
+                    ariaLabel="Tera captain"
+                    pdzTooltipPosition="below"
+                    [pdzTooltip]="captTypes(pokemon.capt!.tera!)"
+                    [size]="16"
+                  />
+                }
+                @if (pokemon.capt?.z) {
+                  <pdz-icon
+                    name="z"
+                    ariaLabel="Z captain"
+                    pdzTooltipPosition="below"
+                    [pdzTooltip]="captTypes(pokemon.capt!.z!, 18)"
+                    [size]="16"
+                  />
+                }
+                @if (pokemon.capt?.dmax) {
+                  <pdz-icon name="dmax" ariaLabel="Dynamax" [size]="16" />
+                }
+              </span>
+              <span class="roster__speed" title="Base speed">{{
+                pokemon.baseStats.spe
+              }}</span>
+            </li>
+          }
+        </ul>
+      </section>
+    </pdz-card>
+
+    <pdz-planner-summary [summary]="team.summary" />
+    <pdz-planner-typechart [typechart]="team.typechart" />
+    <div class="analysis__moves">
+      <pdz-planner-moves [movechart]="team.movechart" />
+    </div>
+    <div class="analysis__coverage">
+      <pdz-planner-move-coverage [coverage]="team.coverage" />
+      <pdz-planner-team-coverage [coverage]="team.coverage" />
     </div>
   </div>
 
-  <div class="team-info">
-    <div class="widget-wrapper">
-      <div class="widget-container overview-wrapper">
-        <div class="team-container">
-          <div class="team-header">
-            <div class="team-name-title">
-              {{ selectedTeam.info.name }}
-            </div>
-          </div>
-          <div class="team-body">
-            <div class="overview-row header">
-              <div class="sprite-cell"></div>
-              <div class="name-cell">Name</div>
-              <div class="speed-cell">SPE</div>
-            </div>
-            @for (pokemon of selectedTeam.summary.team; track pokemon) {
-              <div class="overview-row">
-                <div class="sprite-cell">
-                  <pdz-sprite [pokemon]="pokemon" flipped></pdz-sprite>
-                </div>
-                <div class="name-cell">
-                  <div class="name-label">{{ pokemon.name }}</div>
-                  <div class="capt-row">
-                    @if (pokemon.capt?.tera) {
-                      <pdz-icon
-                        [pdzTooltip]="
-                          pokemon.capt!.tera!.length
-                            ? pokemon.capt!.tera!.join(', ')
-                            : 'All Types'
-                        "
-                        pdzTooltipPosition="below"
-                        name="tera"
-                      ></pdz-icon>
-                    }
-                    @if (pokemon.capt?.z) {
-                      <pdz-icon
-                        [pdzTooltip]="
-                          pokemon.capt!.z!.length &&
-                          pokemon.capt!.z!.length < 18
-                            ? pokemon.capt!.z!.join(', ')
-                            : 'All Types'
-                        "
-                        pdzTooltipPosition="below"
-                        name="z"
-                      ></pdz-icon>
-                    }
-                    @if (pokemon.capt?.dmax) {
-                      <pdz-icon svgIcon="dmax" name=""></pdz-icon>
-                    }
-                  </div>
-                </div>
-                <div class="speed-cell">{{ pokemon.baseStats.spe }}</div>
-              </div>
-            }
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <pdz-planner-summary [summary]="selectedTeam.summary"></pdz-planner-summary>
-    <pdz-planner-typechart
-      [typechart]="selectedTeam.typechart"
-    ></pdz-planner-typechart>
-    <div class="movechart-wrapper">
-      <pdz-planner-moves
-        [movechart]="selectedTeam.movechart"
-      ></pdz-planner-moves>
-    </div>
-    <div class="coverage-wrapper">
-      <pdz-planner-move-coverage
-        [coverage]="selectedTeam.coverage"
-      ></pdz-planner-move-coverage>
-      <pdz-planner-team-coverage
-        [coverage]="selectedTeam.coverage"
-      ></pdz-planner-team-coverage>
-    </div>
-  </div>
-  <div class="score-comparison">
-    @if (teams) {
-      <table
-        cdk-table
-        class="pdz-table power-rankings-table"
-        data-zebra
-        data-density="relaxed"
-        [dataSource]="teams"
-        pdzSort
-        pdzSortActive="score"
-        pdzSortDirection="desc"
-        pdzSortDisableClear
-        (pdzSortChange)="sort($event)"
-      >
-        <ng-container cdkColumnDef="position">
-          <th class="pdz-table__num" cdk-header-cell *cdkHeaderCellDef>
-            Position
-          </th>
-          <td class="pdz-table__num" cdk-cell *cdkCellDef="let team">
-            {{ team.info.index + 1 }}
-          </td>
-        </ng-container>
-
-        <ng-container cdkColumnDef="teamName">
-          <th cdk-header-cell *cdkHeaderCellDef>Team Name</th>
-          <td cdk-cell *cdkCellDef="let team">
-            {{ team.info.name }}
-          </td>
-        </ng-container>
-
-        <ng-container cdkColumnDef="draft">
-          <th cdk-header-cell *cdkHeaderCellDef>Draft</th>
-          <td cdk-cell *cdkCellDef="let team">
-            <div class="draft-container">
-              @for (pokemon of team.summary.team; track $index) {
-                <div class="sprite-wrapper">
-                  <pdz-sprite [pokemon]="pokemon"></pdz-sprite>
-                </div>
-              }
-            </div>
-          </td>
-        </ng-container>
-
-        <ng-container cdkColumnDef="score">
-          <th
-            class="pdz-table__num"
-            pdzSortHeader="score"
-            cdk-header-cell
-            *cdkHeaderCellDef
-          >
+  <div class="pdz-table-wrapper ranking">
+    <table
+      class="pdz-table"
+      pdzSort
+      pdzSortActive="score"
+      pdzSortDirection="desc"
+      pdzSortDisableClear
+      (pdzSortChange)="onSort($event)"
+    >
+      <caption class="ranking__caption">Your ranking</caption>
+      <thead>
+        <tr>
+          <th class="pdz-table__num" scope="col">Seed</th>
+          <th scope="col">Team</th>
+          <th scope="col">Draft</th>
+          <th class="pdz-table__num" scope="col" pdzSortHeader="score" start="desc">
             Score
           </th>
-          <td class="pdz-table__num" cdk-cell *cdkCellDef="let team">
-            {{ team.score }}
-          </td>
-        </ng-container>
-
-        <tr cdk-header-row *cdkHeaderRowDef="displayedColumns"></tr>
-        <tr cdk-row *cdkRowDef="let row; columns: displayedColumns"></tr>
-      </table>
-    }
+        </tr>
+      </thead>
+      <tbody>
+        @for (row of ranked(); track row.info.id) {
+          <tr
+            class="pdz-table__row--interactive"
+            [class.pdz-table__row--selected]="row.info.id === selectedId()"
+            tabindex="0"
+            (click)="selectedId.set(row.info.id)"
+            (keydown.enter)="selectedId.set(row.info.id)"
+          >
+            <td class="pdz-table__num">{{ row.info.index + 1 }}</td>
+            <td>{{ row.info.name }}</td>
+            <td>
+              <span class="ranking__draft">
+                @for (pokemon of row.summary.team; track $index) {
+                  <pdz-sprite size="2rem" [pokemon]="pokemon" />
+                }
+              </span>
+            </td>
+            <td class="pdz-table__num">{{ scoreFor(row) ?? "—" }}</td>
+          </tr>
+        }
+      </tbody>
+    </table>
   </div>
-} @else {
-  <pdz-loading></pdz-loading>
 }

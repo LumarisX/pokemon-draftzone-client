@@ -1,27 +1,22 @@
 @if (opponentForm) {
   <div class="draft-builder">
     <header class="draft-builder__header">
-      <div class="draft-builder__header-inner">
-        <a
-          pdz-button
-          iconOnly
-          variant="ghost"
-          color="neutral"
-          [routerLink]="['/', draftPath, teamId]"
-          aria-label="Back to draft"
-        >
-          <pdz-icon name="arrow_back" [size]="22"></pdz-icon>
-        </a>
-        <h1 class="draft-builder__title">{{ title() }}</h1>
-        <span class="draft-builder__spacer"></span>
+      <pdz-page-header
+        compact
+        class="draft-builder__header-inner"
+        backLabel="Back to Draft"
+        [title]="title()"
+        [backLink]="['/', draftPath, teamId]"
+      >
         <button
+          pdz-page-header-actions
           pdz-button
           [disabled]="isImporting"
           (click)="onSubmit()"
         >
           {{ submitLabel() }}
         </button>
-      </div>
+      </pdz-page-header>
     </header>
 
     <div class="draft-builder__body">

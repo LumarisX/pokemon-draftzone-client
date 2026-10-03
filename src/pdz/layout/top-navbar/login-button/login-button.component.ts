@@ -1,75 +1,56 @@
-import { AsyncPipe } from '@angular/common';
-import { Component, DestroyRef, inject, OnInit } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  inject,
+} from '@angular/core';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { AuthService } from '@pdz/core/services/auth0.service';
-import { DialogService } from '@pdz/shared/dialogs/dialog/dialog.service';
-import { IconComponent } from '@pdz/shared/images/icon/icon.component';
-import { of } from 'rxjs';
-import { switchMap, take } from 'rxjs/operators';
-import { SettingsService } from '../settings.service';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
-import { MenuComponent } from '@pdz/shared/menu/menu.component';
+import { DialogService } from '@pdz/shared/dialogs/dialog/dialog.service';
+import { TeamLogoComponent } from '@pdz/shared/images/team-logo/team-logo.component';
 import { MenuItemComponent } from '@pdz/shared/menu/menu-item.component';
 import { MenuTriggerDirective } from '@pdz/shared/menu/menu-trigger.directive';
+import { MenuComponent } from '@pdz/shared/menu/menu.component';
+import { of } from 'rxjs';
+import { filter, switchMap, take } from 'rxjs/operators';
+import { SettingsService } from '../settings.service';
 
 @Component({
   selector: 'pdz-login-button',
   imports: [
-    AsyncPipe,
-    IconComponent,
     ButtonComponent,
     MenuComponent,
     MenuItemComponent,
     MenuTriggerDirective,
+    TeamLogoComponent,
   ],
   templateUrl: './login-button.component.html',
   styleUrl: './login-button.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class LoginButtonComponent implements OnInit {
-  readonly auth = inject(AuthService);
-  private readonly destroyRef = inject(DestroyRef);
+export class LoginButtonComponent {
+  private readonly auth = inject(AuthService);
   private readonly settingsService = inject(SettingsService);
   private readonly dialogs = inject(DialogService);
 
-  authenticated: boolean = false;
+  readonly authenticated = toSignal(this.auth.isAuthenticated$, {
+    initialValue: false,
+  });
+  readonly user = toSignal(this.auth.user$, { initialValue: null });
 
-  ngOnInit(): void {
-    this.initAuthSubscription();
-  }
-
-  private initAuthSubscription(): void {
+  constructor() {
     this.auth.isAuthenticated$
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe((authenticated) => {
-        this.authenticated = authenticated;
-        if (authenticated) {
-          this.loadSettings();
-        }
-      });
-  }
-
-  private loadSettings(): void {
-    this.settingsService
-      .getSettings()
       .pipe(
-        take(1),
-        switchMap((serverSettings) => {
-          if (serverSettings) {
-            this.settingsService.setSettings(serverSettings, {
-              source: 'server',
-            });
-            return of(null);
-          }
-          return this.auth.user$.pipe(take(1));
-        }),
+        filter(Boolean),
+        switchMap(() => this.settingsService.getSettings().pipe(take(1))),
+        switchMap((serverSettings) =>
+          serverSettings
+            ? of({ settings: serverSettings })
+            : this.auth.user$.pipe(take(1)),
+        ),
+        takeUntilDestroyed(),
       )
-      .subscribe((userData) => {
-        if (userData?.settings) {
-          this.settingsService.setSettings(userData.settings, {
-            source: 'server',
-          });
-        }
-      });
+      .subscribe((data) => this.settingsService.setSettings(data?.settings));
   }
 
   async openSettings(): Promise<void> {

@@ -1,11 +1,9 @@
-﻿@use "pdz-theming" as pdz;
-@use "mixins" as *;
+@use "pdz-theming" as pdz;
 
 :host {
   display: block;
   width: 100%;
   min-height: 100%;
-  background: pdz.color(background);
 }
 
 .loading-state {
@@ -18,198 +16,122 @@
 .landing {
   display: flex;
   flex-direction: column;
-  gap: pdz.space(2xl);
+  gap: pdz.layout(page-gap);
 }
 
 .tournaments {
   display: flex;
   flex-direction: column;
   gap: pdz.space(lg);
+}
 
-  &__heading {
-    @include text(headline);
-    color: pdz.color(on-surface);
-    margin: 0;
-    font-weight: 700;
-    padding-bottom: pdz.space(sm);
-    border-bottom: 2px solid pdz.color(outline-variant);
+.tournaments__heading {
+  @include pdz.text(section-title);
+  margin: 0;
+  color: pdz.color(on-surface);
+}
+
+.tournaments__list {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(md);
+}
+
+.tournament {
+  position: relative;
+}
+
+.tournament--over {
+  opacity: 0.85;
+}
+
+.tournament__header {
+  display: flex;
+  align-items: center;
+  gap: pdz.space(md);
+  margin-bottom: pdz.space(md);
+}
+
+.tournament__title-group {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(xs);
+}
+
+.tournament__name {
+  @include pdz.text(section-title);
+  margin: 0;
+  color: pdz.color(on-surface);
+}
+
+.tournament__link {
+  color: inherit;
+  text-decoration: none;
+
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
   }
 
-  &__empty {
-    @include text(title);
-    color: pdz.color(on-surface-variant);
+  &:hover {
+    text-decoration: underline;
   }
 
-  &__list {
-    display: flex;
-    flex-direction: column;
-    gap: pdz.space(md);
+  &:focus-visible {
+    outline: none;
+
+    &::after {
+      @include pdz.focus-ring(-2px);
+    }
   }
 }
 
-.tournament-card {
+.tournament__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: pdz.space(xs);
+}
+
+.tournament__description {
+  @include pdz.text(body-sm);
+  margin: 0 0 pdz.space(md);
+  color: pdz.color(on-surface-variant);
+}
+
+.tournament__details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: pdz.space(sm) pdz.space(xl);
+  margin: 0 0 pdz.space(md);
+}
+
+.tournament__detail {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(3xs);
+}
+
+.tournament__label {
+  @include pdz.text(label-caps);
+  color: pdz.color(on-surface-muted);
+}
+
+.tournament__value {
+  @include pdz.text(body-sm-strong);
+  margin: 0;
+  color: pdz.color(on-surface);
+}
+
+.tournament__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: pdz.space(sm);
+}
+
+.tournament__discord {
   position: relative;
-  display: block;
-  background: pdz.color(surface-container);
-  border-radius: pdz.shape(corner-lg);
-  padding: pdz.space(lg);
-  color: inherit;
-  transition:
-    box-shadow pdz.duration(base) pdz.easing(standard),
-    transform pdz.duration(base) pdz.easing(standard);
-  border-left: 4px solid transparent;
-
-  &:hover,
-  &:focus-within {
-    box-shadow: var(--pdz-level-3);
-    transform: translateY(-2px);
-  }
-
-  &--active {
-    border-left-color: pdz.color(success);
-  }
-
-  &--completed {
-    border-left-color: pdz.color(outline);
-    opacity: 0.85;
-  }
-
-  &__header {
-    display: flex;
-    align-items: center;
-    gap: pdz.space(md);
-    margin-bottom: pdz.space(md);
-  }
-
-  &__logo {
-    width: 56px;
-    height: 56px;
-    object-fit: contain;
-    border-radius: pdz.shape(corner-sm);
-    flex-shrink: 0;
-  }
-
-  &__title-group {
-    display: flex;
-    flex-direction: column;
-    gap: pdz.space(xs);
-  }
-
-  &__name {
-    @include text(title);
-    color: pdz.color(on-surface);
-    margin: 0;
-    font-weight: 600;
-  }
-
-  &__link {
-    color: inherit;
-    text-decoration: none;
-
-    &::after {
-      content: "";
-      position: absolute;
-      inset: 0;
-      border-radius: inherit;
-    }
-
-    &:hover,
-    &:focus-visible {
-      text-decoration: underline;
-    }
-  }
-
-  &__status {
-    @include text(label);
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.06em;
-    padding: 2px pdz.space(sm);
-    border-radius: pdz.shape(corner-full);
-    display: inline-block;
-    width: fit-content;
-
-    &--active {
-      background: pdz.color(success-container);
-      color: pdz.color(on-success-container);
-    }
-
-    &--upcoming {
-      background: pdz.color(primary-container);
-      color: pdz.color(on-primary-container);
-    }
-
-    &--completed {
-      background: pdz.color(surface-container-high);
-      color: pdz.color(on-surface-variant);
-    }
-  }
-
-  &__description {
-    @include text(body);
-    color: pdz.color(on-surface-variant);
-    margin: 0 0 pdz.space(md);
-  }
-
-  &__details {
-    display: flex;
-    flex-wrap: wrap;
-    gap: pdz.space(sm) pdz.space(xl);
-    margin-bottom: pdz.space(md);
-  }
-
-  &__detail {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-  }
-
-  &__label {
-    @include text(label);
-    color: pdz.color(on-surface-variant);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    font-weight: 600;
-  }
-
-  &__value {
-    @include text(body);
-    color: pdz.color(on-surface);
-    font-weight: 600;
-  }
-
-  &__actions {
-    display: flex;
-    align-items: center;
-    gap: pdz.space(sm);
-    flex-wrap: wrap;
-  }
-
-  &__badge {
-    @include text(label);
-    font-weight: 700;
-    padding: pdz.space(xs) pdz.space(md);
-    border-radius: pdz.shape(corner-full);
-
-    &--signup {
-      background: pdz.color(primary-container);
-      color: pdz.color(on-primary-container);
-    }
-  }
-
-  &__discord {
-    @include text(label);
-    position: relative;
-    font-weight: 700;
-    color: #5865f2;
-    background: rgba(88, 101, 242, 0.12);
-    padding: pdz.space(xs) pdz.space(md);
-    border-radius: pdz.shape(corner-full);
-    text-decoration: none;
-    transition: background pdz.duration(base) pdz.easing(standard);
-
-    &:hover {
-      background: rgba(88, 101, 242, 0.2);
-    }
-  }
+  z-index: 1;
 }

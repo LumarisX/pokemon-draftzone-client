@@ -1,42 +1,45 @@
-<div class="teams">
-  <pdz-page-header title="Teams">
-    @if (pools()?.length === 1) {
-      <span pdz-page-header-detail>{{ activeGroup()?.name }}</span>
-    }
+@let groups = pools();
 
-    @if (pools() && pools()!.length > 1) {
-      <pdz-segmented
-        class="teams__pools"
-        size="sm"
-        aria-label="Pool"
-        [value]="selected()"
-        (valueChange)="selected.set($any($event))"
-      >
-        @for (group of pools()!; track groupKey(group)) {
-          <pdz-segmented-option
-            [value]="groupKey(group)"
-            [label]="group.name"
-          />
-        }
-      </pdz-segmented>
-    }
-  </pdz-page-header>
+<pdz-page-header title="Teams">
+  @if (groups?.length === 1) {
+    <span pdz-page-header-detail>{{ activeGroup()?.name }}</span>
+  }
 
-  <div class="teams__body">
-    @if (pools()) {
-      @if (activeGroup(); as group) {
-        <div class="teams__grid">
-          @for (team of group.teams; track team.id) {
-            <pdz-league-team-card [teamDetails]="team"></pdz-league-team-card>
-          } @empty {
-            <div class="teams__empty">No teams added to this pool</div>
-          }
-        </div>
-      } @else {
-        <div class="teams__empty">No teams have been added yet</div>
+  @if (groups && groups.length > 1) {
+    <pdz-segmented
+      size="sm"
+      aria-label="Pool"
+      [value]="selected()"
+      (valueChange)="selected.set($any($event))"
+    >
+      @for (group of groups; track groupKey(group)) {
+        <pdz-segmented-option [value]="groupKey(group)" [label]="group.name" />
       }
-    } @else {
-      <pdz-loading></pdz-loading>
-    }
-  </div>
-</div>
+    </pdz-segmented>
+  }
+</pdz-page-header>
+
+@if (!groups) {
+  <pdz-loading />
+} @else if (activeGroup(); as group) {
+  @if (group.teams.length) {
+    <div class="teams__grid">
+      @for (team of group.teams; track team.id) {
+        <pdz-league-team-card [teamDetails]="team" />
+      }
+    </div>
+  } @else {
+    <pdz-empty-state
+      bordered
+      icon="groups"
+      message="No teams added to this pool yet."
+    />
+  }
+} @else {
+  <pdz-empty-state
+    bordered
+    icon="groups"
+    heading="No teams yet"
+    message="Teams appear here once coaches are approved."
+  />
+}

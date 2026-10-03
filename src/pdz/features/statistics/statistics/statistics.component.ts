@@ -2,8 +2,10 @@ import { Component, inject, OnDestroy, OnInit } from '@angular/core';
 import { Subject, takeUntil } from 'rxjs';
 import { Pokemon } from '@pdz/core/utils/pokemon';
 import { StatisticsService } from '../statistics.service';
+import { EmptyStateComponent } from '@pdz/shared/feedback/empty-state/empty-state.component';
 import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
+import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
 
 type DraftStatsSplitBy = 'none' | 'format' | 'ruleset' | 'format-ruleset';
 
@@ -60,7 +62,12 @@ interface DraftStatsView {
 
 @Component({
   selector: 'pdz-statistics',
-  imports: [LoadingComponent, SpriteComponent],
+  imports: [
+    EmptyStateComponent,
+    LoadingComponent,
+    PageHeaderComponent,
+    SpriteComponent,
+  ],
   templateUrl: './statistics.component.html',
   styleUrl: './statistics.component.scss',
 })

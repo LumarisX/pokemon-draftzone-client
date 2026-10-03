@@ -14,10 +14,10 @@
   justify-content: space-between;
   gap: pdz.space(sm);
   padding: pdz.space(sm) pdz.space(md);
-  background: pdz.color(surface-container-low);
-  border: 1px solid pdz.color(outline-variant);
+  background: pdz.color(overlay);
+  border: 1px solid pdz.color(border-subtle);
   border-radius: pdz.shape(corner-lg);
-  box-shadow: var(--pdz-level-2);
+  box-shadow: var(--pdz-elevation-3);
 }
 
 .bar__status {

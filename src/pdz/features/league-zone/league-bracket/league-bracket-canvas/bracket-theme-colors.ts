@@ -1,19 +1,11 @@
-/**
- * Resolves the semantic design tokens the canvas bracket renderer draws with.
- * Canvas can't consume CSS custom properties directly, so we snapshot them via
- * getComputedStyle. The snapshot is cached by the component and re-resolved
- * when the theme attributes on <html> change (see the MutationObserver in
- * LeagueBracketCanvasComponent) — never per frame.
- */
-
 export const BRACKET_COLOR_TOKENS = [
   'on-surface',
   'on-surface-variant',
-  'surface',
-  'surface-container',
-  'surface-container-low',
+  'raised',
+  'inset',
+  'border-subtle',
+  'border-control',
   'outline',
-  'outline-variant',
   'positive',
   'positive-container',
   'negative',
@@ -30,12 +22,8 @@ export type BracketColorToken = (typeof BRACKET_COLOR_TOKENS)[number];
 
 export interface BracketTheme {
   colors: Record<BracketColorToken, string>;
-  /** e.g. "Nasalization RG" — labels, headers, seed numbers. */
-  fontFancy: string;
-  /** The app's base body font stack. */
   fontRegular: string;
   fontWeightBold: string;
-  /** rgb triplet backing --pdz-color-shadow-rgb, used for card shadows. */
   shadowRgb: string;
 }
 
@@ -52,7 +40,6 @@ export function resolveBracketTheme(
 
   return {
     colors,
-    fontFancy: read('--pdz-font-display', 'sans-serif'),
     fontRegular: read(
       '--pdz-font-body',
       getComputedStyle(document.body).fontFamily || 'sans-serif',

@@ -1,4 +1,4 @@
-import { Component, input } from '@angular/core';
+import { Component, computed, input } from '@angular/core';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { FormArray, FormControl, ReactiveFormsModule } from '@angular/forms';
 import { EMPTY, startWith, switchMap } from 'rxjs';
@@ -19,10 +19,10 @@ import {
   toggleMatchForfeit,
 } from './score-entry.form';
 import {
-  SCORE_ENTRY_SIDES,
   ScoreEntryGameForm,
   ScoreEntryMatchForm,
   ScoreEntrySide,
+  scoreEntryOrder,
 } from './score-entry.model';
 
 @Component({
@@ -40,17 +40,13 @@ import {
 export class ScoreEntryMatchComponent {
   readonly match = input.required<ScoreEntryMatchForm>();
   readonly sideNames = input.required<Record<ScoreEntrySide, string>>();
+  readonly viewerSide = input<ScoreEntrySide | null>(null);
   readonly games = input<FormArray<ScoreEntryGameForm> | null>(null);
   readonly notes = input<FormControl<string> | null>(null);
   readonly notesLabel = input('Notes (optional)');
   readonly notesPlaceholder = input('Anything worth recording…');
 
-  protected readonly sides = SCORE_ENTRY_SIDES;
-
-  protected readonly accents: Record<ScoreEntrySide, 'primary' | 'secondary'> = {
-    side1: 'primary',
-    side2: 'secondary',
-  };
+  protected readonly order = computed(() => scoreEntryOrder(this.viewerSide()));
 
   constructor() {
     toObservable(this.games)
@@ -61,6 +57,11 @@ export class ScoreEntryMatchComponent {
         takeUntilDestroyed(),
       )
       .subscribe(() => syncMatchScore(this.match(), this.gameControls()));
+  }
+
+  protected teamSlot(side: ScoreEntrySide | null): 'team1' | 'team2' | null {
+    if (!side) return null;
+    return this.order().indexOf(side) === 0 ? 'team1' : 'team2';
   }
 
   protected gameControls(): ScoreEntryGameForm[] {
@@ -84,7 +85,7 @@ export class ScoreEntryMatchComponent {
   }
 
   protected isForfeit(): boolean {
-    return this.sides.some((side) => this.hasForfeited(side));
+    return this.order().some((side) => this.hasForfeited(side));
   }
 
   protected winner(): ScoreEntrySide | null {
@@ -95,7 +96,7 @@ export class ScoreEntryMatchComponent {
     const forfeited = matchForfeitedBy(this.match());
     if (!forfeited) return null;
     if (forfeited === 'both') return 'Double forfeit — a loss for both';
-    return `Wins by forfeit — games ignored`;
+    return 'Wins by forfeit — games ignored';
   }
 
   protected reasonMissing(): boolean {

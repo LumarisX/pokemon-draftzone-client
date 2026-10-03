@@ -1,5 +1,4 @@
 @use "pdz-theming" as pdz;
-@use "mixins" as *;
 
 :host {
   display: block;
@@ -8,161 +7,132 @@
 .chat {
   display: flex;
   flex-direction: column;
-  border: 1px solid pdz.color("outline-variant");
-  border-radius: pdz.shape("corner-md");
-  background: pdz.color("surface-container-lowest");
   overflow: hidden;
+  border: 1px solid pdz.color(border-subtle);
+  border-radius: pdz.shape(corner-md);
+  background: pdz.color(raised);
+}
 
-  &__header {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
-    gap: pdz.space(2xs);
-    padding: pdz.space(2xs) pdz.space(md);
-    border-bottom: 1px solid pdz.color("outline-variant");
-    background: pdz.color("surface-container-low");
-  }
+.chat__header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: pdz.space(2xs);
+  padding: pdz.space(xs) pdz.space(md);
+  border-bottom: 1px solid pdz.color(border-subtle);
+}
 
-  &__title {
-    display: inline-flex;
-    align-items: center;
-    gap: pdz.space(2xs);
-    margin: 0;
-    @include text(subtitle);
-    color: pdz.color("on-surface");
-  }
+.chat__title {
+  @include pdz.text(card-title);
+  display: inline-flex;
+  align-items: center;
+  gap: pdz.space(xs);
+  margin: 0;
+  color: pdz.color(on-surface);
+}
 
-  &__privacy {
-    @include text(label);
-    color: pdz.color("on-surface-variant");
-    text-transform: uppercase;
-    letter-spacing: 0.04em;
-  }
+.chat__log {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(2xs);
+  min-height: 8rem;
+  max-height: 22rem;
+  padding: pdz.space(md);
+  overflow-y: auto;
+}
 
-  &__log {
-    display: flex;
-    flex-direction: column;
-    gap: pdz.space(2xs);
-    max-height: 22rem;
-    min-height: 8rem;
-    padding: pdz.space(md);
-    overflow-y: auto;
-  }
+.chat__empty {
+  @include pdz.text(body-sm);
+  margin: auto;
+  color: pdz.color(on-surface-variant);
+  text-align: center;
+}
 
-  &__empty {
-    @include text(body-sm);
-    margin: auto;
-    color: pdz.color("on-surface-variant");
-    font-style: italic;
-    text-align: center;
-  }
+.chat__message {
+  align-self: flex-start;
+  max-width: min(36rem, 85%);
+  padding: pdz.space(2xs) pdz.space(sm);
+  border: 1px solid pdz.color(border-subtle);
+  border-radius: pdz.shape(corner-md);
+  background: pdz.color(raised-high);
+}
 
-  &__message {
-    align-self: flex-start;
-    max-width: min(36rem, 85%);
-    padding: pdz.space(2xs) pdz.space(sm);
-    border: 1px solid pdz.color("outline-variant");
-    border-radius: pdz.shape("corner-md");
-    background: pdz.color("surface-container-low");
+.chat__message--mine {
+  align-self: flex-end;
+  border-color: pdz.color(primary-border);
+  background: pdz.color(state-selected);
+}
 
-    &--mine {
-      align-self: flex-end;
-      border-color: pdz.color("primary-border");
-      background: pdz.color("primary-subtle");
-      color: pdz.color("on-primary-container");
-    }
+.chat__message--organizer {
+  align-self: flex-start;
+  border-color: pdz.color(info-border);
+  background: pdz.color(info-container);
+  color: pdz.color(on-info-container);
+}
 
-    &--organizer {
-      align-self: flex-start;
-      border-color: pdz.color("info");
-      background: pdz.color("info-container");
-      color: pdz.color("on-info-container");
-    }
-  }
+.chat__meta {
+  display: flex;
+  align-items: center;
+  gap: pdz.space(xs);
+}
 
-  &__meta {
-    display: flex;
-    align-items: center;
-    gap: pdz.space(2xs);
-  }
+.chat__author {
+  @include pdz.text(label-strong);
+}
 
-  &__author {
-    @include text(label);
-    text-transform: none;
-    font-weight: var(--pdz-font-weight-semibold);
-  }
+.chat__badge {
+  @include pdz.text(label-caps);
+  display: inline-flex;
+  align-items: center;
+  gap: pdz.space(3xs);
+  padding: 0 pdz.space(xs);
+  border-radius: pdz.shape(corner-full);
+  background: pdz.color(state-pressed);
+  color: pdz.color(on-surface-variant);
+}
 
-  &__badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.15rem;
-    padding: 0 pdz.space(2xs);
-    border-radius: pdz.shape("corner-full");
-    background: pdz.color("info");
-    color: pdz.color("on-info");
-    @include text(label);
-    text-transform: uppercase;
+.chat__badge--organizer {
+  background: pdz.color(info);
+  color: pdz.color(on-info);
+}
 
-    &--participant {
-      background: pdz.color("secondary");
-      color: pdz.color("on-secondary");
-    }
-  }
+.chat__time {
+  @include pdz.text(label);
+  color: pdz.color(on-surface-muted);
+}
 
-  &__time {
-    @include text(label);
-    color: pdz.color("on-surface-variant");
-  }
-  &__message:hover &__remove {
-    opacity: 1;
-  }
+.chat__text {
+  @include pdz.text(body-sm);
+  margin: 0;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
 
-  &__text {
-    @include text(body-sm);
-    margin: 0;
-    white-space: pre-wrap;
-    overflow-wrap: anywhere;
-  }
+.chat__composer {
+  display: flex;
+  align-items: flex-end;
+  gap: pdz.space(xs);
+  padding: pdz.space(sm) pdz.space(md);
+  border-top: 1px solid pdz.color(border-subtle);
+}
 
-  &__composer {
-    display: flex;
-    align-items: flex-end;
-    gap: pdz.space(2xs);
-    padding: pdz.space(sm) pdz.space(md);
-    border-top: 1px solid pdz.color("outline-variant");
-    background: pdz.color("surface-container-low");
-  }
+.chat__input {
+  flex: 1;
+  resize: none;
+}
 
-  &__input {
-    flex: 1;
-    resize: none;
-    padding: pdz.space(2xs) pdz.space(sm);
-    border: 1px solid pdz.color("outline-variant");
-    border-radius: pdz.shape("corner-sm");
-    background: pdz.color("surface-container-lowest");
-    color: pdz.color("on-surface");
-    font-family: inherit;
-    @include text(body-sm);
+.chat__readonly {
+  @include pdz.text(label);
+  margin: 0;
+  padding: pdz.space(xs) pdz.space(md) pdz.space(sm);
+  border-top: 1px solid pdz.color(border-subtle);
+  color: pdz.color(on-surface-variant);
+}
 
-    &:focus {
-      outline: none;
-      border-color: pdz.color("primary");
-    }
-  }
-  &__readonly {
-    @include text(label);
-    margin: 0;
-    padding: pdz.space(2xs) pdz.space(md) pdz.space(sm);
-    border-top: 1px solid pdz.color("outline-variant");
-    color: pdz.color("on-surface-variant");
-    text-transform: none;
-  }
-
-  &__error {
-    @include text(label);
-    margin: 0;
-    padding: 0 pdz.space(md) pdz.space(sm);
-    color: pdz.color("danger");
-  }
+.chat__error {
+  @include pdz.text(label);
+  margin: 0;
+  padding: 0 pdz.space(md) pdz.space(sm);
+  color: pdz.color(danger);
 }

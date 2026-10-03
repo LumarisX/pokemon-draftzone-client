@@ -8,6 +8,7 @@ import {
   signal,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { safeStorage } from '@pdz/core/utils/storage';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { Observable } from 'rxjs';
@@ -26,6 +27,7 @@ import { SegmentedOptionComponent } from '@pdz/shared/inputs/segmented/segmented
 import { SegmentedComponent } from '@pdz/shared/inputs/segmented/segmented.component';
 import { SlideToggleComponent } from '@pdz/shared/inputs/slide-toggle/slide-toggle.component';
 import { PageComponent } from '@pdz/shared/layout/page/page.component';
+import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
 import { WidgetComponent } from '@pdz/shared/layout/widget/widget.component';
 import { TooltipDirective } from '@pdz/shared/tooltip/tooltip.directive';
 
@@ -89,6 +91,7 @@ type KORow = {
     IconComponent,
     InputDirective,
     PageComponent,
+    PageHeaderComponent,
     ReplayChartComponent,
     SegmentedComponent,
     SegmentedOptionComponent,
@@ -366,33 +369,17 @@ function buildKOSummary(
 }
 
 function readDetailsPreference(): boolean {
-  try {
-    return localStorage.getItem(DETAILS_STORAGE_KEY) === 'true';
-  } catch {
-    return false;
-  }
+  return safeStorage.get(DETAILS_STORAGE_KEY) === 'true';
 }
 
 function writeDetailsPreference(enabled: boolean): void {
-  try {
-    localStorage.setItem(DETAILS_STORAGE_KEY, String(enabled));
-  } catch {
-    return;
-  }
+  safeStorage.set(DETAILS_STORAGE_KEY, String(enabled));
 }
 
 function readVersionPreference(): ReplayAnalyzerVersion {
-  try {
-    return localStorage.getItem(VERSION_STORAGE_KEY) === 'v1' ? 'v1' : 'v2';
-  } catch {
-    return 'v2';
-  }
+  return safeStorage.get(VERSION_STORAGE_KEY) === 'v1' ? 'v1' : 'v2';
 }
 
 function writeVersionPreference(version: ReplayAnalyzerVersion): void {
-  try {
-    localStorage.setItem(VERSION_STORAGE_KEY, version);
-  } catch {
-    return;
-  }
+  safeStorage.set(VERSION_STORAGE_KEY, version);
 }

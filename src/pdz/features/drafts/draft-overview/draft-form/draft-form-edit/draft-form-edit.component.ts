@@ -1,8 +1,8 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { DraftService } from '../../draft.service';
+import { DraftService } from '@pdz/features/drafts/draft-overview/draft.service';
 import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
-import { Draft } from '../../../draft.model';
+import { Draft } from '@pdz/features/drafts/draft.model';
 import {
   DraftFormCoreComponent,
   DraftFormData,

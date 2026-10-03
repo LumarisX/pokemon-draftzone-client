@@ -33,7 +33,7 @@ function baseFormeIds(id: string): string[] {
 export class SpriteService {
   private settingsService = inject(SettingsService);
 
-  readonly UNKNOWN_SPRITE_PATH = '../../../../assets/icons/unknown.svg';
+  readonly UNKNOWN_SPRITE_PATH = '/assets/icons/unknown.svg';
 
   private readonly DEFAULT: SpriteSetKey = 'home';
 

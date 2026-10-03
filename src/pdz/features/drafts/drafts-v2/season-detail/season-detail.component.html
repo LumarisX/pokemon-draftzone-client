@@ -14,11 +14,13 @@
     <div class="dz-detail__identity">
       <h2 class="dz-detail__title">{{ season().name }}</h2>
       <p class="dz-detail__team">
-        @if (logoUrl(); as logo) {
-          <img class="dz-detail__logo" alt="" [src]="logo" />
-        } @else {
-          <span class="dz-detail__crest" aria-hidden="true">{{ crest() }}</span>
-        }
+        <pdz-team-logo
+          decorative
+          size="md"
+          team="team1"
+          [src]="logoUrl()"
+          [name]="season().teamName"
+        />
         <span class="dz-detail__team-name">{{ season().teamName }}</span>
         @if (season().coach; as coach) {
           <span class="dz-detail__coach">{{ coach }}</span>
@@ -34,11 +36,11 @@
           icon="add"
           [routerLink]="link"
           [queryParams]="addOpponentParams()"
-          >Add opponent</a
+          >Add Opponent</a
         >
       } @else if (season().homeLink; as link) {
         <a pdz-button color="primary" icon="stadium" [routerLink]="link"
-          >Tournament hub</a
+          >Tournament Hub</a
         >
       }
 
@@ -60,7 +62,7 @@
             icon="edit_document"
             [routerLink]="['/', draftPath, 'edit']"
             [queryParams]="params"
-            >Edit team</a
+            >Edit Team</a
           >
         }
         <a
@@ -68,17 +70,17 @@
           icon="event_list"
           [routerLink]="['/', plannerPath]"
           [queryParams]="plannerParams()"
-          >Open in planner</a
+          >Open in Planner</a
         >
         @if (statsLink(); as link) {
           <a pdz-menu-item icon="query_stats" [routerLink]="link"
-            >Full stats table</a
+            >Full Stats Table</a
           >
         }
         @if (addOpponentLink()) {
           @if (season().homeLink; as link) {
             <a pdz-menu-item icon="open_in_new" [routerLink]="link"
-              >Classic view</a
+              >Classic View</a
             >
           }
         }
@@ -264,7 +266,7 @@
                     icon="add"
                     [routerLink]="link"
                     [queryParams]="addOpponentParams()"
-                    >Add opponent</a
+                    >Add Opponent</a
                   >
                 }
               </div>

@@ -8,7 +8,7 @@
   position: relative;
   display: flex;
   gap: pdz.space(xs);
-  border-bottom: 1px solid pdz.color(outline-variant);
+  border-bottom: 1px solid pdz.color(border-subtle);
   overflow-x: auto;
   scrollbar-width: none;
 
@@ -43,12 +43,11 @@
 
   &:hover:not(:disabled) {
     color: pdz.color(on-surface);
-    background-color: pdz.color(surface-container);
+    background-color: pdz.color(state-hover);
   }
 
   &:focus-visible {
-    outline: 2px solid pdz.color(primary-accent);
-    outline-offset: -2px;
+    @include pdz.focus-ring(-2px);
   }
 
   &:disabled {
@@ -58,6 +57,7 @@
 }
 
 .pdz-tabs__tab--active {
+  --pdz-icon-fill: 1;
   color: pdz.color(primary-accent);
 }
 
@@ -78,8 +78,7 @@
   padding-top: pdz.space(lg);
 
   &:focus-visible {
-    outline: 2px solid pdz.color(primary-accent);
-    outline-offset: 2px;
+    @include pdz.focus-ring;
   }
 }
 

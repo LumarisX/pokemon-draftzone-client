@@ -1,7 +1,7 @@
 <form [formGroup]="settingsForm" (ngSubmit)="save()">
   <div class="settings-dialog__body">
     <div pdz-field label="Light / Dark">
-      <pdz-segmented formControlName="ldMode" aria-label="Light / Dark">
+      <pdz-segmented formControlName="ldMode" aria-label="Light or dark mode">
         <pdz-segmented-option value="device" label="Device" />
         <pdz-segmented-option value="light" label="Light" />
         <pdz-segmented-option value="dark" label="Dark" />
@@ -10,22 +10,32 @@
 
     <div pdz-field label="Theme">
       <div class="theme-grid" role="radiogroup" aria-label="Theme">
-        @for (theme of themes; track theme.id) {
+        @for (option of themes; track option.id) {
           <button
-            type="button"
+            pdz-card
+            padding="sm"
             role="radio"
             class="theme-tile"
-            [ngClass]="theme.id"
-            [class.theme-tile--selected]="
-              settingsForm.controls.theme.value === theme.id
-            "
-            [attr.aria-checked]="settingsForm.controls.theme.value === theme.id"
-            (click)="selectTheme(theme.id)"
+            [selected]="theme() === option.id"
+            [attr.aria-checked]="theme() === option.id"
+            (click)="selectTheme(option.id)"
           >
-            <span class="theme-tile__label">{{ theme.name }}</span>
-            @if (theme.id === "shiny") {
-              <pdz-icon name="lock_open" [size]="16" aria-hidden="true" />
-            }
+            <span class="theme-tile__inner">
+              <span class="theme-tile__swatches" aria-hidden="true">
+                <span
+                  class="theme-tile__swatch"
+                  [style.background]="swatch(option.team1)"
+                ></span>
+                <span
+                  class="theme-tile__swatch"
+                  [style.background]="swatch(option.team2)"
+                ></span>
+              </span>
+              <span class="theme-tile__label">{{ option.name }}</span>
+              @if (option.id === "shiny") {
+                <pdz-icon name="lock_open" [size]="16" />
+              }
+            </span>
           </button>
         }
       </div>
@@ -34,21 +44,21 @@
     <div class="sprite-option">
       <div class="sprite-form">
         <label pdz-field label="Sprite Set">
-          <pdz-select formControlName="spriteSet" aria-label="Sprite set">
-            @for (spriteSet of spriteSets; track spriteSet.id) {
-              <pdz-option [value]="spriteSet.id" [label]="spriteSet.name" />
+          <pdz-select formControlName="spriteSet" aria-label="Sprite Set">
+            @for (set of spriteSets; track set.id) {
+              <pdz-option [value]="set.id" [label]="set.name" />
             }
           </pdz-select>
         </label>
 
         <a
-          target="_blank"
           pdz-button
           variant="link"
           color="neutral"
           size="sm"
+          target="_blank"
           rel="noopener noreferrer"
-          [href]="getCreditLink()"
+          [href]="creditLink()"
           >Credits</a
         >
       </div>
@@ -59,7 +69,7 @@
     </div>
 
     @if (saveError()) {
-      <p class="save-error" aria-live="polite">{{ saveError() }}</p>
+      <p class="save-error" role="alert">{{ saveError() }}</p>
     }
   </div>
 
@@ -73,8 +83,6 @@
     >
       Cancel
     </button>
-    <button pdz-button type="submit" [disabled]="saving()">
-      {{ saving() ? "Saving…" : "Save" }}
-    </button>
+    <button pdz-button type="submit" [loading]="saving()">Save</button>
   </div>
 </form>

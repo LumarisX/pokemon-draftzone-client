@@ -1,54 +1,55 @@
-import { Component, OnInit } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { CardComponent } from '@pdz/shared/data/card/card.component';
+import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
 import { PageComponent } from '@pdz/shared/layout/page/page.component';
 
-interface DevLink {
+interface SupportLink {
   name: string;
   href: string;
   iconSrc: string;
 }
 
-interface Developer {
+interface Supportee {
   name: string;
-  links: DevLink[];
+  description: string;
+  links: SupportLink[];
 }
 
 @Component({
   selector: 'pdz-supporters',
-  imports: [RouterModule, PageComponent],
+  imports: [CardComponent, PageComponent, PageHeaderComponent],
   templateUrl: './supporters.component.html',
   styleUrl: './supporters.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SupportersComponent implements OnInit {
-  developers: Developer[] = [
+export class SupportersComponent {
+  readonly supportees: Supportee[] = [
     {
       name: 'Pokémon DraftZone',
+      description: 'Merch and memberships that keep the site running.',
       links: [
         {
-          name: 'FourthWall',
+          name: 'Fourthwall',
           href: 'https://shop.pokemondraftzone.com/pages/join-support',
-          iconSrc: '../../../assets/icons/media/fourthwall.svg',
+          iconSrc: '/assets/icons/media/fourthwall.svg',
         },
       ],
     },
     {
       name: 'Lumaris',
+      description: 'Tip the developer directly.',
       links: [
         {
           name: 'Venmo',
           href: 'https://venmo.com/u/lumarisx',
-          iconSrc: '../../../assets/icons/media/venmo-icon.svg',
+          iconSrc: '/assets/icons/media/venmo-icon.svg',
         },
         {
           name: 'Buy Me a Coffee',
           href: 'https://buymeacoffee.com/xlumarisxu',
-          iconSrc: '../../../assets/icons/media/bmc-logo.svg',
+          iconSrc: '/assets/icons/media/bmc-logo.svg',
         },
       ],
     },
   ];
-
-  constructor() {}
-
-  ngOnInit(): void {}
 }

@@ -1,24 +1,23 @@
-@if (loading()) {
-  <pdz-loading></pdz-loading>
-} @else {
-  <div class="organizers">
-    <pdz-page-header
-      title="Organizers"
-      eyebrow="Manage"
-      subtitle="Organizers can manage every part of this tournament. Only the owner can change this list."
-    />
+<pdz-page-header
+  title="Organizers"
+  eyebrow="Manage"
+  subtitle="Organizers can manage every part of this tournament. Only the owner can change this list."
+/>
 
-    <section class="panel">
-      <h2 class="panel__title">Current</h2>
+@if (loading()) {
+  <pdz-loading />
+} @else {
+  <pdz-card padding="lg">
+    <section class="panel" aria-labelledby="organizers-current">
+      <h2 class="panel__title" id="organizers-current">Current</h2>
       <ul class="people">
         @for (organizer of organizers(); track organizer.sub) {
           <li class="person">
-            <span class="person__icon">
-              <pdz-icon
-                [name]="organizer.isOwner ? 'shield_person' : 'person'"
-                [size]="20"
-              />
-            </span>
+            <pdz-icon
+              class="person__icon"
+              [name]="organizer.isOwner ? 'shield_person' : 'person'"
+              [size]="20"
+            />
             @if (editingSub() === organizer.sub) {
               <form class="rename" (ngSubmit)="saveRename(organizer)">
                 <label pdz-field class="rename__field">
@@ -26,18 +25,18 @@
                     pdz-input
                     type="text"
                     name="draftName"
+                    aria-label="Organizer Name"
                     [maxlength]="nameMax"
-                    aria-label="Organizer name"
-                    [(ngModel)]="draftName"
+                    [ngModel]="draftName()"
+                    (ngModelChange)="draftName.set($event)"
                   />
                 </label>
                 <button
                   pdz-button
                   type="submit"
                   size="sm"
-                  [disabled]="
-                    !isValidName(draftName) || busyId() === organizer.sub
-                  "
+                  [loading]="busyId() === organizer.sub"
+                  [disabled]="!isValidName(draftName())"
                 >
                   Save
                 </button>
@@ -46,6 +45,7 @@
                   type="button"
                   size="sm"
                   variant="ghost"
+                  color="neutral"
                   (click)="cancelRename()"
                 >
                   Cancel
@@ -53,29 +53,34 @@
               </form>
             } @else {
               <span class="person__body">
-                <span class="person__name">{{ label(organizer) }}</span>
-                @if (note(organizer); as text) {
-                  <span class="person__note">{{ text }}</span>
+                <span class="person__name">
+                  {{ label(organizer) }}
+                  @if (organizer.isYou) {
+                    <span class="pdz-you-tag">You</span>
+                  }
+                </span>
+                @if (organizer.isOwner) {
+                  <span class="person__note">Owner</span>
                 }
               </span>
               @if (canRename(organizer)) {
                 <button
                   pdz-button
                   iconOnly
+                  icon="edit"
                   size="sm"
                   variant="ghost"
                   color="neutral"
                   pdzTooltip="Rename"
                   [attr.aria-label]="'Rename ' + label(organizer)"
                   (click)="startRename(organizer)"
-                >
-                  <pdz-icon name="edit" [size]="20" />
-                </button>
+                ></button>
               }
               @if (canEdit() && !organizer.isOwner) {
                 <button
                   pdz-button
                   iconOnly
+                  icon="person_remove"
                   size="sm"
                   variant="ghost"
                   color="danger"
@@ -83,19 +88,19 @@
                   [attr.aria-label]="'Remove ' + label(organizer)"
                   [disabled]="busyId() === organizer.sub"
                   (click)="remove(organizer)"
-                >
-                  <pdz-icon name="person_remove" [size]="20" />
-                </button>
+                ></button>
               }
             }
           </li>
         }
       </ul>
     </section>
+  </pdz-card>
 
-    @if (canEdit()) {
-      <section class="panel">
-        <h2 class="panel__title">Invite by link</h2>
+  @if (canEdit()) {
+    <pdz-card padding="lg">
+      <section class="panel" aria-labelledby="organizers-invite">
+        <h2 class="panel__title" id="organizers-invite">Invite by Link</h2>
         <p class="panel__lead">
           For someone who isn't playing in this tournament. Each link works for
           one person and expires after 7 days. They'll be asked to sign in or
@@ -105,55 +110,59 @@
         <form class="invite-form" (ngSubmit)="createInvite()">
           <label
             pdz-field
-            label="Organizer name"
+            class="invite-form__field"
+            label="Organizer Name"
             hint="What other organizers will see. They can change it when they accept."
             required
-            class="invite-form__field"
           >
             <input
               pdz-input
               type="text"
               name="inviteName"
-              [maxlength]="nameMax"
               placeholder="e.g. Misty"
-              [(ngModel)]="inviteName"
+              [maxlength]="nameMax"
+              [ngModel]="inviteName()"
+              (ngModelChange)="inviteName.set($event)"
             />
           </label>
           <button
             pdz-button
             type="submit"
-            [disabled]="creatingInvite() || !isValidName(inviteName)"
+            icon="add_link"
+            [loading]="creatingInvite()"
+            [disabled]="!isValidName(inviteName())"
           >
-            <pdz-icon name="add_link" [size]="18" />
-            Create link
+            Create Link
           </button>
         </form>
 
         @if (createdLink(); as link) {
           <div class="invite-created">
-            <label pdz-field label="New invite link">
-              <input
-                pdz-input
-                type="text"
-                readonly
-                [value]="link.url"
-                aria-label="New invite link"
-              />
-            </label>
-            <div class="invite-created__actions">
-              <button
-                pdz-button
-                type="button"
-                size="sm"
-                variant="outlined"
-                (click)="copyLink(link.url)"
-              >
-                Copy link
-              </button>
+            <div
+              pdz-field
+              label="New invite link"
+              hint="Copy it now. The link is not stored, so it can't be shown again."
+            >
+              <div class="invite-created__row">
+                <input
+                  pdz-input
+                  type="text"
+                  readonly
+                  aria-label="New invite link"
+                  [value]="link.url"
+                />
+                <button
+                  pdz-button
+                  type="button"
+                  icon="content_copy"
+                  variant="outlined"
+                  color="neutral"
+                  (click)="copyLink(link.url)"
+                >
+                  Copy
+                </button>
+              </div>
             </div>
-            <p class="panel__hint">
-              Copy it now. The link is not stored, so it can't be shown again.
-            </p>
           </div>
         }
 
@@ -162,13 +171,9 @@
           <ul class="people">
             @for (invite of invites(); track invite.id) {
               <li class="person">
-                <span class="person__icon">
-                  <pdz-icon name="link" [size]="20" />
-                </span>
+                <pdz-icon class="person__icon" name="link" [size]="20" />
                 <span class="person__body">
-                  <span class="person__name">
-                    {{ invite.name }}
-                  </span>
+                  <span class="person__name">{{ invite.name }}</span>
                   <span class="person__note">
                     Expires {{ invite.expiresAt | date: "MMM d, h:mm a" }}
                   </span>
@@ -188,31 +193,32 @@
           </ul>
         }
       </section>
+    </pdz-card>
 
-      <section class="panel">
-        <h2 class="panel__title">Promote a participant</h2>
+    <pdz-card padding="lg">
+      <section class="panel" aria-labelledby="organizers-promote">
+        <h2 class="panel__title" id="organizers-promote">
+          Promote a Participant
+        </h2>
         @if (candidates().length) {
           <ul class="people">
             @for (candidate of candidates(); track candidate.coachId) {
               <li class="person">
-                <span class="person__icon">
-                  <pdz-icon name="person" [size]="20" />
-                </span>
+                <pdz-icon class="person__icon" name="person" [size]="20" />
                 <span class="person__body">
                   <span class="person__name">{{ candidate.name }}</span>
                 </span>
                 <button
                   pdz-button
                   iconOnly
+                  icon="person_add"
                   size="sm"
                   variant="ghost"
                   pdzTooltip="Make organizer"
                   [attr.aria-label]="'Make ' + candidate.name + ' an organizer'"
                   [disabled]="busyId() === candidate.coachId"
                   (click)="promote(candidate)"
-                >
-                  <pdz-icon name="person_add" [size]="20" />
-                </button>
+                ></button>
               </li>
             }
           </ul>
@@ -221,9 +227,9 @@
             icon="group_off"
             heading="No one to promote"
             message="Approved coaches who aren't already organizers appear here."
-          ></pdz-empty-state>
+          />
         }
       </section>
-    }
-  </div>
+    </pdz-card>
+  }
 }

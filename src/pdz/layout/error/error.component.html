@@ -1,13 +1,13 @@
 <div class="toasts">
-  @for (error of errors; track trackByErrorId($index, error)) {
+  @for (error of errors(); track error.id) {
     <div
       class="toast"
       role="alert"
       aria-live="assertive"
-      [class.toast--leaving]="isDismissing(error.id)"
+      [class.toast--leaving]="dismissing().has(error.id)"
     >
       <div class="toast__head">
-        <pdz-icon class="toast__icon" name="error" [size]="20" fill></pdz-icon>
+        <pdz-icon class="toast__icon" name="error" [size]="20" fill />
 
         <div class="toast__titles">
           <span class="toast__title">
@@ -25,14 +25,13 @@
         <button
           pdz-button
           iconOnly
+          icon="close"
           size="xs"
           variant="ghost"
           color="neutral"
-          (click)="dismissError(error.id)"
           aria-label="Dismiss error"
-        >
-          <pdz-icon name="close" [size]="18"></pdz-icon>
-        </button>
+          (click)="dismissError(error.id)"
+        ></button>
       </div>
 
       <div class="toast__message">
@@ -60,27 +59,27 @@
       @if (hasDetails(error) || hasStack(error) || hasRequestId(error)) {
         <button
           pdz-button
-          iconOnly
           size="xs"
           variant="ghost"
           color="neutral"
+          class="toast__toggle"
+          [attr.aria-expanded]="expanded().has(error.id)"
           (click)="toggleDetails(error.id)"
-          [attr.aria-expanded]="isExpanded(error.id)"
         >
           <pdz-icon
             name="expand_more"
             [size]="16"
-            [class.toast__expand-chevron--open]="isExpanded(error.id)"
             class="toast__expand-chevron"
-          ></pdz-icon>
-          {{ isExpanded(error.id) ? "Hide details" : "Show details" }}
+            [class.toast__expand-chevron--open]="expanded().has(error.id)"
+          />
+          {{ expanded().has(error.id) ? "Hide Details" : "Show Details" }}
         </button>
 
-        @if (isExpanded(error.id)) {
+        @if (expanded().has(error.id)) {
           <div class="toast__details">
             @if (hasDetails(error)) {
               <dl class="toast__detail-list">
-                @for (entry of getDetailsEntries(error); track entry[0]) {
+                @for (entry of detailEntries(error); track entry[0]) {
                   <dt>{{ entry[0] }}</dt>
                   <dd>{{ formatDetailValue(entry[1]) }}</dd>
                 }
@@ -101,39 +100,48 @@
       }
 
       <div class="toast__actions">
-        <button
-          pdz-button
-          size="sm"
-          [class.toast__btn--done]="isReported(error.id)"
-          [disabled]="isReporting(error.id) || isReported(error.id)"
-          (click)="sendReport(error)"
-        >
-          @if (isReported(error.id)) {
-            <pdz-icon name="check" [size]="16"></pdz-icon>
-            Reported
-          } @else if (isReporting(error.id)) {
-            Sending…
-          } @else if (reportFailed(error.id)) {
-            <pdz-icon name="refresh" [size]="16"></pdz-icon>
-            Retry
-          } @else {
-            <pdz-icon name="flag" [size]="16"></pdz-icon>
-            Report
+        @switch (reportState(error.id)) {
+          @case ("sent") {
+            <button
+              pdz-button
+              size="sm"
+              variant="outlined"
+              color="neutral"
+              icon="check"
+              disabled
+            >
+              Reported
+            </button>
           }
-        </button>
+          @case ("sending") {
+            <button pdz-button size="sm" loading>Sending</button>
+          }
+          @case ("failed") {
+            <button
+              pdz-button
+              size="sm"
+              icon="refresh"
+              (click)="sendReport(error)"
+            >
+              Retry
+            </button>
+          }
+          @default {
+            <button pdz-button size="sm" icon="flag" (click)="sendReport(error)">
+              Report
+            </button>
+          }
+        }
 
         <button
           pdz-button
           size="sm"
           color="neutral"
           variant="outlined"
+          [icon]="copied().has(error.id) ? 'check' : 'content_copy'"
           (click)="copyError(error)"
         >
-          <pdz-icon
-            [name]="isCopied(error.id) ? 'check' : 'content_copy'"
-            [size]="16"
-          ></pdz-icon>
-          {{ isCopied(error.id) ? "Copied" : "Copy" }}
+          {{ copied().has(error.id) ? "Copied" : "Copy" }}
         </button>
       </div>
     </div>

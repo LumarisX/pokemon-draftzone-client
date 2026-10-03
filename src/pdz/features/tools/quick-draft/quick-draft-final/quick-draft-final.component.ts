@@ -1,93 +1,58 @@
 import { AsyncPipe } from '@angular/common';
-import { Component, EventEmitter, Output, inject, input } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+  input,
+  output,
+} from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { toPSString } from '../quick-draft.utils';
 import { DRAFT_OVERVIEW_PATH, TOOLS_PATH } from '@pdz/core/route-paths';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
 import { QDPokemon } from '../quick-draft-picks/quick-draft-picks.component';
 import { QDSettings } from '../quick-draft-setting/quick-draft-setting.component';
-import { typeColor } from '@pdz/core/utils/styling';
+import { PokemonTypeComponent } from '@pdz/shared/data/pokemon-type/pokemon-type.component';
 import { AuthService } from '@pdz/core/services/auth0.service';
-import { HttpClient } from '@angular/common/http';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 
 @Component({
   selector: 'pdz-quick-draft-final',
-  imports: [SpriteComponent, RouterLink, AsyncPipe, ButtonComponent],
+  imports: [
+    AsyncPipe,
+    ButtonComponent,
+    PokemonTypeComponent,
+    RouterLink,
+    SpriteComponent,
+  ],
   templateUrl: './quick-draft-final.component.html',
   styleUrls: [
     './quick-draft-final.component.scss',
     '../quick-draft.component.scss',
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class QuickDraftFinalComponent {
   private authService = inject(AuthService);
-  private http = inject(HttpClient);
 
   readonly draft = input.required<QDPokemon[]>();
-
   readonly settings = input.required<QDSettings>();
+  readonly restartDraft = output<void>();
 
-  @Output()
-  restartDraft = new EventEmitter<void>();
+  readonly draftPath = DRAFT_OVERVIEW_PATH;
+  readonly toolsPath = TOOLS_PATH;
+  readonly loggedInUser = this.authService.user$;
+  readonly notes = 'Format: gen9natdexdraft\n- Made using Pokemon DraftZone';
 
-  draftPath = DRAFT_OVERVIEW_PATH;
-  toolsPath = TOOLS_PATH;
-
-  get teamIds() {
-    return this.draft().map((pokemon) => pokemon.id);
-  }
-
-  typeColor = typeColor;
-
-  toPokepaste() {
-    this.newPokepaste(
-      this.draft()
-        .map((pokemon) => pokemon.name)
-        .join('\n'),
-    ).subscribe((response) => {
-      console.log(response);
-    });
-  }
+  readonly teamIds = computed(() => this.draft().map((pokemon) => pokemon.id));
+  readonly teamPaste = computed(() =>
+    this.draft()
+      .map((pokemon) => toPSString(pokemon))
+      .join('\n'),
+  );
 
   restart() {
     this.restartDraft.emit();
-  }
-
-  get loggedInUser() {
-    return this.authService.user$;
-  }
-
-  get teamPaste() {
-    return this.draft()
-      .map((pokemon) => toPSString(pokemon))
-      .join('\n');
-  }
-
-  get psformat() {
-    return this.settings().format;
-  }
-
-  get notes() {
-    //TODO: add psformat to format
-    return `Format: gen9natdexdraft\n- Made using Pokemon DraftZone`;
-  }
-
-  newPokepaste(
-    paste: string,
-    options: {
-      title?: string;
-      user?: string;
-      notes?: string;
-      teamPrivacy?: boolean;
-    } = {},
-  ) {
-    return this.http.post('https://pokepast.es/create', {
-      title: options.title,
-      paste: paste,
-      author: options.user || 'Pokemon DraftZone User',
-      notes: options.notes + '\nCreated using Pokemon DraftZone',
-      teamprivacy: options.teamPrivacy ? 'on' : 'off',
-    });
   }
 }

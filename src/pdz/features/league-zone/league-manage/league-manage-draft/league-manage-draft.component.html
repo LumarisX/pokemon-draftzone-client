@@ -1,413 +1,345 @@
+@let saved = settings();
+@let draft = pending();
+@let turnNow = currentTurn();
 
-<pdz-page-header [title]="poolName || 'Draft Control'" eyebrow="Draft Control">
-  <span pdz-page-header-detail>
-    <span
-      class="page-header__status-badge"
-      [class.page-header__status-badge--in-progress]="status === 'IN_PROGRESS'"
-      [class.page-header__status-badge--paused]="status === 'PAUSED'"
-      [class.page-header__status-badge--completed]="status === 'COMPLETED'"
-      >{{ statusLabel }}</span
+<pdz-page-header
+  [title]="saved.name || 'Draft control'"
+  eyebrow="Draft Control"
+>
+  <pdz-chip
+    pdz-page-header-meta
+    class="manage-draft__status"
+    size="sm"
+    [tone]="statusTone()"
+    >{{ statusLabel() }}</pdz-chip
+  >
+  @if (status() === "IN_PROGRESS" && turnNow) {
+    <span pdz-page-header-detail class="manage-draft__clock">
+      {{ turnNow.team.name }} is on the clock
+      @if (noTimer()) {
+        · timer disabled
+      } @else if (pickTimeDisplay(); as left) {
+        · {{ left }} left
+      }
+    </span>
+  } @else if (status() === "PAUSED") {
+    <span pdz-page-header-detail class="manage-draft__clock"
+      >Clock is stopped — press play to resume</span
     >
-    @if (status === "IN_PROGRESS" && currentTurn) {
-      <span class="page-header__status-detail">
-        {{ currentTurn.team.name }} is on the clock
-        @if (noTimer) {
-          · timer disabled
-        } @else if (pickTimeDisplay) {
-          · {{ pickTimeDisplay }} left
-        }
-      </span>
-    } @else if (status === "PAUSED") {
-      <span class="page-header__status-detail"
-        >Clock is stopped — press play to resume</span
-      >
-    }
-  </span>
+  }
 
   <div pdz-page-header-actions>
-    @if (status === "IN_PROGRESS") {
+    @if (status() === "IN_PROGRESS") {
       <button
         pdz-button
         iconOnly
-        size="lg"
-        color="secondary"
-        type="button"
-        aria-label="Pause timer"
+        icon="pause"
+        aria-label="Pause draft"
+        pdzTooltip="Pause draft"
         (click)="setState('pause')"
-      >
-        <pdz-icon name="pause" size="md" aria-hidden="true"></pdz-icon>
-      </button>
+      ></button>
     } @else {
       <button
         pdz-button
         iconOnly
-        size="lg"
-        type="button"
-        aria-label="Play timer"
+        icon="play_arrow"
+        aria-label="Start draft"
+        pdzTooltip="Start draft"
         (click)="setState('play')"
-      >
-        <pdz-icon name="play_arrow" size="md" aria-hidden="true"></pdz-icon>
-      </button>
+      ></button>
     }
     <button
       pdz-button
       iconOnly
-      size="lg"
-      color="secondary"
-      type="button"
+      icon="skip_next"
+      variant="outlined"
+      color="neutral"
       aria-label="Skip turn"
+      pdzTooltip="Skip turn"
       (click)="skipNext()"
-    >
-      <pdz-icon name="skip_next" size="md" aria-hidden="true"></pdz-icon>
-    </button>
-    @if (noTimer) {
-      <button
-        pdz-button
-        iconOnly
-        size="lg"
-        type="button"
-        aria-label="Enable pick timer"
-        pdzTooltip="Timer disabled — click to re-enable"
-        (click)="toggleNoTimer()"
-      >
-        <pdz-icon name="timer_off" size="md" aria-hidden="true"></pdz-icon>
-      </button>
-    } @else {
-      <button
-        pdz-button
-        iconOnly
-        size="lg"
-        color="secondary"
-        type="button"
-        aria-label="Disable pick timer"
-        pdzTooltip="Click to run the draft with no timer"
-        (click)="toggleNoTimer()"
-      >
-        <pdz-icon name="timer" size="md" aria-hidden="true"></pdz-icon>
-      </button>
-    }
-  </div>
-  <pdz-pool-switcher
-    [currentPoolSlug]="poolSlug"
-    (poolSelected)="onPoolSelected($event)"
-  ></pdz-pool-switcher>
-</pdz-page-header>
-
-<div class="control-panels">
-<section class="settings-panel">
-  <header class="settings-panel__header">
-    <h3 class="settings-panel__title">Draft Settings</h3>
-  </header>
-
-  <div class="settings-panel__body">
-    <div class="form-field">
-      <label class="form-field__label" for="draft-name">Draft name</label>
-      <input
-        id="draft-name"
-        class="form-field__input"
-        type="text"
-        [value]="pendingPoolName"
-        (input)="pendingPoolName = $any($event.target).value"
-      />
-    </div>
-
-    <div class="form-field">
-      <label class="form-field__label" for="draft-channel-id"
-        >Discord channel ID</label
-      >
-      <div class="settings-panel__channel-row">
-        <input
-          id="draft-channel-id"
-          class="form-field__input"
-          type="text"
-          placeholder="e.g. 123456789012345678"
-          [value]="pendingChannelId"
-          (input)="pendingChannelId = $any($event.target).value"
-        />
-        <button
-          pdz-button
-          size="sm"
-          color="neutral"
-          variant="outlined"
-          [disabled]="!channelId || testingMessage"
-          [title]="
-            channelId
-              ? 'Send a test message to the saved channel ID'
-              : 'Save a channel ID first'
-          "
-          (click)="sendTestMessage()"
-        >
-          Send test message
-        </button>
-      </div>
-      <span class="form-field__hint">
-        Test sends to the last <strong>saved</strong> channel ID — save
-        settings first if you just changed it.
-      </span>
-    </div>
-
-    <div class="form-field">
-      <span class="form-field__label">Turn order</span>
-      <div class="radio-group">
-        <label class="radio-option">
-          <input
-            pdz-radio
-            type="radio"
-            name="order-progression"
-            value="snake"
-            [checked]="pendingOrderProgression === 'snake'"
-            [disabled]="!canEditOrder"
-            (change)="pendingOrderProgression = 'snake'"
-          />
-          <span class="radio-option__label">Snake</span>
-        </label>
-        <label class="radio-option">
-          <input
-            pdz-radio
-            type="radio"
-            name="order-progression"
-            value="linear"
-            [checked]="pendingOrderProgression === 'linear'"
-            [disabled]="!canEditOrder"
-            (change)="pendingOrderProgression = 'linear'"
-          />
-          <span class="radio-option__label">Linear</span>
-        </label>
-      </div>
-      @if (!canEditOrder) {
-        <span class="form-field__hint"
-          >Turn order can only be changed before the draft starts.</span
-        >
-      }
-    </div>
-
-    <label class="checkbox-option">
-      <input
-        pdz-checkbox type="checkbox"
-        [checked]="pendingSequentialTurns"
-        [disabled]="!canEditOrder"
-        (change)="pendingSequentialTurns = !pendingSequentialTurns"
-      />
-      <span class="checkbox-option__label">Sequential turns</span>
-    </label>
-
-    <label class="checkbox-option">
-      <input
-        pdz-checkbox type="checkbox"
-        [checked]="pendingAllowDuplicates"
-        [disabled]="!canEditOrder"
-        (change)="pendingAllowDuplicates = !pendingAllowDuplicates"
-      />
-      <span class="checkbox-option__label"
-        >Let more than one team draft the same Pokémon</span
-      >
-    </label>
-
-    <div class="form-field">
-      <span class="form-field__label">Who sees picks</span>
-      <div class="radio-group">
-        <label class="radio-option">
-          <input
-            pdz-radio
-            type="radio"
-            name="picks-visible-to"
-            value="everyone"
-            [checked]="pendingPicksVisibleTo === 'everyone'"
-            (change)="pendingPicksVisibleTo = 'everyone'"
-          />
-          <span class="radio-option__label">Everyone</span>
-        </label>
-        <label class="radio-option">
-          <input
-            pdz-radio
-            type="radio"
-            name="picks-visible-to"
-            value="ownTeam"
-            [checked]="pendingPicksVisibleTo === 'ownTeam'"
-            (change)="pendingPicksVisibleTo = 'ownTeam'"
-          />
-          <span class="radio-option__label">Own team only</span>
-        </label>
-      </div>
-      <span class="form-field__hint"
-        >Own team only hides other teams' picks from coaches until the draft
-        completes. Switch back to everyone to reveal early.</span
-      >
-    </div>
-
-    <label class="checkbox-option">
-      <input
-        pdz-checkbox type="checkbox"
-        [checked]="pendingAllowRemovals"
-        (change)="pendingAllowRemovals = !pendingAllowRemovals"
-      />
-      <span class="checkbox-option__label">Allow pick removals</span>
-    </label>
-  </div>
-
-  <div class="settings-panel__actions">
-    @if (isSettingsDirty) {
-      <span class="order-panel__dirty">Unsaved changes</span>
-    }
+    ></button>
     <button
       pdz-button
-          size="sm"
-          color="neutral"
-          variant="outlined"
-      [disabled]="!isSettingsDirty || settingsSaving"
-      (click)="saveSettings()"
-    >
-      Save settings
-    </button>
+      iconOnly
+      variant="outlined"
+      color="neutral"
+      [icon]="noTimer() ? 'timer_off' : 'timer'"
+      [attr.aria-pressed]="!noTimer()"
+      aria-label="Pick timer"
+      [pdzTooltip]="
+        noTimer()
+          ? 'Timer off — click to turn it on'
+          : 'Timer on — click to run without one'
+      "
+      (click)="toggleNoTimer()"
+    ></button>
   </div>
-</section>
 
-<section class="order-panel">
-  <header class="order-panel__header">
-    <h3 class="order-panel__title">Draft Order</h3>
-    <label class="order-panel__toggle">
-      <input
-        pdz-checkbox type="checkbox"
-        [checked]="pendingUseRandomSeeding"
-        [disabled]="!canEditOrder"
-        (change)="toggleRandomSeeding()"
-      />
-      Random seeding
-    </label>
-  </header>
+  <pdz-pool-switcher
+    [currentPoolSlug]="poolSlug()"
+    (poolSelected)="onPoolSelected($event)"
+  />
+</pdz-page-header>
 
-  <ol
-    class="order-panel__list"
-    [cdkDropListDisabled]="!canReorderTeams"
-    cdkDropList
-    (cdkDropListDropped)="dropTeam($event)"
-  >
-    @for (team of orderPreview; track team.id) {
-      <li
-        class="order-panel__row"
-        [class.order-panel__row--static]="!canReorderTeams"
-        cdkDrag
-        cdkDragLockAxis="y"
-        cdkDragBoundary=".order-panel__list"
+<div class="manage-draft__panels">
+  <pdz-card padding="lg" class="panel">
+    <div class="panel__body">
+      <h2 class="panel__title">Draft Settings</h2>
+
+      <label pdz-field label="Draft Name">
+        <input
+          pdz-input
+          type="text"
+          [value]="draft.name"
+          (input)="patch('name', $any($event.target).value)"
+        />
+      </label>
+
+      <div
+        pdz-field
+        label="Discord channel ID"
+        hint="Test sends to the last saved channel ID — save settings first if you just changed it."
       >
-        @if (canReorderTeams) {
-          <span class="order-panel__handle" cdkDragHandle title="Drag to reorder">
-            <pdz-icon name="drag_indicator" [size]="18"></pdz-icon>
-          </span>
-        }
-        <span class="order-panel__position">{{ $index + 1 }}</span>
-        <div class="order-panel__who">
-          <span class="order-panel__team">{{ team.name }}</span>
-          <span class="order-panel__coach">{{ team.coach }}</span>
+        <div class="panel__inline">
+          <input
+            pdz-input
+            type="text"
+            aria-label="Discord channel ID"
+            placeholder="e.g. 123456789012345678"
+            [value]="draft.channelId"
+            (input)="patch('channelId', $any($event.target).value)"
+          />
+          <button
+            pdz-button
+            variant="outlined"
+            color="neutral"
+            [loading]="testingMessage()"
+            [disabled]="!saved.channelId"
+            [pdzTooltip]="saved.channelId ? '' : 'Save a channel ID first'"
+            (click)="sendTestMessage()"
+          >
+            Send Test
+          </button>
         </div>
-      </li>
-    }
-  </ol>
+      </div>
 
-  @if (canEditOrder) {
-    <div class="order-panel__actions">
-      @if (isOrderDirty) {
-        <span class="order-panel__dirty">Unsaved changes</span>
-      }
-      <button
-        pdz-button
-          size="sm"
-          color="neutral"
-          variant="outlined"
-        [disabled]="!isOrderDirty || orderSaving"
-        (click)="saveOrder()"
+      <div
+        pdz-field
+        label="Turn Order"
+        [hint]="
+          canEditOrder()
+            ? undefined
+            : 'Turn order can only change before the draft starts.'
+        "
       >
-        Save order
-      </button>
+        <pdz-segmented
+          size="sm"
+          aria-label="Turn Order"
+          [disabled]="!canEditOrder()"
+          [value]="draft.orderProgression"
+          (valueChange)="patch('orderProgression', $any($event))"
+        >
+          <pdz-segmented-option value="snake" label="Snake" />
+          <pdz-segmented-option value="linear" label="Linear" />
+        </pdz-segmented>
+      </div>
+
+      <div
+        pdz-field
+        label="Who sees picks"
+        hint="Own team only hides other teams' picks from coaches until the draft completes. Switch back to everyone to reveal early."
+      >
+        <pdz-segmented
+          size="sm"
+          aria-label="Who sees picks"
+          [value]="draft.picksVisibleTo"
+          (valueChange)="patch('picksVisibleTo', $any($event))"
+        >
+          <pdz-segmented-option value="everyone" label="Everyone" />
+          <pdz-segmented-option value="ownTeam" label="Own team only" />
+        </pdz-segmented>
+      </div>
+
+      <div class="panel__checks">
+        <label pdz-check label="Sequential Turns">
+          <input
+            pdz-checkbox
+            type="checkbox"
+            [checked]="draft.sequentialTurns"
+            [disabled]="!canEditOrder()"
+            (change)="patch('sequentialTurns', !draft.sequentialTurns)"
+          />
+        </label>
+        <label
+          pdz-check
+          label="Allow duplicate picks"
+          description="More than one team can draft the same Pokémon."
+        >
+          <input
+            pdz-checkbox
+            type="checkbox"
+            [checked]="draft.allowDuplicates"
+            [disabled]="!canEditOrder()"
+            (change)="patch('allowDuplicates', !draft.allowDuplicates)"
+          />
+        </label>
+        <label pdz-check label="Allow pick removals">
+          <input
+            pdz-checkbox
+            type="checkbox"
+            [checked]="draft.allowRemovals"
+            (change)="patch('allowRemovals', !draft.allowRemovals)"
+          />
+        </label>
+      </div>
+
+      <div class="panel__actions">
+        @if (isSettingsDirty()) {
+          <span class="panel__dirty">Unsaved changes</span>
+        }
+        <button
+          pdz-button
+          [loading]="settingsSaving()"
+          [disabled]="!isSettingsDirty()"
+          (click)="saveSettings()"
+        >
+          Save Settings
+        </button>
+      </div>
     </div>
-  } @else {
-    <p class="order-panel__locked">
-      Order can only be changed before the draft starts.
-    </p>
-  }
-</section>
+  </pdz-card>
+
+  <pdz-card padding="lg" class="panel">
+    <div class="panel__body">
+      <div class="panel__header">
+        <h2 class="panel__title">Draft Order</h2>
+        <label pdz-check label="Random Seeding">
+          <input
+            pdz-checkbox
+            type="checkbox"
+            [checked]="pendingUseRandomSeeding()"
+            [disabled]="!canEditOrder()"
+            (change)="toggleRandomSeeding()"
+          />
+        </label>
+      </div>
+
+      <ol
+        class="order"
+        cdkDropList
+        [cdkDropListDisabled]="!canReorderTeams()"
+        (cdkDropListDropped)="dropTeam($event)"
+      >
+        @for (team of orderPreview(); track team.id) {
+          <li
+            class="order__row"
+            [class.order__row--static]="!canReorderTeams()"
+            cdkDrag
+            cdkDragLockAxis="y"
+            cdkDragBoundary=".order"
+          >
+            @if (canReorderTeams()) {
+              <span class="order__handle" cdkDragHandle aria-hidden="true">
+                <pdz-icon name="drag_indicator" [size]="18" />
+              </span>
+            }
+            <span class="order__position">{{ $index + 1 }}</span>
+            <span class="order__who">
+              <span class="order__team">{{ team.name }}</span>
+              <span class="order__coach">{{ team.coach }}</span>
+            </span>
+          </li>
+        }
+      </ol>
+
+      @if (canEditOrder()) {
+        <div class="panel__actions">
+          @if (isOrderDirty()) {
+            <span class="panel__dirty">Unsaved changes</span>
+          }
+          <button
+            pdz-button
+            [loading]="orderSaving()"
+            [disabled]="!isOrderDirty()"
+            (click)="saveOrder()"
+          >
+            Save Order
+          </button>
+        </div>
+      } @else {
+        <p class="panel__note">
+          Order can only change before the draft starts.
+        </p>
+      }
+    </div>
+  </pdz-card>
 </div>
 
-@if (rounds.length) {
-  <div class="rounds">
-    @for (round of rounds; track round.round) {
-      <section class="round">
+@if (rounds().length) {
+  <div class="manage-draft__rounds">
+    @for (round of rounds(); track round.round) {
+      <section class="round" [attr.aria-label]="'Round ' + (round.round + 1)">
         <header class="round__header">
-          <h3 class="round__title">Round {{ round.round + 1 }}</h3>
+          <h2 class="round__title">Round {{ round.round + 1 }}</h2>
           <span class="round__count">
             {{ roundPickedCount(round) }} / {{ round.turns.length }} picked
           </span>
-          <pdz-icon
-            class="round__direction"
-            name="trending_flat"
-            size="sm"
-          ></pdz-icon>
         </header>
 
         <div class="round__turns">
           @for (turn of round.turns; track turn.key) {
             <article
               class="turn"
-              [class.turn--picked]="turn.state === 'picked'"
-              [class.turn--current]="turn.state === 'current'"
-              [class.turn--skipped]="turn.state === 'skipped'"
+              [attr.data-state]="turn.state"
               [class.turn--editing]="isEditing(turn)"
               [class.turn--pending]="isPending(turn)"
             >
               <header class="turn__header">
                 <span class="turn__position">{{ turn.position + 1 }}</span>
-                <div class="turn__who">
-                  <span class="turn__team" [title]="turn.team.name">
-                    {{ turn.team.name }}
-                  </span>
-                  <span class="turn__coach" [title]="turnCoach(turn)">
-                    <pdz-icon
-                      [name]="turn.pokemon ? 'how_to_reg' : 'person'"
-                      [size]="14"
-                    ></pdz-icon>
-                    <span class="turn__coach-name">{{ turnCoach(turn) }}</span>
-                  </span>
-                </div>
+                <span class="turn__who">
+                  <span class="turn__team" [title]="turn.team.name">{{
+                    turn.team.name
+                  }}</span>
+                  <span class="turn__coach" [title]="turnCoach(turn)">{{
+                    turnCoach(turn)
+                  }}</span>
+                </span>
               </header>
 
               <div class="turn__pick">
-                @if (turn.pokemon) {
-                  <pdz-sprite size="3rem" [pokemon]="turn.pokemon"></pdz-sprite>
-                  <div class="turn__pick-info">
-                    <span class="turn__pokemon" [title]="turn.pokemon.name">
-                      {{ turn.pokemon.name }}
-                    </span>
+                @if (turn.pokemon; as pokemon) {
+                  <pdz-sprite size="3rem" [pokemon]="pokemon" />
+                  <span class="turn__pick-info">
+                    <span class="turn__pokemon" [title]="pokemon.name">{{
+                      pokemon.name
+                    }}</span>
                     <span class="turn__meta">
-                      <span class="turn__tier">
-                        {{ turn.pokemon.tier || "Untiered" }}
-                      </span>
-                      <span class="turn__cost"
-                        >{{ turn.pokemon.cost }} pts</span
-                      >
+                      <span class="turn__tier">{{
+                        pokemon.tier || "Untiered"
+                      }}</span>
+                      <span>{{ pokemon.cost }} pts</span>
                     </span>
-                  </div>
+                  </span>
                 } @else {
-                  <div class="turn__empty">
+                  <span class="turn__empty">
                     <pdz-icon
                       [name]="
                         turn.state === 'current' ? 'hourglass_top' : 'pokeball'
                       "
                       size="md"
-                    ></pdz-icon>
-                    <span>
-                      @switch (turn.state) {
-                        @case ("current") {
-                          On the clock
-                        }
-                        @case ("skipped") {
-                          Skipped
-                        }
-                        @default {
-                          Upcoming
-                        }
+                    />
+                    @switch (turn.state) {
+                      @case ("current") {
+                        On the clock
                       }
-                    </span>
-                  </div>
+                      @case ("skipped") {
+                        Skipped
+                      }
+                      @default {
+                        Upcoming
+                      }
+                    }
+                  </span>
                 }
               </div>
 
@@ -415,68 +347,65 @@
                 @if (isEditing(turn)) {
                   <pdz-pokemon-search
                     class="turn__search"
+                    density="compact"
+                    placeholder="Set pick…"
                     [options$]="pokemonList$"
                     [takenIds]="takenIdsFor(turn)"
-                    placeholder="Set pick..."
                     (pokemonSelected)="setTurnPick(turn, $event)"
-                  ></pdz-pokemon-search>
+                  />
                   <button
                     pdz-button
                     iconOnly
+                    icon="close"
                     size="xs"
                     variant="ghost"
                     color="neutral"
                     aria-label="Cancel"
                     (click)="cancelEdit()"
-                  >
-                    <pdz-icon name="close" size="sm"></pdz-icon>
-                  </button>
+                  ></button>
                 } @else {
                   <button
                     pdz-button
                     size="xs"
+                    variant="outlined"
+                    color="neutral"
+                    [icon]="turn.pokemon ? 'edit' : 'add'"
                     [disabled]="!canSetTurn(turn) || isPending(turn)"
-                    [title]="
+                    [pdzTooltip]="
                       canSetTurn(turn)
                         ? ''
                         : 'Fill this team\'s earlier rounds first'
                     "
                     (click)="startEdit(turn)"
                   >
-                    <pdz-icon
-                      [name]="turn.pokemon ? 'edit' : 'add'"
-                      size="sm"
-                    ></pdz-icon>
                     {{ turn.pokemon ? "Change" : "Set pick" }}
                   </button>
                   @if (turn.pokemon) {
                     <button
                       pdz-button
                       iconOnly
+                      icon="delete"
                       size="xs"
                       variant="ghost"
                       color="danger"
                       aria-label="Clear pick"
-                      title="Clear pick"
+                      pdzTooltip="Clear pick"
                       [disabled]="isPending(turn)"
                       (click)="clearTurnPick(turn)"
-                    >
-                      <pdz-icon name="delete" size="sm"></pdz-icon>
-                    </button>
+                    ></button>
                   } @else if (canMakeCurrent(turn)) {
                     <button
                       pdz-button
                       iconOnly
+                      icon="restart_alt"
                       size="xs"
                       variant="ghost"
                       color="neutral"
                       aria-label="Put this turn back on the clock"
-                      title="Put this turn back on the clock and restart the timer"
+                      pdzTooltip="Put this turn back on the clock and restart the timer"
                       [disabled]="isPending(turn)"
                       (click)="makeCurrentTurn(turn)"
-                    >
-                      <pdz-icon name="restart_alt" size="sm"></pdz-icon>
-                    </button>
+                    ></button>
                   }
                 }
               </footer>
@@ -487,5 +416,10 @@
     }
   </div>
 } @else {
-  <p class="empty-state">There are no draft turns to display.</p>
+  <pdz-empty-state
+    icon="format_list_numbered"
+    heading="No draft turns yet"
+    message="Turns appear once the pool has teams and a round count."
+    bordered
+  />
 }

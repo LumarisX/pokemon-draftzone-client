@@ -1,61 +1,60 @@
-import { CommonModule } from '@angular/common';
 import {
+  ChangeDetectionStrategy,
   Component,
+  DestroyRef,
   ElementRef,
-  inject,
   OnChanges,
-  OnDestroy,
   OnInit,
-  signal,
-  ViewChild,
+  inject,
   input,
+  signal,
+  viewChild,
 } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
-import { IconComponent } from '@pdz/shared/images/icon/icon.component';
-import { Subject, takeUntil } from 'rxjs';
-import { LeagueZoneService } from '../league-zone.service';
-import { ChatChannel, ChatMessage } from './league-chat.model';
+import { LeagueZoneService } from '@pdz/features/league-zone/league-zone.service';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
+import { IconComponent } from '@pdz/shared/images/icon/icon.component';
+import { InputDirective } from '@pdz/shared/inputs/field/input.directive';
+import { ChatChannel, ChatMessage } from './league-chat.model';
 
 const POLL_INTERVAL_MS = 10000;
 
 @Component({
   selector: 'pdz-league-chat',
-  imports: [CommonModule, FormsModule, IconComponent,
-    ButtonComponent,
-  ],
+  imports: [FormsModule, IconComponent, ButtonComponent, InputDirective],
   templateUrl: './league-chat.component.html',
   styleUrl: './league-chat.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class LeagueChatComponent implements OnInit, OnChanges, OnDestroy {
+export class LeagueChatComponent implements OnInit, OnChanges {
   readonly channel = input.required<ChatChannel>();
   readonly target = input<string>();
   readonly heading = input('Chat');
   readonly placeholder = input('Write a message…');
-  /** Team ids that align a message to the right-hand side of the log. */
   readonly ownTeamIds = input<string[]>([]);
 
-  @ViewChild('log') private log?: ElementRef<HTMLDivElement>;
+  private readonly log = viewChild<ElementRef<HTMLDivElement>>('log');
 
   private leagueService = inject(LeagueZoneService);
-  private readonly destroy$ = new Subject<void>();
-  private poller?: ReturnType<typeof setInterval>;
+  private destroyRef = inject(DestroyRef);
   private atBottom = true;
   private roomKey = '';
 
-  messages = signal<ChatMessage[]>([]);
-  canPost = signal(false);
-  loading = signal(true);
-  sending = signal(false);
-  error = signal<string | null>(null);
-  draft = '';
+  readonly messages = signal<ChatMessage[]>([]);
+  readonly canPost = signal(false);
+  readonly loading = signal(true);
+  readonly sending = signal(false);
+  readonly error = signal<string | null>(null);
+  readonly draft = signal('');
 
   ngOnInit(): void {
     this.roomKey = this.currentRoomKey();
     this.refresh(true);
-    this.poller = setInterval(() => {
+    const poller = setInterval(() => {
       if (document.visibilityState === 'visible') this.refresh(false);
     }, POLL_INTERVAL_MS);
+    this.destroyRef.onDestroy(() => clearInterval(poller));
   }
 
   ngOnChanges(): void {
@@ -67,14 +66,8 @@ export class LeagueChatComponent implements OnInit, OnChanges, OnDestroy {
     this.refresh(true);
   }
 
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
-    if (this.poller) clearInterval(this.poller);
-  }
-
   onScroll(): void {
-    const element = this.log?.nativeElement;
+    const element = this.log()?.nativeElement;
     if (!element) return;
     this.atBottom =
       element.scrollHeight - element.scrollTop - element.clientHeight < 40;
@@ -108,7 +101,7 @@ export class LeagueChatComponent implements OnInit, OnChanges, OnDestroy {
   }
 
   send(): void {
-    const text = this.draft.trim();
+    const text = this.draft().trim();
     if (!text || this.sending() || !this.canPost()) return;
 
     this.sending.set(true);
@@ -116,11 +109,11 @@ export class LeagueChatComponent implements OnInit, OnChanges, OnDestroy {
 
     this.leagueService
       .sendChatMessage(this.channel(), text, this.target())
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: ({ message }) => {
           this.messages.update((messages) => [...messages, message]);
-          this.draft = '';
+          this.draft.set('');
           this.sending.set(false);
           this.atBottom = true;
           this.scrollToBottom();
@@ -143,7 +136,7 @@ export class LeagueChatComponent implements OnInit, OnChanges, OnDestroy {
     if (!message.canDelete) return;
     this.leagueService
       .deleteChatMessage(message.id)
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: () =>
           this.messages.update((messages) =>
@@ -161,7 +154,7 @@ export class LeagueChatComponent implements OnInit, OnChanges, OnDestroy {
   private refresh(initial: boolean): void {
     this.leagueService
       .getChatMessages(this.channel(), this.target())
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (room) => {
           const grew = room.messages.length !== this.messages().length;
@@ -179,7 +172,7 @@ export class LeagueChatComponent implements OnInit, OnChanges, OnDestroy {
 
   private scrollToBottom(): void {
     setTimeout(() => {
-      const element = this.log?.nativeElement;
+      const element = this.log()?.nativeElement;
       if (element) element.scrollTop = element.scrollHeight;
     });
   }

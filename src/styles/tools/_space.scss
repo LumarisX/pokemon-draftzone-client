@@ -7,3 +7,24 @@
   }
   @return var(--pdz-space-#{$space-name});
 }
+
+@function layout($name) {
+  @if not map.has-key(spacing-tokens.$layout, $name) {
+    @error "'#{$name}' is not a valid PDZ layout token. Available tokens: #{map.keys(spacing-tokens.$layout)}";
+  }
+  @return var(--pdz-layout-#{$name});
+}
+
+@function content-width($name) {
+  @if not map.has-key(spacing-tokens.$content-width, $name) {
+    @error "'#{$name}' is not a valid PDZ content width. Available tokens: #{map.keys(spacing-tokens.$content-width)}";
+  }
+  @return var(--pdz-content-width-#{$name});
+}
+
+@function control-height($name) {
+  @if not map.has-key(spacing-tokens.$control-height, $name) {
+    @error "'#{$name}' is not a valid PDZ control height. Available tokens: #{map.keys(spacing-tokens.$control-height)}";
+  }
+  @return var(--pdz-control-height-#{$name});
+}

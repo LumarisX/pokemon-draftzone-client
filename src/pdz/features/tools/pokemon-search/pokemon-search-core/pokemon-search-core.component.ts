@@ -49,9 +49,12 @@ import {
 import { SaveSearchesServices } from '../save-searches.service';
 import { SelectOptionComponent } from '@pdz/shared/dropdowns/select/select-option.component';
 import { SelectComponent } from '@pdz/shared/dropdowns/select/select.component';
+import { FieldComponent } from '@pdz/shared/inputs/field/field.component';
+import { InputDirective } from '@pdz/shared/inputs/field/input.directive';
 import { SegmentedOptionComponent } from '@pdz/shared/inputs/segmented/segmented-option.component';
 import { SegmentedComponent } from '@pdz/shared/inputs/segmented/segmented.component';
 import { CardComponent } from '@pdz/shared/data/card/card.component';
+import { EmptyStateComponent } from '@pdz/shared/feedback/empty-state/empty-state.component';
 import { MenuComponent } from '@pdz/shared/menu/menu.component';
 import { MenuItemComponent } from '@pdz/shared/menu/menu-item.component';
 import { MenuTriggerDirective } from '@pdz/shared/menu/menu-trigger.directive';
@@ -78,6 +81,9 @@ import { apiErrorMessage } from '@pdz/core/services/api.service';
     MenuItemComponent,
     MenuTriggerDirective,
     ChipComponent,
+    FieldComponent,
+    InputDirective,
+    EmptyStateComponent,
   ],
   templateUrl: './pokemon-search-core.component.html',
   styleUrl: './pokemon-search-core.component.scss',

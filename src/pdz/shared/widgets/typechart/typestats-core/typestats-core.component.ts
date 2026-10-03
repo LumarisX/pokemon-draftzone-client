@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { DecimalPipe } from '@angular/common';
 import { Component, Input, OnDestroy, OnInit, input } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TooltipDirective } from '@pdz/shared/tooltip/tooltip.directive';
@@ -28,7 +28,7 @@ type ScoreRange = {
   templateUrl: './typestats-core.component.html',
   styleUrl: './typestats-core.component.scss',
   imports: [
-    CommonModule,
+    DecimalPipe,
     FormsModule,
     ReactiveFormsModule,
     TooltipDirective,

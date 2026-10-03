@@ -11,11 +11,11 @@
   padding: pdz.space(2xs);
   min-width: 10rem;
   max-width: 20rem;
-  border: 1px solid pdz.color(outline-variant);
+  border: 1px solid pdz.color(border-subtle);
   border-radius: pdz.shape(corner-sm);
-  background-color: pdz.color(surface-container-low);
+  background-color: pdz.color(floating);
   color: pdz.color(on-surface);
-  box-shadow: var(--pdz-level-3);
+  box-shadow: var(--pdz-elevation-2);
   overflow-y: auto;
 
   &:popover-open {

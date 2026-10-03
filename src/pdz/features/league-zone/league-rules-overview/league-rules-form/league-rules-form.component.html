@@ -1,103 +1,96 @@
-<div class="rules-editor">
-  <pdz-page-header title="Rules" eyebrow="Manage">
+<pdz-page-header title="Rules" eyebrow="Manage">
+  <div pdz-page-header-actions>
     <button
-      pdz-page-header-actions
       pdz-button
       icon="add"
-      (click)="addSection()"
+      variant="outlined"
+      color="neutral"
       [disabled]="isSaving()"
+      (click)="addSection()"
     >
       Add Section
     </button>
-  </pdz-page-header>
-
-  @if (saveMessage(); as message) {
-    <div
-      class="save-message"
-      [class.success]="message.type === 'success'"
-      [class.error]="message.type === 'error'"
-    >
-      {{ message.text }}
-    </div>
-  }
-
-  <div class="sections-list">
-    @for (section of rules(); track $index) {
-      <div class="section-editor">
-        <div class="section-header">
-          <div class="section-controls">
-            <button
-              pdz-button
-              size="sm"
-              color="neutral"
-              variant="ghost"
-              (click)="moveUp($index)"
-              [disabled]="$index === 0"
-              title="Move up"
-            >
-              ↑
-            </button>
-            <button
-              pdz-button
-              size="sm"
-              color="neutral"
-              variant="ghost"
-              (click)="moveDown($index)"
-              [disabled]="$index === rules().length - 1"
-              title="Move down"
-            >
-              ↓
-            </button>
-            <button
-              pdz-button
-              size="sm"
-              color="danger"
-              variant="ghost"
-              (click)="deleteSection($index)"
-              title="Delete section"
-            >
-              Delete
-            </button>
-          </div>
-        </div>
-
-        <div class="section-content">
-          <label class="label">Section Title</label>
-          <input
-            type="text"
-            class="input-title"
-            [(ngModel)]="section.title"
-            (change)="onRuleChange()"
-            placeholder="Enter section title"
-          />
-
-          <label class="label">Section Body</label>
-          <textarea
-            class="textarea-body"
-            [(ngModel)]="section.body"
-            (change)="onRuleChange()"
-            placeholder="Enter rule details here..."
-          ></textarea>
-        </div>
-      </div>
-    } @empty {
-      <div class="empty-state">
-        <p>No rule sections yet. Click "Add Section" to create one.</p>
-      </div>
-    }
-  </div>
-
-  <div class="actions-footer">
     <button
       pdz-button
-      (click)="saveRules()"
+      icon="save"
       [loading]="isSaving()"
-      [disabled]="!hasUnsavedChanges() || isSaving()"
+      [disabled]="!hasUnsavedChanges()"
+      (click)="saveRules()"
     >
-      {{ isSaving() ? "Saving..." : "Save Rules" }}
+      Save Rules
     </button>
-    @if (hasUnsavedChanges()) {
-      <span class="unsaved-indicator"> ⚠ You have unsaved changes </span>
-    }
   </div>
-</div>
+  @if (hasUnsavedChanges()) {
+    <span pdz-page-header-detail class="rules-editor__dirty">Unsaved changes</span>
+  }
+</pdz-page-header>
+
+@for (section of rules(); track $index) {
+  <pdz-card padding="lg">
+    <section class="section" [attr.aria-label]="section.title || 'Untitled section'">
+      <div class="section__toolbar">
+        <span class="section__index">Section {{ $index + 1 }}</span>
+        <button
+          pdz-button
+          iconOnly
+          icon="arrow_upward"
+          size="sm"
+          variant="ghost"
+          color="neutral"
+          aria-label="Move section up"
+          [disabled]="$first"
+          (click)="move($index, -1)"
+        ></button>
+        <button
+          pdz-button
+          iconOnly
+          icon="arrow_downward"
+          size="sm"
+          variant="ghost"
+          color="neutral"
+          aria-label="Move section down"
+          [disabled]="$last"
+          (click)="move($index, 1)"
+        ></button>
+        <button
+          pdz-button
+          iconOnly
+          icon="delete"
+          size="sm"
+          variant="ghost"
+          color="danger"
+          aria-label="Delete section"
+          (click)="deleteSection($index)"
+        ></button>
+      </div>
+
+      <label pdz-field label="Title">
+        <input
+          pdz-input
+          type="text"
+          placeholder="Section title"
+          [value]="section.title"
+          (input)="updateSection($index, { title: $any($event.target).value })"
+        />
+      </label>
+
+      <label pdz-field label="Body" hint="Markdown is supported.">
+        <textarea
+          pdz-input
+          class="section__body"
+          rows="8"
+          placeholder="Rule details"
+          [value]="section.body"
+          (input)="updateSection($index, { body: $any($event.target).value })"
+        ></textarea>
+      </label>
+    </section>
+  </pdz-card>
+} @empty {
+  <pdz-empty-state
+    bordered
+    icon="gavel"
+    heading="No rule sections yet"
+    message="Add a section to start writing the rules."
+  />
+}

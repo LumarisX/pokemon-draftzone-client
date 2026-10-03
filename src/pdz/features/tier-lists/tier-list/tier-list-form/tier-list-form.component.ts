@@ -1,4 +1,3 @@
-import { CommonModule } from '@angular/common';
 import {
   Component,
   computed,
@@ -25,8 +24,8 @@ import { MenuItemComponent } from '@pdz/shared/menu/menu-item.component';
 import { MenuTriggerDirective } from '@pdz/shared/menu/menu-trigger.directive';
 import { Subject } from 'rxjs';
 import { first, takeUntil } from 'rxjs/operators';
-import { TierPokemon } from '../../tier-list.model';
-import { TierListService } from '../../tier-list.service';
+import { TierPokemon } from '@pdz/features/tier-lists/tier-list.model';
+import { TierListService } from '@pdz/features/tier-lists/tier-list.service';
 import {
   TierListSettingsDialogComponent,
   TierListSettingsDialogData,
@@ -72,7 +71,6 @@ interface EditableTier {
 @Component({
   selector: 'pdz-tier-list-form',
   imports: [
-    CommonModule,
     FormsModule,
     TooltipDirective,
     ReactiveFormsModule,
@@ -98,7 +96,6 @@ export class TierListFormComponent implements OnInit, OnDestroy {
   private toasts = inject(ToastService);
   private destroy$ = new Subject<void>();
 
-  // State
   tiers = signal<EditableTier[] | undefined>(undefined);
   untiered = signal<EditableTier | undefined>(undefined);
   sortBy = signal<SortOption>('BST');
@@ -106,7 +103,6 @@ export class TierListFormComponent implements OnInit, OnDestroy {
   isLoading = signal<boolean>(false);
   hasUnsavedChanges = signal<boolean>(false);
   tierListName = signal<string>('Tier List');
-  /** Needed to look up a species' formes when editing an entry. */
   ruleset = signal<string | undefined>(undefined);
 
   UNTIERED_TIER_NAME = 'Untiered';
@@ -129,7 +125,6 @@ export class TierListFormComponent implements OnInit, OnDestroy {
   private resizeStartRatio = this.DEFAULT_NULL_PANEL_RATIO;
   private resizeContainerHeight = 1;
 
-  // Undo/redo history
   private undoStack: HistoryEntry[] = [];
   private redoStack: HistoryEntry[] = [];
   private savedHistoryDepth = 0;
@@ -137,17 +132,14 @@ export class TierListFormComponent implements OnInit, OnDestroy {
   canUndo = signal(false);
   canRedo = signal(false);
 
-  // Flash animation state
   flashedPokemonIds = signal<Set<string>>(new Set());
   private flashTimeouts = new Map<string, ReturnType<typeof setTimeout>>();
 
-  // Multi-select state
   selectedPokemonIds = signal<Set<string>>(new Set());
   lastSelectedPokemon: { pokemon: EditTierPokemon; tier: EditableTier } | null =
     null;
   isDragging = signal<boolean>(false);
 
-  // Native drag state
   draggedPokemon: EditTierPokemon | null = null;
   draggedFromTier: EditableTier | null = null;
   dragOverTier = signal<EditableTier | null>(null);
@@ -184,7 +176,6 @@ export class TierListFormComponent implements OnInit, OnDestroy {
               ? (flatTiers.splice(nullTierIndex, 1)[0] as EditableTier)
               : { name: this.UNTIERED_TIER_NAME, pokemon: [] };
 
-          // Extract pokemon with draftBanned: true from all tiers into the banned section
           const bannedPokemon: EditTierPokemon[] = [];
           const extractBanned = (tier: EditableTier) => {
             const kept: EditTierPokemon[] = [];
@@ -408,7 +399,6 @@ export class TierListFormComponent implements OnInit, OnDestroy {
     const current = new Set(this.flashedPokemonIds());
     ids.forEach((id) => {
       current.add(id);
-      // Reset any existing timeout for this id
       const existing = this.flashTimeouts.get(id);
       if (existing) clearTimeout(existing);
       const t = setTimeout(() => {
@@ -433,10 +423,6 @@ export class TierListFormComponent implements OnInit, OnDestroy {
     { formes: EditTierPokemon['formes']; ref: EditTierPokemon }
   >();
 
-  /** The sprite reads `draftFormes`, but a tier entry stores its allowed
-   * formes in `formes`; expose a derived pokemon so the sprite renders the
-   * forme stack. Cached per entry (and invalidated when `formes` changes) so
-   * the OnPush sprite keeps a stable reference. */
   spriteFor(pokemon: EditTierPokemon): EditTierPokemon {
     if (!pokemon.formes?.length) return pokemon;
     const cached = this.spriteCache.get(pokemon);
@@ -525,7 +511,6 @@ export class TierListFormComponent implements OnInit, OnDestroy {
     if (this.undoStack.length === 0) return;
     const entry = this.undoStack.pop()!;
 
-    // Sort moves by fromIndex ascending within the same fromTier for correct position restoration
     const sortedMoves = [...entry.moves].sort((a, b) =>
       a.fromTier === b.fromTier ? a.fromIndex - b.fromIndex : 0,
     );
@@ -576,14 +561,12 @@ export class TierListFormComponent implements OnInit, OnDestroy {
   ): void {
     event.stopPropagation();
 
-    // Don't handle clicks during or immediately after drag
     if (this.isDragging()) {
       return;
     }
 
     const selectedIds = this.selectedPokemonIds();
 
-    // Ctrl/Cmd key - toggle individual selection
     if (event.ctrlKey || event.metaKey) {
       const newSelected = new Set(selectedIds);
       if (newSelected.has(pokemon.id)) {
@@ -596,7 +579,6 @@ export class TierListFormComponent implements OnInit, OnDestroy {
       return;
     }
 
-    // Shift key - range selection
     if (event.shiftKey && this.lastSelectedPokemon) {
       const newSelected = new Set(selectedIds);
       const rangeSelection = this.getPokemonRange(this.lastSelectedPokemon, {
@@ -608,7 +590,6 @@ export class TierListFormComponent implements OnInit, OnDestroy {
       return;
     }
 
-    // No modifier - toggle selection
     this.togglePokemonSelection(pokemon, tier);
   }
 
@@ -639,7 +620,6 @@ export class TierListFormComponent implements OnInit, OnDestroy {
     start: { pokemon: EditTierPokemon; tier: EditableTier },
     end: { pokemon: EditTierPokemon; tier: EditableTier },
   ): string[] {
-    // If same tier, get range within tier
     if (start.tier === end.tier) {
       const startIdx = start.tier.pokemon.indexOf(start.pokemon);
       const endIdx = end.tier.pokemon.indexOf(end.pokemon);
@@ -648,7 +628,6 @@ export class TierListFormComponent implements OnInit, OnDestroy {
       return start.tier.pokemon.slice(minIdx, maxIdx + 1).map((p) => p.id);
     }
 
-    // Different tiers - just select both
     return [start.pokemon.id, end.pokemon.id];
   }
 
@@ -675,7 +654,6 @@ export class TierListFormComponent implements OnInit, OnDestroy {
     if (bannedTier) allTiers.push(bannedTier);
     const sortBy = this.sortBy();
 
-    // Collect moves before modifying arrays
     const moves: MoveRecord[] = [];
     allTiers.forEach((tier) => {
       tier.pokemon.forEach((pokemon, index) => {
@@ -693,12 +671,10 @@ export class TierListFormComponent implements OnInit, OnDestroy {
     if (moves.length === 0) return;
     this.pushHistory({ moves });
 
-    // Remove from source tiers
     allTiers.forEach((tier) => {
       tier.pokemon = tier.pokemon.filter((p) => !selectedIds.has(p.id));
     });
 
-    // Add to target tier and sort
     targetTier.pokemon.push(...moves.map((m) => m.pokemon));
     targetTier.pokemon.sort(SORT_MAP[sortBy]);
 
@@ -822,18 +798,18 @@ export class TierListFormComponent implements OnInit, OnDestroy {
     >(TierEditDialogComponent, { heading, size: 'sm', data }).closed;
   }
 
-  deleteTier(tierIndex: number): void {
+  async deleteTier(tierIndex: number): Promise<void> {
     const tiers = this.tiers();
     if (!tiers) return;
 
     const tier = tiers[tierIndex];
-    if (
-      tier.pokemon.length > 0 &&
-      !confirm(
-        `Tier "${tier.name}" contains ${tier.pokemon.length} Pokemon. Delete anyway?`,
-      )
-    ) {
-      return;
+    if (tier.pokemon.length > 0) {
+      const confirmed = await this.dialogs.confirm(`Delete "${tier.name}"?`, {
+        message: `Its ${tier.pokemon.length} Pokémon will be removed from the tier list too.`,
+        confirmLabel: 'Delete Tier',
+        confirmColor: 'danger',
+      });
+      if (!confirmed) return;
     }
 
     tiers.splice(tierIndex, 1);
@@ -862,7 +838,6 @@ export class TierListFormComponent implements OnInit, OnDestroy {
     const banned = this.banned();
     if (!tiers) return;
 
-    // Build ordered column list: Banned first, then regular tiers
     const columns: { name: string; pokemon: EditTierPokemon[] }[] = [];
     if (banned && banned.pokemon.length > 0) {
       columns.push(banned);
@@ -1009,7 +984,6 @@ export class TierListFormComponent implements OnInit, OnDestroy {
       .split('\n')
       .filter((l) => l.trim());
 
-    // Build a flat lookup map: lowercase name -> TierPokemon
     const allPokemon = new Map<string, EditTierPokemon>();
     const allTiers = [...tiers, untiered, ...(banned ? [banned] : [])];
     for (const tier of allTiers) {
@@ -1018,14 +992,12 @@ export class TierListFormComponent implements OnInit, OnDestroy {
       }
     }
 
-    // Resolve column mappings: NEW_TIER__ prefixed values become actual tier names
     const resolvedMapping: (string | null)[] = columnMapping.map((m) => {
       if (m === null) return null;
       if (m.startsWith(NEW_TIER_PREFIX)) return m.slice(NEW_TIER_PREFIX.length);
       return m;
     });
 
-    // Collect new tier names that need to be created (preserve insertion order)
     const newTierNames: string[] = [];
     columnMapping.forEach((m) => {
       if (m !== null && m.startsWith(NEW_TIER_PREFIX)) {
@@ -1034,13 +1006,12 @@ export class TierListFormComponent implements OnInit, OnDestroy {
       }
     });
 
-    // Build new tier buckets using resolved mapping
     const importedByTier = new Map<string, EditTierPokemon[]>();
     const assignedIds = new Set<string>();
     const unknownNames = new Set<string>();
 
     for (let col = 0; col < headers.length; col++) {
-      const targetTier = resolvedMapping[col]; // null = excluded
+      const targetTier = resolvedMapping[col];
       if (targetTier === null) continue;
 
       const bucket = importedByTier.get(targetTier) ?? [];
@@ -1059,7 +1030,6 @@ export class TierListFormComponent implements OnInit, OnDestroy {
       importedByTier.set(targetTier, bucket);
     }
 
-    // Reassign existing tiers and append newly created tiers at the end
     const updatedTiers: EditableTier[] = tiers.map((tier) => ({
       ...tier,
       pokemon: importedByTier.get(tier.name) ?? [],
@@ -1072,7 +1042,6 @@ export class TierListFormComponent implements OnInit, OnDestroy {
     const importedBanned = importedByTier.get(this.BANNED_TIER_NAME) ?? [];
     const importedUntiered = importedByTier.get(this.UNTIERED_TIER_NAME) ?? [];
 
-    // Any pokemon not assigned by the mapping goes back to untiered
     const remainingPokemon = [
       ...importedUntiered,
       ...[...allPokemon.values()].filter((p) => !assignedIds.has(p.id)),
@@ -1100,7 +1069,7 @@ export class TierListFormComponent implements OnInit, OnDestroy {
       parts.push(`${unknownNames.size} unrecognized name(s) skipped.`);
     }
     this.toasts.show({
-      title: 'Import complete',
+      title: 'Import Complete',
       message: parts.join(' '),
       tone: unknownNames.size > 0 ? 'warning' : 'success',
     });
@@ -1136,11 +1105,9 @@ export class TierListFormComponent implements OnInit, OnDestroy {
       return;
     }
 
-    // Combine regular tiers with untiered for saving
     const allTiers = [...tiers];
     if (nullTier) allTiers.push(nullTier);
 
-    // Convert to server format
     const tierData = allTiers.map((tier) => ({
       id: tier.id,
       name: tier.name,
@@ -1154,7 +1121,6 @@ export class TierListFormComponent implements OnInit, OnDestroy {
       })),
     }));
 
-    // Merge banned pokemon into untiered with banned: true
     const bannedTier = this.banned();
     if (bannedTier && bannedTier.pokemon.length > 0) {
       const untieredEntry = tierData.find(
@@ -1209,9 +1175,13 @@ export class TierListFormComponent implements OnInit, OnDestroy {
     }
   }
 
-  canDeactivate(): boolean {
+  canDeactivate(): boolean | Promise<boolean> {
     if (!this.hasUnsavedChanges()) return true;
-    return confirm('You have unsaved changes. Are you sure you want to leave?');
+    return this.dialogs.confirm('Leave without saving?', {
+      message: 'Your tier list changes have not been saved.',
+      confirmLabel: 'Leave',
+      confirmColor: 'danger',
+    });
   }
 
   isSortingDisabled(_tier: EditableTier): boolean {

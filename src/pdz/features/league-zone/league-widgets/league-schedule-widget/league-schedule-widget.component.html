@@ -1,32 +1,30 @@
 @if (scheduleRounds()?.length) {
-  <div class="matchup-stage-list">
+  <div class="rounds">
     @for (round of scheduleRounds(); track round.id) {
-      <div class="matchup-stage">
+      <section class="round" [attr.aria-label]="round.name">
         @if (showRoundTitle()) {
-          <h4 class="matchup-stage__title">{{ round.name }}</h4>
+          <h3 class="round__title">{{ round.name }}</h3>
         }
-        <div class="matchup-stage__cards">
-          @if (!round.stages.length) {
-            <p class="section-message">No matchups in this round.</p>
-          } @else {
+        @if (!round.stages.length) {
+          <p class="round__empty">No matchups in this round.</p>
+        } @else {
+          <div class="round__cards">
             @for (stage of round.stages; track stage.id) {
               @if (round.stages.length > 1) {
-                <h5 class="matchup-stage__group">{{ stage.name }}</h5>
+                <h4 class="round__group">{{ stage.name }}</h4>
               }
               @for (card of stage.cards; track card.id) {
                 <pdz-matchup-card
                   [card]="card"
-                  [class.matchup-stage__card--mine]="
-                    card.id === highlightedCardId()
-                  "
-                ></pdz-matchup-card>
+                  [class.round__card--mine]="card.id === highlightedCardId()"
+                />
               }
             }
-          }
-        </div>
-      </div>
+          </div>
+        }
+      </section>
     }
   </div>
-} @else {
-  <p class="section-message">No matchups scheduled.</p>
+} @else if (scheduleRounds()) {
+  <pdz-empty-state size="sm" icon="event" message="No matchups scheduled." />
 }

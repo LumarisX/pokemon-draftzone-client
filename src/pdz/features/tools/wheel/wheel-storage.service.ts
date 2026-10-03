@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { safeStorage } from '@pdz/core/utils/storage';
 import {
   clampRimArc,
   clampSpinSeconds,
@@ -197,16 +198,10 @@ export class WheelStorageService {
   }
 
   private read(key: string): string | null {
-    try {
-      return localStorage.getItem(key);
-    } catch {
-      return null;
-    }
+    return safeStorage.get(key);
   }
 
   private write(key: string, value: string): void {
-    try {
-      localStorage.setItem(key, value);
-    } catch {}
+    safeStorage.set(key, value);
   }
 }

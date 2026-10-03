@@ -1,16 +1,20 @@
 import {
+  ChangeDetectionStrategy,
   Component,
-  inject,
-  OnDestroy,
+  DestroyRef,
   OnInit,
+  inject,
   input,
   output,
+  signal,
 } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { LeagueZoneService } from '@pdz/features/league-zone/league-zone.service';
+import { TradeLog } from '@pdz/features/league-zone/league.interface';
+import { TradeCardComponent } from '@pdz/features/league-zone/trade-card/trade-card.component';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
-import { finalize, Subject, take, takeUntil } from 'rxjs';
-import { LeagueZoneService } from '../../league-zone.service';
-import { TradeLog } from '../../league.interface';
-import { TradeCardComponent } from '../../trade-card/trade-card.component';
+import { EmptyStateComponent } from '@pdz/shared/feedback/empty-state/empty-state.component';
+import { finalize } from 'rxjs';
 
 export type TradeSummary = {
   total: number;
@@ -20,24 +24,29 @@ export type TradeSummary = {
 
 @Component({
   selector: 'pdz-league-trade-widget',
-  imports: [ButtonComponent, TradeCardComponent],
+  imports: [ButtonComponent, EmptyStateComponent, TradeCardComponent],
   templateUrl: './league-trade-widget.component.html',
   styleUrl: './league-trade-widget.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class LeagueTradeWidgetComponent implements OnInit, OnDestroy {
-  leagueService = inject(LeagueZoneService);
-  private readonly destroy$ = new Subject<void>();
+export class LeagueTradeWidgetComponent implements OnInit {
+  private readonly leagueService = inject(LeagueZoneService);
+  private readonly destroyRef = inject(DestroyRef);
 
   readonly stageSlug = input<string>();
-
   readonly withdrawableTeamId = input<string>();
-
   readonly summaryChange = output<TradeSummary>();
 
-  tradeRounds?: { name: string; trades: TradeLog[] }[];
-  currentRoundIndex = -1;
-  withdrawingTradeId: string | null = null;
-  withdrawError = '';
+  readonly tradeRounds = signal<{ name: string; trades: TradeLog[] }[] | null>(
+    null,
+  );
+  readonly currentRoundIndex = signal(-1);
+  readonly withdrawingTradeId = signal<string | null>(null);
+  readonly withdrawError = signal('');
+
+  ngOnInit(): void {
+    this.reload();
+  }
 
   canWithdraw(trade: TradeLog): boolean {
     const teamId = this.withdrawableTeamId();
@@ -46,55 +55,44 @@ export class LeagueTradeWidgetComponent implements OnInit, OnDestroy {
   }
 
   withdraw(trade: TradeLog): void {
-    if (!trade.id || this.withdrawingTradeId) return;
+    if (!trade.id || this.withdrawingTradeId()) return;
 
-    this.withdrawingTradeId = trade.id;
-    this.withdrawError = '';
+    this.withdrawingTradeId.set(trade.id);
+    this.withdrawError.set('');
 
     this.leagueService
       .withdrawTrade(trade.id)
       .pipe(
-        take(1),
-        finalize(() => {
-          this.withdrawingTradeId = null;
-        }),
-        takeUntil(this.destroy$),
+        finalize(() => this.withdrawingTradeId.set(null)),
+        takeUntilDestroyed(this.destroyRef),
       )
       .subscribe({
         next: () => this.reload(),
-        error: (err) => {
-          this.withdrawError = err?.message || 'Could not withdraw the trade.';
-        },
+        error: (err) =>
+          this.withdrawError.set(
+            err?.message || 'Could not withdraw the trade.',
+          ),
       });
-  }
-
-  ngOnInit(): void {
-    this.reload();
   }
 
   reload(): void {
     this.leagueService
       .getTrades()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (data) => {
-          this.currentRoundIndex = data.currentRoundIndex ?? -1;
-          this.tradeRounds = [...data.rounds]
-            .filter((round) => round.trades.length)
-            .reverse();
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((data) => {
+        const currentRoundIndex = data.currentRoundIndex ?? -1;
+        const rounds = [...data.rounds]
+          .filter((round) => round.trades.length)
+          .reverse();
+        this.currentRoundIndex.set(currentRoundIndex);
+        this.tradeRounds.set(rounds);
 
-          const trades = this.tradeRounds.flatMap((round) => round.trades);
-          this.summaryChange.emit({
-            total: trades.length,
-            pending: trades.filter((trade) => trade.status === 'PENDING').length,
-            currentRoundName: data.rounds[this.currentRoundIndex]?.name,
-          });
-        },
+        const trades = rounds.flatMap((round) => round.trades);
+        this.summaryChange.emit({
+          total: trades.length,
+          pending: trades.filter((trade) => trade.status === 'PENDING').length,
+          currentRoundName: data.rounds[currentRoundIndex]?.name,
+        });
       });
-  }
-
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
   }
 }

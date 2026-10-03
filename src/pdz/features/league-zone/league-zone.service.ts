@@ -1,5 +1,12 @@
 import { effect, inject, Injectable, signal } from '@angular/core';
-import { NavigationEnd, Router } from '@angular/router';
+import {
+  ActivatedRouteSnapshot,
+  NavigationCancel,
+  NavigationEnd,
+  NavigationError,
+  ResolveEnd,
+  Router,
+} from '@angular/router';
 import {
   League,
   TradeData,
@@ -18,7 +25,7 @@ import {
 } from '@pdz/features/league-zone/league-matchup/league-matchup.model';
 import { TournamentDetails } from '@pdz/features/league-zone/league.model';
 import { Observable } from 'rxjs';
-import { filter, map, mergeMap } from 'rxjs/operators';
+import { filter, map } from 'rxjs/operators';
 import { ApiService } from '@pdz/core/services/api.service';
 import { EventStreamService } from '@pdz/core/services/event-stream.service';
 import {
@@ -44,31 +51,22 @@ export class LeagueZoneService {
   teamSlug = signal<string | null>(null);
 
   constructor() {
+    this.applyRoute(this.router.routerState.snapshot.root);
     this.router.events
       .pipe(
-        filter((event) => event instanceof NavigationEnd),
-        map(() => {
-          let route = this.router.routerState.root;
-          while (route.firstChild) {
-            route = route.firstChild;
-          }
-          return route;
+        map((event) => {
+          if (event instanceof ResolveEnd) return event.state.root;
+          if (
+            event instanceof NavigationEnd ||
+            event instanceof NavigationCancel ||
+            event instanceof NavigationError
+          )
+            return this.router.routerState.snapshot.root;
+          return null;
         }),
-        filter((route) => route.outlet === 'primary'),
-        mergeMap((route) => route.paramMap),
+        filter((root): root is ActivatedRouteSnapshot => root !== null),
       )
-      .subscribe((paramMap) => {
-        const leagueSlug = paramMap.get('leagueSlug');
-        this.leagueSlug.set(leagueSlug);
-        const tournamentSlug = paramMap.get('tournamentSlug');
-        this.tournamentSlug.set(tournamentSlug);
-        const poolSlug = paramMap.get('poolSlug');
-        this.poolSlug.set(poolSlug);
-        const stageSlug = paramMap.get('stageSlug');
-        this.stageSlug.set(stageSlug);
-        const teamSlug = paramMap.get('teamSlug');
-        this.teamSlug.set(teamSlug);
-      });
+      .subscribe((root) => this.applyRoute(root));
 
     effect(() => {
       const leagueSlug = this.leagueSlug();
@@ -79,6 +77,17 @@ export class LeagueZoneService {
         );
       else this.eventStream.close();
     });
+  }
+
+  private applyRoute(root: ActivatedRouteSnapshot): void {
+    let route = root;
+    while (route.firstChild) route = route.firstChild;
+    const params = route.paramMap;
+    this.leagueSlug.set(params.get('leagueSlug'));
+    this.tournamentSlug.set(params.get('tournamentSlug'));
+    this.poolSlug.set(params.get('poolSlug'));
+    this.stageSlug.set(params.get('stageSlug'));
+    this.teamSlug.set(params.get('teamSlug'));
   }
 
   getTournamentsList() {

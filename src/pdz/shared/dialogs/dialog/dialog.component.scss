@@ -64,11 +64,11 @@ $sizes: (
   flex-direction: column;
   width: 100%;
   max-height: 100%;
-  border: 1px solid pdz.color(outline-variant);
+  border: 1px solid pdz.color(border-subtle);
   border-radius: pdz.shape(corner-lg);
-  background-color: pdz.color(surface-container-low);
+  background-color: pdz.color(overlay);
   color: pdz.color(on-surface);
-  box-shadow: var(--pdz-level-5);
+  box-shadow: var(--pdz-elevation-3);
   overflow: hidden;
   transform: translateY(0.5rem) scale(0.98);
   transition: transform pdz.duration(base) pdz.easing(standard);
@@ -99,7 +99,7 @@ $sizes: (
   align-items: flex-start;
   gap: pdz.space(md);
   padding: pdz.space(lg);
-  border-bottom: 1px solid pdz.color(outline-variant);
+  border-bottom: 1px solid pdz.color(border-subtle);
 
   &:not(:has(.pdz-dialog__heading)):not(:has(.pdz-dialog__subheading)) {
     border-bottom: none;
@@ -143,8 +143,7 @@ $sizes: (
   justify-content: flex-end;
   gap: pdz.space(sm);
   padding: pdz.space(lg);
-  border-top: 1px solid pdz.color(outline-variant);
-  background-color: pdz.color(surface-container);
+  border-top: 1px solid pdz.color(border-subtle);
 
   &:empty {
     display: none;

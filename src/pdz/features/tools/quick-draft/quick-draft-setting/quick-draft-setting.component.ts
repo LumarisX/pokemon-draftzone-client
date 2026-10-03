@@ -1,4 +1,3 @@
-import { CommonModule } from '@angular/common';
 import { Component, EventEmitter, Output } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
@@ -23,7 +22,6 @@ type Template = {
 @Component({
   selector: 'pdz-quick-draft-setting',
   imports: [
-    CommonModule,
     FormsModule,
     FormatSelectComponent,
     RulesetSelectComponent,

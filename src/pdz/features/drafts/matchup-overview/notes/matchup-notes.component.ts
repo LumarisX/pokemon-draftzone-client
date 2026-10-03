@@ -15,6 +15,7 @@ import { FormsModule } from '@angular/forms';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 import { EmptyStateComponent } from '@pdz/shared/feedback/empty-state/empty-state.component';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
+import { InputDirective } from '@pdz/shared/inputs/field/input.directive';
 import { TooltipDirective } from '@pdz/shared/tooltip/tooltip.directive';
 import { MarkdownComponent } from 'ngx-markdown';
 import {
@@ -39,6 +40,7 @@ const SAVE_DEBOUNCE_MS = 1500;
     EmptyStateComponent,
     FormsModule,
     IconComponent,
+    InputDirective,
     MarkdownComponent,
     TooltipDirective,
   ],

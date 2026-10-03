@@ -1,33 +1,54 @@
 @use "pdz-theming" as pdz;
-@use "mixins" as *;
 
 :host {
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 100%;
   width: 100%;
+  height: 100%;
   overflow: hidden;
 }
 
-.not-found {
-  &__picture {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 100%;
-    width: 100%;
-    overflow: hidden;
-  }
+.not-found__picture {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
 
-  &__image {
-    min-width: 100%;
-    min-height: 100%;
-    object-fit: cover;
-    object-position: center;
+.not-found__image {
+  min-width: 100%;
+  min-height: 100%;
+  object-fit: cover;
+  object-position: center;
 
-    @media (orientation: portrait) {
-      min-width: unset;
-    }
+  @media (orientation: portrait) {
+    min-width: unset;
   }
+}
+
+.not-found__message {
+  position: absolute;
+  inset-inline: 0;
+  bottom: pdz.space(2xl);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: pdz.space(md);
+  margin-inline: auto;
+  padding: pdz.space(lg) pdz.space(xl);
+  width: fit-content;
+  border: 1px solid pdz.color(border-subtle);
+  border-radius: pdz.shape(corner-lg);
+  background: pdz.color(overlay);
+  box-shadow: var(--pdz-elevation-2);
+}
+
+.not-found__title {
+  @include pdz.text(title);
+  margin: 0;
+  color: pdz.color(on-surface);
 }

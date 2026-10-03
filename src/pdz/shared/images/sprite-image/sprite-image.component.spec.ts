@@ -24,7 +24,7 @@ class HostComponent {
   loads = 0;
 }
 
-const UNKNOWN = '../../../../assets/icons/unknown.svg';
+const UNKNOWN = '/assets/icons/unknown.svg';
 
 describe('SpriteImageComponent', () => {
   let fixture: ComponentFixture<HostComponent>;

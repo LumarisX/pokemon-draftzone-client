@@ -14,6 +14,7 @@ import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
 import { InputDirective } from '@pdz/shared/inputs/field/input.directive';
+import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
 import { WidgetComponent } from '@pdz/shared/layout/widget/widget.component';
 import { isReplayUrl } from '@pdz/shared/widgets/score-entry/score-entry.model';
 import {
@@ -21,7 +22,7 @@ import {
   toRosterEntries,
 } from '@pdz/shared/widgets/score-entry/score-entry.replay';
 import { Subject, takeUntil } from 'rxjs';
-import { DraftService } from '../../draft-overview/draft.service';
+import { DraftService } from '@pdz/features/drafts/draft-overview/draft.service';
 import {
   Match,
   MatchSide,
@@ -29,7 +30,7 @@ import {
   MatchTeam,
   Matchup,
   ScorePatch,
-} from '../../matchup-overview/matchup.model';
+} from '@pdz/features/drafts/matchup-overview/matchup.model';
 import { KoGraphComponent, KoGraphRosters } from './ko-graph.component';
 import {
   KO_SIDES,
@@ -65,6 +66,7 @@ const SIDE_OF: Record<KoSide, MatchSide> = { side1: 'a', side2: 'b' };
     InputDirective,
     KoGraphComponent,
     LoadingComponent,
+    PageHeaderComponent,
     RouterModule,
     WidgetComponent,
   ],

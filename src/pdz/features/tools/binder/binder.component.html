@@ -75,9 +75,9 @@
           (click)="deleteBinder()"
         ></button>
 
-        <label pdz-field label="Sort by" inline>
+        <label pdz-field label="Sort By" inline>
           <pdz-select
-            aria-label="Sort by"
+            aria-label="Sort By"
             [ngModel]="store.sort()"
             (ngModelChange)="setSort($event)"
           >
@@ -157,7 +157,7 @@
           [disabled]="!store.stats().blanks"
           (click)="removeBlanks()"
         >
-          Clear blanks
+          Clear Blanks
         </button>
         <button
           pdz-button
@@ -166,7 +166,7 @@
           size="sm"
           (click)="clearOwned()"
         >
-          Clear owned
+          Clear Owned
         </button>
         <button
           pdz-button
@@ -175,7 +175,7 @@
           size="sm"
           (click)="resetLayout()"
         >
-          Reset order
+          Reset Order
         </button>
       </div>
     </pdz-page-header>
@@ -187,9 +187,9 @@
           (valueChange)="setMode($any($event))"
           aria-label="What the box below does"
         >
-          <pdz-segmented-option value="jump" label="Jump to" />
-          <pdz-segmented-option value="mark" label="Mark owned" />
-          <pdz-segmented-option value="add" label="Add card" />
+          <pdz-segmented-option value="jump" label="Jump To" />
+          <pdz-segmented-option value="mark" label="Mark Owned" />
+          <pdz-segmented-option value="add" label="Add Card" />
         </pdz-segmented>
 
         <label
@@ -219,7 +219,7 @@
           {{ entryAction() }}
         </button>
 
-        <label pdz-field label="Go to page" inline>
+        <label pdz-field label="Go to Page" inline>
           <input
             pdz-input
             type="number"
@@ -510,7 +510,7 @@
           size="sm"
           (click)="store.restoreAll()"
         >
-          Restore all
+          Restore All
         </button>
       </pdz-disclosure>
     }

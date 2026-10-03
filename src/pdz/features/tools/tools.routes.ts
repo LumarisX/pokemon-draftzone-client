@@ -29,10 +29,6 @@ export const routes: Routes = [
     path: 'pokemon-search',
     component: PokemonSearchComponent,
   },
-  // {
-  //   path: 'set-analyzer',
-  //   component: SetAnalyzerComponent,
-  // },
   {
     path: 'quick-matchup',
     component: QuickMatchupBaseComponent,

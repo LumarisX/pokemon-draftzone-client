@@ -1,21 +1,17 @@
 <div class="wheel-page">
-  <header class="wheel-page__header">
-    <div class="wheel-page__heading">
-      <h1 class="wheel-page__title">Wheel Randomizer</h1>
-    </div>
+  <pdz-page-header class="wheel-page__header" title="Wheel Randomizer">
     <button
+      pdz-page-header-actions
       pdz-button
-      iconOnly
-      pill
-      variant="ghost"
-      color="neutral"
       type="button"
-      class="wheel-page__options"
+      icon="gearalt"
+      variant="outlined"
+      color="neutral"
       (click)="optionsDialog.open()"
     >
-      <pdz-icon name="gearalt" [size]="18"></pdz-icon>
+      Options
     </button>
-  </header>
+  </pdz-page-header>
 
   <div class="wheel-page__body">
     <section class="wheel-stage">

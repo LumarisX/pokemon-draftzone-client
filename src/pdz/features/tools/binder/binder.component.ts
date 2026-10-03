@@ -575,7 +575,7 @@ export class BinderComponent {
     const ref = this.dialog.open<BinderPrintDialogComponent, boolean>(
       BinderPrintDialogComponent,
       {
-        heading: 'Print placeholders',
+        heading: 'Print Placeholders',
         subheading: 'Cut-out cards for the pockets you have not filled yet.',
         size: 'md',
       },

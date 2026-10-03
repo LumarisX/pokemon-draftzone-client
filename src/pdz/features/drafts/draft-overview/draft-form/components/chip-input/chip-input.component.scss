@@ -23,13 +23,12 @@
     padding: pdz.space(xs) pdz.space(sm);
     border: 1px solid pdz.color(outline);
     border-radius: pdz.shape(corner-sm);
-    background: pdz.color(surface);
+    background: pdz.color(inset);
     cursor: text;
     transition: border-color pdz.duration(base) pdz.easing(standard);
 
     &:focus-within {
-      outline: 2px solid pdz.color(primary-accent);
-      outline-offset: 1px;
+      @include pdz.focus-ring(1px);
       border-color: pdz.color(primary-accent);
     }
   }

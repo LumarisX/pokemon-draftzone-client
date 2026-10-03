@@ -1,20 +1,20 @@
 <div class="bracket-container">
-  @if (componentTitle) {
-    <h2>{{ componentTitle }}</h2>
+  @if (componentTitle()) {
+    <h2 class="bracket-title">{{ componentTitle() }}</h2>
   }
 
   <div class="canvas-host" #host [style.height.px]="hostHeight">
     <canvas #canvasEl></canvas>
 
     <div class="canvas-toolbar">
-      @if (editable) {
+      @if (editable()) {
         <button
           pdz-button
           size="sm"
           color="danger"
           variant="outlined"
-          (click)="clearDraft()"
           title="Remove every matchup, round, and section"
+          (click)="clearDraft()"
         >
           Clear
         </button>
@@ -23,17 +23,18 @@
           size="sm"
           color="neutral"
           variant="outlined"
-          (click)="toggleSectionPrompt()"
+          icon="add"
           title="Add a new bracket section (e.g. losers bracket)"
+          (click)="toggleSectionPrompt()"
         >
-          + Section
+          Section
         </button>
         <button
           pdz-button
           size="sm"
+          title="Save the bracket"
           [disabled]="!canSave"
           (click)="onSaveClick()"
-          title="Save the bracket"
         >
           Save
         </button>
@@ -43,10 +44,11 @@
         size="sm"
         color="neutral"
         variant="outlined"
-        (click)="resetView()"
+        icon="fit_screen"
         title="Fit bracket to view"
+        (click)="resetView()"
       >
-        ⤢ Fit
+        Fit
       </button>
     </div>
 
@@ -54,7 +56,11 @@
       <div class="section-prompt">
         <input
           #sectionInput
+          pdz-input
+          size="sm"
           type="text"
+          class="section-prompt__input"
+          aria-label="Section name"
           placeholder="Section name (e.g. Losers Bracket)"
           (keydown.enter)="commitAddSection(sectionInput.value)"
           (keydown.escape)="cancelSectionPrompt()"
@@ -70,19 +76,27 @@
     }
 
     @if (matchEditor; as ed) {
-      <div class="editor-backdrop" (click)="cancelMatchEditor()"></div>
+      <div
+        class="editor-backdrop"
+        aria-hidden="true"
+        (click)="cancelMatchEditor()"
+      ></div>
       <div
         class="match-editor"
         role="dialog"
         aria-modal="true"
+        aria-labelledby="bracket-match-editor-title"
         (keydown.escape)="cancelMatchEditor()"
       >
-        <h3 class="match-editor__title">Edit {{ ed.autoLabel }}</h3>
+        <h3 class="match-editor__title" id="bracket-match-editor-title">
+          Edit {{ ed.autoLabel }}
+        </h3>
 
-        <label class="match-editor__field">
-          <span>Label</span>
+        <label pdz-field label="Label">
           <input
             #editorLabel
+            pdz-input
+            size="sm"
             type="text"
             [value]="ed.label"
             [placeholder]="ed.autoLabel"
@@ -91,23 +105,24 @@
 
         @for (slot of ed.slots; track $index) {
           <fieldset class="match-editor__slot">
-            <legend>{{ $index === 0 ? 'Slot A' : 'Slot B' }}</legend>
+            <legend>{{ $index === 0 ? "Slot A" : "Slot B" }}</legend>
             <pdz-select
               size="sm"
               aria-label="Slot source"
               [value]="slot.mode"
               (valueChange)="onEditorModeChange($any($index), $any($event))"
             >
-              <pdz-option value="empty" label="— TBD / Unassigned —" />
-              <pdz-option value="seed" label="Static seed" />
+              <pdz-option value="empty" label="To be decided" />
+              <pdz-option value="seed" label="Static Seed" />
               <pdz-option value="winner" label="Winner of a matchup" />
-              <pdz-option value="loser" label="Loser of a matchup" />
+              <pdz-option value="loser" label="Loser of a Matchup" />
             </pdz-select>
 
-            @if (slot.mode === 'seed') {
+            @if (slot.mode === "seed") {
               <pdz-select
                 size="sm"
                 aria-label="Seed"
+                searchable
                 [value]="slot.seed"
                 (valueChange)="onEditorSeedChange($any($index), $any($event))"
               >
@@ -115,11 +130,12 @@
                   <pdz-option [value]="opt.seed" [label]="opt.label" />
                 }
               </pdz-select>
-            } @else if (slot.mode === 'winner' || slot.mode === 'loser') {
+            } @else if (slot.mode === "winner" || slot.mode === "loser") {
               @if (ed.matchOptions.length) {
                 <pdz-select
                   size="sm"
                   aria-label="Source matchup"
+                  searchable
                   [value]="slot.from"
                   (valueChange)="onEditorFromChange($any($index), $any($event))"
                 >
@@ -129,7 +145,7 @@
                 </pdz-select>
               } @else {
                 <p class="match-editor__hint">
-                  No other matchups exist yet — add one first.
+                  No other matchups exist yet. Add one first.
                 </p>
               }
             }
@@ -160,8 +176,11 @@
     @if (titleOverlay; as t) {
       <input
         #titleInput
+        pdz-input
+        size="sm"
         type="text"
         class="title-overlay"
+        aria-label="Round title"
         [value]="t.value"
         [style.left.px]="t.x"
         [style.top.px]="t.y"
@@ -176,15 +195,15 @@
     @if (replayOverlay; as ro) {
       <a
         class="replay-overlay"
-        [href]="ro.href"
         target="_blank"
         rel="noopener noreferrer"
+        aria-label="Watch replay"
+        [href]="ro.href"
         [style.left.px]="ro.x"
         [style.top.px]="ro.y"
         [style.width.px]="ro.w"
         [style.height.px]="ro.h"
         (mouseleave)="onReplayOverlayLeave()"
-        aria-label="Watch replay"
       ></a>
     }
   </div>

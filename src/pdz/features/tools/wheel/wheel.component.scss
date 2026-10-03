@@ -32,34 +32,6 @@
     max-width: 84rem;
   }
 
-  &__header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: pdz.space(md);
-  }
-
-  &__heading {
-    flex: 1;
-    min-width: 0;
-    text-align: center;
-    margin-left: 7rem;
-  }
-
-  &__title {
-    @include text(display);
-    color: pdz.color(on-surface);
-  }
-
-  &__subtitle {
-    @include text(body-sm);
-    color: pdz.color(on-surface-variant);
-  }
-
-  &__options {
-    flex: none;
-  }
-
   &__body {
     display: grid;
     grid-template-columns: minmax(0, 1fr);
@@ -105,8 +77,6 @@
       --rim-width: 15rem;
     }
 
-    // Below this, the wheel and drum are too cramped side by side —
-    // stack them instead.
     @container (min-width: 30rem) {
       flex-direction: row;
       align-items: stretch;
@@ -130,7 +100,6 @@
     border: none;
     background: none;
     cursor: pointer;
-    transition: transform pdz.duration(base) pdz.easing(standard);
 
     @container (min-width: 30rem) {
       width: auto;
@@ -138,17 +107,12 @@
       height: 100%;
     }
 
-    &:hover:not(:disabled) {
-      transform: scale(1.015);
-    }
-
     &:disabled {
       cursor: default;
     }
 
     &:focus-visible {
-      outline: 2px solid pdz.color(primary-accent);
-      outline-offset: 4px;
+      @include pdz.focus-ring(4px);
       border-radius: pdz.shape(corner-full);
     }
   }
@@ -217,11 +181,9 @@
 
   &__weight {
     @include text(label);
-    font-size: pdz.font-size(3xs);
-    font-weight: 500;
-    color: pdz.color(on-surface-variant);
-    font-variant-numeric: tabular-nums;
-    opacity: 0.75;
+    @include pdz.numeric;
+    font-size: pdz.font-size(2xs);
+    color: pdz.color(on-surface-muted);
   }
 
   &__copied {
@@ -266,16 +228,18 @@
   display: block;
   width: 100%;
   height: 100%;
-  filter: drop-shadow(0 4px 10px rgb(0 0 0 / 25%));
+  filter: drop-shadow(
+    0 4px 10px color-mix(in srgb, #{pdz.color(scrim)} 25%, transparent)
+  );
 
   &__slice {
-    stroke: pdz.color(surface);
+    stroke: pdz.color(raised);
   }
 
   &__label {
     @include text(body-sm);
     font-size: 7px;
-    font-weight: 600;
+    font-weight: pdz.font-weight(semibold);
     fill: var(--wheel-slice-ink);
     text-anchor: middle;
     dominant-baseline: middle;
@@ -290,7 +254,7 @@
   }
 
   &__hub {
-    fill: pdz.color(surface-container-low);
+    fill: pdz.color(raised);
     stroke: pdz.color(outline);
     stroke-width: 1.5;
   }
@@ -302,7 +266,7 @@
 
   &__pointer {
     fill: var(--wheel-pointer, #{pdz.color(secondary)});
-    stroke: pdz.color(surface);
+    stroke: pdz.color(raised);
     stroke-width: 1.5;
     stroke-linejoin: round;
   }
@@ -313,9 +277,9 @@
   flex-direction: column;
   gap: pdz.space(md);
   padding: pdz.space(lg);
-  border: 1px solid pdz.color(outline-variant);
+  border: 1px solid pdz.color(border-subtle);
   border-radius: pdz.shape(corner-lg);
-  background: pdz.color(surface-container-low);
+  background: pdz.color(raised);
 
   &__header {
     display: flex;
@@ -368,9 +332,9 @@
     flex: 1;
     min-width: 0;
     padding: pdz.space(sm) pdz.space(md);
-    border: 1px solid pdz.color(outline-variant);
+    border: 1px solid pdz.color(border-control);
     border-radius: pdz.shape(corner-sm);
-    background: pdz.color(surface-container-lowest);
+    background: pdz.color(inset);
     color: pdz.color(on-surface);
 
     &:focus-visible {
@@ -394,7 +358,7 @@
   gap: pdz.space(sm);
   padding: pdz.space(2xs) pdz.space(2xs) pdz.space(2xs) pdz.space(sm);
   border-radius: pdz.shape(corner-sm);
-  background: pdz.color(surface-container);
+  background: pdz.color(state-hover);
   box-shadow: inset 0 0 0 1px transparent;
 
   &--duplicate {
@@ -407,7 +371,7 @@
   }
 
   &.cdk-drag-dragging {
-    box-shadow: var(--pdz-level-3);
+    box-shadow: var(--pdz-elevation-3);
   }
 
   &.cdk-drag-placeholder {
@@ -419,7 +383,7 @@
     width: 0.75rem;
     height: 0.75rem;
     border-radius: pdz.shape(corner-full);
-    border: 1px solid pdz.color(outline-variant);
+    border: 1px solid pdz.color(border-subtle);
     cursor: grab;
     touch-action: none;
 
@@ -443,13 +407,13 @@
     color: pdz.color(on-surface);
 
     &:hover:not(:disabled) {
-      border-color: pdz.color(outline-variant);
+      border-color: pdz.color(border-control);
     }
 
     &:focus-visible {
       outline: none;
       border-color: pdz.color(primary-accent);
-      background: pdz.color(surface-container-lowest);
+      background: pdz.color(inset);
     }
   }
 
@@ -472,13 +436,13 @@
     font-variant-numeric: tabular-nums;
 
     &:hover:not(:disabled) {
-      border-color: pdz.color(outline-variant);
+      border-color: pdz.color(border-control);
     }
 
     &:focus-visible {
       outline: none;
       border-color: pdz.color(primary-accent);
-      background: pdz.color(surface-container-lowest);
+      background: pdz.color(inset);
     }
   }
 
@@ -501,9 +465,9 @@
   flex-direction: column;
   gap: pdz.space(sm);
   padding: pdz.space(lg);
-  border: 1px solid pdz.color(outline-variant);
+  border: 1px solid pdz.color(border-subtle);
   border-radius: pdz.shape(corner-lg);
-  background: pdz.color(surface-container-low);
+  background: pdz.color(raised);
 
   &__header {
     display: flex;
@@ -534,10 +498,6 @@
     gap: pdz.space(sm);
     padding: pdz.space(2xs) pdz.space(sm);
     border-radius: pdz.shape(corner-sm);
-
-    &:nth-child(odd) {
-      background: pdz.color(surface-container);
-    }
   }
 
   &__index {
@@ -553,7 +513,7 @@
     width: 0.6rem;
     height: 0.6rem;
     border-radius: pdz.shape(corner-full);
-    border: 1px solid pdz.color(outline-variant);
+    border: 1px solid pdz.color(border-subtle);
   }
 
   &__label {
@@ -589,16 +549,11 @@
   height: 13rem;
   min-width: 0;
   cursor: pointer;
-  transition: transform pdz.duration(base) pdz.easing(standard);
 
   @container (min-width: 30rem) {
     width: auto;
     height: auto;
     flex: 0 0 var(--rim-width);
-  }
-
-  &:hover:not(&--disabled) {
-    transform: scale(1.015);
   }
 
   &--disabled {
@@ -612,7 +567,7 @@
     overflow: hidden;
     border: 3px solid pdz.color(outline);
     border-radius: pdz.shape(corner-lg);
-    background: pdz.color(surface-container-low);
+    background: pdz.color(inset);
   }
 
   &__stage {
@@ -643,7 +598,7 @@
       left: 0;
       right: 0;
       height: 1px;
-      background: pdz.color(surface);
+      background: pdz.color(inset);
     }
 
     &--active .drum__name {
@@ -659,7 +614,7 @@
     left: 50%;
     max-width: 96%;
     color: var(--wheel-slice-ink);
-    font-weight: 600;
+    font-weight: pdz.font-weight(semibold);
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;

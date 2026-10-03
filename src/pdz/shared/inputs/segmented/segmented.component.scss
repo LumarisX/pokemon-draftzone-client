@@ -54,9 +54,9 @@ $inner-radius: calc(#{$track-radius} - #{$track-pad});
   min-width: 0;
   padding: $track-pad;
   gap: $track-pad;
-  border: 1px solid pdz.color(outline-variant);
+  border: 1px solid pdz.color(border-control);
   border-radius: $track-radius;
-  background: pdz.color(surface);
+  background: pdz.color(inset);
 }
 
 .pdz-segmented__indicator {
@@ -103,7 +103,7 @@ $inner-radius: calc(#{$track-radius} - #{$track-pad});
     color pdz.duration(base) pdz.easing(standard);
 
   &:hover:not(:disabled):not(.pdz-segmented__option--checked) {
-    background: pdz.color(surface-container-high);
+    background: pdz.color(state-hover);
     color: pdz.color(on-surface);
   }
 

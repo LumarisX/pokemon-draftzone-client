@@ -46,9 +46,9 @@
   @include pdz.respond-above(medium) {
     padding: pdz.space(sm);
   }
-  border: 1px solid pdz.color(outline-variant);
+  border: 1px solid pdz.color(border-subtle);
   border-radius: pdz.shape(corner-lg);
-  background: pdz.color(surface-container-low);
+  background: pdz.color(raised);
 }
 
 .binder__findbar-row {
@@ -180,9 +180,9 @@
 .binder__slot {
   position: relative;
   aspect-ratio: 5 / 7;
-  border: 1px solid pdz.color(outline-variant);
+  border: 1px solid pdz.color(border-subtle);
   border-radius: pdz.shape(corner-sm);
-  background: pdz.color(surface-container-low);
+  background: pdz.color(inset);
   transition:
     border-color pdz.duration(fast) pdz.easing(standard),
     background-color pdz.duration(fast) pdz.easing(standard),
@@ -281,12 +281,12 @@
   padding: pdz.space(3xs);
   border: none;
   border-radius: pdz.shape(corner-xs);
-  background: pdz.color(surface-container-high);
+  background: pdz.color(state-hover);
   color: pdz.color(on-surface-variant);
   cursor: pointer;
 
   &:hover {
-    background: pdz.color(surface-container-highest);
+    background: pdz.color(state-pressed);
     color: pdz.color(on-surface);
   }
 
@@ -423,16 +423,16 @@
   align-items: center;
   gap: pdz.space(xs);
   padding: pdz.space(2xs) pdz.space(sm);
-  border: 1px solid pdz.color(outline-variant);
+  border: 1px solid pdz.color(border-control);
   border-radius: pdz.shape(corner-full);
-  background: pdz.color(surface-container-low);
+  background: transparent;
   color: pdz.color(on-surface);
   cursor: pointer;
 
   @include pdz.text(body-sm);
 
   &:hover {
-    background: pdz.color(surface-container);
+    background: pdz.color(state-hover);
   }
 
   &:focus-visible {
@@ -452,7 +452,7 @@
 
 .cdk-drag-preview {
   border-radius: pdz.shape(corner-sm);
-  box-shadow: var(--pdz-level-3);
+  box-shadow: var(--pdz-elevation-3);
 }
 
 .cdk-drag-placeholder {
@@ -485,10 +485,10 @@
     max-width: calc(100% - #{pdz.space(2xl)});
     padding: pdz.space(sm) pdz.space(md);
   }
-  border: 1px solid pdz.color(outline-variant);
+  border: 1px solid pdz.color(border-subtle);
   border-radius: pdz.shape(corner-lg);
-  background: pdz.color(surface-container-high);
-  box-shadow: var(--pdz-level-3);
+  background: pdz.color(overlay);
+  box-shadow: var(--pdz-elevation-3);
 }
 
 .binder__selection-count {

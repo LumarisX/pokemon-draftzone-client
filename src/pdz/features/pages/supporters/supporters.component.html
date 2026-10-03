@@ -1,29 +1,33 @@
-<pdz-page width="default">
-  <div class="support-page">
-    <h1 class="support-page__title">Support the Site</h1>
+<pdz-page width="narrow">
+  <div class="support">
+    <pdz-page-header
+      title="Support the Site"
+      subtitle="DraftZone is free. If it helps your leagues, these keep it that way."
+    />
 
-    @for (dev of developers; track dev) {
-      <div class="developer-card">
-        <h2 class="developer-card__name">{{ dev.name }}</h2>
-
-        <div class="developer-card__links">
-          @for (link of dev.links; track link) {
-            <a
-              [href]="link.href"
-              target="_blank"
-              rel="noopener noreferrer"
-              class="support-link"
-              [attr.aria-label]="'Support ' + dev.name + ' on ' + link.name"
-            >
-              <img
-                class="support-link__icon"
-                [src]="link.iconSrc"
-                [alt]="link.name + ' logo'"
-              />
-            </a>
-          }
-        </div>
-      </div>
+    @for (supportee of supportees; track supportee.name) {
+      <pdz-card padding="lg">
+        <section
+          class="supportee"
+          [attr.aria-label]="'Support ' + supportee.name"
+        >
+          <h2 class="supportee__name">{{ supportee.name }}</h2>
+          <p class="supportee__description">{{ supportee.description }}</p>
+          <div class="supportee__links">
+            @for (link of supportee.links; track link.name) {
+              <a
+                class="support-link"
+                target="_blank"
+                rel="noopener noreferrer"
+                [href]="link.href"
+              >
+                <img class="support-link__icon" alt="" [src]="link.iconSrc" />
+                <span>{{ link.name }}</span>
+              </a>
+            }
+          </div>
+        </section>
+      </pdz-card>
     }
   </div>
 </pdz-page>

@@ -1,12 +1,23 @@
 <pdz-page width="default">
-  <div class="tools-page">
-  <h1 class="tools-page__title">Tools</h1>
-  <nav class="tools-list">
-    @for (tool of tools; track tool.link) {
-      <a class="tools-list__item" [routerLink]="tool.link">
-        <h2 class="tools-list__label">{{ tool.title }}</h2>
-      </a>
-    }
-  </nav>
-</div>
+  <div class="tools">
+    <pdz-page-header
+      title="Tools"
+      subtitle="Utilities for planning, scouting and running your leagues."
+    />
+    <nav class="tools__grid" aria-label="Tools">
+      @for (tool of tools; track tool.link) {
+        <a pdz-card class="tool" [routerLink]="tool.link">
+          <span class="tool__row">
+            <span class="tool__icon">
+              <pdz-icon [name]="tool.icon" [size]="24" />
+            </span>
+            <span class="tool__text">
+              <span class="tool__title">{{ tool.title }}</span>
+              <span class="tool__description">{{ tool.description }}</span>
+            </span>
+          </span>
+        </a>
+      }
+    </nav>
+  </div>
 </pdz-page>

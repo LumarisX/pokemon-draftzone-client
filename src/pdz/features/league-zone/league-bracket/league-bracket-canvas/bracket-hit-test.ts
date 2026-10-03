@@ -13,18 +13,12 @@ export interface HitRegion {
   slotIndex?: 0 | 1;
   section?: string;
   round?: number;
-  /** World-space bounding box. */
   x: number;
   y: number;
   w: number;
   h: number;
 }
 
-/**
- * Builds the interactive region list in paint order (later entries painted on
- * top). Regions are world-space, so they only change with layout — pan/zoom is
- * handled by converting pointer coordinates to world space before querying.
- */
 export function buildHitRegions(
   layout: CanvasLayout,
   editable: boolean,
@@ -32,8 +26,6 @@ export function buildHitRegions(
   const regions: HitRegion[] = [];
 
   if (editable) {
-    // Round titles are click-to-rename in edit mode. Painted before cards, so
-    // they sit earliest in the list.
     for (const section of layout.sections) {
       for (const col of section.columns) {
         regions.push({
@@ -61,12 +53,14 @@ export function buildHitRegions(
       h: match.h,
     });
 
-    for (const slotIndex of [0, 1] as const) {
-      const rect = slotRect(match, slotIndex);
-      if (editable) {
-        regions.push({ kind: 'slot', matchId: match.id, slotIndex, ...rect });
-      } else if (match.winner === undefined) {
-        // Non-interactive in read-only mode; skip so background pans start here.
+    if (editable) {
+      for (const slotIndex of [0, 1] as const) {
+        regions.push({
+          kind: 'slot',
+          matchId: match.id,
+          slotIndex,
+          ...slotRect(match, slotIndex),
+        });
       }
     }
 
@@ -118,7 +112,6 @@ export function buildHitRegions(
   return regions;
 }
 
-/** Distance from a point to a line segment. */
 function segmentDistance(
   px: number,
   py: number,
@@ -136,11 +129,6 @@ function segmentDistance(
   return Math.hypot(px - (x1 + t * dx), py - (y1 + t * dy));
 }
 
-/**
- * Returns the index of the connector polyline closest to the world-space
- * point, or null if none is within `tolerance` (world px). Rect regions
- * don't fit connector lines, so they get their own proximity test.
- */
 export function hitTestConnector(
   wx: number,
   wy: number,
@@ -169,10 +157,6 @@ export function hitTestConnector(
   return best;
 }
 
-/**
- * Returns the topmost region containing the world-space point, mirroring DOM
- * event targeting: the list is in paint order, so query in reverse.
- */
 export function queryHitRegion(
   wx: number,
   wy: number,

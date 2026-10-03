@@ -173,7 +173,7 @@ import { TournamentSettingsStore } from './tournament-settings.store';
       .node-control__choices {
         display: flex;
         flex-wrap: wrap;
-        gap: 0.75rem;
+        gap: var(--pdz-space-md);
       }
     `,
   ],

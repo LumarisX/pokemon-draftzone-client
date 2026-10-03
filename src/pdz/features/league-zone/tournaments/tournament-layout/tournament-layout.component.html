@@ -1,18 +1,20 @@
 <div class="layout" [class.layout--nav-open]="navOpen()">
-  <div class="layout__backdrop" (click)="closeNav()"></div>
+  <div
+    class="layout__backdrop"
+    aria-hidden="true"
+    (click)="closeNav()"
+  ></div>
 
   <button
     pdz-button
     iconOnly
-    type="button"
+    icon="chevron_left"
     variant="ghost"
     color="neutral"
     class="layout__nav-close"
     aria-label="Close navigation"
     (click)="closeNav()"
-  >
-    <pdz-icon name="chevron_left" [size]="22" aria-hidden="true"></pdz-icon>
-  </button>
+  ></button>
 
   <pdz-tournament-nav class="layout__nav"></pdz-tournament-nav>
 

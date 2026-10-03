@@ -1,339 +1,304 @@
 @if (isLoading) {
-  <pdz-loading></pdz-loading>
+  <pdz-loading />
 } @else {
-  <pdz-page-header
-    compact
-    [title]="poolName"
-    [eyebrow]="leagueName"
-  >
-    <div
-      pdz-page-header-meta
-      class="draft-status"
-      [ngClass]="{
-        'in-progress': draftDetails.status === 'IN_PROGRESS',
-        paused: draftDetails.status === 'PAUSED',
-        'pre-draft': isPreDraft,
-        completed: draftDetails.status === 'COMPLETED',
-      }"
+  <pdz-page-header compact [title]="poolName" [eyebrow]="leagueName">
+    <pdz-chip pdz-page-header-meta size="sm" [tone]="statusTone">{{
+      statusLabel
+    }}</pdz-chip>
+    <a
+      pdz-page-header-actions
+      pdz-button
+      size="sm"
+      variant="outlined"
+      color="neutral"
+      icon="open_in_new"
+      target="_blank"
+      [routerLink]="['/', plannerPath]"
     >
-      @if (draftStartDisplay) {
-        Starting in {{ draftStartDisplay }}
-      } @else if (isPreDraft && draftStartOverdue) {
-        Awaiting organizer to start the draft
-      } @else {
-        {{ draftDetails.status.replace("_", " ") | titlecase }}
-      }
-    </div>
+      Planner
+    </a>
   </pdz-page-header>
 
-  <div class="main-league-container">
-    <div class="draft-panel">
-      <a class="planner-link fancy-font" target="_blank" routerLink="/planner">
-        Planner
-        <pdz-icon name="open_in_new" size="sm"></pdz-icon>
-      </a>
-      <div class="my-draft-main">
-        <div class="draft-section">
-          <pdz-menu align="start" aria-label="Select team">
-            <button
-              pdz-button
-              pdz-menu-trigger
-              color="neutral"
-              variant="ghost"
-              class="draft-section-title"
-              [disabled]="teamSwitchLocked"
-            >
-              {{ selectedTeam.name }}
-              @if (!teamSwitchLocked) {
-                <pdz-icon name="arrow_drop_down"></pdz-icon>
-              }
+  <div class="board">
+    <section class="roster" aria-label="Roster">
+      <div class="roster__head">
+        <pdz-menu align="start" aria-label="Select team">
+          <button
+            pdz-button
+            pdz-menu-trigger
+            color="neutral"
+            variant="ghost"
+            class="roster__team"
+            [disabled]="teamSwitchLocked"
+          >
+            {{ selectedTeam.name }}
+            @if (!teamSwitchLocked) {
+              <pdz-icon name="arrow_drop_down" />
+            }
+          </button>
+          @for (team of teams; track team.id) {
+            <button pdz-menu-item (click)="selectTeamAndClose(team)">
+              {{ team.name }}
             </button>
-            @for (team of teams; track team) {
-              <button pdz-menu-item (click)="selectTeamAndClose(team)">
-                {{ team.name }}
-              </button>
+          }
+        </pdz-menu>
+      </div>
+
+      <ol class="roster__list">
+        @if (selectedTeam.picksHidden) {
+          <li class="roster__hidden">
+            <pdz-icon name="lock" size="sm" />
+            {{ selectedTeam.pickCount ?? 0 }}
+            {{ selectedTeam.pickCount === 1 ? "pick" : "picks" }} hidden until
+            the draft ends
+          </li>
+        }
+        @for (pokemon of selectedTeam.draft; track pokemon.id) {
+          <li
+            class="slot"
+            [class.slot--pending]="pendingPokemonIds.has(pokemon.id)"
+          >
+            <span class="slot__index">{{ $index + 1 }}</span>
+            <span class="slot__sprite">
+              <pdz-sprite [pokemon]="pokemon" flipped></pdz-sprite>
+            </span>
+            <span class="slot__info">
+              <span class="slot__name">{{ pokemon.name }}</span>
+              @if (pokemon.types?.length) {
+                <span class="pdz-types">
+                  @for (type of pokemon.types; track $index) {
+                    <pdz-pokemon-type [type]="type" content="icon" />
+                  }
+                </span>
+              }
+            </span>
+            @if (pokemon.capt?.tera) {
+              <pdz-icon class="slot__capt" name="tera" ariaLabel="Tera captain" />
             }
-          </pdz-menu>
-          <ol class="my-draft-pokemons draft-section-body">
-            @if (selectedTeam.picksHidden) {
-              <li class="hidden-picks">
-                <pdz-icon name="lock" size="sm"></pdz-icon>
-                {{ selectedTeam.pickCount ?? 0 }}
-                {{ selectedTeam.pickCount === 1 ? "pick" : "picks" }} hidden
-                until the draft ends
-              </li>
+            <span class="slot__cost">{{ pokemon.cost || pokemon.tier }}</span>
+            @if (
+              isInProgress &&
+              selectedTeam.isCoach &&
+              (pendingPokemonIds.has(pokemon.id) ||
+                !draftDetails.sequentialTurns)
+            ) {
+              <button
+                pdz-button
+                iconOnly
+                icon="close"
+                size="xs"
+                variant="ghost"
+                color="danger"
+                [attr.aria-label]="
+                  pendingPokemonIds.has(pokemon.id)
+                    ? 'Undo picking ' + pokemon.name
+                    : 'Remove ' + pokemon.name + ' from the draft'
+                "
+                (click)="removeDraftedPokemon(pokemon)"
+              ></button>
             }
-            @for (pokemon of selectedTeam.draft; track pokemon.id) {
-              <li
-                class="my-draft-pokemon"
-                [class.pending-pick]="pendingPokemonIds.has(pokemon.id)"
+          </li>
+        }
+        @if (isInProgress && draftDetails.sequentialTurns) {
+          @for (
+            picks of selectedTeam.picks;
+            track $index;
+            let roundIndex = $index
+          ) {
+            <li
+              class="slot slot--queue"
+              [class.slot--selected]="selectedPick === roundIndex"
+              [class.slot--ready]="roundIndex < draftableCount()"
+            >
+              <button
+                type="button"
+                class="slot__select"
+                [attr.aria-pressed]="selectedPick === roundIndex"
+                [attr.aria-label]="
+                  'Queue picks for slot ' +
+                  (roundIndex + selectedTeam.draft.length + 1)
+                "
+                (click)="selectedPick = roundIndex"
               >
-                <div class="my-pokemon-index">{{ $index + 1 }}</div>
-                <div class="my-pokemon-sprite">
-                  <pdz-sprite [pokemon]="pokemon" flipped></pdz-sprite>
-                </div>
-                <div class="my-pokemon-info">
-                  <span class="my-pokemon-name">{{ pokemon.name }}</span>
-                  @if (pokemon.types?.length) {
-                    <div class="pdz-types">
-                      @for (type of pokemon.types; track $index) {
-                        <pdz-pokemon-type
-                          [type]="type"
-                          content="icon"
-                        ></pdz-pokemon-type>
+                <span class="slot__index">{{
+                  roundIndex + selectedTeam.draft.length + 1
+                }}</span>
+                @if (!picks.length) {
+                  <span class="slot__empty">Select Pokémon</span>
+                }
+              </button>
+              @if (picks.length) {
+                <div class="choices">
+                  @for (choice of picks; track choice.id) {
+                    <div class="choice" [class.choice--backup]="$index > 0">
+                      <span class="choice__sprite">
+                        <pdz-sprite
+                          [pokemon]="choice"
+                          flipped
+                          size="2.5rem"
+                        ></pdz-sprite>
+                      </span>
+                      <span class="choice__text">
+                        <span class="choice__rank"
+                          >{{ $index + 1 | numbersuffix }} choice</span
+                        >
+                        <span class="choice__name">{{ choice.name }}</span>
+                      </span>
+                      @if (choice.addons?.includes("Tera Captain")) {
+                        <pdz-icon
+                          class="slot__capt"
+                          name="tera"
+                          ariaLabel="Tera captain"
+                        />
                       }
+                      <span class="slot__cost">{{ choice.cost }}</span>
+                      @if ($index) {
+                        <button
+                          pdz-button
+                          iconOnly
+                          icon="arrow_upward_alt"
+                          size="xs"
+                          variant="ghost"
+                          color="neutral"
+                          [attr.aria-label]="'Move ' + choice.name + ' up'"
+                          (click)="moveUp(picks, $index)"
+                        ></button>
+                      }
+                      <button
+                        pdz-button
+                        iconOnly
+                        icon="close"
+                        size="xs"
+                        variant="ghost"
+                        color="danger"
+                        [attr.aria-label]="'Remove ' + choice.name"
+                        (click)="deleteChoice(picks, $index)"
+                      ></button>
                     </div>
                   }
                 </div>
-                @if (pokemon.capt?.tera) {
-                  <div class="my-pokemon-capt fancy-font">
-                    <pdz-icon name="tera"></pdz-icon>
-                  </div>
-                }
-                <div class="my-pokemon-tier fancy-font">
-                  {{ pokemon.cost || pokemon.tier }}
-                </div>
-                @if (
-                  draftDetails.status === "IN_PROGRESS" &&
-                  selectedTeam.isCoach &&
-                  (pendingPokemonIds.has(pokemon.id) ||
-                    !draftDetails.sequentialTurns)
-                ) {
-                  <button
-                    pdz-button
-                    iconOnly
-                    size="xs"
-                    variant="ghost"
-                    color="danger"
-                    class="remove-button"
-                    [title]="
-                      pendingPokemonIds.has(pokemon.id)
-                        ? 'Undo this draft pick (not saved yet)'
-                        : 'Remove from draft'
-                    "
-                    (click)="removeDraftedPokemon(pokemon)"
-                  >
-                    <pdz-icon name="close" size="sm"></pdz-icon>
-                  </button>
-                }
-              </li>
-            }
-            @if (
-              draftDetails.status === "IN_PROGRESS" &&
-              draftDetails.sequentialTurns
-            ) {
-              @for (
-                picks of selectedTeam.picks;
-                track $index;
-                let roundIndex = $index
-              ) {
-                <li
-                  class="my-draft-pokemon my-pick"
-                  (click)="selectedPick = roundIndex"
-                  [class.selected-pick]="selectedPick === roundIndex"
-                  [class.ready]="roundIndex < draftableCount()"
-                >
-                  <div class="my-pokemon-index">
-                    {{ roundIndex + selectedTeam.draft.length + 1 }}
-                  </div>
-                  <div class="my-draft-picks">
-                    @for (choice of picks; track choice.id) {
-                      <div
-                        class="my-draft-pick-container"
-                        [class.backup]="$index > 0"
-                      >
-                        @if ($index) {
-                          <button (click)="moveUp(picks, $index)">
-                            <pdz-icon name="arrow_upward_alt"></pdz-icon>
-                          </button>
-                        }
-                        <button
-                          class="my-draft-pick"
-                          [class.backup]="$index > 0"
-                        >
-                          <div class="my-pokemon-sprite">
-                            <pdz-sprite
-                              [pokemon]="choice"
-                              flipped
-                              size="2.5rem"
-                            ></pdz-sprite>
-                          </div>
-                          <div class="pick-header">
-                            <div class="pick-text">
-                              {{ $index + 1 | numbersuffix }} Choice
-                            </div>
-                            <div class="my-pokemon-name fancy-font">
-                              {{ choice.name }}
-                            </div>
-                          </div>
-                          @if (choice.addons?.includes("Tera Captain")) {
-                            <div class="my-pokemon-capt fancy-font">
-                              <pdz-icon name="tera"></pdz-icon>
-                            </div>
-                          }
-                          <div class="my-pokemon-tier fancy-font">
-                            {{ choice.cost }}
-                          </div>
-                          <button
-                            pdz-button
-                    iconOnly
-                    size="xs"
-                    variant="ghost"
-                    color="danger"
-                    class="remove-button"
-                            (click)="deleteChoice(picks, $index)"
-                          >
-                            <pdz-icon name="close" size="sm"></pdz-icon>
-                          </button>
-                        </button>
-                      </div>
-                    } @empty {
-                      <button
-                        class="no-pick"
-                        [class.selected-pick]="selectedPick === roundIndex"
-                      >
-                        Select Pokémon
-                      </button>
-                    }
-                  </div>
-                </li>
               }
-            } @else if (draftDetails.status === "IN_PROGRESS") {
-              @for (
-                slot of selectedTeam.picks;
-                track $index;
-                let roundIndex = $index
-              ) {
-                <li class="my-draft-pokemon my-pick">
-                  <div class="my-pokemon-index">
-                    {{ roundIndex + selectedTeam.draft.length + 1 }}
-                  </div>
-                  <div class="my-draft-picks">
-                    <button class="no-pick">Add Pokémon</button>
-                  </div>
-                </li>
-              }
-            }
-          </ol>
-        </div>
-
-        <div class="draft-footer">
-          @if (draftDetails.status === "IN_PROGRESS") {
-            <button
-              pdz-button
-              [disabled]="!canSave()"
-              (click)="saveDraft()"
-            >
-              {{ isSubmitting ? "Sending..." : "Send" }}
-            </button>
+            </li>
           }
-          <span class="draft-footer-info">
-            @if (points) {
-              <span>Points: {{ selectedTeam.pointTotal }}/{{ points }}</span>
-            }
-            @if (unmetTierRequirements(); as unmet) {
-              @if (unmet.length) {
-                <div class="tier-requirements-warning-container">
-                  @for (req of unmet; track req.tierName) {
-                    <span class="tier-requirements-warning">
-                      {{ req.tierName }} {{ req.have }}/{{ req.required }}
-                    </span>
-                  }
-                </div>
-              }
-            }
-          </span>
-        </div>
+        } @else if (isInProgress) {
+          @for (
+            slot of selectedTeam.picks;
+            track $index;
+            let roundIndex = $index
+          ) {
+            <li class="slot slot--queue">
+              <span class="slot__index">{{
+                roundIndex + selectedTeam.draft.length + 1
+              }}</span>
+              <span class="slot__empty">Add Pokémon</span>
+            </li>
+          }
+        }
+      </ol>
+
+      <div class="roster__footer">
+        @if (isInProgress) {
+          <button
+            pdz-button
+            [loading]="isSubmitting"
+            [disabled]="!canSave()"
+            (click)="saveDraft()"
+          >
+            Send
+          </button>
+        }
+        <span class="roster__totals">
+          @if (points) {
+            <span
+              class="roster__points"
+              [class.roster__points--over]="!isRosterValid()"
+              >{{ selectedTeam.pointTotal }} / {{ points }} points</span
+            >
+          }
+          @for (req of unmetTierRequirements(); track req.tierName) {
+            <span class="roster__requirement">
+              {{ req.tierName }} {{ req.have }}/{{ req.required }}
+            </span>
+          }
+        </span>
       </div>
-    </div>
-    <div class="main-draft">
+    </section>
+
+    <div class="board__main">
       @if (draftDetails.sequentialTurns) {
-        <div class="draft-bar draft-section">
-          <div class="draft-section-title">Draft Order</div>
-          <div class="draft-rounds draft-section-body" #draftRoundsContainer>
+        <section class="order" aria-label="Draft order">
+          <h2 class="order__title">Draft Order</h2>
+          <div class="order__rounds" #draftRoundsContainer>
             @for (round of draftRounds; track $index; let roundIndex = $index) {
-              <div
-                class="draft-round-container"
-                [attr.data-round-index]="roundIndex"
-              >
-                <div class="round-label">
-                  <span>Round {{ roundIndex + 1 }}</span>
-                  <pdz-icon name="trending_flat"></pdz-icon>
-                </div>
-                <div class="card-container">
+              <div class="order__round" [attr.data-round-index]="roundIndex">
+                <span class="order__round-label">
+                  Round {{ roundIndex + 1 }}
+                  <pdz-icon name="trending_flat" [size]="18" />
+                </span>
+                <div class="order__cards">
                   @for (position of round; track $index) {
                     @let pokemon = position.draft[roundIndex];
-                    @let hiddenPick = hiddenPickAt(position, roundIndex);
+                    @let state = pickState(position, roundIndex, $index);
                     <div
-                      class="team-card"
-                      [class.alternate]="!pokemon && !hiddenPick"
+                      class="pick"
+                      [class.pick--open]="state === 'upcoming' || state === 'skipped'"
                     >
-                      <div class="team-card-header">
-                        <span
-                          [class.selectedTeam]="
-                            position.name === selectedTeam.name
-                          "
-                        >
-                          {{ position.name }}
-                        </span>
-                      </div>
-                      <div
-                        class="team-card-body"
-                        [class.picking]="
-                          currentPick &&
-                          currentPick.round === roundIndex &&
-                          currentPick.position === $index
-                        "
+                      <span
+                        class="pick__team"
+                        [class.pick__team--viewed]="position.id === selectedTeam.id"
+                        >{{ position.name }}</span
                       >
-                        <div class="team-card-icon">
-                          @if (pokemon) {
-                            <pdz-sprite [pokemon]="pokemon"></pdz-sprite>
-                          } @else if (hiddenPick) {
-                            <pdz-icon name="lock"></pdz-icon>
-                          } @else if (
-                            currentPick &&
-                            currentPick.round === roundIndex &&
-                            currentPick.position === $index
-                          ) {
-                            @if (this.draftDetails.status === "PAUSED") {
-                              <span class="pause-time">
-                                <pdz-icon name="pause"></pdz-icon>
-                              </span>
-                            } @else if (noTimer) {
-                              <span class="skip-time" title="No timer">
-                                <pdz-icon name="timer_off" size="sm"></pdz-icon>
-                              </span>
-                            } @else {
-                              <span class="skip-time">
-                                {{ skipTimeDisplay }}
-                              </span>
+                      <div
+                        class="pick__body"
+                        [class.pick__body--picking]="state === 'picking'"
+                      >
+                        <div class="pick__icon">
+                          @switch (state) {
+                            @case ("drafted") {
+                              <pdz-sprite [pokemon]="pokemon"></pdz-sprite>
                             }
-                          } @else {
-                            <pdz-icon svgIcon="pokeball" name=""></pdz-icon>
+                            @case ("hidden") {
+                              <pdz-icon name="lock" />
+                            }
+                            @case ("picking") {
+                              @if (draftDetails.status === "PAUSED") {
+                                <pdz-icon name="pause" [size]="48" />
+                              } @else if (noTimer) {
+                                <pdz-icon
+                                  name="timer_off"
+                                  size="sm"
+                                  ariaLabel="No timer"
+                                />
+                              } @else {
+                                <span class="pick__clock">{{
+                                  skipTimeDisplay
+                                }}</span>
+                              }
+                            }
+                            @default {
+                              <pdz-icon name="pokeball" />
+                            }
                           }
                         </div>
-                        <div class="team-card-name">
-                          @if (pokemon) {
-                            {{ pokemon.name }}
-                          } @else if (hiddenPick) {
-                            Hidden
-                          } @else if (
-                            currentPick &&
-                            currentPick.round === roundIndex &&
-                            currentPick.position === $index
-                          ) {
-                            Picking
-                          } @else if (
-                            currentPick &&
-                            (currentPick.round > roundIndex ||
-                              (currentPick.round === roundIndex &&
-                                currentPick.position > $index))
-                          ) {
-                            Skipped
-                          } @else {
-                            Upcoming
+                        <span class="pick__name">
+                          @switch (state) {
+                            @case ("drafted") {
+                              {{ pokemon.name }}
+                            }
+                            @case ("hidden") {
+                              Hidden
+                            }
+                            @case ("picking") {
+                              Picking
+                            }
+                            @case ("skipped") {
+                              Skipped
+                            }
+                            @default {
+                              Upcoming
+                            }
                           }
-                        </div>
+                        </span>
                       </div>
                     </div>
                   }
@@ -341,15 +306,15 @@
               </div>
             }
           </div>
-        </div>
+        </section>
       }
-      <div class="tier-wrapper">
+      <div class="board__tiers">
         <pdz-tier-list
           [buttonText]="buttonText()"
           [altButtonText]="altButtonText()"
           [localDraftedIds]="draftedIds"
-          (pokemonSelected)="pokemonSelected($event)"
           [showHeader]="false"
+          (pokemonSelected)="pokemonSelected($event)"
         ></pdz-tier-list>
       </div>
     </div>

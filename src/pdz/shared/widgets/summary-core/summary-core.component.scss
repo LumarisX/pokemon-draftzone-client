@@ -1,20 +1,20 @@
 @use "pdz-theming" as pdz;
 
 $corner-radius: pdz.shape(corner-md);
-$border-color: var(--pdz-cmp-summary-border, pdz.color(menu-border));
+$border-color: var(--pdz-cmp-summary-border, pdz.color(border-control));
 $border: 1px solid $border-color;
 
 :host {
   display: block;
   width: 100%;
   overflow-x: auto;
-  padding-right: 2px;
+  padding-right: pdz.space(2xs);
 }
 
 .summary {
   display: grid;
   grid-template-columns: auto auto auto repeat(8, 3rem);
-  row-gap: 4px;
+  row-gap: pdz.space(xs);
   width: 100%;
 
   &__head,
@@ -35,36 +35,43 @@ $border: 1px solid $border-color;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 0 4px;
+    padding: 0 pdz.space(xs);
     text-align: center;
   }
 
-  // ---- Header ----
   &__header {
-    border-bottom: 2px solid $border-color;
+    border-bottom: $border;
 
     &--sortable {
-      cursor: pointer;
       user-select: none;
     }
 
     &--sorted {
       color: pdz.color(primary-accent);
-      font-weight: 700;
-
-      &.summary__header--reversed {
-        color: pdz.color(secondary-accent);
-      }
+      font-weight: pdz.font-weight(bold);
     }
   }
 
-  // ---- Body ----
+  &__sort {
+    padding: 0;
+    border: none;
+    background: none;
+    font: inherit;
+    color: inherit;
+    cursor: pointer;
+    border-radius: pdz.shape(corner-xs);
+
+    &:focus-visible {
+      @include pdz.focus-ring;
+    }
+  }
+
   &__cell--name {
     flex-direction: column;
   }
 
   &__pokemon-name {
-    font-weight: 600;
+    font-weight: pdz.font-weight(semibold);
   }
 
   &__cell--abilities {
@@ -95,7 +102,6 @@ $border: 1px solid $border-color;
     }
   }
 
-  // ---- Footer ----
   &__foot {
     .summary__cell {
       padding: 0;
@@ -148,15 +154,14 @@ $border: 1px solid $border-color;
   }
 
   &__cell--aggregate-labels {
-    font-weight: 600;
+    font-weight: pdz.font-weight(semibold);
   }
 
-  // ---- Slider ----
   &__cell--slider {
     grid-column: span 2;
     flex-direction: column;
     justify-content: center;
-    border: 1.5px solid $border-color;
+    border: $border;
     border-radius: $corner-radius;
   }
 
@@ -171,11 +176,11 @@ $border: 1px solid $border-color;
     justify-content: space-evenly;
     align-items: center;
     width: 80%;
-    font-size: small;
+    font-size: pdz.font-size(sm);
   }
 
   &__slider-value {
-    font-weight: bold;
+    font-weight: pdz.font-weight(bold);
   }
 }
 

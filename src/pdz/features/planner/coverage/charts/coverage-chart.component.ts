@@ -12,7 +12,7 @@ import { typeColor } from '@pdz/core/utils/styling';
 import {
   CoveragePokemon,
   FullCoverageMove,
-} from '../../../drafts/matchup-overview/matchup-interface';
+} from '@pdz/features/drafts/matchup-overview/matchup-interface';
 
 type DataPoint = {
   name: string;
@@ -129,7 +129,6 @@ export class CoverageChartComponent implements OnChanges, OnDestroy {
     const interactive = this.interactive();
     const stroke = this.strokeWidth() ?? (interactive ? 4 : 10);
 
-    // Compute the layout.
     const hierarchy = d3.hierarchy(hierarchyData).sum((d) => d.value ?? 0);
 
     const root: ExtendedNode<DataPoint> = d3
@@ -141,7 +140,6 @@ export class CoverageChartComponent implements OnChanges, OnDestroy {
       d.current = d;
       d.target = d;
     });
-    // Create the arc generator.
     const arc = d3
       .arc<PositionData>()
       .startAngle((d) => d.x0)
@@ -150,8 +148,6 @@ export class CoverageChartComponent implements OnChanges, OnDestroy {
       .padRadius(radius * 1.5)
       .innerRadius((d) => d.y0 * radius)
       .outerRadius((d) => Math.max(d.y0 * radius, d.y1 * radius - 3));
-
-    // Create the SVG container.
 
     const svg = d3
       .select(this.el.nativeElement)
@@ -171,12 +167,11 @@ export class CoverageChartComponent implements OnChanges, OnDestroy {
       .append('circle')
       .datum(root)
       .attr('r', (width + borderWidth) / 2)
-      .attr('fill', 'var(--pdz-color-surface)')
-      .attr('stroke', 'var(--pdz-color-outline-variant)')
+      .attr('fill', 'var(--pdz-color-raised)')
+      .attr('stroke', 'var(--pdz-color-border-subtle)')
       .attr('stroke-width', borderWidth)
       .attr('pointer-events', 'all');
 
-    // Append the arcs.
     const path: d3.Selection<
       SVGPathElement,
       ExtendedNode<DataPoint>,
@@ -194,7 +189,7 @@ export class CoverageChartComponent implements OnChanges, OnDestroy {
       .attr('fill-opacity', (d: ExtendedNode<DataPoint>) =>
         arcVisible(d.current) ? 1 : 0,
       )
-      .attr('stroke', 'var(--pdz-color-surface)')
+      .attr('stroke', 'var(--pdz-color-raised)')
       .attr('stroke-width', stroke)
       .attr('stroke-linejoin', 'round')
       .attr('stroke-opacity', (d: ExtendedNode<DataPoint>) =>
@@ -343,7 +338,6 @@ export class CoverageChartComponent implements OnChanges, OnDestroy {
         });
     }
 
-    // Handle zoom on click.
     function clicked(event: any, p: ExtendedNode<DataPoint>) {
       root.each(
         (d) =>
@@ -363,9 +357,6 @@ export class CoverageChartComponent implements OnChanges, OnDestroy {
 
       const t = svg.transition().duration(event.altKey ? 7500 : 750);
 
-      // Transition the data on all arcs, even the ones that aren’t visible,
-      // so that if this transition is interrupted, entering arcs will start
-      // the next transition from the desired position.
       path
         .transition(t)
         .tween('data', (d: ExtendedNode<DataPoint>) => {
@@ -439,7 +430,5 @@ export class CoverageChartComponent implements OnChanges, OnDestroy {
       if (d.y0 >= 2 && d.y0 < 3) return 0.4;
       return 0;
     }
-
-    // return svg.node();
   }
 }

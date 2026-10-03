@@ -1,27 +1,32 @@
-import { CommonModule } from '@angular/common';
-import { Component, computed, inject, OnDestroy, signal } from '@angular/core';
-import { ActivatedRoute, RouterModule } from '@angular/router';
-import { getNameByPid } from '@pdz/shared/data/namedex';
-import { IconComponent } from '@pdz/shared/images/icon/icon.component';
-import { SkeletonComponent } from '@pdz/shared/data/skeleton/skeleton.component';
-import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
-import { Subject, takeUntil } from 'rxjs';
-import { League } from '../league.interface';
-import { getLogoUrl } from '../league.util';
-import { LeagueZoneService } from '../league-zone.service';
+import { NgTemplateOutlet } from '@angular/common';
 import {
-  MatchupDetail,
-  MatchupGame,
-  MatchupSideDetail,
-  MatchupSideKey,
-} from './league-matchup.model';
-import { LeagueChatComponent } from '../league-chat/league-chat.component';
-import { MatchupReportComponent } from './matchup-report/matchup-report.component';
+  Component,
+  DestroyRef,
+  computed,
+  inject,
+  signal,
+} from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ActivatedRoute, RouterLink } from '@angular/router';
+import { LEAGUE_ZONE_PATH } from '@pdz/core/route-paths';
+import { VersusSide, orderForViewer } from '@pdz/core/utils/versus';
+import { LeagueChatComponent } from '@pdz/features/league-zone/league-chat/league-chat.component';
+import { League } from '@pdz/features/league-zone/league.interface';
+import { getTeamLogoSrc } from '@pdz/features/league-zone/league.util';
+import { LeagueZoneService } from '@pdz/features/league-zone/league-zone.service';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
+import { CardComponent } from '@pdz/shared/data/card/card.component';
+import { ChipComponent, ChipTone } from '@pdz/shared/data/chip/chip.component';
+import { getNameByPid } from '@pdz/shared/data/namedex';
+import { SkeletonComponent } from '@pdz/shared/data/skeleton/skeleton.component';
+import { DialogService } from '@pdz/shared/dialogs/dialog/dialog.service';
+import { EmptyStateComponent } from '@pdz/shared/feedback/empty-state/empty-state.component';
+import { IconComponent } from '@pdz/shared/images/icon/icon.component';
+import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
+import { TeamLogoComponent } from '@pdz/shared/images/team-logo/team-logo.component';
+import { SegmentedOptionComponent } from '@pdz/shared/inputs/segmented/segmented-option.component';
 import { SegmentedComponent } from '@pdz/shared/inputs/segmented/segmented.component';
 import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
-import { SegmentedOptionComponent } from '@pdz/shared/inputs/segmented/segmented-option.component';
-import { DialogService } from '@pdz/shared/dialogs/dialog/dialog.service';
 import { CountdownComponent } from '@pdz/shared/time/countdown/countdown.component';
 import {
   MatchTimeDialogComponent,
@@ -30,6 +35,13 @@ import {
 } from '@pdz/shared/time/match-time-dialog/match-time-dialog.component';
 import { formatExactTime } from '@pdz/shared/time/timezone';
 import { TooltipDirective } from '@pdz/shared/tooltip/tooltip.directive';
+import {
+  MatchupDetail,
+  MatchupGame,
+  MatchupSideDetail,
+  MatchupSideKey,
+} from './league-matchup.model';
+import { MatchupReportComponent } from './matchup-report/matchup-report.component';
 
 type GameSlot = {
   id: string;
@@ -38,67 +50,82 @@ type GameSlot = {
   kills: number;
 };
 
+type StatusTone = { label: string; tone: ChipTone };
+
 @Component({
   selector: 'pdz-league-matchup',
   imports: [
-    CommonModule,
-    RouterModule,
+    NgTemplateOutlet,
+    RouterLink,
     IconComponent,
     SkeletonComponent,
     SpriteComponent,
     LeagueChatComponent,
     MatchupReportComponent,
     ButtonComponent,
+    CardComponent,
+    ChipComponent,
+    EmptyStateComponent,
     SegmentedComponent,
     SegmentedOptionComponent,
     CountdownComponent,
     TooltipDirective,
     PageHeaderComponent,
+    TeamLogoComponent,
   ],
   templateUrl: './league-matchup.component.html',
   styleUrl: './league-matchup.component.scss',
 })
-export class LeagueMatchupComponent implements OnDestroy {
+export class LeagueMatchupComponent {
   private route = inject(ActivatedRoute);
   private leagueService = inject(LeagueZoneService);
   private dialogs = inject(DialogService);
-  private readonly destroy$ = new Subject<void>();
+  private destroyRef = inject(DestroyRef);
   private clock = signal(Date.now());
-  private clockTimer?: ReturnType<typeof setInterval>;
 
-  protected readonly getLogoUrl = getLogoUrl;
+  protected readonly logoSrc = getTeamLogoSrc;
 
-  matchup = signal<MatchupDetail | null>(null);
-  loading = signal(true);
+  readonly matchup = signal<MatchupDetail | null>(null);
+  readonly loading = signal(true);
   readonly skeletonSides = [0, 1];
-  loadError = signal<string | null>(null);
-  selectedGame = signal(0);
-  reportOpen = signal(false);
-  reviewing = signal(false);
-  reviewError = signal<string | null>(null);
-  copiedHandle = signal<string | null>(null);
-  schedulingError = signal<string | null>(null);
+  readonly loadError = signal<string | null>(null);
+  readonly selectedGame = signal(0);
+  readonly reportOpen = signal(false);
+  readonly reviewing = signal(false);
+  readonly reviewError = signal<string | null>(null);
+  readonly copiedHandle = signal<string | null>(null);
+  readonly schedulingError = signal<string | null>(null);
+
+  readonly versus = computed(() => {
+    const m = this.matchup();
+    return m ? orderForViewer(m.team1, m.team2, m.viewer.side) : null;
+  });
+
+  readonly status = computed<StatusTone | null>(() => {
+    const m = this.matchup();
+    if (!m) return null;
+    if (m.forfeit) return { label: 'Forfeit', tone: 'warning' };
+    if (m.winner) return { label: 'Final', tone: 'success' };
+    if (m.status === 'pending') return { label: 'Awaiting Review', tone: 'info' };
+    return { label: 'Unplayed', tone: 'neutral' };
+  });
 
   private matchupSlug = '';
 
   constructor() {
-    this.route.params.pipe(takeUntil(this.destroy$)).subscribe((params) => {
+    this.route.params.pipe(takeUntilDestroyed()).subscribe((params) => {
       this.matchupSlug = params['matchupSlug'];
       this.load();
     });
 
-    this.clockTimer = setInterval(() => this.clock.set(Date.now()), 30000);
-  }
-
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
-    if (this.clockTimer) clearInterval(this.clockTimer);
+    const timer = setInterval(() => this.clock.set(Date.now()), 30000);
+    this.destroyRef.onDestroy(() => clearInterval(timer));
   }
 
   teamPath(teamSlug: string): string[] {
     return [
-      '/leagues',
+      '/',
+      LEAGUE_ZONE_PATH,
       this.leagueService.leagueSlug() ?? '',
       'tournaments',
       this.leagueService.tournamentSlug() ?? '',
@@ -117,7 +144,7 @@ export class LeagueMatchupComponent implements OnDestroy {
     this.loadError.set(null);
     this.leagueService
       .getMatchupDetail(this.matchupSlug)
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (detail) => {
           this.matchup.set(detail);
@@ -137,25 +164,15 @@ export class LeagueMatchupComponent implements OnDestroy {
     return parts.join(' · ') || 'Matchup';
   }
 
-  statusLabel(matchup: MatchupDetail): string {
-    if (matchup.forfeit) return 'Forfeit';
-    if (matchup.winner) return 'Final';
-    if (matchup.status === 'pending') return 'Awaiting review';
-    return 'Unplayed';
-  }
-
   isWinner(matchup: MatchupDetail, side: MatchupSideKey): boolean {
     if (!matchup.winner) return false;
     return matchup.winner.startsWith(side);
   }
 
-  sideOf(matchup: MatchupDetail, side: MatchupSideKey): MatchupSideDetail {
-    return side === 'side1' ? matchup.team1 : matchup.team2;
-  }
-
   ownTeamIds(matchup: MatchupDetail): string[] {
     const side = matchup.viewer.side;
-    return side ? [this.sideOf(matchup, side).id] : [];
+    if (!side) return [];
+    return [side === 'side1' ? matchup.team1.id : matchup.team2.id];
   }
 
   localTime(side: MatchupSideDetail): string | null {
@@ -241,7 +258,7 @@ export class LeagueMatchupComponent implements OnDestroy {
     this.schedulingError.set(null);
     this.leagueService
       .setMatchupSchedule(this.matchupSlug, result.scheduledDate)
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: () => this.load(),
         error: (error) =>
@@ -255,6 +272,13 @@ export class LeagueMatchupComponent implements OnDestroy {
     return game.link?.trim() || null;
   }
 
+  gameTeam(
+    game: MatchupGame,
+    side: VersusSide<MatchupSideDetail>,
+  ): MatchupGame['team1'] {
+    return side.stored === 'side1' ? game.team1 : game.team2;
+  }
+
   gameSlots(team: League.MatchTeamStats): GameSlot[] {
     return Object.entries(team).map(([id, stats]) => ({
       id,
@@ -262,6 +286,16 @@ export class LeagueMatchupComponent implements OnDestroy {
       status: stats.status,
       kills: (stats.kills?.direct || 0) + (stats.kills?.indirect || 0),
     }));
+  }
+
+  gameLabel(
+    game: MatchupGame,
+    index: number,
+    versus: { team1: VersusSide<MatchupSideDetail>; team2: VersusSide<MatchupSideDetail> },
+  ): string {
+    const first = this.gameTeam(game, versus.team1).score;
+    const second = this.gameTeam(game, versus.team2).score;
+    return `Game ${index + 1} · ${first}–${second}`;
   }
 
   selectGame(index: number): void {
@@ -283,7 +317,7 @@ export class LeagueMatchupComponent implements OnDestroy {
     this.reviewError.set(null);
     this.leagueService
       .reviewMatchupReport(this.matchupSlug, decision)
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: () => {
           this.reviewing.set(false);

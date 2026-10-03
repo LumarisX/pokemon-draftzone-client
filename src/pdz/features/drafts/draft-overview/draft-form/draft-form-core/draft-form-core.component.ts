@@ -18,16 +18,18 @@ import {
 } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { BehaviorSubject, filter, Subject, takeUntil } from 'rxjs';
-import { Draft, DraftPokemon } from '../../../draft.model';
+import { Draft, DraftPokemon } from '@pdz/features/drafts/draft.model';
 import { DataService } from '@pdz/core/services/data.service';
 import { DRAFT_OVERVIEW_PATH } from '@pdz/core/route-paths';
+import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 import { FormatSelectComponent } from '@pdz/shared/dropdowns/format-select/format.component';
 import { RulesetSelectComponent } from '@pdz/shared/dropdowns/ruleset-select/ruleset.component';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
+import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
 import {
   PokemonFormGroup,
   TeamEditorComponent,
-} from '../components/team-editor/team-editor.component';
+} from '@pdz/features/drafts/draft-overview/draft-form/components/team-editor/team-editor.component';
 import {
   FieldErrorDirective,
 } from '@pdz/shared/inputs/field/field-message.directive';
@@ -40,7 +42,9 @@ import { DEFAULT_RULESET } from '@pdz/core/rulesets';
   imports: [
     RouterModule,
     ReactiveFormsModule,
+    ButtonComponent,
     FormatSelectComponent,
+    PageHeaderComponent,
     RulesetSelectComponent,
     IconComponent,
     TeamEditorComponent,

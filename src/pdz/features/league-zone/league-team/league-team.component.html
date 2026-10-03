@@ -1,196 +1,189 @@
-@if (teamData) {
-  <pdz-page-header
-    [title]="teamData.name"
-    [logo]="getLogoUrl(teamData.logo)"
-    logoAlt="Team logo"
-  >
-    <div pdz-page-header-detail class="team-header__coach">
-      <span class="team-header__coach-name">{{ teamData.coach }}</span>
-      @if (teamData.isCoach) {
+@if (teamData(); as team) {
+  <pdz-page-header [title]="team.name" [logo]="logoSrc()">
+    <span pdz-page-header-detail class="team-header__coach">
+      <span class="team-header__coach-name">{{ team.coach }}</span>
+      @if (team.isCoach) {
         <button
           pdz-button
           iconOnly
+          icon="edit"
           variant="ghost"
           size="xs"
           color="neutral"
-          [disabled]="saving"
           aria-label="Edit coach info"
+          pdzTooltip="Edit coach info"
+          [disabled]="saving()"
           (click)="openCoachEdit()"
-        >
-          <pdz-icon name="edit" [size]="14" aria-hidden="true"></pdz-icon>
-        </button>
+        ></button>
       }
-      @if (coachCurrentTime) {
-        <span class="team-header__time">{{ coachCurrentTime }}</span>
+      @if (coachCurrentTime(); as time) {
+        <span class="team-header__time">
+          <pdz-icon name="schedule" [size]="14" />
+          {{ time }} local
+        </span>
       }
-      @if (saveError) {
-        <span class="team-header__error">{{ saveError }}</span>
-      }
-    </div>
+    </span>
 
-    <p pdz-page-header-meta class="team-header__record">
-      <span class="team-header__wins">{{ teamData.record?.wins ?? 0 }}</span>
-      @if (teamData.record?.draws) {
-        <span class="team-header__draws">{{ teamData.record?.draws }}</span>
-      }
-      <span class="team-header__losses">{{ teamData.record?.losses ?? 0 }}</span>
-    </p>
+    <pdz-record
+      pdz-page-header-meta
+      [wins]="team.record?.wins ?? 0"
+      [draws]="team.record?.draws"
+      [losses]="team.record?.losses ?? 0"
+    />
 
-    @if (teamData.isCoach) {
+    @if (team.isCoach) {
       <button
         pdz-page-header-actions
         pdz-button
+        icon="edit"
         variant="outlined"
-        size="sm"
         color="neutral"
-        [disabled]="saving"
+        [disabled]="saving()"
         (click)="openTeamEdit()"
       >
-        <pdz-icon name="edit" [size]="16" aria-hidden="true"></pdz-icon>
-        Edit team
+        Edit Team
       </button>
     }
   </pdz-page-header>
+
+  @if (saveError(); as error) {
+    <p class="team-error" role="alert">{{ error }}</p>
+  }
+
   <div class="team-body">
-    <div class="section section--matchups">
-      <div class="section-header">
-        <h3>Schedule</h3>
-      </div>
-      <div class="section-body">
-        @if (stageSlug) {
-          <pdz-league-schedule-widget></pdz-league-schedule-widget>
+    <pdz-card padding="lg" class="team-body__schedule">
+      <section class="section" aria-labelledby="team-schedule">
+        <h2 class="section__title" id="team-schedule">Schedule</h2>
+        @if (stageSlug()) {
+          <pdz-league-schedule-widget />
         } @else {
-          <p class="section-message">No schedule yet.</p>
+          <pdz-empty-state size="sm" icon="event" message="No schedule yet." />
         }
-      </div>
-    </div>
-    <div class="section section--draft">
-      <div class="section-header">
-        <h3>Draft Roster</h3>
-      </div>
-      <div class="section-body">
-        @if (teamData.draft.length) {
-          <div class="pdz-table-wrapper stats-table-wrapper">
-            <table class="pdz-table stats-table" data-header="primary">
+      </section>
+    </pdz-card>
+
+    <pdz-card padding="none" class="team-body__roster">
+      <section class="section" aria-labelledby="team-roster">
+        <h2 class="section__title section__title--padded" id="team-roster">
+          Draft Roster
+        </h2>
+        @if (team.draft.length) {
+          @let sum = totals();
+          <div class="pdz-table-wrapper">
+            <table class="pdz-table" data-density="compact">
               <thead>
                 <tr>
-                  <th class="col-sprite pdz-table__center"></th>
-                  <th class="col-name">Pokémon</th>
-                  <th class="col-stat pdz-table__num pdz-table__center">Brought</th>
-                  <th class="col-stat pdz-table__num pdz-table__center">Kills</th>
-                  <th class="col-stat pdz-table__num pdz-table__center">Deaths</th>
-                  <th class="col-stat pdz-table__num pdz-table__center">K/D Ratio</th>
+                  <th scope="col">Pokémon</th>
+                  <th class="pdz-table__num" scope="col">Brought</th>
+                  <th class="pdz-table__num" scope="col">Kills</th>
+                  <th class="pdz-table__num" scope="col">Deaths</th>
+                  <th class="pdz-table__num" scope="col">K/D</th>
                 </tr>
               </thead>
               <tbody>
-                @for (pokemon of teamData.draft; track pokemon.id) {
+                @for (pokemon of team.draft; track pokemon.id) {
                   <tr>
-                    <td class="cell-sprite pdz-table__center">
-                      <pdz-sprite flipped [pokemon]="pokemon"></pdz-sprite>
+                    <td>
+                      <span class="mon">
+                        <pdz-sprite size="2.5rem" flipped [pokemon]="pokemon" />
+                        <span class="mon__text">
+                          <span class="mon__name">{{ pokemon.name }}</span>
+                          <span class="mon__details">
+                            <span class="mon__cost">{{ pokemon.cost }} pts</span>
+                            @if (pokemon.capt?.tera) {
+                              <pdz-icon
+                                name="tera"
+                                ariaLabel="Tera captain"
+                                [size]="14"
+                              />
+                            }
+                            @if (pokemon.missingFromTierList) {
+                              <pdz-chip
+                                size="xs"
+                                tone="danger"
+                                icon="warning"
+                                pdzTooltip="Drafted, but no longer on the tier list. It is not priced, so this roster may be illegal."
+                                >Off list</pdz-chip
+                              >
+                            }
+                          </span>
+                        </span>
+                      </span>
                     </td>
-                    <td class="cell-name">
-                      <div class="name-cell">
-                        <span class="name">{{ pokemon.name }}</span>
-                        <div class="details">
-                          <span class="cost">{{ pokemon.cost }}</span>
-                          @if (pokemon.capt && pokemon.capt.tera) {
-                            <pdz-icon name="tera" [size]="16"></pdz-icon>
-                          }
-                          @if (pokemon.missingFromTierList) {
-                            <span
-                              class="off-list"
-                              pdzTooltip="Drafted, but no longer on the tier list. It is not priced, so this roster may be illegal."
-                            >
-                              <pdz-icon name="warning" [size]="14"></pdz-icon>
-                              Off list
-                            </span>
-                          }
-                        </div>
-                      </div>
-                    </td>
-                    <td class="cell-stat pdz-table__num pdz-table__center">
+                    <td class="pdz-table__num">
                       {{ pokemon.record?.brought ?? 0 }}
                     </td>
-                    <td class="cell-stat pdz-table__num pdz-table__center">
+                    <td class="pdz-table__num">
                       {{ pokemon.record?.kills ?? 0 }}
                     </td>
-                    <td class="cell-stat pdz-table__num pdz-table__center">
+                    <td class="pdz-table__num">
                       {{ pokemon.record?.deaths ?? 0 }}
                     </td>
-                    <td class="cell-stat pdz-table__num pdz-table__center">
-                      @if (pokemon.record?.deaths) {
-                        {{
-                          (
-                            (pokemon.record?.kills ?? 0) /
-                            (pokemon.record?.deaths ?? 1)
-                          ).toFixed(1)
-                        }}
-                      } @else {
-                        {{
-                          (pokemon.record?.kills ?? 0) > 0
-                            ? pokemon.record?.kills
-                            : "—"
-                        }}
-                      }
-                    </td>
+                    <td class="pdz-table__num">{{ killRatio(pokemon) }}</td>
                   </tr>
                 }
               </tbody>
               <tfoot>
                 <tr>
-                  <th class="col-sprite pdz-table__center"></th>
-                  <th class="col-name">{{ total.cost }}</th>
-                  <th class="col-stat pdz-table__num pdz-table__center"></th>
-                  <th class="col-stat pdz-table__num pdz-table__center">{{ total.kill }}</th>
-                  <th class="col-stat pdz-table__num pdz-table__center">{{ total.deaths }}</th>
-                  <th class="col-stat pdz-table__num pdz-table__center"></th>
+                  <th scope="row">{{ sum.cost }} pts total</th>
+                  <td class="pdz-table__num"></td>
+                  <td class="pdz-table__num">{{ sum.kills }}</td>
+                  <td class="pdz-table__num">{{ sum.deaths }}</td>
+                  <td class="pdz-table__num"></td>
                 </tr>
               </tfoot>
             </table>
           </div>
-        } @else if (teamData.picksHidden) {
+        } @else if (team.picksHidden) {
           <pdz-empty-state
             size="sm"
             icon="lock"
             heading="Picks hidden until the draft ends"
             [message]="
-              (teamData.pickCount ?? 0) +
-              ((teamData.pickCount ?? 0) === 1 ? ' pick' : ' picks') +
+              (team.pickCount ?? 0) +
+              ((team.pickCount ?? 0) === 1 ? ' pick' : ' picks') +
               ' made so far.'
             "
           />
         } @else {
-          <p class="section-message">No Pokémon drafted yet.</p>
-        }
-      </div>
-    </div>
-    <div class="section section--trades">
-      <div class="section-header section-header--actionable">
-        <h3>Trades</h3>
-        @if (teamData.isCoach) {
-          <button
-            pdz-button
-            variant="outlined"
+          <pdz-empty-state
             size="sm"
-            (click)="openTradePropose()"
-          >
-            <pdz-icon name="add" [size]="16" aria-hidden="true"></pdz-icon>
-            New Trade
-          </button>
+            icon="catching_pokemon"
+            message="No Pokémon drafted yet."
+          />
         }
-      </div>
-      <div class="section-body">
-        @if (stageSlug) {
+      </section>
+    </pdz-card>
+
+    <pdz-card padding="lg" class="team-body__trades">
+      <section class="section" aria-labelledby="team-trades">
+        <div class="section__header">
+          <h2 class="section__title" id="team-trades">Trades</h2>
+          @if (team.isCoach) {
+            <button
+              pdz-button
+              icon="add"
+              size="sm"
+              variant="outlined"
+              color="neutral"
+              [disabled]="saving()"
+              (click)="openTradePropose()"
+            >
+              New Trade
+            </button>
+          }
+        </div>
+        @if (stageSlug(); as slug) {
           <pdz-league-trade-widget
-            [stageSlug]="stageSlug"
-            [withdrawableTeamId]="teamData.isCoach ? teamData.id : undefined"
-          ></pdz-league-trade-widget>
+            [stageSlug]="slug"
+            [withdrawableTeamId]="team.isCoach ? team.id : undefined"
+          />
         } @else {
-          <p class="section-message">No trades yet.</p>
+          <pdz-empty-state size="sm" icon="swap_horiz" message="No trades yet." />
         }
-      </div>
-    </div>
+      </section>
+    </pdz-card>
   </div>
 } @else {
-  <pdz-loading></pdz-loading>
+  <pdz-loading />
 }

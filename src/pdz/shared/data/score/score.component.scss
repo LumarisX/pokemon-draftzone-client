@@ -3,7 +3,7 @@
 
 $tones: (
   neutral: (
-    bg: surface-container-high,
+    bg: state-pressed,
     on: on-surface-variant,
   ),
   primary: (
@@ -29,7 +29,7 @@ $tones: (
 );
 
 :host {
-  --pdz-score-bg: #{pdz.color(surface-container-high)};
+  --pdz-score-bg: #{pdz.color(state-pressed)};
   --pdz-score-on: #{pdz.color(on-surface-variant)};
 
   display: flex;

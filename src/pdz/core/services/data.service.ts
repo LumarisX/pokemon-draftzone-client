@@ -145,7 +145,6 @@ export class DataService {
       );
   }
 
-  //Currently Unused
   advancesearch(query: string[], ruleset?: string, format?: string) {
     let encodedQuery = encodeURIComponent(query.join(''));
     let params: { [key: string]: string } = { query: encodedQuery };
@@ -155,7 +154,6 @@ export class DataService {
     });
   }
 
-  //Currently Unused
   pokemonSearch(
     query: string | string[] | Record<string, unknown>,
     ruleset?: string,

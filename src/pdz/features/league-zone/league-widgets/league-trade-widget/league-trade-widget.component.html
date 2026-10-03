@@ -1,15 +1,16 @@
-@if (tradeRounds) {
-  @if (withdrawError) {
-    <p class="trades__error">{{ withdrawError }}</p>
+@if (tradeRounds(); as rounds) {
+  @if (withdrawError()) {
+    <p class="trades__error" role="alert">{{ withdrawError() }}</p>
   }
-  @for (round of tradeRounds; track round.name) {
+  @for (round of rounds; track round.name) {
     <section class="round">
-      <h4 class="round__name">{{ round.name }}</h4>
+      <h3 class="round__name">{{ round.name }}</h3>
       <div class="round__trades">
-        @for (tradeLog of round.trades; track tradeLog) {
+        @for (tradeLog of round.trades; track tradeLog.id ?? $index) {
           <pdz-trade-card
             [trade]="tradeLog"
-            [currentRoundIndex]="currentRoundIndex"
+            [currentRoundIndex]="currentRoundIndex()"
+            [viewerTeamId]="withdrawableTeamId()"
           >
             <div tradeActions>
               @if (canWithdraw(tradeLog)) {
@@ -18,14 +19,10 @@
                   size="xs"
                   color="danger"
                   variant="outlined"
-                  [disabled]="withdrawingTradeId === tradeLog.id"
+                  [loading]="withdrawingTradeId() === tradeLog.id"
                   (click)="withdraw(tradeLog)"
                 >
-                  {{
-                    withdrawingTradeId === tradeLog.id
-                      ? "Withdrawing…"
-                      : "Withdraw"
-                  }}
+                  Withdraw
                 </button>
               }
             </div>
@@ -34,6 +31,6 @@
       </div>
     </section>
   } @empty {
-    <p class="trades__empty">No trades made.</p>
+    <pdz-empty-state icon="swap_horiz" message="No trades made." size="sm" />
   }
 }

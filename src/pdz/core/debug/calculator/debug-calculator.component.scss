@@ -7,15 +7,10 @@
   padding-block: pdz.space(lg);
 }
 
-.calc__title {
-  @include pdz.text(title);
-  margin: 0;
-}
-
 .calc__lede {
   @include pdz.text(body-sm);
   color: pdz.color(on-surface-variant);
-  margin: pdz.space(xs) 0 0;
+  margin: 0;
 }
 
 .calc__form,
@@ -24,9 +19,9 @@
   flex-direction: column;
   gap: pdz.space(md);
   padding: pdz.space(md);
-  border: 1px solid pdz.color(outline-variant);
+  border: 1px solid pdz.color(border-subtle);
   border-radius: pdz.shape(corner-md);
-  background: pdz.color(surface-container-low);
+  background: pdz.color(raised);
 }
 
 .calc__panel--refused {
@@ -51,7 +46,7 @@
 
 .calc__row--preset {
   padding-block-end: pdz.space(md);
-  border-block-end: 1px solid pdz.color(outline-variant);
+  border-block-end: 1px solid pdz.color(border-subtle);
 }
 
 .calc__control--narrow {
@@ -72,7 +67,7 @@
   gap: pdz.space(sm);
   margin: 0;
   padding: pdz.space(md);
-  border: 1px solid pdz.color(outline-variant);
+  border: 1px solid pdz.color(border-subtle);
   border-radius: pdz.shape(corner-sm);
 }
 
@@ -141,13 +136,13 @@
   th {
     text-align: left;
     color: pdz.color(on-surface-variant);
-    border-bottom: 1px solid pdz.color(outline-variant);
+    border-bottom: 1px solid pdz.color(border-subtle);
     padding: pdz.space(xs);
   }
 
   td {
     padding: pdz.space(xs);
-    border-bottom: 1px solid pdz.color(outline-variant);
+    border-bottom: 1px solid pdz.color(border-subtle);
   }
 }
 
@@ -159,7 +154,7 @@
   margin: 0;
   padding: pdz.space(sm);
   border-radius: pdz.shape(corner-sm);
-  background: pdz.color(surface-container-high);
+  background: pdz.color(inset);
   overflow-x: auto;
   max-height: 28rem;
   @include pdz.text(body-sm);

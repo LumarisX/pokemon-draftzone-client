@@ -3,7 +3,7 @@
   tone="panel"
   [trailingGrow]="true"
   [heading]="label()"
-  [attr.data-winner]="winner()"
+  [attr.data-team]="teamSlot(winner())"
   [(open)]="open"
 >
   <div pdz-disclosure-trailing class="game__controls">
@@ -23,18 +23,12 @@
           pdz-button
           iconOnly
           size="xs"
-          color="secondary"
           variant="ghost"
           class="game__replay-action"
-          aria-label="Analyze replay"
-          [title]="analyzing() ? 'Reading replay…' : 'Fill stats from replay'"
+          aria-label="Fill stats from the replay"
+          [icon]="analyzing() ? 'hourglass_top' : 'auto_fix_high'"
           (click)="analyze.emit()"
-        >
-          <pdz-icon
-            [name]="analyzing() ? 'hourglass_top' : 'auto_fix_high'"
-            [size]="16"
-          ></pdz-icon>
-        </button>
+        ></button>
       }
     </div>
 
@@ -44,11 +38,11 @@
         size="sm"
         placeholder="Undecided"
         aria-label="Game winner"
-        [attr.data-winner]="winner()"
+        [attr.data-team]="teamSlot(winner())"
         [value]="winner()"
         (valueChange)="onWinner($any($event))"
       >
-        @for (side of sides; track side) {
+        @for (side of order(); track side) {
           <pdz-option [value]="side" [label]="teamName(side)" />
         }
       </pdz-select>
@@ -58,27 +52,25 @@
       <button
         pdz-button
         iconOnly
+        icon="close"
         size="sm"
         variant="ghost"
         color="danger"
-        type="button"
         aria-label="Remove game"
         (click)="remove.emit()"
-      >
-        <pdz-icon name="close" [size]="16"></pdz-icon>
-      </button>
+      ></button>
     }
   </div>
 
   <div class="game__body">
     <div class="game__rosters">
-      @for (side of sides; track side) {
+      @for (side of order(); track side; let first = $first) {
         <pdz-score-entry-roster
           [game]="game()"
           [side]="side"
           [teamName]="teamName(side)"
           [pokedex]="pokedex()"
-          [accent]="accents[side]"
+          [team]="first ? 'team1' : 'team2'"
         />
       }
     </div>

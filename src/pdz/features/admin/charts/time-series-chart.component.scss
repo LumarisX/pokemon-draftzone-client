@@ -27,17 +27,17 @@
 
   .domain,
   .tick line {
-    stroke: pdz.color(outline-variant);
+    stroke: pdz.color(border-subtle);
   }
 }
 
 .ts-gridline {
-  stroke: pdz.color(outline-variant);
+  stroke: pdz.color(border-subtle);
   stroke-opacity: 0.4;
 }
 
 .ts-focus {
-  stroke: pdz.color(surface);
+  stroke: pdz.color(raised);
   stroke-width: 2;
 }
 
@@ -50,10 +50,10 @@
   border-radius: pdz.shape(corner-sm);
   font-size: pdz.font-size(xs);
   line-height: 1.35;
-  background: pdz.color(surface-container-high);
+  background: pdz.color(floating);
   color: pdz.color(on-surface);
-  border: 1px solid pdz.color(outline-variant);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+  border: 1px solid pdz.color(border-subtle);
+  box-shadow: var(--pdz-elevation-2);
   z-index: 5;
 
   .ts-tooltip-date {

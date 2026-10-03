@@ -4,12 +4,12 @@ import { of, EMPTY } from 'rxjs';
 import { By } from '@angular/platform-browser';
 
 import { LeagueManageDraftComponent } from './league-manage-draft.component';
-import { LeagueZoneService } from '../../league-zone.service';
+import { LeagueZoneService } from '@pdz/features/league-zone/league-zone.service';
 import { PoolDetails, LeagueManageService } from '../league-manage.service';
-import { TierListService } from '../../../tier-lists/tier-list.service';
-import { LeagueNotificationService } from '../../league-notification.service';
+import { TierListService } from '@pdz/features/tier-lists/tier-list.service';
+import { LeagueNotificationService } from '@pdz/features/league-zone/league-notification.service';
 import { EventStreamService } from '@pdz/core/services/event-stream.service';
-import { League } from '../../league.interface';
+import { League } from '@pdz/features/league-zone/league.interface';
 
 function makeTeam(id: string, name: string): League.LeagueTeam {
   return {
@@ -112,14 +112,14 @@ describe('LeagueManageDraftComponent', () => {
 
   function statusDetailText(): string {
     return (
-      fixture.debugElement.query(By.css('.page-header__status-detail'))
+      fixture.debugElement.query(By.css('.manage-draft__clock'))
         ?.nativeElement as HTMLElement | undefined
     )?.textContent ?? '';
   }
 
   function statusBadgeText(): string {
     return (
-      fixture.debugElement.query(By.css('.page-header__status-badge'))
+      fixture.debugElement.query(By.css('.manage-draft__status'))
         .nativeElement as HTMLElement
     ).textContent ?? '';
   }
@@ -143,12 +143,12 @@ describe('LeagueManageDraftComponent', () => {
     expect(statusDetailText()).toContain('Team One is on the clock');
     expect(statusDetailText()).toMatch(/\d+s left/);
 
-    const firstReading = component.pickTimeDisplay;
+    const firstReading = component.pickTimeDisplay();
 
     await wait(1100);
     fixture.detectChanges();
 
-    expect(component.pickTimeDisplay).not.toBe(firstReading);
+    expect(component.pickTimeDisplay()).not.toBe(firstReading);
   });
 
   it('shows "timer disabled" instead of a countdown when noTimer is on', async () => {
@@ -160,7 +160,7 @@ describe('LeagueManageDraftComponent', () => {
     );
 
     expect(statusDetailText()).toContain('timer disabled');
-    expect(component.pickTimeDisplay).toBeNull();
+    expect(component.pickTimeDisplay()).toBeNull();
   });
 
   it('shows a paused message and no countdown when the draft is paused', async () => {
@@ -195,7 +195,7 @@ describe('LeagueManageDraftComponent', () => {
     ];
 
     function turnFor(teamIndex: number) {
-      return component.rounds[1].turns.find(
+      return component.rounds()[1].turns.find(
         (turn) => turn.team.id === drafted[teamIndex].id,
       )!;
     }

@@ -6,9 +6,9 @@
   width: 100%;
   margin: 0;
   padding: 0;
-  border: 1px solid pdz.color(outline-variant);
+  border: 1px solid pdz.color(border-subtle);
   border-radius: pdz.shape(corner-md);
-  background-color: pdz.color(surface-container-lowest);
+  background-color: pdz.color(raised-high);
   color: pdz.color(on-surface);
   font: inherit;
   text-align: start;
@@ -18,11 +18,11 @@
   transition:
     border-color pdz.duration(fast) pdz.easing(standard),
     background-color pdz.duration(fast) pdz.easing(standard),
-    transform pdz.duration(fast) pdz.easing(standard);
+    box-shadow pdz.duration(fast) pdz.easing(standard);
 
   &:hover {
     border-color: pdz.color(primary-border);
-    background-color: pdz.color(surface-container-low);
+    box-shadow: var(--pdz-elevation-1);
   }
 
   &:focus-visible {
@@ -41,7 +41,7 @@
   inset-block: 0;
   inset-inline-start: 0;
   width: 3px;
-  background-color: pdz.color(outline-variant);
+  background-color: pdz.color(border-control);
 }
 
 :host([data-status="active"]) .dz-season-card__rail {
@@ -131,7 +131,7 @@
   @include pdz.numeric;
   padding: pdz.space(3xs) pdz.space(sm);
   border-radius: pdz.shape(corner-full);
-  background-color: pdz.color(surface-container-high);
+  background-color: pdz.color(state-pressed);
   color: pdz.color(on-surface);
 
   &[data-tone="positive"] {

@@ -1,57 +1,51 @@
 @use "pdz-theming" as pdz;
 
-.tools-page {
+.tools {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: pdz.space(2xl);
-  width: 100%;
-  height: 100%;
-  overflow-y: auto;
+  gap: pdz.layout(section-gap);
 }
 
-.tools-page__title {
-  width: 100%;
-  text-align: center;
-  font-family: var(--pdz-font-display);
-  font-size: pdz.font-size(2xl);
+.tools__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(18rem, 100%), 1fr));
+  gap: pdz.space(md);
 }
 
-.tools-list {
-  display: flex;
-  flex-direction: column;
-  gap: pdz.space(2xl);
-  width: 100%;
-  max-width: 32rem;
-}
-
-.tools-list__item {
-  display: block;
-  padding: pdz.space(md);
-  background: pdz.color(menu-container);
-  color: pdz.color(on-menu-container);
-  border: 1px solid pdz.color(menu-border);
-  border-radius: pdz.shape(corner-full);
+.tool {
   text-decoration: none;
-  cursor: pointer;
-  transition:
-    background-color pdz.duration(base) pdz.easing(standard),
-    border-color pdz.duration(base) pdz.easing(standard);
-
-  &:hover {
-    background: pdz.color(menu-container-hover);
-    border-color: pdz.color(primary-accent);
-  }
-
-  &:focus-visible {
-    outline: 2px solid pdz.color(primary-accent);
-    outline-offset: 2px;
-  }
 }
 
-.tools-list__label {
-  width: 100%;
-  text-align: center;
-  font-family: var(--pdz-font-display);
-  font-size: pdz.font-size(xl);
+.tool__row {
+  display: flex;
+  align-items: flex-start;
+  gap: pdz.space(md);
+}
+
+.tool__icon {
+  display: inline-grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: pdz.control-height(lg);
+  height: pdz.control-height(lg);
+  border-radius: pdz.shape(corner-md);
+  background: pdz.color(state-pressed);
+  color: pdz.color(on-surface);
+}
+
+.tool__text {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(3xs);
+  min-width: 0;
+}
+
+.tool__title {
+  @include pdz.text(card-title);
+  color: pdz.color(on-surface);
+}
+
+.tool__description {
+  @include pdz.text(body-sm);
+  color: pdz.color(on-surface-variant);
 }

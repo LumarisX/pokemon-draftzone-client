@@ -1,18 +1,4 @@
-// ============================================================================
-// Scale Mixins
-// ============================================================================
-// Color scale system for visualizing positive/negative/neutral values.
-// Generates utility classes for graduated color scales.
-//
-// Use cases: Stats visualization, matchup advantages, score indicators
-// ============================================================================
 
-// ----------------------------------------------------------------------------
-// Scale Maps
-// ----------------------------------------------------------------------------
-
-/// Positive scale map - graduated from light to dark for positive values
-/// Values range from 1 (least positive) to 7 (most positive)
 $positive-scale: (
   1: var(--pdz-color-scale-positive-1),
   2: var(--pdz-color-scale-positive-2),
@@ -23,8 +9,6 @@ $positive-scale: (
   7: var(--pdz-color-scale-positive-7),
 ) !default;
 
-/// Negative scale map - graduated from light to dark for negative values
-/// Values range from 1 (least negative) to 7 (most negative)
 $negative-scale: (
   1: var(--pdz-color-scale-negative-1),
   2: var(--pdz-color-scale-negative-2),
@@ -35,41 +19,19 @@ $negative-scale: (
   7: var(--pdz-color-scale-negative-7),
 ) !default;
 
-// ----------------------------------------------------------------------------
-// Scale Generator Mixin
-// ----------------------------------------------------------------------------
-
-/// Generates background color utility classes for positive, negative, and
-/// neutral scales. Creates classes like `.pdz-scale-positive-3` that can be
-/// applied to elements to visualize graduated values.
-///
-/// @param {String} $class-prefix ['pdz-scale'] - Prefix for generated class names
-/// @output Utility classes for all scale levels and neutral state
-/// @example scss
-///   @include generate-bg-scale('score');
-///   // Generates: .score-positive-1 through .score-positive-7
-///   //            .score-negative-1 through .score-negative-7
-///   //            .score-neutral
-/// @example html
-///   <div class="pdz-scale-positive-5">High advantage</div>
-///   <div class="pdz-scale-negative-3">Moderate disadvantage</div>
-///   <div class="pdz-neutral">No advantage</div>
 @mixin generate-bg-scale($class-prefix: "pdz-scale") {
-  // Generate positive scale classes (1-7)
   @each $level, $color in $positive-scale {
     .#{$class-prefix}-positive-#{$level} {
       background-color: $color;
     }
   }
 
-  // Generate negative scale classes (1-7)
   @each $level, $color in $negative-scale {
     .#{$class-prefix}-negative-#{$level} {
       background-color: $color;
     }
   }
 
-  // Generate neutral class
   .#{$class-prefix}-neutral {
     background-color: var(--pdz-color-neutral);
   }
@@ -81,7 +43,6 @@ $negative-scale: (
     }
   }
 
-  // Generate negative scale classes (1-7)
   @each $level, $color in $negative-scale {
     .#{$class-prefix}-inverse-negative-#{$level} {
       color: $color;
@@ -89,7 +50,6 @@ $negative-scale: (
     }
   }
 
-  // Generate neutral class
   .#{$class-prefix}-inverse-neutral {
     color: var(--pdz-color-neutral);
     border: 2px solid var(--pdz-color-neutral);

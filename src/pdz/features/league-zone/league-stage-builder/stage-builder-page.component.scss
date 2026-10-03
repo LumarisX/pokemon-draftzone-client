@@ -1,19 +1,18 @@
 @use "pdz-theming" as pdz;
-@use "mixins" as *;
 
 :host {
   display: block;
 
-  @include respond-above(medium) {
+  @include pdz.respond-above(medium) {
     height: 100%;
   }
 }
 
 .loading-state {
   display: flex;
-  justify-content: center;
   align-items: center;
-  min-height: 400px;
+  justify-content: center;
+  min-height: 25rem;
 }
 
 .page {
@@ -21,7 +20,7 @@
   flex-direction: column;
   gap: pdz.space(md);
 
-  @include respond-above(medium) {
+  @include pdz.respond-above(medium) {
     height: 100%;
     min-height: 0;
 
@@ -30,160 +29,118 @@
       min-height: 14rem;
     }
   }
+}
 
-  &__actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: pdz.space(sm);
-  }
-
-  &__error,
-  &__status,
-  &__seeding {
-    flex: 0 0 auto;
-    @include text(body-sm);
-    border-radius: pdz.shape("corner-sm");
-    padding: pdz.space(sm) pdz.space(md);
-    margin: 0 0 pdz.space(md);
-  }
-
-  &__error {
-    background: pdz.color("danger-container");
-    color: pdz.color("on-danger-container");
-  }
-
-  &__status {
-    background: pdz.color("success-container");
-    color: pdz.color("on-success-container");
-  }
-
-  &__seeding {
-    background: pdz.color("surface-container");
-    color: pdz.color("on-surface-variant");
-  }
+.page__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: pdz.space(sm);
 }
 
 .panel {
   flex: 0 1 auto;
   min-height: 0;
+  max-width: pdz.content-width(narrow);
   overflow-y: auto;
-  border: 1px solid pdz.color("outline-variant");
-  border-radius: pdz.shape("corner-lg");
-  background: pdz.color("surface-container-low");
-  padding: pdz.space(lg);
-  margin-bottom: pdz.space(lg);
-  max-width: 40rem;
-
-  &__title {
-    @include text(title);
-    display: flex;
-    align-items: baseline;
-    gap: pdz.space(sm);
-    margin: 0 0 pdz.space(xs);
-  }
-
-  &__count {
-    @include text(label);
-    color: pdz.color("on-surface-variant");
-  }
-
-  &__hint {
-    @include text(body-sm);
-    color: pdz.color("on-surface-variant");
-    margin: 0 0 pdz.space(md);
-  }
-
-  &__actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: pdz.space(sm);
-    margin-top: pdz.space(lg);
-  }
 }
 
-.field {
-  display: block;
+.panel__title {
+  @include pdz.text(section-title);
+  display: flex;
+  align-items: baseline;
+  gap: pdz.space(sm);
+  margin: 0 0 pdz.space(xs);
+}
+
+.panel__count {
+  @include pdz.text(meta);
+  color: pdz.color(on-surface-variant);
+}
+
+.panel__hint {
+  @include pdz.text(body-sm);
+  margin: 0 0 pdz.space(md);
+  color: pdz.color(on-surface-variant);
+}
+
+.panel__fields {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(md);
   margin-bottom: pdz.space(md);
+}
 
-  &__label {
-    @include text(label);
-    display: block;
-    color: pdz.color("on-surface-variant");
-    margin-bottom: pdz.space(2xs);
-  }
+.panel__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: pdz.space(sm);
+  margin-top: pdz.space(lg);
+}
 
-  &__input {
-    width: 100%;
-    padding: pdz.space(sm);
-    border: 1px solid pdz.color("outline-variant");
-    border-radius: pdz.shape("corner-sm");
-    background: pdz.color("surface");
-    color: pdz.color("on-surface");
-  }
+.teams__label {
+  @include pdz.text(field-label);
+  display: block;
+  margin-bottom: pdz.space(2xs);
+}
 
-  &--check {
-    display: flex;
-    align-items: center;
-    gap: pdz.space(sm);
-    @include text(body-sm);
+.teams__list {
+  max-height: 16rem;
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+  list-style: none;
+  border: 1px solid pdz.color(border-subtle);
+  border-radius: pdz.shape(corner-sm);
+}
+
+.teams__row + .teams__row {
+  border-top: 1px solid pdz.color(border-subtle);
+}
+
+.teams__option {
+  display: flex;
+  align-items: center;
+  gap: pdz.space(sm);
+  padding: pdz.space(xs) pdz.space(sm);
+  cursor: pointer;
+
+  &:hover {
+    background: pdz.color(state-hover);
   }
 }
 
-.teams {
-  &__list {
-    list-style: none;
-    margin: pdz.space(2xs) 0 0;
-    padding: 0;
-    max-height: 16rem;
-    overflow-y: auto;
-    border: 1px solid pdz.color("outline-variant");
-    border-radius: pdz.shape("corner-sm");
-  }
+.teams__name {
+  @include pdz.text(body-sm);
+  flex: 1;
+  min-width: 0;
+}
 
-  &__row label {
-    display: flex;
-    align-items: center;
-    gap: pdz.space(sm);
-    padding: pdz.space(xs) pdz.space(sm);
-    cursor: pointer;
+.teams__pool {
+  @include pdz.text(label);
+  padding: pdz.space(3xs) pdz.space(sm);
+  border-radius: pdz.shape(corner-full);
+  background: pdz.color(state-pressed);
+  color: pdz.color(on-surface-variant);
+  white-space: nowrap;
+}
 
-    &:hover {
-      background: pdz.color("surface-container-high");
-    }
-  }
+.teams__coach {
+  @include pdz.text(meta);
+  color: pdz.color(on-surface-variant);
+  white-space: nowrap;
+}
 
-  &__name {
-    flex: 1;
-    min-width: 0;
-  }
+.teams__placed {
+  @include pdz.text(label);
+  padding: pdz.space(3xs) pdz.space(sm);
+  border-radius: pdz.shape(corner-full);
+  background: pdz.color(primary-container);
+  color: pdz.color(on-primary-container);
+  white-space: nowrap;
+}
 
-  &__pool {
-    @include text(label);
-    color: pdz.color("on-surface-variant");
-    background: pdz.color("surface-container-high");
-    border-radius: pdz.shape("corner-full");
-    padding: pdz.space(3xs) pdz.space(sm);
-    white-space: nowrap;
-  }
-
-  &__coach {
-    @include text(label);
-    color: pdz.color("on-surface-variant");
-    white-space: nowrap;
-  }
-
-  &__placed {
-    @include text(label);
-    color: pdz.color("on-primary-container");
-    background: pdz.color("primary-container");
-    border-radius: pdz.shape("corner-full");
-    padding: pdz.space(3xs) pdz.space(sm);
-    white-space: nowrap;
-  }
-
-  &__empty {
-    @include text(body-sm);
-    color: pdz.color("on-surface-variant");
-    padding: pdz.space(sm);
-  }
+.teams__empty {
+  @include pdz.text(body-sm);
+  padding: pdz.space(sm);
+  color: pdz.color(on-surface-variant);
 }

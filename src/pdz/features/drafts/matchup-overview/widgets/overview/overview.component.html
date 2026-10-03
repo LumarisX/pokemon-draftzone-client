@@ -1,162 +1,91 @@
-<pdz-card tone="lowest" padding="sm">
-  <div class="overview-wrapper">
-  <div class="team-container">
-    <div class="team-header">
-      <div class="team-name-title">
-        {{ teams[0].teamName }}
-      </div>
-      @if (teams[0].coach || teams[1].coach) {
-        <div class="team-coach-title">{{ teams[0].coach }}</div>
-      }
-    </div>
-    <div class="team-body">
-      <div class="overview-row header">
-        <div class="sprite-cell"></div>
-        <div class="name-cell" (click)="sortData('name')">
-          @if (sortedBy === "name") {
-            @if (sortDirection === "desc") {
-              <pdz-icon name="arrow_downward"></pdz-icon>
-            }
-            @if (sortDirection === "asc") {
-              <pdz-icon name="arrow_upward"></pdz-icon>
-            }
+<ng-template #sortButton let-key let-label="label">
+  <button
+    pdz-button
+    type="button"
+    size="xs"
+    variant="ghost"
+    color="neutral"
+    [attr.aria-label]="'Sort by ' + label + ', ' + ariaSort(key)"
+    (click)="toggleSort(key)"
+  >
+    {{ label }}
+    @if (sortIcon(key); as icon) {
+      <pdz-icon [name]="icon" [size]="14" />
+    }
+  </button>
+</ng-template>
+
+<pdz-card padding="sm">
+  <div class="overview">
+    @for (side of sides(); track side.slot) {
+      <section
+        class="team"
+        [attr.data-team]="side.slot"
+        [attr.aria-label]="side.name"
+      >
+        <header class="team__header">
+          <span class="team__name">{{ side.name }}</span>
+          @if (showCoach()) {
+            <span class="team__coach">{{ side.coach }}</span>
           }
-          Name
+        </header>
+        <div class="row row--head">
+          <span class="row__sprite"></span>
+          <span class="row__name">
+            <ng-container
+              [ngTemplateOutlet]="sortButton"
+              [ngTemplateOutletContext]="{ $implicit: 'name', label: 'Name' }"
+            />
+          </span>
+          <span class="row__speed">
+            <ng-container
+              [ngTemplateOutlet]="sortButton"
+              [ngTemplateOutletContext]="{ $implicit: 'spe', label: 'Spe' }"
+            />
+          </span>
         </div>
-        <div class="speed-cell" (click)="sortData('spe')">
-          @if (sortedBy === "spe") {
-            @if (sortDirection === "desc") {
-              <pdz-icon name="arrow_downward"></pdz-icon>
-            }
-            @if (sortDirection === "asc") {
-              <pdz-icon name="arrow_upward"></pdz-icon>
-            }
-          }
-          SPE
-        </div>
-      </div>
-      @for (pokemon of ($teams | async)![0]; track pokemon) {
-        <div class="overview-row">
-          <div class="sprite-cell">
-            <pdz-sprite size="100%" [pokemon]="pokemon" flipped></pdz-sprite>
+        @for (pokemon of side.pokemon; track pokemon.id) {
+          <div class="row">
+            <span class="row__sprite">
+              <pdz-sprite
+                size="100%"
+                [pokemon]="pokemon"
+                [flipped]="side.slot === 'team1'"
+              />
+            </span>
+            <span class="row__name">
+              <span class="row__label">{{ pokemon.name }}</span>
+              @if (pokemon.nickname) {
+                <span class="row__nickname">{{ pokemon.nickname }}</span>
+              }
+              <span class="row__capt">
+                @if (pokemon.capt?.tera) {
+                  <pdz-icon
+                    name="tera"
+                    ariaLabel="Tera captain"
+                    pdzTooltipPosition="below"
+                    [pdzTooltip]="captTypes(pokemon.capt!.tera!, 'tera')"
+                    [size]="18"
+                  />
+                }
+                @if (pokemon.capt?.z) {
+                  <pdz-icon
+                    name="z"
+                    ariaLabel="Z captain"
+                    pdzTooltipPosition="below"
+                    [pdzTooltip]="captTypes(pokemon.capt!.z!, 'z')"
+                    [size]="18"
+                  />
+                }
+                @if (pokemon.capt?.dmax) {
+                  <pdz-icon name="dmax" ariaLabel="Dynamax" [size]="18" />
+                }
+              </span>
+            </span>
+            <span class="row__speed">{{ pokemon.baseStats.spe }}</span>
           </div>
-          <div class="name-cell">
-            <div class="name-label">{{ pokemon.name }}</div>
-            @if (pokemon.nickname) {
-              <div class="nickname-label">{{ pokemon.nickname }}</div>
-            }
-            <div class="capt-row">
-              @if (pokemon.capt?.tera) {
-                <pdz-icon
-                  [pdzTooltip]="
-                    pokemon.capt!.tera!.length &&
-                    pokemon.capt!.tera!.length < 19
-                      ? pokemon.capt!.tera!.join(', ')
-                      : 'All Types'
-                  "
-                  pdzTooltipPosition="below"
-                  name="tera"
-                ></pdz-icon>
-              }
-              @if (pokemon.capt?.z) {
-                <pdz-icon
-                  [pdzTooltip]="
-                    pokemon.capt!.z!.length && pokemon.capt!.z!.length < 18
-                      ? pokemon.capt!.z!.join(', ')
-                      : 'All Types'
-                  "
-                  pdzTooltipPosition="below"
-                  name="z"
-                ></pdz-icon>
-              }
-              @if (pokemon.capt?.dmax) {
-                <pdz-icon svgIcon="dmax" name=""></pdz-icon>
-              }
-            </div>
-          </div>
-          <div class="speed-cell">{{ pokemon.baseStats.spe }}</div>
-        </div>
-      }
-    </div>
-  </div>
-  <div class="team-container alternate">
-    <div class="team-header">
-      <div class="team-name-title">
-        {{ teams[1].teamName }}
-      </div>
-      @if (teams[0].coach || teams[1].coach) {
-        <div class="team-coach-title">{{ teams[1].coach }}</div>
-      }
-    </div>
-    <div class="team-body">
-      <div class="overview-row header">
-        <div class="speed-cell" (click)="sortData('spe')">
-          SPE
-          @if (sortedBy === "spe") {
-            @if (sortDirection === "desc") {
-              <pdz-icon name="arrow_downward"></pdz-icon>
-            }
-            @if (sortDirection === "asc") {
-              <pdz-icon name="arrow_upward"></pdz-icon>
-            }
-          }
-        </div>
-        <div class="name-cell" (click)="sortData('name')">
-          Name
-          @if (sortedBy === "name") {
-            @if (sortDirection === "desc") {
-              <pdz-icon name="arrow_downward"></pdz-icon>
-            }
-            @if (sortDirection === "asc") {
-              <pdz-icon name="arrow_upward"></pdz-icon>
-            }
-          }
-        </div>
-        <div class="sprite-cell"></div>
-      </div>
-      @for (pokemon of ($teams | async)![1]; track pokemon) {
-        <div class="overview-row">
-          <div class="speed-cell">{{ pokemon.baseStats.spe }}</div>
-          <div class="name-cell">
-            <div class="name-label">{{ pokemon.name }}</div>
-            @if (pokemon.nickname) {
-              <div class="nickname-label">{{ pokemon.nickname }}</div>
-            }
-            <div class="capt-row">
-              @if (pokemon.capt?.tera) {
-                <pdz-icon
-                  [pdzTooltip]="
-                    pokemon.capt!.tera!.length &&
-                    pokemon.capt!.tera!.length < 19
-                      ? pokemon.capt!.tera!.join(', ')
-                      : 'All Types'
-                  "
-                  pdzTooltipPosition="below"
-                  name="tera"
-                ></pdz-icon>
-              }
-              @if (pokemon.capt?.z) {
-                <pdz-icon
-                  [pdzTooltip]="
-                    pokemon.capt!.z!.length && pokemon.capt!.z!.length < 18
-                      ? pokemon.capt!.z!.join(', ')
-                      : 'All Types'
-                  "
-                  pdzTooltipPosition="below"
-                  name="z"
-                ></pdz-icon>
-              }
-              @if (pokemon.capt?.dmax) {
-                <pdz-icon svgIcon="dmax" name=""></pdz-icon>
-              }
-            </div>
-          </div>
-          <div class="sprite-cell">
-            <pdz-sprite size="100%" [pokemon]="pokemon"></pdz-sprite>
-          </div>
-        </div>
-      }
-    </div>
-  </div>
+        }
+      </section>
+    }
   </div>
 </pdz-card>

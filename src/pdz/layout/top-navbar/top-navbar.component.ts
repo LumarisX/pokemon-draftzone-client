@@ -1,7 +1,20 @@
 import { AsyncPipe } from '@angular/common';
-import { Component, inject } from '@angular/core';
-import { NavigationEnd, Router, RouterModule } from '@angular/router';
-import { ADMIN_PATH, DRAFT_OVERVIEW_PATH } from '@pdz/core/route-paths';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  Signal,
+  computed,
+  inject,
+} from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { NavigationEnd, Router, RouterLink, RouterLinkActive } from '@angular/router';
+import {
+  ADMIN_PATH,
+  DRAFT_OVERVIEW_PATH,
+  LEAGUE_ADS_PATH,
+  PLANNER_PATH,
+  TOOLS_PATH,
+} from '@pdz/core/route-paths';
 import { NavContextService } from '@pdz/core/services/nav-context.service';
 import { RoleService } from '@pdz/core/services/role.service';
 import { UnreadService } from '@pdz/features/pages/homepage/unread.service';
@@ -13,20 +26,13 @@ import { TabNavComponent } from '@pdz/shared/layout/tab-nav/tab-nav.component';
 import { MenuItemComponent } from '@pdz/shared/menu/menu-item.component';
 import { MenuTriggerDirective } from '@pdz/shared/menu/menu-trigger.directive';
 import { MenuComponent } from '@pdz/shared/menu/menu.component';
-import {
-  BehaviorSubject,
-  combineLatest,
-  filter,
-  map,
-  of,
-  startWith,
-} from 'rxjs';
+import { filter, map } from 'rxjs';
 import { LoginButtonComponent } from './login-button/login-button.component';
 
 interface NavTab {
   title: string;
   route: string;
-  badge?: BehaviorSubject<string>;
+  badge?: Signal<string>;
 }
 
 interface NavTool {
@@ -35,11 +41,14 @@ interface NavTool {
   icon: string;
 }
 
+const tool = (path: string) => `/${TOOLS_PATH}/${path}`;
+
 @Component({
   selector: 'pdz-top-navbar',
   imports: [
     AsyncPipe,
-    RouterModule,
+    RouterLink,
+    RouterLinkActive,
     IconComponent,
     LoginButtonComponent,
     ButtonComponent,
@@ -52,6 +61,7 @@ interface NavTool {
   ],
   templateUrl: './top-navbar.component.html',
   styleUrl: './top-navbar.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TopNavbarComponent {
   private unreadService = inject(UnreadService);
@@ -60,49 +70,47 @@ export class TopNavbarComponent {
   readonly adminPath = `/${ADMIN_PATH}/users`;
   readonly isAdmin$ = inject(RoleService).isAdmin$;
   readonly navDrawer = inject(NavContextService).drawer;
+  readonly newsBadge = this.unreadService.newsCount;
 
-  readonly TABS: NavTab[] = [
-    { title: 'My Drafts', route: DRAFT_OVERVIEW_PATH },
-    { title: 'Planner', route: '/planner' },
-    { title: 'Replay Analyzer', route: '/tools/replay-analyzer' },
+  readonly tabs: NavTab[] = [
+    { title: 'My Drafts', route: `/${DRAFT_OVERVIEW_PATH}` },
+    { title: 'Planner', route: `/${PLANNER_PATH}` },
+    { title: 'Replay Analyzer', route: tool('replay-analyzer') },
     {
-      title: 'Find A League',
-      route: '/league-list',
+      title: 'Find a League',
+      route: `/${LEAGUE_ADS_PATH}`,
       badge: this.unreadService.leagueCount,
     },
   ];
 
-  readonly TOOLS: NavTool[] = [
-    { title: 'One-Time Matchup', route: '/tools/quick-matchup', icon: 'bolt' },
-    {
-      title: 'Quick Draft',
-      route: '/tools/quick-draft',
-      icon: 'playing_cards',
-    },
-
+  readonly tools: NavTool[] = [
+    { title: 'One-Time Matchup', route: tool('quick-matchup'), icon: 'bolt' },
+    { title: 'Quick Draft', route: tool('quick-draft'), icon: 'playing_cards' },
     {
       title: 'Time Converter',
-      route: '/tools/time-converter',
+      route: tool('time-converter'),
       icon: 'calendar_clock',
     },
-    { title: 'Pokemon Search', route: '/tools/pokemon-search', icon: 'search' },
-    { title: 'Wheel Randomizer', route: '/tools/wheel', icon: 'casino' },
+    { title: 'Pokémon Search', route: tool('pokemon-search'), icon: 'search' },
+    { title: 'Wheel Randomizer', route: tool('wheel'), icon: 'casino' },
   ];
 
-  readonly newsBadge = this.unreadService.newsCount;
-
-  readonly anyBadge$ = combineLatest(
-    this.TABS.map((tab) => tab.badge ?? of('')),
-  ).pipe(map((badges) => badges.some((badge) => badge !== '')));
-
-  readonly toolsActive$ = this.router.events.pipe(
-    filter((event) => event instanceof NavigationEnd),
-    startWith(null),
-    map(() => {
-      const url = this.router.url.split(/[?#]/)[0];
-      return this.TOOLS.some(
-        (tool) => url === tool.route || url.startsWith(`${tool.route}/`),
-      );
-    }),
+  readonly anyBadge = computed(() =>
+    this.tabs.some((tab) => !!tab.badge?.()),
   );
+
+  private readonly url = toSignal(
+    this.router.events.pipe(
+      filter((event) => event instanceof NavigationEnd),
+      map(() => this.router.url),
+    ),
+    { initialValue: this.router.url },
+  );
+
+  readonly toolsActive = computed(() => {
+    const url = this.url().split(/[?#]/)[0];
+    return this.tools.some(
+      (item) => url === item.route || url.startsWith(`${item.route}/`),
+    );
+  });
 }

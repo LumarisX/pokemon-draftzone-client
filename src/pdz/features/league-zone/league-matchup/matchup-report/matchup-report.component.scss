@@ -1,5 +1,4 @@
 @use "pdz-theming" as pdz;
-@use "mixins" as *;
 
 :host {
   display: block;
@@ -10,115 +9,78 @@
   flex-direction: column;
   gap: pdz.space(md);
   padding: pdz.space(sm);
-  border: 1px solid pdz.color("primary-border");
-  border-radius: pdz.shape("corner-md");
-  background: pdz.color("surface-container-low");
+  border: 1px solid pdz.color(border-subtle);
+  border-radius: pdz.shape(corner-md);
+  background: pdz.color(raised);
 
-  @include respond-above(medium) {
+  @include pdz.respond-above(medium) {
     padding: pdz.space(lg);
   }
+}
 
-  &__intro {
-    @include text(body-sm);
-    margin: 0;
-    color: pdz.color("on-surface-variant");
+.report__games {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(md);
+}
+
+.report__summary-content {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: pdz.space(md);
+  padding: 0 pdz.space(md) pdz.space(md);
+  border-top: 1px solid pdz.color(border-subtle);
+
+  @include pdz.respond-above(large) {
+    grid-template-columns: 1fr 1fr;
   }
+}
 
-  &__games {
-    display: flex;
-    flex-direction: column;
-    gap: pdz.space(md);
+.report__summary-team {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(xs);
+  padding-top: pdz.space(sm);
+}
+
+.report__summary-team-title {
+  @include pdz.text(body-sm-strong);
+  color: pdz.color(on-surface);
+}
+
+.report__summary-empty {
+  @include pdz.text(label);
+  margin: 0;
+  color: pdz.color(on-surface-variant);
+}
+
+.report__footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: pdz.space(sm);
+  padding-top: pdz.space(md);
+  border-top: 1px solid pdz.color(border-subtle);
+}
+
+.report__series {
+  @include pdz.text(meta);
+  @include pdz.numeric;
+  flex: 1 1 100%;
+  order: -1;
+  text-align: center;
+  color: pdz.color(on-surface-variant);
+
+  @include pdz.respond-above(medium) {
+    flex: 0 1 auto;
+    order: 0;
+    text-align: start;
   }
+}
 
-  &__summary {
-    border: 1px solid pdz.color("outline-variant");
-    border-radius: pdz.shape("corner-md");
-    background: pdz.color("surface-container-lowest");
-  }
-
-  &__summary-content {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: pdz.space(md);
-    padding: 0 pdz.space(md) pdz.space(md);
-    border-top: 1px solid pdz.color("outline-variant");
-
-    @include respond-above(large) {
-      grid-template-columns: 1fr 1fr;
-    }
-  }
-
-  &__summary-team {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-    padding-top: pdz.space(sm);
-  }
-
-  &__summary-team-title {
-    @include text(label);
-    font-weight: var(--pdz-font-weight-semibold);
-    color: pdz.color("on-surface");
-    margin-bottom: pdz.space(3xs);
-  }
-
-  &__summary-row {
-    display: grid;
-    grid-template-columns: 1.6fr 1fr 1fr;
-    gap: pdz.space(sm);
-    @include text(label);
-    color: pdz.color("on-surface-variant");
-
-    > span:first-child {
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-    }
-
-    &--header {
-      @include text(label);
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-      border-bottom: 1px solid pdz.color("outline-variant");
-      padding-bottom: pdz.space(3xs);
-      margin-bottom: pdz.space(3xs);
-    }
-  }
-
-  &__summary-empty {
-    @include text(label);
-    margin: 0;
-    color: pdz.color("on-surface-variant");
-  }
-
-  &__footer {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
-    gap: pdz.space(sm);
-    padding-top: pdz.space(md);
-    border-top: 1px solid pdz.color("outline-variant");
-  }
-
-  &__series {
-    @include text(label);
-    flex: 1 1 100%;
-    order: -1;
-    text-align: center;
-    font-variant-numeric: tabular-nums;
-    color: pdz.color("on-surface-variant");
-
-    @include respond-above(medium) {
-      flex: 0 1 auto;
-      order: 0;
-      text-align: start;
-    }
-  }
-
-  &__error {
-    @include text(label);
-    margin: 0;
-    color: pdz.color("danger");
-  }
+.report__error {
+  @include pdz.text(label);
+  margin: 0;
+  color: pdz.color(danger);
 }

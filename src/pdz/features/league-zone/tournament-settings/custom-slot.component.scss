@@ -131,8 +131,8 @@
   color: pdz.color(on-surface-variant);
 }
 
-@media (max-width: 40rem) {
-  .slot-window__apply {
+.slot-window__apply {
+  @include pdz.respond-below(small) {
     flex: 1 1 100%;
   }
 }
@@ -195,8 +195,8 @@
   flex-direction: column;
   gap: pdz.space(sm);
   padding: pdz.space(md);
-  background: pdz.color(surface-container-lowest);
-  border: 1px solid pdz.color(outline-variant);
+  background: pdz.color(raised-high);
+  border: 1px solid pdz.color(border-subtle);
   border-radius: pdz.shape(corner-lg);
 }
 

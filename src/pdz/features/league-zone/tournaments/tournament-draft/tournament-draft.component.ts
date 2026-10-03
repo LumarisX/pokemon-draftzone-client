@@ -1,26 +1,27 @@
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
-import { catchError, of, Subject, switchMap, take, takeUntil } from 'rxjs';
+import { LEAGUE_ZONE_PATH } from '@pdz/core/route-paths';
 import { AuthService } from '@pdz/core/services/auth0.service';
+import { LeagueZoneService } from '@pdz/features/league-zone/league-zone.service';
+import { League } from '@pdz/features/league-zone/league.interface';
 import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
-import { LeagueZoneService } from '../../league-zone.service';
-import { League } from '../../league.interface';
+import { catchError, of, switchMap, take } from 'rxjs';
 
 @Component({
   selector: 'pdz-tournament-draft',
-  templateUrl: './tournament-draft.component.html',
+  template: `<div class="redirect-state"><pdz-loading /></div>`,
   styleUrl: './tournament-draft.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [LoadingComponent],
 })
-export class TournamentDraftComponent implements OnInit, OnDestroy {
+export class TournamentDraftComponent {
   private leagueService = inject(LeagueZoneService);
-  private authService = inject(AuthService);
   private router = inject(Router);
-  private destroy$ = new Subject<void>();
 
-  ngOnInit(): void {
-    this.authService.isAuthenticated$
-      .pipe(
+  constructor() {
+    inject(AuthService)
+      .isAuthenticated$.pipe(
         take(1),
         switchMap((isAuthenticated) =>
           isAuthenticated
@@ -29,31 +30,23 @@ export class TournamentDraftComponent implements OnInit, OnDestroy {
                 .pipe(catchError(() => of(null)))
             : of(null),
         ),
-        takeUntil(this.destroy$),
+        takeUntilDestroyed(),
       )
-      .subscribe((coachData: League.CoachProfile | null) => {
-        this.redirect(coachData);
-      });
+      .subscribe((coachData) => this.redirect(coachData));
   }
 
   private redirect(coachData: League.CoachProfile | null): void {
-    const leagueSlug = this.leagueService.leagueSlug();
-    const tournamentSlug = this.leagueService.tournamentSlug();
     const poolsList = [
-      '/leagues',
-      leagueSlug,
+      '/',
+      LEAGUE_ZONE_PATH,
+      this.leagueService.leagueSlug(),
       'tournaments',
-      tournamentSlug,
+      this.leagueService.tournamentSlug(),
       'pools',
     ];
     const destination = coachData?.pool
       ? [...poolsList, coachData.pool.poolSlug]
       : poolsList;
     this.router.navigate(destination, { replaceUrl: true });
-  }
-
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
   }
 }

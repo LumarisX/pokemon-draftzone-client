@@ -2,7 +2,6 @@
   <div class="draft-builder">
     <header class="draft-builder__header">
       <div class="draft-builder__header-inner">
-        <h1 class="draft-builder__title">Quick Matchup</h1>
         <span class="draft-builder__spacer"></span>
         @if (submitAttempted && quickForm.hasError("emptyTeam")) {
           <span class="form-field__error"
@@ -41,18 +40,14 @@
           </h2>
         </div>
 
-        <div class="form-field">
-          <label class="form-field__label" for="side1-team-name"
-            >Team Name</label
-          >
+        <label pdz-field class="form-field" label="Team Name">
           <input
-            id="side1-team-name"
-            class="form-field__input"
+            pdz-input
             type="text"
             spellcheck="false"
             [formControl]="quickForm.controls.side1.controls.teamName"
           />
-        </div>
+        </label>
 
         <pdz-team-editor
           [pokemonList$]="pokemonList$"
@@ -69,18 +64,14 @@
           </h2>
         </div>
 
-        <div class="form-field">
-          <label class="form-field__label" for="side2-team-name"
-            >Team Name</label
-          >
+        <label pdz-field class="form-field" label="Team Name">
           <input
-            id="side2-team-name"
-            class="form-field__input"
+            pdz-input
             type="text"
             spellcheck="false"
             [formControl]="quickForm.controls.side2.controls.teamName"
           />
-        </div>
+        </label>
 
         <pdz-team-editor
           [pokemonList$]="pokemonList$"

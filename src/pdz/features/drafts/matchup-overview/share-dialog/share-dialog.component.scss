@@ -10,9 +10,9 @@
   row-gap: pdz.space(md);
 
   .url-container {
-    border: 1px solid pdz.color(outline-variant);
+    border: 1px solid pdz.color(border-subtle);
     border-radius: pdz.shape(corner-lg);
-    padding: 0 0.5rem;
+    padding: 0 pdz.space(sm);
     width: 100%;
     display: flex;
     align-items: center;
@@ -31,9 +31,9 @@
     display: flex;
     flex-wrap: wrap;
     justify-content: space-evenly;
-    border: 1px solid pdz.color(outline-variant);
+    border: 1px solid pdz.color(border-subtle);
     border-radius: pdz.shape(corner-lg);
-    padding: 0 1rem;
+    padding: 0 pdz.space(lg);
 
     .detail-container {
       display: flex;
@@ -53,16 +53,15 @@
     display: flex;
     gap: pdz.space(md);
     > :not(:last-child) {
-      border-right: 1px solid pdz.color(primary-border);
+      border-right: 1px solid pdz.color(border-subtle);
     }
 
     .team-container {
-      --pdz-cmp-color-border: #{pdz.color(primary-border)};
-      --pdz-cmp-color-title: #{pdz.color(primary-accent)};
+      --pdz-cmp-color-border: #{pdz.color(team1-border)};
+      --pdz-cmp-color-title: #{pdz.color(on-surface)};
 
       &.alternate {
-        --pdz-cmp-color-border: #{pdz.color(secondary-border)};
-        --pdz-cmp-color-title: #{pdz.color(secondary-accent)};
+        --pdz-cmp-color-border: #{pdz.color(team2-border)};
       }
       border-width: 1px;
       border-radius: pdz.shape(corner-lg);
@@ -78,7 +77,7 @@
         align-items: center;
         border-width: 0 0 1px;
         border-color: var(--pdz-cmp-color-border);
-        margin-bottom: 0.5rem;
+        margin-bottom: pdz.space(sm);
 
         .team-name-title,
         .team-coach-title {
@@ -89,7 +88,6 @@
           text-align: center;
           font-weight: var(--pdz-font-weight-bold);
           color: var(--pdz-cmp-color-title);
-          font-family: var(--pdz-font-display);
         }
 
         .team-coach-title {
@@ -100,7 +98,7 @@
 
       .team-body {
         display: grid;
-        gap: 0.5rem;
+        gap: pdz.space(sm);
         grid-template-columns: repeat(4, minmax(0, 1fr));
         .sprite-wrapper {
           position: relative;
@@ -115,14 +113,13 @@
             right: 0;
             background-color: pdz.color(primary);
             color: pdz.color(on-primary);
-            box-shadow: var(--pdz-level-2);
+            box-shadow: var(--pdz-elevation-2);
             border-radius: pdz.shape(corner-lg);
 
-            // pdz-icon size="sm" = 20px; override for capt badges
             pdz-icon {
               --icon-size: 1.5rem;
 
-              @media (max-width: 768px) {
+              @include pdz.respond-below(medium) {
                 --icon-size: 1rem;
               }
             }
@@ -131,13 +128,13 @@
           .speed-label {
             position: absolute;
             bottom: 0;
-            font-weight: 600;
-            background-color: pdz.color(surface);
+            font-weight: pdz.font-weight(semibold);
+            background-color: pdz.color(raised);
             padding: 0 pdz.space(xs);
             border-radius: pdz.shape(corner-full);
             color: var(--pdz-cmp-color-title);
 
-            @media (max-width: 768px) {
+            @include pdz.respond-below(medium) {
               font-size: pdz.font-size(xs);
               line-height: pdz.leading(tight);
               padding: pdz.space(2xs);

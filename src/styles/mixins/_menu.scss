@@ -4,7 +4,7 @@
 @mixin menu-section-label {
   padding: pdz.space(xs) pdz.space(sm) pdz.space(2xs);
   margin-top: pdz.space(2xs);
-  border-top: 1px solid pdz.color(outline-variant);
+  border-top: 1px solid pdz.color(border-subtle);
   color: pdz.color(on-surface-variant);
   @include text(label);
 }
@@ -12,5 +12,5 @@
 @mixin menu-divider {
   height: 1px;
   margin: pdz.space(2xs) 0;
-  background-color: pdz.color(outline-variant);
+  background-color: pdz.color(border-subtle);
 }

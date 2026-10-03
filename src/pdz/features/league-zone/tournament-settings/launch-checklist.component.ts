@@ -14,10 +14,10 @@ import { TournamentSettingsStore } from './tournament-settings.store';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [CardComponent, IconComponent, RouterLink],
   template: `
-    <pdz-card padding="lg" tone="lowest">
+    <pdz-card padding="lg">
       <div class="checklist__head">
         <div>
-          <h2 class="checklist__title">Getting set up</h2>
+          <h2 class="checklist__title">Getting Set Up</h2>
           <p class="checklist__sub">
             {{ doneCount() }} of {{ totalCount() }} done
           </p>

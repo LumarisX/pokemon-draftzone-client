@@ -1,5 +1,4 @@
 @use "pdz-theming" as pdz;
-@use "mixins" as *;
 
 :host {
   display: block;
@@ -18,7 +17,7 @@
   flex-direction: column;
   gap: pdz.space(sm);
 
-  @include respond-above(medium) {
+  @include pdz.respond-above(medium) {
     display: grid;
     grid-template-columns: minmax(11rem, 16rem) 1fr;
     gap: pdz.space(md);
@@ -35,23 +34,23 @@
     width: var(--drawer-width);
     padding: pdz.space(md);
     overflow-y: auto;
-    background: pdz.color(surface);
-    box-shadow: var(--pdz-level-3);
+    background: pdz.color(overlay);
+    box-shadow: var(--pdz-elevation-3);
     transform: translateX(-100%);
     visibility: hidden;
     transition:
       transform pdz.duration(slow) pdz.easing(standard),
       visibility pdz.duration(slow) pdz.easing(standard);
 
-    @include respond-above(medium) {
+    @include pdz.respond-above(medium) {
       position: static;
       z-index: auto;
       width: auto;
       min-height: 0;
       padding: pdz.space(md) pdz.space(sm);
-      border: 1px solid pdz.color(outline-variant);
+      border: 1px solid pdz.color(border-subtle);
       border-radius: pdz.shape(corner-lg);
-      background: pdz.color(surface-container-low);
+      background: pdz.color(raised);
       box-shadow: none;
       transform: none;
       visibility: visible;
@@ -66,9 +65,9 @@
     inset-inline-start: calc(var(--drawer-width) + #{pdz.space(sm)});
     transform: translateX(calc(#{pdz.space(lg)} * -1)) scale(0.8);
     z-index: pdz.z(drawer-control);
-    background: pdz.color(surface-container-high);
+    background: pdz.color(floating);
     border-radius: pdz.shape(corner-full);
-    box-shadow: var(--pdz-level-2);
+    box-shadow: var(--pdz-elevation-2);
     opacity: 0;
     visibility: hidden;
     transition:
@@ -76,7 +75,7 @@
       opacity pdz.duration(slow) pdz.easing(standard),
       visibility pdz.duration(slow) pdz.easing(standard);
 
-    @include respond-above(medium) {
+    @include pdz.respond-above(medium) {
       display: none;
     }
   }
@@ -85,14 +84,14 @@
     position: fixed;
     inset: 0;
     z-index: pdz.z(drawer-backdrop);
-    background: pdz.color-rgba(scrim, 0.5);
+    background: color-mix(in srgb, #{pdz.color(scrim)} 50%, transparent);
     opacity: 0;
     visibility: hidden;
     transition:
       opacity pdz.duration(slow) pdz.easing(standard),
       visibility pdz.duration(slow) pdz.easing(standard);
 
-    @include respond-above(medium) {
+    @include pdz.respond-above(medium) {
       display: none;
     }
   }
@@ -119,10 +118,9 @@
     min-width: 0;
     isolation: isolate;
 
-    @include respond-above(medium) {
+    @include pdz.respond-above(medium) {
       min-height: 0;
       overflow-y: auto;
     }
   }
-
 }

@@ -23,7 +23,7 @@
 .charts__caption {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: pdz.space(2xs);
 }
 
 .charts__title {
@@ -61,8 +61,8 @@
   z-index: 2;
   padding: pdz.space(xs) pdz.space(sm);
   border-radius: pdz.shape(corner-sm);
-  border: 1px solid pdz.color(outline-variant);
-  background: pdz.color(surface-container-high);
+  border: 1px solid pdz.color(border-subtle);
+  background: pdz.color(floating);
   color: pdz.color(on-surface);
   white-space: nowrap;
   @include pdz.text(body-sm);

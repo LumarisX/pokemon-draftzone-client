@@ -1,43 +1,46 @@
-import { CommonModule } from '@angular/common';
-import { Component, OnInit, inject } from '@angular/core';
-import { ReactiveFormsModule } from '@angular/forms';
-import { ActivatedRoute, RouterModule } from '@angular/router';
+import { Component, inject } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { ActivatedRoute, RouterLink, RouterOutlet } from '@angular/router';
 import { DRAFT_OVERVIEW_PATH } from '@pdz/core/route-paths';
+import { DraftService } from '@pdz/features/drafts/draft-overview/draft.service';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
-import { IconComponent } from '@pdz/shared/images/icon/icon.component';
+import { RecordComponent } from '@pdz/shared/data/record/record.component';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
+import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
 import { RouteEnterDirective } from '@pdz/shared/layout/route-enter.directive';
-import { Observable, switchMap } from 'rxjs';
-import { DraftService } from '../draft-overview/draft.service';
-import { Draft } from '../draft.model';
+import { TooltipDirective } from '@pdz/shared/tooltip/tooltip.directive';
+import { switchMap } from 'rxjs';
 
 @Component({
   selector: 'pdz-opponent-overview',
   imports: [
-    CommonModule,
-    RouterModule,
-    ReactiveFormsModule,
-    IconComponent,
-    SpriteComponent,
-    RouteEnterDirective,
     ButtonComponent,
+    PageHeaderComponent,
+    RecordComponent,
+    RouteEnterDirective,
+    RouterLink,
+    RouterOutlet,
+    SpriteComponent,
+    TooltipDirective,
   ],
   templateUrl: './opponent-overview.component.html',
   styleUrl: './opponent-overview.component.scss',
 })
-export class OpponentOverviewComponent implements OnInit {
-  private route = inject(ActivatedRoute);
-  private draftService = inject(DraftService);
+export class OpponentOverviewComponent {
+  private readonly route = inject(ActivatedRoute);
+  private readonly draftService = inject(DraftService);
 
-  draft!: Observable<Draft>;
-  draftPath = DRAFT_OVERVIEW_PATH;
+  readonly backLink = ['/', DRAFT_OVERVIEW_PATH];
 
-  ngOnInit(): void {
-    this.draft = this.route.paramMap.pipe(
-      switchMap((params) => {
-        const teamId = params.get('teamId')!;
-        return this.draftService.getDraft(teamId);
-      }),
-    );
+  readonly draft = toSignal(
+    this.route.paramMap.pipe(
+      switchMap((params) =>
+        this.draftService.getDraft(params.get('teamId') ?? ''),
+      ),
+    ),
+  );
+
+  draftParam(slug: string): string {
+    return JSON.stringify(slug);
   }
 }

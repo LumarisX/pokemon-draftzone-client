@@ -4,49 +4,42 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  row-gap: 1rem;
+  row-gap: pdz.space(lg);
   height: 100%;
-  width: fit-content !important;
+  width: fit-content;
   max-width: 100%;
   overflow: hidden;
-  @media (max-width: 768px) {
+
+  @include pdz.respond-below(medium) {
     overflow-y: auto;
   }
 }
 
-h1,
 h2 {
-  font-family: var(--pdz-font-display);
-}
-
-h2 {
-  font-size: pdz.font-size(xl);
+  @include pdz.text(section-title);
+  text-align: center;
 }
 
 .qd-template {
-  font-family: var(--pdz-font-display);
   width: 15rem;
   min-height: 12rem;
   padding: pdz.space(lg);
   display: flex;
   flex-direction: column;
   align-items: center;
-  row-gap: 0.5rem;
+  row-gap: pdz.space(sm);
 
   .qd-header {
-    font-size: pdz.font-size(lg);
+    @include pdz.text(card-title);
     text-align: center;
     width: 100%;
-    border-bottom: 2px solid pdz.color(primary-border);
+    border-bottom: 1px solid pdz.color(border-subtle);
   }
 
-  @media (max-width: 768px) {
+  @include pdz.respond-below(medium) {
     padding: pdz.space(sm);
     min-height: 0;
     height: fit-content;
-    .qd-header {
-      font-size: pdz.font-size(md);
-    }
   }
 }
 
@@ -54,25 +47,26 @@ h2 {
   padding: pdz.space(xs);
   width: 100%;
   border-radius: pdz.shape(corner-sm);
-  font-size: small;
-  border: 2px solid pdz.color(primary-border);
+  font-size: pdz.font-size(sm);
+  border: 1px solid pdz.color(border-subtle);
   display: flex;
   justify-content: space-around;
   flex-wrap: wrap;
+
   .qd-tier {
     text-align: center;
     min-width: fit-content;
     width: 30%;
-    padding: 0 0.25rem;
+    padding: 0 pdz.space(xs);
   }
 }
 
 .qd-options-bar {
-  margin-bottom: -1rem;
+  margin-bottom: calc(-1 * #{pdz.space(lg)});
 }
 
 .custom-button {
-  width: 100% !important;
+  width: 100%;
   min-height: fit-content;
   max-height: fit-content;
   gap: 0;
@@ -102,21 +96,23 @@ h2 {
       width: fit-content;
       display: flex;
       align-items: center;
-      column-gap: 1rem;
-
+      column-gap: pdz.space(lg);
       justify-content: space-between;
     }
 
     .option-label {
       font-size: pdz.font-size(sm);
     }
+
     .custom-tier-options {
       display: grid;
-      column-gap: 2rem;
+      column-gap: pdz.space(2xl);
       grid-template-columns: repeat(2, minmax(0, 1fr));
-      @media (max-width: 768px) {
+
+      @include pdz.respond-below(medium) {
         grid-template-columns: repeat(1, minmax(0, 1fr));
       }
+
       .custom-option {
         width: 100%;
       }
@@ -125,9 +121,9 @@ h2 {
 }
 
 .qd-option-container {
-  @media (max-width: 768px) {
+  @include pdz.respond-below(medium) {
     flex-direction: column;
-    row-gap: 0.25rem;
+    row-gap: pdz.space(xs);
   }
 }
 

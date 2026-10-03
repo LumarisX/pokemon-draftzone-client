@@ -1,8 +1,23 @@
-import { CommonModule } from '@angular/common';
-import { Component, inject } from '@angular/core';
-import { RouterModule } from '@angular/router';
-import { DRAFT_OVERVIEW_PATH } from '@pdz/core/route-paths';
+import { JsonPipe } from '@angular/common';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+  signal,
+} from '@angular/core';
+import { RouterLink } from '@angular/router';
+import {
+  DRAFT_OVERVIEW_PATH,
+  LEAGUE_ZONE_PATH,
+  PLANNER_PATH,
+} from '@pdz/core/route-paths';
+import { DraftService } from '@pdz/features/drafts/draft-overview/draft.service';
+import { Archive } from '@pdz/features/drafts/draft-overview/archive.model';
+import { Draft } from '@pdz/features/drafts/draft.model';
+import { TournamentDetails } from '@pdz/features/league-zone/league.model';
 import { LeagueZoneService } from '@pdz/features/league-zone/league-zone.service';
+import { LSDraftData } from '@pdz/features/planner/planner.component';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 import { BadgeTone } from '@pdz/shared/data/badge/badge.component';
 import { CardComponent } from '@pdz/shared/data/card/card.component';
@@ -10,18 +25,16 @@ import { ScoreComponent } from '@pdz/shared/data/score/score.component';
 import { SkeletonComponent } from '@pdz/shared/data/skeleton/skeleton.component';
 import { DialogService } from '@pdz/shared/dialogs/dialog/dialog.service';
 import { EmptyStateComponent } from '@pdz/shared/feedback/empty-state/empty-state.component';
+import { ToastService } from '@pdz/shared/feedback/toast/toast.service';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
 import { DisclosureComponent } from '@pdz/shared/layout/disclosure/disclosure.component';
+import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
+import { PageComponent } from '@pdz/shared/layout/page/page.component';
 import { MenuItemComponent } from '@pdz/shared/menu/menu-item.component';
 import { MenuTriggerDirective } from '@pdz/shared/menu/menu-trigger.directive';
 import { MenuComponent } from '@pdz/shared/menu/menu.component';
 import { TooltipDirective } from '@pdz/shared/tooltip/tooltip.directive';
-import { TournamentDetails } from '../../../league-zone/league.model';
-import { LSDraftData } from '../../../planner/planner.component';
-import { Draft } from '../../draft.model';
-import { Archive } from '../archive.model';
-import { DraftService } from '../draft.service';
 
 type Score = { wins: number; losses: number };
 
@@ -29,9 +42,10 @@ type Score = { wins: number; losses: number };
   selector: 'pdz-draft-preview',
   templateUrl: './draft-preview.component.html',
   styleUrl: './draft-preview.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    CommonModule,
-    RouterModule,
+    JsonPipe,
+    RouterLink,
     TooltipDirective,
     SpriteComponent,
     IconComponent,
@@ -44,71 +58,76 @@ type Score = { wins: number; losses: number };
     MenuTriggerDirective,
     SkeletonComponent,
     DisclosureComponent,
+    PageComponent,
+    PageHeaderComponent,
   ],
 })
 export class DraftPreviewComponent {
   private draftService = inject(DraftService);
   private leagueService = inject(LeagueZoneService);
   private dialogs = inject(DialogService);
+  private toasts = inject(ToastService);
 
   readonly skeletonCards = [0, 1, 2];
   readonly skeletonSprites = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
+  readonly draftPath = DRAFT_OVERVIEW_PATH;
+  readonly plannerPath = PLANNER_PATH;
 
-  drafts?: Draft[];
-  tournaments?: TournamentDetails[];
-  archives?: Archive[];
-  loadError = false;
-  draftPath = DRAFT_OVERVIEW_PATH;
+  readonly drafts = signal<Draft[] | undefined>(undefined);
+  readonly tournaments = signal<TournamentDetails[] | undefined>(undefined);
+  readonly archives = signal<Archive[]>([]);
+  readonly loadError = signal(false);
 
-  ngOnInit() {
+  readonly hasAnyDrafts = computed(
+    () => (this.drafts()?.length ?? 0) + (this.tournaments()?.length ?? 0) > 0,
+  );
+
+  constructor() {
     this.loadDrafts();
     this.loadTournaments();
     this.loadArchives();
   }
 
+  tournamentPath(tournament: TournamentDetails): string[] {
+    return [
+      '/',
+      LEAGUE_ZONE_PATH,
+      tournament.leagueSlug,
+      'tournaments',
+      tournament.tournamentSlug,
+    ];
+  }
+
   loadDrafts() {
-    this.drafts = undefined;
-    this.loadError = false;
+    this.drafts.set(undefined);
+    this.loadError.set(false);
     this.draftService.getDraftsList().subscribe({
-      next: (data) => {
-        this.drafts = data.drafts;
-      },
-      error: (error) => {
-        console.error('Failed to load drafts', error);
-        this.drafts = [];
-        this.tournaments = [];
-        this.loadError = true;
+      next: (data) => this.drafts.set(data.drafts),
+      error: () => {
+        this.drafts.set([]);
+        this.tournaments.set([]);
+        this.loadError.set(true);
       },
     });
   }
 
   loadTournaments() {
-    this.tournaments = undefined;
+    this.tournaments.set(undefined);
     this.leagueService.getTournamentsList().subscribe({
-      next: (data) => {
-        this.tournaments = data.tournaments;
-      },
-      error: (error) => {
-        console.error('Failed to load tournaments', error);
-        this.tournaments = [];
-      },
+      next: (data) => this.tournaments.set(data.tournaments),
+      error: () => this.tournaments.set([]),
     });
   }
 
   loadArchives() {
     this.draftService.getArchiveList().subscribe({
-      next: (data) => {
-        this.archives = data;
-      },
-      error: (error) => {
-        console.error('Failed to load tournaments', error);
-        this.tournaments = [];
-      },
+      next: (data) => this.archives.set(data),
+      error: () => this.archives.set([]),
     });
   }
 
   async confirmArchive(draft: Draft) {
-    const confirmed = await this.dialogs.confirm('Are you sure?', {
+    const confirmed = await this.dialogs.confirm('Archive this draft?', {
       message: `${draft.leagueName} will be archived. This can be undone.`,
       confirmLabel: 'Archive',
     });
@@ -119,7 +138,7 @@ export class DraftPreviewComponent {
         this.loadDrafts();
         this.loadArchives();
       },
-      error: (error) => console.error('Failed to archive draft', error),
+      error: () => this.toasts.error('Could not archive that draft.'),
     });
   }
 
@@ -131,7 +150,7 @@ export class DraftPreviewComponent {
         this.loadDrafts();
         this.loadArchives();
       },
-      error: (error) => console.error('Failed to restore draft', error),
+      error: () => this.toasts.error('Could not restore that draft.'),
     });
   }
 
@@ -145,7 +164,7 @@ export class DraftPreviewComponent {
 
     this.draftService.deleteDraft(draft.slug).subscribe({
       next: () => this.loadDrafts(),
-      error: (error) => console.error('Failed to delete draft', error),
+      error: () => this.toasts.error('Could not delete that draft.'),
     });
   }
 
@@ -165,8 +184,7 @@ export class DraftPreviewComponent {
   }
 
   scoreString(score: Score) {
-    if (score) return `${score.wins} - ${score.losses}`;
-    return `Unscored`;
+    return score ? `${score.wins} - ${score.losses}` : 'Unscored';
   }
 
   scoreTone(score: Score): BadgeTone {
@@ -174,10 +192,6 @@ export class DraftPreviewComponent {
     if (score.wins > score.losses) return 'success';
     if (score.wins < score.losses) return 'danger';
     return 'neutral';
-  }
-
-  hasAnyDrafts(): boolean {
-    return (this.drafts?.length ?? 0) + (this.tournaments?.length ?? 0) > 0;
   }
 
   unresolvedWarning(draft: Draft): string | null {

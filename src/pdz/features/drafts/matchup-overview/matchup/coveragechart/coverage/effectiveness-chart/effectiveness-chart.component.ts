@@ -1,123 +1,103 @@
 import {
+  ChangeDetectionStrategy,
   Component,
-  OnInit,
   ElementRef,
-  OnChanges,
+  afterRenderEffect,
   inject,
   input,
 } from '@angular/core';
 import * as d3 from 'd3';
 
+type EffectivenessRow = {
+  category: string;
+  se: number;
+  e: number;
+  ne: number;
+};
+
+type Segment = 'se' | 'e' | 'ne';
+
+const SEGMENTS: Segment[] = ['se', 'e', 'ne'];
+const FILLS: Record<Segment, string> = {
+  se: 'var(--pdz-color-positive)',
+  e: 'var(--pdz-color-state-strong)',
+  ne: 'var(--pdz-color-negative)',
+};
+const INKS: Record<Segment, string> = {
+  se: 'var(--pdz-color-on-positive)',
+  e: 'var(--pdz-color-on-surface)',
+  ne: 'var(--pdz-color-on-negative)',
+};
+const VIEW_WIDTH = 200;
+const VIEW_HEIGHT = 25;
+const MIN_LABEL_WIDTH = 30;
+
 @Component({
   selector: 'pdz-effectiveness-chart',
-  template: `<svg></svg>`,
+  template: `<svg role="img" aria-label="Move effectiveness breakdown"></svg>`,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class EffectivenessChartComponent implements OnInit, OnChanges {
-  private el = inject(ElementRef);
+export class EffectivenessChartComponent {
+  private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
 
-  readonly data = input<
-    {
-      category: string;
-      se: number;
-      e: number;
-      ne: number;
-    }[]
-  >([]);
-  svg: any;
-  margin = { top: 0, right: 0, bottom: 0, left: 0 };
-  padding = 0;
-  viewBoxWidth = 200;
-  viewBoxHeight = 25;
-  ngOnInit(): void {
-    this.createSvg();
-    this.drawBars(this.data());
+  readonly data = input<EffectivenessRow[]>([]);
+
+  constructor() {
+    afterRenderEffect(() => this.draw(this.data()));
   }
 
-  ngOnChanges(): void {
-    if (this.svg) this.drawBars(this.data());
-  }
-
-  createSvg(): void {
-    this.svg = d3
-      .select(this.el.nativeElement)
+  private draw(data: EffectivenessRow[]): void {
+    const svg = d3
+      .select(this.host.nativeElement)
       .select('svg')
-      .attr('viewBox', `0 0 ${this.viewBoxWidth} ${this.viewBoxHeight}`)
-      .append('g')
-      .attr('transform', `translate(${this.margin.left},${this.margin.top})`);
-  }
+      .attr('viewBox', `0 0 ${VIEW_WIDTH} ${VIEW_HEIGHT}`);
+    svg.selectAll('*').remove();
+    if (!data.length) return;
 
-  drawBars(
-    data: {
-      category: string;
-      se: number;
-      e: number;
-      ne: number;
-    }[],
-  ): void {
-    const subgroups = Object.keys(data[0]).slice(1);
-    const groups = data.map((d) => d.category);
-
-    this.svg.selectAll('*').remove();
-
-    // Create the x and y scales
-    const x = d3
-      .scaleLinear()
-      .domain([0, 1])
-      .range([0, this.viewBoxWidth - this.margin.left - this.margin.right]);
+    const x = d3.scaleLinear().domain([0, 1]).range([0, VIEW_WIDTH]);
     const y = d3
       .scaleBand()
-      .domain(groups)
-      .range([0, this.viewBoxHeight - this.margin.top - this.margin.bottom])
-      .padding(this.padding);
+      .domain(data.map((row) => row.category))
+      .range([0, VIEW_HEIGHT]);
+    const stacked = d3.stack<EffectivenessRow, Segment>().keys(SEGMENTS)(data);
 
-    const color = d3
-      .scaleOrdinal<string>()
-      .domain(subgroups)
-      .range(['#6ee7b7', '#d6d3d1', '#fda4af']);
-
-    // Show the stacked bar
-    const stackedData = d3.stack().keys(subgroups)(data as any);
-    this.svg
+    const groups = svg
       .append('g')
       .selectAll('g')
-      .data(stackedData)
+      .data(stacked)
       .join('g')
-      .attr('fill', (d: { key: string }) => color(d.key) as string)
+      .style('fill', (series) => FILLS[series.key]);
+
+    groups
       .selectAll('rect')
-      .data((d: any) => d)
+      .data((series) => series)
       .join('rect')
-      .attr('x', (d: d3.NumberValue[]) => x(d[0]))
-      .attr('y', (d: { data: { category: string } }) => y(d.data.category)!)
-      .attr('width', (d: d3.NumberValue[]) => x(d[1]) - x(d[0]))
+      .attr('x', (point) => x(point[0]))
+      .attr('y', (point) => y(point.data.category) ?? 0)
+      .attr('width', (point) => x(point[1]) - x(point[0]))
       .attr('height', y.bandwidth());
 
-    // Add values inside bars
-    this.svg
+    svg
       .append('g')
       .selectAll('g')
-      .data(stackedData)
+      .data(stacked)
       .join('g')
-      .attr('fill', (d: { key: string }) => color(d.key) as string)
+      .style('fill', (series) => INKS[series.key])
       .selectAll('text')
-      .data((d: any) => d)
+      .data((series) => series)
       .join('text')
-      .attr('x', (d: d3.NumberValue[]) => x(d[0]) + (x(d[1]) - x(d[0])) / 2)
+      .attr('x', (point) => x(point[0]) + (x(point[1]) - x(point[0])) / 2)
       .attr(
         'y',
-        (d: { data: { category: string } }) =>
-          y(d.data.category)! + y.bandwidth() / 2,
+        (point) => (y(point.data.category) ?? 0) + y.bandwidth() / 2,
       )
       .attr('dy', '0.35em')
       .attr('text-anchor', 'middle')
-      .attr('fill', 'white')
-
       .attr('font-weight', '700')
-      .text((d: number[]) => {
-        const segmentWidth = x(d[1]) - x(d[0]);
-        if (segmentWidth < 30) return '';
-
-        let text = ((d[1] - d[0]) * 100).toFixed();
-        return text + '%';
-      });
+      .text((point) =>
+        x(point[1]) - x(point[0]) < MIN_LABEL_WIDTH
+          ? ''
+          : `${((point[1] - point[0]) * 100).toFixed()}%`,
+      );
   }
 }

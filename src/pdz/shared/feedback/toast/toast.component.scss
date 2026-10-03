@@ -29,10 +29,10 @@ $tones: (
 );
 
 :host {
-  --pdz-toast-surface: #{pdz.color(surface-container-high)};
+  --pdz-toast-surface: #{pdz.color(floating)};
   --pdz-toast-ink: #{pdz.color(on-surface)};
   --pdz-toast-accent: #{pdz.color(primary)};
-  --pdz-toast-border: #{pdz.color(outline-variant)};
+  --pdz-toast-border: #{pdz.color(border-subtle)};
 
   display: flex;
   align-items: flex-start;
@@ -44,7 +44,7 @@ $tones: (
   border-radius: pdz.shape(corner-sm);
   background-color: var(--pdz-toast-surface);
   color: var(--pdz-toast-ink);
-  box-shadow: var(--pdz-level-3);
+  box-shadow: var(--pdz-elevation-2);
   pointer-events: auto;
   animation: pdz-toast-enter pdz.duration(slow) pdz.easing(standard) both;
 }

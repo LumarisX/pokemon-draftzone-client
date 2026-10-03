@@ -14,7 +14,7 @@
     padding: pdz.space(xs) pdz.space(sm);
     border: 1px solid pdz.color(outline);
     border-radius: pdz.shape(corner-sm);
-    background: pdz.color(surface);
+    background: pdz.color(inset);
     color: pdz.color(on-surface);
     transition: border-color pdz.duration(base) pdz.easing(standard);
 
@@ -100,10 +100,10 @@
     inset: auto;
     margin: 0;
     padding: 0;
-    background: pdz.color(surface);
-    border: 1px solid pdz.color(outline-variant);
+    background: pdz.color(floating);
+    border: 1px solid pdz.color(border-subtle);
     border-radius: pdz.shape(corner-sm);
-    box-shadow: var(--pdz-level-3);
+    box-shadow: var(--pdz-elevation-2);
     overflow: hidden;
 
     &:popover-open {
@@ -113,8 +113,6 @@
 
   &__viewport {
     width: 100%;
-    // Always-on scrollbar with a reserved gutter, so revealing it never
-    // reflows the option rows.
     scrollbar-width: thin;
     scrollbar-color: var(--pdz-scrollbar-thumb-idle) transparent;
     scrollbar-gutter: stable;
@@ -152,7 +150,7 @@
 
     &:hover,
     &--highlighted {
-      background: pdz.color(surface-container-low);
+      background: pdz.color(state-hover);
     }
 
     &--taken {
@@ -179,7 +177,7 @@
     justify-content: center;
     min-width: 1.75rem;
     height: 1.5rem;
-    padding: 0 0.25rem;
+    padding: 0 pdz.space(xs);
     border-radius: pdz.shape(corner-xs);
     background: pdz.color(primary);
     color: pdz.color(on-primary);

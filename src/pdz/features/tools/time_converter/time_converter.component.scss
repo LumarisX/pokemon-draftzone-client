@@ -1,25 +1,7 @@
 @use "pdz-theming" as pdz;
 
-.converter-page {
-  display: flex;
-  justify-content: center;
-  padding: pdz.space(lg) pdz.space(sm);
-}
-
-.converter-panel {
+.converter {
   display: flex;
   flex-direction: column;
-  gap: pdz.space(lg);
-  width: 100%;
-  max-width: 60rem;
-  padding: pdz.space(lg);
-  background: pdz.color(surface-container-low);
-  color: pdz.color(on-surface);
-  border: 1px solid pdz.color(outline-variant);
-  border-radius: pdz.shape(corner-md);
-}
-
-.converter-panel__title {
-  @include pdz.text(title);
-  text-align: center;
+  gap: pdz.layout(section-gap);
 }

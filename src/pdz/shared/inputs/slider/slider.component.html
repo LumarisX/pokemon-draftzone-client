@@ -1,11 +1,11 @@
 <div
   class="slider"
   [class.slider--disabled]="isDisabled()"
-  [style.--pdz-slider-fill]="fillPercent + '%'"
+  [style.--pdz-slider-fill]="fillPercent() + '%'"
   [style.--pdz-slider-active]="color() || null"
 >
   @if (showValue()) {
-    <div class="slider__bubble" aria-hidden="true">{{ value }}</div>
+    <div class="slider__bubble" aria-hidden="true">{{ value() }}</div>
   }
   @if (tickMarks().length > 0) {
     <div class="slider__ticks" aria-hidden="true">
@@ -13,7 +13,7 @@
         <span
           class="slider__tick"
           [attr.data-tone]="tick.tone"
-          [class.slider__tick--filled]="tick.position <= fillPercent"
+          [class.slider__tick--filled]="tick.position <= fillPercent()"
           [style.left.%]="tick.position"
         ></span>
       }
@@ -26,7 +26,8 @@
     [max]="max()"
     [step]="effectiveStep()"
     [disabled]="isDisabled()"
-    [value]="value"
+    [value]="value()"
+    [attr.aria-label]="ariaLabel() ?? null"
     (input)="onInput($event)"
     (keydown)="onKeydown($event)"
     (blur)="onBlur()"

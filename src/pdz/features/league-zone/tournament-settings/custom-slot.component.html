@@ -1,7 +1,7 @@
 @switch (slot()) {
   @case ('logo') {
     <pdz-logo-field
-      label="Tournament logo"
+      label="Tournament Logo"
       folder="tournament-logos"
       [value]="store.draft().logo"
       [disabled]="disabled()"
@@ -162,7 +162,7 @@
         </p>
         <div class="slot-discord__actions">
           <button pdz-button type="button" size="sm" variant="outlined" (click)="copyLinkCommand(code.command)">
-            Copy command
+            Copy Command
           </button>
           <button pdz-button type="button" size="sm" [disabled]="linkBusy()" (click)="checkLink()">
             I've run it
@@ -199,7 +199,7 @@
   }
 
   @case ('discord-channels') {
-    <label pdz-field label="Sign-up channel ID">
+    <label pdz-field label="Sign-Up Channel ID">
       <input
         pdz-input
         type="text"
@@ -242,7 +242,7 @@
             </label>
           </div>
 
-          <label pdz-field label="Help text">
+          <label pdz-field label="Help Text">
             <input
               pdz-input
               type="text"
@@ -276,7 +276,7 @@
                   (ngModelChange)="setDependency(question.id, $event)"
                   [ngModelOptions]="{ standalone: true }"
                 >
-                  <pdz-option value="" label="Always ask" />
+                  <pdz-option value="" label="Always Ask" />
                   @for (choice of choices; track choice.id) {
                     <pdz-option
                       [value]="choice.id"
@@ -342,12 +342,12 @@
     @if (inviteMode()) {
       <div class="slot-invite">
         @if (inviteUrl(); as url) {
-          <label pdz-field label="Invite link">
+          <label pdz-field label="Invite Link">
             <input pdz-input type="text" readonly [ngModel]="url" [ngModelOptions]="{ standalone: true }" />
           </label>
           <div class="slot-invite__actions">
             <button pdz-button type="button" size="sm" variant="outlined" (click)="copyInvite(url)">
-              Copy link
+              Copy Link
             </button>
             <button pdz-button type="button" size="sm" variant="outlined" color="danger" (click)="rotateInvite()">
               Rotate
@@ -386,14 +386,14 @@
         color="neutral"
         [disabled]="disabled() || !poolChannelId()"
       >
-        Send test message
+        Send Test Message
       </button>
     </div>
   }
 
   @case ('pool-window') {
     <div class="slot-window">
-      <label pdz-field label="Drafting opens">
+      <label pdz-field label="Drafting Opens">
         <input
           pdz-input
           type="datetime-local"
@@ -403,7 +403,7 @@
           [ngModelOptions]="{ standalone: true }"
         />
       </label>
-      <label pdz-field label="Drafting closes">
+      <label pdz-field label="Drafting Closes">
         <input
           pdz-input
           type="datetime-local"

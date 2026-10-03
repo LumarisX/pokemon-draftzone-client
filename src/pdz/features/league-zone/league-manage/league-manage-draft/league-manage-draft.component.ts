@@ -5,43 +5,83 @@ import {
   CdkDropList,
   moveItemInArray,
 } from '@angular/cdk/drag-drop';
-import { Component, inject, OnDestroy, OnInit } from '@angular/core';
+import {
+  Component,
+  DestroyRef,
+  OnInit,
+  computed,
+  inject,
+  linkedSignal,
+  signal,
+} from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router } from '@angular/router';
-import { BehaviorSubject, interval, Subject, takeUntil } from 'rxjs';
-import { distinctUntilChanged, finalize, map, switchMap, tap } from 'rxjs/operators';
-import { DraftPokemon } from '../../../drafts/draft.model';
-import { PokemonSearchComponent } from '@pdz/shared/dropdowns/pokemon-search/pokemon-search.component';
-import { TierListService } from '../../../tier-lists/tier-list.service';
-import { LeagueNotificationService } from '../../league-notification.service';
-import { PoolDetails, LeagueManageService } from '../league-manage.service';
-import { LeagueZoneService } from '../../league-zone.service';
+import {
+  LEAGUE_ZONE_MANAGE_PATH,
+  LEAGUE_ZONE_PATH,
+} from '@pdz/core/route-paths';
 import { EventStreamService } from '@pdz/core/services/event-stream.service';
-import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
+import { DraftPokemon } from '@pdz/features/drafts/draft.model';
+import { LeagueNotificationService } from '@pdz/features/league-zone/league-notification.service';
+import { LeagueZoneService } from '@pdz/features/league-zone/league-zone.service';
+import { League } from '@pdz/features/league-zone/league.interface';
+import { formatCountdown } from '@pdz/features/league-zone/league.util';
+import { PoolSwitcherComponent } from '@pdz/features/league-zone/league-widgets/pool-switcher/pool-switcher.component';
+import { TierListService } from '@pdz/features/tier-lists/tier-list.service';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
+import { CardComponent } from '@pdz/shared/data/card/card.component';
+import { ChipComponent, ChipTone } from '@pdz/shared/data/chip/chip.component';
+import { PokemonSearchComponent } from '@pdz/shared/dropdowns/pokemon-search/pokemon-search.component';
+import { EmptyStateComponent } from '@pdz/shared/feedback/empty-state/empty-state.component';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
-import { TooltipDirective } from '@pdz/shared/tooltip/tooltip.directive';
-import { League } from '../../league.interface';
-import { formatCountdown } from '../../league.util';
+import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
+import { CheckComponent } from '@pdz/shared/inputs/choice/check.component';
 import { ChoiceDirective } from '@pdz/shared/inputs/choice/choice.directive';
+import { FieldComponent } from '@pdz/shared/inputs/field/field.component';
+import { InputDirective } from '@pdz/shared/inputs/field/input.directive';
+import { SegmentedOptionComponent } from '@pdz/shared/inputs/segmented/segmented-option.component';
+import { SegmentedComponent } from '@pdz/shared/inputs/segmented/segmented.component';
 import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
-import { PoolSwitcherComponent } from '../../league-widgets/pool-switcher/pool-switcher.component';
+import { TooltipDirective } from '@pdz/shared/tooltip/tooltip.directive';
+import { BehaviorSubject, Observable, Subject, interval } from 'rxjs';
+import {
+  distinctUntilChanged,
+  filter,
+  finalize,
+  map,
+  switchMap,
+  takeUntil,
+  tap,
+} from 'rxjs/operators';
+import {
+  LeagueManageService,
+  PoolDetails,
+} from '@pdz/features/league-zone/league-manage/league-manage.service';
+
+type DraftStatus = PoolDetails['status'];
+type OrderProgression = 'snake' | 'linear';
+type CurrentPick = { round: number; position: number; skipTime?: Date };
 
 interface DraftCounterEvent {
   poolSlug: string;
-  currentPick: {
-    round: number;
-    position: number;
-    skipTime?: Date;
-  };
+  currentPick: CurrentPick;
   nextTeam: string;
 }
 
-interface DraftPickUpdatedEvent {
+interface DraftTeamEvent {
   poolSlug: string;
-  round?: number;
-  pokemon?: League.LeaguePokemon;
-  previous?: League.LeaguePokemon;
   team: { id: string; name: string; draft: League.LeaguePokemon[] };
+}
+
+interface DraftAddedEvent extends DraftTeamEvent {
+  pick: { pokemon: League.LeaguePokemon };
+}
+
+interface DraftStatusEvent {
+  poolSlug: string;
+  status: DraftStatus;
+  noTimer?: boolean;
+  currentPick?: CurrentPick;
 }
 
 export interface DraftTurn {
@@ -58,6 +98,42 @@ export interface DraftTurnRound {
   turns: DraftTurn[];
 }
 
+interface DraftSettings {
+  name: string;
+  channelId: string;
+  orderProgression: OrderProgression;
+  sequentialTurns: boolean;
+  picksVisibleTo: League.PicksVisibleTo;
+  allowDuplicates: boolean;
+  allowRemovals: boolean;
+}
+
+const STATUS_LABELS: Record<DraftStatus, string> = {
+  PRE_DRAFT: 'Not started',
+  IN_PROGRESS: 'In progress',
+  PAUSED: 'Paused',
+  COMPLETED: 'Draft complete',
+};
+
+const STATUS_TONES: Record<DraftStatus, ChipTone> = {
+  PRE_DRAFT: 'info',
+  IN_PROGRESS: 'success',
+  PAUSED: 'warning',
+  COMPLETED: 'neutral',
+};
+
+const COUNTDOWN_TICK_MS = 1000;
+
+const EMPTY_SETTINGS: DraftSettings = {
+  name: '',
+  channelId: '',
+  orderProgression: 'snake',
+  sequentialTurns: false,
+  picksVisibleTo: 'everyone',
+  allowDuplicates: false,
+  allowRemovals: false,
+};
+
 @Component({
   selector: 'pdz-league-manage-draft',
   imports: [
@@ -69,121 +145,110 @@ export interface DraftTurnRound {
     CdkDropList,
     CdkDrag,
     CdkDragHandle,
+    CardComponent,
+    ChipComponent,
+    CheckComponent,
     ChoiceDirective,
+    EmptyStateComponent,
+    FieldComponent,
+    InputDirective,
+    SegmentedComponent,
+    SegmentedOptionComponent,
     PoolSwitcherComponent,
     PageHeaderComponent,
   ],
   templateUrl: './league-manage-draft.component.html',
   styleUrl: './league-manage-draft.component.scss',
 })
-export class LeagueManageDraftComponent implements OnInit, OnDestroy {
-  leagueManageService = inject(LeagueManageService);
-  leagueZoneService = inject(LeagueZoneService);
+export class LeagueManageDraftComponent implements OnInit {
+  private leagueManageService = inject(LeagueManageService);
+  private leagueZoneService = inject(LeagueZoneService);
   private eventStream = inject(EventStreamService);
   private notificationService = inject(LeagueNotificationService);
   private tierListService = inject(TierListService);
   private route = inject(ActivatedRoute);
   private router = inject(Router);
+  private destroyRef = inject(DestroyRef);
 
-  private destroy$ = new Subject<void>();
-  private countdownTick$ = new Subject<void>();
-  private readonly COUNTDOWN_TICK_MS = 1000;
+  private countdownReset$ = new Subject<void>();
 
-  teams: League.LeagueTeam[] = [];
-  status: 'PRE_DRAFT' | 'IN_PROGRESS' | 'PAUSED' | 'COMPLETED' = 'IN_PROGRESS';
-  noTimer = false;
-  pokemonList$ = new BehaviorSubject<DraftPokemon[]>([]);
+  readonly pokemonList$ = new BehaviorSubject<DraftPokemon[]>([]);
 
-  sequentialTurns = false;
-  orderProgression: 'snake' | 'linear' = 'snake';
-  roundCount = 0;
-  teamOrder: string[] = [];
-  currentPick?: { round: number; position: number; skipTime?: Date };
-  pickTimeDisplay: string | null = null;
+  readonly teams = signal<League.LeagueTeam[]>([]);
+  readonly status = signal<DraftStatus>('IN_PROGRESS');
+  readonly noTimer = signal(false);
+  readonly roundCount = signal(0);
+  readonly teamOrder = signal<string[]>([]);
+  readonly currentPick = signal<CurrentPick | undefined>(undefined);
+  readonly pickTimeDisplay = signal<string | null>(null);
 
-  useRandomSeeding = true;
-  pendingUseRandomSeeding = true;
-  pendingOrder: string[] = [];
-  orderSaving = false;
+  readonly useRandomSeeding = signal(true);
+  readonly pendingUseRandomSeeding = linkedSignal(() =>
+    this.useRandomSeeding(),
+  );
+  readonly pendingOrder = linkedSignal(() => [...this.teamOrder()]);
+  readonly orderSaving = signal(false);
 
-  poolName = '';
-  channelId?: string;
-  picksVisibleTo: League.PicksVisibleTo = 'everyone';
-  allowDuplicates = false;
-  allowRemovals = false;
+  readonly settings = signal<DraftSettings>(EMPTY_SETTINGS);
+  readonly pending = linkedSignal(() => ({ ...this.settings() }));
+  readonly settingsSaving = signal(false);
+  readonly testingMessage = signal(false);
 
-  pendingPoolName = '';
-  pendingChannelId = '';
-  pendingOrderProgression: 'snake' | 'linear' = 'snake';
-  pendingSequentialTurns = false;
-  pendingPicksVisibleTo: League.PicksVisibleTo = 'everyone';
-  pendingAllowDuplicates = false;
-  pendingAllowRemovals = false;
-  settingsSaving = false;
-  testingMessage = false;
+  readonly editingKey = signal<string | null>(null);
+  readonly pendingKey = signal<string | null>(null);
 
-  editingKey: string | null = null;
-  pendingKey: string | null = null;
+  readonly poolSlug = computed(() => this.leagueZoneService.poolSlug());
 
-  get teamsMap(): Map<string, League.LeagueTeam> {
-    return new Map(this.teams.map((team) => [team.id, team]));
-  }
+  readonly statusLabel = computed(() => STATUS_LABELS[this.status()]);
+  readonly statusTone = computed(() => STATUS_TONES[this.status()]);
 
-  takenIdsFor(turn: DraftTurn): string[] {
-    const teams = this.allowDuplicates ? [turn.team] : this.teams;
-    return teams.flatMap((team) => team.draft.map((pokemon) => pokemon.id));
-  }
+  readonly canEditOrder = computed(
+    () => !['IN_PROGRESS', 'PAUSED', 'COMPLETED'].includes(this.status()),
+  );
 
-  private get orderedTeams(): League.LeagueTeam[] {
-    const ordered = this.teamOrder
-      .map((teamId) => this.teamsMap.get(teamId))
-      .filter((team): team is League.LeagueTeam => team !== undefined);
-    return ordered.length ? ordered : this.teams;
-  }
+  readonly canReorderTeams = computed(
+    () => this.canEditOrder() && !this.pendingUseRandomSeeding(),
+  );
 
-  get canEditOrder(): boolean {
-    return !['IN_PROGRESS', 'PAUSED', 'COMPLETED'].includes(this.status);
-  }
+  private readonly teamsById = computed(
+    () => new Map(this.teams().map((team) => [team.id, team])),
+  );
 
-  get canReorderTeams(): boolean {
-    return this.canEditOrder && !this.pendingUseRandomSeeding;
-  }
+  private readonly orderedTeams = computed(() =>
+    this.resolveOrder(this.teamOrder()),
+  );
 
-  get orderPreview(): League.LeagueTeam[] {
-    const ids = this.pendingUseRandomSeeding ? this.teamOrder : this.pendingOrder;
-    const ordered = ids
-      .map((teamId) => this.teamsMap.get(teamId))
-      .filter((team): team is League.LeagueTeam => team !== undefined);
-    return ordered.length ? ordered : this.teams;
-  }
+  readonly orderPreview = computed(() =>
+    this.resolveOrder(
+      this.pendingUseRandomSeeding() ? this.teamOrder() : this.pendingOrder(),
+    ),
+  );
 
-  get isOrderDirty(): boolean {
-    if (this.pendingUseRandomSeeding !== this.useRandomSeeding) return true;
-    if (this.pendingUseRandomSeeding) return false;
-    return !this.sameOrder(this.pendingOrder, this.teamOrder);
-  }
-
-  private sameOrder(a: string[], b: string[]): boolean {
-    return a.length === b.length && a.every((id, i) => id === b[i]);
-  }
-
-  get isSettingsDirty(): boolean {
+  readonly isOrderDirty = computed(() => {
+    if (this.pendingUseRandomSeeding() !== this.useRandomSeeding()) return true;
+    if (this.pendingUseRandomSeeding()) return false;
+    const pending = this.pendingOrder();
+    const saved = this.teamOrder();
     return (
-      this.pendingPoolName !== this.poolName ||
-      this.pendingChannelId !== (this.channelId ?? '') ||
-      this.pendingOrderProgression !== this.orderProgression ||
-      this.pendingSequentialTurns !== this.sequentialTurns ||
-      this.pendingPicksVisibleTo !== this.picksVisibleTo ||
-      this.pendingAllowDuplicates !== this.allowDuplicates ||
-      this.pendingAllowRemovals !== this.allowRemovals
+      pending.length !== saved.length ||
+      pending.some((id, index) => id !== saved[index])
     );
-  }
+  });
 
-  get rounds(): DraftTurnRound[] {
-    const teams = this.orderedTeams;
-    return Array.from({ length: this.roundCount }, (_, round) => {
+  readonly isSettingsDirty = computed(() => {
+    const pending = this.pending();
+    const saved = this.settings();
+    return (Object.keys(saved) as (keyof DraftSettings)[]).some(
+      (key) => pending[key] !== saved[key],
+    );
+  });
+
+  readonly rounds = computed<DraftTurnRound[]>(() => {
+    const teams = this.orderedTeams();
+    const snake = this.settings().orderProgression === 'snake';
+    return Array.from({ length: this.roundCount() }, (_, round) => {
       const order = [...teams];
-      if (this.orderProgression === 'snake' && round % 2 === 1) order.reverse();
+      if (snake && round % 2 === 1) order.reverse();
       return {
         round,
         turns: order.map((team, position) => {
@@ -199,49 +264,20 @@ export class LeagueManageDraftComponent implements OnInit, OnDestroy {
         }),
       };
     });
-  }
+  });
 
-  get currentTurn(): DraftTurn | undefined {
-    if (!this.currentPick) return undefined;
-    return this.rounds[this.currentPick.round]?.turns.find(
-      (turn) => turn.position === this.currentPick!.position,
+  readonly currentTurn = computed(() => {
+    const pick = this.currentPick();
+    if (!pick) return undefined;
+    return this.rounds()[pick.round]?.turns.find(
+      (turn) => turn.position === pick.position,
     );
-  }
-
-  get statusLabel(): string {
-    switch (this.status) {
-      case 'COMPLETED':
-        return 'Draft complete';
-      case 'PAUSED':
-        return 'Paused';
-      case 'IN_PROGRESS':
-        return 'In progress';
-      default:
-        return 'Not started';
-    }
-  }
-
-  private turnState(
-    round: number,
-    position: number,
-    pokemon?: League.LeaguePokemon,
-  ): DraftTurn['state'] {
-    if (pokemon) return 'picked';
-    if (!this.sequentialTurns || !this.currentPick) return 'upcoming';
-
-    const { round: currentRound, position: currentPosition } = this.currentPick;
-    if (currentRound === round && currentPosition === position)
-      return 'current';
-    return currentRound > round ||
-      (currentRound === round && currentPosition > position)
-      ? 'skipped'
-      : 'upcoming';
-  }
+  });
 
   ngOnInit(): void {
     this.tierListService
       .getTierList()
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: ({ tierList }) =>
           this.pokemonList$.next(
@@ -267,149 +303,51 @@ export class LeagueManageDraftComponent implements OnInit, OnDestroy {
         switchMap((poolSlug) =>
           this.leagueZoneService.getPoolDetails(poolSlug ?? undefined),
         ),
-        takeUntil(this.destroy$),
+        takeUntilDestroyed(this.destroyRef),
       )
       .subscribe((data) => {
         this.applyPoolDetails(data);
         this.startCountdown();
       });
 
-    this.eventStream
-      .on<{
-        poolSlug: string;
-        pick: { pokemon: League.LeaguePokemon };
-        team: { id: string; name: string; draft: League.LeaguePokemon[] };
-      }>('league.draft.added')
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((data) => {
-        if (this.leagueZoneService.poolSlug() !== data.poolSlug) return;
+    this.on<DraftAddedEvent>('league.draft.added').subscribe((data) => {
+      this.replaceDraft(data.team);
+      this.notificationService.show(
+        `${data.team.name} drafted ${data.pick.pokemon.name}!`,
+        'success',
+      );
+    });
 
-        const team = this.teams.find((team) => team.id === data.team.id);
-        if (team) team.draft = data.team.draft;
-        this.notificationService.show(
-          `${data.team.name} drafted ${data.pick.pokemon.name}!`,
-          'success',
-        );
-      });
+    this.on<DraftTeamEvent>('league.draft.updated').subscribe((data) =>
+      this.replaceDraft(data.team),
+    );
 
-    this.eventStream
-      .on<DraftPickUpdatedEvent>('league.draft.updated')
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((data) => {
-        if (this.leagueZoneService.poolSlug() !== data.poolSlug) return;
+    this.on<DraftCounterEvent>('league.draft.counter').subscribe((data) => {
+      this.currentPick.set(data.currentPick);
+      this.startCountdown();
+    });
 
-        const team = this.teams.find((team) => team.id === data.team.id);
-        if (team) team.draft = data.team.draft;
-      });
+    this.on<DraftStatusEvent>('league.draft.status').subscribe((data) => {
+      this.status.set(data.status);
+      if (data.noTimer !== undefined) this.noTimer.set(data.noTimer);
+      if (data.currentPick) this.currentPick.set(data.currentPick);
+      this.startCountdown();
+      this.notificationService.show(
+        `Draft status: ${STATUS_LABELS[data.status] ?? data.status}`,
+        'info',
+      );
+    });
 
-    this.eventStream
-      .on<DraftCounterEvent>('league.draft.counter')
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((data) => {
-        if (this.leagueZoneService.poolSlug() !== data.poolSlug) return;
-
-        this.currentPick = data.currentPick;
-        this.startCountdown();
-      });
-
-    this.eventStream
-      .on<{
-        poolSlug: string;
-        status: 'PRE_DRAFT' | 'IN_PROGRESS' | 'PAUSED' | 'COMPLETED';
-        noTimer?: boolean;
-        currentPick?: { round: number; position: number; skipTime?: Date };
-      }>('league.draft.status')
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((data) => {
-        if (this.leagueZoneService.poolSlug() !== data.poolSlug) return;
-
-        this.status = data.status;
-        if (data.noTimer !== undefined) this.noTimer = data.noTimer;
-        if (data.currentPick) this.currentPick = data.currentPick;
-        this.startCountdown();
-        this.notificationService.show(`Draft Status: ${data.status}`, 'info');
-      });
+    this.destroyRef.onDestroy(() => this.countdownReset$.next());
   }
 
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
-    this.countdownTick$.next();
-    this.countdownTick$.complete();
+  patch<K extends keyof DraftSettings>(key: K, value: DraftSettings[K]): void {
+    this.pending.update((settings) => ({ ...settings, [key]: value }));
   }
 
-  private startCountdown(): void {
-    this.countdownTick$.next();
-    this.updatePickTimeDisplay();
-    if (!this.currentPick?.skipTime) return;
-
-    interval(this.COUNTDOWN_TICK_MS)
-      .pipe(takeUntil(this.countdownTick$), takeUntil(this.destroy$))
-      .subscribe(() => this.updatePickTimeDisplay());
-  }
-
-  private updatePickTimeDisplay(): void {
-    const skipTime = this.currentPick?.skipTime;
-    if (!skipTime) {
-      this.pickTimeDisplay = null;
-      return;
-    }
-    const diffMs = new Date(skipTime).getTime() - Date.now();
-    this.pickTimeDisplay = diffMs > 0 ? formatCountdown(diffMs) : '0s';
-  }
-
-  get poolSlug(): string | null {
-    return this.leagueZoneService.poolSlug();
-  }
-
-  onPoolSelected(poolSlug: string): void {
-    this.router.navigate([
-      '/leagues',
-      this.leagueZoneService.leagueSlug(),
-      'tournaments',
-      this.leagueZoneService.tournamentSlug(),
-      'manage',
-      'pools',
-      poolSlug,
-      'draft',
-    ]);
-  }
-
-  private resetPendingEdits(): void {
-    this.editingKey = null;
-    this.pendingKey = null;
-    this.orderSaving = false;
-    this.settingsSaving = false;
-    this.testingMessage = false;
-  }
-
-  private applyPoolDetails(data: PoolDetails): void {
-    this.teams = data.teams;
-    this.status = data.status;
-    this.noTimer = data.noTimer;
-    this.sequentialTurns = data.sequentialTurns;
-    this.orderProgression = data.orderProgression;
-    this.roundCount = data.rounds;
-    this.teamOrder = data.teamOrder;
-    this.currentPick = data.currentPick;
-
-    this.useRandomSeeding = data.useRandomSeeding;
-    this.pendingUseRandomSeeding = data.useRandomSeeding;
-    this.pendingOrder = [...data.teamOrder];
-
-    this.poolName = data.poolName;
-    this.channelId = data.channelId;
-    this.picksVisibleTo = data.picksVisibleTo;
-    this.allowDuplicates = data.allowDuplicates;
-    this.allowRemovals = data.allowRemovals;
-
-    this.pendingPoolName = data.poolName;
-    this.pendingChannelId = data.channelId ?? '';
-    this.pendingOrderProgression = data.orderProgression;
-    this.pendingSequentialTurns = data.sequentialTurns;
-    this.pendingPicksVisibleTo = data.picksVisibleTo;
-    this.pendingAllowDuplicates = data.allowDuplicates;
-    this.pendingAllowRemovals = data.allowRemovals;
+  takenIdsFor(turn: DraftTurn): string[] {
+    const teams = this.settings().allowDuplicates ? [turn.team] : this.teams();
+    return teams.flatMap((team) => team.draft.map((pokemon) => pokemon.id));
   }
 
   turnCoach(turn: DraftTurn): string {
@@ -424,193 +362,155 @@ export class LeagueManageDraftComponent implements OnInit, OnDestroy {
     return turn.round <= turn.team.draft.length;
   }
 
+  canMakeCurrent(turn: DraftTurn): boolean {
+    return (
+      this.settings().sequentialTurns &&
+      !turn.pokemon &&
+      turn.state !== 'current'
+    );
+  }
+
   isEditing(turn: DraftTurn): boolean {
-    return this.editingKey === turn.key;
+    return this.editingKey() === turn.key;
   }
 
   isPending(turn: DraftTurn): boolean {
-    return this.pendingKey === turn.key;
+    return this.pendingKey() === turn.key;
   }
 
   startEdit(turn: DraftTurn): void {
-    if (!this.canSetTurn(turn)) return;
-    this.editingKey = turn.key;
+    if (this.canSetTurn(turn)) this.editingKey.set(turn.key);
   }
 
   cancelEdit(): void {
-    this.editingKey = null;
+    this.editingKey.set(null);
+  }
+
+  onPoolSelected(poolSlug: string): void {
+    this.router.navigate([
+      '/',
+      LEAGUE_ZONE_PATH,
+      this.leagueZoneService.leagueSlug(),
+      'tournaments',
+      this.leagueZoneService.tournamentSlug(),
+      LEAGUE_ZONE_MANAGE_PATH,
+      'pools',
+      poolSlug,
+      'draft',
+    ]);
   }
 
   setTurnPick(turn: DraftTurn, pokemon: DraftPokemon): void {
-    if (!pokemon.id || this.pendingKey) return;
-    this.pendingKey = turn.key;
-
-    this.leagueManageService
-      .setRoundPick(turn.team.id, turn.round, { pokemonId: pokemon.id })
-      .pipe(
-        takeUntil(this.destroy$),
-        finalize(() => (this.pendingKey = null)),
-      )
-      .subscribe({
-        next: (data) => {
-          this.applyPoolDetails(data);
-          this.editingKey = null;
-          this.notificationService.show(
-            `Round ${turn.round + 1}: ${turn.team.name} set to ${pokemon.name}.`,
-            'success',
-          );
-        },
-        error: (error) =>
-          this.notificationService.show(
-            `Could not set ${pokemon.name} for ${turn.team.name}. ${this.errorReason(error) ?? ''}`.trim(),
-            'error',
-          ),
-      });
+    if (!pokemon.id) return;
+    this.runTurnAction(
+      turn,
+      this.leagueManageService.setRoundPick(turn.team.id, turn.round, {
+        pokemonId: pokemon.id,
+      }),
+      `Round ${turn.round + 1}: ${turn.team.name} set to ${pokemon.name}.`,
+      `Could not set ${pokemon.name} for ${turn.team.name}.`,
+    );
   }
 
   clearTurnPick(turn: DraftTurn): void {
     const pokemon = turn.pokemon;
-    if (!pokemon?.id || this.pendingKey) return;
-    this.pendingKey = turn.key;
-
-    this.leagueManageService
-      .clearPick(turn.team.id, pokemon.id)
-      .pipe(
-        takeUntil(this.destroy$),
-        finalize(() => (this.pendingKey = null)),
-      )
-      .subscribe({
-        next: (data) => {
-          this.applyPoolDetails(data);
-          this.editingKey = null;
-          this.notificationService.show(
-            `Cleared ${pokemon.name} from ${turn.team.name}.`,
-            'success',
-          );
-        },
-        error: (error) =>
-          this.notificationService.show(
-            `Could not clear ${pokemon.name} from ${turn.team.name}. ${this.errorReason(error) ?? ''}`.trim(),
-            'error',
-          ),
-      });
-  }
-
-  canMakeCurrent(turn: DraftTurn): boolean {
-    return this.sequentialTurns && !turn.pokemon && turn.state !== 'current';
+    if (!pokemon?.id) return;
+    this.runTurnAction(
+      turn,
+      this.leagueManageService.clearPick(turn.team.id, pokemon.id),
+      `Cleared ${pokemon.name} from ${turn.team.name}.`,
+      `Could not clear ${pokemon.name} from ${turn.team.name}.`,
+    );
   }
 
   makeCurrentTurn(turn: DraftTurn): void {
-    if (!this.canMakeCurrent(turn) || this.pendingKey) return;
-    this.pendingKey = turn.key;
-
-    this.leagueManageService
-      .setCurrentPick(turn.round, turn.position)
-      .pipe(
-        takeUntil(this.destroy$),
-        finalize(() => (this.pendingKey = null)),
-      )
-      .subscribe({
-        next: (data) => {
-          this.applyPoolDetails(data);
-          this.editingKey = null;
-          this.notificationService.show(
-            `Draft moved to round ${turn.round + 1}, pick ${turn.position + 1} (${turn.team.name}).`,
-            'success',
-          );
-        },
-        error: (error) =>
-          this.notificationService.show(
-            `Could not move the draft to ${turn.team.name}'s turn. ${this.errorReason(error) ?? ''}`.trim(),
-            'error',
-          ),
-      });
+    if (!this.canMakeCurrent(turn)) return;
+    this.runTurnAction(
+      turn,
+      this.leagueManageService.setCurrentPick(turn.round, turn.position),
+      `Draft moved to round ${turn.round + 1}, pick ${turn.position + 1} (${turn.team.name}).`,
+      `Could not move the draft to ${turn.team.name}'s turn.`,
+    );
   }
 
-  private errorReason(error: unknown): string | undefined {
-    const reason = (
-      error as { error?: { error?: { details?: { reason?: unknown } } } }
-    )?.error?.error?.details?.reason;
-    return typeof reason === 'string' ? reason : undefined;
-  }
-
-  setState(state: string): void {
+  setState(state: 'play' | 'pause'): void {
     this.leagueManageService.setDraftState(state).subscribe();
   }
 
   toggleNoTimer(): void {
-    const noTimer = !this.noTimer;
+    const noTimer = !this.noTimer();
     this.leagueManageService
       .setNoTimer(noTimer)
-      .subscribe(() => (this.noTimer = noTimer));
+      .subscribe(() => this.noTimer.set(noTimer));
   }
 
-  skipNext() {
+  skipNext(): void {
     this.leagueManageService.skipCurrentPick().subscribe();
   }
 
   toggleRandomSeeding(): void {
-    if (!this.canEditOrder) return;
-    this.pendingUseRandomSeeding = !this.pendingUseRandomSeeding;
-    if (!this.pendingUseRandomSeeding && !this.pendingOrder.length) {
-      this.pendingOrder = this.orderedTeams.map((team) => team.id);
+    if (!this.canEditOrder()) return;
+    this.pendingUseRandomSeeding.update((value) => !value);
+    if (!this.pendingUseRandomSeeding() && !this.pendingOrder().length) {
+      this.pendingOrder.set(this.orderedTeams().map((team) => team.id));
     }
   }
 
   dropTeam(event: CdkDragDrop<League.LeagueTeam[]>): void {
-    if (!this.canReorderTeams) return;
-    moveItemInArray(this.pendingOrder, event.previousIndex, event.currentIndex);
+    if (!this.canReorderTeams()) return;
+    this.pendingOrder.update((order) => {
+      const next = [...order];
+      moveItemInArray(next, event.previousIndex, event.currentIndex);
+      return next;
+    });
   }
 
   saveOrder(): void {
-    if (!this.isOrderDirty || this.orderSaving) return;
-    this.orderSaving = true;
+    if (!this.isOrderDirty() || this.orderSaving()) return;
+    this.orderSaving.set(true);
 
+    const useRandomSeeding = this.pendingUseRandomSeeding();
     this.leagueManageService
       .setDraftOrder({
-        useRandomSeeding: this.pendingUseRandomSeeding,
-        order: this.pendingUseRandomSeeding ? undefined : this.pendingOrder,
+        useRandomSeeding,
+        order: useRandomSeeding ? undefined : this.pendingOrder(),
       })
       .pipe(
-        takeUntil(this.destroy$),
-        finalize(() => (this.orderSaving = false)),
+        takeUntilDestroyed(this.destroyRef),
+        finalize(() => this.orderSaving.set(false)),
       )
       .subscribe({
         next: (data) => {
           this.applyPoolDetails(data);
           this.notificationService.show('Draft order saved.', 'success');
         },
-        error: (error) =>
-          this.notificationService.show(
-            `Could not save draft order. ${this.errorReason(error) ?? ''}`.trim(),
-            'error',
-          ),
+        error: (error) => this.showError('Could not save draft order.', error),
       });
   }
 
   saveSettings(): void {
-    if (!this.isSettingsDirty || this.settingsSaving) return;
-    this.settingsSaving = true;
+    if (!this.isSettingsDirty() || this.settingsSaving()) return;
+    this.settingsSaving.set(true);
 
+    const pending = this.pending();
+    const channelId = pending.channelId.trim();
     this.leagueManageService
       .updateDraftSettings({
-        name: this.pendingPoolName,
-        channelId: this.pendingChannelId.trim()
-          ? this.pendingChannelId.trim()
-          : null,
-        picksVisibleTo: this.pendingPicksVisibleTo,
-        allowRemovals: this.pendingAllowRemovals,
-        ...(this.canEditOrder
+        name: pending.name,
+        channelId: channelId || null,
+        picksVisibleTo: pending.picksVisibleTo,
+        allowRemovals: pending.allowRemovals,
+        ...(this.canEditOrder()
           ? {
-              orderProgression: this.pendingOrderProgression,
-              sequentialTurns: this.pendingSequentialTurns,
-              allowDuplicates: this.pendingAllowDuplicates,
+              orderProgression: pending.orderProgression,
+              sequentialTurns: pending.sequentialTurns,
+              allowDuplicates: pending.allowDuplicates,
             }
           : {}),
       })
       .pipe(
-        takeUntil(this.destroy$),
-        finalize(() => (this.settingsSaving = false)),
+        takeUntilDestroyed(this.destroyRef),
+        finalize(() => this.settingsSaving.set(false)),
       )
       .subscribe({
         next: (data) => {
@@ -618,22 +518,19 @@ export class LeagueManageDraftComponent implements OnInit, OnDestroy {
           this.notificationService.show('Draft settings saved.', 'success');
         },
         error: (error) =>
-          this.notificationService.show(
-            `Could not save draft settings. ${this.errorReason(error) ?? ''}`.trim(),
-            'error',
-          ),
+          this.showError('Could not save draft settings.', error),
       });
   }
 
   sendTestMessage(): void {
-    if (!this.channelId || this.testingMessage) return;
-    this.testingMessage = true;
+    if (!this.settings().channelId || this.testingMessage()) return;
+    this.testingMessage.set(true);
 
     this.leagueManageService
       .sendTestMessage()
       .pipe(
-        takeUntil(this.destroy$),
-        finalize(() => (this.testingMessage = false)),
+        takeUntilDestroyed(this.destroyRef),
+        finalize(() => this.testingMessage.set(false)),
       )
       .subscribe({
         next: (data) =>
@@ -644,10 +541,129 @@ export class LeagueManageDraftComponent implements OnInit, OnDestroy {
             data.delivered ? 'success' : 'error',
           ),
         error: (error) =>
-          this.notificationService.show(
-            `Could not send a test message. ${this.errorReason(error) ?? ''}`.trim(),
-            'error',
-          ),
+          this.showError('Could not send a test message.', error),
       });
+  }
+
+  private on<T extends { poolSlug: string }>(event: string): Observable<T> {
+    return this.eventStream.on<T>(event).pipe(
+      filter((data) => this.leagueZoneService.poolSlug() === data.poolSlug),
+      takeUntilDestroyed(this.destroyRef),
+    );
+  }
+
+  private resolveOrder(ids: string[]): League.LeagueTeam[] {
+    const byId = this.teamsById();
+    const ordered = ids
+      .map((teamId) => byId.get(teamId))
+      .filter((team): team is League.LeagueTeam => team !== undefined);
+    return ordered.length ? ordered : this.teams();
+  }
+
+  private turnState(
+    round: number,
+    position: number,
+    pokemon?: League.LeaguePokemon,
+  ): DraftTurn['state'] {
+    if (pokemon) return 'picked';
+    const pick = this.currentPick();
+    if (!this.settings().sequentialTurns || !pick) return 'upcoming';
+    if (pick.round === round && pick.position === position) return 'current';
+    return pick.round > round ||
+      (pick.round === round && pick.position > position)
+      ? 'skipped'
+      : 'upcoming';
+  }
+
+  private replaceDraft(team: DraftTeamEvent['team']): void {
+    this.teams.update((teams) =>
+      teams.map((entry) =>
+        entry.id === team.id ? { ...entry, draft: team.draft } : entry,
+      ),
+    );
+  }
+
+  private runTurnAction(
+    turn: DraftTurn,
+    request: Observable<PoolDetails>,
+    success: string,
+    failure: string,
+  ): void {
+    if (this.pendingKey()) return;
+    this.pendingKey.set(turn.key);
+
+    request
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        finalize(() => this.pendingKey.set(null)),
+      )
+      .subscribe({
+        next: (data) => {
+          this.applyPoolDetails(data);
+          this.editingKey.set(null);
+          this.notificationService.show(success, 'success');
+        },
+        error: (error) => this.showError(failure, error),
+      });
+  }
+
+  private startCountdown(): void {
+    this.countdownReset$.next();
+    this.updatePickTimeDisplay();
+    if (!this.currentPick()?.skipTime) return;
+
+    interval(COUNTDOWN_TICK_MS)
+      .pipe(
+        takeUntil(this.countdownReset$),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe(() => this.updatePickTimeDisplay());
+  }
+
+  private updatePickTimeDisplay(): void {
+    const skipTime = this.currentPick()?.skipTime;
+    if (!skipTime) {
+      this.pickTimeDisplay.set(null);
+      return;
+    }
+    const diffMs = new Date(skipTime).getTime() - Date.now();
+    this.pickTimeDisplay.set(diffMs > 0 ? formatCountdown(diffMs) : '0s');
+  }
+
+  private resetPendingEdits(): void {
+    this.editingKey.set(null);
+    this.pendingKey.set(null);
+    this.orderSaving.set(false);
+    this.settingsSaving.set(false);
+    this.testingMessage.set(false);
+  }
+
+  private applyPoolDetails(data: PoolDetails): void {
+    this.teams.set(data.teams);
+    this.status.set(data.status);
+    this.noTimer.set(data.noTimer);
+    this.roundCount.set(data.rounds);
+    this.teamOrder.set(data.teamOrder);
+    this.currentPick.set(data.currentPick);
+    this.useRandomSeeding.set(data.useRandomSeeding);
+    this.settings.set({
+      name: data.poolName,
+      channelId: data.channelId ?? '',
+      orderProgression: data.orderProgression,
+      sequentialTurns: data.sequentialTurns,
+      picksVisibleTo: data.picksVisibleTo,
+      allowDuplicates: data.allowDuplicates,
+      allowRemovals: data.allowRemovals,
+    });
+  }
+
+  private showError(message: string, error: unknown): void {
+    const reason = (
+      error as { error?: { error?: { details?: { reason?: unknown } } } }
+    )?.error?.error?.details?.reason;
+    this.notificationService.show(
+      typeof reason === 'string' ? `${message} ${reason}` : message,
+      'error',
+    );
   }
 }

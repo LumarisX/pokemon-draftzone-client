@@ -11,15 +11,18 @@
 @use "themes" as pdz-themes;
 @use "tools/typography" as *;
 @use "tools/theme" as *;
+@use "tools/breakpoints" as *;
+
+@mixin -apply-elevation($mode) {
+  @each $level, $value in map.get(shadow-tokens.$elevation, $mode) {
+    --pdz-elevation-#{$level}: #{$value};
+  }
+}
 
 @mixin init-tokens() {
   :root {
-    --pdz-screen-size-medium: #{bp-tokens.$screen-size-medium};
-    --pdz-screen-size-large: #{bp-tokens.$screen-size-large};
-
     --pdz-navbar-height: 3.5rem;
 
-    // Core color palette
     @each $token-name, $token-value in color-tokens.$core-tokens {
       --pdz-color-#{$token-name}: #{$token-value};
       --pdz-color-#{$token-name}-rgb:
@@ -28,22 +31,38 @@
         #{color.channel($token-value, "blue", $space: rgb)};
     }
 
-    // Elevation shadows
-    @each $level, $shadows in shadow-tokens.$shadows {
-      --pdz-level-#{$level}: #{$shadows};
-    }
-
-    // Shape (border-radius)
     @each $name, $value in shape-tokens.$shape {
       --pdz-shape-#{$name}: #{$value};
     }
 
-    // Spacing
     @each $name, $value in spacing-tokens.$spacing {
       --pdz-space-#{$name}: #{$value};
     }
 
-    // Motion
+    @each $name, $value in spacing-tokens.$content-width {
+      --pdz-content-width-#{$name}: #{$value};
+    }
+
+    @each $name, $value in spacing-tokens.$control-height {
+      --pdz-control-height-#{$name}: #{$value};
+    }
+
+    @each $name, $steps in spacing-tokens.$layout {
+      --pdz-layout-#{$name}: var(--pdz-space-#{map.get($steps, base)});
+    }
+
+    @each $breakpoint in map.keys(bp-tokens.$breakpoints) {
+      @include respond-above($breakpoint) {
+        @each $name, $steps in spacing-tokens.$layout {
+          @if map.has-key($steps, $breakpoint) {
+            --pdz-layout-#{$name}: var(
+              --pdz-space-#{map.get($steps, $breakpoint)}
+            );
+          }
+        }
+      }
+    }
+
     @each $name, $value in motion-tokens.$duration {
       --pdz-duration-#{$name}: #{$value};
     }
@@ -51,12 +70,10 @@
       --pdz-easing-#{$name}: #{$value};
     }
 
-    // Stacking layers
     @each $name, $value in z-tokens.$z-layers {
       --pdz-z-#{$name}: #{$value};
     }
 
-    // Typography
     @each $name, $value in type-tokens.$fonts {
       --pdz-font-#{$name}: #{$value};
     }
@@ -70,33 +87,27 @@
       --pdz-line-height-#{$name}: #{$value};
     }
 
-    // Base typography style on :root
     @include text(body, $leading: snug);
 
-    // Default theme (classic light)
     color-scheme: light;
     @include apply-theme(map.get(map.get(pdz-themes.$themes, classic), light));
+    @include -apply-elevation(light);
 
-    // Pre-hydration fallback (OS preference)
     @media (prefers-color-scheme: dark) {
       color-scheme: dark;
       @include apply-theme(map.get(map.get(pdz-themes.$themes, classic), dark));
+      @include -apply-elevation(dark);
     }
 
-    // All theme / mode variants. `color-scheme` is what makes browser-rendered
-    // UI -- date pickers, scrollbars, spin buttons -- follow the active mode
-    // instead of the OS preference.
     @each $theme-name, $variations in pdz-themes.$themes {
       @each $variation-name, $palette in $variations {
         &[pdz-theme="#{$theme-name}"][pdz-theme-mode="#{$variation-name}"] {
           color-scheme: #{$variation-name};
           @include apply-theme($palette);
+          @include -apply-elevation($variation-name);
         }
       }
     }
-
-    // Default color scheme alias
-    @include apply-scheme("menu");
   }
 
   @media (prefers-reduced-motion: reduce) {

@@ -37,7 +37,6 @@ describe('buildHitRegions / queryHitRegion', () => {
     const regions = buildHitRegions(layout, true);
     const match = layout.matches[0];
 
-    // A slot rect sits inside the card rect and is painted after it.
     const slotHit = queryHitRegion(
       match.x + match.w / 2,
       match.slotY[0] + 10,
@@ -46,7 +45,6 @@ describe('buildHitRegions / queryHitRegion', () => {
     expect(slotHit?.kind).toBe('slot');
     expect(slotHit?.slotIndex).toBe(0);
 
-    // The card's label strip (outside slot/delete rects) hits the card itself.
     const cardHit = queryHitRegion(match.x + 30, match.y + 12, regions);
     expect(cardHit?.kind).toBe('match-card');
     expect(cardHit?.matchId).toBe('m1');
@@ -109,7 +107,6 @@ describe('hitTestConnector', () => {
   });
 
   it('tests every segment of a polyline, not just endpoints', () => {
-    // Midway down the vertical segment of connector 1.
     expect(hitTestConnector(50, 100, connectors, 1)).toBe(1);
   });
 

@@ -1,4 +1,4 @@
-<h2>Select Ruleset, Format, and Template prior to proceeding</h2>
+<h2>Select a ruleset, format and template to start</h2>
 <div class="qd-options-bar">
   <pdz-format-select [(ngModel)]="format"></pdz-format-select>
   <pdz-ruleset-select [(ngModel)]="ruleset"></pdz-ruleset-select>
@@ -23,14 +23,23 @@
     </button>
   }
 </div>
-<div
+<pdz-card
+  padding="sm"
   class="custom-button qd-template qd-option"
-  (click)="selectedTemplate = null"
-  [ngClass]="{
-    selected: null == selectedTemplate,
-  }"
+  [selected]="selectedTemplate === null"
 >
-  <div class="button-header">Custom</div>
+  <div class="qd-header">
+    <button
+      pdz-button
+      block
+      variant="ghost"
+      color="neutral"
+      [attr.aria-pressed]="selectedTemplate === null"
+      (click)="selectedTemplate = null"
+    >
+      Custom
+    </button>
+  </div>
   <div
     class="custom-options-container"
     [class.custom-options-container--collapsed]="selectedTemplate !== null"
@@ -59,7 +68,7 @@
       </div>
     </div>
   </div>
-</div>
+</pdz-card>
 <div class="qd-spacer"></div>
 <button
   pdz-button

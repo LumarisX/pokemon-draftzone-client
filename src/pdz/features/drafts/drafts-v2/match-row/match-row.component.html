@@ -12,11 +12,13 @@
     }
   </span>
 
-  @if (logoUrl(); as logo) {
-    <img class="dz-match__logo" alt="" [src]="logo" />
-  } @else {
-    <span class="dz-match__crest" aria-hidden="true">{{ crest() }}</span>
-  }
+  <pdz-team-logo
+    decorative
+    size="md"
+    team="team2"
+    [src]="logoUrl()"
+    [name]="match().teamName"
+  />
 
   <span class="dz-match__who">
     <span class="dz-match__team">{{ match().teamName }}</span>
@@ -114,7 +116,7 @@
           color="primary"
           icon="search_insights"
           [routerLink]="link"
-          >Matchup sheet</a
+          >Matchup Sheet</a
         >
       }
       @if (match().scoreLink; as link) {
@@ -126,7 +128,7 @@
           icon="scoreboard"
           [routerLink]="link"
           [queryParams]="match().actionParams"
-          >{{ match().score ? "Edit score" : "Add score" }}</a
+          >{{ match().score ? "Edit Score" : "Add Score" }}</a
         >
       }
       @if (match().editLink; as link) {
@@ -138,7 +140,7 @@
           icon="edit_document"
           [routerLink]="link"
           [queryParams]="match().actionParams"
-          >Edit opponent</a
+          >Edit Opponent</a
         >
       }
       @if (match().manageable) {

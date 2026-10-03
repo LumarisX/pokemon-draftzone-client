@@ -1,4 +1,3 @@
-import { NgClass } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -17,7 +16,7 @@ type SpritePokemon = Pokemon<DraftOptions>;
 
 @Component({
   selector: 'pdz-sprite-image',
-  imports: [NgClass, TooltipDirective],
+  imports: [TooltipDirective],
   styleUrl: './sprite-image.component.scss',
   templateUrl: './sprite-image.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,

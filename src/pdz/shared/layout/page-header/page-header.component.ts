@@ -6,16 +6,23 @@ import {
 } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
+import { TeamLogoComponent } from '@pdz/shared/images/team-logo/team-logo.component';
 
 export type PageHeaderTone = 'panel' | 'plain';
 
 @Component({
   selector: 'pdz-page-header',
-  imports: [RouterLink, IconComponent],
+  imports: [RouterLink, IconComponent, TeamLogoComponent],
   template: `
     <div class="pdz-page-header__bar">
       @if (logo(); as src) {
-        <img class="pdz-page-header__logo" [src]="src" [alt]="logoAlt()" />
+        <pdz-team-logo
+          class="pdz-page-header__logo"
+          size="lg"
+          decorative
+          [src]="src"
+          [name]="title()"
+        />
       }
 
       <div class="pdz-page-header__text">
@@ -39,6 +46,10 @@ export type PageHeaderTone = 'panel' | 'plain';
         }
       </div>
 
+      <div class="pdz-page-header__center">
+        <ng-content select="[pdz-page-header-center]" />
+      </div>
+
       <div class="pdz-page-header__meta">
         <ng-content select="[pdz-page-header-meta]" />
       </div>
@@ -58,6 +69,7 @@ export type PageHeaderTone = 'panel' | 'plain';
     class: 'pdz-page-header',
     '[attr.data-tone]': 'tone()',
     '[class.pdz-page-header--compact]': 'compact()',
+    '[class.pdz-page-header--wash]': 'wash()',
   },
 })
 export class PageHeaderComponent {
@@ -69,8 +81,8 @@ export class PageHeaderComponent {
   readonly backLabel = input('Back');
 
   readonly logo = input<string>();
-  readonly logoAlt = input('');
 
-  readonly tone = input<PageHeaderTone>('panel');
+  readonly tone = input<PageHeaderTone>('plain');
   readonly compact = input(false, { transform: booleanAttribute });
+  readonly wash = input(false, { transform: booleanAttribute });
 }

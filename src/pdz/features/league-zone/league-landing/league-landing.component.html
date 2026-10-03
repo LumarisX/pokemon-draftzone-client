@@ -1,155 +1,176 @@
-@if (league) {
+@if (league(); as league) {
   <pdz-page width="wide">
-  <div class="landing">
-    <pdz-page-header
-      eyebrow="League"
-      [title]="league.name"
-      [subtitle]="league.description"
-      [logo]="league.logo ? getLogoUrl(league.logo) : undefined"
-      [logoAlt]="league.name + ' logo'"
-    >
-      @if (league.isOwner) {
-        <a
-          pdz-page-header-actions
-          pdz-button
-          icon="edit"
-          color="neutral"
-          variant="tonal"
-          routerLink="edit"
-          >Edit league</a
-        >
-      }
-      @if (league.hosting?.canHost) {
-        <a
-          pdz-page-header-actions
-          pdz-button
-          icon="add"
-          [routerLink]="['tournaments', 'new']"
-          >New tournament</a
-        >
-      }
-    </pdz-page-header>
-
-    <div class="tournaments">
-      <h2 class="tournaments__heading">Tournaments</h2>
-      @if (league.tournaments.length === 0) {
+    <div class="landing">
+      <pdz-page-header
+        eyebrow="League"
+        [title]="league.name"
+        [subtitle]="league.description"
+        [logo]="league.logo ? getLogoUrl(league.logo) : undefined"
+      >
+        @if (league.isOwner) {
+          <a
+            pdz-page-header-actions
+            pdz-button
+            icon="edit"
+            color="neutral"
+            variant="tonal"
+            routerLink="edit"
+            >Edit League</a
+          >
+        }
         @if (league.hosting?.canHost) {
+          <a
+            pdz-page-header-actions
+            pdz-button
+            icon="add"
+            [routerLink]="['tournaments', 'new']"
+            >New Tournament</a
+          >
+        }
+      </pdz-page-header>
+
+      <section class="tournaments" aria-labelledby="tournaments-heading">
+        <h2 class="tournaments__heading" id="tournaments-heading">
+          Tournaments
+        </h2>
+        @if (tournaments().length === 0) {
           <pdz-empty-state
             bordered
             icon="emoji_events"
             heading="No tournaments yet"
-            message="Create the first season to start taking sign-ups."
+            [message]="
+              league.hosting?.canHost
+                ? 'Create the first season to start taking sign-ups.'
+                : 'Check back once the organizers announce a season.'
+            "
           >
-            <a
-              pdz-empty-state-actions
-              pdz-button
-              [routerLink]="['tournaments', 'new']"
-              >New tournament</a
-            >
+            @if (league.hosting?.canHost) {
+              <a
+                pdz-empty-state-actions
+                pdz-button
+                [routerLink]="['tournaments', 'new']"
+                >New Tournament</a
+              >
+            }
           </pdz-empty-state>
         } @else {
-          <p class="tournaments__empty">No tournaments yet.</p>
-        }
-      } @else {
-        <div class="tournaments__list">
-          @for (tournament of league.tournaments; track tournament.tournamentSlug) {
-            <div
-              class="tournament-card"
-              [class.tournament-card--active]="getTournamentStatus(tournament) === 'active'"
-              [class.tournament-card--completed]="getTournamentStatus(tournament) === 'completed'"
-            >
-              <div class="tournament-card__header">
-                @if (tournament.logo) {
-                  <img
-                    [src]="getLogoUrl(tournament.logo)"
-                    [alt]="tournament.name + ' logo'"
-                    class="tournament-card__logo"
-                  />
-                }
-                <div class="tournament-card__title-group">
-                  <h3 class="tournament-card__name">
-                    <a
-                      class="tournament-card__link"
-                      [routerLink]="['tournaments', tournament.tournamentSlug]"
-                    >
-                      {{ tournament.name }}
-                    </a>
-                  </h3>
-                  <span
-                    class="tournament-card__status"
-                    [class.tournament-card__status--active]="getTournamentStatus(tournament) === 'active'"
-                    [class.tournament-card__status--completed]="getTournamentStatus(tournament) === 'completed'"
-                    [class.tournament-card__status--upcoming]="getTournamentStatus(tournament) === 'upcoming'"
-                  >
-                    {{ getTournamentStatus(tournament) | titlecase }}
-                  </span>
-                </div>
-              </div>
-
-              @if (tournament.description) {
-                <p class="tournament-card__description">{{ tournament.description }}</p>
-              }
-
-              <div class="tournament-card__details">
-                @if (tournament.format) {
-                  <div class="tournament-card__detail">
-                    <span class="tournament-card__label">Format</span>
-                    <span class="tournament-card__value">{{ tournament.format }}</span>
-                  </div>
-                }
-                @if (tournament.ruleset) {
-                  <div class="tournament-card__detail">
-                    <span class="tournament-card__label">Ruleset</span>
-                    <span class="tournament-card__value">{{ tournament.ruleset }}</span>
-                  </div>
-                }
-                @if (tournament.seasonStart) {
-                  <div class="tournament-card__detail">
-                    <span class="tournament-card__label">Season</span>
-                    <span class="tournament-card__value">
-                      {{ tournament.seasonStart | date: 'MMM d, y' }}
-                      @if (tournament.seasonEnd) {
-                        &ndash; {{ tournament.seasonEnd | date: 'MMM d, y' }}
+          <div class="tournaments__list">
+            @for (row of tournaments(); track row.tournament.tournamentSlug) {
+              @let tournament = row.tournament;
+              <pdz-card
+                class="tournament"
+                padding="lg"
+                interactive
+                [class.tournament--over]="row.over"
+              >
+                <div class="tournament__header">
+                  @if (tournament.logo) {
+                    <pdz-team-logo
+                      size="xl"
+                      decorative
+                      [src]="getLogoUrl(tournament.logo)"
+                      [name]="tournament.name"
+                    />
+                  }
+                  <div class="tournament__title-group">
+                    <h3 class="tournament__name">
+                      <a
+                        class="tournament__link"
+                        [routerLink]="['tournaments', tournament.tournamentSlug]"
+                      >
+                        {{ tournament.name }}
+                      </a>
+                    </h3>
+                    <span class="tournament__chips">
+                      <pdz-chip size="xs" [tone]="row.status.tone">{{
+                        row.status.label
+                      }}</pdz-chip>
+                      @if (row.signUpOpen) {
+                        <pdz-chip size="xs" tone="primary" icon="how_to_reg"
+                          >Sign-ups open</pdz-chip
+                        >
                       }
                     </span>
                   </div>
+                </div>
+
+                @if (tournament.description) {
+                  <p class="tournament__description">
+                    {{ tournament.description }}
+                  </p>
                 }
-                @if (!isSeasonOver(tournament)) {
-                  <div class="tournament-card__detail">
-                    <span class="tournament-card__label">Sign Up Deadline</span>
-                    <span class="tournament-card__value">
-                      {{ tournament.signUpDeadline | date: 'MMM d, y' }}
-                    </span>
+
+                <dl class="tournament__details">
+                  @if (tournament.format) {
+                    <div class="tournament__detail">
+                      <dt class="tournament__label">Format</dt>
+                      <dd class="tournament__value">{{ tournament.format }}</dd>
+                    </div>
+                  }
+                  @if (tournament.ruleset) {
+                    <div class="tournament__detail">
+                      <dt class="tournament__label">Ruleset</dt>
+                      <dd class="tournament__value">
+                        {{ tournament.ruleset }}
+                      </dd>
+                    </div>
+                  }
+                  @if (tournament.seasonStart) {
+                    <div class="tournament__detail">
+                      <dt class="tournament__label">Season</dt>
+                      <dd class="tournament__value">
+                        {{ tournament.seasonStart | date: "MMM d, y" }}
+                        @if (tournament.seasonEnd) {
+                          &ndash; {{ tournament.seasonEnd | date: "MMM d, y" }}
+                        }
+                      </dd>
+                    </div>
+                  }
+                  @if (!row.over) {
+                    <div class="tournament__detail">
+                      <dt class="tournament__label">Sign-up deadline</dt>
+                      <dd class="tournament__value">
+                        {{ tournament.signUpDeadline | date: "MMM d, y" }}
+                      </dd>
+                    </div>
+                  }
+                </dl>
+
+                @if (tournament.discord) {
+                  <div class="tournament__actions">
+                    <a
+                      pdz-button
+                      size="sm"
+                      variant="outlined"
+                      color="neutral"
+                      class="tournament__discord"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      [href]="'https://discord.gg/' + tournament.discord"
+                    >
+                      <pdz-icon name="discord" [size]="16" />
+                      Discord
+                    </a>
                   </div>
                 }
-              </div>
-
-              <div class="tournament-card__actions">
-                @if (isSignUpOpen(tournament)) {
-                  <span class="tournament-card__badge tournament-card__badge--signup">
-                    Sign Ups Open
-                  </span>
-                }
-                @if (tournament.discord) {
-                  <a
-                    [href]="'https://discord.gg/' + tournament.discord"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    class="tournament-card__discord"
-                  >
-                    Discord
-                  </a>
-                }
-              </div>
-            </div>
-          }
-        </div>
-      }
+              </pdz-card>
+            }
+          </div>
+        }
+      </section>
     </div>
-  </div>
+  </pdz-page>
+} @else if (league() === null) {
+  <pdz-page width="wide">
+    <pdz-empty-state
+      bordered
+      icon="error"
+      heading="Could not load this league"
+      message="Refresh the page to try again."
+    />
   </pdz-page>
 } @else {
   <div class="loading-state">
-    <pdz-loading></pdz-loading>
+    <pdz-loading />
   </div>
 }

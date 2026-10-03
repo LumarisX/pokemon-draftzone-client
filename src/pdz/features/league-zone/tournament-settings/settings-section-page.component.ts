@@ -90,7 +90,7 @@ export class SettingsSectionPageComponent {
         `Save ${this.section().label}?`,
         {
           message: risk.because,
-          confirmLabel: 'Save anyway',
+          confirmLabel: 'Save Anyway',
           confirmColor: 'danger',
         },
       );

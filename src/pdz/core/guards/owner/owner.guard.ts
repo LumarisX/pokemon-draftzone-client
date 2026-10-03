@@ -48,16 +48,9 @@ export class OwnerGuard implements CanActivate {
           return of(false);
         }
         return this.ownershipService.checkMatchupOwnership(matchupId).pipe(
-          map((isOwner) => {
-            if (isOwner) {
-              return true;
-            } else {
-              console.log(
-                `User not owner of matchup ${matchupId}. Redirecting to shared view.`,
-              );
-              return this.router.createUrlTree(['/matchup', matchupId]);
-            }
-          }),
+          map((isOwner) =>
+            isOwner ? true : this.router.createUrlTree(['/matchup', matchupId]),
+          ),
           catchError((error) => {
             console.error('Error checking ownership:', error);
             return of(this.router.createUrlTree(['/matchup', matchupId]));

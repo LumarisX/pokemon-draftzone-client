@@ -74,7 +74,7 @@ export class TooltipComponent {
       if (element.matches(':popover-open')) element.hidePopover();
       element.showPopover();
     } catch {
-      /* empty */
+      return;
     }
   }
 
@@ -83,7 +83,7 @@ export class TooltipComponent {
     try {
       if (element.matches(':popover-open')) element.hidePopover();
     } catch {
-      /* empty */
+      return;
     }
   }
 }

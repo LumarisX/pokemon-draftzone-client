@@ -15,7 +15,7 @@
     size="sm"
     variant="ghost"
     color="neutral"
-    aria-label="Showdown export"
+    aria-label="Showdown Export"
     [class.tb__action--active]="panel() === 'export'"
     [attr.aria-pressed]="panel() === 'export'"
     (click)="toggleExport()"
@@ -77,7 +77,7 @@
 <div class="tb__body">
   @switch (panel()) {
     @case ("export") {
-      <label pdz-field label="Showdown export" class="tb__export">
+      <label pdz-field label="Showdown Export" class="tb__export">
         <textarea
           pdz-input
           rows="16"

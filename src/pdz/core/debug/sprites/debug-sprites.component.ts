@@ -12,6 +12,7 @@ import { ChoiceDirective } from '@pdz/shared/inputs/choice/choice.directive';
 import { FieldComponent } from '@pdz/shared/inputs/field/field.component';
 import { InputDirective } from '@pdz/shared/inputs/field/input.directive';
 import { PageComponent } from '@pdz/shared/layout/page/page.component';
+import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
 import { SegmentedComponent } from '@pdz/shared/inputs/segmented/segmented.component';
 import { SegmentedOptionComponent } from '@pdz/shared/inputs/segmented/segmented-option.component';
 
@@ -25,6 +26,7 @@ type Filter = 'all' | 'fallback' | 'missing';
   imports: [
     SpriteImageComponent,
     PageComponent,
+    PageHeaderComponent,
     ChoiceDirective,
     CheckComponent,
     FieldComponent,

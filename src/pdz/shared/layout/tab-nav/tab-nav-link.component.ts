@@ -19,7 +19,6 @@ import { RouterLinkActive } from '@angular/router';
   },
 })
 export class TabNavLinkComponent {
-  /** Marks the link active when it isn't a `routerLink` (e.g. a menu trigger). */
   active = input(false, { transform: booleanAttribute });
 
   private readonly linkActive = inject(RouterLinkActive, {

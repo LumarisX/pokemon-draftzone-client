@@ -1,22 +1,27 @@
-import { CommonModule } from '@angular/common';
 import {
   AfterViewInit,
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
   ElementRef,
-  EventEmitter,
-  Input,
   NgZone,
   OnChanges,
   OnDestroy,
-  Output,
   SimpleChanges,
-  ViewChild,
+  booleanAttribute,
   inject,
+  input,
+  output,
+  viewChild,
 } from '@angular/core';
+import { getLogoUrl } from '@pdz/features/league-zone/league.util';
+import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
+import { DialogService } from '@pdz/shared/dialogs/dialog/dialog.service';
+import { SelectOptionComponent } from '@pdz/shared/dropdowns/select/select-option.component';
+import { SelectComponent } from '@pdz/shared/dropdowns/select/select.component';
+import { FieldComponent } from '@pdz/shared/inputs/field/field.component';
+import { InputDirective } from '@pdz/shared/inputs/field/input.directive';
 import { select, zoom, zoomIdentity, type ZoomBehavior } from 'd3';
-import { getLogoUrl } from '../../league.util';
 import {
   GeneratedBracket,
   addMatchToRound,
@@ -48,8 +53,6 @@ import {
   MATCH_GAP,
   computeBracketLayout,
 } from './bracket-layout';
-import { SelectOptionComponent } from '@pdz/shared/dropdowns/select/select-option.component';
-import { SelectComponent } from '@pdz/shared/dropdowns/select/select.component';
 import { BracketTheme, resolveBracketTheme } from './bracket-theme-colors';
 import {
   MAX_SCALE,
@@ -58,7 +61,6 @@ import {
   screenToWorld,
   worldToScreen,
 } from './bracket-transform';
-import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 
 const EMPTY_LAYOUT: CanvasLayout = {
   width: 0,
@@ -71,10 +73,17 @@ const EMPTY_LAYOUT: CanvasLayout = {
   addRoundButtons: [],
 };
 
-/** Screen-pixel movement before a pointerdown on a card becomes a drag. */
 const DRAG_THRESHOLD = 5;
 
 type SlotMode = 'empty' | 'seed' | 'winner' | 'loser';
+
+type ZoomEvent = {
+  type: string;
+  button?: number;
+  clientX?: number;
+  clientY?: number;
+  touches?: TouchList;
+};
 
 interface EditorSlot {
   mode: SlotMode;
@@ -124,21 +133,14 @@ interface PointerSession {
   } | null;
 }
 
-/**
- * Canvas-based bracket renderer with pan/zoom.
- *
- * Read-only mode: bind `bracketData`.
- *
- * Edit mode (`editable`): the component owns a local draft of the bracket
- * wiring — add/move/delete matches, rewire slots, rename rounds, add sections.
- * Nothing leaves the component until the user hits Save, which emits the whole
- * draft as one `saveRequested` event. Bind `teams` for seed resolution and
- * optionally `initialMatches`/`initialSections` to edit an existing bracket.
- */
 @Component({
   selector: 'pdz-league-bracket-canvas',
-  imports: [CommonModule, SelectComponent, SelectOptionComponent,
+  imports: [
     ButtonComponent,
+    FieldComponent,
+    InputDirective,
+    SelectComponent,
+    SelectOptionComponent,
   ],
   templateUrl: './league-bracket-canvas.component.html',
   styleUrl: './league-bracket-canvas.component.scss',
@@ -147,39 +149,28 @@ interface PointerSession {
 export class LeagueBracketCanvasComponent
   implements OnChanges, AfterViewInit, OnDestroy
 {
-  @Input() componentTitle: string = 'Playoff Bracket';
-  /** Read-only bracket to display (ignored in edit mode). */
-  @Input() bracketData?: FlexBracketData;
-  /** Enables the organizer bracket builder. */
-  @Input() editable = false;
-  /** Edit mode: participating teams, in seed order (index 0 = seed 1). */
-  @Input() teams: BracketTeamFlex[] = [];
-  /**
-   * Edit mode: how many seeds exist when team identities are hidden
-   * (certified-random seeding). Ignored when `teams` is non-empty.
-   */
-  @Input() seedCount?: number;
-  /** Edit mode: seeds the draft. Changing identity resets any unsaved work. */
-  @Input() initialMatches?: FlexBracketMatch[];
-  @Input() initialSections?: FlexBracketSectionConfig[];
+  readonly componentTitle = input('Playoff Bracket');
+  readonly bracketData = input<FlexBracketData>();
+  readonly editable = input(false, { transform: booleanAttribute });
+  readonly teams = input<BracketTeamFlex[]>([]);
+  readonly seedCount = input<number>();
+  readonly initialMatches = input<FlexBracketMatch[]>();
+  readonly initialSections = input<FlexBracketSectionConfig[]>();
 
-  /** Emits the complete draft (matches + sections) when the user hits Save. */
-  @Output() saveRequested = new EventEmitter<GeneratedBracket>();
-  /**
-   * Emits after every draft mutation. Lets the host track hand edits so it can
-   * append to the live draft (rather than clobber it) when it pushes new
-   * `initialMatches`.
-   */
-  @Output() draftChanged = new EventEmitter<GeneratedBracket>();
+  readonly saveRequested = output<GeneratedBracket>();
+  readonly draftChanged = output<GeneratedBracket>();
 
-  @ViewChild('host') private hostRef!: ElementRef<HTMLElement>;
-  @ViewChild('canvasEl') private canvasRef!: ElementRef<HTMLCanvasElement>;
-  @ViewChild('titleInput') private titleInputRef?: ElementRef<HTMLInputElement>;
-  @ViewChild('sectionInput')
-  private sectionInputRef?: ElementRef<HTMLInputElement>;
+  private readonly hostRef = viewChild.required<ElementRef<HTMLElement>>('host');
+  private readonly canvasRef =
+    viewChild.required<ElementRef<HTMLCanvasElement>>('canvasEl');
+  private readonly titleInputRef =
+    viewChild<ElementRef<HTMLInputElement>>('titleInput');
+  private readonly sectionInputRef =
+    viewChild<ElementRef<HTMLInputElement>>('sectionInput');
 
   private readonly ngZone = inject(NgZone);
   private readonly cdr = inject(ChangeDetectorRef);
+  private readonly dialogs = inject(DialogService);
 
   hostHeight = 420;
   matchEditor: MatchEditor | null = null;
@@ -209,13 +200,13 @@ export class LeagueBracketCanvasComponent
   private themeObserver?: MutationObserver;
   private readonly images = new Map<string, HTMLImageElement | null>();
 
-  // ─── Lifecycle ──────────────────────────────────────────────────────────────
-
   ngOnChanges(changes: SimpleChanges): void {
     if (changes['initialMatches'] || changes['initialSections']) {
-      this.draftMatches = this.initialMatches ? [...this.initialMatches] : [];
-      this.draftSections = this.initialSections?.length
-        ? [...this.initialSections]
+      const matches = this.initialMatches();
+      const sections = this.initialSections();
+      this.draftMatches = matches ? [...matches] : [];
+      this.draftSections = sections?.length
+        ? [...sections]
         : [{ key: 'main', order: 0 }];
     }
     this.recomputeLayout();
@@ -223,7 +214,7 @@ export class LeagueBracketCanvasComponent
   }
 
   ngAfterViewInit(): void {
-    this.ctx = this.canvasRef.nativeElement.getContext('2d');
+    this.ctx = this.canvas.getContext('2d');
     this.theme = resolveBracketTheme();
 
     this.ngZone.runOutsideAngular(() => {
@@ -231,7 +222,6 @@ export class LeagueBracketCanvasComponent
       this.setupThemeObserver();
       this.setupZoom();
       this.setupPointerHandlers();
-      // Repaint once web fonts (Nasalization RG, Nunito) finish loading.
       document.fonts?.ready.then(() => this.scheduleRender());
       this.resizeCanvas();
       this.autoFitIfPending();
@@ -246,22 +236,22 @@ export class LeagueBracketCanvasComponent
     this.themeObserver?.disconnect();
   }
 
-  // ─── Draft state ────────────────────────────────────────────────────────────
+  private get canvas(): HTMLCanvasElement {
+    return this.canvasRef().nativeElement;
+  }
 
   private effectiveData(): FlexBracketData | undefined {
-    if (this.editable) {
+    if (this.editable()) {
       return {
         format: 'custom',
-        teams: this.teams ?? [],
+        teams: this.teams() ?? [],
         matches: this.draftMatches,
         sections: this.draftSections,
       };
     }
-    return this.bracketData;
+    return this.bracketData();
   }
 
-  /** Applies a draft mutation from a pointer handler: re-enters the zone so
-   *  template bindings (hostHeight, overlays) update, then repaints. */
   private applyDraft(mutate: () => void): void {
     this.ngZone.run(() => {
       mutate();
@@ -290,40 +280,41 @@ export class LeagueBracketCanvasComponent
     });
   }
 
-  /** Wipes the draft back to a single empty section — a from-scratch canvas. */
-  clearDraft(): void {
+  async clearDraft(): Promise<void> {
     if (this.draftMatches.length === 0 && this.draftSections.length <= 1) {
       return;
     }
-    if (
-      !confirm(
-        'Clear the entire bracket? All matchups, rounds, and sections will be removed.',
-      )
-    ) {
-      return;
-    }
-    this.draftMatches = [];
-    this.draftSections = [{ key: 'main', order: 0 }];
-    this.recomputeLayout();
-    this.emitDraft();
-    this.scheduleRender();
+    const confirmed = await this.dialogs.confirm('Clear the entire bracket?', {
+      message: 'All matchups, rounds, and sections will be removed.',
+      confirmLabel: 'Clear',
+      confirmColor: 'danger',
+    });
+    if (!confirmed) return;
+    this.applyDraft(() => {
+      this.draftMatches = [];
+      this.draftSections = [{ key: 'main', order: 0 }];
+    });
   }
 
-  // ─── Layout / render pipeline ──────────────────────────────────────────────
+  private async confirmDeleteMatch(matchId: string): Promise<void> {
+    const confirmed = await this.dialogs.confirm('Delete this match?', {
+      message: 'Any slot pointing to it will become unassigned.',
+      confirmLabel: 'Delete',
+      confirmColor: 'danger',
+    });
+    if (!confirmed) return;
+    this.applyDraft(() => {
+      this.draftMatches = deleteMatch(this.draftMatches, matchId);
+    });
+  }
 
   private recomputeLayout(): void {
     const data = this.effectiveData();
-    this.layout = data
-      ? computeBracketLayout(data, this.editable)
-      : EMPTY_LAYOUT;
-    this.hitRegions = buildHitRegions(this.layout, this.editable);
-    // Give the builder generous working room; both modes may grow with the
-    // bracket up to most of the viewport instead of a hard 720px cap.
-    const minHeight = this.editable ? 560 : 420;
-    const maxHeight = Math.max(
-      minHeight,
-      Math.round(window.innerHeight * 0.8),
-    );
+    const editable = this.editable();
+    this.layout = data ? computeBracketLayout(data, editable) : EMPTY_LAYOUT;
+    this.hitRegions = buildHitRegions(this.layout, editable);
+    const minHeight = editable ? 560 : 420;
+    const maxHeight = Math.max(minHeight, Math.round(window.innerHeight * 0.8));
     this.hostHeight = Math.max(
       minHeight,
       Math.min(this.layout.height + 48, maxHeight),
@@ -359,7 +350,7 @@ export class LeagueBracketCanvasComponent
       dpr: this.dpr,
       viewWidth: this.viewW,
       viewHeight: this.viewH,
-      editable: this.editable,
+      editable: this.editable(),
       state: this.state,
       resolveImage: this.resolveImage,
     });
@@ -381,11 +372,8 @@ export class LeagueBracketCanvasComponent
     return null;
   };
 
-  // ─── Canvas sizing ─────────────────────────────────────────────────────────
-
   private setupResizeObserver(): void {
     this.resizeObserver = new ResizeObserver(() => {
-      // Coalesce bursts to one resize per frame.
       if (this.resizeRaf) return;
       this.resizeRaf = requestAnimationFrame(() => {
         this.resizeRaf = 0;
@@ -394,12 +382,12 @@ export class LeagueBracketCanvasComponent
         this.drawFrame();
       });
     });
-    this.resizeObserver.observe(this.hostRef.nativeElement);
+    this.resizeObserver.observe(this.hostRef().nativeElement);
   }
 
   private resizeCanvas(): void {
-    const host = this.hostRef.nativeElement;
-    const canvas = this.canvasRef.nativeElement;
+    const host = this.hostRef().nativeElement;
+    const canvas = this.canvas;
     this.viewW = host.clientWidth;
     this.viewH = host.clientHeight;
     this.dpr = window.devicePixelRatio || 1;
@@ -408,8 +396,6 @@ export class LeagueBracketCanvasComponent
     canvas.style.width = `${this.viewW}px`;
     canvas.style.height = `${this.viewH}px`;
   }
-
-  // ─── Theming ───────────────────────────────────────────────────────────────
 
   private setupThemeObserver(): void {
     this.themeObserver = new MutationObserver(() => {
@@ -422,21 +408,15 @@ export class LeagueBracketCanvasComponent
     });
   }
 
-  // ─── Zoom / pan ────────────────────────────────────────────────────────────
-
   private setupZoom(): void {
-    const canvas = this.canvasRef.nativeElement;
-
     this.zoomBehavior = zoom<HTMLCanvasElement, unknown>()
       .scaleExtent([MIN_SCALE, MAX_SCALE])
-      .filter((event: any) => {
-        // Mirror d3's default gating (primary button, allow ctrl+wheel pinch).
+      .filter((event: ZoomEvent) => {
         if (event.type === 'wheel') return true;
         if (event.button) return false;
         const region = this.regionAtEvent(event);
         if (!region) return true;
-        // Read-only cards aren't interactive, so panning may start on them.
-        return !this.editable && region.kind === 'match-card';
+        return !this.editable() && region.kind === 'match-card';
       })
       .on('zoom', (event) => {
         this.transform = {
@@ -444,8 +424,6 @@ export class LeagueBracketCanvasComponent
           y: event.transform.y,
           k: event.transform.k,
         };
-        // Anchored overlays live in screen space; close rather than chase the
-        // gesture. (The match editor is a centered modal — it stays open.)
         if (this.replayOverlay || this.titleOverlay) {
           this.ngZone.run(() => {
             this.replayOverlay = null;
@@ -456,13 +434,13 @@ export class LeagueBracketCanvasComponent
         this.scheduleRender();
       });
 
-    select(canvas).call(this.zoomBehavior).on('dblclick.zoom', null);
+    select(this.canvas).call(this.zoomBehavior).on('dblclick.zoom', null);
   }
 
   private applyTransform(t: BracketViewTransform): void {
     this.transform = t;
     if (this.zoomBehavior) {
-      select(this.canvasRef.nativeElement).call(
+      select(this.canvas).call(
         this.zoomBehavior.transform,
         zoomIdentity.translate(t.x, t.y).scale(t.k),
       );
@@ -476,26 +454,20 @@ export class LeagueBracketCanvasComponent
     );
   }
 
-  private regionAtEvent(event: {
-    clientX?: number;
-    clientY?: number;
-    touches?: TouchList;
-  }): HitRegion | null {
-    const p = event.touches?.[0] ?? (event as { clientX: number; clientY: number });
-    if (p.clientX === undefined) return null;
-    const rect = this.canvasRef.nativeElement.getBoundingClientRect();
+  private regionAtEvent(event: ZoomEvent): HitRegion | null {
+    const point = event.touches?.[0] ?? event;
+    if (point.clientX === undefined || point.clientY === undefined) return null;
+    const rect = this.canvas.getBoundingClientRect();
     const w = screenToWorld(
-      p.clientX - rect.left,
-      p.clientY! - rect.top,
+      point.clientX - rect.left,
+      point.clientY - rect.top,
       this.transform,
     );
     return queryHitRegion(w.x, w.y, this.hitRegions);
   }
 
-  // ─── Pointer interactions ──────────────────────────────────────────────────
-
   private setupPointerHandlers(): void {
-    const canvas = this.canvasRef.nativeElement;
+    const canvas = this.canvas;
     canvas.addEventListener('pointerdown', this.onPointerDown);
     canvas.addEventListener('pointermove', this.onPointerMove);
     canvas.addEventListener('pointerup', this.onPointerUp);
@@ -504,7 +476,7 @@ export class LeagueBracketCanvasComponent
   }
 
   private toWorld(event: PointerEvent): { x: number; y: number } {
-    const rect = this.canvasRef.nativeElement.getBoundingClientRect();
+    const rect = this.canvas.getBoundingClientRect();
     return screenToWorld(
       event.clientX - rect.left,
       event.clientY - rect.top,
@@ -517,7 +489,7 @@ export class LeagueBracketCanvasComponent
     const w = this.toWorld(event);
     const region = queryHitRegion(w.x, w.y, this.hitRegions);
     if (!region) return;
-    if (!this.editable && region.kind === 'match-card') return; // pan territory
+    if (!this.editable() && region.kind === 'match-card') return;
     this.pointer = {
       pointerId: event.pointerId,
       startScreenX: event.clientX,
@@ -536,7 +508,7 @@ export class LeagueBracketCanvasComponent
     if (this.pointer && this.pointer.pointerId === event.pointerId) {
       const session = this.pointer;
       const canDrag =
-        this.editable &&
+        this.editable() &&
         (session.region.kind === 'match-card' ||
           session.region.kind === 'slot') &&
         session.region.matchId !== undefined;
@@ -548,7 +520,7 @@ export class LeagueBracketCanvasComponent
         );
         if (dist > DRAG_THRESHOLD) {
           session.dragging = true;
-          this.canvasRef.nativeElement.setPointerCapture(event.pointerId);
+          this.canvas.setPointerCapture(event.pointerId);
           this.setCursor('grabbing');
         }
       }
@@ -584,7 +556,7 @@ export class LeagueBracketCanvasComponent
     if (!session || session.pointerId !== event.pointerId) return;
 
     if (session.dragging) {
-      this.canvasRef.nativeElement.releasePointerCapture(event.pointerId);
+      this.canvas.releasePointerCapture(event.pointerId);
       const target = session.dropTarget;
       this.state = { ...this.state, drag: null };
       this.setCursor('');
@@ -604,28 +576,14 @@ export class LeagueBracketCanvasComponent
       return;
     }
 
-    // Plain click: dispatch by the region under the pointer now.
     const w = this.toWorld(event);
     const region = queryHitRegion(w.x, w.y, this.hitRegions);
-    if (!region || !this.editable) return;
+    if (!region || !this.editable()) return;
 
     switch (region.kind) {
       case 'delete-icon': {
         const matchId = region.matchId!;
-        this.ngZone.run(() => {
-          if (
-            !confirm(
-              'Delete this match? Any slot pointing to it will become unassigned.',
-            )
-          ) {
-            return;
-          }
-          this.draftMatches = deleteMatch(this.draftMatches, matchId);
-          this.recomputeLayout();
-          this.emitDraft();
-          this.cdr.markForCheck();
-        });
-        this.scheduleRender();
+        this.ngZone.run(() => void this.confirmDeleteMatch(matchId));
         break;
       }
       case 'add-match-btn':
@@ -658,16 +616,12 @@ export class LeagueBracketCanvasComponent
   };
 
   private readonly onPointerLeave = (): void => {
-    if (this.pointer?.dragging) return; // pointer capture keeps the drag alive
+    if (this.pointer?.dragging) return;
     this.clearHover();
   };
 
-  // ─── Hover ─────────────────────────────────────────────────────────────────
-
   private updateHover(wx: number, wy: number): void {
     const region = queryHitRegion(wx, wy, this.hitRegions);
-    // Cards and buttons take priority; only probe connector lines on empty
-    // canvas. Tolerance is ~7 screen px regardless of zoom.
     const hoveredConnectorIndex = region
       ? null
       : hitTestConnector(wx, wy, this.layout.connectors, 7 / this.transform.k);
@@ -723,11 +677,12 @@ export class LeagueBracketCanvasComponent
 
   private cursorFor(region: HitRegion | null): string {
     if (!region) return '';
+    const editable = this.editable();
     switch (region.kind) {
       case 'match-card':
-        return this.editable ? 'grab' : '';
+        return editable ? 'grab' : '';
       case 'round-title':
-        return this.editable ? 'text' : '';
+        return editable ? 'text' : '';
       case 'edit-icon':
       case 'delete-icon':
       case 'add-match-btn':
@@ -739,15 +694,11 @@ export class LeagueBracketCanvasComponent
   }
 
   private setCursor(cursor: string): void {
-    this.canvasRef.nativeElement.style.cursor = cursor;
+    this.canvas.style.cursor = cursor;
   }
 
-  /**
-   * Keeps a real <a> positioned over the hovered replay pill so native link
-   * behaviors (middle-click, ctrl+click, status bar, new tab) keep working.
-   */
   private syncReplayOverlay(region: HitRegion | null): void {
-    const wantsOverlay = !this.editable && region?.kind === 'replay-link';
+    const wantsOverlay = !this.editable() && region?.kind === 'replay-link';
     if (!wantsOverlay) {
       if (this.replayOverlay) {
         this.ngZone.run(() => {
@@ -777,8 +728,6 @@ export class LeagueBracketCanvasComponent
     this.clearHover();
   }
 
-  // ─── Drag drop-target resolution ───────────────────────────────────────────
-
   private findDropTarget(
     wx: number,
     wy: number,
@@ -790,8 +739,6 @@ export class LeagueBracketCanvasComponent
     insertX: number;
     targetRowY: number;
   } | null {
-    // Every card shares the same height (it depends only on whether teams are
-    // bound, not on round), so any laid-out match gives the current row height.
     const rowH = this.layout.matches[0]?.h ?? 0;
     for (const section of this.layout.sections) {
       if (
@@ -841,14 +788,13 @@ export class LeagueBracketCanvasComponent
     return null;
   }
 
-  // ─── Match editor dialog ───────────────────────────────────────────────────
-
   private openMatchEditor(matchId: string): void {
     const match = this.draftMatches.find((m) => m.id === matchId);
     if (!match) return;
 
-    const seedTotal = Math.max(this.teams?.length ?? 0, this.seedCount ?? 0);
-    const teamBySeed = new Map((this.teams ?? []).map((t) => [t.seed, t]));
+    const teams = this.teams() ?? [];
+    const seedTotal = Math.max(teams.length, this.seedCount() ?? 0);
+    const teamBySeed = new Map(teams.map((t) => [t.seed, t]));
     const seedOptions = Array.from({ length: seedTotal }, (_, i) => {
       const seed = i + 1;
       const team = teamBySeed.get(seed);
@@ -956,8 +902,6 @@ export class LeagueBracketCanvasComponent
     this.matchEditor = null;
   }
 
-  // ─── Round-title editing ───────────────────────────────────────────────────
-
   private openTitleOverlay(region: HitRegion): void {
     const section = this.layout.sections.find(
       (s) => s.key === region.section,
@@ -981,7 +925,7 @@ export class LeagueBracketCanvasComponent
       this.cdr.markForCheck();
     });
     setTimeout(() => {
-      const el = this.titleInputRef?.nativeElement;
+      const el = this.titleInputRef()?.nativeElement;
       el?.focus();
       el?.select();
     });
@@ -1004,7 +948,6 @@ export class LeagueBracketCanvasComponent
     if (title) {
       titles[overlay.round] = title;
     } else {
-      // Clearing the input reverts to the automatic title.
       delete titles[overlay.round];
     }
     cfg.roundTitles = titles;
@@ -1020,12 +963,10 @@ export class LeagueBracketCanvasComponent
     this.titleOverlay = null;
   }
 
-  // ─── Section creation ──────────────────────────────────────────────────────
-
   toggleSectionPrompt(): void {
     this.sectionPromptOpen = !this.sectionPromptOpen;
     if (this.sectionPromptOpen) {
-      setTimeout(() => this.sectionInputRef?.nativeElement?.focus());
+      setTimeout(() => this.sectionInputRef()?.nativeElement?.focus());
     }
   }
 

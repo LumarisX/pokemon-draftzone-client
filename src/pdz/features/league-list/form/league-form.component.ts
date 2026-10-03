@@ -12,6 +12,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
+import { LEAGUE_ADS_PATH } from '@pdz/core/route-paths';
 import { DataService } from '@pdz/core/services/data.service';
 import { SelectOptionComponent } from '@pdz/shared/dropdowns/select/select-option.component';
 import { SelectComponent } from '@pdz/shared/dropdowns/select/select.component';
@@ -21,6 +22,7 @@ import { FieldErrorDirective } from '@pdz/shared/inputs/field/field-message.dire
 import { FieldComponent } from '@pdz/shared/inputs/field/field.component';
 import { InputDirective } from '@pdz/shared/inputs/field/input.directive';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
+import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
 import { DEFAULT_RULESET } from '@pdz/core/rulesets';
 
 @Component({
@@ -38,6 +40,7 @@ import { DEFAULT_RULESET } from '@pdz/core/rulesets';
     InputDirective,
     FieldErrorDirective,
     ButtonComponent,
+    PageHeaderComponent,
   ],
 })
 export class LeagueFormComponent implements OnInit {
@@ -115,7 +118,6 @@ export class LeagueFormComponent implements OnInit {
       seasonEnd: [''],
     });
 
-    // Initialize platforms array with defaults
     this.initializePlatformsArray();
   }
 
@@ -202,7 +204,7 @@ export class LeagueFormComponent implements OnInit {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: () => {
-          this.router.navigate(['/league-list/manage']);
+          this.router.navigate(['/', LEAGUE_ADS_PATH, 'manage']);
         },
         error: (error) => {
           console.error('Error submitting league ad:', error);

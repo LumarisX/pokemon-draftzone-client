@@ -3,7 +3,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SwapOpponentButton } from '@pdz/shared/buttons/swap-opponent/swap-opponent.component';
 import { SlideToggleComponent } from '@pdz/shared/inputs/slide-toggle/slide-toggle.component';
 import { WidgetComponent } from '@pdz/shared/layout/widget/widget.component';
-import { CoverageChart, TypeChart } from '../../matchup-interface';
+import { CoverageChart, TypeChart } from '@pdz/features/drafts/matchup-overview/matchup-interface';
 import { CoverageComponent } from './coverage/coverage.component';
 
 @Component({

@@ -70,7 +70,7 @@ export class ToastHostComponent {
       if (element.parentElement !== parent) parent.appendChild(element);
       element.showPopover();
     } catch {
-      /* empty */
+      return;
     }
   }
 

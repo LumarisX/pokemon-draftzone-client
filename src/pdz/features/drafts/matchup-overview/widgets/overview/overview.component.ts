@@ -1,76 +1,96 @@
-import { CommonModule } from '@angular/common';
-import { Component, Input } from '@angular/core';
+import { NgTemplateOutlet } from '@angular/common';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  input,
+  signal,
+} from '@angular/core';
+import {
+  Summary,
+  SummaryPokemon,
+} from '@pdz/features/drafts/matchup-overview/matchup-interface';
+import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 import { CardComponent } from '@pdz/shared/data/card/card.component';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
-import { compare } from '@pdz/core/utils';
-import { Summary } from '../../matchup-interface';
 import { TooltipDirective } from '@pdz/shared/tooltip/tooltip.directive';
-import { BehaviorSubject } from 'rxjs';
-import { DraftPokemon } from '../../../draft.model';
-import { StatsTable } from '@pdz/shared/data';
+
+type SortKey = 'name' | 'spe';
+type SortState = { key: SortKey; direction: 'asc' | 'desc' } | null;
+
+const ALL_TERA_TYPES = 19;
+const ALL_Z_TYPES = 18;
 
 @Component({
   selector: 'pdz-overview',
   templateUrl: './overview.component.html',
   styleUrl: './overview.component.scss',
   imports: [
-    CommonModule,
+    ButtonComponent,
+    CardComponent,
+    IconComponent,
+    NgTemplateOutlet,
     SpriteComponent,
     TooltipDirective,
-    IconComponent,
-    CardComponent,
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class OverviewComponent {
-  private _teams: Summary[] = [];
-  $teams = new BehaviorSubject<
-    (DraftPokemon & {
-      abilities: string[];
-      index: number;
-      types: string[];
-      bst: number;
-      baseStats: StatsTable;
-    })[][]
-  >([]);
+  readonly teams = input.required<Summary[]>();
 
-  @Input()
-  set teams(value: Summary[]) {
-    this._teams = value;
-    this.$teams.next(value.map((team) => team.team));
+  readonly sort = signal<SortState>(null);
+
+  readonly sides = computed(() => {
+    const sort = this.sort();
+    return this.teams().map((team, index) => ({
+      slot: index === 0 ? 'team1' : 'team2',
+      name: `${team.teamName}`,
+      coach: team.coach,
+      pokemon: sort ? sortPokemon(team.team, sort) : team.team,
+    }));
+  });
+
+  readonly showCoach = computed(() =>
+    this.teams().some((team) => !!team.coach),
+  );
+
+  toggleSort(key: SortKey): void {
+    this.sort.update((current) => {
+      if (current?.key !== key) return { key, direction: 'desc' };
+      if (current.direction === 'desc') return { key, direction: 'asc' };
+      return null;
+    });
   }
 
-  get teams() {
-    return this._teams;
+  sortIcon(key: SortKey): string | null {
+    const sort = this.sort();
+    if (sort?.key !== key) return null;
+    return sort.direction === 'desc' ? 'arrow_downward' : 'arrow_upward';
   }
-  sortedBy: 'spe' | 'name' | null = null;
-  sortDirection: 'asc' | 'desc' | null = null;
-  sortData(sortKey: 'spe' | 'name') {
-    if (sortKey === this.sortedBy) {
-      if (this.sortDirection === 'asc') {
-        this.sortedBy = null;
-        this.sortDirection = null;
-        this.$teams.next(this.teams.map((team) => team.team));
-      } else if (this.sortDirection === 'desc') {
-        this.sortDirection = 'asc';
-        this.$teams.next(this.$teams.value.map((team) => team.reverse()));
-      }
-    } else {
-      if (sortKey === 'name') {
-        this.$teams.next(
-          this.teams.map((team) =>
-            [...team.team].sort((x, y) => x.name.localeCompare(y.name)),
-          ),
-        );
-      } else if (sortKey === 'spe') {
-        this.$teams.next(
-          this.teams.map((team) =>
-            [...team.team].sort((x, y) => y.baseStats.spe - x.baseStats.spe),
-          ),
-        );
-      }
-      this.sortedBy = sortKey;
-      this.sortDirection = 'desc';
-    }
+
+  ariaSort(key: SortKey): 'ascending' | 'descending' | 'none' {
+    const sort = this.sort();
+    if (sort?.key !== key) return 'none';
+    return sort.direction === 'desc' ? 'descending' : 'ascending';
   }
+
+  captTypes(types: string[] | undefined, all: 'tera' | 'z'): string {
+    const limit = all === 'tera' ? ALL_TERA_TYPES : ALL_Z_TYPES;
+    return types?.length && types.length < limit
+      ? types.join(', ')
+      : 'All types';
+  }
+}
+
+function sortPokemon(
+  pokemon: SummaryPokemon[],
+  sort: NonNullable<SortState>,
+): SummaryPokemon[] {
+  const direction = sort.direction === 'desc' ? 1 : -1;
+  return [...pokemon].sort((a, b) =>
+    sort.key === 'name'
+      ? a.name.localeCompare(b.name) * direction
+      : (b.baseStats.spe - a.baseStats.spe) * direction,
+  );
 }

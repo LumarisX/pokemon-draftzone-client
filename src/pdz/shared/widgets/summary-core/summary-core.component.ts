@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { Component, Input } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { BehaviorSubject, combineLatest, map } from 'rxjs';
@@ -34,7 +34,7 @@ interface SortState {
   templateUrl: './summary-core.component.html',
   styleUrl: './summary-core.component.scss',
   imports: [
-    CommonModule,
+    AsyncPipe,
     FormsModule,
     SpriteComponent,
     SliderComponent,

@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { safeStorage } from '@pdz/core/utils/storage';
 import { Subject } from 'rxjs';
 
 export interface SavedSearch {
@@ -15,19 +16,13 @@ export class SaveSearchesServices {
   readonly changed$ = this._changed$.asObservable();
 
   getSavedSearches(): SavedSearch[] {
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      return raw ? (JSON.parse(raw) as SavedSearch[]) : [];
-    } catch {
-      return [];
-    }
+    return safeStorage.getJson<SavedSearch[]>(STORAGE_KEY) ?? [];
   }
 
   isBookmarked(params: string): boolean {
     return !!params && this.getSavedSearches().some((s) => s.params === params);
   }
 
-  /** Adds or removes a bookmark. Returns true if now bookmarked. */
   toggle(params: string, href: string): boolean {
     const saved = this.getSavedSearches();
     const idx = saved.findIndex((s) => s.params === params);
@@ -46,7 +41,6 @@ export class SaveSearchesServices {
     this.persist(saved);
   }
 
-  /** Normalises URL search params into a stable comparison key. */
   static getSearchKey(): string {
     const params = new URLSearchParams(window.location.search);
     const entries = [...params.entries()].sort(([a], [b]) =>
@@ -56,7 +50,7 @@ export class SaveSearchesServices {
   }
 
   private persist(saved: SavedSearch[]): void {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(saved));
+    safeStorage.setJson(STORAGE_KEY, saved);
     this._changed$.next();
   }
 }

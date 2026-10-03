@@ -4,7 +4,6 @@
 $theme-overrides: (
   light: accent.apply(
       (
-        // Logo Colors
         logo-ring-1: "jade-175",
         logo-ring-2: "jade-250",
         logo-ring-3: "jade-300",
@@ -18,13 +17,11 @@ $theme-overrides: (
         logo-top: "jade-450",
         logo-bottom: "blue-450",
 
-        // Loading Colors
         loading-primary-high: "jade-550",
         loading-primary-low: "jade-300",
         loading-secondary-high: "blue-550",
         loading-secondary-low: "blue-300",
 
-        // Hero
         hero: linear-gradient(
             135deg,
             var(--pdz-color-jade-350),
@@ -37,7 +34,6 @@ $theme-overrides: (
     ),
   dark: accent.apply(
       (
-        // Logo Colors
         logo-ring-1: "jade-175",
         logo-ring-2: "jade-250",
         logo-ring-3: "jade-300",
@@ -51,13 +47,11 @@ $theme-overrides: (
         logo-top: "jade-400",
         logo-bottom: "blue-400",
 
-        // Loading Colors
         loading-primary-high: "jade-350",
         loading-primary-low: "jade-550",
         loading-secondary-high: "blue-350",
         loading-secondary-low: "blue-550",
 
-        // Hero
         hero: linear-gradient(
             135deg,
             var(--pdz-color-jade-400),

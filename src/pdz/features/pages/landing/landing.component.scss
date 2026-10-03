@@ -1,5 +1,4 @@
 @use "pdz-theming" as pdz;
-@use "tokens/breakpoints" as breakpoints;
 
 $content-max: 80rem;
 
@@ -8,7 +7,7 @@ $content-max: 80rem;
   height: 100%;
   min-height: 0;
   overflow-y: auto;
-  background-color: pdz.color(background);
+  background-color: pdz.color(ground);
   color: pdz.color(on-surface);
 }
 
@@ -93,8 +92,7 @@ $content-max: 80rem;
   }
 
   &__section-title {
-    @include pdz.text(title);
-    font-family: var(--pdz-font-display);
+    @include pdz.text(section-title);
     margin: 0;
   }
 
@@ -107,18 +105,6 @@ $content-max: 80rem;
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr));
     gap: pdz.space(lg);
-  }
-
-  &__league-link {
-    display: block;
-    color: inherit;
-    text-decoration: none;
-    border-radius: pdz.shape(corner-md);
-
-    &:focus-visible {
-      outline: 2px solid pdz.color(primary-accent);
-      outline-offset: 2px;
-    }
   }
 
   &__league,
@@ -143,7 +129,7 @@ $content-max: 80rem;
     width: 2.75rem;
     height: 2.75rem;
     border-radius: pdz.shape(corner-sm);
-    background-color: pdz.color(surface-container);
+    background-color: pdz.color(state-pressed);
     color: pdz.color(on-surface-variant);
   }
 
@@ -181,8 +167,8 @@ $content-max: 80rem;
 
   &__promos {
     padding: pdz.space(2xl) pdz.space(lg) pdz.space(3xl);
-    background-color: pdz.color(surface);
-    border-top: 1px solid pdz.color(outline-variant);
+    background-color: pdz.color(raised);
+    border-top: 1px solid pdz.color(border-subtle);
   }
 
   &__promos-inner {
@@ -215,8 +201,8 @@ $content-max: 80rem;
     }
 
     &--secondary {
-      background-color: pdz.color(secondary-container);
-      color: pdz.color(on-secondary-container);
+      background-color: pdz.color(state-pressed);
+      color: pdz.color(on-surface);
     }
   }
 
@@ -239,7 +225,7 @@ $content-max: 80rem;
   }
 }
 
-@media (max-width: breakpoints.$screen-size-medium) {
+@include pdz.respond-below(medium) {
   .landing {
     &__hero {
       padding: pdz.space(2xl) pdz.space(lg) pdz.space(xl);

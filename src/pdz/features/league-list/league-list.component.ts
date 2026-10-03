@@ -1,4 +1,4 @@
-import { Component, HostListener, OnInit, inject } from '@angular/core';
+import { Component, ElementRef, OnInit, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { DataService } from '@pdz/core/services/data.service';
@@ -6,7 +6,7 @@ import { UnreadService } from '@pdz/features/pages/homepage/unread.service';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 import { SelectOptionComponent } from '@pdz/shared/dropdowns/select/select-option.component';
 import { SelectComponent } from '@pdz/shared/dropdowns/select/select.component';
-import { IconComponent } from '@pdz/shared/images/icon/icon.component';
+import { EmptyStateComponent } from '@pdz/shared/feedback/empty-state/empty-state.component';
 import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
 import { forkJoin } from 'rxjs';
 import { LeagueAdComponent } from './league-ad/league-ad.component';
@@ -20,14 +20,18 @@ import { LeagueAd, LeagueAdsService } from './league-ads.service';
     FormsModule,
     LeagueAdComponent,
     RouterModule,
-    IconComponent,
     ButtonComponent,
+    EmptyStateComponent,
     PageHeaderComponent,
     SelectComponent,
     SelectOptionComponent,
   ],
+  host: {
+    '(document:click)': 'onDocumentClick($event)',
+  },
 })
 export class LeagueAdListComponent implements OnInit {
+  private host = inject<ElementRef<HTMLElement>>(ElementRef);
   private leagueService = inject(LeagueAdsService);
   private dataService = inject(DataService);
   private unreadService = inject(UnreadService);
@@ -67,8 +71,7 @@ export class LeagueAdListComponent implements OnInit {
     ]).subscribe(([external, hosted]) => {
       this.leagues = [...hosted, ...external];
       this.filteredLeagues = [...this.leagues];
-      localStorage.setItem('leagueTime', Date.now().toString());
-      this.unreadService.leagueCount.next('');
+      this.unreadService.markLeaguesRead();
       this.sortLeagues();
     });
     this.dataService.getFormatsLegacy().subscribe((formats) => {
@@ -113,13 +116,13 @@ export class LeagueAdListComponent implements OnInit {
     );
   }
 
-  @HostListener('document:click')
-  onDocumentClick(): void {
+  onDocumentClick(event: MouseEvent): void {
+    const controls = this.host.nativeElement.querySelector('.toolbar__controls');
+    if (controls?.contains(event.target as Node)) return;
     this.menu = null;
   }
 
-  toggleMenu(menu: 'filter' | 'sort', event: MouseEvent): void {
-    event.stopPropagation();
+  toggleMenu(menu: 'filter' | 'sort'): void {
     this.menu = this.menu === menu ? null : menu;
   }
 

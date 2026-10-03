@@ -9,64 +9,61 @@ $paddings: (
 );
 
 $tones: (
-  lowest: (
-    bg: surface-container-lowest,
-    hover: surface-container-low,
+  raised: (
+    bg: raised,
+    shadow: none,
+    hover-shadow: var(--pdz-elevation-1),
   ),
-  low: (
-    bg: surface-container-low,
-    hover: surface-container,
-  ),
-  default: (
-    bg: surface-container,
-    hover: surface-container-high,
-  ),
-  high: (
-    bg: surface-container-high,
-    hover: surface-container-highest,
+  raised-high: (
+    bg: raised-high,
+    shadow: var(--pdz-elevation-1),
+    hover-shadow: var(--pdz-elevation-2),
   ),
 );
 
 $colors: (
-  primary: (
-    bg: primary-container,
-    fg: on-primary-container,
-    border: primary-border,
-    header: primary-container-high,
-    hover: primary-container-hover,
-    accent: primary-accent,
-  ),
-  secondary: (
-    bg: secondary-container,
-    fg: on-secondary-container,
-    border: secondary-border,
-    header: secondary-container-high,
-    hover: secondary-container-hover,
-    accent: secondary-accent,
-  ),
   danger: (
     bg: danger-container,
     fg: on-danger-container,
     border: danger-border,
-    header: danger-container,
-    hover: danger-container,
     accent: danger,
+  ),
+  warning: (
+    bg: warning-container,
+    fg: on-warning-container,
+    border: warning-border,
+    accent: on-warning-container,
+  ),
+  info: (
+    bg: info-container,
+    fg: on-info-container,
+    border: info-border,
+    accent: info,
+  ),
+  success: (
+    bg: success-container,
+    fg: on-success-container,
+    border: success-border,
+    accent: success,
   ),
 );
 
 .pdz-card {
-  --pdz-card-bg: #{pdz.color(surface-container-low)};
+  --pdz-card-bg: #{pdz.color(raised)};
   --pdz-card-fg: #{pdz.color(on-surface)};
-  --pdz-card-border: #{pdz.color(outline-variant)};
-  --pdz-card-header-bg: transparent;
-  --pdz-card-hover-bg: #{pdz.color(surface-container)};
+  --pdz-card-border: #{pdz.color(border-subtle)};
+  --pdz-card-hover-border: #{pdz.color(border-control)};
+  --pdz-card-shadow: none;
+  --pdz-card-hover-shadow: var(--pdz-elevation-1);
+  --pdz-card-selected-bg: #{pdz.color(state-selected)};
   --pdz-card-accent: #{pdz.color(primary-accent)};
 }
 
 @each $name, $tone in $tones {
   .pdz-card[data-tone="#{$name}"] {
     --pdz-card-bg: #{pdz.color(map.get($tone, bg))};
-    --pdz-card-hover-bg: #{pdz.color(map.get($tone, hover))};
+    --pdz-card-shadow: #{map.get($tone, shadow)};
+    --pdz-card-hover-shadow: #{map.get($tone, hover-shadow)};
   }
 }
 
@@ -75,9 +72,9 @@ $colors: (
     --pdz-card-bg: #{pdz.color(map.get($c, bg))};
     --pdz-card-fg: #{pdz.color(map.get($c, fg))};
     --pdz-card-border: #{pdz.color(map.get($c, border))};
-    --pdz-card-header-bg: #{pdz.color(map.get($c, header))};
-    --pdz-card-hover-bg: #{pdz.color(map.get($c, hover))};
+    --pdz-card-hover-border: #{pdz.color(map.get($c, accent))};
     --pdz-card-accent: #{pdz.color(map.get($c, accent))};
+    --pdz-card-shadow: none;
   }
 }
 
@@ -90,13 +87,12 @@ $colors: (
 }
 
 [pdz-card-header] {
-  border-bottom: 1px solid var(--pdz-card-border, #{pdz.color(outline-variant)});
-  background-color: var(--pdz-card-header-bg, transparent);
+  border-bottom: 1px solid var(--pdz-card-border, #{pdz.color(border-subtle)});
   font-weight: pdz.font-weight(semibold);
 }
 
 [pdz-card-footer] {
-  border-top: 1px solid var(--pdz-card-border, #{pdz.color(outline-variant)});
+  border-top: 1px solid var(--pdz-card-border, #{pdz.color(border-subtle)});
 }
 
 @each $name, $value in $paddings {

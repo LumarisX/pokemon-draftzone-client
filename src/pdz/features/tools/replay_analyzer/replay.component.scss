@@ -11,19 +11,6 @@
   gap: pdz.space(lg);
   width: 100%;
 
-  &__header {
-    display: flex;
-    flex-direction: column;
-    gap: pdz.space(2xs);
-    text-align: center;
-  }
-
-  &__title {
-    margin: 0;
-    font-family: pdz.font(display);
-    @include pdz.text(title, $family: false);
-  }
-
   &__tagline {
     margin: 0;
     color: pdz.color(on-surface-variant);
@@ -205,7 +192,7 @@
     flex-wrap: wrap;
     gap: pdz.space(sm) pdz.space(lg);
     padding: pdz.space(sm) pdz.space(md);
-    border: 1px solid pdz.color(outline-variant);
+    border: 1px solid pdz.color(border-subtle);
     border-radius: pdz.shape(corner-sm);
   }
 
@@ -244,6 +231,16 @@
     display: flex;
     flex-direction: column;
     gap: pdz.space(md);
+  }
+
+  @each $team in (team1, team2) {
+    &__player[data-team="#{$team}"] {
+      background-image: linear-gradient(
+        160deg,
+        pdz.color(#{$team}-wash),
+        transparent 45%
+      );
+    }
   }
 
   &__player-header {
@@ -436,7 +433,7 @@
   &__move {
     padding: pdz.space(3xs) pdz.space(xs);
     border-radius: pdz.shape(corner-xs);
-    background-color: pdz.color(surface-container);
+    background-color: pdz.color(state-pressed);
     color: pdz.color(on-surface-variant);
     @include pdz.text(label, $family: false);
   }
@@ -481,20 +478,15 @@
     align-items: baseline;
     gap: pdz.space(sm);
     padding: pdz.space(2xs) pdz.space(xs);
-    border-left: 2px solid transparent;
     border-radius: pdz.shape(corner-xs);
     @include pdz.text(body-sm);
 
     &--team-a {
-      border-left-color: pdz.color(primary-accent);
-      background-color: pdz.color(primary-container);
-      color: pdz.color(on-primary-container);
+      background-color: pdz.color(team1-wash);
     }
 
     &--team-b {
-      border-left-color: pdz.color(secondary-accent);
-      background-color: pdz.color(secondary-container);
-      color: pdz.color(on-secondary-container);
+      background-color: pdz.color(team2-wash);
     }
   }
 
@@ -532,14 +524,14 @@
     gap: pdz.space(2xs);
     grid-template-columns: var(--ko-timeline-columns);
     padding: 0 pdz.space(2xs) pdz.space(2xs);
-    border-bottom: 1px solid pdz.color(outline-variant);
+    border-bottom: 1px solid pdz.color(border-subtle);
     @include pdz.text(label, $family: false);
     @include pdz.caps;
 
     > :first-child {
       grid-column: 2;
       overflow: hidden;
-      color: pdz.color(primary-accent);
+      color: pdz.color(on-surface);
       text-align: center;
       text-overflow: ellipsis;
       white-space: nowrap;
@@ -548,7 +540,7 @@
     > :last-child {
       grid-column: 4;
       overflow: hidden;
-      color: pdz.color(secondary-accent);
+      color: pdz.color(on-surface);
       text-align: center;
       text-overflow: ellipsis;
       white-space: nowrap;
@@ -573,10 +565,6 @@
     grid-template-columns: var(--ko-timeline-columns);
     padding: pdz.space(2xs);
     border-radius: pdz.shape(corner-sm);
-
-    &:nth-child(odd) {
-      background-color: pdz.color(surface-container-low);
-    }
   }
 
   &__turn {
@@ -650,7 +638,7 @@
     padding: pdz.space(3xs) pdz.space(2xs);
     overflow: hidden;
     border-radius: pdz.shape(corner-xs);
-    background-color: pdz.color(surface-container-high);
+    background-color: pdz.color(state-pressed);
     color: pdz.color(on-surface);
     text-align: center;
     text-overflow: ellipsis;
@@ -667,11 +655,11 @@
     height: 0.65rem;
 
     &--right {
-      color: pdz.color(primary-accent);
+      color: pdz.color(team1-accent);
     }
 
     &--left {
-      color: pdz.color(secondary-accent);
+      color: pdz.color(team2-accent);
     }
 
     &--same,

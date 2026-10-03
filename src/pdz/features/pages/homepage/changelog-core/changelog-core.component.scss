@@ -1,88 +1,70 @@
 @use "pdz-theming" as pdz;
-@use "mixins" as *;
 
 :host {
   display: flex;
   flex-direction: column;
-  row-gap: 0.25rem;
-  height: 100%;
   min-height: 0;
-  overflow: hidden;
 }
 
-.changelog-scroll {
-  flex: 1 1 auto;
+.changelog {
+  display: flex;
+  flex-direction: column;
   min-height: 0;
   overflow-y: auto;
-  padding-bottom: pdz.space(lg);
 }
 
-.changelog-header {
+.entry {
   display: flex;
   flex-direction: column;
-  font-family: var(--pdz-font-display);
+  gap: pdz.space(xs);
+  padding-block: pdz.space(md);
+
+  &:first-child {
+    padding-top: 0;
+  }
+
+  &:not(:last-child) {
+    border-bottom: 1px solid pdz.color(border-subtle);
+  }
 }
 
-.changelog-date {
-  color: pdz.color(primary-accent);
-  @include pdz.text(subtitle, $family: false);
+.entry__header {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(3xs);
 }
 
-.changelog-title {
+.entry__date {
+  @include pdz.text(label-caps);
+  color: pdz.color(on-surface-muted);
+}
+
+.entry__title {
+  @include pdz.text(card-title);
+  margin: 0;
   color: pdz.color(on-surface);
-  font-size: pdz.font-size(md);
 }
 
-.changelog-description {
-  font-size: pdz.font-size(sm);
+.entry__description {
+  @include pdz.text(body-sm);
+  margin: 0;
   color: pdz.color(on-surface-variant);
-  margin: 0.125rem 0 0;
 }
 
-.changelog-item:not(:last-child) {
-  padding-bottom: 0.25rem;
-  margin-bottom: 0.25rem;
-  border-bottom: 1px solid pdz.color(primary-border);
-}
-
-.changelog-body {
+.entry__category {
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
+  align-items: flex-start;
+  gap: pdz.space(2xs);
 }
 
-.indent {
-  padding-left: 0.5rem;
-}
-
-.changelog-category {
-  &__label {
-    @include pdz.text(field-label, $family: false);
-    letter-spacing: 0.05em;
-    font-family: var(--pdz-font-display);
-    text-transform: uppercase;
-  }
-
-  &__list {
-    font-size: pdz.font-size(sm);
-    padding-left: 1rem;
-    margin: 0.125rem 0 0;
-    list-style-type: disc;
-  }
-
-  &--added .changelog-category__label {
-    color: pdz.color(success);
-  }
-
-  &--changed .changelog-category__label {
-    color: pdz.color(info);
-  }
-
-  &--fixed .changelog-category__label {
-    color: pdz.color(warning);
-  }
-
-  &--removed .changelog-category__label {
-    color: pdz.color(danger);
-  }
+.entry__list {
+  @include pdz.text(body-sm);
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(3xs);
+  margin: 0;
+  padding-left: pdz.space(lg);
+  color: pdz.color(on-surface);
+  list-style: disc;
 }

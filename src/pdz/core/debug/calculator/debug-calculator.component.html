@@ -1,13 +1,12 @@
 <pdz-page>
   <div class="calc">
-    <header class="calc__header">
-      <h2 class="calc__title">Calculator harness</h2>
+    <pdz-page-header title="Calculator Harness">
       <p class="calc__lede">
         Sends a state to <code>POST /calc</code> and shows what the calculator
         understood, what it branched on, and the resulting distribution over
         battle states.
       </p>
-    </header>
+    </pdz-page-header>
 
     <section class="calc__form">
       <div class="calc__row calc__row--preset">
@@ -107,12 +106,12 @@
             (valueChange)="forcedHit.set($any($event))"
           >
             <pdz-segmented-option value="roll" label="Roll" />
-            <pdz-segmented-option value="always" label="Always hit" />
-            <pdz-segmented-option value="never" label="Always miss" />
+            <pdz-segmented-option value="always" label="Always Hit" />
+            <pdz-segmented-option value="never" label="Always Miss" />
           </pdz-segmented>
         </div>
 
-        <div pdz-field label="Critical hit" hint="Force the crit branch" class="calc__control">
+        <div pdz-field label="Critical Hit" hint="Force the crit branch" class="calc__control">
           <pdz-segmented
             size="sm"
             aria-label="Force critical hit outcome"
@@ -120,8 +119,8 @@
             (valueChange)="forcedCrit.set($any($event))"
           >
             <pdz-segmented-option value="roll" label="Roll" />
-            <pdz-segmented-option value="always" label="Always crit" />
-            <pdz-segmented-option value="never" label="Never crit" />
+            <pdz-segmented-option value="always" label="Always Crit" />
+            <pdz-segmented-option value="never" label="Never Crit" />
           </pdz-segmented>
         </div>
       </div>
@@ -267,7 +266,7 @@
             </div>
 
             <div class="calc__row calc__row--tera">
-              <label pdz-field label="Tera type">
+              <label pdz-field label="Tera Type">
                 <pdz-select
                   [attr.aria-label]="side.key + ' tera type'"
                   [ngModel]="side.form.teraType"
@@ -406,9 +405,9 @@
               <tr>
                 <th>Probability</th>
                 <th>Damage</th>
-                <th>HP left</th>
+                <th>HP Left</th>
                 <th>Status</th>
-                <th>Target boosts</th>
+                <th>Target Boosts</th>
               </tr>
             </thead>
             <tbody>
@@ -433,13 +432,13 @@
       }
 
       <section class="calc__panel">
-        <h3 class="calc__panel-title">Normalized input</h3>
+        <h3 class="calc__panel-title">Normalized Input</h3>
         <pre class="calc__pre">{{ inputJson() }}</pre>
       </section>
 
       @if (showRaw()) {
         <section class="calc__panel">
-          <h3 class="calc__panel-title">Raw response</h3>
+          <h3 class="calc__panel-title">Raw Response</h3>
           <pre class="calc__pre">{{ rawJson() }}</pre>
         </section>
       }

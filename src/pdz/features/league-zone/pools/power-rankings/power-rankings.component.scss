@@ -1,202 +1,107 @@
 @use "pdz-theming" as pdz;
 
-.team-info {
-  display: flex;
-  padding: 1rem;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 2rem;
-  .movechart-wrapper {
-    max-width: 30rem;
-    max-height: 55rem;
-    overflow: auto;
-    scrollbar-gutter: stable;
-  }
-
-  .coverage-wrapper {
-    max-width: 60rem;
-  }
-}
 :host {
   display: flex;
   flex-direction: column;
+  gap: pdz.layout(section-gap);
+}
+
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: pdz.space(md);
+}
+
+.toolbar__team {
+  flex: 1 1 16rem;
+  max-width: 24rem;
+}
+
+.toolbar__score {
+  width: 8rem;
+}
+
+.analysis {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-start;
+  gap: pdz.space(xl);
+}
+
+.analysis__moves {
+  max-width: 30rem;
+  max-height: 55rem;
+  overflow: auto;
+  scrollbar-gutter: stable;
+}
+
+.analysis__coverage {
+  max-width: 60rem;
+}
+
+.roster {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(sm);
+  min-width: 16rem;
+}
+
+.roster__title {
+  @include pdz.text(section-title);
+  margin: 0;
+  color: pdz.color(on-surface);
+}
+
+.roster__list {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.roster__row {
+  display: flex;
   align-items: center;
-  padding: 1rem;
-  gap: 1rem;
+  gap: pdz.space(sm);
+  padding-block: pdz.space(2xs);
+
+  &:not(:last-child) {
+    border-bottom: 1px solid pdz.color(border-subtle);
+  }
 }
-.team-header {
-  display: flex;
-  justify-content: space-between;
+
+.roster__name {
+  @include pdz.text(body-sm-strong);
+  display: inline-flex;
+  flex: 1 1 auto;
   align-items: center;
-  gap: 1rem;
-  width: 100%;
-  .team-name {
-    font-family: var(--pdz-font-display);
-    font-size: 3rem;
-  }
-  .info-card {
-    background-color: pdz.color(primary-container);
-    color: pdz.color(on-primary-container);
-    padding: 0.5rem;
-    border-radius: 0.5rem;
-    border: 1rem;
-    width: 6rem;
-
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    .label {
-      font-weight: bold;
-    }
-    .value {
-      @include pdz.text(headline, $family: false);
-      color: pdz.color(primary);
-    }
-  }
+  gap: pdz.space(2xs);
+  min-width: 0;
+  color: pdz.color(on-surface);
 }
 
-input {
-  padding-left: 0.75rem;
-  width: 4.25rem;
-  text-align: center;
-  &:focus {
-    outline: none;
-  }
-  background-color: inherit;
-}
-.sprite-wrapper {
-  height: 2rem;
-  width: 2rem;
+.roster__speed {
+  @include pdz.text(meta);
+  @include pdz.numeric;
+  color: pdz.color(on-surface-variant);
 }
 
-.draft-container {
+.ranking {
+  border: 1px solid pdz.color(border-subtle);
+}
+
+.ranking__caption {
+  @include pdz.text(section-title);
+  padding: pdz.space(md) pdz.space(lg) pdz.space(sm);
+  color: pdz.color(on-surface);
+  caption-side: top;
+  text-align: left;
+}
+
+.ranking__draft {
   display: flex;
-}
-
-.power-rankings-table {
-  width: fit-content;
-  border-radius: pdz.shape(corner-sm);
-  overflow: hidden;
-}
-
-.overview-wrapper {
-  display: flex;
-  column-gap: 0.5rem;
-  .team-container {
-    border-width: 1px;
-    border-radius: 1rem;
-    border-color: pdz.color(outline);
-    padding: 0.25rem;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    .team-header {
-      width: 100%;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      border-width: 0 0 1px;
-      border-color: pdz.color(outline);
-      margin-bottom: 0.5rem;
-
-      .team-name-title,
-      .team-coach-title {
-        max-width: 100%;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        text-align: center;
-        font-weight: var(--pdz-font-weight-bold);
-        color: pdz.color(secondary);
-        font-family: "Nasalization RG", sans-serif;
-      }
-
-      .team-coach-title {
-        font-size: 0.8em;
-        height: 1.25rem;
-      }
-    }
-
-    .team-body {
-      width: 100%;
-
-      .overview-row {
-        display: flex;
-        column-gap: 0.25rem;
-        align-items: center;
-        .sprite-cell {
-          width: 4rem;
-          flex-shrink: 0;
-          @media (max-width: 768px) {
-            width: 2rem;
-          }
-        }
-        .name-cell {
-          flex-grow: 1;
-          text-align: center;
-          overflow: hidden;
-          .name-label {
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            display: block;
-            max-width: 8rem;
-            font-weight: 600;
-          }
-        }
-
-        .capt-row {
-          width: 100%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-        }
-        .speed-cell {
-          text-align: center;
-
-          flex-shrink: 0;
-          font-weight: 800;
-          min-width: 2rem;
-        }
-
-        &:not(.header) {
-          .sprite-cell {
-            height: 4rem;
-            @media (max-width: 768px) {
-              height: 2rem;
-            }
-          }
-        }
-        &.header {
-          > div {
-            font-size: 0.8em;
-            font-weight: var(--pdz-font-weight-bold);
-          }
-
-          .speed-cell,
-          .name-cell {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            pdz-icon {
-              font-size: 1.2em;
-              height: fit-content;
-              left: 0;
-            }
-            &:hover {
-              opacity: 0.5;
-              cursor: pointer;
-            }
-          }
-        }
-      }
-    }
-  }
-}
-
-.widget-wrapper {
-  background-color: pdz.color(surface-container-low);
-  border: 1px solid pdz.color(outline-variant);
-  border-radius: pdz.shape(corner-lg);
-  padding: pdz.space(sm);
+  flex-wrap: wrap;
 }

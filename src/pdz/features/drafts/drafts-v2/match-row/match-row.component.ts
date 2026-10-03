@@ -12,6 +12,7 @@ import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
 import { getLogoUrl } from '@pdz/features/league-zone/league.util';
+import { TeamLogoComponent } from '@pdz/shared/images/team-logo/team-logo.component';
 import { CountdownComponent } from '@pdz/shared/time/countdown/countdown.component';
 import { formatExactTime } from '@pdz/shared/time/timezone';
 import { TooltipDirective } from '@pdz/shared/tooltip/tooltip.directive';
@@ -26,6 +27,7 @@ let nextRowId = 0;
     ButtonComponent,
     IconComponent,
     SpriteComponent,
+    TeamLogoComponent,
     CountdownComponent,
     TooltipDirective,
   ],
@@ -60,15 +62,6 @@ export class MatchRowComponent {
     const logo = this.match().logo;
     return logo ? getLogoUrl(logo) : null;
   });
-
-  protected readonly crest = computed(() =>
-    this.match()
-      .teamName.split(/\s+/)
-      .filter(Boolean)
-      .slice(0, 2)
-      .map((word) => word[0]?.toUpperCase() ?? '')
-      .join(''),
-  );
 
   protected readonly exactTime = computed(() => {
     const scheduled = this.match().scheduledDate;

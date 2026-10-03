@@ -1,4 +1,3 @@
-import { CommonModule } from '@angular/common';
 import {
   afterRenderEffect,
   booleanAttribute,
@@ -21,7 +20,6 @@ import { TooltipDirective } from '@pdz/shared/tooltip/tooltip.directive';
 import { RouterModule } from '@angular/router';
 import { EventStreamService } from '@pdz/core/services/event-stream.service';
 import { Pokemon } from '@pdz/core/utils/pokemon';
-import { typeColor } from '@pdz/core/utils/styling';
 import { Type, TYPES } from '@pdz/shared/data';
 import { DialogService } from '@pdz/shared/dialogs/dialog/dialog.service';
 import {
@@ -44,7 +42,7 @@ import { MenuComponent } from '@pdz/shared/menu/menu.component';
 import { MenuTriggerDirective } from '@pdz/shared/menu/menu-trigger.directive';
 import { Subject } from 'rxjs';
 import { first, takeUntil } from 'rxjs/operators';
-import { League } from '../../league-zone/league.interface';
+import { League } from '@pdz/features/league-zone/league.interface';
 import { LeagueTier, TierPokemon } from '../tier-list.model';
 import { TierListService } from '../tier-list.service';
 import {
@@ -66,7 +64,6 @@ interface DraftPokemonAction {
   selector: 'pdz-tier-list',
   templateUrl: './tier-list.component.html',
   imports: [
-    CommonModule,
     RouterModule,
     FormsModule,
     ChoiceDirective,
@@ -330,7 +327,6 @@ export class TierListComponent implements OnInit, OnDestroy {
   }>();
 
   showDrafted: boolean = true;
-  typeColor = typeColor;
 
   async openPokemonDetails(
     pokemon: TierPokemon,

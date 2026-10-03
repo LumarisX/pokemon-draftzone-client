@@ -28,7 +28,6 @@ export const pdzConfig: ApplicationConfig = {
       withInterceptors([authRecoveryInterceptor, authHttpInterceptorFn]),
     ),
 
-    // Standalone Auth0 Provider
     provideAuth0({
       domain: environment.auth.domain,
       clientId: environment.auth.clientId,
@@ -55,13 +54,11 @@ export const pdzConfig: ApplicationConfig = {
       },
     }),
 
-    // Standalone Service Worker
     provideServiceWorker('ngsw-worker.js', {
       enabled: environment.serviceWorkerEnabled ?? environment.production,
       registrationStrategy: 'registerWhenStable:30000',
     }),
 
-    // Standalone Markdown
     provideMarkdown({
       markedOptions: {
         provide: MARKED_OPTIONS,
@@ -69,7 +66,6 @@ export const pdzConfig: ApplicationConfig = {
       },
     }),
 
-    // App Initializers
     provideAppInitializer(() =>
       inject(AuthRecoveryService).validateSessionOnStartup(),
     ),

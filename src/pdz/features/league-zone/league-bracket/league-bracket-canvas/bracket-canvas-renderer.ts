@@ -12,8 +12,6 @@ import {
 } from './bracket-layout';
 import { BracketTheme } from './bracket-theme-colors';
 
-// ─── View / interaction state ─────────────────────────────────────────────────
-
 export interface BracketViewTransform {
   x: number;
   y: number;
@@ -34,20 +32,15 @@ export interface BracketInteractionState {
   hoveredMatchId?: string | null;
   hoveredKind?: HitKind | null;
   hoveredSlotIndex?: 0 | 1 | null;
-  /** `${section}::${round}` of the hovered add button. */
   hoveredButtonKey?: string | null;
-  /** Index into layout.connectors of the line under the pointer. */
   hoveredConnectorIndex?: number | null;
   drag?: {
     matchId: string;
-    /** World-space offset of the dragged ghost from the card's laid-out position. */
     dx: number;
     dy: number;
     targetSection?: string;
     targetRound?: number;
-    /** World-space x of the insertion indicator line, if a target is resolved. */
     insertX?: number | null;
-    /** World-space y of the target round row, for the indicator line. */
     targetRowY?: number | null;
   } | null;
 }
@@ -61,11 +54,8 @@ export interface RenderOptions {
   viewHeight: number;
   editable: boolean;
   state: BracketInteractionState;
-  /** Returns a decoded image for a logo URL, or null while it loads. */
   resolveImage: (url: string | undefined) => HTMLImageElement | null;
 }
-
-// ─── Card sub-rects (shared with hit-testing) ─────────────────────────────────
 
 export const DELETE_BTN_SIZE = 20;
 export const REPLAY_W = 48;
@@ -99,13 +89,9 @@ export function slotRect(m: CanvasMatch, slotIndex: 0 | 1) {
     x: m.x + CARD_PAD,
     y: m.slotY[slotIndex],
     w: m.w - CARD_PAD * 2,
-    // Row height is layout-dependent (compact vs full team rows), so recover
-    // it from the gap between the two slot rows.
     h: m.slotY[1] - m.slotY[0] - ROW_GAP,
   };
 }
-
-// ─── Drawing helpers ──────────────────────────────────────────────────────────
 
 function roundedRect(
   ctx: CanvasRenderingContext2D,
@@ -149,8 +135,6 @@ function truncate(
   return lo > 0 ? text.slice(0, lo) + ellipsis : ellipsis;
 }
 
-/** Traces an orthogonal connector polyline, rounding every corner. Works for
- *  any travel direction — up, down, left, or right. */
 function traceConnector(
   ctx: CanvasRenderingContext2D,
   points: { x: number; y: number }[],
@@ -184,13 +168,8 @@ function traceConnector(
   ctx.lineTo(last.x, last.y);
 }
 
-// ─── Background grid ──────────────────────────────────────────────────────────
-
 const GRID_BASE_SPACING = 32;
 
-/** Subtle dot grid drawn in world space, so it pans and zooms with the
- *  bracket. Spacing doubles as you zoom out so dot density (and draw cost)
- *  stays roughly constant. */
 function drawDotGrid(ctx: CanvasRenderingContext2D, opts: RenderOptions): void {
   const { theme, transform, viewWidth, viewHeight } = opts;
   const k = transform.k;
@@ -200,16 +179,15 @@ function drawDotGrid(ctx: CanvasRenderingContext2D, opts: RenderOptions): void {
   while (spacing * k < 22) spacing *= 2;
   while (spacing * k > 88) spacing /= 2;
 
-  // Visible world rect, snapped outward to the grid.
   const x0 = Math.floor(-transform.x / k / spacing) * spacing;
   const y0 = Math.floor(-transform.y / k / spacing) * spacing;
   const x1 = (viewWidth - transform.x) / k;
   const y1 = (viewHeight - transform.y) / k;
 
-  const r = 1.1 / k; // ~1px on screen regardless of zoom
+  const r = 1.1 / k;
   ctx.save();
   ctx.globalAlpha = 0.4;
-  ctx.fillStyle = theme.colors['outline-variant'];
+  ctx.fillStyle = theme.colors['border-control'];
   ctx.beginPath();
   for (let gx = x0; gx <= x1; gx += spacing) {
     for (let gy = y0; gy <= y1; gy += spacing) {
@@ -219,8 +197,6 @@ function drawDotGrid(ctx: CanvasRenderingContext2D, opts: RenderOptions): void {
   ctx.fill();
   ctx.restore();
 }
-
-// ─── Frame render ─────────────────────────────────────────────────────────────
 
 export function renderBracket(
   ctx: CanvasRenderingContext2D,
@@ -243,9 +219,6 @@ export function renderBracket(
 
   if (editable) drawDotGrid(ctx, opts);
 
-  // 1. Connectors (behind everything). Winner lines are green, loser lines
-  // red; dashed until the source match is decided, then solid. The hovered
-  // line is drawn last, thicker and with a soft halo, so it pops.
   const hoveredConn = state.hoveredConnectorIndex ?? null;
   ctx.lineCap = 'round';
   ctx.lineJoin = 'round';
@@ -275,15 +248,14 @@ export function renderBracket(
   }
   ctx.setLineDash([]);
 
-  // 2. Section titles + round headers
   for (const section of layout.sections) {
     if (section.titleY !== null && section.title) {
-      ctx.font = `600 15px ${theme.fontFancy}`;
+      ctx.font = `${theme.fontWeightBold} 13px ${theme.fontRegular}`;
       ctx.fillStyle = c['on-surface-variant'];
       ctx.textBaseline = 'top';
       ctx.textAlign = 'left';
       ctx.fillText(section.title.toUpperCase(), section.x, section.titleY + 2);
-      ctx.strokeStyle = c['outline-variant'];
+      ctx.strokeStyle = c['border-subtle'];
       ctx.lineWidth = 1;
       ctx.beginPath();
       ctx.moveTo(section.x, section.titleY + SECTION_TITLE_H - 0.5);
@@ -294,7 +266,7 @@ export function renderBracket(
       ctx.stroke();
     }
 
-    ctx.font = `600 14px ${theme.fontFancy}`;
+    ctx.font = `${theme.fontWeightBold} 14px ${theme.fontRegular}`;
     ctx.textBaseline = 'top';
     ctx.textAlign = 'center';
     const midX = section.x + section.width / 2;
@@ -307,9 +279,8 @@ export function renderBracket(
       const text = truncate(ctx, col.title, section.width);
       ctx.fillText(text, midX, col.headerY + (HEADER_H - 14) / 2);
       if (editable) {
-        // Dashed underline hints that round titles are click-to-rename.
         const tw = Math.min(ctx.measureText(text).width + 12, section.width);
-        ctx.strokeStyle = titleHovered ? c['primary'] : c['outline-variant'];
+        ctx.strokeStyle = titleHovered ? c['primary'] : c['border-control'];
         ctx.lineWidth = 1;
         ctx.setLineDash([3, 3]);
         ctx.beginPath();
@@ -322,14 +293,12 @@ export function renderBracket(
   }
   ctx.textAlign = 'left';
 
-  // 3. Match cards
   const dragging = state.drag ?? null;
   for (const match of layout.matches) {
-    if (dragging?.matchId === match.id) continue; // ghost drawn last, on top
+    if (dragging?.matchId === match.id) continue;
     drawMatchCard(ctx, match, opts, 1, 0, 0);
   }
 
-  // 4. Edit-mode add buttons
   if (editable) {
     for (const btn of layout.addMatchButtons) {
       drawAddButton(ctx, btn, '+ Match', opts);
@@ -339,7 +308,6 @@ export function renderBracket(
     }
   }
 
-  // 5. Drag ghost + insertion indicator
   if (dragging) {
     const match = layout.matches.find((m) => m.id === dragging.matchId);
     if (match) {
@@ -396,30 +364,27 @@ function drawMatchCard(
   const hovered =
     state.hoveredMatchId === match.id && shadowLevel === 1 ? 2 : shadowLevel;
 
-  // Card chrome
   drawShadow(ctx, theme, hovered as 1 | 2 | 3);
-  ctx.fillStyle = c['surface-container-low'];
+  ctx.fillStyle = c['raised'];
   roundedRect(ctx, x, y, match.w, match.h, 12);
   ctx.fill();
   clearShadow(ctx);
-  ctx.strokeStyle = c['outline-variant'];
+  ctx.strokeStyle = c['border-subtle'];
   ctx.lineWidth = 1;
   ctx.stroke();
 
-  // Label row
   const labelY = y + CARD_PAD;
   let labelX = x + CARD_PAD + 4;
   ctx.textBaseline = 'middle';
 
   if (editable) {
-    // Drag handle glyph
     ctx.font = `12px ${theme.fontRegular}`;
     ctx.fillStyle = c['on-surface-variant'];
     ctx.fillText('⠿', labelX, labelY + LABEL_H / 2 + 1);
     labelX += 16;
   }
 
-  ctx.font = `${theme.fontWeightBold} 13px ${theme.fontFancy}`;
+  ctx.font = `${theme.fontWeightBold} 13px ${theme.fontRegular}`;
   ctx.fillStyle = c['on-surface-variant'];
   const labelMaxW = editable
     ? match.w - CARD_PAD * 2 - 16 - (DELETE_BTN_SIZE + 4) * 2 - 8
@@ -435,7 +400,7 @@ function drawMatchCard(
     const editHovered =
       state.hoveredKind === 'edit-icon' && state.hoveredMatchId === match.id;
     if (editHovered) {
-      ctx.fillStyle = c['surface-container'];
+      ctx.fillStyle = c['inset'];
       roundedRect(
         ctx,
         edit.x + offsetX,
@@ -502,7 +467,6 @@ function drawMatchCard(
     ctx.globalAlpha = 1;
   }
 
-  // Team rows
   for (const slotIndex of [0, 1] as const) {
     drawTeamRow(ctx, match, slotIndex, opts, offsetX, offsetY);
   }
@@ -529,7 +493,7 @@ function drawTeamRow(
       ? c['positive-container']
       : slot.status === 'loser'
         ? c['negative-container']
-        : c['surface-container'];
+        : c['inset'];
   ctx.fillStyle = bg;
   roundedRect(ctx, x, y, rect.w, rect.h, 8);
   ctx.fill();
@@ -547,7 +511,6 @@ function drawTeamRow(
   }
 
   if (editable) {
-    // Slot picker row: current selection text + dropdown caret
     const raw = slot.raw;
     let text: string;
     if (raw.type === 'seed' || raw.type === 'bye') {
@@ -573,10 +536,8 @@ function drawTeamRow(
     const team = slot.team;
     let textX = x + 12;
 
-    // Logo box always reserved — getLogoUrl falls back to the default logo.
     const img = resolveImage(team.logo);
     if (img && img.width > 0 && img.height > 0) {
-      // object-fit: contain within a 36x36 box
       const box = 36;
       const scale = Math.min(box / img.width, box / img.height);
       const dw = img.width * scale;
@@ -590,21 +551,21 @@ function drawTeamRow(
     ctx.fillStyle = c['on-surface'];
     ctx.fillText(truncate(ctx, team.teamName, maxW), textX, y + 17);
 
-    ctx.font = `${theme.fontWeightBold} 12px ${theme.fontFancy}`;
-    ctx.fillStyle = c['secondary'];
+    ctx.font = `${theme.fontWeightBold} 12px ${theme.fontRegular}`;
+    ctx.fillStyle = c['on-surface-variant'];
     const seedText = `${team.seed}`;
     ctx.fillText(seedText, textX, y + 34);
     const seedW = ctx.measureText(seedText).width;
 
-    ctx.font = `${theme.fontWeightBold} 12px ${theme.fontRegular}`;
-    ctx.fillStyle = c['primary'];
+    ctx.font = `12px ${theme.fontRegular}`;
+    ctx.fillStyle = c['on-surface-variant'];
     ctx.fillText(
       truncate(ctx, team.coachName, maxW - seedW - 6),
       textX + seedW + 6,
       y + 34,
     );
   } else {
-    ctx.font = `italic 12.5px ${theme.fontFancy}`;
+    ctx.font = `italic 13px ${theme.fontRegular}`;
     ctx.fillStyle = c['on-surface-variant'];
     ctx.textAlign = 'center';
     ctx.fillText(
@@ -629,7 +590,7 @@ function drawAddButton(
     state.hoveredKind === kind &&
     state.hoveredButtonKey === `${btn.section}::${btn.round}`;
   const color = hovered ? c['primary'] : c['on-surface-variant'];
-  const border = hovered ? c['primary'] : c['outline-variant'];
+  const border = hovered ? c['primary'] : c['border-control'];
 
   ctx.strokeStyle = border;
   ctx.lineWidth = 1;

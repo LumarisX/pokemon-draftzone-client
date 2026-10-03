@@ -17,7 +17,7 @@
   align-items: center;
   gap: pdz.space(xs);
   padding: pdz.space(md);
-  background: pdz.color(surface-container-low);
+  background: pdz.color(raised);
   border: 1px solid pdz.color(danger-border);
   border-radius: pdz.shape(corner-lg);
   color: pdz.color(danger);
@@ -52,8 +52,8 @@
   align-items: center;
   gap: pdz.space(sm);
   padding: pdz.space(sm) pdz.space(md);
-  background: pdz.color(surface-container-low);
-  border: 1px solid pdz.color(outline-variant);
+  background: pdz.color(raised);
+  border: 1px solid pdz.color(border-subtle);
   border-radius: pdz.shape(corner-lg);
   color: inherit;
   text-decoration: none;
@@ -64,7 +64,7 @@
   &:hover,
   &:focus-visible {
     border-color: pdz.color(primary-border);
-    box-shadow: var(--pdz-level-1);
+    box-shadow: var(--pdz-elevation-1);
   }
 }
 
@@ -131,8 +131,8 @@
   align-items: center;
   gap: pdz.space(sm);
   padding: pdz.space(sm) pdz.space(md);
-  background: pdz.color(surface-container-low);
-  border: 1px solid pdz.color(outline-variant);
+  background: pdz.color(raised);
+  border: 1px solid pdz.color(border-subtle);
   border-radius: pdz.shape(corner-lg);
   color: inherit;
   text-decoration: none;

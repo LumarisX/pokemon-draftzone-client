@@ -1,0 +1,78 @@
+@use "sass:map";
+@use "pdz-theming" as pdz;
+
+$sizes: (
+  xs: (
+    box: 1.5rem,
+    font: 2xs,
+  ),
+  sm: (
+    box: 2rem,
+    font: 2xs,
+  ),
+  md: (
+    box: 2.5rem,
+    font: xs,
+  ),
+  lg: (
+    box: 3rem,
+    font: sm,
+  ),
+  xl: (
+    box: 4rem,
+    font: md,
+  ),
+  2xl: (
+    box: 6rem,
+    font: xl,
+  ),
+);
+
+:host {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: var(--pdz-team-logo-size);
+  height: var(--pdz-team-logo-size);
+  border-radius: pdz.shape(corner-sm);
+  overflow: hidden;
+}
+
+@each $name, $s in $sizes {
+  :host([data-size="#{$name}"]) {
+    --pdz-team-logo-size: #{map.get($s, box)};
+    font-size: pdz.font-size(map.get($s, font));
+  }
+}
+
+:host([data-shape="circle"]) {
+  border-radius: pdz.shape(corner-full);
+}
+
+.pdz-team-logo__img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.pdz-team-logo__initials {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  background-color: pdz.color(state-pressed);
+  color: pdz.color(on-surface-variant);
+  font-weight: pdz.font-weight(bold);
+  letter-spacing: 0.02em;
+  line-height: 1;
+  user-select: none;
+}
+
+@each $team in (team1, team2) {
+  :host([data-team="#{$team}"]) .pdz-team-logo__initials {
+    background-color: pdz.color(#{$team}-container);
+    color: pdz.color(on-#{$team}-container);
+  }
+}

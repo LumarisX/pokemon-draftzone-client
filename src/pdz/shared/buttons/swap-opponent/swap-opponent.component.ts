@@ -1,22 +1,22 @@
 import { BooleanInput } from '@angular/cdk/coercion';
-import { CommonModule } from '@angular/common';
 import {
+  ChangeDetectionStrategy,
   Component,
-  EventEmitter,
+  computed,
   forwardRef,
-  Output,
   model,
+  output,
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
-import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
+import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 
 @Component({
   selector: 'pdz-swap-opponent',
-  imports: [CommonModule, IconComponent, ButtonComponent],
+  imports: [ButtonComponent, IconComponent],
   templateUrl: './swap-opponent.component.html',
   styleUrl: './swap-opponent.component.scss',
-
+  changeDetection: ChangeDetectionStrategy.OnPush,
   providers: [
     {
       provide: NG_VALUE_ACCESSOR,
@@ -27,10 +27,12 @@ import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 })
 export class SwapOpponentButton implements ControlValueAccessor {
   readonly opponent = model<number | BooleanInput>();
+  readonly opponentChanged = output<number | boolean>();
 
-  @Output()
-  opponentChanged = new EventEmitter<number | boolean>();
-  constructor() {}
+  protected readonly showingOpponent = computed(() => !!this.opponent());
+
+  private onTouched: () => void = () => {};
+  private onChange: (value: number | boolean) => void = () => {};
 
   toggleOpponent() {
     const current = this.opponent();
@@ -42,14 +44,11 @@ export class SwapOpponentButton implements ControlValueAccessor {
     this.opponentChanged.emit(next);
   }
 
-  private onTouched: () => void = () => {};
-  private onChange: (value: number | BooleanInput) => void = () => {};
-
   writeValue(value: BooleanInput): void {
     this.opponent.set(value);
   }
 
-  registerOnChange(fn: (value: any) => void): void {
+  registerOnChange(fn: (value: number | boolean) => void): void {
     this.onChange = fn;
   }
 

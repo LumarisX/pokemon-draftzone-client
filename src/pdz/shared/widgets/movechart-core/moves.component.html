@@ -8,9 +8,12 @@
       <div class="search-wrapper">
         <pdz-icon name="search" size="sm"></pdz-icon>
         <input
+          pdz-input
+          size="sm"
           class="search-input"
           type="text"
-          placeholder="Search move or type..."
+          aria-label="Search moves"
+          placeholder="Search move or type…"
           [ngModel]="searchQuery()"
           (ngModelChange)="search($event)"
         />
@@ -57,17 +60,9 @@
             </div>
           </div>
           @if (showDescription() === move.name) {
-            <!-- <div>
-            <div>
-              <div class="move-basepower">
-                {{ move.basePower }}
-              </div>
-              <div class="move-accuracy">{{ move.accuracy }}</div>
-            </div> -->
             <div class="move-desc">
               {{ move.desc }}
             </div>
-            <!-- </div> -->
           } @else {
             <div class="move-pokemon">
               @for (pid of move.pokemon; track pid) {

@@ -1,66 +1,62 @@
 @if (matchupId && matchupData) {
+  @let details = matchupData.details;
   <div class="matchup__main">
-    <div class="matchup__header">
-      @if (config.back) {
-        <button
-          pdz-button
-          class="matchup__action"
-          color="neutral"
-          variant="tonal"
-          [routerLink]="backLink"
-        >
-          Back
-        </button>
-      }
-      <div class="matchup__details">
-        <div class="matchup__details-card">
-          <div class="matchup__detail">
-            <p class="matchup__detail-label">League Name</p>
-            <p class="matchup__detail-value">
-              {{ matchupData.details.leagueName }}
-            </p>
+    <pdz-page-header
+      compact
+      [title]="matchupTitle()"
+      [eyebrow]="details.leagueName"
+      [backLink]="config.back ? backLink : undefined"
+      [backLabel]="details.leagueName"
+    >
+      <span pdz-page-header-detail class="matchup__facts">
+        <span>{{ details.stage }}</span>
+        <span>{{ details.format }}</span>
+        <span>{{ details.ruleset }}</span>
+      </span>
+      @if (matchupData.summary.length === 2) {
+        <div pdz-page-header-center class="versus" aria-hidden="true">
+          <div class="versus__side versus__side--team1">
+            @for (pokemon of matchupData.summary[0].team; track pokemon.index) {
+              <pdz-sprite
+                size="var(--versus-sprite)"
+                [interactive]="false"
+                [pokemon]="pokemon"
+              />
+            }
           </div>
-          <div class="matchup__detail">
-            <p class="matchup__detail-label">Stage</p>
-            <p class="matchup__detail-value">{{ matchupData.details.stage }}</p>
+          <span class="versus__vs">vs</span>
+          <div class="versus__side versus__side--team2">
+            @for (pokemon of matchupData.summary[1].team; track pokemon.index) {
+              <pdz-sprite
+                flipped
+                size="var(--versus-sprite)"
+                [interactive]="false"
+                [pokemon]="pokemon"
+              />
+            }
           </div>
-          <div class="matchup__detail">
-            <p class="matchup__detail-label">Ruleset</p>
-            <p class="matchup__detail-value">
-              {{ matchupData.details.ruleset }}
-            </p>
-          </div>
-          <div class="matchup__detail">
-            <p class="matchup__detail-label">Format</p>
-            <p class="matchup__detail-value">
-              {{ matchupData.details.format }}
-            </p>
-          </div>
-          @if (scheduledLabel(); as when) {
-            <div class="matchup__detail">
-              <p class="matchup__detail-label">Match Time</p>
-              <p class="matchup__detail-value">
-                {{ when }}
-                <pdz-countdown
-                  [target]="matchupData.details.scheduledDate ?? null"
-                />
-              </p>
-            </div>
-          }
         </div>
-      </div>
+      }
+      @if (scheduledLabel(); as when) {
+        <span pdz-page-header-meta class="matchup__when">
+          <pdz-icon name="schedule" [size]="16" />
+          {{ when }}
+          <pdz-countdown [target]="details.scheduledDate ?? null" />
+        </span>
+      }
       @if (config.share) {
         <button
+          pdz-page-header-actions
           pdz-button
-          class="matchup__action"
+          icon="share"
+          variant="outlined"
           color="neutral"
-          variant="tonal"
           (click)="openShareDialog()"
         >
           Share
         </button>
       }
-    </div>
+    </pdz-page-header>
 
     <div class="matchup__body" [class.matchup__body--fabs]="panelEnabled">
       <pdz-matchup [matchupData]="matchupData"></pdz-matchup>
@@ -136,31 +132,10 @@
   }
 } @else {
   <div class="matchup__main" role="status" aria-label="Loading matchup">
-    <div class="matchup__header">
-      @if (config.back) {
-        <pdz-skeleton variant="block" width="4rem" height="2rem"></pdz-skeleton>
-      }
-      <div class="matchup__details">
-        <div class="matchup__details-card">
-          @for (detail of skeletonDetails; track $index) {
-            <div class="matchup__detail">
-              <pdz-skeleton
-                variant="block"
-                width="4rem"
-                height="0.8rem"
-              ></pdz-skeleton>
-              <pdz-skeleton
-                variant="block"
-                width="5.5rem"
-                height="1rem"
-              ></pdz-skeleton>
-            </div>
-          }
-        </div>
-      </div>
-      @if (config.share) {
-        <pdz-skeleton variant="block" width="4rem" height="2rem"></pdz-skeleton>
-      }
+    <div class="matchup__header-skeleton">
+      <pdz-skeleton variant="block" width="8rem" height="0.75rem" />
+      <pdz-skeleton variant="block" width="16rem" height="1.75rem" />
+      <pdz-skeleton variant="block" width="12rem" height="0.875rem" />
     </div>
 
     <div class="matchup__body matchup-skeleton__body">

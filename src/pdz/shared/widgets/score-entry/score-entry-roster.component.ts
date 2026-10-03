@@ -2,7 +2,6 @@ import { Component, computed, input } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { getNameByPid } from '@pdz/shared/data/namedex';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
-import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
 import { InputDirective } from '@pdz/shared/inputs/field/input.directive';
 import { SelectOptionComponent } from '@pdz/shared/dropdowns/select/select-option.component';
@@ -34,7 +33,6 @@ import {
   styleUrl: './score-entry-roster.component.scss',
   imports: [
     ButtonComponent,
-    IconComponent,
     InputDirective,
     ReactiveFormsModule,
     SelectComponent,
@@ -47,7 +45,7 @@ export class ScoreEntryRosterComponent {
   readonly side = input.required<ScoreEntrySide>();
   readonly teamName = input('');
   readonly pokedex = input<Record<string, ScoreEntryPokemon>>({});
-  readonly accent = input<'primary' | 'secondary' | 'neutral'>('neutral');
+  readonly team = input<'team1' | 'team2' | null>(null);
 
   protected readonly statuses = SCORE_ENTRY_STATUSES;
   protected readonly killFields = SCORE_ENTRY_KILL_FIELDS;
@@ -56,7 +54,7 @@ export class ScoreEntryRosterComponent {
     rosterEntries(this.game(), this.side()),
   );
 
-  protected readonly facingRight = computed(() => this.side() === 'side1');
+  protected readonly facingRight = computed(() => this.team() !== 'team2');
 
   protected readonly score = computed(() =>
     scoreControl(this.game(), this.side()),

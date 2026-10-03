@@ -19,7 +19,7 @@
 
   &:hover,
   &:focus-visible {
-    background-color: pdz.color(surface-container-highest);
+    background-color: pdz.color(state-hover);
   }
 
   &:focus-visible {

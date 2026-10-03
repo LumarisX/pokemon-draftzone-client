@@ -4,17 +4,14 @@
 $theme-overrides: (
   light: accent.apply(
       (
-        // Logo Colors
         logo-top: "orange-450",
         logo-bottom: "cyan-450",
 
-        // Loading Colors
         loading-primary-high: "orange-550",
         loading-primary-low: "orange-300",
         loading-secondary-high: "cyan-550",
         loading-secondary-low: "cyan-300",
 
-        // Hero
         hero: linear-gradient(
             135deg,
             var(--pdz-color-orange-350),
@@ -27,17 +24,14 @@ $theme-overrides: (
     ),
   dark: accent.apply(
       (
-        // Logo Colors
         logo-top: "orange-400",
         logo-bottom: "cyan-400",
 
-        // Loading Colors
         loading-primary-high: "orange-350",
         loading-primary-low: "orange-550",
         loading-secondary-high: "cyan-350",
         loading-secondary-low: "cyan-550",
 
-        // Hero
         hero: linear-gradient(
             135deg,
             var(--pdz-color-orange-400),

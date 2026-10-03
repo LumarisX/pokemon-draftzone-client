@@ -1,94 +1,44 @@
-<div class="homepage">
-  <div class="homepage__hero">
-    <div class="homepage__title">
-      <span class="homepage__title-text homepage__title-text--desktop">
-        POKEMON
-      </span>
-      <pdz-icon
-        name="logo-small"
-        [height]="64"
-        [width]="64"
-        class="homepage__title-logo"
-      ></pdz-icon>
-      <span class="homepage__title-text homepage__title-text--mobile-stack">
-        <span class="homepage__title-text homepage__title-text--mobile">
-          POKEMON
-        </span>
+<section class="hero" aria-labelledby="home-title">
+  <h1 class="hero__title" id="home-title" aria-label="Pokémon DraftZone">
+    <span class="hero__word hero__word--start" aria-hidden="true">Pokémon</span>
+    <pdz-icon class="hero__logo" name="logo-small" [size]="64" aria-hidden="true" />
+    <span class="hero__word hero__word--end" aria-hidden="true">DraftZone</span>
+  </h1>
+  <p class="hero__tagline">
+    Plan your draft. Prep your matchups. Win your games.
+  </p>
+</section>
 
-        <span class="homepage__title-text"> DRAFTZONE </span>
-      </span>
-    </div>
-    <!-- <p class="homepage__subtitle">
-      Plan your draft. Prep your matchups. Win your games.
-    </p> -->
-    <div class="homepage__secondary-actions">
-      <div class="homepage__secondary-action-wrapper">
-        <span class="homepage__secondary-action-title"> About DraftZone </span>
-        <button
-          type="button"
-          class="homepage__secondary-action"
-          routerLink="/about"
-        >
-          <pdz-icon [size]="iconSize" name="info"></pdz-icon>
-        </button>
-      </div>
-      <div class="homepage__secondary-action-wrapper">
-        <span class="homepage__secondary-action-title"> Shop For Merch </span>
-        <a
-          class="homepage__secondary-action homepage__secondary-action--github"
-          href="https://shop.pokemondraftzone.com"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <pdz-icon [size]="iconSize" fill name="apparel"></pdz-icon>
-        </a>
-      </div>
-      <div class="homepage__secondary-action-wrapper">
-        <span class="homepage__secondary-action-title"> Join Our Discord </span>
-        <a
-          class="homepage__secondary-action homepage__secondary-action--discord"
-          href="https://discord.gg/sQUEBW4UVx"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <pdz-icon [size]="iconSize" name="discord"></pdz-icon>
-        </a>
-      </div>
-      <div class="homepage__secondary-action-wrapper">
-        <span class="homepage__secondary-action-title">
-          Support DraftZone
-        </span>
-        <a
-          class="homepage__secondary-action"
-          href="https://shop.pokemondraftzone.com/pages/join-support"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <pdz-icon [size]="iconSize" fill name="favorite"></pdz-icon>
-        </a>
-      </div>
-      <div class="homepage__secondary-action-wrapper">
-        <span class="homepage__secondary-action-title"> Github Repo </span>
-        <a
-          class="homepage__secondary-action"
-          href="https://github.com/LumarisX/pokemon-draftzone-client"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <pdz-icon [size]="iconSize" name="github"></pdz-icon>
-        </a>
-      </div>
-    </div>
-  </div>
+<div class="home">
+  <nav class="home__actions" aria-label="DraftZone links">
+    <a pdz-button icon="info" [routerLink]="['/', aboutPath]">About DraftZone</a>
+    @for (link of links; track link.href) {
+      <a
+        pdz-button
+        variant="outlined"
+        color="neutral"
+        target="_blank"
+        rel="noopener noreferrer"
+        [href]="link.href"
+      >
+        <pdz-icon [name]="link.icon" [fill]="!!link.fill" [size]="20" />
+        {{ link.label }}
+      </a>
+    }
+  </nav>
 
-  <div class="homepage__info">
-    <div class="homepage__panel">
-      <h2 class="homepage__panel-title">News</h2>
-      <pdz-news-core></pdz-news-core>
-    </div>
-    <div class="homepage__panel">
-      <h2 class="homepage__panel-title">Changelog</h2>
-      <pdz-changelog-core></pdz-changelog-core>
-    </div>
+  <div class="panels">
+    <pdz-card padding="lg" class="panel">
+      <section class="panel__body" aria-labelledby="home-news">
+        <h2 class="panel__title" id="home-news">News</h2>
+        <pdz-news-core class="panel__content" />
+      </section>
+    </pdz-card>
+    <pdz-card padding="lg" class="panel">
+      <section class="panel__body" aria-labelledby="home-changelog">
+        <h2 class="panel__title" id="home-changelog">Changelog</h2>
+        <pdz-changelog-core class="panel__content" />
+      </section>
+    </pdz-card>
   </div>
 </div>

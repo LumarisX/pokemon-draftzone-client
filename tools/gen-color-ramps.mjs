@@ -128,7 +128,7 @@ function buildRamp(name, curves) {
   if (name === "gray") {
     for (const step of STEPS) {
       const L = LADDER[step];
-      const t = Math.max(0, (0.6 - L) / (0.6 - LADDER[950]));
+      const t = Math.max(0.3, (0.6 - L) / (0.6 - LADDER[950]));
       ramp[step] = toHex(L, GRAY_MAX_CHROMA * t, GRAY_HUE);
     }
     return ramp;

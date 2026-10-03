@@ -17,6 +17,7 @@ import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 import { CardComponent } from '@pdz/shared/data/card/card.component';
 import { ChipComponent } from '@pdz/shared/data/chip/chip.component';
 import { DialogService } from '@pdz/shared/dialogs/dialog/dialog.service';
+import { EmptyStateComponent } from '@pdz/shared/feedback/empty-state/empty-state.component';
 import { ToastService } from '@pdz/shared/feedback/toast/toast.service';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
@@ -41,6 +42,7 @@ type Scope = 'public' | 'mine';
     ButtonComponent,
     CardComponent,
     ChipComponent,
+    EmptyStateComponent,
     FieldComponent,
     IconComponent,
     InputDirective,
@@ -130,9 +132,9 @@ export class TierListBrowseComponent {
     this.scope.set(scope);
   }
 
-  protected get hasFilters(): boolean {
-    return !!this.query() || !!this.format() || !!this.ruleset();
-  }
+  protected readonly hasFilters = computed(
+    () => !!this.query() || !!this.format() || !!this.ruleset(),
+  );
 
   protected clearFilters(): void {
     this.query.set('');

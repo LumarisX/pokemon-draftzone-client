@@ -135,7 +135,7 @@ export class ApplicantsPanelComponent {
       },
       {
         id: 'out',
-        label: 'Not participating',
+        label: 'Not Participating',
         hint: 'Denied, dropped, or replaced by another coach.',
         selectable: false,
         entries: entries.filter(

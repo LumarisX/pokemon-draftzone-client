@@ -1,23 +1,20 @@
 @if (form && matchup) {
   <form class="score" [formGroup]="form" (ngSubmit)="submit()">
-    <header class="score__bar">
+    <pdz-page-header
+      compact
+      backLabel="Back to Draft"
+      [title]="teamName('side1') + ' vs ' + teamName('side2')"
+      [backLink]="['/', draftPath, teamId]"
+    >
       <button
+        pdz-page-header-actions
         pdz-button
-        size="sm"
-        color="neutral"
-        variant="outlined"
-        type="button"
-        [routerLink]="['/', draftPath, teamId]"
+        type="submit"
+        [loading]="saving()"
       >
-        Cancel
+        Save Result
       </button>
-      <h1 class="score__title">
-        {{ teamName("side1") }} vs {{ teamName("side2") }}
-      </h1>
-      <button pdz-button size="sm" type="submit" [loading]="saving()">
-        {{ saving() ? "Saving…" : "Submit" }}
-      </button>
-    </header>
+    </pdz-page-header>
 
     <pdz-score-entry-match
       [match]="match"

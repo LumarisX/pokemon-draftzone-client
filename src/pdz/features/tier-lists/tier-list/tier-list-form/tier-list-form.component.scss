@@ -23,7 +23,6 @@
   min-height: 0;
 }
 
-// ─── Toolbar (form-specific) ──────────────────────────────────────────────
 
 .toolbar {
   &__actions {
@@ -42,7 +41,6 @@
   }
 }
 
-// ─── Tier column (form-specific) ──────────────────────────────────────────
 
 .tier-container--null {
   display: flex;
@@ -51,9 +49,9 @@
   min-width: 0;
   flex: 0 0 40%;
   padding: pdz.space(sm);
-  border: 1px solid pdz.color(outline-variant);
+  border: 1px solid pdz.color(border-subtle);
   border-radius: pdz.shape(corner-lg);
-  background-color: pdz.color(surface-container-low);
+  background-color: pdz.color(raised);
 
   @include respond-above(medium) {
     flex: 0 0 auto;
@@ -114,15 +112,15 @@
     padding-block: pdz.space(2xs);
 
     &--null {
-      background-color: pdz.color(secondary-container);
-      color: pdz.color(on-secondary-container);
-      border-bottom: 2px solid pdz.color(secondary-accent);
+      background-color: pdz.color(state-pressed);
+      color: pdz.color(on-surface);
+      border-bottom: 1px solid pdz.color(border-control);
     }
 
     &--banned {
       background-color: pdz.color(danger-container);
       color: pdz.color(on-danger-container);
-      border-bottom: 2px solid pdz.color(danger);
+      border-bottom: 1px solid pdz.color(danger);
     }
   }
 
@@ -162,7 +160,7 @@
       @include text(body-sm);
       font-style: italic;
       min-height: 120px;
-      border: 2px dashed pdz.color(outline-variant);
+      border: 2px dashed pdz.color(border-control);
       border-radius: pdz.shape(corner-xs);
       margin: pdz.space(2xs);
 
@@ -175,7 +173,7 @@
         border-color: pdz.color(primary-accent);
         border-style: solid;
         color: pdz.color(on-primary-container);
-        font-weight: 600;
+        font-weight: pdz.font-weight(semibold);
       }
     }
   }
@@ -189,7 +187,7 @@
   }
 
   &--null {
-    border: 2px solid pdz.color(secondary-accent);
+    border: 1px dashed pdz.color(border-control);
 
     .tier__pokemon-list {
       min-height: 0;
@@ -201,7 +199,7 @@
   }
 
   &--banned {
-    border: 2px solid pdz.color(danger);
+    border: 1px solid pdz.color(danger);
 
     .tier__pokemon-list {
       min-height: 0;
@@ -213,17 +211,15 @@
   }
 }
 
-// ─── Pokemon card ─────────────────────────────────────────────────────────
-
 @keyframes pokemon-flash {
   0% {
-    background-color: pdz.color(surface);
+    background-color: pdz.color(raised-high);
   }
   30% {
     background-color: pdz.color(primary-container);
   }
   100% {
-    background-color: pdz.color(surface);
+    background-color: pdz.color(raised-high);
   }
 }
 
@@ -232,8 +228,8 @@
   align-items: center;
   gap: pdz.space(xs);
   padding: pdz.space(xs);
-  background-color: pdz.color(surface);
-  border: 1px solid pdz.color(outline-variant);
+  background-color: pdz.color(raised-high);
+  border: 1px solid pdz.color(border-subtle);
   border-radius: pdz.shape(corner-xs);
   cursor: grab;
   transition:
@@ -250,22 +246,21 @@
   }
 
   &:hover {
-    background-color: pdz.color(surface-container-high);
     border-color: pdz.color(primary-accent);
-    box-shadow: var(--pdz-level-1);
+    box-shadow: var(--pdz-elevation-1);
   }
 
   &__select-indicator {
     position: absolute;
-    top: -4px;
-    right: -4px;
+    top: calc(-1 * #{pdz.space(xs)});
+    right: calc(-1 * #{pdz.space(xs)});
     display: flex;
     align-items: center;
     justify-content: center;
     background-color: pdz.color(primary);
     border-radius: pdz.shape(corner-full);
-    padding: 2px;
-    box-shadow: var(--pdz-level-2);
+    padding: pdz.space(2xs);
+    box-shadow: var(--pdz-elevation-2);
     z-index: 1;
 
     pdz-icon {
@@ -315,7 +310,6 @@
   }
 }
 
-// ─── Add tier ─────────────────────────────────────────────────────────────
 
 .unsaved-indicator {
   display: inline-flex;

@@ -30,9 +30,9 @@
   align-items: center;
   gap: pdz.space(2xs);
   padding: pdz.space(3xs) pdz.space(2xs);
-  border: 1px solid pdz.color(outline-variant);
+  border: 1px solid pdz.color(border-subtle);
   border-radius: pdz.shape(corner-sm);
-  background: pdz.color(surface-container-lowest);
+  background: pdz.color(raised-high);
 }
 
 .tier--mine {

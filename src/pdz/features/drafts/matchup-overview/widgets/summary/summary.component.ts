@@ -3,7 +3,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SwapOpponentButton } from '@pdz/shared/buttons/swap-opponent/swap-opponent.component';
 import { WidgetComponent } from '@pdz/shared/layout/widget/widget.component';
 import { SummaryCoreComponent } from '@pdz/shared/widgets/summary-core/summary-core.component';
-import { Summary } from '../../matchup-interface';
+import { Summary } from '@pdz/features/drafts/matchup-overview/matchup-interface';
 
 @Component({
   selector: 'pdz-summary',

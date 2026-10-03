@@ -1,23 +1,19 @@
 <header class="navbar">
-  <!-- Mobile navigation: a section can take the trigger over with its own drawer -->
   @if (navDrawer(); as drawer) {
     <button
-      type="button"
       pdz-button
       variant="ghost"
       color="neutral"
       iconOnly
+      icon="menu"
       class="mobile-menu"
       [attr.aria-label]="drawer.ariaLabel"
       [attr.aria-expanded]="drawer.isOpen()"
       (click)="drawer.toggle()"
-    >
-      <pdz-icon name="menu"></pdz-icon>
-    </button>
+    ></button>
   } @else {
     <pdz-menu class="mobile-menu" align="start" aria-label="Navigation menu">
       <button
-        type="button"
         pdz-button
         variant="ghost"
         color="neutral"
@@ -25,27 +21,25 @@
         pdz-menu-trigger
         aria-label="Open navigation menu"
       >
-        <pdz-icon name="menu"></pdz-icon>
-        @if (anyBadge$ | async) {
+        <pdz-icon name="menu" />
+        @if (anyBadge()) {
           <pdz-badge dot floating></pdz-badge>
         }
       </button>
 
-      @for (tab of TABS; track tab.route) {
+      @for (tab of tabs; track tab.route) {
         <a pdz-menu-item [routerLink]="tab.route">
           {{ tab.title }}
-          @if (tab.badge | async; as count) {
-            @if (count) {
-              <pdz-badge size="sm">{{ count }}</pdz-badge>
-            }
+          @if (tab.badge?.(); as count) {
+            <pdz-badge size="sm">{{ count }}</pdz-badge>
           }
         </a>
       }
 
       <div class="menu-section-label">Other Tools</div>
-      @for (tool of TOOLS; track tool.route) {
-        <a pdz-menu-item [icon]="tool.icon" [routerLink]="tool.route">
-          {{ tool.title }}
+      @for (item of tools; track item.route) {
+        <a pdz-menu-item [icon]="item.icon" [routerLink]="item.route">
+          {{ item.title }}
         </a>
       }
 
@@ -58,7 +52,6 @@
     </pdz-menu>
   }
 
-  <!-- Home button with logo -->
   <a
     pdz-button
     variant="ghost"
@@ -67,37 +60,29 @@
     routerLink="/"
     aria-label="Go to home page"
   >
-    <pdz-icon name="logo" [height]="36"></pdz-icon>
-    @if (newsBadge | async) {
+    <pdz-icon name="logo" [height]="36" />
+    @if (newsBadge()) {
       <pdz-badge dot floating></pdz-badge>
     }
   </a>
 
-  <!-- Desktop navigation tabs -->
   <pdz-tab-nav class="desktop-tabs" label="Main navigation">
-    @for (tab of TABS; track tab.route) {
+    @for (tab of tabs; track tab.route) {
       <a pdz-tab-link [routerLink]="tab.route" routerLinkActive>
         <span>{{ tab.title }}</span>
-        @if (tab.badge | async; as count) {
-          @if (count) {
-            <pdz-badge size="sm">{{ count }}</pdz-badge>
-          }
+        @if (tab.badge?.(); as count) {
+          <pdz-badge size="sm">{{ count }}</pdz-badge>
         }
       </a>
     }
 
     <pdz-menu align="start" aria-label="Other tools">
-      <button
-        type="button"
-        pdz-tab-link
-        pdz-menu-trigger
-        [active]="toolsActive$ | async"
-      >
+      <button pdz-tab-link pdz-menu-trigger [active]="toolsActive()">
         Other Tools
       </button>
-      @for (tool of TOOLS; track tool.route) {
-        <a pdz-menu-item [icon]="tool.icon" [routerLink]="tool.route">
-          {{ tool.title }}
+      @for (item of tools; track item.route) {
+        <a pdz-menu-item [icon]="item.icon" [routerLink]="item.route">
+          {{ item.title }}
         </a>
       }
     </pdz-menu>
@@ -110,20 +95,19 @@
   <span class="toolbar-spacer"></span>
 
   <a
-    href="https://shop.pokemondraftzone.com"
-    target="_blank"
-    rel="noopener noreferrer"
-    aria-label="Visit the shop (opens in new tab)"
     pdz-button
     variant="ghost"
     color="neutral"
     size="lg"
     class="shop-link"
+    href="https://shop.pokemondraftzone.com"
+    target="_blank"
+    rel="noopener noreferrer"
+    aria-label="Visit the shop (opens in new tab)"
   >
-    <pdz-icon name="apparel" [height]="20"></pdz-icon>
-
+    <pdz-icon name="apparel" [height]="20" />
     <span class="shop-label">Shop</span>
   </a>
 
-  <pdz-login-button></pdz-login-button>
+  <pdz-login-button />
 </header>

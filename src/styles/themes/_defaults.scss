@@ -2,44 +2,71 @@
 @use "tokens/color" as *;
 @use "tools/accent" as accent;
 
-// The classic theme — also the base fallback for all other themes.
-// Other themes only need to override what differs from classic.
+@function -teams($wash) {
+  $out: (
+    focus-ring: var(--pdz-color-primary-accent),
+    versus-gradient:
+      linear-gradient(
+        135deg,
+        var(--pdz-color-primary),
+        var(--pdz-color-secondary)
+      ),
+    versus-wash:
+      linear-gradient(
+        90deg,
+        var(--pdz-color-team1-wash),
+        transparent 42% 58%,
+        var(--pdz-color-team2-wash)
+      ),
+    versus-wash-vertical:
+      linear-gradient(
+        180deg,
+        var(--pdz-color-team1-wash),
+        transparent 42% 58%,
+        var(--pdz-color-team2-wash)
+      ),
+  );
+  @each $team, $role in (team1: primary, team2: secondary) {
+    $out: map.merge(
+      $out,
+      (
+        "#{$team}": var(--pdz-color-#{$role}),
+        "on-#{$team}": var(--pdz-color-on-#{$role}),
+        "#{$team}-accent": var(--pdz-color-#{$role}-accent),
+        "#{$team}-soft": var(--pdz-color-#{$role}-soft),
+        "#{$team}-subtle": var(--pdz-color-#{$role}-subtle),
+        "#{$team}-border": var(--pdz-color-#{$role}-border),
+        "#{$team}-container": var(--pdz-color-#{$role}-container),
+        "#{$team}-container-low": var(--pdz-color-#{$role}-container-low),
+        "on-#{$team}-container": var(--pdz-color-on-#{$role}-container),
+        "#{$team}-wash":
+          color-mix(in srgb, var(--pdz-color-#{$role}) $wash, transparent),
+      )
+    );
+  }
+  @return $out;
+}
 
 $-light-base: (
-  // Surface Colors
-  background: "white",
-  surface: "gray-25",
-  surface-variant: "gray-100",
-  surface-container-lowest: "white",
-  surface-container-low: "gray-25",
-  surface-container: "gray-50",
-  surface-container-high: "gray-75",
-  surface-container-highest: "gray-100",
-  on-surface: "gray-950",
-  on-surface-variant: "gray-900",
-  on-surface-placeholder: "gray-550",
-  outline: "gray-550",
-  outline-variant: "gray-200",
+  ground: "gray-50",
+  raised: "white",
+  raised-high: "white",
+  overlay: "white",
+  floating: "white",
+  inset: "gray-50",
+  border-subtle: "gray-125",
+  border-control: "gray-200",
+  state-hover: color-mix(in srgb, var(--pdz-color-on-surface) 5%, transparent),
+  state-pressed: color-mix(in srgb, var(--pdz-color-on-surface) 9%, transparent),
+  state-strong: color-mix(in srgb, var(--pdz-color-on-surface) 14%, transparent),
+  state-selected: var(--pdz-color-primary-subtle),
 
-  // Menu Theme
-  menu: "gray-550",
-  menu-lighter: "gray-450",
-  menu-darker: "gray-650",
-  on-menu: "white",
-  menu-container: "gray-50",
-  menu-container-low: "gray-25",
-  menu-container-high: "gray-125",
-  menu-container-hover: "gray-75",
-  on-menu-container: "gray-950",
-  menu-hover: "gray-400",
-  menu-border: "gray-200",
-  menu-subtle: "gray-50",
-  menu-gradient: linear-gradient(
-      135deg,
-      var(--pdz-color-gray-125),
-      var(--pdz-color-gray-50)
-    ),
-  // Status Colors
+  on-surface: "gray-950",
+  on-surface-variant: "gray-700",
+  on-surface-muted: "gray-600",
+  on-surface-placeholder: "gray-600",
+  outline: "gray-550",
+
   danger: "red-550",
   on-danger: "white",
   danger-border: "red-250",
@@ -50,7 +77,7 @@ $-light-base: (
   warning-border: "amber-250",
   warning-container: "amber-100",
   on-warning-container: "amber-800",
-  success: "green-550",
+  success: "green-600",
   on-success: "white",
   success-border: "green-250",
   success-container: "green-100",
@@ -61,20 +88,15 @@ $-light-base: (
   info-container: "blue-100",
   on-info-container: "blue-800",
 
-  // Disabled State
   surface-disabled: "gray-100",
   on-surface-disabled: "gray-400",
 
-  // Inverse Colors
   surface-inverse: "gray-900",
   on-surface-inverse: "gray-75",
 
-  // Effects
   shadow: #4d4d4d,
   scrim: "black",
-  elevation-highlight: rgba(255, 255, 255, 0),
 
-  // Logo Colors (default rings use orange)
   logo-ring-1: "orange-175",
   logo-ring-2: "orange-250",
   logo-ring-3: "orange-300",
@@ -86,7 +108,6 @@ $-light-base: (
   logo-core-2: "logo-core-color",
   logo-background: "white",
 
-  // Semantic Data Colors
   positive: "mint-175",
   on-positive: "mint-800",
   positive-container: "mint-75",
@@ -97,22 +118,18 @@ $-light-base: (
   on-negative-container: "rose-825",
   neutral: "gray-175",
 
-  // Scale Colors
   scale-neutral: "gray-25",
   scale-positive: "mint-125",
   scale-negative: "rose-300",
 
-  // Logo
   logo-top: "cyan-450",
   logo-bottom: "orange-450",
 
-  // Loading
   loading-primary-high: "cyan-550",
   loading-primary-low: "cyan-300",
   loading-secondary-high: "orange-550",
   loading-secondary-low: "orange-300",
 
-  // Hero
   hero: linear-gradient(
       135deg,
       var(--pdz-color-cyan-350),
@@ -137,40 +154,25 @@ $-light-base: (
 );
 
 $-dark-base: (
-  // Surface Colors
-  background: "gray-875",
-  surface: "gray-850",
-  surface-variant: "gray-775",
-  surface-container-lowest: "gray-900",
-  surface-container-low: "gray-825",
-  surface-container: "gray-800",
-  surface-container-high: "gray-775",
-  surface-container-highest: "gray-750",
+  ground: "gray-875",
+  raised: "gray-825",
+  raised-high: "gray-775",
+  overlay: "gray-750",
+  floating: "gray-725",
+  inset: "gray-875",
+  border-subtle: rgba(255, 255, 255, 0.08),
+  border-control: "gray-700",
+  state-hover: color-mix(in srgb, var(--pdz-color-on-surface) 6%, transparent),
+  state-pressed: color-mix(in srgb, var(--pdz-color-on-surface) 10%, transparent),
+  state-strong: color-mix(in srgb, var(--pdz-color-on-surface) 16%, transparent),
+  state-selected: var(--pdz-color-primary-subtle),
+
   on-surface: "gray-75",
   on-surface-variant: "gray-225",
+  on-surface-muted: "gray-300",
   on-surface-placeholder: "gray-450",
-  outline: "gray-600",
-  outline-variant: "gray-700",
+  outline: "gray-550",
 
-  // Menu Theme
-  menu: "gray-75",
-  menu-lighter: "gray-175",
-  menu-darker: "gray-25",
-  on-menu: "gray-950",
-  menu-container: "gray-825",
-  menu-container-low: "gray-875",
-  menu-container-high: "gray-800",
-  menu-container-hover: "gray-775",
-  on-menu-container: "gray-175",
-  menu-hover: "gray-550",
-  menu-border: "gray-700",
-  menu-subtle: "gray-875",
-  menu-gradient: linear-gradient(
-      135deg,
-      var(--pdz-color-gray-800),
-      var(--pdz-color-gray-700)
-    ),
-  // Status Colors
   danger: "red-250",
   on-danger: "red-900",
   danger-border: "red-700",
@@ -192,20 +194,15 @@ $-dark-base: (
   info-container: "blue-825",
   on-info-container: "blue-100",
 
-  // Disabled State
   surface-disabled: "gray-825",
   on-surface-disabled: "gray-600",
 
-  // Inverse Colors
   surface-inverse: "gray-75",
   on-surface-inverse: "gray-900",
 
-  // Effects
   shadow: "black",
   scrim: "black",
-  elevation-highlight: rgba(255, 255, 255, 0.07),
 
-  // Logo Colors (default rings use orange)
   logo-ring-1: "orange-175",
   logo-ring-2: "orange-250",
   logo-ring-3: "orange-300",
@@ -217,7 +214,6 @@ $-dark-base: (
   logo-core-2: "logo-core-color",
   logo-background: "white",
 
-  // Semantic Data Colors
   positive: "mint-300",
   on-positive: "mint-800",
   positive-container: "mint-725",
@@ -228,22 +224,18 @@ $-dark-base: (
   on-negative-container: "rose-75",
   neutral: "gray-700",
 
-  // Scale Colors
   scale-neutral: "gray-875",
   scale-positive: "mint-650",
   scale-negative: "rose-750",
 
-  // Logo
   logo-top: "cyan-400",
   logo-bottom: "orange-400",
 
-  // Loading
   loading-primary-high: "cyan-350",
   loading-primary-low: "cyan-550",
   loading-secondary-high: "orange-350",
   loading-secondary-low: "orange-550",
 
-  // Hero
   hero: linear-gradient(
       135deg,
       var(--pdz-color-cyan-400),
@@ -268,9 +260,20 @@ $-dark-base: (
 );
 
 $defaults: (
-  light: accent.apply($-light-base, "cyan", "orange", light),
-  dark: accent.apply($-dark-base, "cyan", "orange", dark),
+  light:
+    accent.apply(
+      map.merge($-light-base, -teams(14%)),
+      "cyan",
+      "orange",
+      light
+    ),
+  dark:
+    accent.apply(
+      map.merge($-dark-base, -teams(18%)),
+      "cyan",
+      "orange",
+      dark
+    ),
 );
 
-// All valid semantic color token names — used by pdz.color() for compile-time validation.
 $valid-tokens: map.keys(map.get($defaults, light));

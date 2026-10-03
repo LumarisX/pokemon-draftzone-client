@@ -19,13 +19,13 @@
           color="neutral"
           [routerLink]="editRoute()"
         >
-          Edit costs
+          Edit Costs
           <pdz-icon name="arrow_forward" [size]="16" aria-hidden="true" />
         </a>
       </div>
     </div>
 
-    <table class="tlp__table">
+    <table class="pdz-table" data-density="compact">
       <thead>
         <tr>
           <th scope="col">Tier</th>
@@ -88,10 +88,10 @@
     </div>
     <div class="tlp__actions">
       <button pdz-button type="button" size="sm" variant="outlined" color="neutral">
-        Start from a template
+        Start from a Template
       </button>
       <a pdz-button size="sm" [routerLink]="editRoute()">
-        Build one
+        Build One
         <pdz-icon name="arrow_forward" [size]="16" aria-hidden="true" />
       </a>
     </div>

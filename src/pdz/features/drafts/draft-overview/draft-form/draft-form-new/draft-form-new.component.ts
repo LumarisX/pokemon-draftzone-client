@@ -1,9 +1,9 @@
 import { Location } from '@angular/common';
 import { Component, OnInit, inject } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { DraftService } from '../../draft.service';
+import { DraftService } from '@pdz/features/drafts/draft-overview/draft.service';
 import { getNameByPid } from '@pdz/shared/data/namedex';
-import { DraftPokemon } from '../../../draft.model';
+import { DraftPokemon } from '@pdz/features/drafts/draft.model';
 import {
   DraftFormCoreComponent,
   DraftFormData,

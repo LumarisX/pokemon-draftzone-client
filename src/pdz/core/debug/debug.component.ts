@@ -1,20 +1,21 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { AuthService } from '../services/auth0.service';
+import { AuthService } from '@pdz/core/services/auth0.service';
+import { ToastService } from '@pdz/shared/feedback/toast/toast.service';
 import { PageComponent } from '@pdz/shared/layout/page/page.component';
+import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
+import { safeStorage } from '@pdz/core/utils/storage';
 
 @Component({
   selector: 'pdz-debug',
-  imports: [PageComponent,
-    ButtonComponent,
-    RouterLink,
-  ],
+  imports: [PageComponent, PageHeaderComponent, ButtonComponent, RouterLink],
   templateUrl: './debug.component.html',
   styleUrl: './debug.component.scss',
 })
 export class DebugComponent implements OnInit {
   private authService = inject(AuthService);
+  private toast = inject(ToastService);
 
   debugData!: {
     browser: string;
@@ -82,7 +83,6 @@ export class DebugComponent implements OnInit {
   }
 
   getMemoryUsage() {
-    // Safely check if `performance.memory` exists and is accessible
     if ('memory' in performance) {
       const memory = (performance as any).memory;
       return {
@@ -92,7 +92,6 @@ export class DebugComponent implements OnInit {
       };
     }
 
-    // Return 'N/A' if `performance.memory` is not available
     return {
       jsHeapSizeLimit: 'N/A',
       totalJSHeapSize: 'N/A',
@@ -111,7 +110,6 @@ export class DebugComponent implements OnInit {
   }
 
   getLoginId() {
-    // Mock implementation. Replace with actual login ID retrieval logic.
     this.authService.user$.subscribe((data) => {
       if (!data) return;
       this.debugData.loginId = `${data.username} (${data.sub})`;
@@ -119,14 +117,14 @@ export class DebugComponent implements OnInit {
   }
 
   getPlannerData(): string {
-    return localStorage.getItem('plannerData') || 'Empty';
+    return safeStorage.get('plannerData') || 'Empty';
   }
 
   copyToClipboard(): void {
     const debugInfo = JSON.stringify(this.debugData, null, 2);
     navigator.clipboard.writeText(debugInfo).then(
-      () => alert('Debugging info copied to clipboard!'),
-      (err) => alert('Failed to copy debugging info.'),
+      () => this.toast.success('Debugging info copied.'),
+      () => this.toast.error('Could not copy the debugging info.'),
     );
   }
 

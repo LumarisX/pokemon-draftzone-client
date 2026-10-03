@@ -11,7 +11,6 @@
   gap: pdz.space(md);
 }
 
-// ─── Toolbar (list-specific) ──────────────────────────────────────────────
 
 .toolbar {
   &__search input {
@@ -28,7 +27,6 @@
   }
 }
 
-// ─── Filter controls ──────────────────────────────────────────────────────
 
 .filter-badge {
   display: inline-flex;
@@ -55,7 +53,7 @@
     align-items: center;
     justify-content: space-between;
     padding: pdz.space(xs) pdz.space(sm) pdz.space(sm);
-    border-bottom: 1px solid pdz.color(outline-variant);
+    border-bottom: 1px solid pdz.color(border-subtle);
     gap: pdz.space(sm);
   }
 
@@ -64,7 +62,7 @@
     padding-top: pdz.space(xs);
     display: flex;
     flex-direction: column;
-    gap: 2px;
+    gap: pdz.space(2xs);
   }
 }
 
@@ -81,17 +79,11 @@
     cursor: pointer;
   }
 
-  label.pdz-type {
-    flex: 0 0 auto;
-    width: 5rem;
-  }
-
   &:hover {
-    background-color: pdz.color(surface-container-highest);
+    background-color: pdz.color(state-hover);
   }
 }
 
-// ─── Tier column (list-specific) ──────────────────────────────────────────
 
 .tier {
   flex: 1 0 14rem;
@@ -150,7 +142,7 @@
       align-items: center;
       justify-content: center;
       min-height: 5rem;
-      border: 2px dashed pdz.color(outline-variant);
+      border: 2px dashed pdz.color(border-control);
       border-radius: pdz.shape(corner-xs);
       margin: pdz.space(2xs);
       color: pdz.color(on-surface-variant);
@@ -165,15 +157,26 @@
   }
 }
 
-// ─── Pokemon card ─────────────────────────────────────────────────────────
+
+.pokemon-entry,
+.pokemon-tile {
+  font: inherit;
+  color: inherit;
+  text-align: start;
+
+  &:focus-visible {
+    @include pdz.focus-ring;
+  }
+}
 
 .pokemon-entry {
   display: flex;
+  width: 100%;
   align-items: center;
   gap: pdz.space(xs);
   padding: pdz.space(xs);
-  background-color: pdz.color(surface);
-  border: 1px solid pdz.color(outline-variant);
+  background-color: pdz.color(raised-high);
+  border: 1px solid pdz.color(border-subtle);
   border-radius: pdz.shape(corner-sm);
   cursor: pointer;
   transition:
@@ -187,7 +190,7 @@
   &:hover:not(.is-drafted) {
     background-color: pdz.color(primary-container-low);
     border-color: pdz.color(primary-accent);
-    box-shadow: var(--pdz-level-1);
+    box-shadow: var(--pdz-elevation-1);
     transform: translateY(-1px);
   }
 
@@ -209,12 +212,11 @@
     min-width: 0;
     display: flex;
     flex-direction: column;
-    gap: 2px;
+    gap: pdz.space(2xs);
   }
 
   &__name {
-    @include text(body-sm);
-    font-weight: 600;
+    @include text(body-sm-strong);
     color: pdz.color(on-surface);
     word-break: break-word;
   }
@@ -223,14 +225,14 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 2px;
+    gap: pdz.space(2xs);
     flex-shrink: 0;
   }
 
   &__tera {
     display: flex;
     align-items: center;
-    gap: 2px;
+    gap: pdz.space(2xs);
     @include text(label);
     color: pdz.color(on-surface-variant);
   }
@@ -241,7 +243,7 @@
   }
 
   &.is-drafted {
-    background-color: pdz.color(surface-variant);
+    background-color: pdz.color(surface-disabled);
     cursor: default;
     opacity: 0.75;
 
@@ -252,13 +254,15 @@
   }
 }
 
-// ─── Compact view ─────────────────────────────────────────────────────────
 
 .pokemon-tile {
   display: flex;
   align-items: center;
   justify-content: center;
   aspect-ratio: 1;
+  padding: 0;
+  border: none;
+  background: transparent;
   border-radius: pdz.shape(corner-xs);
   cursor: pointer;
   transition:

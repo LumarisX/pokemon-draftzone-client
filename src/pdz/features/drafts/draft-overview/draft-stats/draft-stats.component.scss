@@ -1,46 +1,20 @@
 @use "pdz-theming" as pdz;
 
-.sprite-wrapper {
-  width: 4rem;
-  max-width: 4rem;
-}
-
-.table-container {
-  max-width: min(100rem, 100%);
-  padding: 0 0.5rem 0.5rem;
-}
-
-.content-container {
+.stats {
   display: flex;
-  width: 100%;
-  justify-content: center;
+  flex-direction: column;
+  gap: pdz.layout(section-gap);
 }
 
-.table-wrapper {
+.stats__table {
   --pdz-table-max-height: calc(100vh - 16rem);
-  box-shadow: var(--pdz-level-3);
+  border: 1px solid pdz.color(border-subtle);
 }
 
-.title-bar {
-  position: relative;
-  padding: pdz.space(lg);
+.stats__sprite {
+  width: 4rem;
 }
 
-.back-button {
-  @media (min-width: 768px) {
-    position: absolute;
-    top: 0.5rem;
-    left: 0.5rem;
-  }
-}
-
-.stats-title-wrapper {
-  display: flex;
-  justify-content: center;
-}
-
-.stats-title {
-  font-family: var(--pdz-font-display);
-  @include pdz.text(headline, $family: false);
-  text-align: center;
+.stats__name {
+  @include pdz.text(body-sm-strong);
 }

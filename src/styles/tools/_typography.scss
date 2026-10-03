@@ -26,6 +26,10 @@
   } @else {
     letter-spacing: normal;
   }
+
+  @if map.has-key($style, text-transform) {
+    text-transform: map.get($style, text-transform);
+  }
 }
 
 @mixin caps {

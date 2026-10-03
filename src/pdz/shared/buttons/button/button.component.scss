@@ -5,84 +5,76 @@ $colors: (
   primary: (
     solid: primary,
     on-solid: on-primary,
-    hover-solid: primary-accent,
     container: primary-container,
     on-container: on-primary-container,
-    container-hover: primary-container-hover,
     accent: primary-accent,
-    border: primary-border,
     state: primary-accent,
   ),
   secondary: (
     solid: secondary,
     on-solid: on-secondary,
-    hover-solid: secondary-accent,
     container: secondary-container,
     on-container: on-secondary-container,
-    container-hover: secondary-container-hover,
     accent: secondary-accent,
-    border: secondary-border,
     state: secondary-accent,
   ),
   neutral: (
-    solid: surface-container-highest,
+    solid: state-pressed,
     on-solid: on-surface,
-    hover-solid: surface-container-high,
-    container: surface-container,
+    container: state-hover,
     on-container: on-surface,
-    container-hover: surface-container-high,
     accent: on-surface,
-    border: outline-variant,
     state: on-surface,
   ),
   danger: (
     solid: danger,
     on-solid: on-danger,
-    hover-solid: danger,
     container: danger-container,
     on-container: on-danger-container,
-    container-hover: danger-container,
     accent: danger,
-    border: danger-border,
     state: danger,
   ),
   success: (
     solid: success,
     on-solid: on-success,
-    hover-solid: success,
     container: success-container,
     on-container: on-success-container,
-    container-hover: success-container,
     accent: success,
-    border: success-border,
     state: success,
   ),
 );
 
+@function -layer($color, $amount) {
+  @return linear-gradient(
+    color-mix(in srgb, #{$color} #{$amount}, transparent),
+    color-mix(in srgb, #{$color} #{$amount}, transparent)
+  );
+}
+
 $sizes: (
   xs: (
-    height: 1.5rem,
+    height: pdz.control-height(xs),
     pad: pdz.space(xs),
     gap: pdz.space(2xs),
     radius: pdz.shape(corner-xs),
     role: label,
   ),
   sm: (
-    height: 1.75rem,
+    height: pdz.control-height(sm),
     pad: pdz.space(sm),
     gap: pdz.space(2xs),
     radius: pdz.shape(corner-xs),
     role: label,
   ),
   md: (
-    height: 2.25rem,
+    height: pdz.control-height(md),
     pad: pdz.space(md),
     gap: pdz.space(xs),
     radius: pdz.shape(corner-sm),
     role: body-sm,
   ),
   lg: (
-    height: 2.75rem,
+    height: pdz.control-height(lg),
     pad: pdz.space(lg),
     gap: pdz.space(xs),
     radius: pdz.shape(corner-sm),
@@ -111,14 +103,12 @@ $sizes: (
   :host([data-color="#{$name}"]) {
     --pdz-btn-solid: #{pdz.color(map.get($c, solid))};
     --pdz-btn-on-solid: #{pdz.color(map.get($c, on-solid))};
-    --pdz-btn-hover-solid: #{pdz.color(map.get($c, hover-solid))};
     --pdz-btn-container: #{pdz.color(map.get($c, container))};
     --pdz-btn-on-container: #{pdz.color(map.get($c, on-container))};
-    --pdz-btn-container-hover: #{pdz.color(map.get($c, container-hover))};
     --pdz-btn-accent: #{pdz.color(map.get($c, accent))};
-    --pdz-btn-border: #{pdz.color(map.get($c, border))};
-    --pdz-btn-state: #{pdz.color-rgba(map.get($c, state), 0.12)};
-    --pdz-btn-state-strong: #{pdz.color-rgba(map.get($c, state), 0.2)};
+    --pdz-btn-border: #{pdz.color(border-control)};
+    --pdz-btn-state: #{pdz.color-rgba(map.get($c, state), 0.1)};
+    --pdz-btn-state-strong: #{pdz.color-rgba(map.get($c, state), 0.18)};
   }
 }
 
@@ -127,7 +117,11 @@ $sizes: (
   color: var(--pdz-btn-on-solid);
 
   &:hover:not(:disabled) {
-    background-color: var(--pdz-btn-hover-solid);
+    background-image: -layer(var(--pdz-btn-on-solid), 10%);
+  }
+
+  &:active:not(:disabled) {
+    background-image: -layer(var(--pdz-btn-on-solid), 18%);
   }
 }
 
@@ -136,7 +130,11 @@ $sizes: (
   color: var(--pdz-btn-on-container);
 
   &:hover:not(:disabled) {
-    background-color: var(--pdz-btn-container-hover);
+    background-image: -layer(var(--pdz-btn-on-container), 8%);
+  }
+
+  &:active:not(:disabled) {
+    background-image: -layer(var(--pdz-btn-on-container), 14%);
   }
 }
 
@@ -212,8 +210,7 @@ $sizes: (
 }
 
 :host(:focus-visible) {
-  outline: 2px solid pdz.color(primary-accent);
-  outline-offset: 2px;
+  @include pdz.focus-ring;
 }
 
 :host(:active:not(:disabled)) {

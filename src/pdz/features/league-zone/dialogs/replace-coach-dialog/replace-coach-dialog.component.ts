@@ -9,7 +9,7 @@ import { SelectOptionComponent } from '@pdz/shared/dropdowns/select/select-optio
 import { SelectComponent } from '@pdz/shared/dropdowns/select/select.component';
 import { FieldComponent } from '@pdz/shared/inputs/field/field.component';
 import { InputDirective } from '@pdz/shared/inputs/field/input.directive';
-import { SignUpValue } from '../../tournament-settings/settings-schema';
+import { SignUpValue } from '@pdz/features/league-zone/tournament-settings/settings-schema';
 
 export interface ReplaceCoachDialogData {
   teamName: string;

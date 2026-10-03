@@ -19,9 +19,9 @@ $sizes: (
   max-width: 100%;
 
   --pdz-switch-pad: 2px;
-  --pdz-switch-track: #{pdz.color(surface-container-high)};
+  --pdz-switch-track: #{pdz.color(inset)};
   --pdz-switch-track-border: #{pdz.color(outline)};
-  --pdz-switch-thumb-bg: #{pdz.color(surface)};
+  --pdz-switch-thumb-bg: #{pdz.color(floating)};
   --pdz-switch-thumb-fg: #{pdz.color(on-surface-variant)};
   --pdz-switch-thumb-border: #{pdz.color(outline)};
 }

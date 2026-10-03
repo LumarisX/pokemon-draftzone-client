@@ -1,57 +1,30 @@
 @use "pdz-theming" as pdz;
-@use "mixins" as *;
 
 :host {
   display: flex;
   flex-direction: column;
-  gap: pdz.space(md);
+  gap: pdz.layout(section-gap);
 }
 
 .pool-body {
-  display: flex;
-  flex-wrap: wrap;
-  gap: pdz.space(md);
-  justify-content: center;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: pdz.layout(section-gap);
+  align-items: start;
+
+  @include pdz.respond-above(large) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 .section {
-  padding: pdz.space(md) pdz.space(xs);
-  background-color: pdz.color(surface-container-low);
-  border: 1px solid pdz.color(outline-variant);
-  border-radius: pdz.shape(corner-lg);
   display: flex;
   flex-direction: column;
-  gap: pdz.space(sm);
-  height: fit-content;
-  max-width: 100%;
-  &--matchups {
-    width: fit-content;
-  }
-
-  &-message {
-    @include text(body);
-    color: pdz.color(on-surface-variant);
-    margin: 0;
-
-    &--error {
-      color: pdz.color(danger);
-    }
-  }
-
-  &-header {
-    @include text(title);
-    border-bottom: 2px solid pdz.color(primary-accent);
-    padding: 0 pdz.space(xs);
-  }
-
-  &-body {
-    max-height: 40rem;
-    overflow: auto;
-    scrollbar-gutter: stable both-edges;
-    padding: 0 pdz.space(xs);
-    @include respond-above(medium) {
-      max-height: calc(100vh - 21rem);
-    }
-  }
+  gap: pdz.layout(stack);
 }
 
+.section__title {
+  @include pdz.text(section-title);
+  margin: 0;
+  color: pdz.color(on-surface);
+}

@@ -7,12 +7,10 @@
 .game {
   transition: border-color pdz.duration(base) pdz.easing(standard);
 
-  &[data-winner="side1"] {
-    border-color: pdz.color(primary-border);
-  }
-
-  &[data-winner="side2"] {
-    border-color: pdz.color(secondary-border);
+  @each $team in (team1, team2) {
+    &[data-team="#{$team}"] {
+      border-color: pdz.color(#{$team}-border);
+    }
   }
 }
 
@@ -70,7 +68,7 @@
 .game__replay-input {
   width: 100%;
   min-width: 0;
-  padding-inline-end: 1.75rem;
+  padding-inline-end: pdz.control-height(xs);
 }
 
 .game__replay-action {
@@ -79,8 +77,6 @@
 }
 
 .game__winner {
-  --pdz-select-surface: #{pdz.color(surface-container-lowest)};
-
   min-width: 0;
   width: 100%;
 
@@ -89,16 +85,12 @@
     width: auto;
   }
 
-  &[data-winner="side1"] {
-    --pdz-select-surface: #{pdz.color(primary-container-low)};
-    --pdz-select-border: #{pdz.color(primary-border)};
-    --pdz-select-on-surface: #{pdz.color(on-primary-container)};
-  }
-
-  &[data-winner="side2"] {
-    --pdz-select-surface: #{pdz.color(secondary-container-low)};
-    --pdz-select-border: #{pdz.color(secondary-border)};
-    --pdz-select-on-surface: #{pdz.color(on-secondary-container)};
+  @each $team in (team1, team2) {
+    &[data-team="#{$team}"] {
+      --pdz-select-surface: #{pdz.color(#{$team}-container)};
+      --pdz-select-border: #{pdz.color(#{$team}-border)};
+      --pdz-select-on-surface: #{pdz.color(on-#{$team}-container)};
+    }
   }
 }
 

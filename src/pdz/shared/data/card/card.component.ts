@@ -8,8 +8,8 @@ import {
   input,
 } from '@angular/core';
 
-export type CardTone = 'lowest' | 'low' | 'default' | 'high';
-export type CardColor = 'surface' | 'primary' | 'secondary' | 'danger';
+export type CardTone = 'raised' | 'raised-high';
+export type CardColor = 'neutral' | 'danger' | 'warning' | 'info' | 'success';
 export type CardPadding = 'none' | 'sm' | 'md' | 'lg';
 
 @Component({
@@ -29,17 +29,15 @@ export type CardPadding = 'none' | 'sm' | 'md' | 'lg';
     '[attr.data-color]': 'color()',
     '[attr.data-padding]': 'padding()',
     '[class.pdz-card--interactive]': 'isInteractive()',
-    '[class.pdz-card--elevated]': 'elevated()',
     '[class.pdz-card--selected]': 'selected()',
     '[attr.type]': 'isButton ? "button" : null',
   },
 })
 export class CardComponent {
-  tone = input<CardTone>('low');
-  color = input<CardColor>('surface');
+  tone = input<CardTone>('raised');
+  color = input<CardColor>('neutral');
   padding = input<CardPadding>('md');
   interactive = input(false, { transform: booleanAttribute });
-  elevated = input(false, { transform: booleanAttribute });
   selected = input(false, { transform: booleanAttribute });
 
   private readonly element = inject<ElementRef<HTMLElement>>(ElementRef)

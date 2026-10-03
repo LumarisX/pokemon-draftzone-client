@@ -1,30 +1,27 @@
-<div class="changelog-scroll">
+<div class="changelog">
   @for (entry of changelog; track entry.date) {
-    <div class="changelog-item">
-      <div class="changelog-header">
-        <span class="changelog-date">{{ formatDate(entry.date) }}</span>
-        <span class="changelog-title">{{ entry.title }}</span>
-      </div>
+    <article class="entry">
+      <header class="entry__header">
+        <time class="entry__date" [attr.datetime]="entry.date">{{
+          formatDate(entry.date)
+        }}</time>
+        <h3 class="entry__title">{{ entry.title }}</h3>
+      </header>
       @if (entry.description) {
-        <p class="changelog-description indent">{{ entry.description }}</p>
+        <p class="entry__description">{{ entry.description }}</p>
       }
-      <div class="changelog-body indent">
-        @for (category of entry.categories; track category.type) {
-          <div
-            class="changelog-category"
-            [class]="'changelog-category--' + category.type"
-          >
-            <span class="changelog-category__label">{{
-              category.type | titlecase
-            }}</span>
-            <ul class="changelog-category__list">
-              @for (item of category.items; track $index) {
-                <li>{{ item }}</li>
-              }
-            </ul>
-          </div>
-        }
-      </div>
-    </div>
+      @for (category of entry.categories; track category.type) {
+        <div class="entry__category">
+          <pdz-chip size="xs" [tone]="tone(category.type)">{{
+            category.type | titlecase
+          }}</pdz-chip>
+          <ul class="entry__list">
+            @for (item of category.items; track $index) {
+              <li>{{ item }}</li>
+            }
+          </ul>
+        </div>
+      }
+    </article>
   }
 </div>

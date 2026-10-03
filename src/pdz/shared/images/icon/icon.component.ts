@@ -1,18 +1,16 @@
-import { CommonModule } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
 import {
-  booleanAttribute,
+  ChangeDetectionStrategy,
   Component,
-  Input,
-  OnChanges,
-  SimpleChanges,
-  ViewChild,
-  ViewContainerRef,
+  booleanAttribute,
+  computed,
+  inject,
   input,
 } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { Observable, of, shareReplay } from 'rxjs';
-import { map, catchError } from 'rxjs/operators';
+import { catchError, map } from 'rxjs/operators';
 
 const svgIconPaths: Readonly<Record<string, string>> = {
   logo: 'assets/icons/logo.svg',
@@ -66,6 +64,7 @@ const SIZE_MAP: Readonly<Record<IconSizeName, number>> = {
 };
 
 const DEFAULT_SIZE = SIZE_MAP.md;
+const svgCache = new Map<string, Observable<string>>();
 
 function toPixels(size: IconSize): number {
   return typeof size === 'number' ? size : (SIZE_MAP[size] ?? DEFAULT_SIZE);
@@ -73,93 +72,98 @@ function toPixels(size: IconSize): number {
 
 @Component({
   selector: 'pdz-icon',
-  imports: [CommonModule],
+  imports: [AsyncPipe],
   template: `
-    @if (hasSvg) {
-      <div
-        [innerHTML]="svgIcon$ | async"
-        class="icon-wrapper"
-        [style.width.px]="computedWidth"
-        [style.height.px]="computedHeight"
-      ></div>
+    @if (svg(); as svg$) {
+      <span
+        class="pdz-icon__svg"
+        [innerHTML]="svg$ | async"
+        [style.width.px]="width()"
+        [style.height.px]="height()"
+      ></span>
     } @else {
       <span
-        class="material-symbols-outlined"
-        [style.fontSize.px]="computedHeight ?? 24"
-        [style.fontVariationSettings]="fontSettings"
-        [attr.aria-label]="ariaLabel()"
+        class="material-symbols-outlined pdz-icon__glyph"
+        [style.fontSize.px]="height() ?? DEFAULT_SIZE"
+        [attr.role]="ariaLabel() ? 'img' : null"
+        [attr.aria-label]="ariaLabel() ?? null"
+        [attr.aria-hidden]="ariaLabel() ? null : 'true'"
+        >{{ name() }}</span
       >
-        {{ name }}
-      </span>
     }
   `,
-  styles: [
-    `
-      :host {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        vertical-align: middle;
-      }
+  styles: `
+    :host {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      vertical-align: middle;
+    }
 
-      .icon-wrapper {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
+    .pdz-icon__svg {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
 
-        svg {
-          display: block;
-        }
-      }
-    `,
-  ],
+    .pdz-icon__svg svg {
+      display: block;
+    }
+
+    .pdz-icon__glyph {
+      font-variation-settings:
+        'FILL' var(--pdz-icon-fill, 0),
+        'wght' var(--pdz-icon-weight, 400),
+        'GRAD' var(--pdz-icon-grade, 0);
+    }
+  `,
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  host: {
+    '[style.--pdz-icon-fill]': 'fill() ? 1 : null',
+    '[style.--pdz-icon-weight]': 'weight() ?? null',
+    '[style.--pdz-icon-grade]': 'grade() ?? null',
+  },
 })
-export class IconComponent implements OnChanges {
-  private static svgCache = new Map<string, Observable<string>>();
-  private static readonly localSvgIconPaths = svgIconPaths;
+export class IconComponent {
+  private readonly http = inject(HttpClient);
+  private readonly sanitizer = inject(DomSanitizer);
+  protected readonly DEFAULT_SIZE = DEFAULT_SIZE;
 
-  private _name!: string;
-  @Input({ required: true })
-  set name(value: string) {
-    this._name = value.toLowerCase();
-  }
-
-  get name(): string {
-    return this._name;
-  }
-
+  readonly name = input.required<string, string>({
+    transform: (value) => value.toLowerCase(),
+  });
   readonly size = input<IconSize>(24);
-  readonly width = input<IconSize>();
-  readonly height = input<IconSize>();
+  readonly widthInput = input<IconSize | undefined>(undefined, {
+    alias: 'width',
+  });
+  readonly heightInput = input<IconSize | undefined>(undefined, {
+    alias: 'height',
+  });
   readonly square = input(false, { transform: booleanAttribute });
-
-  readonly weight = input<number>(400);
+  readonly weight = input<number>();
   readonly fill = input(false, { transform: booleanAttribute });
-  readonly grade = input<-25 | 0 | 200>(0);
-  readonly opticalSize = input<number>(24);
+  readonly grade = input<-25 | 0 | 200>();
   readonly ariaLabel = input<string>();
 
-  svgIcon$?: Observable<SafeHtml>;
+  protected readonly width = computed(() =>
+    this.resolveAxis(this.widthInput(), this.heightInput()),
+  );
+  protected readonly height = computed(() =>
+    this.resolveAxis(this.heightInput(), this.widthInput()),
+  );
 
-  @ViewChild('svgContainer', { read: ViewContainerRef })
-  svgContainer?: ViewContainerRef;
-
-  get hasSvg(): boolean {
-    return IconComponent.localSvgIconPaths[this.name] !== undefined;
-  }
-
-  constructor(
-    private http: HttpClient,
-    private sanitizer: DomSanitizer,
-  ) {}
-
-  get computedWidth(): number | undefined {
-    return this.resolveAxis(this.width(), this.height());
-  }
-
-  get computedHeight(): number | undefined {
-    return this.resolveAxis(this.height(), this.width());
-  }
+  protected readonly svg = computed(() => {
+    const path = svgIconPaths[this.name()];
+    if (!path) return null;
+    const width = this.width();
+    const height = this.height();
+    return this.source(path).pipe(
+      map((svg) => this.applySize(svg, width, height)),
+      catchError(() =>
+        of(this.sanitizer.bypassSecurityTrustHtml('<svg></svg>')),
+      ),
+    );
+  });
 
   private resolveAxis(own?: IconSize, other?: IconSize): number | undefined {
     if (own !== undefined) return toPixels(own);
@@ -169,56 +173,29 @@ export class IconComponent implements OnChanges {
     return toPixels(this.size());
   }
 
-  get fontSettings(): string {
-    return `'OPSZ' ${this.opticalSize()}, 'wght' ${this.weight()}, 'FILL' ${this.fill() ? 1 : 0}, 'GRAD' ${this.grade()}`;
-  }
-
-  ngOnChanges(changes: SimpleChanges): void {
-    if (changes['name'] && this.name) {
-      if (this.hasSvg) {
-        this.loadSvg();
-      }
-    }
-  }
-
-  private loadSvg(): void {
-    const iconPath = IconComponent.localSvgIconPaths[this.name];
-    if (!iconPath) {
-      return;
-    }
-
-    let svgSource$ = IconComponent.svgCache.get(iconPath);
-    if (!svgSource$) {
-      svgSource$ = this.http
-        .get(iconPath, { responseType: 'text' })
+  private source(path: string): Observable<string> {
+    let source$ = svgCache.get(path);
+    if (!source$) {
+      source$ = this.http
+        .get(path, { responseType: 'text' })
         .pipe(shareReplay(1));
-      IconComponent.svgCache.set(iconPath, svgSource$);
+      svgCache.set(path, source$);
     }
-
-    this.svgIcon$ = svgSource$.pipe(
-      map((svg) => this.applySize(svg)),
-      catchError((err) => {
-        console.error(`Could not load SVG icon: ${this.name}`, err);
-        return of(this.sanitizer.bypassSecurityTrustHtml('<svg></svg>'));
-      }),
-    );
+    return source$;
   }
 
-  private applySize(svg: string): SafeHtml {
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(svg, 'image/svg+xml');
-    const svgElement = doc.querySelector('svg');
-
-    if (svgElement) {
-      if (this.computedWidth !== undefined) {
-        svgElement.setAttribute('width', `${this.computedWidth}`);
-      }
-      if (this.computedHeight !== undefined) {
-        svgElement.setAttribute('height', `${this.computedHeight}`);
-      }
-      svg = new XMLSerializer().serializeToString(svgElement);
+  private applySize(
+    svg: string,
+    width: number | undefined,
+    height: number | undefined,
+  ): SafeHtml {
+    const doc = new DOMParser().parseFromString(svg, 'image/svg+xml');
+    const element = doc.querySelector('svg');
+    if (element) {
+      if (width !== undefined) element.setAttribute('width', `${width}`);
+      if (height !== undefined) element.setAttribute('height', `${height}`);
+      svg = new XMLSerializer().serializeToString(element);
     }
-
     return this.sanitizer.bypassSecurityTrustHtml(svg);
   }
 }

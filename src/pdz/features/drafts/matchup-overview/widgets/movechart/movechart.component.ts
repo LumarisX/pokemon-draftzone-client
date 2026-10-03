@@ -3,7 +3,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { SwapOpponentButton } from '@pdz/shared/buttons/swap-opponent/swap-opponent.component';
 import { WidgetComponent } from '@pdz/shared/layout/widget/widget.component';
 import { MoveCoreComponent } from '@pdz/shared/widgets/movechart-core/moves.component';
-import { MoveChart } from '../../matchup-interface';
+import { MoveChart } from '@pdz/features/drafts/matchup-overview/matchup-interface';
 
 @Component({
   selector: 'pdz-movechart',

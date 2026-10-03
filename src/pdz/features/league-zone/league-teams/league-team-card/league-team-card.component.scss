@@ -1,16 +1,4 @@
-@use "../../league.mixins.scss" as *;
 @use "pdz-theming" as pdz;
-
-.logo {
-  @include pdz-league-logo(4rem);
-}
-
-.sprite-wrapper {
-  width: 2rem;
-  height: 2rem;
-  display: inline-block;
-  vertical-align: middle;
-}
 
 :host {
   display: flex;
@@ -21,203 +9,113 @@ pdz-card {
   min-width: 0;
 }
 
-.team-container {
+.team {
   display: flex;
   flex-direction: column;
   height: 100%;
+}
 
-  .team-header {
-    display: flex;
-    flex-shrink: 0;
-    align-items: center;
-    gap: pdz.space(md);
-    margin-bottom: pdz.space(sm);
-    padding-bottom: pdz.space(sm);
-    border-bottom: 1px solid pdz.color(outline-variant);
-    .team-info {
-      flex-grow: 1;
+.team__header {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: pdz.space(md);
+  margin-bottom: pdz.space(sm);
+  padding-bottom: pdz.space(sm);
+  border-bottom: 1px solid pdz.color(border-subtle);
+}
 
-      .team-name {
-        text-align: center;
-        @include pdz.text(card-title, $family: false);
-        margin: 0 0 0.2em 0;
-      }
+.team__info {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: pdz.space(2xs);
+  min-width: 0;
+}
 
-      .team-coaches {
-        .team-coach {
-          text-align: center;
-          color: pdz.color(primary-accent);
-          @include pdz.text(body-sm-strong, $family: false);
-          margin: 0;
-        }
-      }
-      .team-info-bar {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 0.4rem;
-        flex-wrap: wrap;
-      }
+.team__name {
+  @include pdz.text(card-title);
+  margin: 0;
+  overflow-wrap: anywhere;
+}
 
-      .team-record {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.3rem;
+.team__coach {
+  @include pdz.text(meta);
+  margin: 0;
+  color: pdz.color(on-surface-variant);
+}
 
-        &__wins {
-          @include pdz-league-record-box();
-          background-color: pdz.color(positive);
-          color: pdz.color(on-positive);
-          width: 1.25rem;
-          height: 1.25rem;
-          line-height: 1.25rem;
-          font-size: pdz.font-size(xs);
-        }
+.team__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: pdz.space(xs);
+}
 
-        &__draws {
-          @include pdz-league-record-box();
-          background-color: pdz.color(secondary-container);
-          color: pdz.color(on-secondary-container);
-          width: 1.25rem;
-          height: 1.25rem;
-          line-height: 1.25rem;
-          font-size: pdz.font-size(xs);
-        }
+.team__time {
+  @include pdz.text(meta);
+  display: inline-flex;
+  align-items: center;
+  gap: pdz.space(2xs);
+  color: pdz.color(on-surface-muted);
+}
 
-        &__losses {
-          @include pdz-league-record-box();
-          background-color: pdz.color(negative);
-          color: pdz.color(on-negative);
-          width: 1.25rem;
-          height: 1.25rem;
-          line-height: 1.25rem;
-          font-size: pdz.font-size(xs);
-        }
+.team__views {
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  gap: pdz.space(2xs);
+}
 
-        &__diff {
-          @include pdz-league-record-box();
-          background-color: pdz.color(secondary-container);
-          color: pdz.color(on-secondary-container);
-          width: auto;
-          min-width: 2.1rem;
-          height: 1.35rem;
-          line-height: 1.35rem;
-          padding: 0 0.35rem;
-          font-size: pdz.font-size(xs);
+.team__body {
+  display: flex;
+  flex-grow: 1;
+  flex-direction: column;
+  overflow: auto;
+}
 
-          &--positive {
-            background-color: pdz.color(positive-container);
-            color: pdz.color(on-positive-container);
-          }
+.sprite-wrapper {
+  display: inline-block;
+  width: 2rem;
+  height: 2rem;
+  vertical-align: middle;
+}
 
-          &--negative {
-            background-color: pdz.color(negative-container);
-            color: pdz.color(on-negative-container);
-          }
-        }
-      }
+.roster-table {
+  table-layout: fixed;
 
-      .team-timezone {
-        color: pdz.color(secondary-accent);
-        @include pdz.text(body-sm-strong, $family: false);
-      }
-    }
-
-    .view-container {
-      flex-shrink: 0;
-      display: flex;
-      flex-direction: column;
-      gap: pdz.space(2xs);
-    }
+  th,
+  td {
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
-  .team-body {
-    flex-grow: 1;
-    overflow: auto;
-    display: flex;
-    flex-direction: column;
-    .table-wrapper {
-      width: 100%;
-      height: 100%;
-      border: 1px solid pdz.color(outline-variant);
-      border-radius: pdz.shape(corner-md);
-      overflow: hidden;
-      font-size: pdz.font-size(sm);
-      display: flex;
-      flex-direction: column;
-      .roster-table {
-        height: 100%;
-        table-layout: fixed;
-        display: flex;
-        flex-direction: column;
 
-        thead,
-        tfoot {
-          flex-shrink: 0;
-          display: table;
-          width: 100%;
-          table-layout: fixed;
-        }
+  .col-sprite,
+  .cell-sprite {
+    width: 3.5rem;
+  }
 
-        tbody {
-          flex-grow: 1;
-          display: block;
-          overflow-y: auto;
+  .col-capt,
+  .cell-capt {
+    width: 4.5rem;
+    white-space: nowrap;
+  }
 
-          tr {
-            display: table;
-            width: 100%;
-            table-layout: fixed;
-          }
+  .col-tier,
+  .cell-tier {
+    width: 4.5rem;
+    white-space: nowrap;
+  }
 
-          tr:last-child {
-            border-bottom: 1px solid pdz.color(outline-variant);
-          }
-        }
+  .col-record,
+  .cell-record {
+    width: 3.75rem;
+    white-space: nowrap;
+  }
 
-        th,
-        td {
-          overflow: hidden;
-          text-overflow: ellipsis;
-        }
-
-        tfoot th,
-        tfoot td {
-          border-top: 0;
-        }
-
-        th.col-sprite,
-        td.cell-sprite {
-          width: 3.5rem;
-        }
-
-        th.col-capt,
-        td.cell-capt {
-          width: 4rem;
-          white-space: nowrap;
-
-          pdz-icon {
-            color: pdz.color(primary-accent);
-          }
-        }
-
-        th.col-tier,
-        td.cell-tier {
-          width: 4.5rem;
-          white-space: nowrap;
-        }
-
-        th.col-record,
-        td.cell-record {
-          width: 3.5rem;
-          white-space: nowrap;
-        }
-
-        th.col-name,
-        td.cell-name {
-          white-space: normal;
-          line-height: 1rem;
-        }
-      }
-    }
+  .col-name,
+  .cell-name {
+    white-space: normal;
   }
 }

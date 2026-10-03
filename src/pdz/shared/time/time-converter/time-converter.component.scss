@@ -21,11 +21,11 @@
 
 .converter-summary__label {
   @include pdz.text(label);
-  color: pdz.color(on-surface-variant);
+  color: pdz.color(on-surface-muted);
 }
 
 .converter-summary__value {
-  font-weight: 600;
+  font-weight: pdz.font-weight(semibold);
 }
 
 .converter-columns {
@@ -46,14 +46,14 @@
   flex-direction: column;
   gap: pdz.space(md);
   padding: pdz.space(md);
-  background: pdz.color(surface-container-low);
-  border: 1px solid pdz.color(outline-variant);
+  background: pdz.color(raised-high);
+  border: 1px solid pdz.color(border-subtle);
   border-radius: pdz.shape(corner-md);
 }
 
 .converter-side__title {
-  @include pdz.text(subtitle);
-  color: pdz.color(on-surface-variant);
+  @include pdz.text(section-title);
+  color: pdz.color(on-surface);
 }
 
 .converter-side__when {

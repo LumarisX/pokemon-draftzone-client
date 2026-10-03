@@ -12,7 +12,6 @@
         [title]="store.draft().name || 'New tournament'"
         eyebrow="Manage"
         [logo]="logoUrl()"
-        [logoAlt]="store.draft().name + ' logo'"
       >
         <div pdz-page-header-detail>
           <span>{{ store.artifacts().tierList.format || "No format" }}</span>
@@ -40,7 +39,7 @@
 
       @if (attention().length) {
         <section class="attention">
-          <h2 class="dash__heading">Needs you</h2>
+          <h2 class="dash__heading">Needs You</h2>
           <ul class="attention__list">
             @for (item of attention(); track item.id) {
               <li>

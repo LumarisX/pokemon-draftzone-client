@@ -13,40 +13,18 @@
   flex: 1 1 auto;
   width: 100%;
 
-  &__spacer {
-    flex: 1;
-  }
-
-  // -------------------------------------------------------------------------
-  // Header
-  // -------------------------------------------------------------------------
-
   &__header {
     position: sticky;
     top: 0;
     z-index: pdz.z(sticky);
     padding: pdz.space(sm) pdz.space(lg);
-    background: pdz.color(background);
+    background: pdz.color(ground);
   }
 
   &__header-inner {
-    display: flex;
-    align-items: center;
-    gap: pdz.space(md);
-    width: 100%;
     max-width: 90rem;
     margin: 0 auto;
   }
-
-  &__title {
-    margin: 0;
-    @include pdz.text(subtitle, $family: false);
-    line-height: 1.2;
-    white-space: nowrap;
-  }
-  // -------------------------------------------------------------------------
-  // Body layout
-  // -------------------------------------------------------------------------
 
   &__body {
     flex: 1;
@@ -61,10 +39,9 @@
   }
 
   &__panel {
-    background: pdz.color(surface);
-    border: 1px solid pdz.color(outline-variant);
+    background: pdz.color(raised);
+    border: 1px solid pdz.color(border-subtle);
     border-radius: pdz.shape(corner-lg);
-    box-shadow: var(--pdz-level-1);
     padding: pdz.space(lg);
 
     &--team {
@@ -89,7 +66,7 @@
     @include pdz.text(label-strong, $family: false);
     min-width: 1.5rem;
     text-align: center;
-    padding: 0.125rem pdz.space(xs);
+    padding: pdz.space(2xs) pdz.space(xs);
     border-radius: pdz.shape(corner-full);
     background: pdz.color(primary-subtle);
     color: pdz.color(on-primary-container);
@@ -112,19 +89,9 @@
   }
 }
 
-// ---------------------------------------------------------------------------
-// Fields
-// ---------------------------------------------------------------------------
-
-// ---------------------------------------------------------------------------
-// Responsive
-// ---------------------------------------------------------------------------
-
-@media (max-width: 960px) {
+@include pdz.respond-below(large) {
   .draft-builder__body {
     grid-template-columns: minmax(0, 1fr);
-    // Fit rows to their content instead of stretching panels to fill the
-    // leftover viewport height.
     align-content: start;
   }
 
@@ -133,18 +100,9 @@
   }
 }
 
-@media (max-width: 640px) {
+@include pdz.respond-below(small) {
   .draft-builder__header {
     padding: pdz.space(sm);
-  }
-
-  .draft-builder__header-inner {
-    flex-wrap: wrap;
-    gap: pdz.space(sm);
-  }
-
-  .draft-builder__submit {
-    margin-left: auto;
   }
 
   .draft-builder__body {
@@ -155,8 +113,4 @@
   .draft-builder__panel {
     padding: pdz.space(md);
   }
-}
-
-.draft-builder__title {
-  font-family: var(--pdz-font-display);
 }

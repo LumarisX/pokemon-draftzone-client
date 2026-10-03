@@ -2,20 +2,25 @@ import { NgTemplateOutlet } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
-  EventEmitter,
-  Output,
+  computed,
   input,
+  output,
 } from '@angular/core';
-import { RouterModule } from '@angular/router';
-import { IconComponent } from '@pdz/shared/images/icon/icon.component';
-import { getLogoUrl } from '../league.util';
-import { MatchupCard } from './matchup-card.model';
+import { RouterLink } from '@angular/router';
+import { getTeamLogoSrc } from '@pdz/features/league-zone/league.util';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
+import { IconComponent } from '@pdz/shared/images/icon/icon.component';
+import { TeamLogoComponent } from '@pdz/shared/images/team-logo/team-logo.component';
+import { MatchupCard } from './matchup-card.model';
 
 @Component({
   selector: 'pdz-matchup-card',
-  imports: [NgTemplateOutlet, RouterModule, IconComponent,
+  imports: [
+    NgTemplateOutlet,
+    RouterLink,
+    IconComponent,
     ButtonComponent,
+    TeamLogoComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './matchup-card.component.html',
@@ -25,19 +30,19 @@ export class MatchupCardComponent {
   readonly card = input.required<MatchupCard>();
   readonly editable = input(false);
 
-  @Output() edit = new EventEmitter<string>();
-  @Output() remove = new EventEmitter<string>();
-  @Output() focusSource = new EventEmitter<string>();
+  readonly edit = output<string>();
+  readonly remove = output<string>();
+  readonly focusSource = output<string>();
 
-  protected readonly getLogoUrl = getLogoUrl;
+  protected readonly logoSrc = getTeamLogoSrc;
 
-  protected get hasHeader(): boolean {
+  protected readonly hasHeader = computed(() => {
     const card = this.card();
     return !!card.label || this.editable() || card.forfeit;
-  }
+  });
 
-  protected get hasFooter(): boolean {
+  protected readonly hasFooter = computed(() => {
     const card = this.card();
     return !!card.viewLink || !!card.breakdownLink || card.replays.length > 0;
-  }
+  });
 }

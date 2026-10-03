@@ -35,7 +35,7 @@ export interface ScoreEntryWarningsData {
 
     <div class="pdz-dialog-actions">
       <button pdz-button color="neutral" (click)="ref.close(false)">
-        Go back and fix
+        Go Back and Fix
       </button>
       <button
         pdz-button

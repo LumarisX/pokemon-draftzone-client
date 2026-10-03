@@ -22,7 +22,7 @@
   align-items: baseline;
   gap: pdz.space(2xs) pdz.space(sm);
   padding-bottom: pdz.space(2xs);
-  border-bottom: 1px solid pdz.color(outline-variant);
+  border-bottom: 1px solid pdz.color(border-subtle);
 }
 
 .apps__group-title {
@@ -37,7 +37,7 @@
 .apps__group-count {
   padding: 0 pdz.space(2xs);
   color: pdz.color(on-surface-variant);
-  background: pdz.color(surface-container);
+  background: pdz.color(state-pressed);
   border-radius: pdz.shape(corner-sm);
   @include pdz.text(body-sm);
 }
@@ -99,8 +99,8 @@
   flex-direction: column;
   gap: pdz.space(xs);
   padding: pdz.space(sm);
-  background: pdz.color(surface-container-lowest);
-  border: 1px solid pdz.color(outline-variant);
+  background: pdz.color(raised-high);
+  border: 1px solid pdz.color(border-subtle);
   border-radius: pdz.shape(corner-md);
 }
 
@@ -145,7 +145,7 @@
   margin-left: pdz.space(2xs);
   padding: 0 pdz.space(2xs);
   color: pdz.color(on-surface-variant);
-  background: pdz.color(surface-container);
+  background: pdz.color(state-pressed);
   border-radius: pdz.shape(corner-sm);
   @include pdz.text(body-sm);
 }

@@ -24,14 +24,14 @@ import {
 } from '@pdz/features/drafts/draft-overview/draft-form/components/team-editor/team-editor.component';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { BehaviorSubject, Observable, switchMap } from 'rxjs';
-import { DraftService } from '../../../draft-overview/draft.service';
-import { Draft, DraftPokemon } from '../../../draft.model';
+import { DraftService } from '@pdz/features/drafts/draft-overview/draft.service';
+import { Draft, DraftPokemon } from '@pdz/features/drafts/draft.model';
 import {
   MatchTimeDialogComponent,
   MatchTimeDialogData,
   MatchTimeDialogResult,
 } from '@pdz/shared/time/match-time-dialog/match-time-dialog.component';
-import { Opponent } from '../../opponent.model';
+import { Opponent } from '@pdz/features/drafts/opponent-overview/opponent.model';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 import { DialogService } from '@pdz/shared/dialogs/dialog/dialog.service';
 import {
@@ -39,6 +39,7 @@ import {
 } from '@pdz/shared/inputs/field/field-message.directive';
 import { FieldComponent } from '@pdz/shared/inputs/field/field.component';
 import { InputDirective } from '@pdz/shared/inputs/field/input.directive';
+import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
 import { CountdownComponent } from '@pdz/shared/time/countdown/countdown.component';
 
 @Component({
@@ -53,6 +54,7 @@ import { CountdownComponent } from '@pdz/shared/time/countdown/countdown.compone
     FieldErrorDirective,
     ButtonComponent,
     CountdownComponent,
+    PageHeaderComponent,
   ],
   templateUrl: './opponent-form-core.component.html',
   styleUrl: './opponent-form-core.component.scss',

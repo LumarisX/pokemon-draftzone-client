@@ -46,31 +46,6 @@ export class MatchupService {
     return this.apiService.post(`${matchupPath}/quick`, matchupData);
   }
 
-  //Currently Unused
-  getSpeedchart(matchupId: string) {
-    return this.apiService.get(`${matchupPath}/${matchupId}/speedchart`);
-  }
-
-  //Currently Unused
-  getsummary(matchupId: string) {
-    return this.apiService.get(`${matchupPath}/${matchupId}/summary`);
-  }
-
-  //Currently Unused
-  getTypechart(matchupId: string) {
-    return this.apiService.get(`${matchupPath}/${matchupId}/typechart`);
-  }
-
-  //Currently Unused
-  getMovechart(matchupId: string) {
-    return this.apiService.get(`${matchupPath}/${matchupId}/movechart`);
-  }
-
-  //Currently Unused
-  getCoveragechart(matchupId: string) {
-    return this.apiService.get(`${matchupPath}/${matchupId}/coveragechart`);
-  }
-
   getMatchupOwnership(matchupId: string) {
     return this.apiService.get<{ isOwner: boolean }>(
       `${matchupPath}/${matchupId}/check-ownership`,

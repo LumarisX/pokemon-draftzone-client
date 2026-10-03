@@ -6,31 +6,22 @@
 }
 
 .roster {
-  --roster-line: #{pdz.color(outline-variant)};
-  --roster-tint: #{pdz.color(surface-container)};
-  --roster-text: #{pdz.color(on-surface)};
-  --roster-accent: #{pdz.color(outline)};
+  --roster-wash: #{pdz.color(state-hover)};
+  --roster-accent: #{pdz.color(on-surface)};
 
   display: flex;
   flex-direction: column;
   min-width: 0;
-  border: 1px solid var(--roster-line);
+  border: 1px solid pdz.color(border-subtle);
   border-radius: pdz.shape(corner-md);
-  background: pdz.color(surface-container-lowest);
+  background: pdz.color(raised-high);
   overflow: hidden;
 
-  &[data-accent="primary"] {
-    --roster-line: #{pdz.color(primary-border)};
-    --roster-tint: #{pdz.color(primary-container-low)};
-    --roster-text: #{pdz.color(on-primary-container)};
-    --roster-accent: #{pdz.color(primary-accent)};
-  }
-
-  &[data-accent="secondary"] {
-    --roster-line: #{pdz.color(secondary-border)};
-    --roster-tint: #{pdz.color(secondary-container-low)};
-    --roster-text: #{pdz.color(on-secondary-container)};
-    --roster-accent: #{pdz.color(secondary-accent)};
+  @each $team in (team1, team2) {
+    &[data-team="#{$team}"] {
+      --roster-wash: #{pdz.color(#{$team}-wash)};
+      --roster-accent: #{pdz.color(#{$team}-accent)};
+    }
   }
 }
 
@@ -39,8 +30,8 @@
   align-items: center;
   gap: pdz.space(sm);
   padding: pdz.space(2xs) pdz.space(sm);
-  background: var(--roster-tint);
-  border-bottom: 1px solid var(--roster-line);
+  background: var(--roster-wash);
+  border-bottom: 1px solid pdz.color(border-subtle);
 
   &--mirrored {
     flex-direction: row-reverse;
@@ -55,29 +46,22 @@
   @include pdz.text(body-sm-strong, $family: false);
   flex: 1 1 auto;
   min-width: 0;
-  color: var(--roster-text);
+  color: pdz.color(on-surface);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
 .roster__score {
+  @include pdz.text(card-title, $family: false);
+  @include pdz.numeric;
   flex: none;
   width: 3.25rem;
   min-height: 2rem;
   padding-inline: pdz.space(2xs);
-  @include pdz.text(card-title, $family: false);
   text-align: center;
-  font-variant-numeric: tabular-nums;
-  color: var(--roster-text);
-  background: pdz.color(surface-container-lowest);
-  border-color: var(--roster-line);
-
-  &:focus,
-  &:focus-visible {
-    border-color: var(--roster-accent);
-    box-shadow: 0 0 0 2px var(--roster-tint);
-  }
+  font-weight: pdz.font-weight(bold);
+  color: var(--roster-accent);
 
   &::-webkit-outer-spin-button,
   &::-webkit-inner-spin-button {
@@ -106,9 +90,8 @@
   gap: pdz.space(2xs);
   min-width: 0;
   padding: pdz.space(2xs) pdz.space(xs) pdz.space(sm);
-  border: 1px solid transparent;
+  border: 1px solid pdz.color(border-subtle);
   border-radius: pdz.shape(corner-sm);
-  background: pdz.color(surface);
   transition:
     background-color pdz.duration(fast) pdz.easing(standard),
     border-color pdz.duration(fast) pdz.easing(standard);
@@ -153,7 +136,7 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  font-weight: var(--pdz-font-weight-semibold);
+  font-weight: pdz.font-weight(semibold);
   color: pdz.color(on-surface);
 }
 
@@ -179,10 +162,8 @@
 }
 
 .stepper__label {
-  @include pdz.text(label, $family: false);
-  color: pdz.color(on-surface-variant);
-  text-transform: uppercase;
-  letter-spacing: 0.03em;
+  @include pdz.text(label-caps, $family: false);
+  color: pdz.color(on-surface-muted);
 }
 
 .stepper__controls {
@@ -198,7 +179,7 @@
   padding-left: pdz.space(3xs);
   padding-right: pdz.space(3xs);
   text-align: center;
-  font-variant-numeric: tabular-nums;
+  @include pdz.numeric;
 
   &::-webkit-outer-spin-button,
   &::-webkit-inner-spin-button {

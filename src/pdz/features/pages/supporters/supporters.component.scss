@@ -1,92 +1,65 @@
 @use "pdz-theming" as pdz;
 
-:host {
-  display: block;
-  width: 100%;
-}
-
-$spacing-sm: 0.5rem;
-$spacing-md: 0.75rem;
-$spacing-lg: 1rem;
-$icon-size: 4rem;
-$card-max-width: 32rem;
-$border-radius-sm: pdz.shape(corner-sm);
-$border-radius-md: pdz.shape(corner-md);
-$border-radius-lg: pdz.shape(corner-lg);
-$font-nasa: var(--pdz-font-display);
-.support-page {
+.support {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  gap: $spacing-lg;
-
-  &__title {
-    font-family: $font-nasa;
-    font-size: pdz.font-size(xl);
-    font-weight: 600;
-    color: pdz.color(on-surface);
-    text-align: center;
-    margin-bottom: $spacing-md;
-  }
+  gap: pdz.layout(section-gap);
 }
 
-.developer-card {
+.supportee {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: $spacing-md;
-  width: 100%;
-  max-width: $card-max-width;
-  padding: $spacing-lg;
-  border-radius: $border-radius-lg;
-  background-color: pdz.color(surface-container);
-  border: 1px solid pdz.color(primary-border);
-  &__name {
-    font-size: pdz.font-size(lg);
-    font-weight: 600;
-    color: pdz.color(on-surface-variant);
-    margin: 0;
-  }
+  gap: pdz.space(sm);
+}
 
-  &__links {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    gap: $spacing-md;
-    width: 100%;
-  }
+.supportee__name {
+  @include pdz.text(section-title);
+  margin: 0;
+  color: pdz.color(on-surface);
+}
+
+.supportee__description {
+  @include pdz.text(body-sm);
+  margin: 0;
+  color: pdz.color(on-surface-variant);
+}
+
+.supportee__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: pdz.space(sm);
+  margin-top: pdz.space(xs);
 }
 
 .support-link {
-  display: flex;
+  @include pdz.text(body-sm-strong);
+  display: inline-flex;
   align-items: center;
-  justify-content: center;
-  padding: $spacing-sm;
-  border-radius: $border-radius-md;
-  background-color: pdz.color(surface-container-low);
-  border: 1px solid transparent;
+  gap: pdz.space(sm);
+  padding: pdz.space(sm) pdz.space(md);
+  border: 1px solid pdz.color(border-control);
+  border-radius: pdz.shape(corner-md);
+  color: pdz.color(on-surface);
+  text-decoration: none;
   transition:
     background-color pdz.duration(base) pdz.easing(standard),
-    border-color pdz.duration(base) pdz.easing(standard),
     box-shadow pdz.duration(base) pdz.easing(standard);
-  cursor: pointer;
-  text-decoration: none;
+
   &:hover {
-    background-color: pdz.color(surface-container-high);
-    box-shadow: var(--pdz-level-2);
+    background: pdz.color(state-hover);
+  }
+
+  &:active {
+    background: pdz.color(state-pressed);
   }
 
   &:focus-visible {
-    outline: 2px solid pdz.color(primary-accent);
-    outline-offset: 2px;
-    border-color: transparent;
+    @include pdz.focus-ring;
   }
+}
 
-  &__icon {
-    display: block;
-    width: $icon-size;
-    height: $icon-size;
-  }
+.support-link__icon {
+  display: block;
+  width: 2rem;
+  height: 2rem;
 }

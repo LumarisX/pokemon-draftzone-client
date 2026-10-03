@@ -9,5 +9,39 @@ $spacing: (
   xl: 1.5rem,
   2xl: 2rem,
   3xl: 3rem,
-  4xl: 5rem,
+  4xl: 4rem,
+  5xl: 5rem,
+);
+
+$layout: (
+  page-gap: (
+    base: xl,
+    medium: 2xl,
+  ),
+  section-gap: (
+    base: xl,
+  ),
+  card-pad: (
+    base: lg,
+    medium: xl,
+  ),
+  stack: (
+    base: md,
+  ),
+  inline: (
+    base: sm,
+  ),
+);
+
+$content-width: (
+  narrow: 40rem,
+  default: 64rem,
+  wide: 96rem,
+);
+
+$control-height: (
+  xs: 1.5rem,
+  sm: 1.75rem,
+  md: 2.25rem,
+  lg: 2.75rem,
 );

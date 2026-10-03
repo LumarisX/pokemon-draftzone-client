@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { safeStorage } from '@pdz/core/utils/storage';
 
 @Injectable({
   providedIn: 'root',
@@ -32,21 +33,11 @@ export class SwUpdateService {
   }
 
   private hasCompletedCleanup(): boolean {
-    try {
-      return (
-        localStorage.getItem(SwUpdateService.SW_CLEANUP_DONE_KEY) === 'true'
-      );
-    } catch {
-      return false;
-    }
+    return safeStorage.get(SwUpdateService.SW_CLEANUP_DONE_KEY) === 'true';
   }
 
   private markCleanupComplete(): void {
-    try {
-      localStorage.setItem(SwUpdateService.SW_CLEANUP_DONE_KEY, 'true');
-    } catch {
-      // Ignore storage errors and retry cleanup on future visits.
-    }
+    safeStorage.set(SwUpdateService.SW_CLEANUP_DONE_KEY, 'true');
   }
 
   private async unregisterExistingServiceWorkers(): Promise<boolean> {

@@ -1,7 +1,7 @@
 <pdz-page width="narrow">
   <div class="create">
     <pdz-page-header
-      title="New tournament"
+      title="New Tournament"
       [backLink]="leagueLink"
       [backLabel]="league()?.name ?? 'League'"
       subtitle="Start with the basics. Everything else lives in the tournament's settings."
@@ -18,7 +18,7 @@
       @if (league.isOwner && league.hosting?.canCreateTournament) {
         <pdz-card padding="lg">
           <form class="create__form" (ngSubmit)="submit()">
-            <label pdz-field label="Tournament name" required>
+            <label pdz-field label="Tournament Name" required>
               <input
                 pdz-input
                 type="text"
@@ -51,7 +51,7 @@
               />
             </label>
 
-            <label pdz-field label="Sign-ups close" required>
+            <label pdz-field label="Sign-Ups Close" required>
               <input
                 pdz-input
                 type="datetime-local"
@@ -89,7 +89,7 @@
               </div>
 
               <div class="create__pair">
-                <label pdz-field label="Minimum roster">
+                <label pdz-field label="Minimum Roster">
                   <input
                     pdz-input
                     type="number"
@@ -101,7 +101,7 @@
                 </label>
                 <label
                   pdz-field
-                  label="Maximum roster"
+                  label="Maximum Roster"
                   [error]="
                     draftCountValid()
                       ? null
@@ -135,7 +135,7 @@
                 icon="add"
                 [disabled]="!canSubmit()"
               >
-                Create tournament
+                Create Tournament
               </button>
             </div>
           </form>
@@ -148,7 +148,7 @@
           message="Archive a finished tournament from its settings to start another."
         >
           <a pdz-empty-state-actions pdz-button [routerLink]="leagueLink">
-            Back to the league
+            Back to the League
           </a>
         </pdz-empty-state>
       } @else if (league.isOwner) {
@@ -159,7 +159,7 @@
           message="Running tournaments on DraftZone is open to a small group for now. Ask in the DraftZone Discord if you'd like access."
         >
           <a pdz-empty-state-actions pdz-button [routerLink]="leagueLink">
-            Back to the league
+            Back to the League
           </a>
         </pdz-empty-state>
       } @else {
@@ -172,7 +172,7 @@
           "
         >
           <a pdz-empty-state-actions pdz-button [routerLink]="leagueLink">
-            Back to the league
+            Back to the League
           </a>
         </pdz-empty-state>
       }

@@ -1,74 +1,58 @@
-import { CommonModule } from '@angular/common';
-import { Component, OnDestroy, OnInit, inject } from '@angular/core';
-import { Subject, takeUntil } from 'rxjs';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  inject,
+  signal,
+} from '@angular/core';
 import { environment } from '@pdz/environments/environment';
+import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import type { ClientError } from './error.service';
 import { ErrorService } from './error.service';
-import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
+
+type ReportState = 'sending' | 'sent' | 'failed';
 
 @Component({
   selector: 'pdz-error',
-  imports: [CommonModule, IconComponent,
-    ButtonComponent,
-  ],
+  imports: [IconComponent, ButtonComponent],
   templateUrl: './error.component.html',
   styleUrl: './error.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class ErrorComponent implements OnInit, OnDestroy {
+export class ErrorComponent {
   private errorService = inject(ErrorService);
-  private destroy$ = new Subject<void>();
+  private destroyRef = inject(DestroyRef);
+  private copyTimers = new Map<string, ReturnType<typeof setTimeout>>();
 
   readonly isDev = !environment.production;
+  readonly errors = this.errorService.errors;
 
-  errors: ClientError[] = [];
-  expandedErrorIds = new Set<string>();
-  dismissingErrorIds = new Set<string>();
-  copiedErrorIds = new Set<string>();
-  reportingErrorIds = new Set<string>();
-  reportedErrorIds = new Set<string>();
-  reportFailedErrorIds = new Set<string>();
-  private copyResetTimers = new Map<string, ReturnType<typeof setTimeout>>();
+  readonly expanded = signal<ReadonlySet<string>>(new Set());
+  readonly dismissing = signal<ReadonlySet<string>>(new Set());
+  readonly copied = signal<ReadonlySet<string>>(new Set());
+  readonly reports = signal<ReadonlyMap<string, ReportState>>(new Map());
 
-  ngOnInit(): void {
-    this.errorService
-      .getErrorsObservable()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((errors) => {
-        this.errors = errors;
-      });
-  }
-
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
-    this.copyResetTimers.forEach((timer) => clearTimeout(timer));
-    this.copyResetTimers.clear();
+  constructor() {
+    this.destroyRef.onDestroy(() => {
+      this.copyTimers.forEach((timer) => clearTimeout(timer));
+      this.copyTimers.clear();
+    });
   }
 
   dismissError(errorId: string): void {
-    this.dismissingErrorIds.add(errorId);
+    this.dismissing.update((ids) => withId(ids, errorId));
     setTimeout(() => {
       this.errorService.dismissError(errorId);
-      this.expandedErrorIds.delete(errorId);
-      this.dismissingErrorIds.delete(errorId);
+      this.expanded.update((ids) => withoutId(ids, errorId));
+      this.dismissing.update((ids) => withoutId(ids, errorId));
     }, 600);
   }
 
-  isDismissing(errorId: string): boolean {
-    return this.dismissingErrorIds.has(errorId);
-  }
-
   toggleDetails(errorId: string): void {
-    if (this.expandedErrorIds.has(errorId)) {
-      this.expandedErrorIds.delete(errorId);
-    } else {
-      this.expandedErrorIds.add(errorId);
-    }
-  }
-
-  isExpanded(errorId: string): boolean {
-    return this.expandedErrorIds.has(errorId);
+    this.expanded.update((ids) =>
+      ids.has(errorId) ? withoutId(ids, errorId) : withId(ids, errorId),
+    );
   }
 
   hasDetails(error: ClientError): boolean {
@@ -77,9 +61,16 @@ export class ErrorComponent implements OnInit, OnDestroy {
     );
   }
 
-  getDetailsEntries(error: ClientError): [string, unknown][] {
-    if (!error?.error?.details) return [];
-    return Object.entries(error.error.details);
+  hasStack(error: ClientError): boolean {
+    return !!error?.error?.stack;
+  }
+
+  hasRequestId(error: ClientError): boolean {
+    return !!error?.meta?.requestId;
+  }
+
+  detailEntries(error: ClientError): [string, unknown][] {
+    return error?.error?.details ? Object.entries(error.error.details) : [];
   }
 
   formatDetailValue(value: unknown): string {
@@ -100,7 +91,6 @@ export class ErrorComponent implements OnInit, OnDestroy {
     try {
       await navigator.clipboard.writeText(report);
     } catch {
-      // Fallback for browsers/contexts without the async clipboard API.
       const textarea = document.createElement('textarea');
       textarea.value = report;
       textarea.style.position = 'fixed';
@@ -114,72 +104,46 @@ export class ErrorComponent implements OnInit, OnDestroy {
       }
     }
 
-    this.copiedErrorIds.add(error.id);
-    const existing = this.copyResetTimers.get(error.id);
+    this.copied.update((ids) => withId(ids, error.id));
+    const existing = this.copyTimers.get(error.id);
     if (existing) clearTimeout(existing);
-    this.copyResetTimers.set(
+    this.copyTimers.set(
       error.id,
       setTimeout(() => {
-        this.copiedErrorIds.delete(error.id);
-        this.copyResetTimers.delete(error.id);
+        this.copied.update((ids) => withoutId(ids, error.id));
+        this.copyTimers.delete(error.id);
       }, 2000),
     );
   }
 
-  isCopied(errorId: string): boolean {
-    return this.copiedErrorIds.has(errorId);
+  reportState(errorId: string): ReportState | undefined {
+    return this.reports().get(errorId);
   }
 
   sendReport(error: ClientError): void {
-    if (
-      this.reportingErrorIds.has(error.id) ||
-      this.reportedErrorIds.has(error.id)
-    ) {
-      return;
-    }
+    const state = this.reportState(error.id);
+    if (state === 'sending' || state === 'sent') return;
 
-    this.reportFailedErrorIds.delete(error.id);
-    this.reportingErrorIds.add(error.id);
-
-    this.errorService
-      .sendErrorReport(error)
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (result) => {
-          this.reportingErrorIds.delete(error.id);
-          if (result?.delivered) {
-            this.reportedErrorIds.add(error.id);
-          } else {
-            this.reportFailedErrorIds.add(error.id);
-          }
-        },
-        error: () => {
-          this.reportingErrorIds.delete(error.id);
-          this.reportFailedErrorIds.add(error.id);
-        },
-      });
+    this.setReport(error.id, 'sending');
+    this.errorService.sendErrorReport(error).subscribe({
+      next: (result) =>
+        this.setReport(error.id, result?.delivered ? 'sent' : 'failed'),
+      error: () => this.setReport(error.id, 'failed'),
+    });
   }
 
-  isReporting(errorId: string): boolean {
-    return this.reportingErrorIds.has(errorId);
-  }
-
-  isReported(errorId: string): boolean {
-    return this.reportedErrorIds.has(errorId);
-  }
-
-  reportFailed(errorId: string): boolean {
-    return this.reportFailedErrorIds.has(errorId);
+  private setReport(errorId: string, state: ReportState): void {
+    this.reports.update((reports) => new Map(reports).set(errorId, state));
   }
 
   private buildErrorReport(error: ClientError): string {
     const lines: string[] = ['Pokémon DraftZone — Error Report', ''];
 
-    const title =
+    lines.push(
       error.status !== undefined && error.status !== 0
         ? `Error ${error.status}`
-        : 'Error';
-    lines.push(title);
+        : 'Error',
+    );
 
     if (error.error?.code) lines.push(`Code: ${error.error.code}`);
 
@@ -191,7 +155,7 @@ export class ErrorComponent implements OnInit, OnDestroy {
 
     if (this.hasDetails(error)) {
       lines.push('', 'Details:');
-      for (const [key, value] of this.getDetailsEntries(error)) {
+      for (const [key, value] of this.detailEntries(error)) {
         lines.push(`  ${key}: ${this.formatDetailValue(value)}`);
       }
     }
@@ -215,16 +179,14 @@ export class ErrorComponent implements OnInit, OnDestroy {
 
     return lines.join('\n');
   }
+}
 
-  hasStack(error: ClientError): boolean {
-    return !!error?.error?.stack;
-  }
+function withId(ids: ReadonlySet<string>, id: string): ReadonlySet<string> {
+  return new Set(ids).add(id);
+}
 
-  hasRequestId(error: ClientError): boolean {
-    return !!error?.meta?.requestId;
-  }
-
-  trackByErrorId(index: number, error: ClientError): string {
-    return error.id;
-  }
+function withoutId(ids: ReadonlySet<string>, id: string): ReadonlySet<string> {
+  const next = new Set(ids);
+  next.delete(id);
+  return next;
 }

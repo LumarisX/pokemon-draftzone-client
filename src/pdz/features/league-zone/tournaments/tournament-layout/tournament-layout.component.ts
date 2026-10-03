@@ -2,11 +2,10 @@ import { Component, DestroyRef, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { NavContextService } from '@pdz/core/services/nav-context.service';
+import { TournamentNavComponent } from '@pdz/features/league-zone/tournaments/tournament-nav/tournament-nav.component';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
-import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { RouteEnterDirective } from '@pdz/shared/layout/route-enter.directive';
 import { filter } from 'rxjs/operators';
-import { TournamentNavComponent } from '../tournament-nav/tournament-nav.component';
 
 @Component({
   selector: 'pdz-tournament-layout',
@@ -17,7 +16,6 @@ import { TournamentNavComponent } from '../tournament-nav/tournament-nav.compone
     RouteEnterDirective,
     TournamentNavComponent,
     ButtonComponent,
-    IconComponent,
   ],
   host: {
     '(document:keydown.escape)': 'closeNav()',

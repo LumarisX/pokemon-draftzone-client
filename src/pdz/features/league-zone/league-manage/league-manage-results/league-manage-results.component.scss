@@ -1,158 +1,153 @@
 @use "pdz-theming" as pdz;
-@use "mixins" as *;
 
 :host {
   display: flex;
   flex-direction: column;
-  gap: pdz.space(lg);
+  gap: pdz.layout(section-gap);
   width: 100%;
-  max-width: 72rem;
+  max-width: pdz.content-width(default);
   margin-inline: auto;
 }
 
-.results {
-  &__counts {
-    display: flex;
-    flex-wrap: wrap;
-    gap: pdz.space(xs);
-  }
-
-  &__filter {
-    max-width: 100%;
-    overflow-x: auto;
-  }
-
-  &__rounds {
-    display: flex;
-    flex-direction: column;
-    gap: pdz.space(sm);
-  }
+.results__counts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: pdz.space(xs);
 }
 
-.round {
-  &__tags {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: flex-end;
-    gap: pdz.space(xs);
-  }
+.results__filter {
+  max-width: 100%;
+  overflow-x: auto;
+}
 
-  &__deadline {
-    display: inline-flex;
-    align-items: center;
-    gap: pdz.space(xs);
-    @include text(label);
-    color: pdz.color("on-surface-variant");
-  }
+.results__rounds {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(sm);
+}
 
-  &__rows {
-    display: flex;
-    flex-direction: column;
-    gap: pdz.space(sm);
-    padding-top: pdz.space(sm);
-  }
+.round__tags {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: pdz.space(xs);
+}
+
+.round__deadline {
+  @include pdz.text(meta);
+  display: inline-flex;
+  align-items: center;
+  gap: pdz.space(xs);
+  color: pdz.color(on-surface-variant);
+}
+
+.round__rows {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(sm);
+  padding-top: pdz.space(sm);
 }
 
 .row {
   display: flex;
   flex-direction: column;
   gap: pdz.space(sm);
+}
 
-  &__main {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
-    gap: pdz.space(sm) pdz.space(md);
+.row__main {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: pdz.space(sm) pdz.space(md);
+}
+
+.row__info {
+  display: flex;
+  flex: 1 1 16rem;
+  flex-direction: column;
+  gap: pdz.space(xs);
+  min-width: 0;
+}
+
+.row__teams {
+  @include pdz.text(body-sm);
+  margin: 0;
+  color: pdz.color(on-surface);
+  overflow-wrap: anywhere;
+}
+
+.row__name {
+  font-weight: pdz.font-weight(semibold);
+}
+
+.row__coach {
+  @include pdz.text(meta);
+  color: pdz.color(on-surface-variant);
+
+  &::before {
+    content: " ";
+  }
+}
+
+.row__vs {
+  @include pdz.text(meta);
+  padding-inline: pdz.space(xs);
+  color: pdz.color(on-surface-variant);
+}
+
+.row__meta {
+  @include pdz.text(meta);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: pdz.space(xs);
+  margin: 0;
+  color: pdz.color(on-surface-variant);
+
+  &:empty {
+    display: none;
   }
 
-  &__info {
-    display: flex;
-    flex-direction: column;
-    gap: pdz.space(xs);
-    min-width: 0;
-    flex: 1 1 16rem;
+  span:not(:first-child)::before {
+    content: "·";
+    padding-inline-end: pdz.space(xs);
   }
+}
 
-  &__teams {
-    margin: 0;
-    @include text(body-sm);
-    color: pdz.color("on-surface");
-    overflow-wrap: anywhere;
+.row__aside {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: flex-end;
+  gap: pdz.space(xs) pdz.space(sm);
+}
+
+.row__action {
+  width: 100%;
+
+  @include pdz.respond-above(small) {
+    width: auto;
   }
+}
 
-  &__name {
-    font-weight: var(--pdz-font-weight-semibold);
-  }
+.row__editor {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(md);
+  padding-top: pdz.space(sm);
+  border-top: 1px solid pdz.color(border-subtle);
+}
 
-  &__coach {
-    @include text(label);
-    color: pdz.color("on-surface-variant");
+.row__advance {
+  max-width: 24rem;
+}
 
-    &::before {
-      content: " ";
-    }
-  }
-
-  &__vs {
-    @include text(label);
-    color: pdz.color("on-surface-variant");
-    padding-inline: pdz.space(xs);
-  }
-
-  &__meta {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: pdz.space(xs);
-    margin: 0;
-    @include text(label);
-    color: pdz.color("on-surface-variant");
-
-    &:empty {
-      display: none;
-    }
-
-    span:not(:first-child)::before {
-      content: "·";
-      padding-inline-end: pdz.space(xs);
-    }
-  }
-
-  &__aside {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: flex-end;
-    gap: pdz.space(xs) pdz.space(sm);
-  }
-
-  &__action {
-    width: 100%;
-
-    @include respond-above(small) {
-      width: auto;
-    }
-  }
-
-  &__editor {
-    display: flex;
-    flex-direction: column;
-    gap: pdz.space(md);
-    padding-top: pdz.space(sm);
-    border-top: 1px solid pdz.color("outline-variant");
-  }
-
-  &__advance {
-    max-width: 24rem;
-  }
-
-  &__error {
-    @include text(label);
-    margin: 0;
-    color: pdz.color("danger");
-  }
+.row__error {
+  @include pdz.text(meta);
+  margin: 0;
+  color: pdz.color(danger);
 }
 
 .review {
@@ -160,42 +155,42 @@
   flex-direction: column;
   gap: pdz.space(sm);
   padding: pdz.space(sm);
-  border: 1px solid pdz.color("warning-border");
-  border-radius: pdz.shape("corner-sm");
-  background: pdz.color("warning-container");
+  border: 1px solid pdz.color(warning-border);
+  border-radius: pdz.shape(corner-sm);
+  background: pdz.color(warning-container);
+}
 
-  &__text {
-    display: flex;
-    align-items: flex-start;
-    gap: pdz.space(xs);
-    @include text(label);
-    color: pdz.color("on-warning-container");
+.review__text {
+  @include pdz.text(body-sm);
+  display: flex;
+  align-items: flex-start;
+  gap: pdz.space(xs);
+  color: pdz.color(on-warning-container);
+}
+
+.review__summary,
+.review__note {
+  display: block;
+}
+
+.review__note {
+  font-style: italic;
+}
+
+.review__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: pdz.space(xs);
+
+  button {
+    flex: 1 1 auto;
   }
 
-  &__summary {
-    display: block;
-  }
-
-  &__note {
-    display: block;
-    font-style: italic;
-  }
-
-  &__actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: pdz.space(xs);
+  @include pdz.respond-above(small) {
+    justify-content: flex-end;
 
     button {
-      flex: 1 1 auto;
-    }
-
-    @include respond-above(small) {
-      justify-content: flex-end;
-
-      button {
-        flex: 0 0 auto;
-      }
+      flex: 0 0 auto;
     }
   }
 }

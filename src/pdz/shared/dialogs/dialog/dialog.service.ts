@@ -51,7 +51,6 @@ export class DialogRef<R = unknown> {
     this.config = this.chrome.asReadonly();
   }
 
-  /** Lets the hosted component retitle or resize its own dialog while open. */
   update(chrome: DialogChrome) {
     this.chrome.update((current) => ({ ...current, ...chrome }));
   }

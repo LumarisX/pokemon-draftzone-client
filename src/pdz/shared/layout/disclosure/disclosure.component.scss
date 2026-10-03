@@ -13,9 +13,9 @@
 }
 
 :host([data-tone="panel"]) {
-  border: 1px solid pdz.color(outline-variant);
+  border: 1px solid pdz.color(border-subtle);
   border-radius: pdz.shape(corner-lg);
-  background: pdz.color(surface-container-low);
+  background: pdz.color(raised);
   overflow: hidden;
 }
 
@@ -44,7 +44,7 @@
   @include pdz.text(card-title, $family: false);
 
   &:hover:not(:disabled) {
-    background: pdz.color(surface-container);
+    background: pdz.color(state-hover);
   }
 
   &:focus-visible {

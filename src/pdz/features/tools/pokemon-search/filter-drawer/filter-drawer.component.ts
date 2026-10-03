@@ -19,12 +19,17 @@ import {
   SearchOperator,
 } from '../pokemon-search.types';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
+import { InputDirective } from '@pdz/shared/inputs/field/input.directive';
 import { SegmentedOptionComponent } from '@pdz/shared/inputs/segmented/segmented-option.component';
 import { SegmentedComponent } from '@pdz/shared/inputs/segmented/segmented.component';
 
 @Component({
   selector: 'pdz-filter-drawer',
-  imports: [FormsModule, IconComponent, PokemonTypeComponent,
+  imports: [
+    FormsModule,
+    IconComponent,
+    InputDirective,
+    PokemonTypeComponent,
     ButtonComponent,
     SegmentedComponent,
     SegmentedOptionComponent,
@@ -106,7 +111,6 @@ export class FilterDrawerComponent implements OnChanges {
   @HostListener('keyup.enter', ['$event'])
   onEnterKey(event: Event): void {
     const target = event.target as HTMLElement;
-    // Selects use Enter to open/close; cancel button should not also apply
     if (target.tagName === 'SELECT') return;
     if (target.classList.contains('filter-drawer__close')) return;
     this.applyFilter();

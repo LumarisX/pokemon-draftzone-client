@@ -1,12 +1,12 @@
-<section class="chat">
+<section class="chat" [attr.aria-label]="heading()">
   <header class="chat__header">
     <h2 class="chat__title">
-      <pdz-icon name="forum" [size]="18"></pdz-icon>
+      <pdz-icon name="forum" [size]="18" />
       <span>{{ heading() }}</span>
     </h2>
   </header>
 
-  <div #log class="chat__log" (scroll)="onScroll()">
+  <div #log class="chat__log" aria-live="polite" (scroll)="onScroll()">
     @if (loading()) {
       <p class="chat__empty">Loading…</p>
     } @else if (!messages().length) {
@@ -23,10 +23,9 @@
             @if (showsRole(message)) {
               <span
                 class="chat__badge"
-                [class.chat__badge--participant]="message.role === 'coach'"
-                [title]="roleLabel(message)"
+                [class.chat__badge--organizer]="message.role === 'organizer'"
               >
-                <pdz-icon [name]="roleIcon(message)" [size]="12"></pdz-icon>
+                <pdz-icon [name]="roleIcon(message)" [size]="12" />
                 <span>{{ roleLabel(message) }}</span>
               </span>
             }
@@ -35,14 +34,13 @@
               <button
                 pdz-button
                 iconOnly
+                icon="close"
                 size="xs"
                 variant="ghost"
                 color="danger"
                 aria-label="Delete message"
                 (click)="remove(message)"
-              >
-                <pdz-icon name="close" [size]="12"></pdz-icon>
-              </button>
+              ></button>
             }
           </div>
           <p class="chat__text">{{ message.text }}</p>
@@ -54,21 +52,25 @@
   @if (canPost()) {
     <div class="chat__composer">
       <textarea
+        pdz-input
         class="chat__input"
         rows="2"
         maxlength="1000"
+        [attr.aria-label]="'Message ' + heading()"
         [placeholder]="placeholder()"
-        [(ngModel)]="draft"
+        [ngModel]="draft()"
+        (ngModelChange)="draft.set($event)"
         (keydown)="onKeydown($event)"
       ></textarea>
       <button
         pdz-button
         size="sm"
-        [disabled]="!draft.trim() || sending()"
+        icon="send"
+        [loading]="sending()"
+        [disabled]="!draft().trim()"
         (click)="send()"
       >
-        <pdz-icon name="send" [size]="16"></pdz-icon>
-        <span>{{ sending() ? "Sending…" : "Send" }}</span>
+        Send
       </button>
     </div>
   } @else if (!loading()) {
@@ -76,6 +78,6 @@
   }
 
   @if (error()) {
-    <p class="chat__error">{{ error() }}</p>
+    <p class="chat__error" role="alert">{{ error() }}</p>
   }
 </section>

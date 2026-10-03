@@ -25,14 +25,11 @@ export type TierPokemon = {
     tera?: true;
   };
   addons?: TierPokemonAddon[];
-  /** Alternate formes this entry is allowed to run. */
   formes?: { id: string; name: string }[];
-  /** Populated from `formes` for the sprite's forme stack; not persisted. */
   draftFormes?: { id: string; name: string }[];
 };
 
 export type LeagueTier = {
-  /** Absent for the synthetic Untiered/Banned buckets and newly added tiers. */
   id?: string;
   name: string;
   cost?: number;

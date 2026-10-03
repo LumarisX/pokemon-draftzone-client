@@ -9,7 +9,7 @@
   transition: box-shadow pdz.duration(base) pdz.easing(standard);
 
   &:hover {
-    box-shadow: var(--pdz-level-2);
+    box-shadow: var(--pdz-elevation-2);
   }
 
   .card-header {
@@ -196,16 +196,10 @@
 
           .division-card {
             padding: pdz.space(md);
+            border: 1px solid pdz.color(border-subtle);
             border-radius: pdz.shape(corner-sm);
-            box-shadow: var(--pdz-level-1);
 
-            &.team-a {
-              background-color: pdz.color(primary-container-low);
-            }
-
-            &.team-b {
-              background-color: pdz.color(secondary-container-low);
-            }
+            background-color: pdz.color(raised-high);
 
             .division-name {
               font-weight: var(--pdz-font-weight-semibold);
@@ -320,7 +314,6 @@
   align-items: center;
   padding: pdz.space(2xs) pdz.space(sm);
   border-radius: pdz.shape(corner-full);
-  box-shadow: var(--pdz-level-1);
   @include pdz.text(label, $family: false);
   text-transform: capitalize;
   white-space: nowrap;

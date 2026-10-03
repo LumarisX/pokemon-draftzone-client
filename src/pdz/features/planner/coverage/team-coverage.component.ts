@@ -5,7 +5,7 @@ import { SegmentedOptionComponent } from '@pdz/shared/inputs/segmented/segmented
 import { SegmentedComponent } from '@pdz/shared/inputs/segmented/segmented.component';
 import { SliderComponent } from '@pdz/shared/inputs/slider/slider.component';
 import { debounceTime, Subject, takeUntil } from 'rxjs';
-import { Coverage } from '../../drafts/matchup-overview/matchup-interface';
+import { Coverage } from '@pdz/features/drafts/matchup-overview/matchup-interface';
 import { WidgetComponent } from '@pdz/shared/layout/widget/widget.component';
 import { CoverageTeamChartComponent } from './charts/coverage-team-chart.component';
 

@@ -1,7 +1,11 @@
 import { DatePipe } from '@angular/common';
-import { Component, computed, inject, signal } from '@angular/core';
+import { Component, DestroyRef, computed, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { DestroyRef } from '@angular/core';
+import { MatchupDetail } from '@pdz/features/league-zone/league-matchup/league-matchup.model';
+import { MatchupReportComponent } from '@pdz/features/league-zone/league-matchup/matchup-report/matchup-report.component';
+import { LeagueManageService } from '@pdz/features/league-zone/league-manage/league-manage.service';
+import { LeagueZoneService } from '@pdz/features/league-zone/league-zone.service';
+import { League } from '@pdz/features/league-zone/league.interface';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 import { CardComponent } from '@pdz/shared/data/card/card.component';
 import { ChipComponent } from '@pdz/shared/data/chip/chip.component';
@@ -16,11 +20,6 @@ import { ScoreComponent } from '@pdz/shared/data/score/score.component';
 import { SegmentedOptionComponent } from '@pdz/shared/inputs/segmented/segmented-option.component';
 import { SelectComponent } from '@pdz/shared/dropdowns/select/select.component';
 import { SelectOptionComponent } from '@pdz/shared/dropdowns/select/select-option.component';
-import { MatchupReportComponent } from '../../league-matchup/matchup-report/matchup-report.component';
-import { MatchupDetail } from '../../league-matchup/league-matchup.model';
-import { LeagueZoneService } from '../../league-zone.service';
-import { League } from '../../league.interface';
-import { LeagueManageService } from '../league-manage.service';
 
 type ResultsScope = 'attention' | 'all';
 
@@ -335,7 +334,7 @@ export class LeagueManageResultsComponent {
       case 'side2ffw':
         return `${team2.name} won by forfeit`;
       case 'dffl':
-        return 'Double forfeit';
+        return 'Double Forfeit';
       case 'draw':
         return 'Draw';
       default:

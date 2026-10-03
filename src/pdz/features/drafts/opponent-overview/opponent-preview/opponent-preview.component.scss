@@ -15,8 +15,8 @@
 .preview-main {
   display: flex;
   width: 100%;
-  gap: 0.5rem;
-  padding: 0 0.5rem 0.5rem;
+  gap: pdz.space(sm);
+  padding: 0 pdz.space(sm) pdz.space(sm);
 
   flex-direction: column;
   align-items: stretch;
@@ -27,7 +27,7 @@
 }
 
 section {
-  border: 1px solid pdz.color(menu-border);
+  border: 1px solid pdz.color(border-subtle);
   border-radius: pdz.shape(corner-lg);
   width: fit-content;
   min-width: 33%;
@@ -52,7 +52,7 @@ section {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(20rem, 1fr));
   gap: pdz.space(lg);
-  padding: 0 0.5rem 0.5rem;
+  padding: 0 pdz.space(sm) pdz.space(sm);
   align-items: start;
 }
 
@@ -83,20 +83,6 @@ section {
   }
 }
 
-.matchup-logo {
-  flex-shrink: 0;
-  overflow: hidden;
-  border-radius: pdz.shape(corner-md);
-  box-shadow: var(--pdz-level-1);
-  height: 3rem;
-  width: 3rem;
-
-  img {
-    aspect-ratio: 1/1;
-    object-fit: contain;
-  }
-}
-
 .matchup-meta {
   @include pdz.text(label);
   display: flex;
@@ -109,7 +95,7 @@ section {
 }
 
 .matchup-meta__stage {
-  font-weight: 700;
+  font-weight: pdz.font-weight(bold);
 }
 
 .matchup-meta__time {
@@ -120,8 +106,7 @@ section {
   cursor: help;
 
   &:focus-visible {
-    outline: 2px solid pdz.color(primary-accent);
-    outline-offset: 2px;
+    @include pdz.focus-ring;
   }
 }
 
@@ -134,11 +119,10 @@ section {
 .section-header {
   display: flex;
   width: 100%;
-  font-size: pdz.font-size(lg);
+  @include pdz.text(section-title);
   align-items: center;
   justify-content: space-between;
-  font-family: var(--pdz-font-display);
-  padding: 0.5rem 1rem;
+  padding: pdz.space(sm) pdz.space(lg);
   flex-shrink: 0;
 }
 
@@ -169,26 +153,16 @@ section {
   }
 
   .table-wrapper {
-    padding: 0 0.5rem;
+    padding: 0 pdz.space(sm);
     overflow: auto;
     height: 100%;
     width: 100%;
-  }
-
-  .pdz-table {
-    thead th {
-      border-bottom: 2px solid pdz.color(secondary-border);
-    }
-
-    tbody tr:hover {
-      background-color: pdz.color(secondary-container);
-    }
   }
 }
 
 .button-container {
   display: flex;
-  gap: 0.5rem;
+  gap: pdz.space(sm);
   align-items: stretch;
 }
 

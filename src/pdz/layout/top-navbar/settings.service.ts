@@ -1,7 +1,6 @@
-import { Injectable, inject } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { Injectable, inject, signal } from '@angular/core';
 import { ApiService } from '@pdz/core/services/api.service';
-import { BehaviorSubject } from 'rxjs';
+import { safeStorage } from '@pdz/core/utils/storage';
 
 export type Settings = {
   theme?: string | null;
@@ -13,34 +12,27 @@ export type Settings = {
   themeOverride?: string | null;
 };
 
+const STORAGE_KEY = 'user-settings';
+const DEFAULT_THEME = 'classic';
+const THEME_OVERRIDE = '6526';
+
 @Injectable({
   providedIn: 'root',
 })
 export class SettingsService {
   private apiService = inject(ApiService);
+  private readonly state = signal<Settings>(
+    safeStorage.getJson<Settings>(STORAGE_KEY) ?? {},
+  );
 
-  settingsData$ = new BehaviorSubject<Settings>({});
-  readonly settings = toSignal(this.settingsData$, { requireSync: true });
-  get settingsData() {
-    return this.settingsData$.value;
+  readonly settings = this.state.asReadonly();
+
+  get settingsData(): Settings {
+    return this.state();
   }
-  get settings$() {
-    return this.settingsData$.asObservable();
-  }
-
-  private readonly DEFAULT_THEME: string = 'classic';
-
-  private themeOverride?: string = '6526';
 
   constructor() {
-    try {
-      const localSettings = localStorage.getItem('user-settings');
-      if (localSettings) this.settingsData$.next(JSON.parse(localSettings));
-    } catch (e) {
-      console.warn('Failed to parse local user settings', e);
-    }
-
-    this.applyThemeAndMode(this.settingsData);
+    this.applyThemeAndMode(this.state());
   }
 
   updateLDMode(value?: string | null) {
@@ -50,63 +42,34 @@ export class SettingsService {
         window.matchMedia &&
         window.matchMedia('(prefers-color-scheme: dark)').matches);
 
-    document.documentElement.classList.toggle('dark', isDark);
-    document.documentElement.classList.toggle('light', !isDark);
-
-    document.documentElement.setAttribute(
-      'pdz-theme-mode',
-      isDark ? 'dark' : 'light',
-    );
+    const root = document.documentElement;
+    root.classList.toggle('dark', isDark);
+    root.classList.toggle('light', !isDark);
+    root.setAttribute('pdz-theme-mode', isDark ? 'dark' : 'light');
   }
 
-  private applyThemeAndMode(
-    settings: Settings,
-    options?: { source?: 'local' | 'server' },
-  ) {
+  private applyThemeAndMode(settings: Settings) {
     const theme =
-      this.themeOverride && this.themeOverride === settings.themeOverride
-        ? this.DEFAULT_THEME
-        : (settings?.theme ?? this.DEFAULT_THEME);
-    const ldMode = settings?.ldMode ?? 'device';
-
-    try {
-      document.documentElement.setAttribute('pdz-theme', theme);
-    } catch (e) {}
-
-    this.updateLDMode(ldMode ?? undefined);
+      settings.themeOverride === THEME_OVERRIDE
+        ? DEFAULT_THEME
+        : (settings.theme ?? DEFAULT_THEME);
+    document.documentElement.setAttribute('pdz-theme', theme);
+    this.updateLDMode(settings.ldMode ?? 'device');
   }
 
-  /**
-   * Update settings locally and optionally mark them as coming from the server.
-   * This method will not call the server — use saveToServer() for that.
-   *
-   * @param value Partial settings to merge
-   * @param options.source 'server' when these settings came from backend (server wins)
-   */
-  setSettings(
-    value: Partial<Settings> | undefined,
-    options?: { source?: 'local' | 'server' },
-  ) {
+  setSettings(value: Partial<Settings> | null | undefined) {
     if (!value) return;
-    const merged: Settings = {
-      ...this.settingsData,
-      ...value,
-    };
+    const current = this.state();
+    const merged: Settings = { ...current, ...value };
     merged.themeOverride =
-      !this.settingsData.theme && !merged.theme
-        ? this.themeOverride
-        : undefined;
-    this.settingsData$.next(merged);
-    try {
-      localStorage.setItem('user-settings', JSON.stringify(merged));
-    } catch (e) {
-      console.warn('Failed to persist user settings to localStorage', e);
-    }
-    this.applyThemeAndMode(merged, options);
+      !current.theme && !merged.theme ? THEME_OVERRIDE : undefined;
+    this.state.set(merged);
+    safeStorage.setJson(STORAGE_KEY, merged);
+    this.applyThemeAndMode(merged);
   }
 
   saveToServer() {
-    return this.updateSettings(this.settingsData);
+    return this.updateSettings(this.state());
   }
 
   refreshFromServer() {
@@ -118,7 +81,6 @@ export class SettingsService {
   }
 
   updateSettings(settingData: Partial<Settings>) {
-    console.log(settingData);
     return this.apiService.patch(`users/settings`, settingData);
   }
 }

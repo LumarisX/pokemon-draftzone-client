@@ -1,14 +1,14 @@
 import {
   Component,
-  computed,
-  EventEmitter,
-  inject,
-  OnDestroy,
+  DestroyRef,
   OnInit,
-  Output,
-  signal,
+  computed,
+  inject,
   input,
+  output,
+  signal,
 } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import {
   FormArray,
   FormBuilder,
@@ -17,18 +17,16 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import { apiErrorMessage } from '@pdz/core/services/api.service';
-import { getNameByPid } from '@pdz/shared/data/namedex';
-import { Subject, takeUntil } from 'rxjs';
+import { LeagueZoneService } from '@pdz/features/league-zone/league-zone.service';
 import { ReplayService } from '@pdz/features/tools/replay_analyzer/replay.service';
-import { LeagueZoneService } from '../../league-zone.service';
+import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
+import { getNameByPid } from '@pdz/shared/data/namedex';
+import { DisclosureComponent } from '@pdz/shared/layout/disclosure/disclosure.component';
 import {
   MatchupDetail,
   MatchupReportPayload,
   MatchupSideKey,
 } from '../league-matchup.model';
-import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
-import { IconComponent } from '@pdz/shared/images/icon/icon.component';
-import { DisclosureComponent } from '@pdz/shared/layout/disclosure/disclosure.component';
 import { ScoreEntryGameComponent } from '@pdz/shared/widgets/score-entry/score-entry-game.component';
 import { ScoreEntryMatchComponent } from '@pdz/shared/widgets/score-entry/score-entry-match.component';
 import { confirmScoreEntry } from '@pdz/shared/widgets/score-entry/score-entry-warnings-dialog.component';
@@ -50,11 +48,11 @@ import {
   scoreEntryWarnings,
 } from '@pdz/shared/widgets/score-entry/score-entry.form';
 import {
-  SCORE_ENTRY_SIDES,
   ScoreEntryGameForm,
   ScoreEntryMatchForm,
   ScoreEntrySide,
   ScoreEntryWarningGroup,
+  scoreEntryOrder,
   toReplayLink,
 } from '@pdz/shared/widgets/score-entry/score-entry.model';
 import { toRosterEntries } from '@pdz/shared/widgets/score-entry/score-entry.replay';
@@ -72,7 +70,6 @@ const ROSTER_SIZE = 6;
   selector: 'pdz-matchup-report',
   imports: [
     ReactiveFormsModule,
-    IconComponent,
     ButtonComponent,
     DisclosureComponent,
     ScoreEntryGameComponent,
@@ -81,17 +78,17 @@ const ROSTER_SIZE = 6;
   templateUrl: './matchup-report.component.html',
   styleUrl: './matchup-report.component.scss',
 })
-export class MatchupReportComponent implements OnInit, OnDestroy {
+export class MatchupReportComponent implements OnInit {
   readonly matchup = input.required<MatchupDetail>();
   readonly matchupSlug = input.required<string>();
 
-  @Output() submitted = new EventEmitter<void>();
+  readonly submitted = output<void>();
 
   private fb = inject(FormBuilder);
   private leagueService = inject(LeagueZoneService);
   private replayService = inject(ReplayService);
   private dialogs = inject(DialogService);
-  private readonly destroy$ = new Subject<void>();
+  private destroyRef = inject(DestroyRef);
 
   form!: FormGroup<{
     match: ScoreEntryMatchForm;
@@ -106,7 +103,9 @@ export class MatchupReportComponent implements OnInit, OnDestroy {
   summaryOpen = signal(false);
   openGames = signal<number[]>([0]);
 
-  readonly sides = SCORE_ENTRY_SIDES;
+  readonly order = computed(() =>
+    scoreEntryOrder(this.matchup().viewer.side),
+  );
   readonly rosterSize = ROSTER_SIZE;
 
   readonly recordsDirectly = computed(() => this.matchup().viewer.isOrganizer);
@@ -167,11 +166,6 @@ export class MatchupReportComponent implements OnInit, OnDestroy {
     if (report.winner === 'side1') return 'side2';
     if (report.winner === 'side2') return 'side1';
     return 'both';
-  }
-
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
   }
 
   get match(): ScoreEntryMatchForm {
@@ -294,7 +288,7 @@ export class MatchupReportComponent implements OnInit, OnDestroy {
 
     this.replayService
       .analyzeReplayV2(url)
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (data) => {
           const applied = applyReplayToGame(game, data.analysis.players, {
@@ -338,7 +332,7 @@ export class MatchupReportComponent implements OnInit, OnDestroy {
 
     this.leagueService
       .submitMatchupReport(this.matchupSlug(), this.buildPayload())
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: () => {
           this.saving.set(false);

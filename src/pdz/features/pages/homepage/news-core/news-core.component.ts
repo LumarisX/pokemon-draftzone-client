@@ -1,36 +1,34 @@
-import { Component, OnInit, inject } from '@angular/core';
-import { NEWS } from './news.data';
-import { CommonModule } from '@angular/common';
+import { NgTemplateOutlet } from '@angular/common';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { MarkdownModule } from 'ngx-markdown';
-import { UnreadService } from '../unread.service';
+import { UnreadService } from '@pdz/features/pages/homepage/unread.service';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
+import { MarkdownModule } from 'ngx-markdown';
+import { NEWS } from './news.data';
+
+const LA_DATE = new Intl.DateTimeFormat('en-US', {
+  timeZone: 'America/Los_Angeles',
+  month: 'short',
+  day: 'numeric',
+  year: 'numeric',
+});
 
 @Component({
   selector: 'pdz-news-core',
-  imports: [CommonModule, RouterLink, MarkdownModule, ButtonComponent],
+  imports: [NgTemplateOutlet, RouterLink, MarkdownModule, ButtonComponent],
   templateUrl: './news-core.component.html',
   styleUrl: './news-core.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class NewsCoreComponent implements OnInit {
-  private unreadService = inject(UnreadService);
-  private readonly laDateFormatter = new Intl.DateTimeFormat('en-US', {
-    timeZone: 'America/Los_Angeles',
-    month: '2-digit',
-    day: '2-digit',
-    year: 'numeric',
-  });
-
+export class NewsCoreComponent {
   readonly news = NEWS;
 
-  ngOnInit(): void {
-    this.unreadService.newsCount.next('');
-    localStorage.setItem('newsTime', Date.now().toString());
+  constructor() {
+    inject(UnreadService).markNewsRead();
   }
 
   formatDate(dateString: string): string {
     const date = new Date(dateString);
-    if (Number.isNaN(date.getTime())) return dateString;
-    return this.laDateFormatter.format(date);
+    return Number.isNaN(date.getTime()) ? dateString : LA_DATE.format(date);
   }
 }

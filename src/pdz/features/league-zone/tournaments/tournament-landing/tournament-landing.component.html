@@ -1,10 +1,14 @@
 @if (infoFailed()) {
-  <p class="section-message section-message--error">
-    Could not load this tournament.
-  </p>
+  <pdz-empty-state
+    bordered
+    icon="error"
+    heading="Could not load this tournament"
+    message="Refresh the page to try again."
+  />
 } @else {
   @if (info(); as tournament) {
     <pdz-page-header
+      wash
       [title]="tournament.name"
       [subtitle]="tournament.description ?? ''"
       [logo]="getTournamentLogoUrl(tournament.logo)"
@@ -31,7 +35,9 @@
           <pdz-chip [tone]="phase.tone" [icon]="phase.icon">
             {{ phase.label }}
             @if (phase.countdown) {
-              <span class="landing-header__countdown">{{ phase.countdown }}</span>
+              <span class="landing-header__countdown">{{
+                phase.countdown
+              }}</span>
             }
           </pdz-chip>
         }
@@ -61,35 +67,44 @@
         <pdz-skeleton variant="text" width="13rem" height="1.75rem" />
         <pdz-skeleton variant="text" width="17rem" height="0.875rem" />
       </div>
-      <pdz-skeleton variant="block" width="8rem" height="1.75rem" radius="999px" />
+      <pdz-skeleton
+        variant="block"
+        width="8rem"
+        height="1.75rem"
+        radius="var(--pdz-shape-corner-full)"
+      />
     </div>
   }
 
   <div class="landing-body">
     <section class="section section--round">
       <div class="section-header">
-        <span class="section-header__title">
+        <h2 class="section-header__title">
           {{ roundName() ?? "This Round" }}
           @if (roundDeadline(); as deadline) {
             <span class="section-header__note">
               due {{ deadline | date: "MMM d, h:mm a" }}
             </span>
           }
-        </span>
+        </h2>
         <a
           pdz-button
           variant="link"
           size="sm"
           [routerLink]="[...tournamentBase(), 'schedule']"
         >
-          Full schedule
+          Full Schedule
         </a>
       </div>
       <div class="section-body">
         @if (!roundLoaded()) {
           <div class="section-skeletons">
             @for (row of skeletonRows; track row) {
-              <pdz-skeleton variant="block" height="4.5rem" radius="0.5rem" />
+              <pdz-skeleton
+                variant="block"
+                height="4.5rem"
+                radius="var(--pdz-shape-corner-sm)"
+              />
             }
           </div>
         }
@@ -105,14 +120,14 @@
 
     <section class="section section--standings">
       <div class="section-header">
-        <span class="section-header__title">Standings</span>
+        <h2 class="section-header__title">Standings</h2>
         <a
           pdz-button
           variant="link"
           size="sm"
           [routerLink]="[...tournamentBase(), 'standings']"
         >
-          Full standings
+          Full Standings
         </a>
       </div>
       <div class="section-body">
@@ -120,15 +135,24 @@
           @if (rows.length) {
             <ol class="standings-preview">
               @for (row of rows; track row.teamId) {
-                <li class="standings-preview__row">
+                <li
+                  class="standings-preview__row"
+                  [class.standings-preview__row--you]="row.teamId === ownTeamId()"
+                >
                   <span class="standings-preview__rank">{{ row.rank }}</span>
-                  <img
-                    class="standings-preview__logo"
-                    [src]="getTeamLogoUrl(row.logo)"
-                    alt=""
+                  <pdz-team-logo
+                    size="sm"
+                    decorative
+                    [src]="logoSrc(row.logo)"
+                    [name]="row.name"
                   />
                   <ng-template #teamText>
-                    <span class="standings-preview__name">{{ row.name }}</span>
+                    <span class="standings-preview__name">
+                      {{ row.name }}
+                      @if (row.teamId === ownTeamId()) {
+                        <span class="pdz-you-tag">You</span>
+                      }
+                    </span>
                     <span class="standings-preview__coach">{{ row.coach }}</span>
                   </ng-template>
                   @if (row.teamSlug; as slug) {
@@ -143,24 +167,15 @@
                       <ng-container [ngTemplateOutlet]="teamText" />
                     </span>
                   }
-                  <span
-                    class="record-box record-box--wide"
-                    [class.positive]="row.wins > row.losses"
-                    [class.negative]="row.wins < row.losses"
-                    [class.neutral]="row.wins === row.losses"
-                    >@if (row.draws) {
-                      {{ row.wins }}-{{ row.draws }}-{{ row.losses }}
-                    } @else {
-                      {{ row.wins }}-{{ row.losses }}
-                    }</span
-                  >
-                  <span
-                    class="record-box"
-                    [class.positive]="row.diff > 0"
-                    [class.negative]="row.diff < 0"
-                    [class.neutral]="row.diff === 0"
-                    >{{ row.diff | plusSign }}</span
-                  >
+                  <pdz-record
+                    size="sm"
+                    [wins]="row.wins"
+                    [draws]="row.draws"
+                    [losses]="row.losses"
+                  />
+                  <pdz-score [tone]="diffTone(row.diff)">{{
+                    row.diff | plusSign
+                  }}</pdz-score>
                 </li>
               }
             </ol>
@@ -175,7 +190,11 @@
         } @else {
           <div class="section-skeletons">
             @for (row of skeletonRows; track row) {
-              <pdz-skeleton variant="block" height="2.5rem" radius="0.5rem" />
+              <pdz-skeleton
+                variant="block"
+                height="2.5rem"
+                radius="var(--pdz-shape-corner-sm)"
+              />
             }
           </div>
         }

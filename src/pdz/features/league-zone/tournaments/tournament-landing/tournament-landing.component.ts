@@ -10,24 +10,30 @@ import {
 import { DatePipe, NgTemplateOutlet } from '@angular/common';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
-import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
-import { ChipComponent, ChipTone } from '@pdz/shared/data/chip/chip.component';
-import { SkeletonComponent } from '@pdz/shared/data/skeleton/skeleton.component';
-import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
-import { PlusSignPipe } from '@pdz/shared/pipes/plus-sign.pipe';
-import { catchError, of, switchMap } from 'rxjs';
+import { LEAGUE_ZONE_PATH } from '@pdz/core/route-paths';
 import { AuthService } from '@pdz/core/services/auth0.service';
 import {
   LeagueScheduleWidgetComponent,
   ScheduleRoundView,
-} from '../../league-widgets/league-schedule-widget/league-schedule-widget.component';
-import { LeagueZoneService } from '../../league-zone.service';
-import { League } from '../../league.interface';
+} from '@pdz/features/league-zone/league-widgets/league-schedule-widget/league-schedule-widget.component';
+import { LeagueZoneService } from '@pdz/features/league-zone/league-zone.service';
+import { League } from '@pdz/features/league-zone/league.interface';
 import {
   formatCountdown,
   getLeagueLogoUrl,
-  getLogoUrl,
-} from '../../league.util';
+  getTeamLogoSrc,
+} from '@pdz/features/league-zone/league.util';
+import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
+import { BadgeTone } from '@pdz/shared/data/badge/badge.component';
+import { ChipComponent, ChipTone } from '@pdz/shared/data/chip/chip.component';
+import { RecordComponent } from '@pdz/shared/data/record/record.component';
+import { ScoreComponent } from '@pdz/shared/data/score/score.component';
+import { SkeletonComponent } from '@pdz/shared/data/skeleton/skeleton.component';
+import { EmptyStateComponent } from '@pdz/shared/feedback/empty-state/empty-state.component';
+import { TeamLogoComponent } from '@pdz/shared/images/team-logo/team-logo.component';
+import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
+import { PlusSignPipe } from '@pdz/shared/pipes/plus-sign.pipe';
+import { catchError, of, switchMap } from 'rxjs';
 
 type Phase =
   | 'signup'
@@ -71,10 +77,14 @@ const STANDINGS_PREVIEW_ROWS = 8;
     RouterLink,
     ButtonComponent,
     ChipComponent,
+    EmptyStateComponent,
     PageHeaderComponent,
     LeagueScheduleWidgetComponent,
     PlusSignPipe,
+    RecordComponent,
+    ScoreComponent,
     SkeletonComponent,
+    TeamLogoComponent,
   ],
 })
 export class TournamentLandingComponent implements OnInit {
@@ -98,20 +108,28 @@ export class TournamentLandingComponent implements OnInit {
   private readonly now = signal(Date.now());
 
   protected readonly getTournamentLogoUrl = getLeagueLogoUrl;
-  protected readonly getTeamLogoUrl = getLogoUrl;
+  protected readonly logoSrc = getTeamLogoSrc;
   protected readonly skeletonRows = [0, 1, 2, 3, 4];
 
   protected readonly tournamentBase = computed(() => {
     const leagueSlug = this.leagueService.leagueSlug();
     const tournamentSlug = this.leagueService.tournamentSlug();
     if (!leagueSlug || !tournamentSlug) return [];
-    return ['/leagues', leagueSlug, 'tournaments', tournamentSlug];
+    return ['/', LEAGUE_ZONE_PATH, leagueSlug, 'tournaments', tournamentSlug];
   });
 
   protected readonly leagueLink = computed(() => {
     const leagueSlug = this.leagueService.leagueSlug();
-    return leagueSlug ? ['/leagues', leagueSlug] : [];
+    return leagueSlug ? ['/', LEAGUE_ZONE_PATH, leagueSlug] : [];
   });
+
+  protected readonly ownTeamId = computed(() => this.profile()?.teamId ?? null);
+
+  protected diffTone(diff: number): BadgeTone {
+    if (diff > 0) return 'success';
+    if (diff < 0) return 'danger';
+    return 'neutral';
+  }
 
   protected readonly facts = computed(() => {
     const info = this.info();
@@ -164,7 +182,7 @@ export class TournamentLandingComponent implements OnInit {
       return {
         phase: 'signup',
         icon: 'how_to_reg',
-        label: 'Sign-ups close in',
+        label: 'Sign-Ups Close In',
         countdown: until(signUp),
         tone: 'success',
       };
@@ -191,7 +209,7 @@ export class TournamentLandingComponent implements OnInit {
       return {
         phase: 'season-soon',
         icon: 'event_upcoming',
-        label: 'Season starts in',
+        label: 'Season Starts In',
         countdown: until(seasonStart),
         tone: 'info',
       };
@@ -200,7 +218,7 @@ export class TournamentLandingComponent implements OnInit {
       return {
         phase: 'complete',
         icon: 'emoji_events',
-        label: 'Season complete',
+        label: 'Season Complete',
         countdown: null,
         tone: 'neutral',
       };

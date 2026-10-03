@@ -2,7 +2,7 @@
   @if (label()) {
     <span class="chip-input__label">{{ label() }}</span>
   }
-  <div class="chip-input__box" (click)="chipInput.focus()">
+  <label class="chip-input__box">
     @for (chip of control().value; track $index) {
       <pdz-chip
         removable
@@ -19,9 +19,10 @@
       type="text"
       spellcheck="false"
       autocomplete="off"
+      [attr.aria-label]="label() || placeholder()"
       [placeholder]="control().value.length ? '' : placeholder()"
       (keydown)="handleKeydown($event, chipInput)"
       (blur)="add(chipInput)"
     />
-  </div>
+  </label>
 </div>

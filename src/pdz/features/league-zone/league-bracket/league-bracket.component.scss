@@ -1,12 +1,10 @@
 @use "pdz-theming" as pdz;
-@use "mixins" as *;
-@use "../league.mixins" as *;
 
 :host {
   display: block;
   width: 100%;
 
-  @include respond-above(medium) {
+  @include pdz.respond-above(medium) {
     height: 100%;
   }
 }
@@ -16,34 +14,30 @@
   flex-direction: column;
   gap: pdz.space(md);
 
-  @include respond-above(medium) {
+  @include pdz.respond-above(medium) {
     height: 100%;
     min-height: 0;
   }
+}
 
-  &__body {
-    display: flex;
-    flex-direction: column;
+.schedule__body {
+  display: flex;
+  flex-direction: column;
 
-    @include respond-above(medium) {
+  @include pdz.respond-above(medium) {
+    flex: 1 1 auto;
+    min-height: 0;
+
+    > pdz-stage-builder {
       flex: 1 1 auto;
-      min-height: 0;
-
-      > pdz-stage-builder {
-        flex: 1 1 auto;
-        min-height: 14rem;
-      }
+      min-height: 14rem;
     }
   }
+}
 
-  &__loading {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 25rem;
-  }
-
-  &__empty {
-    @include pdz-league-section-message();
-  }
+.schedule__loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 25rem;
 }

@@ -1,6 +1,13 @@
 @use "mixins/scales" as *;
 @use "pdz-theming" as pdz;
 
+$stat-hover: color-mix(
+  in srgb,
+  #{pdz.color(on-surface)} 7%,
+  #{pdz.color(scale-neutral)}
+);
+$line-hover: pdz.color(border-control);
+
 :host {
   @include generate-bg-scale();
   --bevel-radius: #{pdz.shape(corner-sm)};
@@ -27,7 +34,7 @@
   }
   &.type-empty {
     color: transparent;
-    background-color: pdz.color(surface-variant);
+    background-color: pdz.color(inset);
   }
 }
 
@@ -44,10 +51,7 @@ th {
   &.column-hovered {
     .type-wrapper.type-empty,
     .type-wrapper.pdz-scale-neutral {
-      background-color: var(
-        --pdz-cmp-typechart-stat-hover,
-        pdz.color(menu-container)
-      );
+      background-color: var(--pdz-cmp-typechart-stat-hover, #{$stat-hover});
     }
   }
 }
@@ -81,29 +85,18 @@ th {
   }
 }
 
-//Hover lines
-
 .column-hovered {
-  background-color: var(
-    --pdz-cmp-typechart-border-hover,
-    pdz.color(menu-border)
-  );
+  background-color: var(--pdz-cmp-typechart-border-hover, #{$line-hover});
 
   .pdz-scale-neutral {
-    background-color: var(
-      --pdz-cmp-typechart-stat-hover,
-      pdz.color(menu-container)
-    );
+    background-color: var(--pdz-cmp-typechart-stat-hover, #{$stat-hover});
   }
 }
 
 .disabled {
   .column-hovered {
     .pdz-scale-neutral {
-      background-color: var(
-        --pdz-cmp-typechart-stat-hover,
-        pdz.color(menu-container)
-      );
+      background-color: var(--pdz-cmp-typechart-stat-hover, #{$stat-hover});
     }
   }
 }
@@ -111,10 +104,7 @@ th {
 tbody {
   tr {
     &:hover {
-      background-color: var(
-        --pdz-cmp-typechart-border-hover,
-        pdz.color(menu-border)
-      );
+      background-color: var(--pdz-cmp-typechart-border-hover, #{$line-hover});
       td:not(.column-hovered),
       th:not(.column-hovered) {
         &:first-child {
@@ -127,17 +117,14 @@ tbody {
         }
       }
       .pdz-scale-neutral {
-        background-color: var(
-          --pdz-cmp-typechart-stat-hover,
-          pdz.color(menu-container)
-        );
+        background-color: var(--pdz-cmp-typechart-stat-hover, #{$stat-hover});
       }
 
       &.disabled {
         .type-wrapper {
           background-color: var(
             --pdz-cmp-typechart-stat-hover,
-            pdz.color(menu-container)
+            #{$stat-hover}
           );
         }
       }
@@ -186,16 +173,15 @@ tbody {
       border-radius: pdz.shape(corner-xs);
       height: 1.5rem;
       width: 2.5rem;
-      font-size: pdz.font-size(2xs);
+      @include pdz.text(label-caps);
       line-height: 0.7rem;
-      font-weight: bold;
       overflow: hidden;
     }
   }
 }
 
 .sprite-wrapper {
-  background-color: pdz.color(surface);
+  background-color: pdz.color(state-hover);
   display: flex;
   align-items: center;
   justify-content: center;

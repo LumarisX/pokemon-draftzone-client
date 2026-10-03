@@ -1,192 +1,80 @@
-<div class="standing-container">
-  <div class="standing-header">
-    <span class="standing-header-title">Pokemon Standings</span>
-    <button
-      pdz-button
-      size="sm"
-      variant="outlined"
-      class="combine-toggle"
-      [class.combine-toggle--on]="combineTeams"
-      [attr.aria-pressed]="combineTeams"
-      (click)="toggleCombineTeams()"
-    >
-      Combine Teams
-    </button>
-  </div>
-  <div class="standing-table-wrapper">
-    <div class="standing-table" role="table" aria-label="Pokemon standings">
-      <div class="standing-table__row standing-table__row--head" role="row">
-        <div
-          class="standing-table__cell standing-table__cell--head"
-          role="columnheader"
-        >
-          Rank
-        </div>
-        <div
-          class="standing-table__cell standing-table__cell--head"
-          role="columnheader"
-        >
-          Pokemon
-        </div>
-        <div
-          class="standing-table__cell standing-table__cell--head"
-          role="columnheader"
-        >
-          Team
-        </div>
-        <div
-          class="standing-table__cell standing-table__cell--head sortable-header"
-          role="columnheader"
-          [class.is-sorted]="activeSort === 'brought'"
-          [class.is-reversed]="activeSort === 'brought' && !isSortDescending"
-          [attr.aria-sort]="
-            activeSort === 'brought'
-              ? isSortDescending
-                ? 'descending'
-                : 'ascending'
-              : null
-          "
-          tabindex="0"
-          (click)="sortData('brought')"
-          (keydown.enter)="sortData('brought')"
-          (keydown.space)="sortData('brought'); $event.preventDefault()"
-        >
+<div class="pdz-table-wrapper">
+  <table
+    class="pdz-table"
+    data-sticky
+    data-density="compact"
+    pdzSort
+    pdzSortActive="diff"
+    pdzSortDirection="desc"
+    pdzSortDisableClear
+    (pdzSortChange)="onSort($event)"
+  >
+    <caption class="standings__caption">
+      <span>Pokémon standings</span>
+      <label pdz-check label="Combine Teams">
+        <input
+          pdz-checkbox
+          type="checkbox"
+          [checked]="combineTeams()"
+          (change)="combineTeams.set(!combineTeams())"
+        />
+      </label>
+    </caption>
+    <thead>
+      <tr>
+        <th class="pdz-table__num pdz-table__center" scope="col">#</th>
+        <th scope="col">Pokémon</th>
+        <th class="pdz-table__num" scope="col" pdzSortHeader="brought" start="desc">
           Brought
-        </div>
-        <div
-          class="standing-table__cell standing-table__cell--head sortable-header"
-          role="columnheader"
-          [class.is-sorted]="activeSort === 'kills'"
-          [class.is-reversed]="activeSort === 'kills' && !isSortDescending"
-          [attr.aria-sort]="
-            activeSort === 'kills'
-              ? isSortDescending
-                ? 'descending'
-                : 'ascending'
-              : null
-          "
-          tabindex="0"
-          (click)="sortData('kills')"
-          (keydown.enter)="sortData('kills')"
-          (keydown.space)="sortData('kills'); $event.preventDefault()"
-        >
+        </th>
+        <th class="pdz-table__num" scope="col" pdzSortHeader="kills" start="desc">
           Kills
-        </div>
-        <div
-          class="standing-table__cell standing-table__cell--head sortable-header"
-          role="columnheader"
-          [class.is-sorted]="activeSort === 'deaths'"
-          [class.is-reversed]="activeSort === 'deaths' && !isSortDescending"
-          [attr.aria-sort]="
-            activeSort === 'deaths'
-              ? isSortDescending
-                ? 'descending'
-                : 'ascending'
-              : null
-          "
-          tabindex="0"
-          (click)="sortData('deaths')"
-          (keydown.enter)="sortData('deaths')"
-          (keydown.space)="sortData('deaths'); $event.preventDefault()"
-        >
+        </th>
+        <th class="pdz-table__num" scope="col" pdzSortHeader="deaths" start="desc">
           Deaths
-        </div>
-        <div
-          class="standing-table__cell standing-table__cell--head sortable-header"
-          role="columnheader"
-          [class.is-sorted]="activeSort === 'diff'"
-          [class.is-reversed]="activeSort === 'diff' && !isSortDescending"
-          [attr.aria-sort]="
-            activeSort === 'diff'
-              ? isSortDescending
-                ? 'descending'
-                : 'ascending'
-              : null
-          "
-          tabindex="0"
-          (click)="sortData('diff')"
-          (keydown.enter)="sortData('diff')"
-          (keydown.space)="sortData('diff'); $event.preventDefault()"
-        >
-          K/D
-        </div>
-      </div>
-      @for (pokemon of sortedData; track pokemon) {
-        <div class="standing-table__row" role="row">
-          <div class="standing-table__cell" role="cell">
-            <div class="rank-cell">
-              @if (pokemon.direction !== undefined) {
-                @if (pokemon.direction > 0) {
-                  <pdz-icon class="positive" name="arrow_upward"></pdz-icon>
-                } @else if (pokemon.direction < 0) {
-                  <pdz-icon class="negative" name="arrow_downward"></pdz-icon>
-                } @else {
-                  <pdz-icon name="remove"></pdz-icon>
-                }
+        </th>
+        <th class="pdz-table__num" scope="col" pdzSortHeader="diff" start="desc">
+          +/-
+        </th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (pokemon of rows(); track pokemon.id + pokemon.teamName) {
+        <tr>
+          <td class="pdz-table__num pdz-table__center">
+            <span class="rank">
+              {{ $index + 1 }}
+              @if (pokemon.direction !== undefined && pokemon.direction !== 0) {
+                <pdz-icon
+                  class="rank__move"
+                  [class.rank__move--up]="pokemon.direction > 0"
+                  [class.rank__move--down]="pokemon.direction < 0"
+                  [name]="pokemon.direction > 0 ? 'arrow_upward' : 'arrow_downward'"
+                  [ariaLabel]="pokemon.direction > 0 ? 'Moved up' : 'Moved down'"
+                  [size]="14"
+                />
               }
-              <span>
-                {{ $index + 1 }}
+            </span>
+          </td>
+          <td>
+            <span class="mon">
+              <pdz-sprite size="2.5rem" flipped [pokemon]="pokemon" />
+              <span class="mon__text">
+                <span class="mon__name">{{ pokemon.name }}</span>
+                <span class="mon__team">{{ pokemon.teamName }}</span>
               </span>
-            </div>
-          </div>
-          <div class="standing-table__cell" role="cell">
-            <div class="logo-cell">
-              <pdz-sprite size="3rem" flipped [pokemon]="pokemon"></pdz-sprite>
-            </div>
-          </div>
-          <div class="standing-table__cell" role="cell">
-            <div class="team-cell">
-              <div class="team-name">
-                {{ pokemon.name }}
-              </div>
-              <div class="coach-names">
-                {{ pokemon.teamName }}
-              </div>
-            </div>
-          </div>
-          <div class="standing-table__cell" role="cell">
-            <div class="record-cell">
-              <div class="record-box neutral">
-                {{ pokemon.record.brought }}
-              </div>
-            </div>
-          </div>
-          <div class="standing-table__cell" role="cell">
-            <div class="record-cell">
-              <div
-                class="record-box"
-                [class.positive]="pokemon.record.kills > 0"
-                [class.neutral]="pokemon.record.kills === 0"
-              >
-                {{ pokemon.record.kills }}
-              </div>
-            </div>
-          </div>
-          <div class="standing-table__cell" role="cell">
-            <div class="record-cell">
-              <div
-                class="record-box"
-                [class.negative]="pokemon.record.deaths > 0"
-                [class.neutral]="pokemon.record.deaths === 0"
-              >
-                {{ pokemon.record.deaths }}
-              </div>
-            </div>
-          </div>
-          <div class="standing-table__cell" role="cell">
-            <div class="record-cell">
-              <div
-                class="record-box"
-                [class.positive]="pokemon.record.diff > 0"
-                [class.negative]="pokemon.record.diff < 0"
-                [class.neutral]="pokemon.record.diff === 0"
-              >
-                {{ pokemon.record.diff | plusSign }}
-              </div>
-            </div>
-          </div>
-        </div>
+            </span>
+          </td>
+          <td class="pdz-table__num">{{ pokemon.record.brought }}</td>
+          <td class="pdz-table__num">{{ pokemon.record.kills }}</td>
+          <td class="pdz-table__num">{{ pokemon.record.deaths }}</td>
+          <td class="pdz-table__num">
+            <pdz-score [tone]="diffTone(pokemon.record.diff)">{{
+              pokemon.record.diff | plusSign
+            }}</pdz-score>
+          </td>
+        </tr>
       }
-    </div>
-  </div>
+    </tbody>
+  </table>
 </div>

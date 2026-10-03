@@ -9,9 +9,9 @@
   align-items: center;
   gap: pdz.space(md);
   padding: pdz.space(md);
-  border: 1px solid pdz.color(outline-variant);
+  border: 1px solid pdz.color(border-subtle);
   border-radius: pdz.shape(corner-lg);
-  background: pdz.color(surface-container-lowest);
+  background: pdz.color(raised-high);
   flex-wrap: wrap;
 }
 
@@ -26,7 +26,7 @@
   height: 2.75rem;
   flex: none;
   border-radius: pdz.shape(corner-md);
-  background: pdz.color(surface-container-high);
+  background: pdz.color(state-pressed);
   color: pdz.color(on-surface-variant);
 }
 

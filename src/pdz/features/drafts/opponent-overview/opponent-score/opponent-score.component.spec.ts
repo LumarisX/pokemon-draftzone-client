@@ -8,9 +8,9 @@ import {
   setPokemonStatus,
 } from '@pdz/shared/widgets/score-entry/score-entry.form';
 import { ScoreEntrySide } from '@pdz/shared/widgets/score-entry/score-entry.model';
-import { ReplayService } from '../../../tools/replay_analyzer/replay.service';
-import { DraftService } from '../../draft-overview/draft.service';
-import { Matchup } from '../../matchup-overview/matchup.model';
+import { ReplayService } from '@pdz/features/tools/replay_analyzer/replay.service';
+import { DraftService } from '@pdz/features/drafts/draft-overview/draft.service';
+import { Matchup } from '@pdz/features/drafts/matchup-overview/matchup.model';
 import { OpponentScoreComponent } from './opponent-score.component';
 
 const baseMatchup = {

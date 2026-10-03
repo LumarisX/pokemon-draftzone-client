@@ -24,9 +24,11 @@ import { DraftPokemon } from '@pdz/features/drafts/draft.model';
 import { DataService } from '@pdz/core/services/data.service';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
-import { ChipInputComponent } from '../chip-input/chip-input.component';
+import { ChipInputComponent } from '@pdz/features/drafts/draft-overview/draft-form/components/chip-input/chip-input.component';
 import { PokemonSearchComponent } from '@pdz/shared/dropdowns/pokemon-search/pokemon-search.component';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
+import { FieldComponent } from '@pdz/shared/inputs/field/field.component';
+import { InputDirective } from '@pdz/shared/inputs/field/input.directive';
 
 type CaptKind = 'tera' | 'z' | 'dmax';
 
@@ -44,15 +46,14 @@ type CaptKind = 'tera' | 'z' | 'dmax';
     ChipInputComponent,
     PokemonSearchComponent,
     ButtonComponent,
+    FieldComponent,
+    InputDirective,
   ],
   templateUrl: './team-editor.component.html',
   styleUrl: './team-editor.component.scss',
 })
 export class TeamEditorComponent {
-  private static instanceCount = 0;
   private dataService = inject(DataService);
-
-  readonly uid = `team-editor-${TeamEditorComponent.instanceCount++}`;
 
   readonly ruleset = input.required<string>();
   readonly teamArray = input.required<FormArray<PokemonFormGroup>>();
@@ -299,8 +300,8 @@ function pokemonAsyncValidator(
     if (!pokemon || !pokemon.id) return of({ invalidPokemon: true });
 
     return pokemonList$.pipe(
-      filter((list) => list.length > 0), // Wait until the list is populated
-      take(1), // Take the first populated list and complete
+      filter((list) => list.length > 0),
+      take(1),
       map((pokemonList) => {
         const exists = pokemonList.some((p) => p.id === pokemon.id);
         return exists ? null : { invalidPokemon: true };

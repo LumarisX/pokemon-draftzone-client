@@ -27,6 +27,8 @@ import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 import { getNameByPid } from '@pdz/shared/data/namedex';
 import { FormatSelectComponent } from '@pdz/shared/dropdowns/format-select/format.component';
 import { RulesetSelectComponent } from '@pdz/shared/dropdowns/ruleset-select/ruleset.component';
+import { FieldComponent } from '@pdz/shared/inputs/field/field.component';
+import { InputDirective } from '@pdz/shared/inputs/field/input.directive';
 import { BehaviorSubject, filter, Subject, take, takeUntil } from 'rxjs';
 import { DEFAULT_RULESET } from '@pdz/core/rulesets';
 
@@ -39,6 +41,8 @@ import { DEFAULT_RULESET } from '@pdz/core/rulesets';
     RulesetSelectComponent,
     ButtonComponent,
     TeamEditorComponent,
+    FieldComponent,
+    InputDirective,
   ],
 
   templateUrl: './quick-matchup-form.component.html',

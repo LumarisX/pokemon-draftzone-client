@@ -1,7 +1,7 @@
 <pdz-page width="narrow">
   <div class="create">
     <pdz-page-header
-      title="New league"
+      title="New League"
       eyebrow="Leagues"
       subtitle="A league holds your seasons. You'll set up the first tournament next."
     />
@@ -17,7 +17,7 @@
       @if (access.canCreateLeague) {
         <pdz-card padding="lg">
         <form class="create__form" (ngSubmit)="submit()">
-          <label pdz-field label="League name" required>
+          <label pdz-field label="League Name" required>
             <input
               pdz-input
               type="text"
@@ -53,7 +53,7 @@
               icon="add"
               [disabled]="!canSubmit()"
             >
-              Create league
+              Create League
             </button>
           </div>
         </form>
@@ -66,7 +66,7 @@
           message="Running leagues and tournaments on DraftZone is open to a small group for now. Ask in the DraftZone Discord if you'd like access."
         >
           <a pdz-empty-state-actions pdz-button [routerLink]="leagueListLink">
-            Find a league
+            Find a League
           </a>
         </pdz-empty-state>
       }

@@ -1,31 +1,33 @@
-import { CommonModule } from '@angular/common';
 import {
   Component,
+  DestroyRef,
   ElementRef,
-  inject,
-  OnDestroy,
   OnInit,
-  ViewChild,
+  inject,
+  viewChild,
 } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { RouterLink } from '@angular/router';
+import { PLANNER_PATH } from '@pdz/core/route-paths';
 import { EventStreamService } from '@pdz/core/services/event-stream.service';
+import { LeagueNotificationService } from '@pdz/features/league-zone/league-notification.service';
+import { LeagueZoneService } from '@pdz/features/league-zone/league-zone.service';
+import { League } from '@pdz/features/league-zone/league.interface';
+import { formatCountdown } from '@pdz/features/league-zone/league.util';
+import { TierListComponent } from '@pdz/features/tier-lists/tier-list/tier-list.component';
+import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
+import { ChipComponent, ChipTone } from '@pdz/shared/data/chip/chip.component';
 import { PokemonTypeComponent } from '@pdz/shared/data/pokemon-type/pokemon-type.component';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
-import { NumberSuffixPipe } from '@pdz/shared/pipes/number-suffix.pipe';
-import { interval, Observable, Subject, takeUntil } from 'rxjs';
-import { finalize } from 'rxjs/operators';
-import { TierListComponent } from '../../tier-lists/tier-list/tier-list.component';
-import { LeagueNotificationService } from '../league-notification.service';
-import { LeagueZoneService } from '../league-zone.service';
-import { League } from '../league.interface';
-import { formatCountdown } from '../league.util';
-import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
-import { MenuComponent } from '@pdz/shared/menu/menu.component';
 import { MenuItemComponent } from '@pdz/shared/menu/menu-item.component';
 import { MenuTriggerDirective } from '@pdz/shared/menu/menu-trigger.directive';
+import { MenuComponent } from '@pdz/shared/menu/menu.component';
+import { NumberSuffixPipe } from '@pdz/shared/pipes/number-suffix.pipe';
+import { Observable, Subject, interval, takeUntil } from 'rxjs';
+import { finalize } from 'rxjs/operators';
 
 interface DraftAddedEvent {
   poolSlug: string;
@@ -64,9 +66,11 @@ interface DraftPickUpdatedEvent {
   canDraftCounts?: Record<string, number>;
 }
 
+type DraftStatus = 'PRE_DRAFT' | 'IN_PROGRESS' | 'PAUSED' | 'COMPLETED';
+
 interface DraftStatusEvent {
   poolSlug: string;
-  status: 'PRE_DRAFT' | 'IN_PROGRESS' | 'PAUSED' | 'COMPLETED';
+  status: DraftStatus;
   noTimer?: boolean;
   currentPick?: {
     round: number;
@@ -85,57 +89,81 @@ type DraftDetailsResponse =
     ? T
     : never;
 
+type DraftChoice = {
+  id: string;
+  name: string;
+  addons?: string[];
+  tier: string;
+  cost?: number;
+};
+
+const STATUS_LABELS: Record<DraftStatus, string> = {
+  PRE_DRAFT: 'Pre draft',
+  IN_PROGRESS: 'In progress',
+  PAUSED: 'Paused',
+  COMPLETED: 'Completed',
+};
+
+const STATUS_TONES: Record<DraftStatus, ChipTone> = {
+  PRE_DRAFT: 'info',
+  IN_PROGRESS: 'success',
+  PAUSED: 'warning',
+  COMPLETED: 'neutral',
+};
+
 @Component({
   selector: 'pdz-league-drafting',
   imports: [
-    CommonModule,
     TierListComponent,
     SpriteComponent,
     IconComponent,
     NumberSuffixPipe,
     LoadingComponent,
-    RouterModule,
+    RouterLink,
     PokemonTypeComponent,
     ButtonComponent,
+    ChipComponent,
     MenuComponent,
     MenuItemComponent,
     MenuTriggerDirective,
     PageHeaderComponent,
   ],
   templateUrl: './league-drafting.component.html',
-  styleUrls: ['./league-drafting.component.scss', '../league.scss'],
+  styleUrl: './league-drafting.component.scss',
 })
-export class LeagueDraftComponent implements OnInit, OnDestroy {
+export class LeagueDraftComponent implements OnInit {
   private notificationService = inject(LeagueNotificationService);
   private eventStream = inject(EventStreamService);
   private leagueService = inject(LeagueZoneService);
+  private destroyRef = inject(DestroyRef);
 
-  private destroy$ = new Subject<void>();
   private countdownTick$ = new Subject<void>();
   private halfwayReminderTimer?: ReturnType<typeof setTimeout>;
   private hasAutoScrolledToCurrentRound = false;
   private readonly SCROLL_RETRY_DELAY_MS = 50;
   private readonly SCROLL_MAX_ATTEMPTS = 10;
 
-  @ViewChild('draftRoundsContainer')
-  draftRoundsContainer?: ElementRef<HTMLDivElement>;
+  readonly plannerPath = PLANNER_PATH;
+
+  private readonly draftRoundsContainer =
+    viewChild<ElementRef<HTMLDivElement>>('draftRoundsContainer');
 
   teams: League.LeagueTeam[] = [];
   canDraftCounts: Record<string, number> = {};
   selectedTeam!: League.LeagueTeam;
 
   private originalDraft: League.LeaguePokemon[] = [];
-  private picksChanged: boolean = false;
-  isSubmitting: boolean = false;
+  private picksChanged = false;
+  isSubmitting = false;
 
-  leagueName: string = '';
-  poolName: string = '';
-  points: number = 0;
-  minDraftCount: number = 0;
+  leagueName = '';
+  poolName = '';
+  points = 0;
+  minDraftCount = 0;
   tierRequirements: { tierId: string; tierName: string; required: number }[] =
     [];
 
-  isLoading: boolean = true;
+  isLoading = true;
 
   currentPick?: {
     round: number;
@@ -143,12 +171,12 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
     skipTime?: Date;
   };
 
-  selectedPick: number = 0;
+  selectedPick = 0;
   skipTimeDisplay: string | null = null;
-  noTimer: boolean = false;
+  noTimer = false;
   draftStart?: Date;
   draftStartDisplay: string | null = null;
-  draftStartOverdue: boolean = false;
+  draftStartOverdue = false;
 
   draftDetails: {
     orderProgression: 'snake' | 'linear';
@@ -158,7 +186,7 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
     allowDuplicates: boolean;
     roundCount: number;
     teamOrder: string[];
-    status: 'PRE_DRAFT' | 'IN_PROGRESS' | 'PAUSED' | 'COMPLETED';
+    status: DraftStatus;
   } = {
     orderProgression: 'snake',
     sequentialTurns: true,
@@ -173,12 +201,57 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
   private readonly COUNTDOWN_TICK_MS = 1000;
   private readonly FAST_TIME_THRESHOLD_MS = 300;
 
+  constructor() {
+    this.destroyRef.onDestroy(() => {
+      this.countdownTick$.next();
+      this.countdownTick$.complete();
+      this.clearHalfwayReminder();
+    });
+  }
+
+  get statusLabel(): string {
+    if (this.draftStartDisplay) return `Starting in ${this.draftStartDisplay}`;
+    if (this.isPreDraft && this.draftStartOverdue)
+      return 'Awaiting organizer to start the draft';
+    return STATUS_LABELS[this.draftDetails.status] ?? this.draftDetails.status;
+  }
+
+  get statusTone(): ChipTone {
+    return STATUS_TONES[this.draftDetails.status] ?? 'neutral';
+  }
+
   get teamSwitchLocked(): boolean {
     return this.draftDetails.picksBlind && !this.draftDetails.canSeeAllPicks;
   }
 
   hiddenPickAt(team: League.LeagueTeam, round: number): boolean {
     return !!team.picksHidden && round < (team.pickCount ?? 0);
+  }
+
+  isPicking(roundIndex: number, position: number): boolean {
+    return (
+      !!this.currentPick &&
+      this.currentPick.round === roundIndex &&
+      this.currentPick.position === position
+    );
+  }
+
+  pickState(
+    team: League.LeagueTeam,
+    roundIndex: number,
+    position: number,
+  ): 'drafted' | 'hidden' | 'picking' | 'skipped' | 'upcoming' {
+    if (team.draft[roundIndex]) return 'drafted';
+    if (this.hiddenPickAt(team, roundIndex)) return 'hidden';
+    if (this.isPicking(roundIndex, position)) return 'picking';
+    const pick = this.currentPick;
+    if (
+      pick &&
+      (pick.round > roundIndex ||
+        (pick.round === roundIndex && pick.position > position))
+    )
+      return 'skipped';
+    return 'upcoming';
   }
 
   selectTeamAndClose(team: League.LeagueTeam): void {
@@ -255,7 +328,7 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
   private loadDraftDetails(): void {
     this.leagueService
       .getPoolDetails()
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((data) => {
         const previouslySelectedTeamId = this.selectedTeam?.id;
         this.applyDraftDetails(data);
@@ -269,10 +342,16 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
       });
   }
 
+  private on<T>(event: string): Observable<T> {
+    return this.eventStream
+      .on<T>(event)
+      .pipe(takeUntilDestroyed(this.destroyRef));
+  }
+
   ngOnInit(): void {
     this.leagueService
       .getLeagueInfo()
-      .pipe(takeUntil(this.destroy$))
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((info) => {
         this.draftStart = info.draftStart
           ? new Date(info.draftStart)
@@ -282,168 +361,141 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
 
     this.loadDraftDetails();
 
-    this.eventStream
-      .on<DraftAddedEvent>('league.draft.added')
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((data) => {
-        if (this.leagueService.poolSlug() !== data.poolSlug) return;
+    this.on<DraftAddedEvent>('league.draft.added').subscribe((data) => {
+      if (this.leagueService.poolSlug() !== data.poolSlug) return;
 
-        const pokemon = data.pick.pokemon;
-        this.teams = this.teams.map((team) => {
-          const newTeam = { ...team };
-          if (team.id === data.team.id) {
-            if (pokemon) newTeam.draft = data.team.draft;
-            newTeam.pickCount = (team.pickCount ?? team.draft.length) + 1;
-            newTeam.picks = newTeam.picks.filter((_, index) => index);
-          }
-          if (pokemon && !this.draftDetails.allowDuplicates)
-            newTeam.picks = newTeam.picks.map((round) =>
-              round.filter((pick) => pick.id !== pokemon.id),
-            );
-          return newTeam;
-        });
-
-        if (this.selectedTeam) {
-          const updatedSelectedTeam = this.teams.find(
-            (t) => t.id === this.selectedTeam.id,
-          );
-
-          if (updatedSelectedTeam) {
-            updatedSelectedTeam.pointTotal = updatedSelectedTeam.draft.reduce(
-              (points, p) => points + (p.cost ?? 0),
-              0,
-            );
-            Object.assign(this.selectedTeam, updatedSelectedTeam);
-          }
+      const pokemon = data.pick.pokemon;
+      this.teams = this.teams.map((team) => {
+        const newTeam = { ...team };
+        if (team.id === data.team.id) {
+          if (pokemon) newTeam.draft = data.team.draft;
+          newTeam.pickCount = (team.pickCount ?? team.draft.length) + 1;
+          newTeam.picks = newTeam.picks.filter((_, index) => index);
         }
-
-        this.canDraftCounts = data.canDraftCounts ?? {};
-        this.notificationService.show(
-          pokemon
-            ? `${data.team.name} drafted ${pokemon.name}!`
-            : `${data.team.name} made a pick.`,
-          'success',
-        );
+        if (pokemon && !this.draftDetails.allowDuplicates)
+          newTeam.picks = newTeam.picks.map((round) =>
+            round.filter((pick) => pick.id !== pokemon.id),
+          );
+        return newTeam;
       });
 
-    this.eventStream
-      .on<DraftPickUpdatedEvent>('league.draft.updated')
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((data) => {
-        if (this.leagueService.poolSlug() !== data.poolSlug) return;
-
-        const isViewedTeam = this.selectedTeam?.id === data.team.id;
-        const droppedStagedPicks =
-          isViewedTeam && this.pendingPokemonIds.size > 0;
-
-        this.teams = this.teams.map((team) => {
-          const newTeam = { ...team };
-          if (team.id === data.team.id) newTeam.draft = data.team.draft;
-          if (data.pokemon && !this.draftDetails.allowDuplicates)
-            newTeam.picks = newTeam.picks.map((round) =>
-              round.filter((pick) => pick.id !== data.pokemon!.id),
-            );
-          return newTeam;
-        });
-
+      if (this.selectedTeam) {
         const updatedSelectedTeam = this.teams.find(
-          (team) => team.id === this.selectedTeam?.id,
+          (t) => t.id === this.selectedTeam.id,
         );
+
         if (updatedSelectedTeam) {
           updatedSelectedTeam.pointTotal = updatedSelectedTeam.draft.reduce(
-            (points, pokemon) => points + (pokemon.cost ?? 0),
+            (points, p) => points + (p.cost ?? 0),
             0,
           );
           Object.assign(this.selectedTeam, updatedSelectedTeam);
-          if (isViewedTeam) this.originalDraft = [...data.team.draft];
         }
+      }
 
-        this.canDraftCounts = data.canDraftCounts ?? {};
-        this.notificationService.show(
-          this.pickUpdateMessage(data),
-          data.pokemon ? 'info' : 'warning',
-        );
-        if (droppedStagedPicks)
-          this.notificationService.show(
-            'An organizer changed this roster, so your unsaved picks were reset.',
-            'warning',
+      this.canDraftCounts = data.canDraftCounts ?? {};
+      this.notificationService.show(
+        pokemon
+          ? `${data.team.name} drafted ${pokemon.name}!`
+          : `${data.team.name} made a pick.`,
+        'success',
+      );
+    });
+
+    this.on<DraftPickUpdatedEvent>('league.draft.updated').subscribe((data) => {
+      if (this.leagueService.poolSlug() !== data.poolSlug) return;
+
+      const isViewedTeam = this.selectedTeam?.id === data.team.id;
+      const droppedStagedPicks =
+        isViewedTeam && this.pendingPokemonIds.size > 0;
+
+      this.teams = this.teams.map((team) => {
+        const newTeam = { ...team };
+        if (team.id === data.team.id) newTeam.draft = data.team.draft;
+        if (data.pokemon && !this.draftDetails.allowDuplicates)
+          newTeam.picks = newTeam.picks.map((round) =>
+            round.filter((pick) => pick.id !== data.pokemon!.id),
           );
+        return newTeam;
       });
 
-    this.eventStream
-      .on<DraftCounterEvent>('league.draft.counter')
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((data) => {
-        if (this.leagueService.poolSlug() !== data.poolSlug) {
-          return;
-        }
-        this.currentPick = data.currentPick;
-        this.canDraftCounts = data.canDraftCounts ?? {};
-        this.startCountdown();
-        const teamName =
-          this.teamsMap.get(data.nextTeam)?.name ?? 'Unknown team';
-        this.notificationService.show(
-          `Now drafting: ${teamName}${this.pickTimeSuffix()}`,
-          'info',
+      const updatedSelectedTeam = this.teams.find(
+        (team) => team.id === this.selectedTeam?.id,
+      );
+      if (updatedSelectedTeam) {
+        updatedSelectedTeam.pointTotal = updatedSelectedTeam.draft.reduce(
+          (points, pokemon) => points + (pokemon.cost ?? 0),
+          0,
         );
-      });
+        Object.assign(this.selectedTeam, updatedSelectedTeam);
+        if (isViewedTeam) this.originalDraft = [...data.team.draft];
+      }
 
-    this.eventStream
-      .on<DraftStatusEvent>('league.draft.status')
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((data) => {
-        if (this.leagueService.poolSlug() !== data.poolSlug) {
-          return;
-        }
-        this.draftDetails.status = data.status;
-        this.currentPick = data.currentPick;
-        if (data.noTimer !== undefined) this.noTimer = data.noTimer;
-        this.updateDraftStartDisplay();
-        switch (data.status) {
-          case 'PAUSED':
-            this.countdownTick$.next();
-            this.clearHalfwayReminder();
-            break;
-          case 'COMPLETED':
-            this.countdownTick$.next();
-            this.clearHalfwayReminder();
-            if (this.draftDetails.picksBlind) this.loadDraftDetails();
-            break;
-          case 'IN_PROGRESS':
-            this.startCountdown();
-            break;
-        }
-        this.notificationService.show(`Draft Status: ${data.status}`, 'info');
-      });
+      this.canDraftCounts = data.canDraftCounts ?? {};
+      this.notificationService.show(
+        this.pickUpdateMessage(data),
+        data.pokemon ? 'info' : 'warning',
+      );
+      if (droppedStagedPicks)
+        this.notificationService.show(
+          'An organizer changed this roster, so your unsaved picks were reset.',
+          'warning',
+        );
+    });
 
-    this.eventStream
-      .on<{ poolSlug: string }>('league.draft.completed')
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((data) => {
+    this.on<DraftCounterEvent>('league.draft.counter').subscribe((data) => {
+      if (this.leagueService.poolSlug() !== data.poolSlug) return;
+      this.currentPick = data.currentPick;
+      this.canDraftCounts = data.canDraftCounts ?? {};
+      this.startCountdown();
+      const teamName =
+        this.teamsMap.get(data.nextTeam)?.name ?? 'Unknown team';
+      this.notificationService.show(
+        `Now drafting: ${teamName}${this.pickTimeSuffix()}`,
+        'info',
+      );
+    });
+
+    this.on<DraftStatusEvent>('league.draft.status').subscribe((data) => {
+      if (this.leagueService.poolSlug() !== data.poolSlug) return;
+      this.draftDetails.status = data.status;
+      this.currentPick = data.currentPick;
+      if (data.noTimer !== undefined) this.noTimer = data.noTimer;
+      this.updateDraftStartDisplay();
+      switch (data.status) {
+        case 'PAUSED':
+          this.countdownTick$.next();
+          this.clearHalfwayReminder();
+          break;
+        case 'COMPLETED':
+          this.countdownTick$.next();
+          this.clearHalfwayReminder();
+          if (this.draftDetails.picksBlind) this.loadDraftDetails();
+          break;
+        case 'IN_PROGRESS':
+          this.startCountdown();
+          break;
+      }
+      this.notificationService.show(
+        `Draft status: ${STATUS_LABELS[data.status] ?? data.status}`,
+        'info',
+      );
+    });
+
+    this.on<{ poolSlug: string }>('league.draft.completed').subscribe(
+      (data) => {
         if (this.leagueService.poolSlug() !== data.poolSlug) return;
         this.draftDetails.status = 'COMPLETED';
         this.countdownTick$.next();
         this.clearHalfwayReminder();
         if (this.draftDetails.picksBlind) this.loadDraftDetails();
-      });
+      },
+    );
 
-    this.eventStream
-      .on<DraftSkipEvent>('league.draft.skip')
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((data) => {
-        if (this.leagueService.poolSlug() !== data.poolSlug) {
-          return;
-        }
-        this.notificationService.show(`${data.teamName} was skipped!`, 'info');
-      });
-  }
-
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
-    this.countdownTick$.next();
-    this.countdownTick$.complete();
-    this.clearHalfwayReminder();
+    this.on<DraftSkipEvent>('league.draft.skip').subscribe((data) => {
+      if (this.leagueService.poolSlug() !== data.poolSlug) return;
+      this.notificationService.show(`${data.teamName} was skipped!`, 'info');
+    });
   }
 
   private pickUpdateMessage(data: DraftPickUpdatedEvent): string {
@@ -463,7 +515,7 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
 
   private scrollToCurrentRoundOnLoad(): void {
     if (this.hasAutoScrolledToCurrentRound || !this.currentPick) return;
-    const container = this.draftRoundsContainer?.nativeElement;
+    const container = this.draftRoundsContainer()?.nativeElement;
     if (!container) return;
 
     const roundIndex = Math.max(this.currentPick.round, 0);
@@ -484,7 +536,7 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
     this.hasAutoScrolledToCurrentRound = true;
   }
 
-  private scheduleScrollToCurrentRoundOnLoad(attempt: number = 0): void {
+  private scheduleScrollToCurrentRoundOnLoad(attempt = 0): void {
     if (this.hasAutoScrolledToCurrentRound || !this.currentPick) return;
 
     setTimeout(() => {
@@ -585,13 +637,7 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
     this.picksChanged = true;
   }
 
-  pokemonSelected(pokemon: {
-    id: string;
-    name: string;
-    addons?: string[];
-    tier: string;
-    cost?: number;
-  }): void {
+  pokemonSelected(pokemon: DraftChoice): void {
     if (!this.draftDetails.sequentialTurns) {
       if (this.canDraft()) {
         this.draftPokemon(pokemon);
@@ -606,13 +652,7 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
     }
   }
 
-  draftPokemon(pokemon: {
-    id: string;
-    name: string;
-    addons?: string[];
-    tier: string;
-    cost?: number;
-  }): void {
+  draftPokemon(pokemon: DraftChoice): void {
     if (pokemon.cost == null) return;
 
     this.selectedTeam.draft.push({
@@ -644,36 +684,23 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
     this.picksChanged = true;
   }
 
-  addChoice(pokemon: {
-    id: string;
-    name: string;
-    addons?: string[];
-    tier: string;
-    cost?: number;
-  }): void {
+  addChoice(pokemon: DraftChoice): void {
     if (pokemon.cost == null) return;
+    const choice = {
+      name: pokemon.name,
+      id: pokemon.id,
+      tier: pokemon.tier,
+      cost: pokemon.cost,
+      addons: pokemon.addons,
+    };
     if (!this.draftDetails.sequentialTurns) {
-      this.selectedTeam.picks[this.selectedPick] = [
-        {
-          name: pokemon.name,
-          id: pokemon.id,
-          tier: pokemon.tier,
-          cost: pokemon.cost,
-          addons: pokemon.addons,
-        },
-      ];
+      this.selectedTeam.picks[this.selectedPick] = [choice];
       const nextEmpty = this.selectedTeam.picks.findIndex(
         (pick) => pick.length === 0,
       );
-      if (nextEmpty !== undefined) this.selectedPick = nextEmpty;
+      if (nextEmpty !== -1) this.selectedPick = nextEmpty;
     } else {
-      this.selectedTeam.picks[this.selectedPick].push({
-        name: pokemon.name,
-        id: pokemon.id,
-        tier: pokemon.tier,
-        cost: pokemon.cost,
-        addons: pokemon.addons,
-      });
+      this.selectedTeam.picks[this.selectedPick].push(choice);
     }
 
     this.picksChanged = true;
@@ -727,7 +754,7 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
     this.leagueService
       .draftPokemon(teamId, { add, remove, picks })
       .pipe(
-        takeUntil(this.destroy$),
+        takeUntilDestroyed(this.destroyRef),
         finalize(() => {
           this.isSubmitting = false;
         }),
@@ -753,12 +780,8 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
 
   timeUntil(time: Date | string | undefined): string | null {
     if (!time) return null;
-    const targetTime = new Date(time);
-    const now = new Date();
-    const diffMs = targetTime.getTime() - now.getTime();
-    if (diffMs <= 0) {
-      return '0s';
-    }
+    const diffMs = new Date(time).getTime() - Date.now();
+    if (diffMs <= 0) return '0s';
 
     const diffSeconds = diffMs / 1000;
     if (diffSeconds < this.FAST_TIME_THRESHOLD_MS) {
@@ -781,25 +804,17 @@ export class LeagueDraftComponent implements OnInit, OnDestroy {
     }
     if (this.canDraft() && !this.selectedPick) return 'Add to Roster';
     if (!this.selectedTeam.picks.length) return undefined;
-    return (
-      'Add to Picks (' +
-      (this.selectedPick + this.selectedTeam.draft.length + 1) +
-      ')'
-    );
+    return `Add to picks (${this.selectedPick + this.selectedTeam.draft.length + 1})`;
   }
 
   altButtonText(): string | undefined {
     if (!this.isInProgress) return undefined;
     if (!this.draftDetails.sequentialTurns) {
-      return this.canDraft() ? 'Draft Tera Capt.' : undefined;
+      return this.canDraft() ? 'Draft Tera captain' : undefined;
     }
-    if (this.canDraft() && !this.selectedPick) return 'Draft Tera Capt.';
+    if (this.canDraft() && !this.selectedPick) return 'Draft Tera captain';
     if (!this.selectedTeam.picks.length) return undefined;
-    return (
-      'Add as Tera Capt. (' +
-      (this.selectedPick + this.selectedTeam.draft.length + 1) +
-      ')'
-    );
+    return `Add as Tera captain (${this.selectedPick + this.selectedTeam.draft.length + 1})`;
   }
 
   draftableCount(): number {

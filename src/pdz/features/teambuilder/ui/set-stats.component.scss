@@ -12,7 +12,7 @@
   gap: pdz.space(sm);
   padding: pdz.space(2xs) pdz.space(xs);
   border-radius: pdz.shape(corner-sm);
-  background: pdz.color(surface-container-low);
+  background: pdz.color(state-hover);
   color: pdz.color(on-surface-variant);
   @include pdz.text(body-sm);
 }
@@ -51,8 +51,9 @@
   flex-direction: column;
   gap: pdz.space(3xs);
   padding: pdz.space(2xs);
+  border: 1px solid pdz.color(border-subtle);
   border-radius: pdz.shape(corner-sm);
-  background: pdz.color(surface-container-lowest);
+  background: pdz.color(raised-high);
 }
 
 .stat__head {
@@ -92,7 +93,7 @@
   place-items: center;
   min-width: 1.5rem;
   padding: 0 pdz.space(3xs);
-  border: 1px solid pdz.color(outline-variant);
+  border: 1px solid pdz.color(border-control);
   border-radius: pdz.shape(corner-xxs);
   background: transparent;
   color: pdz.color(on-surface-placeholder);
@@ -120,7 +121,7 @@
   border-color: pdz.color(success);
   background: pdz.color(success-container);
   color: pdz.color(on-success-container);
-  font-weight: 700;
+  font-weight: pdz.font-weight(bold);
 }
 
 .stat__milestone--locked {
@@ -167,7 +168,7 @@
 }
 
 .stat__input--jump {
-  font-weight: 700;
+  font-weight: pdz.font-weight(bold);
 }
 
 .stat__input--wasted {

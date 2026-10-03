@@ -1,567 +1,314 @@
 @use "pdz-theming" as pdz;
-@use "mixins" as *;
 
 :host {
   display: flex;
   flex-direction: column;
-  gap: pdz.space(lg);
+  gap: pdz.layout(section-gap);
   min-width: 0;
-  max-width: 90rem;
-  margin: 0 auto;
 }
 
-.page-header {
-  &__status-badge {
-    @include text(label);
-    display: inline-flex;
-    align-items: center;
-    padding: pdz.space(2xs) pdz.space(xs);
-    border-radius: pdz.shape(corner-xs);
-    font-weight: 650;
-    background: pdz.color(surface-container-low);
-    color: pdz.color(on-surface-variant);
+.manage-draft__clock {
+  color: pdz.color(on-surface-variant);
+}
 
-    &--in-progress {
-      background: pdz.color(primary-container);
-      color: pdz.color(on-primary-container);
-    }
+.manage-draft__panels {
+  display: grid;
+  gap: pdz.layout(section-gap);
+  align-items: start;
 
-    &--paused {
-      background: pdz.color(surface-container-high);
-      color: pdz.color(on-surface);
-    }
-
-    &--completed {
-      background: pdz.color(primary-container-low);
-      color: pdz.color(primary-accent);
-    }
-  }
-
-  &__status-detail {
-    color: pdz.color(on-surface-variant);
+  @include pdz.respond-above(large) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
-// ── Settings / order panel layout ────────────────────────────────────────────
-// Stacked on mobile; side by side (equal width, equal height) from `large` up.
-
-.control-panels {
+.manage-draft__rounds {
   display: flex;
   flex-direction: column;
-  row-gap: pdz.space(lg);
-  margin-bottom: pdz.space(xl);
-
-  @include respond-above(large) {
-    flex-direction: row;
-    align-items: stretch;
-    column-gap: pdz.space(lg);
-
-    > .settings-panel,
-    > .order-panel {
-      flex: 1 1 0;
-      min-width: 0;
-    }
-  }
+  gap: pdz.layout(section-gap);
 }
 
-// ── Draft settings panel ─────────────────────────────────────────────────────
+.panel {
+  min-width: 0;
+}
 
-.settings-panel {
+.panel__body {
   display: flex;
   flex-direction: column;
-  row-gap: pdz.space(md);
-  padding: pdz.space(sm) pdz.space(md);
-  border: 1px solid pdz.color(outline-variant);
-  border-radius: pdz.shape(corner-lg);
-  background: pdz.color(surface-container-low);
-
-  &__header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-  }
-
-  &__title {
-    @include text(subtitle);
-    font-family: var(--pdz-font-display);
-    color: pdz.color(primary-accent);
-    margin: 0;
-  }
-
-  &__body {
-    display: flex;
-    flex-direction: column;
-    row-gap: pdz.space(md);
-  }
-
-  &__channel-row {
-    display: flex;
-    column-gap: pdz.space(sm);
-
-    .form-field__input {
-      flex: 1 1 auto;
-    }
-  }
-
-  &__actions {
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    column-gap: pdz.space(sm);
-  }
+  gap: pdz.layout(stack);
 }
 
-.form-field {
-  display: flex;
-  flex-direction: column;
-  row-gap: pdz.space(xs);
-
-  &__label {
-    @include text(label);
-    color: pdz.color(on-surface-variant);
-  }
-
-  &__input {
-    background: pdz.color(surface);
-    border: 1px solid pdz.color(outline-variant);
-    border-radius: pdz.shape(corner-sm);
-    color: pdz.color(on-surface);
-    @include text(body);
-    padding: pdz.space(sm) pdz.space(md);
-    transition: border-color pdz.duration(base) pdz.easing(standard);
-    width: 100%;
-    box-sizing: border-box;
-
-    &:focus {
-      outline: none;
-      border-color: pdz.color(primary-accent);
-      box-shadow: 0 0 0 2px pdz.color(primary-subtle);
-    }
-  }
-
-  &__hint {
-    @include text(body-sm);
-    color: pdz.color(on-surface-variant);
-  }
-}
-
-.radio-group {
+.panel__header {
   display: flex;
   flex-wrap: wrap;
-  column-gap: pdz.space(sm);
-  row-gap: pdz.space(sm);
-}
-
-.radio-option,
-.checkbox-option {
-  display: flex;
   align-items: center;
-  column-gap: pdz.space(sm);
-  padding: pdz.space(sm) pdz.space(md);
-  border: 1px solid pdz.color(outline-variant);
-  border-radius: pdz.shape(corner-sm);
-  cursor: pointer;
-  background: pdz.color(surface);
-  transition:
-    background pdz.duration(base) pdz.easing(standard),
-    border-color pdz.duration(base) pdz.easing(standard);
-
-  &:has(input:checked) {
-    background: pdz.color(primary-container-low);
-    border-color: pdz.color(primary-border);
-  }
-
-  &__label {
-    @include text(label);
-    color: pdz.color(on-surface);
-  }
+  justify-content: space-between;
+  gap: pdz.space(sm);
 }
 
-// ── Draft order panel ────────────────────────────────────────────────────────
+.panel__title {
+  @include pdz.text(section-title);
+  margin: 0;
+  color: pdz.color(on-surface);
+}
 
-.order-panel {
+.panel__inline {
   display: flex;
-  flex-direction: column;
-  row-gap: pdz.space(sm);
-  padding: pdz.space(sm) pdz.space(md);
-  border: 1px solid pdz.color(outline-variant);
-  border-radius: pdz.shape(corner-lg);
-  background: pdz.color(surface-container-low);
+  gap: pdz.space(sm);
 
-  &__header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    column-gap: pdz.space(sm);
-    flex-wrap: wrap;
-  }
-
-  &__title {
-    @include text(subtitle);
-    font-family: var(--pdz-font-display);
-    color: pdz.color(primary-accent);
-    margin: 0;
-  }
-
-  &__toggle {
-    @include text(label);
-    display: flex;
-    align-items: center;
-    column-gap: pdz.space(2xs);
-    color: pdz.color(on-surface-variant);
-    cursor: pointer;
-  }
-
-  &__list {
-    display: flex;
-    flex-direction: column;
-    row-gap: pdz.space(2xs);
-    margin: 0;
-    padding: 0;
-    list-style: none;
-  }
-
-  &__row {
-    display: flex;
-    align-items: center;
-    column-gap: pdz.space(xs);
-    padding: pdz.space(2xs) pdz.space(xs);
-    border: 1px solid pdz.color(outline-variant);
-    border-radius: pdz.shape(corner-xs);
-    background: pdz.color(surface-container-lowest);
-
-    &--static {
-      padding-inline-start: pdz.space(sm);
-    }
-
-    &.cdk-drag-dragging {
-      opacity: 0.6;
-    }
-  }
-
-  &__handle {
-    display: inline-flex;
-    color: pdz.color(on-surface-variant);
-    cursor: grab;
-    touch-action: none;
-
-    &:active {
-      cursor: grabbing;
-    }
-  }
-
-  &__position {
-    @include text(label);
-    flex-shrink: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 1.5rem;
-    height: 1.5rem;
-    border-radius: 50%;
-    background: pdz.color(surface-container-low);
-    color: pdz.color(on-surface-variant);
-    font-family: var(--pdz-font-display);
-  }
-
-  &__who {
-    display: flex;
-    flex-direction: column;
+  [pdz-input] {
+    flex: 1 1 auto;
     min-width: 0;
   }
+}
 
-  &__team {
-    @include text(label);
-    font-weight: 650;
-    color: pdz.color(on-surface);
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+.panel__checks {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(sm);
+}
+
+.panel__actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: pdz.space(sm);
+}
+
+.panel__dirty {
+  @include pdz.text(meta);
+  color: pdz.color(on-surface-variant);
+}
+
+.panel__note {
+  @include pdz.text(meta);
+  margin: 0;
+  color: pdz.color(on-surface-variant);
+}
+
+.order {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(2xs);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.order__row {
+  display: flex;
+  align-items: center;
+  gap: pdz.space(xs);
+  padding: pdz.space(xs) pdz.space(sm);
+  border: 1px solid pdz.color(border-subtle);
+  border-radius: pdz.shape(corner-sm);
+  background: pdz.color(raised-high);
+
+  &.cdk-drag-preview {
+    box-shadow: var(--pdz-elevation-2);
   }
 
-  &__coach {
-    @include text(label);
-    color: pdz.color(on-surface-variant);
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  &__actions {
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    column-gap: pdz.space(sm);
-  }
-
-  &__dirty {
-    @include text(label);
-    color: pdz.color(primary-accent);
-  }
-
-  &__locked {
-    @include text(label);
-    color: pdz.color(on-surface-variant);
-    margin: 0;
+  &.cdk-drag-placeholder {
+    opacity: 0.4;
   }
 }
 
-.cdk-drop-list-dragging .order-panel__row:not(.cdk-drag-dragging) {
+.order__handle {
+  display: inline-flex;
+  color: pdz.color(on-surface-variant);
+  cursor: grab;
+  touch-action: none;
+
+  &:active {
+    cursor: grabbing;
+  }
+}
+
+.cdk-drop-list-dragging .order__row:not(.cdk-drag-placeholder) {
   transition: transform pdz.duration(base) pdz.easing(standard);
 }
 
-// ── Rounds ────────────────────────────────────────────────────────────────────
+.order__position,
+.turn__position {
+  @include pdz.text(label);
+  @include pdz.numeric;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  width: pdz.control-height(xs);
+  height: pdz.control-height(xs);
+  border-radius: pdz.shape(corner-full);
+  background: pdz.color(state-pressed);
+  color: pdz.color(on-surface-variant);
+}
 
-.rounds {
+.order__who,
+.turn__who,
+.turn__pick-info {
   display: flex;
   flex-direction: column;
-  row-gap: pdz.space(lg);
+  min-width: 0;
+}
+
+.order__team,
+.turn__team {
+  @include pdz.text(label);
+  font-weight: pdz.font-weight(semibold);
+  color: pdz.color(on-surface);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.order__coach,
+.turn__coach {
+  @include pdz.text(meta);
+  color: pdz.color(on-surface-variant);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .round {
   display: flex;
   flex-direction: column;
-  row-gap: pdz.space(xs);
+  gap: pdz.space(sm);
   min-width: 0;
-
-  &__header {
-    display: flex;
-    align-items: baseline;
-    column-gap: pdz.space(sm);
-    padding-inline: pdz.space(2xs);
-  }
-
-  &__title {
-    @include text(subtitle);
-    font-family: var(--pdz-font-display);
-    color: pdz.color(primary-accent);
-    margin: 0;
-  }
-
-  &__count {
-    @include text(label);
-    color: pdz.color(on-surface-variant);
-    white-space: nowrap;
-  }
-
-  &__direction {
-    color: pdz.color(primary-border);
-    align-self: center;
-  }
-
-  // The turn list is horizontal by design — rounds scroll sideways rather than
-  // wrapping, so a turn's position in the row always reads as its pick order.
-  &__turns {
-    display: flex;
-    column-gap: pdz.space(sm);
-    align-items: stretch;
-    overflow-x: auto;
-    overscroll-behavior-x: contain;
-    scroll-snap-type: x proximity;
-    scrollbar-width: thin;
-    padding: pdz.space(2xs) pdz.space(2xs) pdz.space(xs);
-  }
 }
 
-// ── Turn card ─────────────────────────────────────────────────────────────────
+.round__header {
+  display: flex;
+  align-items: baseline;
+  gap: pdz.space(sm);
+}
+
+.round__title {
+  @include pdz.text(section-title);
+  margin: 0;
+  color: pdz.color(on-surface);
+}
+
+.round__count {
+  @include pdz.text(meta);
+  @include pdz.numeric;
+  color: pdz.color(on-surface-variant);
+  white-space: nowrap;
+}
+
+.round__turns {
+  display: flex;
+  gap: pdz.space(sm);
+  align-items: stretch;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x proximity;
+  scrollbar-width: thin;
+  padding-block-end: pdz.space(xs);
+}
 
 .turn {
-  flex: 0 0 auto;
-  width: 15rem;
+  flex: 0 0 15rem;
   scroll-snap-align: start;
   display: flex;
   flex-direction: column;
-  row-gap: pdz.space(xs);
-  padding: pdz.space(xs) pdz.space(sm);
-  border: 2px solid pdz.color(outline-variant);
-  border-radius: pdz.shape(corner-sm);
-  background: pdz.color(surface);
-  transition: border-color pdz.duration(fast) pdz.easing(standard);
+  gap: pdz.space(sm);
+  padding: pdz.space(sm) pdz.space(md);
+  border: 1px solid pdz.color(border-subtle);
+  border-radius: pdz.shape(corner-lg);
+  background: pdz.color(raised);
+  transition:
+    border-color pdz.duration(fast) pdz.easing(standard),
+    opacity pdz.duration(fast) pdz.easing(standard);
 
-  &--picked {
+  &[data-state="current"] {
     border-color: pdz.color(primary-border);
+    background: linear-gradient(
+        pdz.color(state-selected),
+        pdz.color(state-selected)
+      ),
+      pdz.color(raised);
   }
 
-  &--current {
-    border-color: pdz.color(primary-accent);
-    background: pdz.color(primary-container);
-    color: pdz.color(on-primary-container);
-  }
-
-  &--skipped {
+  &[data-state="skipped"] {
     border-style: dashed;
-    opacity: 0.75;
   }
 
-  // Card width stays fixed while editing: the search overlay sizes itself from
-  // the field's offsetWidth during change detection, so a card that grows when
-  // the editor opens hands the overlay a stale width (NG0100).
-  &--editing {
+  &.turn--editing {
     border-color: pdz.color(primary-accent);
   }
 
-  &--pending {
+  &.turn--pending {
     opacity: 0.6;
     pointer-events: none;
   }
+}
 
-  &__header {
-    display: flex;
-    align-items: center;
-    column-gap: pdz.space(xs);
-    min-width: 0;
-  }
+.turn__header {
+  display: flex;
+  align-items: center;
+  gap: pdz.space(xs);
+  min-width: 0;
+}
 
-  &__position {
-    @include text(label);
-    flex-shrink: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 1.5rem;
-    height: 1.5rem;
-    border-radius: 50%;
-    background: pdz.color(surface-container-low);
-    color: pdz.color(on-surface-variant);
-    font-family: var(--pdz-font-display);
-  }
+.turn__pick {
+  display: flex;
+  align-items: center;
+  gap: pdz.space(xs);
+  min-height: 3rem;
+  min-width: 0;
 
-  &__who {
-    display: flex;
-    flex-direction: column;
-    min-width: 0;
-  }
-
-  &__team {
-    @include text(label);
-    font-weight: 650;
-    color: pdz.color(secondary-accent);
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  &__coach {
-    @include text(label);
-    display: flex;
-    align-items: center;
-    column-gap: pdz.space(2xs);
-    color: pdz.color(on-surface-variant);
-    min-width: 0;
-
-    pdz-icon {
-      flex-shrink: 0;
-    }
-  }
-
-  // Ellipsis lives on the name, not the row, so the icon never gets clipped.
-  &__coach-name {
-    min-width: 0;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  &__pick {
-    display: flex;
-    align-items: center;
-    column-gap: pdz.space(xs);
-    min-height: 3rem;
-    min-width: 0;
-
-    pdz-sprite {
-      flex: 0 0 auto;
-    }
-  }
-
-  &__pick-info {
-    display: flex;
-    flex-direction: column;
-    min-width: 0;
-  }
-
-  &__pokemon {
-    @include text(label);
-    color: pdz.color(on-surface);
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  &__meta {
-    @include text(label);
-    display: flex;
-    align-items: center;
-    column-gap: pdz.space(2xs);
-    color: pdz.color(on-surface-variant);
-    min-width: 0;
-  }
-
-  &__tier {
+  pdz-sprite {
     flex: 0 0 auto;
-    padding: 0 pdz.space(2xs);
-    border-radius: pdz.shape(corner-xs);
-    background: pdz.color(surface-container-low);
-    color: pdz.color(primary-accent);
-    font-family: var(--pdz-font-display);
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-
-  &__cost {
-    white-space: nowrap;
-  }
-
-  &__empty {
-    display: flex;
-    align-items: center;
-    column-gap: pdz.space(xs);
-    color: pdz.color(on-surface-variant);
-    @include text(label);
-
-    pdz-icon {
-      color: pdz.color(primary-accent);
-    }
-  }
-
-  &__actions {
-    display: flex;
-    align-items: center;
-    column-gap: pdz.space(2xs);
-    min-width: 0;
-  }
-
-  &__search {
-    flex: 1 1 auto;
-    min-width: 0;
-  }
-  &__btn--set {
-    flex: 1 1 auto;
-    min-width: 0;
-  }
-
-  &__btn--icon {
-    flex: 0 0 auto;
-    padding: pdz.space(2xs);
-  }
-
-  &__btn--clear:hover:not(:disabled) {
-    border-color: pdz.color(danger);
-    color: pdz.color(danger);
-  }
-
-  &__btn--rewind:hover:not(:disabled) {
-    border-color: pdz.color(secondary-accent);
-    color: pdz.color(secondary-accent);
   }
 }
 
-// ── Misc ──────────────────────────────────────────────────────────────────────
+.turn__pokemon {
+  @include pdz.text(label);
+  color: pdz.color(on-surface);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 
-.empty-state {
-  @include text(body);
+.turn__meta {
+  @include pdz.text(meta);
+  @include pdz.numeric;
+  display: flex;
+  align-items: center;
+  gap: pdz.space(xs);
   color: pdz.color(on-surface-variant);
-  padding: pdz.space(xl);
-  text-align: center;
+  white-space: nowrap;
+}
+
+.turn__tier {
+  padding-inline: pdz.space(2xs);
+  border-radius: pdz.shape(corner-xs);
+  background: pdz.color(state-hover);
+  color: pdz.color(on-surface);
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.turn__empty {
+  @include pdz.text(label);
+  display: flex;
+  align-items: center;
+  gap: pdz.space(xs);
+  color: pdz.color(on-surface-variant);
+}
+
+.turn[data-state="current"] .turn__empty {
+  color: pdz.color(primary-accent);
+}
+
+.turn__actions {
+  display: flex;
+  align-items: center;
+  gap: pdz.space(2xs);
+  min-width: 0;
+  margin-block-start: auto;
+}
+
+.turn__search {
+  flex: 1 1 auto;
+  min-width: 0;
 }

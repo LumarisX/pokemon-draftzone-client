@@ -1,3 +1,5 @@
+@use "pdz-theming" as pdz;
+
 :host {
   display: flex;
   flex-direction: column;
@@ -8,5 +10,5 @@
 .opponent-form__loading {
   display: flex;
   justify-content: center;
-  padding: 4rem 1rem;
+  padding: pdz.space(4xl) pdz.space(lg);
 }

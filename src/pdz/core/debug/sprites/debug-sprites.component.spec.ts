@@ -12,8 +12,6 @@ describe('DebugSpritesComponent', () => {
     Array.from(fixture.nativeElement.querySelectorAll('.sprite-grid__cell'));
   const grid = (): HTMLElement =>
     fixture.nativeElement.querySelector('.sprite-grid');
-  // Filtering is CSS-driven (:has on the step badge), so assert the selector
-  // the stylesheet uses rather than a computed style jsdom will not resolve.
   const hiddenByFilter = (cell: HTMLElement) => {
     const filter = grid().getAttribute('data-filter');
     if (filter === 'missing') {
@@ -58,7 +56,6 @@ describe('DebugSpritesComponent', () => {
     }).compileComponents();
     fixture = TestBed.createComponent(DebugSpritesComponent);
     component = fixture.componentInstance;
-    // Narrow the grid before first render so the suite is not rendering 1480 sprites.
     component['search'].set('charizard');
     fixture.detectChanges();
   });

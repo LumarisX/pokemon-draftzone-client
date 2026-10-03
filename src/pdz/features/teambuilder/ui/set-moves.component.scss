@@ -18,7 +18,7 @@
   position: sticky;
   top: 0;
   z-index: 2;
-  background: pdz.color(surface);
+  background: pdz.color(ground);
 }
 
 .moves__slot {
@@ -60,7 +60,7 @@
   display: flex;
   flex-direction: column;
   border-radius: pdz.shape(corner-sm);
-  border: 1px solid pdz.color(outline-variant);
+  border: 1px solid pdz.color(border-subtle);
   overflow: clip;
 }
 
@@ -77,8 +77,8 @@
   top: 0;
   z-index: 1;
   padding: 0 pdz.space(2xs);
-  background: pdz.color(surface-container);
-  border-bottom: 1px solid pdz.color(outline-variant);
+  background: pdz.color(raised);
+  border-bottom: 1px solid pdz.color(border-subtle);
 
   button {
     justify-content: flex-start;
@@ -88,7 +88,7 @@
 .learnset__row {
   padding: pdz.space(3xs) pdz.space(2xs);
   border: 0;
-  border-bottom: 1px solid pdz.color(outline-variant);
+  border-bottom: 1px solid pdz.color(border-subtle);
   background: transparent;
   color: pdz.color(on-surface);
   cursor: pointer;
@@ -103,7 +103,7 @@
   }
 
   &:hover {
-    background: pdz.color(surface-container-low);
+    background: pdz.color(state-hover);
   }
 
   &:focus-visible {

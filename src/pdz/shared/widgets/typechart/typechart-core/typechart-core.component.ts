@@ -1,4 +1,4 @@
-import { CommonModule } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import {
   Component,
   EventEmitter,
@@ -30,7 +30,7 @@ import { PokemonTypeComponent } from '@pdz/shared/data/pokemon-type/pokemon-type
   templateUrl: './typechart-core.component.html',
   styleUrl: './typechart-core.component.scss',
   imports: [
-    CommonModule,
+    AsyncPipe,
     SpriteComponent,
     FormsModule,
     ReactiveFormsModule,

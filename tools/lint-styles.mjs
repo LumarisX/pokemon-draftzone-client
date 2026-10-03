@@ -25,6 +25,15 @@ const UNTOKENIZED_ORPHANS = [
 
 const BESPOKE_DENSITY = ["src/pdz/features/tools/wheel/wheel.component.scss"];
 
+const BESPOKE_RENDERING = ["src/pdz/features/tools/wheel/wheel.component.scss"];
+
+const DISPLAY_FONT_MOMENTS = [
+  "src/pdz/shared/layout/page-header/page-header.component.scss",
+  "src/pdz/features/pages/homepage/homepage.component.scss",
+  "src/pdz/features/league-zone/league-drafting/league-drafting.component.scss",
+  "src/pdz/features/league-zone/tournaments/tournament-nav/tournament-nav.component.scss",
+];
+
 const ALLOW_BY_RULE = {
   "raw-font-size": new Set([
     ...BESPOKE_DISPLAY,
@@ -33,6 +42,158 @@ const ALLOW_BY_RULE = {
     ...BESPOKE_DENSITY,
   ]),
   "unroled-type": new Set([]),
+  "raw-color": new Set([...BESPOKE_RENDERING]),
+  "raw-spacing": new Set([...BESPOKE_DISPLAY]),
+  "display-font": new Set([...DISPLAY_FONT_MOMENTS]),
+};
+
+const TOKEN_SOURCES = /^src\/styles\/(tokens|themes|tools)\//;
+
+const LENGTH = /(?<![\w.#-])-?\d*\.?\d+(px|rem|em)(?![\w-])/;
+
+function stripBalanced(value, names) {
+  let out = "";
+  let i = 0;
+  const opener = new RegExp(`^(?:${names})\\(`);
+  while (i < value.length) {
+    const m = value.slice(i).match(opener);
+    if (!m || (i > 0 && /[\w-]/.test(value[i - 1]))) {
+      out += value[i++];
+      continue;
+    }
+    let depth = 0;
+    let j = i + m[0].length - 1;
+    for (; j < value.length; j++) {
+      if (value[j] === "(") depth++;
+      else if (value[j] === ")" && --depth === 0) break;
+    }
+    out += " ";
+    i = j + 1;
+  }
+  return out;
+}
+
+const TOKEN_CALLS = "calc|min|max|clamp|var|pdz\\.[\\w-]+|color-mix";
+
+function splitTopLevel(value) {
+  const parts = [];
+  let depth = 0;
+  let cur = "";
+  for (const ch of value) {
+    if (ch === "(") depth++;
+    else if (ch === ")") depth--;
+    if (ch === "," && depth === 0) {
+      parts.push(cur.trim());
+      cur = "";
+    } else cur += ch;
+  }
+  if (cur.trim()) parts.push(cur.trim());
+  return parts;
+}
+
+const DECL_RULES = [
+  {
+    id: "raw-duration",
+    props: /^(transition|transition-duration)$/,
+    test: (v) => /(?<![\w.-])[0-9.]+m?s(?![\w-])/.test(stripBalanced(v, TOKEN_CALLS)),
+    msg: "raw transition duration; use pdz.duration(none|fast|base|slow)",
+  },
+  {
+    id: "raw-easing",
+    props: /^(transition|transition-timing-function)$/,
+    test: (v) =>
+      /(?<![\w-])(?:ease-in-out|ease-in|ease-out|ease)(?![\w-])|cubic-bezier\(/.test(
+        stripBalanced(v, "var|pdz\\.[\\w-]+"),
+      ),
+    msg: "raw easing; use pdz.easing(standard|exit|linear)",
+  },
+  {
+    id: "raw-font-weight",
+    props: /^font-weight$/,
+    test: (v) =>
+      !/^(pdz\.font-weight\(\w+\)|var\(--pdz-font-weight-\w+\)|inherit|initial|unset|normal|bolder|lighter)$/.test(v),
+    msg: "raw font-weight; use @include pdz.text(<role>) or pdz.font-weight(regular|semibold|bold)",
+  },
+  {
+    id: "raw-color",
+    props: /./,
+    test: (v) => /#[0-9a-fA-F]{3,8}\b|\b(rgba?|hsla?)\(\s*\d/.test(v),
+    msg: "color literal; use pdz.color(<role>), pdz.color-rgba(<role>, <alpha>) or color-mix() over a role",
+  },
+  {
+    id: "raw-radius",
+    props: /^border(-[\w-]+)?-radius$/,
+    test: (v) => LENGTH.test(stripBalanced(v, TOKEN_CALLS)),
+    msg: "raw border-radius; use pdz.shape(<corner>)",
+  },
+  {
+    id: "raw-shadow",
+    props: /^box-shadow$/,
+    test: (v) =>
+      !splitTopLevel(v).every(
+        (part) =>
+          /^(none|inherit|initial|unset)$/.test(part) ||
+          /^var\(--pdz-[\w-]+(,\s*none)?\)$/.test(part) ||
+          /^(inset\s+)?0\s+0\s+0\s+/.test(part),
+      ),
+    msg: "box-shadow must be none, var(--pdz-elevation-1..3), or a 0 0 0 <width> ring",
+    skipInKeyframes: true,
+  },
+  {
+    id: "raw-spacing",
+    props: /^(margin|padding|gap|row-gap|column-gap|inset)(-[\w-]+)?$/,
+    test: (v) =>
+      stripBalanced(v, TOKEN_CALLS)
+        .split(/\s+/)
+        .some((t) => LENGTH.test(t) && !/^-?1px$/.test(t)),
+    msg: "raw spacing length; use pdz.space(<step>) or pdz.layout(<alias>), or calc() for geometry",
+  },
+  {
+    id: "display-font",
+    props: /^font-family$/,
+    test: (v) => /pdz\.font\(display\)|--pdz-font-display|Nasalization/.test(v),
+    msg: "Nasalization is for page titles and big numbers only; use a body role, or @include pdz.text(display|headline)",
+    pdzOnly: true,
+  },
+];
+
+function declarations(lines) {
+  const out = [];
+  let buf = "";
+  let start = 0;
+  let depth = 0;
+  const keyframeDepths = [];
+  lines.forEach((line, i) => {
+    const code = line.replace(/\/\/.*$/, "");
+    for (const ch of code) {
+      if (ch === "{") {
+        if (/@keyframes/.test(buf)) keyframeDepths.push(depth);
+        depth++;
+        buf = "";
+      } else if (ch === "}") {
+        depth--;
+        if (keyframeDepths.length && keyframeDepths[keyframeDepths.length - 1] === depth) keyframeDepths.pop();
+        buf = "";
+      } else if (ch === ";") {
+        const m = buf.trim().match(/^([\w-]+)\s*:\s*([\s\S]+)$/);
+        if (m && !m[1].startsWith("--") && !buf.trim().startsWith("$")) {
+          out.push({ prop: m[1], value: m[2].replace(/\s+/g, " ").trim(), line: start + 1, inKeyframes: keyframeDepths.length > 0 });
+        }
+        buf = "";
+      } else {
+        if (!buf.trim()) start = i;
+        buf += ch;
+      }
+    }
+    buf += " ";
+  });
+  return out;
+}
+
+const MEDIA_RULE = {
+  id: "raw-media",
+  re: /@media[^{]*(max|min)-width\s*:\s*\d/,
+  msg: "raw @media width query; use @include pdz.respond-above/respond-below(<breakpoint>) or a container query",
 };
 
 const RULES = [
@@ -43,19 +204,38 @@ const RULES = [
     glyphExempt: true,
   },
   {
-    id: "raw-duration",
-    re: /transition[^;]*(?<![\w.-])[0-9.]+m?s(?![\w-])/,
-    msg: "raw transition duration; use pdz.duration(none|fast|base|slow)",
-  },
-  {
-    id: "raw-easing",
-    re: /transition[^;]*(?:(?<![\w-])(?:ease-in-out|ease-in|ease-out|ease)(?![\w-])|cubic-bezier\()/,
-    msg: "raw easing; use pdz.easing(standard|exit|linear)",
-  },
-  {
     id: "raw-z-index",
     re: /z-index\s*:\s*-?\d{2,}/,
     msg: "raw z-index; use pdz.z(<layer>) for a page-level surface, or a bare 0-9 for ordering inside a stacking context you own",
+    styles: true,
+  },
+  {
+    id: "legacy-shadow",
+    re: /var\(--pdz-level-/,
+    msg: "the --pdz-level-* shadows are gone; panels use a border, floating things use var(--pdz-elevation-1..3)",
+    styles: true,
+  },
+  {
+    id: "ng-deep",
+    re: /::ng-deep/,
+    msg: "::ng-deep is banned; project content, pass an input, or scope an unencapsulated stylesheet under the host selector",
+    styles: true,
+  },
+  {
+    id: "important",
+    re: /!important/,
+    msg: "!important is banned; fix the specificity instead",
+  },
+  {
+    id: "legacy-role",
+    re: /color\((["']?)(surface|surface-container[\w-]*|background|outline-variant)\1\)/,
+    msg: "deleted color role; use the ladder (ground, raised, raised-high, overlay, floating, inset) or border-subtle",
+    styles: true,
+  },
+  {
+    id: "dead-font-var",
+    re: /--pdz-font-(fancy|regular)\b/,
+    msg: "that font variable does not exist; use pdz.font(display|body|mono) or @include pdz.text(<role>)",
     styles: true,
   },
 ];
@@ -86,7 +266,7 @@ function loadTypeRoles() {
     const size = (m[2].match(/font-size:\s*([^,\n]+),/) || [])[1];
     const weight = (m[2].match(/font-weight:\s*([^,\n]+),/) || [])[1];
     const token = size && sizeToToken.get(size.trim());
-    const pair = token && weight && `${token}/${weight.trim()}`;
+    const pair = token && weight && `${token}/${normalizeWeight(weight)}`;
     if (pair && !roleByPair.has(pair)) roleByPair.set(pair, m[1]);
   }
   return { sizeToToken, roleByPair };
@@ -197,7 +377,24 @@ for (const file of [...walk(SCAN), ...walk(SCAN_STYLES)]) {
       console.error(`${rel}:${i + 1}  ${rule.id}: ${rule.msg}\n    ${line.trim()}`);
       violations++;
     }
+    if (!inStyles && MEDIA_RULE.re.test(line.replace(/\/\/.*$/, ""))) {
+      console.error(`${rel}:${i + 1}  ${MEDIA_RULE.id}: ${MEDIA_RULE.msg}\n    ${line.trim()}`);
+      violations++;
+    }
   });
+
+  if (!TOKEN_SOURCES.test(rel)) {
+    for (const decl of declarations(lines)) {
+      for (const rule of DECL_RULES) {
+        if (rule.pdzOnly && inStyles) continue;
+        if (rule.skipInKeyframes && decl.inKeyframes) continue;
+        if (ALLOW_BY_RULE[rule.id]?.has(rel)) continue;
+        if (!rule.props.test(decl.prop) || !rule.test(decl.value)) continue;
+        console.error(`${rel}:${decl.line}  ${rule.id}: ${rule.msg}\n    ${decl.prop}: ${decl.value}`);
+        violations++;
+      }
+    }
+  }
 
   if (inStyles || ALLOW_BY_RULE["unroled-type"].has(rel)) continue;
   for (const block of blocksOf(lines)) {

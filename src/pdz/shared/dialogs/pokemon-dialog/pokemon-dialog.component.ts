@@ -3,6 +3,7 @@ import { FormsModule } from '@angular/forms';
 import { finalize } from 'rxjs/operators';
 import { STATS, StatsTable, Type } from '@pdz/shared/data';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
+import { InputDirective } from '@pdz/shared/inputs/field/input.directive';
 import {
   DIALOG_DATA,
   DialogRef,
@@ -14,8 +15,8 @@ import {
   PokemonSearchMoveData,
 } from '@pdz/core/services/data.service';
 import { PokemonTypeComponent } from '@pdz/shared/data/pokemon-type/pokemon-type.component';
-import { SpriteComponent } from '../../images/sprite/sprite.component';
-import { IconComponent } from '../../images/icon/icon.component';
+import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
+import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { makeBanString } from '@pdz/features/tier-lists/tier-list/tier-list.utils';
 import { SegmentedOptionComponent } from '@pdz/shared/inputs/segmented/segmented-option.component';
 import { SegmentedComponent } from '@pdz/shared/inputs/segmented/segmented.component';
@@ -62,6 +63,7 @@ export type PokemonDialogResult = unknown;
     PokemonTypeComponent,
     SegmentedComponent,
     SegmentedOptionComponent,
+    InputDirective,
   ],
   templateUrl: './pokemon-dialog.component.html',
   styleUrls: ['./pokemon-dialog.component.scss'],

@@ -10,6 +10,7 @@ import { RouterLink } from '@angular/router';
 import { DRAFT_OVERVIEW_PATH, PLANNER_PATH } from '@pdz/core/route-paths';
 import { DraftService } from '@pdz/features/drafts/draft-overview/draft.service';
 import { getLogoUrl } from '@pdz/features/league-zone/league.util';
+import { TeamLogoComponent } from '@pdz/shared/images/team-logo/team-logo.component';
 import { LSDraftData } from '@pdz/features/planner/planner.component';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 import { ChipComponent, ChipTone } from '@pdz/shared/data/chip/chip.component';
@@ -65,6 +66,7 @@ const STATUS_TONE: Record<Season['status'], ChipTone> = {
     MenuTriggerDirective,
     SkeletonComponent,
     SpriteComponent,
+    TeamLogoComponent,
     TabComponent,
     TabsComponent,
   ],
@@ -113,15 +115,6 @@ export class SeasonDetailComponent {
     const logo = this.season().logo;
     return logo ? getLogoUrl(logo) : null;
   });
-
-  protected readonly crest = computed(() =>
-    this.season()
-      .teamName.split(/\s+/)
-      .filter(Boolean)
-      .slice(0, 2)
-      .map((word) => word[0]?.toUpperCase() ?? '')
-      .join(''),
-  );
 
   protected readonly played = computed(() => seasonPlayed(this.season()));
 

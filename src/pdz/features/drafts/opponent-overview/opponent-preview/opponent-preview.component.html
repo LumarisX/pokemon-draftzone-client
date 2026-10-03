@@ -7,7 +7,7 @@
           pdz-button
           iconOnly
           variant="tonal"
-          color="secondary"
+          color="neutral"
           class="direction-btn"
           aria-label="Reverse order"
           [class.up]="directionUp"
@@ -15,16 +15,16 @@
         >
           <pdz-icon name="arrow_downward"></pdz-icon>
         </button>
-        <button
+        <a
           pdz-button
           iconOnly
+          icon="add"
           variant="tonal"
-          color="secondary"
+          color="neutral"
+          aria-label="Add a matchup"
           [routerLink]="['/', draftPath, this.teamId, 'form']"
           [queryParams]="{ stage: `Week ${(this.matchups?.length ?? 0) + 1}` }"
-        >
-          <pdz-icon name="add"></pdz-icon>
-        </button>
+        ></a>
       </div>
     </div>
     @if (!matchups) {
@@ -32,14 +32,15 @@
     } @else {
       <div class="matchups-container">
         @for (matchup of matchups; track $index) {
-          <pdz-card class="matchup-card" color="secondary" padding="sm">
+          <pdz-card class="matchup-card" padding="sm">
             <div pdz-card-header>
               <div class="card-title">
-                @if (matchup.logo) {
-                  <div class="matchup-logo">
-                    <img [src]="matchup.logo" />
-                  </div>
-                }
+                <pdz-team-logo
+                  size="lg"
+                  team="team2"
+                  [src]="matchup.logo"
+                  [name]="matchup.teamName"
+                />
                 <div class="matchup-team-info">
                   <div class="team-name">{{ matchup.teamName }}</div>
                   @if (matchup.coach) {
@@ -60,7 +61,7 @@
                   iconOnly
                   size="sm"
                   variant="ghost"
-                  color="secondary"
+                  color="neutral"
                   pdz-menu-trigger
                   [attr.aria-label]="'Actions for ' + matchup.teamName"
                 >
@@ -137,7 +138,7 @@
                   pdz-button
                   size="sm"
                   variant="ghost"
-                  color="secondary"
+                  color="neutral"
                   [disabled]="!matchup.matches.length"
                   (click)="openReplays(matchup)"
                 >
@@ -148,7 +149,7 @@
                   pdz-button
                   size="sm"
                   variant="ghost"
-                  color="secondary"
+                  color="neutral"
                   [routerLink]="['matchup', matchup._id]"
                   >View Matchup</a
                 >
@@ -165,7 +166,7 @@
               <a
                 pdz-button
                 size="sm"
-                color="secondary"
+                color="neutral"
                 [routerLink]="['/', draftPath, this.teamId, 'form']"
                 [queryParams]="{ stage: 'Week 1' }"
               >

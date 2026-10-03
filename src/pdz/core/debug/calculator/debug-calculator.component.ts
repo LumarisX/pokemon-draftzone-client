@@ -7,6 +7,7 @@ import { ChoiceDirective } from '@pdz/shared/inputs/choice/choice.directive';
 import { FieldComponent } from '@pdz/shared/inputs/field/field.component';
 import { InputDirective } from '@pdz/shared/inputs/field/input.directive';
 import { PageComponent } from '@pdz/shared/layout/page/page.component';
+import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
 import { SelectComponent } from '@pdz/shared/dropdowns/select/select.component';
 import { SelectOptionComponent } from '@pdz/shared/dropdowns/select/select-option.component';
 import { SegmentedComponent } from '@pdz/shared/inputs/segmented/segmented.component';
@@ -45,6 +46,7 @@ const BOOSTS = ['atk', 'def', 'spa', 'spd', 'spe', 'accuracy', 'evasion'];
     FormsModule,
     JsonPipe,
     PageComponent,
+    PageHeaderComponent,
     ButtonComponent,
     FieldComponent,
     InputDirective,

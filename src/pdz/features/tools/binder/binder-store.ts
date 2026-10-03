@@ -1,4 +1,5 @@
 import { Injectable, computed, signal } from '@angular/core';
+import { safeStorage } from '@pdz/core/utils/storage';
 import { BINDER_ROSTER, BinderKind } from './binder-roster.data';
 
 export const CARDS_PER_SHEET = 9;
@@ -22,7 +23,7 @@ function clampAxis(value: unknown, fallback: number): number {
 export type SortMode = 'dex' | 'alpha' | 'type' | 'custom';
 
 export const SORT_MODES: readonly { id: SortMode; label: string }[] = [
-  { id: 'dex', label: 'Pokédex number' },
+  { id: 'dex', label: 'Pokédex Number' },
   { id: 'alpha', label: 'Alphabetical' },
   { id: 'type', label: 'Type' },
   { id: 'custom', label: 'Custom' },
@@ -343,12 +344,7 @@ export class BinderStore {
   }
 
   private read(): Persisted {
-    let raw: string | null = null;
-    try {
-      raw = localStorage.getItem(STORAGE_KEY);
-    } catch {
-      raw = null;
-    }
+    const raw = safeStorage.get(STORAGE_KEY);
     if (!raw) {
       const doc = this.blankDoc('My binder');
       return { version: 2, activeId: doc.id, binders: [doc] };
@@ -591,11 +587,7 @@ export class BinderStore {
       activeId: this.activeId(),
       binders: this.allDocs(),
     };
-    try {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
-    } catch {
-      return;
-    }
+    safeStorage.setJson(STORAGE_KEY, payload);
   }
 
   undo(): void {
@@ -953,7 +945,6 @@ export class BinderStore {
     });
   }
 
-  /** Labelled blanks are dividers you meant to keep, so they survive. */
   removeBlanks(): void {
     const isLoose = (entry: LayoutEntry) => entry.id === null && !entry.label;
     if (!this.layout().some(isLoose)) return;
@@ -1046,7 +1037,6 @@ export class BinderStore {
     return null;
   }
 
-  /** Replaces the binder you are looking at; the others are left alone. */
   importJson(raw: string): boolean {
     let parsed: unknown;
     try {

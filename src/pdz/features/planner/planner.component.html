@@ -246,6 +246,7 @@
       @if (!isLargeScreen()) {
         <div
           class="planner__scrim"
+          aria-hidden="true"
           [class.planner__scrim--open]="panelOpen()"
           (click)="closePanel()"
         ></div>

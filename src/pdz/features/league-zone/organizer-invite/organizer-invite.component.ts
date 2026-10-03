@@ -1,6 +1,13 @@
 import { DatePipe } from '@angular/common';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  OnInit,
+  inject,
+  signal,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Component, DestroyRef, inject, OnInit, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import {
@@ -15,9 +22,12 @@ import { FieldComponent } from '@pdz/shared/inputs/field/field.component';
 import { InputDirective } from '@pdz/shared/inputs/field/input.directive';
 import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
 import { PageComponent } from '@pdz/shared/layout/page/page.component';
-import { LeagueZoneService } from '../league-zone.service';
-import { League } from '../league.interface';
-import { isValidOrganizerName, ORGANIZER_NAME_MAX } from '../league.util';
+import { LeagueZoneService } from '@pdz/features/league-zone/league-zone.service';
+import { League } from '@pdz/features/league-zone/league.interface';
+import {
+  ORGANIZER_NAME_MAX,
+  isValidOrganizerName,
+} from '@pdz/features/league-zone/league.util';
 
 @Component({
   selector: 'pdz-organizer-invite',
@@ -35,6 +45,7 @@ import { isValidOrganizerName, ORGANIZER_NAME_MAX } from '../league.util';
     PageComponent,
     PageHeaderComponent,
   ],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class OrganizerInviteComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
@@ -54,7 +65,7 @@ export class OrganizerInviteComponent implements OnInit {
     null,
   );
   protected readonly accepting = signal(false);
-  protected name = '';
+  protected readonly name = signal('');
   protected readonly nameMax = ORGANIZER_NAME_MAX;
   protected readonly isValidName = isValidOrganizerName;
 
@@ -81,7 +92,7 @@ export class OrganizerInviteComponent implements OnInit {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (preview) => {
-          this.name = preview.suggestedName;
+          this.name.set(preview.suggestedName);
           this.preview.set(preview);
           this.loading.set(false);
         },
@@ -90,14 +101,15 @@ export class OrganizerInviteComponent implements OnInit {
   }
 
   protected accept(): void {
-    if (!this.token || !isValidOrganizerName(this.name)) return;
+    const name = this.name();
+    if (!this.token || !isValidOrganizerName(name)) return;
     this.accepting.set(true);
     this.leagueService
       .acceptOrganizerInvite(
         this.leagueSlug,
         this.tournamentSlug,
         this.token,
-        this.name.trim(),
+        name.trim(),
       )
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({

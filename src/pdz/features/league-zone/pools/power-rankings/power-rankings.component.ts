@@ -1,135 +1,125 @@
-import { CdkTableModule } from '@angular/cdk/table';
-import { Component, OnDestroy, OnInit, inject } from '@angular/core';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import {
+  Component,
+  DestroyRef,
+  computed,
+  effect,
+  inject,
+  linkedSignal,
+  signal,
+} from '@angular/core';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
+import { safeStorage } from '@pdz/core/utils/storage';
+import { LeagueZoneService } from '@pdz/features/league-zone/league-zone.service';
+import { League } from '@pdz/features/league-zone/league.interface';
+import { PlannerMoveCoverageComponent } from '@pdz/features/planner/coverage/move-coverage.component';
+import { PlannerTeamCoverageComponent } from '@pdz/features/planner/coverage/team-coverage.component';
+import { MoveComponent } from '@pdz/features/planner/moves/moves.component';
+import { PlannerSummaryComponent } from '@pdz/features/planner/summary/summary.component';
+import { PlannerTypechartComponent } from '@pdz/features/planner/typechart/typechart.component';
+import { CardComponent } from '@pdz/shared/data/card/card.component';
 import { SortHeaderComponent } from '@pdz/shared/data/sort/sort-header.component';
 import { Sort, SortDirective } from '@pdz/shared/data/sort/sort.directive';
-import { TooltipDirective } from '@pdz/shared/tooltip/tooltip.directive';
+import { SelectOptionComponent } from '@pdz/shared/dropdowns/select/select-option.component';
+import { SelectComponent } from '@pdz/shared/dropdowns/select/select.component';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
-import { Subject, debounceTime, takeUntil } from 'rxjs';
-import { PlannerMoveCoverageComponent } from '../../../planner/coverage/move-coverage.component';
-import { PlannerTeamCoverageComponent } from '../../../planner/coverage/team-coverage.component';
-import { MoveComponent } from '../../../planner/moves/moves.component';
-import { PlannerSummaryComponent } from '../../../planner/summary/summary.component';
-import { PlannerTypechartComponent } from '../../../planner/typechart/typechart.component';
-import { LeagueZoneService } from '../../league-zone.service';
-import { League } from '../../league.interface';
-import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
+import { FieldComponent } from '@pdz/shared/inputs/field/field.component';
+import { InputDirective } from '@pdz/shared/inputs/field/input.directive';
 import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
-import { MenuComponent } from '@pdz/shared/menu/menu.component';
-import { MenuItemComponent } from '@pdz/shared/menu/menu-item.component';
-import { MenuTriggerDirective } from '@pdz/shared/menu/menu-trigger.directive';
+import { TooltipDirective } from '@pdz/shared/tooltip/tooltip.directive';
+import { Subject, catchError, debounceTime, of } from 'rxjs';
+
+type Scores = Record<string, number>;
+
+const STORAGE_KEY = 'league-power-rankings';
+const SAVE_DEBOUNCE_MS = 1000;
 
 @Component({
   selector: 'pdz-league-power-rankings',
   imports: [
-    LoadingComponent,
-    PlannerSummaryComponent,
+    CardComponent,
+    FieldComponent,
     IconComponent,
-    PlannerTypechartComponent,
+    InputDirective,
+    LoadingComponent,
     MoveComponent,
+    PageHeaderComponent,
     PlannerMoveCoverageComponent,
+    PlannerSummaryComponent,
     PlannerTeamCoverageComponent,
-    CdkTableModule,
-    ReactiveFormsModule,
-    FormsModule,
-    TooltipDirective,
+    PlannerTypechartComponent,
+    SelectComponent,
+    SelectOptionComponent,
     SortDirective,
     SortHeaderComponent,
     SpriteComponent,
-    MenuComponent,
-    MenuItemComponent,
-    MenuTriggerDirective,
-    ButtonComponent,
-    PageHeaderComponent,
+    TooltipDirective,
   ],
   templateUrl: './power-rankings.component.html',
-  styleUrls: ['./power-rankings.component.scss'],
+  styleUrl: './power-rankings.component.scss',
 })
-export class PowerRankingsComponent implements OnInit, OnDestroy {
-  leagueService = inject(LeagueZoneService);
+export class PowerRankingsComponent {
+  private readonly leagueService = inject(LeagueZoneService);
+  private readonly destroyRef = inject(DestroyRef);
+  private readonly save$ = new Subject<Scores>();
 
-  private scoreUpdate$ = new Subject<void>();
-  private destroy$ = new Subject<void>();
-  private readonly storageKey = 'league-power-rankings';
-
-  selectedTeam?: League.PowerRankingTeam;
-  teams?: League.PowerRankingTeam[];
-  displayedColumns: string[] = ['position', 'teamName', 'draft', 'score'];
-  ngOnInit() {
+  readonly teams = toSignal(
     this.leagueService
       .powerRankingDetails()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe((data) => {
-        const savedScores = this.getSavedScores();
-        this.teams = data.map((team) => {
-          if (savedScores[team.info.id]) {
-            team.score = savedScores[team.info.id];
-          }
-          return team;
-        });
-        this.selectedTeam = this.teams[0];
-      });
+      .pipe(catchError(() => of<League.PowerRankingTeam[]>([]))),
+  );
 
-    this.scoreUpdate$
-      .pipe(debounceTime(3000), takeUntil(this.destroy$))
-      .subscribe(() => this.saveScores());
-  }
+  readonly scores = signal<Scores>(safeStorage.getJson<Scores>(STORAGE_KEY) ?? {});
+  readonly sortDescending = signal(true);
 
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
-  }
+  readonly selectedId = linkedSignal(() => this.teams()?.[0]?.info.id ?? null);
 
-  onScoreChange(score: number) {
-    if (this.selectedTeam) {
-      this.selectedTeam.score = score;
-      this.scoreUpdate$.next();
-    }
-  }
+  readonly selectedTeam = computed(() => {
+    const id = this.selectedId();
+    return this.teams()?.find((team) => team.info.id === id) ?? null;
+  });
 
-  selectTeamAndClose(team: League.PowerRankingTeam) {
-    this.selectedTeam = team;
-  }
-
-  private getSavedScores(): { [id: string]: number } {
-    const saved = localStorage.getItem(this.storageKey);
-    return saved ? JSON.parse(saved) : {};
-  }
-
-  private saveScores() {
-    if (!this.teams) return;
-    const scoresToSave = this.teams.reduce(
-      (acc, team) => {
-        if (team.score !== undefined) acc[team.info.id] = team.score;
-        return acc;
-      },
-      {} as { [id: string]: number },
-    );
-    localStorage.setItem(this.storageKey, JSON.stringify(scoresToSave));
-  }
-
-  sort(sort: Sort) {
-    if (!this.teams) return;
-    const isAsc = sort.direction === 'asc';
-    const compare = (
-      a: number | string | null | undefined,
-      b: number | string | null | undefined,
-    ) => {
-      if (a == null) return 1;
-      if (b == null) return -1;
-      return typeof a === 'string' && typeof b === 'string'
-        ? a.localeCompare(b) * (isAsc ? 1 : -1)
-        : (a < b ? -1 : 1) * (isAsc ? 1 : -1);
-    };
-    this.teams = [...this.teams].sort((a, b) => {
-      switch (sort.active) {
-        case 'score':
-          return compare(a.score, b.score);
-        default:
-          return 0;
-      }
+  readonly ranked = computed(() => {
+    const direction = this.sortDescending() ? -1 : 1;
+    return [...(this.teams() ?? [])].sort((a, b) => {
+      const left = this.scoreFor(a);
+      const right = this.scoreFor(b);
+      if (left === undefined) return 1;
+      if (right === undefined) return -1;
+      return (left - right) * direction;
     });
+  });
+
+  constructor() {
+    this.save$
+      .pipe(debounceTime(SAVE_DEBOUNCE_MS), takeUntilDestroyed(this.destroyRef))
+      .subscribe((scores) => safeStorage.setJson(STORAGE_KEY, scores));
+
+    effect(() => this.save$.next(this.scores()));
+  }
+
+  scoreFor(team: League.PowerRankingTeam): number | undefined {
+    return this.scores()[team.info.id] ?? team.score;
+  }
+
+  setScore(value: string): void {
+    const team = this.selectedTeam();
+    if (!team) return;
+    const parsed = Number(value);
+    this.scores.update((scores) => {
+      const next = { ...scores };
+      if (value === '' || !Number.isFinite(parsed)) delete next[team.info.id];
+      else next[team.info.id] = parsed;
+      return next;
+    });
+  }
+
+  onSort(sort: Sort): void {
+    this.sortDescending.set(sort.direction !== 'asc');
+  }
+
+  captTypes(types: string[] | undefined, limit = Infinity): string {
+    return types?.length && types.length < limit ? types.join(', ') : 'All types';
   }
 }

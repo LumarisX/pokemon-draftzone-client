@@ -1,70 +1,46 @@
-import { CommonModule } from '@angular/common';
 import {
+  ChangeDetectionStrategy,
   Component,
-  EventEmitter,
   inject,
-  OnDestroy,
-  OnInit,
-  Output,
   input,
+  output,
 } from '@angular/core';
-import { Subject, takeUntil } from 'rxjs';
-import { LeagueZoneService } from '../../league-zone.service';
-import { League } from '../../league.interface';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { LeagueZoneService } from '@pdz/features/league-zone/league-zone.service';
+import { League } from '@pdz/features/league-zone/league.interface';
 import { SegmentedOptionComponent } from '@pdz/shared/inputs/segmented/segmented-option.component';
 import { SegmentedComponent } from '@pdz/shared/inputs/segmented/segmented.component';
+import { catchError, of } from 'rxjs';
 
 @Component({
   selector: 'pdz-stage-switcher',
-  imports: [CommonModule,
-    SegmentedComponent,
-    SegmentedOptionComponent,
-  ],
+  imports: [SegmentedComponent, SegmentedOptionComponent],
   templateUrl: './stage-switcher.component.html',
   styleUrl: './stage-switcher.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class StageSwitcherComponent implements OnInit, OnDestroy {
-  private leagueService = inject(LeagueZoneService);
-  private readonly destroy$ = new Subject<void>();
+export class StageSwitcherComponent {
+  private readonly leagueService = inject(LeagueZoneService);
 
   readonly currentStageSlug = input<string | null>(null);
-  /**
-   * When set, prepends a leading pill (slug `'all'`) with this label, for
-   * callers that combine every stage's data into one view instead of
-   * picking a single stage.
-   */
   readonly allStagesLabel = input<string | null>(null);
-  @Output() stageSelected = new EventEmitter<string>();
+  readonly stageSelected = output<string>();
 
-  stages: League.StageSummary[] = [];
-
-  ngOnInit(): void {
+  readonly stages = toSignal(
     this.leagueService
       .listStages()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe({
-        next: (stages) => {
-          this.stages = stages;
-        },
-      });
-  }
-
-  ngOnDestroy(): void {
-    this.destroy$.next();
-    this.destroy$.complete();
-  }
+      .pipe(catchError(() => of<League.StageSummary[]>([]))),
+    { initialValue: [] },
+  );
 
   selectStage(stageSlug: string): void {
     if (stageSlug === this.currentStageSlug()) return;
     this.stageSelected.emit(stageSlug);
   }
 
-  getStageLabel(stage: League.StageSummary): string {
+  stageLabel(stage: League.StageSummary): string {
     if (stage.name) return stage.name;
-    return stage.type
-      .split(/[-_\s]+/)
-      .filter(Boolean)
-      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(' ');
+    const label = stage.type.split(/[-_\s]+/).filter(Boolean).join(' ');
+    return label.charAt(0).toUpperCase() + label.slice(1);
   }
 }
