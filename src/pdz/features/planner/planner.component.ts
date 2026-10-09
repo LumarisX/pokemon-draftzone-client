@@ -117,7 +117,7 @@ export class PlannerComponent implements OnInit, OnDestroy {
 
   mainView = signal<PlannerView>('analysis');
   takenIds = signal<string[]>([]);
-  addFeedback = signal<string | null>(null);
+  addFeedback = signal<{ text: string; blocked: boolean } | null>(null);
 
   isLargeScreen = signal(false);
   panelOpen = signal(false);
@@ -264,7 +264,7 @@ export class PlannerComponent implements OnInit, OnDestroy {
     );
 
     if (slotIndex === -1) {
-      this.showAddFeedback('No open slot — clear or unlock one first.');
+      this.showAddFeedback('No open slot — clear or unlock one first.', true);
       return;
     }
 
@@ -274,8 +274,8 @@ export class PlannerComponent implements OnInit, OnDestroy {
     this.showAddFeedback(`Added ${pokemon.name} to slot ${slotIndex + 1}.`);
   }
 
-  private showAddFeedback(message: string): void {
-    this.addFeedback.set(message);
+  private showAddFeedback(text: string, blocked = false): void {
+    this.addFeedback.set({ text, blocked });
     clearTimeout(this.addFeedbackTimeoutId);
     this.addFeedbackTimeoutId = setTimeout(
       () => this.addFeedback.set(null),

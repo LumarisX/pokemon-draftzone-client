@@ -8,15 +8,13 @@
   display: flex;
   align-items: center;
   gap: pdz.space(md);
-  padding: pdz.space(md);
-  border: 1px solid pdz.color(border-subtle);
-  border-radius: pdz.shape(corner-lg);
-  background: pdz.color(raised-high);
   flex-wrap: wrap;
 }
 
 .artifact--empty {
-  border-style: dashed;
+  padding: pdz.space(md);
+  border: 1px dashed pdz.color(border-control);
+  border-radius: pdz.shape(corner-lg);
 }
 
 .artifact__icon {

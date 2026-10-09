@@ -204,17 +204,13 @@
                   <div class="replay__player-body">
                     <div class="replay__team">
                       @for (mon of skeletonTeam; track $index) {
-                        <pdz-card
-                          class="replay__mon"
-                          tone="raised-high"
-                          padding="sm"
-                        >
+                        <div class="replay__mon">
                           <div class="replay__mon-inner">
                             <pdz-skeleton variant="block" height="4rem" />
                             <pdz-skeleton variant="block" height="1.75rem" />
                             <pdz-skeleton variant="block" height="2.5rem" />
                           </div>
-                        </pdz-card>
+                        </div>
                       }
                     </div>
                   </div>
@@ -416,11 +412,7 @@
 
                         <div class="replay__team">
                           @for (pokemon of player.team; track $index) {
-                            <pdz-card
-                              class="replay__mon"
-                              tone="raised-high"
-                              padding="sm"
-                            >
+                            <div class="replay__mon">
                               <div class="replay__mon-inner">
                                 <div class="replay__mon-sprite">
                                   <pdz-sprite
@@ -534,7 +526,7 @@
                                   </ul>
                                 }
                               </div>
-                            </pdz-card>
+                            </div>
                           }
                         </div>
                       </div>

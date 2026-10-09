@@ -44,11 +44,10 @@ h2 {
 }
 
 .qd-tiers-container {
-  padding: pdz.space(xs);
+  padding: pdz.space(xs) 0;
   width: 100%;
-  border-radius: pdz.shape(corner-sm);
   font-size: pdz.font-size(sm);
-  border: 1px solid pdz.color(border-subtle);
+  border-block: 1px solid pdz.color(border-subtle);
   display: flex;
   justify-content: space-around;
   flex-wrap: wrap;

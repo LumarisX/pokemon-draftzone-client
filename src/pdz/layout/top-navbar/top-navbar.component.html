@@ -28,7 +28,12 @@
       </button>
 
       @for (tab of tabs; track tab.route) {
-        <a pdz-menu-item [routerLink]="tab.route">
+        <a
+          pdz-menu-item
+          [routerLink]="tab.route"
+          routerLinkActive
+          ariaCurrentWhenActive="page"
+        >
           {{ tab.title }}
           @if (tab.badge?.(); as count) {
             <pdz-badge size="sm">{{ count }}</pdz-badge>
@@ -38,14 +43,26 @@
 
       <div class="menu-section-label">Other Tools</div>
       @for (item of tools; track item.route) {
-        <a pdz-menu-item [icon]="item.icon" [routerLink]="item.route">
+        <a
+          pdz-menu-item
+          [icon]="item.icon"
+          [routerLink]="item.route"
+          routerLinkActive
+          ariaCurrentWhenActive="page"
+        >
           {{ item.title }}
         </a>
       }
 
       @if (isAdmin$ | async) {
         <div class="menu-divider"></div>
-        <a pdz-menu-item icon="admin_panel_settings" [routerLink]="adminPath">
+        <a
+          pdz-menu-item
+          icon="admin_panel_settings"
+          [routerLink]="adminPath"
+          routerLinkActive
+          ariaCurrentWhenActive="page"
+        >
           Admin
         </a>
       }
@@ -81,7 +98,13 @@
         Other Tools
       </button>
       @for (item of tools; track item.route) {
-        <a pdz-menu-item [icon]="item.icon" [routerLink]="item.route">
+        <a
+          pdz-menu-item
+          [icon]="item.icon"
+          [routerLink]="item.route"
+          routerLinkActive
+          ariaCurrentWhenActive="page"
+        >
           {{ item.title }}
         </a>
       }

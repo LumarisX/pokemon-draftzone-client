@@ -382,6 +382,11 @@
     &--shown {
       opacity: 1;
     }
+
+    &--blocked {
+      color: pdz.color(on-warning-container);
+      background-color: pdz.color(warning-container);
+    }
   }
 
   &__splitter {

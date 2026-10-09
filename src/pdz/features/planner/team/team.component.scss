@@ -313,6 +313,16 @@
     }
   }
 
+  &__remaining {
+    @include pdz.numeric;
+    font-weight: pdz.font-weight(bold);
+    color: pdz.color(secondary-accent);
+
+    &--over {
+      color: pdz.color(danger);
+    }
+  }
+
   &__drag-preview {
     width: 4rem;
     height: 4rem;

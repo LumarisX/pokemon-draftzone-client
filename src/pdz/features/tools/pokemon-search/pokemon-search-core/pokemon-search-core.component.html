@@ -65,6 +65,7 @@
         <pdz-chip
           clickable
           removable
+          tone="primary"
           size="sm"
           removeLabel="Remove filter"
           [selected]="drawerOpen && editingFilterIndex === i"
@@ -137,7 +138,9 @@
     @if (isLoading) {
       <p class="pokemon-results__meta">Searching...</p>
     } @else {
-      <p class="pokemon-results__meta">{{ results.length }} results</p>
+      <pdz-chip tone="secondary" size="md" aria-live="polite">
+        {{ results.length }} {{ results.length === 1 ? "Result" : "Results" }}
+      </pdz-chip>
     }
 
     <div class="pokemon-results__header-controls">
@@ -157,6 +160,7 @@
       >
         <pdz-icon
           [name]="isBookmarked ? 'bookmark' : 'bookmark_add'"
+          [fill]="isBookmarked"
         ></pdz-icon>
       </button>
       <button
@@ -232,6 +236,11 @@
                 class="pokemon-results__sprite"
               ></pdz-sprite>
               <span class="pokemon-results__card-name">{{ pokemon.name }}</span>
+              @if (sortedStatLabel(); as label) {
+                <span class="pokemon-results__card-stat">
+                  {{ sortValue(pokemon) }} {{ label }}
+                </span>
+              }
             </button>
             @if (selectable() && !isTaken(pokemon)) {
               <button
@@ -302,6 +311,7 @@
                   @for (stat of statList; track stat.key) {
                     <div
                       class="pokemon-results__stat-cube"
+                      [class.is-sorted]="sortField === stat.key"
                       [style.background-color]="
                         statColor(pokemon.baseStats[stat.key])
                       "
@@ -316,6 +326,7 @@
                   }
                   <div
                     class="pokemon-results__stat-cube pokemon-results__stat-cube--bst"
+                    [class.is-sorted]="sortField === 'bst'"
                     [style.background-color]="bstColor(pokemon.bst)"
                   >
                     <span class="pokemon-results__stat-label">BST</span>

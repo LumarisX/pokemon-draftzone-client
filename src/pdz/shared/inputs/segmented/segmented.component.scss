@@ -118,6 +118,7 @@ $inner-radius: calc(#{$track-radius} - #{$track-pad});
   }
 
   &--checked {
+    --pdz-icon-fill: 1;
     color: var(--pdz-segmented-on-indicator);
   }
 }

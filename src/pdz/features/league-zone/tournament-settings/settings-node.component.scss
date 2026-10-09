@@ -57,10 +57,6 @@
   align-items: center;
   gap: pdz.space(xs);
   margin: 0;
-  padding: pdz.space(sm) pdz.space(md);
-  border: 1px solid pdz.color(border-subtle);
-  border-radius: pdz.shape(corner-sm);
-  background-color: pdz.color(raised-high);
   color: pdz.color(on-surface-variant);
 }
 

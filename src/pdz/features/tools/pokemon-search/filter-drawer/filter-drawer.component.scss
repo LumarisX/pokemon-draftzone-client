@@ -31,7 +31,7 @@
   }
 
   &__edit-badge {
-    color: pdz.color(secondary-accent);
+    color: pdz.color(primary-accent);
   }
 
   &__header-actions {
@@ -80,17 +80,13 @@
 
   &__move-list {
     display: grid;
-    gap: pdz.space(xs);
+    gap: pdz.space(sm);
   }
 
   &__move-row {
     display: flex;
     align-items: center;
     gap: pdz.space(xs);
-    padding: pdz.space(xs);
-    border: 1px solid pdz.color(border-subtle);
-    border-radius: pdz.shape(corner-sm);
-    background: pdz.color(raised-high);
 
     .filter-drawer__move-select {
       flex: 1.2;

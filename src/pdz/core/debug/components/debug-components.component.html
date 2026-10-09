@@ -102,28 +102,81 @@
     </div>
   </div>
 
-  <h3 class="ground-compare__title">Light Ground: gray-50 vs gray-25</h3>
+</section>
+
+<section class="section">
+  <h2 class="section__title">Boxes Don't Nest</h2>
   <p class="section__hint">
-    Open decision (plan §11.3). Switch the theme mode to light to compare; dark
-    mode keeps its own ladder, so both panels match there.
+    A card is the box. Inside it, rows are split by a hairline and groups by
+    space and a small heading, never by another bordered box. Rows use
+    pdz.row-divider; the "before" boxes are kept here for reference only.
   </p>
-  <div class="ground-compare">
-    @for (option of groundOptions; track option.step) {
-      <div
-        class="ground-compare__page"
-        [class.ground-compare__page--25]="option.step === 'gray-25'"
-      >
-        <span class="elevation__muted">ground · {{ option.label }}</span>
-        <pdz-card>
-          <div class="elevation__card-body">
-            <strong>Shady People Draft League</strong>
-            <span class="elevation__muted">Champions MB · VGC</span>
-            <label pdz-field label="Search Teams">
-              <input pdz-input type="text" placeholder="Inset matches the ground" />
-            </label>
+
+  <h3 class="section__sub">A List Inside a Card</h3>
+  <div class="nest-compare">
+    @for (nested of [true, false]; track nested) {
+      <div class="nest-compare__case">
+        <span class="elevation__muted">{{
+          nested ? "Before: a box per row" : "After: hairline rows"
+        }}</span>
+        <pdz-card padding="lg">
+          <div class="nest-demo">
+            <h4 class="nest-demo__title">Draft Order</h4>
+            <ol class="nest-list" [class.nest-list--boxed]="nested">
+              @for (team of nestTeams; track team.name; let i = $index) {
+                <li class="nest-list__row">
+                  <span class="nest-list__position">{{ i + 1 }}</span>
+                  <pdz-team-logo size="sm" [name]="team.name" decorative />
+                  <span class="nest-list__who">
+                    <span class="nest-list__team">{{ team.name }}</span>
+                    <span class="nest-list__coach">{{ team.coach }}</span>
+                  </span>
+                  <pdz-icon name="drag_indicator" [size]="18" />
+                </li>
+              }
+            </ol>
           </div>
         </pdz-card>
-        <button pdz-button size="sm">New Draft</button>
+      </div>
+    }
+  </div>
+
+  <h3 class="section__sub">Groups Inside a Card</h3>
+  <div class="nest-compare">
+    @for (nested of [true, false]; track nested) {
+      <div class="nest-compare__case">
+        <span class="elevation__muted">{{
+          nested ? "Before: a box per group" : "After: space and a heading"
+        }}</span>
+        <pdz-card padding="lg">
+          <div class="nest-demo">
+            <h4 class="nest-demo__title">Draft Settings</h4>
+            <div class="nest-groups" [class.nest-groups--boxed]="nested">
+              <div class="nest-group">
+                <h5 class="nest-group__label">Timer</h5>
+                <div class="nest-group__fields">
+                  <label pdz-field label="Pick Clock">
+                    <input pdz-input type="text" value="10 minutes" />
+                  </label>
+                  <label pdz-check label="Skip on Timeout">
+                    <input pdz-checkbox type="checkbox" checked />
+                  </label>
+                </div>
+              </div>
+              <div class="nest-group">
+                <h5 class="nest-group__label">Order</h5>
+                <div class="nest-group__fields">
+                  <label pdz-check label="Snake Draft">
+                    <input pdz-checkbox type="checkbox" checked />
+                  </label>
+                  <label pdz-check label="Randomize Before Start">
+                    <input pdz-checkbox type="checkbox" />
+                  </label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </pdz-card>
       </div>
     }
   </div>
@@ -179,8 +232,8 @@
   </div>
 
   <h3 class="section__sub">
-    Single-focus pages (H1, provisional) — primary marks what you do, secondary
-    marks what you should notice
+    Single-focus pages — primary marks what you do, secondary marks what you
+    should notice
   </h3>
   <div class="h1-demo">
     <div class="h1-demo__toolbar">
@@ -375,7 +428,7 @@
     <button pdz-button color="danger" (click)="toggleLoading()">
       Toggle Demo
     </button>
-    <button pdz-button color="secondary" [loading]="loadingDemo()">
+    <button pdz-button color="neutral" [loading]="loadingDemo()">
       Demo Target
     </button>
   </div>
@@ -897,6 +950,9 @@
       >
         <pdz-icon name="more_vert"></pdz-icon>
       </button>
+      <a pdz-menu-item icon="widgets" routerLink="./" aria-current="page">
+        Components
+      </a>
       <a pdz-menu-item icon="search_insights" routerLink="./">View Matchup</a>
       <a pdz-menu-item icon="scoreboard" routerLink="./">Add Score</a>
     </pdz-menu>

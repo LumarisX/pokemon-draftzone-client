@@ -1,8 +1,8 @@
-import { FlexBracketData, FlexBracketMatch } from '../bracket.model';
+import { FlexBracketData, FlexBracketMatch } from './bracket.model';
 import {
   generateDoubleElimination,
   generateSingleElimination,
-} from '../bracket-generator';
+} from './bracket-generator';
 import {
   COL_GAP,
   HEADER_H,

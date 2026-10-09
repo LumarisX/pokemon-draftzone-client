@@ -195,12 +195,6 @@
           }
 
           .division-card {
-            padding: pdz.space(md);
-            border: 1px solid pdz.color(border-subtle);
-            border-radius: pdz.shape(corner-sm);
-
-            background-color: pdz.color(raised-high);
-
             .division-name {
               font-weight: var(--pdz-font-weight-semibold);
               margin-bottom: pdz.space(2xs);

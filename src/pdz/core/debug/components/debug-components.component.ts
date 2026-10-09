@@ -158,9 +158,11 @@ export class DebugComponentsComponent {
   );
 
   protected readonly spriteBasic = { id: 'charizard', name: 'Charizard' };
-  protected readonly groundOptions = [
-    { step: 'gray-50', label: 'gray-50 (current)' },
-    { step: 'gray-25', label: 'gray-25 (quieter)' },
+  protected readonly nestTeams = [
+    { name: 'Ruin Valley Ravagers', coach: 'Cal' },
+    { name: 'Tidepool Tyrants', coach: 'Mira' },
+    { name: 'Neon Nightshades', coach: 'Jett' },
+    { name: 'Granite Gale', coach: 'Oak' },
   ];
   protected readonly versusTeams = [
     [

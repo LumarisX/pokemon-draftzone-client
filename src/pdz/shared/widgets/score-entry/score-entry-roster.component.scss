@@ -12,10 +12,6 @@
   display: flex;
   flex-direction: column;
   min-width: 0;
-  border: 1px solid pdz.color(border-subtle);
-  border-radius: pdz.shape(corner-md);
-  background: pdz.color(raised-high);
-  overflow: hidden;
 
   @each $team in (team1, team2) {
     &[data-team="#{$team}"] {
@@ -30,8 +26,8 @@
   align-items: center;
   gap: pdz.space(sm);
   padding: pdz.space(2xs) pdz.space(sm);
+  border-radius: pdz.shape(corner-sm);
   background: var(--roster-wash);
-  border-bottom: 1px solid pdz.color(border-subtle);
 
   &--mirrored {
     flex-direction: row-reverse;
@@ -76,11 +72,7 @@
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(min(17rem, 100%), 1fr));
   gap: pdz.space(2xs);
-  padding: pdz.space(2xs);
-
-  @include pdz.respond-above(medium) {
-    padding: pdz.space(sm);
-  }
+  padding-top: pdz.space(xs);
 }
 
 .mon {

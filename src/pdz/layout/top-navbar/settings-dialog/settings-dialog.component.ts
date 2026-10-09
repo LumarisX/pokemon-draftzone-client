@@ -19,7 +19,7 @@ import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
 import { FieldComponent } from '@pdz/shared/inputs/field/field.component';
 import { SegmentedOptionComponent } from '@pdz/shared/inputs/segmented/segmented-option.component';
 import { SegmentedComponent } from '@pdz/shared/inputs/segmented/segmented.component';
-import { Settings, SettingsService } from '../settings.service';
+import { Settings, SettingsService } from '@pdz/layout/top-navbar/settings.service';
 
 type ThemeOption = { id: string; name: string; team1: string; team2: string };
 
@@ -133,9 +133,9 @@ export class SettingsDialogComponent {
       .pipe(takeUntilDestroyed())
       .subscribe((value) => this.settingsService.setSettings(value));
 
-    inject(DestroyRef).onDestroy(() =>
-      this.settingsService.setSettings(this.original),
-    );
+    inject(DestroyRef).onDestroy(() => {
+      this.settingsService.setSettings(this.original);
+    });
   }
 
   protected swatch(hue: string): string {

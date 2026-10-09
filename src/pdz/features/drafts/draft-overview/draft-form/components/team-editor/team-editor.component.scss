@@ -292,9 +292,6 @@
   display: flex;
   flex-direction: column;
   gap: pdz.space(xs);
-  padding: pdz.space(sm);
-  border: 1px solid pdz.color(border-subtle);
-  border-radius: pdz.shape(corner-sm);
 
   &__header {
     display: flex;

@@ -85,7 +85,6 @@
 .pick-list {
   display: flex;
   flex-direction: column;
-  gap: pdz.space(2xs);
   min-height: 3rem;
   margin: 0;
   padding: 0;
@@ -104,10 +103,8 @@
   align-items: center;
   gap: pdz.space(xs);
   min-width: 0;
-  padding: pdz.space(2xs) pdz.space(xs);
-  border: 1px solid pdz.color(border-subtle);
-  border-radius: pdz.shape(corner-sm);
-  background: pdz.color(raised-high);
+  padding: pdz.space(2xs) 0;
+  @include pdz.row-divider;
 }
 
 .pick__cost {

@@ -21,7 +21,6 @@
 .speed__list {
   display: flex;
   flex-direction: column;
-  gap: pdz.space(3xs);
 }
 
 .tier {
@@ -30,14 +29,12 @@
   align-items: center;
   gap: pdz.space(2xs);
   padding: pdz.space(3xs) pdz.space(2xs);
-  border: 1px solid pdz.color(border-subtle);
   border-radius: pdz.shape(corner-sm);
-  background: pdz.color(raised-high);
+  @include pdz.row-divider;
 }
 
 .tier--mine {
-  border-color: pdz.color(primary-border);
-  background: pdz.color(primary-container-low);
+  background: pdz.color(state-selected);
 }
 
 .tier--draggable {
@@ -69,13 +66,11 @@
 }
 
 .cdk-drag-preview {
-  border-radius: pdz.shape(corner-sm);
-  opacity: 0.9;
+  @include pdz.drag-lift;
 }
 
 .cdk-drag-placeholder {
   opacity: 0.4;
-  border-style: dashed;
 }
 
 .cdk-drop-list-dragging .tier:not(.cdk-drag-placeholder) {

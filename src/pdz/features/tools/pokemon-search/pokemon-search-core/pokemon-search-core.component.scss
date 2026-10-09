@@ -77,17 +77,6 @@
   }
 }
 
-@keyframes fieldMenuIn {
-  from {
-    opacity: 0;
-    transform: translateY(-0.25rem);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
 .pokemon-results {
   display: grid;
   gap: pdz.space(md);
@@ -115,17 +104,6 @@
     border-radius: pdz.shape(corner-sm);
     background: pdz.color(inset);
     overflow: hidden;
-
-    select {
-      padding: pdz.space(2xs) pdz.space(xs);
-      border: none;
-      background: transparent;
-      color: pdz.color(on-surface);
-      font: inherit;
-      font-size: pdz.font-size(sm);
-      cursor: pointer;
-      outline: none;
-    }
   }
 
   &__sort-dir {
@@ -170,13 +148,13 @@
     }
 
     &.is-bookmarked {
-      color: pdz.color(primary-accent);
-      background: pdz.color(primary-container-low);
-      border-color: pdz.color(primary-border);
+      color: pdz.color(secondary-accent);
+      background: pdz.color(secondary-container-low);
+      border-color: pdz.color(secondary-border);
 
       &:hover {
-        background: pdz.color(primary-container-hover);
-        color: pdz.color(primary-accent);
+        background: pdz.color(secondary-container-hover);
+        color: pdz.color(secondary-accent);
       }
     }
 
@@ -193,8 +171,8 @@
 
   &__meta {
     margin: 0;
-    color: pdz.color(on-surface-variant);
-    font-weight: pdz.font-weight(bold);
+    @include pdz.text(meta);
+    color: pdz.color(on-surface-muted);
   }
 
   &__error {
@@ -204,12 +182,6 @@
     border-radius: pdz.shape(corner-sm);
     padding: pdz.space(xs) pdz.space(sm);
   }
-  &__view-button.is-active {
-    border-color: transparent;
-    background: transparent;
-    color: pdz.color(on-primary-container);
-  }
-
   &__grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(6rem, 1fr));
@@ -268,11 +240,6 @@
     }
   }
 
-  &__loading {
-    display: block;
-    width: 5rem;
-  }
-
   &__card {
     display: flex;
     flex-direction: column;
@@ -295,6 +262,12 @@
     align-items: center;
     @include text(body-sm);
     font-weight: pdz.font-weight(bold);
+  }
+
+  &__card-stat {
+    @include pdz.text(label-strong);
+    @include pdz.numeric;
+    color: pdz.color(secondary-accent);
   }
 
   &__sprite {
@@ -331,12 +304,8 @@
     gap: pdz.space(2xs) pdz.space(sm);
   }
 
-  &__list-name,
-  &__list-meta {
-    margin: 0;
-  }
-
   &__list-name {
+    margin: 0;
     flex: 0 0 9rem;
     font-weight: pdz.font-weight(bold);
     color: pdz.color(on-surface);
@@ -392,6 +361,11 @@
     border: 1px solid pdz.color(border-subtle);
     background: pdz.color(state-hover);
     min-width: 2.5rem;
+
+    &.is-sorted {
+      border-color: pdz.color(secondary-accent);
+      box-shadow: 0 0 0 1px pdz.color(secondary-accent);
+    }
   }
 
   &__stat-label {

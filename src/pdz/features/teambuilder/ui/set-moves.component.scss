@@ -59,8 +59,6 @@
 .learnset {
   display: flex;
   flex-direction: column;
-  border-radius: pdz.shape(corner-sm);
-  border: 1px solid pdz.color(border-subtle);
   overflow: clip;
 }
 

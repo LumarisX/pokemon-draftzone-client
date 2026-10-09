@@ -71,7 +71,7 @@ page-header, tabs, tab-nav, widget, disclosure, masonry), menu, pipes, time,
 tooltip, widgets.
 
 Every routed page opens with `<pdz-page-header>` — never a hand-rolled title bar.
-It carries `title`/`eyebrow`/`subtitle`/`logo`/`backLink`/`backLabel`/`wash`/`compact`,
+It carries `title`/`eyebrow`/`subtitle`/`logo`/`backLink`/`backLabel`/`compact`,
 and projects `[pdz-page-header-detail]` (meta line under the title),
 `[pdz-page-header-meta]` (status chips, records), `[pdz-page-header-actions]`
 (buttons), `[pdz-page-header-center]` (fills the bar between title and actions, e.g.
@@ -185,6 +185,12 @@ empty-state messages and toasts stay sentence case. The brand is "Pokémon Draft
   and hover lifts on interactive cards. A card should use `<pdz-card>` rather than
   restating those values. Whole-card tints are only for alerts
   (`<pdz-card color="danger|warning|info|success">`).
+- **Boxes don't nest.** A card or panel is the box; inside it, rows are split with
+  `@include pdz.row-divider` and groups with space and a `label-caps` heading, never
+  another bordered box. Repeated tiles inside a card take a fill (`state-hover`), not a
+  border. A selected row is `state-selected`, not a colored border. Exceptions: draggable
+  objects, board slots, and dashed empty drop zones (`border-control`). Drag previews use
+  `@include pdz.drag-lift`. `lint:styles` fails on a bordered `raised-high` block.
 - **Hover, pressed and neutral fills are state layers** (`state-hover`,
   `state-pressed`, `state-strong`): translucent, so they work on any rung. Never
   hover to a darker fill; interactive cards lift instead.
@@ -203,8 +209,13 @@ Primary and secondary are side A and side B, never decoration.
 - Team names stay ink. Color goes on half washes, score numerals and value chips.
 - No edge bars or rings for team color. Status beats team color: a pending or
   forfeit state wins over the side's hue.
-- Buttons are primary or neutral, never secondary. Decorative accents that are not
-  a side are neutral.
+- Buttons are primary or neutral, never secondary (`lint:templates` enforces it).
+  Decorative accents that are not a side are neutral.
+- Single-focus pages (Pokémon search, planner, tools): **primary marks what you do**
+  (buttons, active tab, filters you set, selection, locks); **secondary marks what you
+  should notice** (result counts, bookmarks, the stat you sorted by, points remaining).
+  A page about one team still makes that team team 1, so its data charts stay primary.
+  Status beats both: a blocked or over-budget state uses warning or danger.
 
 ### Change detection
 

@@ -229,8 +229,9 @@
             role="status"
             aria-live="polite"
             [class.planner__finder-status--shown]="!!addFeedback()"
+            [class.planner__finder-status--blocked]="addFeedback()?.blocked"
           >
-            {{ addFeedback() }}
+            {{ addFeedback()?.text }}
           </p>
 
           <pdz-pokemon-search-core

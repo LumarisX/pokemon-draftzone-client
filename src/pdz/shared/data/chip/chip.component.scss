@@ -118,6 +118,7 @@ $sizes: (
 }
 
 :host(.pdz-chip--selected) {
+  --pdz-icon-fill: 1;
   border-color: var(--pdz-chip-line);
   box-shadow: inset 0 0 0 1px var(--pdz-chip-line);
 }

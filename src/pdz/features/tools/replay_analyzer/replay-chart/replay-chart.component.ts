@@ -26,8 +26,8 @@ type DataType = {
 export class ReplayChartComponent implements AfterViewInit, OnChanges {
   private readonly el = inject<ElementRef<HTMLElement>>(ElementRef);
   private readonly lineColors = [
-    'var(--pdz-color-primary)',
-    'var(--pdz-color-secondary)',
+    'var(--pdz-color-team1)',
+    'var(--pdz-color-team2)',
   ];
   private readonly axisColor = 'var(--pdz-color-on-surface)';
   private readonly gridColor = 'var(--pdz-color-border-subtle)';

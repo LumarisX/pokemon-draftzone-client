@@ -63,10 +63,8 @@
     gap: pdz.space(sm);
     overflow-x: auto;
     overflow-y: hidden;
-    padding: pdz.space(sm);
+    padding-bottom: pdz.space(sm);
 
-    border: 1px solid pdz.color(border-subtle);
-    border-radius: pdz.shape(corner-lg);
     &__empty {
       @include text(body);
       color: pdz.color(on-surface-variant);

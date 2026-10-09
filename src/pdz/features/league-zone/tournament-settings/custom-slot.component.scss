@@ -187,17 +187,18 @@
 .slot-questions {
   display: flex;
   flex-direction: column;
-  gap: pdz.space(md);
 }
 
 .slot-question {
   display: flex;
   flex-direction: column;
   gap: pdz.space(sm);
-  padding: pdz.space(md);
-  background: pdz.color(raised-high);
-  border: 1px solid pdz.color(border-subtle);
-  border-radius: pdz.shape(corner-lg);
+  padding: pdz.space(md) 0;
+  @include pdz.row-divider;
+
+  &:first-child {
+    padding-top: 0;
+  }
 }
 
 .slot-question--archived {

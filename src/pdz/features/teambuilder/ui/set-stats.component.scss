@@ -50,10 +50,8 @@
   display: flex;
   flex-direction: column;
   gap: pdz.space(3xs);
-  padding: pdz.space(2xs);
-  border: 1px solid pdz.color(border-subtle);
-  border-radius: pdz.shape(corner-sm);
-  background: pdz.color(raised-high);
+  padding: pdz.space(2xs) 0;
+  @include pdz.row-divider;
 }
 
 .stat__head {

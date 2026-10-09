@@ -13,7 +13,6 @@
 .columns-list {
   display: flex;
   flex-direction: column;
-  gap: pdz.space(md);
 }
 
 .column-row {
@@ -23,10 +22,8 @@
   column-gap: pdz.space(lg);
   row-gap: pdz.space(xs);
   align-items: start;
-  padding: pdz.space(md);
-  border-radius: pdz.shape(corner-sm);
-  background: pdz.color(raised-high);
-  border: 1px solid pdz.color(border-subtle);
+  padding: pdz.space(md) 0;
+  @include pdz.row-divider;
 }
 
 .column-header {

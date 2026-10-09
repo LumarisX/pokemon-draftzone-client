@@ -68,7 +68,6 @@
 .people {
   display: flex;
   flex-direction: column;
-  gap: pdz.space(xs);
   margin: 0;
   padding: 0;
   list-style: none;
@@ -78,10 +77,8 @@
   display: flex;
   align-items: center;
   gap: pdz.space(sm);
-  padding: pdz.space(sm) pdz.space(md);
-  border: 1px solid pdz.color(border-subtle);
-  border-radius: pdz.shape(corner-sm);
-  background: pdz.color(raised-high);
+  padding: pdz.space(sm) 0;
+  @include pdz.row-divider;
 }
 
 .person__icon {

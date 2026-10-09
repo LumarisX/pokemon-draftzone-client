@@ -69,7 +69,6 @@ export type PageHeaderTone = 'panel' | 'plain';
     class: 'pdz-page-header',
     '[attr.data-tone]': 'tone()',
     '[class.pdz-page-header--compact]': 'compact()',
-    '[class.pdz-page-header--wash]': 'wash()',
   },
 })
 export class PageHeaderComponent {
@@ -84,5 +83,4 @@ export class PageHeaderComponent {
 
   readonly tone = input<PageHeaderTone>('plain');
   readonly compact = input(false, { transform: booleanAttribute });
-  readonly wash = input(false, { transform: booleanAttribute });
 }

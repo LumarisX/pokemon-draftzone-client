@@ -82,7 +82,6 @@
 .apps__list {
   display: flex;
   flex-direction: column;
-  gap: pdz.space(xs);
   margin: 0;
   padding: 0;
   list-style: none;
@@ -99,13 +98,12 @@
   flex-direction: column;
   gap: pdz.space(xs);
   padding: pdz.space(sm);
-  background: pdz.color(raised-high);
-  border: 1px solid pdz.color(border-subtle);
-  border-radius: pdz.shape(corner-md);
+  border-radius: pdz.shape(corner-sm);
+  @include pdz.row-divider;
 }
 
 .app--selected {
-  border-color: pdz.color(primary-border);
+  background: pdz.color(state-selected);
 }
 
 .app__row {

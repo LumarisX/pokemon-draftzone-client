@@ -8,7 +8,6 @@
 } @else {
   @if (info(); as tournament) {
     <pdz-page-header
-      wash
       [title]="tournament.name"
       [subtitle]="tournament.description ?? ''"
       [logo]="getTournamentLogoUrl(tournament.logo)"

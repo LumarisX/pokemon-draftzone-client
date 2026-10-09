@@ -1,0 +1,14 @@
+@use "tools/color" as *;
+@use "tools/shape" as *;
+
+@mixin row-divider {
+  & + & {
+    border-top: 1px solid color(border-subtle);
+  }
+}
+
+@mixin drag-lift {
+  border-radius: shape(corner-sm);
+  background: color(floating);
+  box-shadow: var(--pdz-elevation-2);
+}

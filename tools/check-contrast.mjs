@@ -125,6 +125,45 @@ function contrast(a, b) {
   return (l1 + 0.05) / (l2 + 0.05);
 }
 
+function gradientStops(value, vars) {
+  const m = value?.trim().match(/^linear-gradient\((.+)\)$/s);
+  if (!m) return null;
+  const args = splitArgs(m[1]).filter((a) => !/^(-?[\d.]+deg|to\s)/.test(a));
+  const stops = args.map((a) => {
+    const p = a.match(/^(.*?)\s+([\d.]+)%$/);
+    return { color: resolve(p ? p[1] : a, vars), at: p ? Number(p[2]) : null };
+  });
+  if (stops.length < 2 || stops.some((s) => !s.color)) return null;
+  stops.forEach((s, i) => (s.at ??= (i / (stops.length - 1)) * 100));
+  return stops;
+}
+
+function sampleGradient(stops, t) {
+  for (let i = 0; i < stops.length - 1; i++) {
+    const a = stops[i];
+    const b = stops[i + 1];
+    if (t >= a.at && t <= b.at) {
+      const k = b.at === a.at ? 0 : (t - a.at) / (b.at - a.at);
+      return [0, 1, 2].map((j) => a.color[j] + (b.color[j] - a.color[j]) * k).concat(1);
+    }
+  }
+  return stops[stops.length - 1].color;
+}
+
+function weakestStop(stops, fg, from, to) {
+  let worst = null;
+  let worstRatio = Infinity;
+  for (let t = from; t <= to; t += 0.5) {
+    const bg = sampleGradient(stops, t);
+    const ratio = contrast(fg, bg);
+    if (ratio < worstRatio) {
+      worstRatio = ratio;
+      worst = bg;
+    }
+  }
+  return worst;
+}
+
 const RUNGS = ["ground", "raised", "raised-high", "overlay", "floating", "inset"];
 const TEXT = ["on-surface", "on-surface-variant", "on-surface-muted"];
 const ACCENT_TEXT = ["primary-accent", "secondary-accent", "team1-accent", "team2-accent"];
@@ -162,7 +201,12 @@ for (const [name, vars] of [...themes].sort(([a], [b]) => a.localeCompare(b))) {
   check("outline on inset", "outline", "inset", 3);
   for (const role of ["primary", "secondary", "danger", "success", "positive", "negative"])
     check(`on-${role} on ${role}`, `on-${role}`, role, 4.5);
-  check("on-primary on secondary (versus-gradient text)", "on-primary", "secondary", 4.5);
+  const versus = gradientStops(vars.get("--pdz-color-versus-gradient") ?? base.get("--pdz-color-versus-gradient"), vars);
+  if (!versus) failures.push(`${name}  versus-gradient: could not resolve its stops`);
+  else {
+    check("on-primary on versus-gradient (weakest point)", "on-primary", null, 3, weakestStop(versus, color("on-primary"), 0, 100));
+    check("on-primary on versus-gradient (middle)", "on-primary", null, 4.5, weakestStop(versus, color("on-primary"), 40, 60));
+  }
   for (const role of ["primary", "secondary", "danger", "warning", "success", "info"])
     check(`on-${role}-container on ${role}-container`, `on-${role}-container`, `${role}-container`, 4.5);
   for (const team of ["team1", "team2"]) {

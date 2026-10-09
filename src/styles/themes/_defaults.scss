@@ -2,24 +2,35 @@
 @use "tokens/color" as *;
 @use "tools/accent" as accent;
 
-@function -teams($wash) {
+@function -versus-gradient($mode) {
+  @if $mode == light {
+    @return linear-gradient(
+      135deg,
+      var(--pdz-color-primary) 0%,
+      var(--pdz-color-primary-blend) 30%,
+      var(--pdz-color-gray-600) 50%,
+      var(--pdz-color-secondary-blend) 70%,
+      var(--pdz-color-secondary) 100%
+    );
+  }
+  @return linear-gradient(
+    135deg,
+    var(--pdz-color-primary),
+    var(--pdz-color-secondary)
+  );
+}
+
+@function -teams($wash, $mode) {
   $out: (
     focus-ring: var(--pdz-color-primary-accent),
-    versus-gradient:
-      linear-gradient(
-        135deg,
-        var(--pdz-color-primary),
-        var(--pdz-color-secondary)
-      ),
-    versus-wash:
-      linear-gradient(
+    versus-gradient: -versus-gradient($mode),
+    versus-wash: linear-gradient(
         90deg,
         var(--pdz-color-team1-wash),
         transparent 42% 58%,
         var(--pdz-color-team2-wash)
       ),
-    versus-wash-vertical:
-      linear-gradient(
+    versus-wash-vertical: linear-gradient(
         180deg,
         var(--pdz-color-team1-wash),
         transparent 42% 58%,
@@ -39,8 +50,11 @@
         "#{$team}-container": var(--pdz-color-#{$role}-container),
         "#{$team}-container-low": var(--pdz-color-#{$role}-container-low),
         "on-#{$team}-container": var(--pdz-color-on-#{$role}-container),
-        "#{$team}-wash":
-          color-mix(in srgb, var(--pdz-color-#{$role}) $wash, transparent),
+        "#{$team}-wash": color-mix(
+            in srgb,
+            var(--pdz-color-#{$role}) $wash,
+            transparent
+          ),
       )
     );
   }
@@ -60,7 +74,6 @@ $-light-base: (
   state-pressed: color-mix(in srgb, var(--pdz-color-on-surface) 9%, transparent),
   state-strong: color-mix(in srgb, var(--pdz-color-on-surface) 14%, transparent),
   state-selected: var(--pdz-color-primary-subtle),
-
   on-surface: "gray-950",
   on-surface-variant: "gray-700",
   on-surface-muted: "gray-600",
@@ -163,10 +176,13 @@ $-dark-base: (
   border-subtle: rgba(255, 255, 255, 0.08),
   border-control: "gray-700",
   state-hover: color-mix(in srgb, var(--pdz-color-on-surface) 6%, transparent),
-  state-pressed: color-mix(in srgb, var(--pdz-color-on-surface) 10%, transparent),
+  state-pressed: color-mix(
+      in srgb,
+      var(--pdz-color-on-surface) 10%,
+      transparent
+    ),
   state-strong: color-mix(in srgb, var(--pdz-color-on-surface) 16%, transparent),
   state-selected: var(--pdz-color-primary-subtle),
-
   on-surface: "gray-75",
   on-surface-variant: "gray-225",
   on-surface-muted: "gray-300",
@@ -260,16 +276,14 @@ $-dark-base: (
 );
 
 $defaults: (
-  light:
-    accent.apply(
-      map.merge($-light-base, -teams(14%)),
+  light: accent.apply(
+      map.merge($-light-base, -teams(14%, light)),
       "cyan",
       "orange",
       light
     ),
-  dark:
-    accent.apply(
-      map.merge($-dark-base, -teams(18%)),
+  dark: accent.apply(
+      map.merge($-dark-base, -teams(18%, dark)),
       "cyan",
       "orange",
       dark

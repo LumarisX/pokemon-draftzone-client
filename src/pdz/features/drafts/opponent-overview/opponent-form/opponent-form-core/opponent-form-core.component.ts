@@ -22,7 +22,6 @@ import {
   PokemonFormGroup,
   TeamEditorComponent,
 } from '@pdz/features/drafts/draft-overview/draft-form/components/team-editor/team-editor.component';
-import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { BehaviorSubject, Observable, switchMap } from 'rxjs';
 import { DraftService } from '@pdz/features/drafts/draft-overview/draft.service';
 import { Draft, DraftPokemon } from '@pdz/features/drafts/draft.model';
@@ -47,7 +46,6 @@ import { CountdownComponent } from '@pdz/shared/time/countdown/countdown.compone
   imports: [
     RouterModule,
     ReactiveFormsModule,
-    IconComponent,
     TeamEditorComponent,
     FieldComponent,
     InputDirective,

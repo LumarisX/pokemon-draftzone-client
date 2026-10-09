@@ -40,7 +40,6 @@
 .compose {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  gap: pdz.space(md);
 
   @include pdz.respond-above(medium) {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -64,10 +63,23 @@
   flex-direction: column;
   gap: pdz.space(sm);
   min-width: 0;
-  padding: pdz.space(md);
-  border: 1px solid pdz.color(border-subtle);
-  border-radius: pdz.shape(corner-lg);
-  background: pdz.color(raised-high);
+  padding-block: pdz.space(md);
+
+  & + & {
+    border-top: 1px solid pdz.color(border-subtle);
+
+    @include pdz.respond-above(medium) {
+      padding-inline-start: pdz.space(lg);
+      border-top: none;
+      border-inline-start: 1px solid pdz.color(border-subtle);
+    }
+  }
+
+  &:first-child {
+    @include pdz.respond-above(medium) {
+      padding-inline-end: pdz.space(lg);
+    }
+  }
 
   &[data-team="team1"] {
     --side-fill: #{pdz.color(team1)};
@@ -113,7 +125,6 @@
 .pick-list {
   display: flex;
   flex-direction: column;
-  gap: pdz.space(2xs);
   margin: 0;
   padding: 0;
   list-style: none;
@@ -131,9 +142,8 @@
   align-items: center;
   gap: pdz.space(xs);
   min-width: 0;
-  padding: pdz.space(2xs) pdz.space(xs);
-  border: 1px solid pdz.color(border-subtle);
-  border-radius: pdz.shape(corner-sm);
+  padding: pdz.space(2xs) 0;
+  @include pdz.row-divider;
 }
 
 .pick__cost {

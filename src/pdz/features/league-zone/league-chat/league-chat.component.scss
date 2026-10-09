@@ -53,20 +53,17 @@
   align-self: flex-start;
   max-width: min(36rem, 85%);
   padding: pdz.space(2xs) pdz.space(sm);
-  border: 1px solid pdz.color(border-subtle);
   border-radius: pdz.shape(corner-md);
-  background: pdz.color(raised-high);
+  background: pdz.color(state-hover);
 }
 
 .chat__message--mine {
   align-self: flex-end;
-  border-color: pdz.color(primary-border);
   background: pdz.color(state-selected);
 }
 
 .chat__message--organizer {
   align-self: flex-start;
-  border-color: pdz.color(info-border);
   background: pdz.color(info-container);
   color: pdz.color(on-info-container);
 }

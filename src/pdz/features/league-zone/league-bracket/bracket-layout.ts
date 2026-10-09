@@ -3,7 +3,7 @@ import {
   BracketTeamFlex,
   FlexBracketData,
   FlexBracketMatch,
-} from '../bracket.model';
+} from './bracket.model';
 
 export const COL_W = 240;
 export const COL_GAP = 80;

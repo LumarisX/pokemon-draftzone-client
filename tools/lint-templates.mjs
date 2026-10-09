@@ -29,7 +29,13 @@ const IMAGE_EDITORS = [
   "src/pdz/features/league-zone/dialogs/team-edit-dialog/",
 ];
 
+const OWNER_TEST_PAGES = [
+  "src/pdz/features/drafts/drafts-v2/",
+  "src/pdz/features/drafts/opponent-overview/opponent-score-v2/",
+];
+
 const ALLOW_BY_RULE = {
+  "secondary-button": OWNER_TEST_PAGES,
   "click-non-interactive": [...PRIMITIVE_SOURCES, ...POINTER_ENHANCEMENTS],
   "text-input-primitive": [...PRIMITIVE_SOURCES, ...INLINE_EDITORS],
   "logo-img": [...PRIMITIVE_SOURCES, ...IMAGE_EDITORS],
@@ -77,6 +83,11 @@ const RULES = [
     id: "angular-material",
     test: (el) => /^mat-/.test(el.name) || /\bmatTooltip\b|\bmat-icon\b|\bmat-button\b/.test(el.attrs),
     msg: "Angular Material was removed; use the pdz primitive",
+  },
+  {
+    id: "secondary-button",
+    test: (el) => /\bpdz-button\b/.test(el.attrs) && /(^|\s)(color="secondary"|\[color\]="'secondary'")/.test(el.attrs),
+    msg: "buttons are primary or neutral; secondary is team 2 or something to notice, never an action",
   },
   {
     id: "svg-icon-input",

@@ -12,7 +12,7 @@ import {
 import {
   advancingSideIndex,
   resolveSlot,
-} from '@pdz/features/league-zone/league-bracket/league-bracket-canvas/bracket-layout';
+} from '@pdz/features/league-zone/league-bracket/bracket-layout';
 import { MatchupCardComponent } from '@pdz/features/league-zone/matchup-card/matchup-card.component';
 import {
   MatchupCard,

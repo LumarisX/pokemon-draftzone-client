@@ -31,12 +31,6 @@
   padding: pdz.space(sm) pdz.space(md);
 }
 
-:host(.pdz-page-header--wash) .pdz-page-header__bar {
-  padding: pdz.space(md) pdz.space(lg);
-  border-radius: pdz.shape(corner-lg);
-  background: pdz.color(versus-wash);
-}
-
 .pdz-page-header__logo {
   flex: none;
   width: 3rem;

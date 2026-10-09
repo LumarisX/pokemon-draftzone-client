@@ -179,7 +179,12 @@
       <dl class="planner-team__totals">
         <div class="planner-team__total">
           <dt>Points Remaining</dt>
-          <dd>{{ remainingPoints }}</dd>
+          <dd
+            class="planner-team__remaining"
+            [class.planner-team__remaining--over]="remainingPoints < 0"
+          >
+            {{ remainingPoints }}
+          </dd>
         </div>
         <div class="planner-team__total">
           <dt>Average</dt>

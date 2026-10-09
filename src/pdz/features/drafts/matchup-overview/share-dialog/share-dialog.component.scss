@@ -31,8 +31,6 @@
     display: flex;
     flex-wrap: wrap;
     justify-content: space-evenly;
-    border: 1px solid pdz.color(border-subtle);
-    border-radius: pdz.shape(corner-lg);
     padding: 0 pdz.space(lg);
 
     .detail-container {

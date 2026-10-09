@@ -449,6 +449,29 @@ export class PokemonSearchCoreComponent implements OnInit, OnDestroy {
     this.applySort();
   }
 
+  sortedStatLabel(): string | null {
+    switch (this.sortField) {
+      case 'num':
+      case 'name':
+        return null;
+      case 'bst':
+        return 'BST';
+      case 'cst':
+        return 'CST';
+      case 'weightkg':
+        return 'kg';
+      default:
+        return (
+          this.statList.find((stat) => stat.key === this.sortField)?.label ??
+          null
+        );
+    }
+  }
+
+  sortValue(pokemon: PokemonFullData): string | number {
+    return this.getSortValue(pokemon);
+  }
+
   toggleSortDir(): void {
     this.sortDir = this.sortDir === 'asc' ? 'desc' : 'asc';
     this.applySort();

@@ -88,7 +88,6 @@
 .order {
   display: flex;
   flex-direction: column;
-  gap: pdz.space(2xs);
   margin: 0;
   padding: 0;
   list-style: none;
@@ -98,13 +97,12 @@
   display: flex;
   align-items: center;
   gap: pdz.space(xs);
-  padding: pdz.space(xs) pdz.space(sm);
-  border: 1px solid pdz.color(border-subtle);
-  border-radius: pdz.shape(corner-sm);
-  background: pdz.color(raised-high);
+  padding: pdz.space(xs) 0;
+  @include pdz.row-divider;
 
   &.cdk-drag-preview {
-    box-shadow: var(--pdz-elevation-2);
+    padding-inline: pdz.space(sm);
+    @include pdz.drag-lift;
   }
 
   &.cdk-drag-placeholder {

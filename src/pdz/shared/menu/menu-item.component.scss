@@ -28,6 +28,17 @@
   }
 }
 
+:host([aria-current="page"]) {
+  --pdz-icon-fill: 1;
+  background-color: pdz.color(state-selected);
+  color: pdz.color(primary-accent);
+  @include pdz.text(body-sm-strong, $family: false);
+}
+
+:host([aria-current="page"]) .pdz-menu-item__icon {
+  color: inherit;
+}
+
 :host([data-tone="danger"]) {
   color: pdz.color(danger);
 

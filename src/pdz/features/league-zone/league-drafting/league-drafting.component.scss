@@ -74,7 +74,6 @@
   display: flex;
   flex: 1 1 auto;
   flex-direction: column;
-  gap: pdz.space(xs);
   margin: 0;
   padding: pdz.space(xs) 0;
   overflow-y: auto;
@@ -132,16 +131,14 @@
   align-items: center;
   gap: pdz.space(xs);
   padding: pdz.space(xs);
-  border: 1px solid pdz.color(border-subtle);
   border-radius: pdz.shape(corner-sm);
-  transition:
-    background-color pdz.duration(base) pdz.easing(standard),
-    border-color pdz.duration(base) pdz.easing(standard);
+  transition: background-color pdz.duration(base) pdz.easing(standard);
+  @include pdz.row-divider;
 }
 
 .slot--pending {
-  border-style: dashed;
-  border-color: pdz.color(primary-border);
+  outline: 1px dashed pdz.color(primary-border);
+  outline-offset: -1px;
 }
 
 .slot--queue {
@@ -154,7 +151,6 @@
 }
 
 .slot--selected {
-  border-color: pdz.color(primary-border);
   background: pdz.color(state-selected);
 }
 

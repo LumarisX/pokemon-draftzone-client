@@ -108,7 +108,7 @@
 .game__rosters {
   display: grid;
   grid-template-columns: 1fr;
-  gap: pdz.space(sm);
+  gap: pdz.space(lg) pdz.space(xl);
 
   @include pdz.respond-above(large) {
     grid-template-columns: 1fr 1fr;

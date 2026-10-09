@@ -34,7 +34,23 @@ const DISPLAY_FONT_MOMENTS = [
   "src/pdz/features/league-zone/tournaments/tournament-nav/tournament-nav.component.scss",
 ];
 
+const DRAG_OBJECTS_AND_SLOTS = [
+  "src/pdz/features/drafts/draft-overview/draft-form/components/team-editor/team-editor.component.scss",
+  "src/pdz/features/tier-lists/tier-list/tier-list-form/tier-list-form.component.scss",
+  "src/pdz/features/tier-lists/tier-list/tier-list.component.scss",
+  "src/pdz/features/league-zone/league-drafting/league-drafting.component.scss",
+];
+
+const OWNER_TEST_PAGES = [
+  "src/pdz/features/drafts/drafts-v2/match-row/match-row.component.scss",
+  "src/pdz/features/drafts/drafts-v2/season-card/season-card.component.scss",
+  "src/pdz/features/drafts/opponent-overview/opponent-score-v2/ko-graph.component.scss",
+];
+
+const GALLERY = ["src/pdz/core/debug/components/debug-components.component.scss"];
+
 const ALLOW_BY_RULE = {
+  "nested-box": new Set([...DRAG_OBJECTS_AND_SLOTS, ...OWNER_TEST_PAGES, ...GALLERY]),
   "raw-font-size": new Set([
     ...BESPOKE_DISPLAY,
     ...COORDINATED_BADGE,
@@ -329,7 +345,7 @@ function blocksOf(lines) {
     const top = stack[stack.length - 1];
     if (!top) return;
     if (/@include\s+pdz\.text\(/.test(code)) top.hasTextMixin = true;
-    const decl = code.match(/^\s*(font-size|font-weight)\s*:\s*([^;]+);\s*$/);
+    const decl = code.match(/^\s*(font-size|font-weight|background|background-color|border)\s*:\s*([^;]+);\s*$/);
     if (decl && !/!important/.test(decl[2])) {
       top.decls.set(decl[1], { value: decl[2].trim(), line: i + 1, raw: line });
     }
@@ -396,8 +412,25 @@ for (const file of [...walk(SCAN), ...walk(SCAN_STYLES)]) {
     }
   }
 
-  if (inStyles || ALLOW_BY_RULE["unroled-type"].has(rel)) continue;
-  for (const block of blocksOf(lines)) {
+  if (inStyles) continue;
+  const blocks = blocksOf(lines);
+
+  if (!ALLOW_BY_RULE["nested-box"].has(rel)) {
+    for (const block of blocks) {
+      const fill = block.decls.get("background") ?? block.decls.get("background-color");
+      const border = block.decls.get("border");
+      if (!fill || !border) continue;
+      if (!/pdz\.color\(raised-high\)/.test(fill.value)) continue;
+      if (!/^1px (solid|dashed) /.test(border.value)) continue;
+      console.error(
+        `${rel}:${border.line}  nested-box: a bordered raised-high block is a box inside a box; split rows with @include pdz.row-divider and groups with space, or use a fill-only tile\n    ${border.raw.trim()}\n    ${fill.raw.trim()}`,
+      );
+      violations++;
+    }
+  }
+
+  if (ALLOW_BY_RULE["unroled-type"].has(rel)) continue;
+  for (const block of blocks) {
     if (block.hasTextMixin) continue;
     const size = block.decls.get("font-size");
     const weight = block.decls.get("font-weight");
