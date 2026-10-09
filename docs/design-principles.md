@@ -160,6 +160,10 @@ The owner has decided these and they're applied app-wide. CLAUDE.md has the enfo
 | **Title Case labels.** Titles, headings, buttons, tabs, nav and menu items. Body text, hints, empty states and toasts stay sentence case. | They're names of things, not sentences. | 10-02 |
 | **Every routed page opens with `pdz-page-header`**, and every control is a pdz primitive. | One way to do each thing. | 10-02 |
 | **A primitive that's missing something gets extended.** Call sites don't get bespoke styles. | Per-feature styling is what made the site feel like separate tools. | 08-23 |
+| **Themes tint surfaces by one formula (F9, P1).** Ground and inset take 6% of the theme's primary, raised rungs 2.5% (1.5% in dark, where the primary is lighter), `border-subtle` 16%; dark `floating` stays neutral to keep muted text above 4.5:1. Text stays neutral ink. Sunset's hand-tuned surfaces and text are gone. | Each theme feels like its own room without hand-tuning, and `check:contrast` verifies every theme. | 10-09 |
+| **Strong team washes (P1).** `team1-wash` / `team2-wash` are 28% of the side's hue in light, 36% in dark. | The owner chose them over softer washes in the Personality Lab. | 10-09 |
+| **Page-header line backdrop (P1).** Plain-tone page headers paint `header-backdrop`, faint diagonal lines fading below the title, set by one switch (`$-header-backdrop`: `lines` or `none`). Only page headers use it. | Lines were chosen with "an easy way out", so it's one line to change. | 10-09 |
+| **Team logos are images (P2).** `pdz-team-logo` always renders an image; a missing or broken one shows the DraftZone logo (`DEFAULT_TEAM_LOGO`). No initials, no team color. | The owner expects 80%+ of teams to upload a logo, and the default logo is the site's own fallback. | 10-09 |
 | **Accessibility floor: keep what's automated.** Contrast in every theme (`check:contrast`), the focus-ring mixin, reduced motion through the duration tokens, and whatever the linters already enforce. New accessibility work is not a priority right now. | Owner, F13: "accessibility is not a priority currently". The automated checks cost nothing to keep. | 10-09 |
 
 ---
@@ -179,8 +183,8 @@ come first").
 
 | Code | Step |
 | --- | --- |
-| P1 | **Tokens.** The F9 tint formula, strong team washes, and the page-header line backdrop as one switchable token (header only, so changing or removing it is a one-line edit). |
-| P2 | **Logo fallback.** `pdz-team-logo` shows the default DraftZone logo instead of initials. |
+| P1 | Applied 2026-10-09; now in §2 (tint formula, strong washes, header backdrop). |
+| P2 | Applied 2026-10-09; now in §2 (logo fallback). |
 | P3 | **Sprite bounds.** An offline script measures every sprite's visible bounds in each sprite set and writes them as generated data (Showdown and Serebii block browser pixel reads). `pdz-sprite` gains a mode that sizes and places by the body. |
 | P4 | **`pdz-sprite` treatments.** Ground shadow, shiny sparkle, the draft-availability badge, and the fainted fade, each adapting to renders, pixel sprites and headshots. |
 | P5 | **`pdz-team-photo`.** The staggered team photo, with empty spots during a draft. Used on My Drafts cards and the team page banner. |
@@ -199,7 +203,7 @@ come first").
 | F4 | **Tabs, or a rail when large.** Areas with a handful of sections (a draft, a team) use tabs under the page header; areas with many (tournament, manage) use the grouped side rail. The planner keeps its own tab strip as a workspace, and tools stay standalone. All share one active style: primary text, filled icon, soft tint. |
 | F5 | **Two densities, set by page type.** Comfortable for Hub, Detail and Form pages; compact for Index tables, Workspace, Tool and Dashboard pages. A page can ask for the other one, and that's when the owner is asked. |
 | F8 | **Each color system owns one job.** Team color marks sides, actions and what to notice. Status color marks outcomes and problems. Pokémon type color appears only on `pdz-pokemon-type` chips and type-specific charts (type chart, coverage), never as a row fill, border, card tint or background. User-uploaded logos sit on neutral, never framed in team color. When two systems meet on one element, status beats team and team beats type. |
-| F9 | **Themes tint surfaces by one formula.** Every theme's ground, raised surfaces and lines take a faint wash of its primary hue by the same recipe (roughly 6% on the ground, 2.5% on raised surfaces, 16% on lines), so each theme feels like its own room without hand-tuned surfaces. Text stays neutral ink. Sunset's hand-tuned orange surfaces still go. Revised 2026-10-09 in the Personality Lab: Hue Tint was chosen over Neutral Gray and Deep Tint. New work is reviewed in dark mode first and checked in light before it ships. |
+| F9 | Applied 2026-10-09 with P1; now in §2. New work is still reviewed in dark mode first and checked in light before it ships. |
 | F10 | **One arrival treatment for live changes.** Motion only explains a change. Anything that arrives live (a pick, a posted score, a message, a status flip) gets a brief `state-selected` highlight that fades over `slow`; with reduced motion it shows without the fade. "You're on the clock" is the one state that stays loud until it ends. |
 | F11 | **One treatment per screen state.** Loading: `pdz-skeleton` shaped like the content, a spinner only inside a busy button. Empty: `pdz-empty-state` with the action that fills it. Waiting: says who or what and when ("Draft starts Fri 8 PM"). Error: says what failed, with a retry. No access: says why and where to go. Every page designs all of them. |
 | S2 | **Seven type sizes**: 12 · 14 · 16 · 18 · 24 · 32 · 40. Meta lines are body size in the muted color. Weights 400 and 600, with 700 only on Nasalization moments. Uppercase only for eyebrows; table heads become small muted Title Case. |

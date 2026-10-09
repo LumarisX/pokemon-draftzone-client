@@ -9,29 +9,20 @@ import {
 
 export type TeamLogoSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | '2xl';
 export type TeamLogoShape = 'rounded' | 'circle';
-export type TeamLogoTeam = 'team1' | 'team2';
+
+export const DEFAULT_TEAM_LOGO = '/assets/images/battle-zone/default_logo.png';
 
 @Component({
   selector: 'pdz-team-logo',
   template: `
-    @if (src() && !failed()) {
-      <img
-        class="pdz-team-logo__img"
-        loading="lazy"
-        decoding="async"
-        [src]="src()"
-        [alt]="decorative() ? '' : label()"
-        (error)="failed.set(true)"
-      />
-    } @else {
-      <span
-        class="pdz-team-logo__initials"
-        [attr.role]="decorative() ? null : 'img'"
-        [attr.aria-label]="decorative() ? null : label()"
-        [attr.aria-hidden]="decorative() ? 'true' : null"
-        >{{ initials() }}</span
-      >
-    }
+    <img
+      class="pdz-team-logo__img"
+      loading="lazy"
+      decoding="async"
+      [src]="resolvedSrc()"
+      [alt]="decorative() ? '' : label()"
+      (error)="failed.set(true)"
+    />
   `,
   styleUrl: './team-logo.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -39,7 +30,6 @@ export type TeamLogoTeam = 'team1' | 'team2';
     class: 'pdz-team-logo',
     '[attr.data-size]': 'size()',
     '[attr.data-shape]': 'shape()',
-    '[attr.data-team]': 'team()',
   },
 })
 export class TeamLogoComponent {
@@ -48,22 +38,18 @@ export class TeamLogoComponent {
   readonly size = input<TeamLogoSize>('md');
   readonly shape = input<TeamLogoShape>('rounded');
   readonly decorative = input(false, { transform: booleanAttribute });
-  readonly team = input<TeamLogoTeam | null>(null);
 
   protected readonly failed = linkedSignal({
     source: this.src,
     computation: () => false,
   });
 
+  protected readonly resolvedSrc = computed(() => {
+    const src = this.src();
+    return src && !this.failed() ? src : DEFAULT_TEAM_LOGO;
+  });
+
   protected readonly label = computed(() =>
     this.name() ? `${this.name()} logo` : 'Logo',
   );
-
-  protected readonly initials = computed(() => {
-    const words = this.name().trim().split(/\s+/).filter(Boolean);
-    if (!words.length) return '?';
-    const letters =
-      words.length === 1 ? words[0].slice(0, 2) : words[0][0] + words[1][0];
-    return letters.toUpperCase();
-  });
 }

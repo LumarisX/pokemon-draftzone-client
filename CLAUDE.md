@@ -126,7 +126,7 @@ and no page header.
 | checkbox / radio | `<input pdz-checkbox>` / `<input pdz-radio>`, or `label[pdz-check]` |
 | a 2–5 way choice | `<pdz-segmented>` + `<pdz-segmented-option>` |
 | icons | `<pdz-icon name="...">` — always, never a raw glyph or `<img>`; buttons take `icon="..."` |
-| a team or league logo | `<pdz-team-logo [src] [name]>` — falls back to initials, no ring or plate |
+| a team or league logo | `<pdz-team-logo [src] [name]>` — a missing or broken image shows the DraftZone logo (`DEFAULT_TEAM_LOGO`), never initials; no ring, plate or team color |
 | W-L or W-D-L | `<pdz-record [wins] [losses] [draws]>` |
 | a Pokémon type | `<pdz-pokemon-type [type]>` |
 | a tabular list | `<table class="pdz-table">` (`data-density`, `data-sticky`, `pdzSort`) |
@@ -183,6 +183,13 @@ empty-state messages and toasts stay sentence case. The brand is "Pokémon Draft
   toasts, chart tooltips). Only `inset` sinks: inputs, tracks, code, empty slots.
   The old `surface*` / `surface-container*` / `background` / `outline-variant`
   roles and the `--pdz-level-*` shadows are deleted; the linter rejects them.
+- **Surfaces carry a faint tint of the theme's primary** by one formula in
+  `themes/_defaults.scss` (`-tint()`: ground and inset 6%, raised rungs 2.5% light /
+  1.5% dark, dark `floating` untinted, `border-subtle` 16%). Themes set hues only; never
+  hand-tune a theme's surfaces or text.
+- **Page headers (plain tone) paint `header-backdrop`**: faint diagonal lines that fade
+  below the title. The style is one switch, `$-header-backdrop` in `themes/_defaults.scss`
+  (`lines` or `none`). Nothing else uses this backdrop: not cards, empty states or buttons.
 - **Panels and cards are defined by a border, not a shadow**: `raised`,
   `1px solid border-subtle`, `corner-lg`, no resting `box-shadow`. Controls
   (outlined buttons, segmented tracks, dashed drop zones) use `border-control`.

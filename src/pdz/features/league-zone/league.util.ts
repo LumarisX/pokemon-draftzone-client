@@ -1,7 +1,9 @@
+import { DEFAULT_TEAM_LOGO } from '@pdz/shared/images/team-logo/team-logo.component';
+
 const BUCKETPATH = 'pokemondraftzone-public.s3.us-east-2.amazonaws.com';
 
 export function getLogoUrl(logoId: string | undefined) {
-  if (!logoId) return '/assets/images/battle-zone/default_logo.png';
+  if (!logoId) return DEFAULT_TEAM_LOGO;
   return `https://${BUCKETPATH}/${logoId}`;
 }
 

@@ -2,6 +2,18 @@
 
 :host {
   display: block;
+  position: relative;
+  isolation: isolate;
+}
+
+:host([data-tone="plain"])::before {
+  content: "";
+  position: absolute;
+  inset: calc(#{pdz.space(lg)} * -1) 0 0;
+  z-index: -1;
+  pointer-events: none;
+  background: pdz.color(header-backdrop);
+  mask-image: linear-gradient(180deg, pdz.color(on-surface) 35%, transparent);
 }
 
 .pdz-page-header__bar {

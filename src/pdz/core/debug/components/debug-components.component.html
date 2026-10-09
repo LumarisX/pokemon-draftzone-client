@@ -318,19 +318,10 @@
 <section class="section">
   <h2 class="section__title">Team Logo</h2>
   <p class="section__hint">
-    One logo primitive. No ring or plate; a missing or broken image falls back
-    to initials. Set <code>team</code> to tint the initials as team 1 or team 2
-    (your team, or the opponent on a page about your team).
+    One logo primitive. Logos are images that sit on neutral, with no ring,
+    plate or team color. A missing or broken image falls back to the DraftZone
+    logo, never initials.
   </p>
-  <div class="row">
-    @for (size of logoSizes; track size) {
-      <pdz-team-logo
-        [size]="size"
-        name="Cerulean Surfers"
-        src="/assets/images/battle-zone/default_logo.png"
-      />
-    }
-  </div>
   <div class="row">
     @for (size of logoSizes; track size) {
       <pdz-team-logo [size]="size" name="Rocket Grunts" />
@@ -338,8 +329,7 @@
     <pdz-team-logo size="lg" shape="circle" name="Vermilion Volts" />
   </div>
   <div class="row">
-    <pdz-team-logo size="lg" team="team1" name="Lumaris" />
-    <pdz-team-logo size="lg" team="team2" name="MetalGearZubat" />
+    <pdz-team-logo size="lg" name="Cerulean Surfers" src="/assets/images/missing-logo.png" />
   </div>
 </section>
 

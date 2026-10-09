@@ -2,6 +2,27 @@
 @use "tokens/color" as *;
 @use "tools/accent" as accent;
 
+$-header-backdrop: lines;
+
+@function -header-backdrop($style) {
+  @if $style == lines {
+    @return repeating-linear-gradient(
+      135deg,
+      transparent 0 11px,
+      color-mix(in srgb, var(--pdz-color-on-surface) 6%, transparent) 11px 12px
+    );
+  }
+  @return none;
+}
+
+@function -tint($step, $amount) {
+  @return color-mix(
+    in srgb,
+    var(--pdz-color-primary) $amount,
+    var(--pdz-color-#{$step})
+  );
+}
+
 @function -versus-gradient($mode) {
   @if $mode == light {
     @return linear-gradient(
@@ -62,13 +83,14 @@
 }
 
 $-light-base: (
-  ground: "gray-50",
-  raised: "white",
-  raised-high: "white",
-  overlay: "white",
-  floating: "white",
-  inset: "gray-50",
-  border-subtle: "gray-125",
+  ground: -tint("gray-50", 6%),
+  raised: -tint("white", 2.5%),
+  raised-high: -tint("white", 2.5%),
+  overlay: -tint("white", 2.5%),
+  floating: -tint("white", 2.5%),
+  inset: -tint("gray-50", 6%),
+  border-subtle: -tint("gray-125", 16%),
+  header-backdrop: -header-backdrop($-header-backdrop),
   border-control: "gray-200",
   state-hover: color-mix(in srgb, var(--pdz-color-on-surface) 5%, transparent),
   state-pressed: color-mix(in srgb, var(--pdz-color-on-surface) 9%, transparent),
@@ -167,13 +189,18 @@ $-light-base: (
 );
 
 $-dark-base: (
-  ground: "gray-875",
-  raised: "gray-825",
-  raised-high: "gray-775",
-  overlay: "gray-750",
+  ground: -tint("gray-875", 6%),
+  raised: -tint("gray-825", 1.5%),
+  raised-high: -tint("gray-775", 1.5%),
+  overlay: -tint("gray-750", 1.5%),
   floating: "gray-725",
-  inset: "gray-875",
-  border-subtle: rgba(255, 255, 255, 0.08),
+  inset: -tint("gray-875", 6%),
+  border-subtle: color-mix(
+      in srgb,
+      var(--pdz-color-primary) 16%,
+      rgba(255, 255, 255, 0.08)
+    ),
+  header-backdrop: -header-backdrop($-header-backdrop),
   border-control: "gray-700",
   state-hover: color-mix(in srgb, var(--pdz-color-on-surface) 6%, transparent),
   state-pressed: color-mix(
@@ -277,13 +304,13 @@ $-dark-base: (
 
 $defaults: (
   light: accent.apply(
-      map.merge($-light-base, -teams(14%, light)),
+      map.merge($-light-base, -teams(28%, light)),
       "cyan",
       "orange",
       light
     ),
   dark: accent.apply(
-      map.merge($-dark-base, -teams(18%, dark)),
+      map.merge($-dark-base, -teams(36%, dark)),
       "cyan",
       "orange",
       dark
