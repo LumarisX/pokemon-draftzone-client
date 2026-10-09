@@ -1,5 +1,8 @@
 # Client refresh — audit and plan
 
+> **Superseded as the source of truth by `docs/design-principles.md` (2026-10-08).**
+> Keep this file as history and as the audit/inventory reference.
+
 Audit run 2026-10-01 across `src/styles/**` and `src/pdz/**` (237 components with at
 least one finding). It builds on the 2026-09-27 style audit
 (https://claude.ai/artifact/9Qb5MNjKqmjaeeARzeNHiP) and replaces the reverted

@@ -62,6 +62,11 @@ Import via path aliases, never deep relative paths:
 
 ## The pdz design system
 
+**Read `docs/design-principles.md` before any visual or styling work.** It is the
+single source for what the site should look like and why: settled rules, accepted
+rules not yet applied, open questions, and ideas set aside. This section holds the
+enforceable form of the settled rules.
+
 `src/pdz/shared/` holds the primitives. **Prefer an existing primitive over
 hand-rolled markup.** Current inventory: buttons, data (badge, card, chip, record,
 score, skeleton, sort, pokemon-type), dialogs, dropdowns (select, pokemon-search,
