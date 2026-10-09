@@ -4,6 +4,7 @@
   display: block;
   position: relative;
   isolation: isolate;
+  container: pdz-page-header / inline-size;
 }
 
 :host([data-tone="plain"])::before {
@@ -29,6 +30,14 @@
   @include pdz.respond-above(medium) {
     flex-wrap: nowrap;
     padding: pdz.space(md) pdz.space(lg);
+  }
+}
+
+.pdz-page-header__bar:has(.pdz-page-header__center:not(:empty)) {
+  flex-wrap: wrap;
+
+  @container pdz-page-header (min-width: 56rem) {
+    flex-wrap: nowrap;
   }
 }
 
@@ -69,14 +78,14 @@
     display: none;
   }
 
-  @include pdz.respond-above(medium) {
+  @container pdz-page-header (min-width: 56rem) {
     flex: 1 1 auto;
     order: 0;
   }
 }
 
 .pdz-page-header__bar:has(.pdz-page-header__center:not(:empty)) .pdz-page-header__text {
-  @include pdz.respond-above(medium) {
+  @container pdz-page-header (min-width: 56rem) {
     flex: 0 1 auto;
   }
 }
@@ -84,7 +93,7 @@
 .pdz-page-header__eyebrow {
   @include pdz.text(label-caps);
   color: pdz.color(on-surface-muted);
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
 }
 
 .pdz-page-header__eyebrow--link {
@@ -110,7 +119,7 @@
   font-family: pdz.font(display);
   margin: 0;
   color: pdz.color(on-surface);
-  overflow-wrap: anywhere;
+  overflow-wrap: break-word;
 
   @include pdz.respond-above(medium) {
     @include pdz.text(headline);

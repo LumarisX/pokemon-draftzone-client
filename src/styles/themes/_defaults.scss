@@ -130,6 +130,7 @@ $-light-base: (
   on-surface-inverse: "gray-75",
 
   shadow: #4d4d4d,
+  sprite-shadow: color-mix(in srgb, var(--pdz-color-shadow) 45%, transparent),
   scrim: "black",
 
   logo-ring-1: "orange-175",
@@ -244,6 +245,7 @@ $-dark-base: (
   on-surface-inverse: "gray-900",
 
   shadow: "black",
+  sprite-shadow: color-mix(in srgb, var(--pdz-color-shadow) 65%, transparent),
   scrim: "black",
 
   logo-ring-1: "orange-175",

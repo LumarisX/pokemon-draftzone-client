@@ -4,10 +4,12 @@ import {
   booleanAttribute,
   computed,
   effect,
+  inject,
   input,
   model,
   output,
 } from '@angular/core';
+import { SpriteService } from '@pdz/core/services/sprite.service';
 import { DraftOptions, Pokemon } from '@pdz/core/utils/pokemon';
 import { TooltipDirective } from '@pdz/shared/tooltip/tooltip.directive';
 import { SpriteImageComponent } from '../sprite-image/sprite-image.component';
@@ -29,9 +31,16 @@ type FormeSlot = {
   templateUrl: './sprite.component.html',
   styleUrl: './sprite.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  host: {
+    '[attr.data-grounded]': 'grounded() ? "" : null',
+    '[attr.data-kind]': 'kind()',
+  },
 })
 export class SpriteComponent {
+  protected readonly kind = inject(SpriteService).kind;
+
   pokemon = input.required<SpritePokemon>();
+  grounded = input(false, { transform: booleanAttribute });
   tooltipPosition = input<
     'before' | 'after' | 'above' | 'below' | 'left' | 'right' | null
   >(null);

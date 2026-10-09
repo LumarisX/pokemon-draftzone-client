@@ -1,0 +1,92 @@
+@use "sass:map";
+@use "pdz-theming" as pdz;
+
+$sizes: (
+  md: (
+    front: 4.5rem,
+    height: 8.5rem,
+  ),
+  lg: (
+    front: 6rem,
+    height: 11rem,
+  ),
+);
+
+:host {
+  --pdz-team-photo-spread: 0.9;
+  --pdz-team-photo-rise: 0.55;
+  --pdz-team-photo-back: calc(var(--pdz-team-photo-front) * 0.72);
+  --pdz-team-photo-floor: calc(var(--pdz-team-photo-front) * 0.42);
+  --pdz-team-photo-feet: calc(var(--pdz-team-photo-front) * 0.08);
+  --pdz-team-photo-pitch: min(
+    calc(var(--pdz-team-photo-front) * var(--pdz-team-photo-spread)),
+    21cqw
+  );
+  position: relative;
+  isolation: isolate;
+  display: block;
+  container-type: inline-size;
+  height: var(--pdz-team-photo-height);
+  overflow: hidden;
+  background: linear-gradient(180deg, pdz.color(team1-wash), transparent 80%);
+
+  &::after {
+    content: "";
+    position: absolute;
+    inset: auto 0 0;
+    height: var(--pdz-team-photo-floor);
+    background: pdz.color(state-hover);
+  }
+}
+
+:host([data-kind="pixel"]) {
+  --pdz-team-photo-spread: 0.85;
+}
+
+:host([data-kind="headshot"]) {
+  --pdz-team-photo-spread: 1.06;
+  --pdz-team-photo-rise: 1.02;
+}
+
+@each $name, $s in $sizes {
+  :host([data-size="#{$name}"]) {
+    --pdz-team-photo-front: #{map.get($s, front)};
+    --pdz-team-photo-height: #{map.get($s, height)};
+  }
+}
+
+.pdz-team-photo__slot {
+  position: absolute;
+  bottom: var(--pdz-team-photo-feet);
+  left: calc(50% + var(--pdz-team-photo-offset) * var(--pdz-team-photo-pitch));
+  z-index: 2;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  width: var(--pdz-team-photo-front);
+  height: var(--pdz-team-photo-front);
+  translate: -50% 0;
+
+  pdz-sprite {
+    width: 100%;
+    height: 100%;
+  }
+}
+
+.pdz-team-photo__slot--back {
+  bottom: calc(
+    var(--pdz-team-photo-feet) + var(--pdz-team-photo-front) *
+      var(--pdz-team-photo-rise)
+  );
+  z-index: 1;
+  width: var(--pdz-team-photo-back);
+  height: var(--pdz-team-photo-back);
+}
+
+.pdz-team-photo__spot {
+  width: 60%;
+  height: 18%;
+  margin-bottom: 4%;
+  border: 1px dashed pdz.color(border-control);
+  border-radius: pdz.shape(corner-full);
+}

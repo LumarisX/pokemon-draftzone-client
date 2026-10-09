@@ -1,4 +1,4 @@
-import { inject, Injectable } from '@angular/core';
+import { computed, inject, Injectable } from '@angular/core';
 import { DraftPokemon } from '@pdz/features/drafts/draft.model';
 import { SettingsService } from '@pdz/layout/top-navbar/settings.service';
 import {
@@ -15,6 +15,10 @@ export type SpriteData = {
   classes: string[];
   flip: boolean;
 };
+
+export type SpriteKind = 'render' | 'pixel' | 'headshot';
+
+const PIXEL_SETS: ReadonlySet<string> = new Set(['bw', 'afd', 'ani']);
 
 const MEGA_FORME_PATH_ID = /-mega[xyz]?(-|$)/;
 
@@ -36,6 +40,13 @@ export class SpriteService {
   readonly UNKNOWN_SPRITE_PATH = '/assets/icons/unknown.svg';
 
   private readonly DEFAULT: SpriteSetKey = 'home';
+
+  readonly kind = computed<SpriteKind>(() => {
+    const spriteSet = this.settingsService.settings().spriteSet ?? this.DEFAULT;
+    if (spriteSet === 'pmd') return 'headshot';
+    if (PIXEL_SETS.has(spriteSet)) return 'pixel';
+    return 'render';
+  });
 
   public getSpriteData(
     pokemon: Pick<DraftPokemon, 'id' | 'shiny'>,

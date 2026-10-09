@@ -71,7 +71,7 @@ enforceable form of the settled rules.
 hand-rolled markup.** Current inventory: buttons, data (badge, card, chip, record,
 score, skeleton, sort, pokemon-type), dialogs, dropdowns (select, pokemon-search,
 format, ruleset), feedback (empty-state, toast), images (icon, sprite, team-logo,
-loading), inputs (field, choice, segmented, slide-toggle, slider), layout (page,
+team-photo, loading), inputs (field, choice, segmented, slide-toggle, slider), layout (page,
 page-header, tabs, tab-nav, widget, disclosure, masonry), menu, pipes, time,
 tooltip, widgets.
 
@@ -126,6 +126,7 @@ and no page header.
 | checkbox / radio | `<input pdz-checkbox>` / `<input pdz-radio>`, or `label[pdz-check]` |
 | a 2–5 way choice | `<pdz-segmented>` + `<pdz-segmented-option>` |
 | icons | `<pdz-icon name="...">` — always, never a raw glyph or `<img>`; buttons take `icon="..."` |
+| a roster shown as a group | `<pdz-team-photo [pokemon] [spots] [name]>` — first six, aces first; `spots` adds empty places while a draft runs. Single sprites standing on a card take `<pdz-sprite grounded>` |
 | a team or league logo | `<pdz-team-logo [src] [name]>` — a missing or broken image shows the DraftZone logo (`DEFAULT_TEAM_LOGO`), never initials; no ring, plate or team color |
 | W-L or W-D-L | `<pdz-record [wins] [losses] [draws]>` |
 | a Pokémon type | `<pdz-pokemon-type [type]>` |

@@ -185,9 +185,9 @@ come first").
 | --- | --- |
 | P1 | Applied 2026-10-09; now in §2 (tint formula, strong washes, header backdrop). |
 | P2 | Applied 2026-10-09; now in §2 (logo fallback). |
-| P3 | **Sprite bounds.** An offline script measures every sprite's visible bounds in each sprite set and writes them as generated data (Showdown and Serebii block browser pixel reads). `pdz-sprite` gains a mode that sizes and places by the body. |
-| P4 | **`pdz-sprite` treatments.** Ground shadow, shiny sparkle, the draft-availability badge, and the fainted fade, each adapting to renders, pixel sprites and headshots. |
-| P5 | **`pdz-team-photo`.** The staggered team photo, with empty spots during a draft. Used on My Drafts cards and the team page banner. |
+| P3 | On hold (2026-10-09): sprites stay on their CDNs, and P4/P5 were built with whole-image placement first to see whether bounds are needed. Spacing is tuned per sprite kind (`SpriteService.kind`) instead. **Sprite bounds.** An offline script measures every sprite's visible bounds in each sprite set and writes them as generated data (Showdown and Serebii block browser pixel reads). `pdz-sprite` gains a mode that sizes and places by the body. |
+| P4 | In progress: `grounded` (the ground shadow, with a `sprite-shadow` token) is built and in the gallery. **`pdz-sprite` treatments.** Ground shadow, shiny sparkle, the draft-availability badge, and the fainted fade, each adapting to renders, pixel sprites and headshots. |
+| P5 | Primitive built and in the gallery (2026-10-09); not yet placed on My Drafts or the team page. **`pdz-team-photo`.** The staggered team photo, with empty spots during a draft. Used on My Drafts cards and the team page banner. |
 | P6 | **Team page.** Roster-pattern header and the season MVP card (needs per-Pokémon KO totals). |
 | P7 | **Season end.** The podium on final standings and the Hall of Fame on the league page. |
 | P8 | **Pokémon actors** in `pdz-empty-state` and the other F11 screen states. |

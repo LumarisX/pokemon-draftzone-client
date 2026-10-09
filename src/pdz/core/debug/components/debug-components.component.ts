@@ -45,6 +45,7 @@ import {
 } from '@pdz/shared/dialogs/dialog/dialog.component';
 import { DialogService } from '@pdz/shared/dialogs/dialog/dialog.service';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
+import { TeamPhotoComponent } from '@pdz/shared/images/team-photo/team-photo.component';
 import { TooltipDirective } from '@pdz/shared/tooltip/tooltip.directive';
 import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
 import { WidgetComponent } from '@pdz/shared/layout/widget/widget.component';
@@ -133,6 +134,7 @@ const MODE_ATTR = 'pdz-theme-mode';
     ChipComponent,
     PokemonTypeComponent,
     SpriteComponent,
+    TeamPhotoComponent,
     ScoreEntryGameComponent,
     ScoreEntryMatchComponent,
     CountdownComponent,
@@ -183,6 +185,19 @@ export class DebugComponentsComponent {
     name: 'Charizard',
     shiny: true,
   };
+  protected readonly photoTeam = [
+    { id: 'garchomp', name: 'Garchomp' },
+    { id: 'rotomheat', name: 'Rotom-Heat' },
+    { id: 'sableye', name: 'Sableye' },
+    { id: 'hawlucha', name: 'Hawlucha' },
+    { id: 'florges', name: 'Florges' },
+    { id: 'skarmory', name: 'Skarmory' },
+  ];
+  protected readonly photoDrafting = [
+    { id: 'dragonite', name: 'Dragonite' },
+    { id: 'swampert', name: 'Swampert' },
+    { id: 'tauros', name: 'Tauros' },
+  ];
   protected readonly spriteBordered = { id: 'greninja', name: 'Greninja' };
   protected readonly spriteFormes = {
     id: 'charizard',

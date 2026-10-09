@@ -1354,7 +1354,8 @@
     <code>[pdz-page-header-meta]</code> and
     <code>[pdz-page-header-actions]</code>.
     <code>[pdz-page-header-center]</code> fills the space between the title
-    and the actions on wide screens and drops to its own row on narrow ones.
+    and the actions when the header itself is at least 56rem wide, and drops
+    to its own row otherwise, so a narrow column never squeezes the title.
     Default content lands below the bar for tab navs and switchers.
   </p>
   <div class="stack">
@@ -1773,6 +1774,28 @@
     <div class="sprites__demo">
       <span class="sprites__name">unknown id</span>
       <pdz-sprite [pokemon]="spriteUnknown" size="5rem" />
+    </div>
+  </div>
+
+  <h3 class="section__sub">Grounded: a soft shadow under the sprite</h3>
+  <div class="sprites">
+    @for (pokemon of photoTeam; track pokemon.id) {
+      <div class="sprites__demo">
+        <span class="sprites__name">{{ pokemon.name }}</span>
+        <pdz-sprite [pokemon]="pokemon" size="5rem" grounded [interactive]="false" />
+      </div>
+    }
+  </div>
+
+  <h3 class="section__sub">
+    Team photo — aces in front, the last two raised into the gaps, empty spots
+    while a draft runs
+  </h3>
+  <div class="photos">
+    <pdz-team-photo [pokemon]="photoTeam" size="lg" name="Inglorious Surfers" />
+    <div class="photos__pair">
+      <pdz-team-photo [pokemon]="photoTeam" name="Inglorious Surfers" />
+      <pdz-team-photo [pokemon]="photoDrafting" [spots]="6" name="Champions Cup" />
     </div>
   </div>
 
