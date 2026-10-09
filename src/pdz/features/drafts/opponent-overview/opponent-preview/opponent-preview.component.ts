@@ -7,6 +7,10 @@ import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 import { BadgeTone } from '@pdz/shared/data/badge/badge.component';
 import { CardComponent } from '@pdz/shared/data/card/card.component';
 import { ScoreComponent } from '@pdz/shared/data/score/score.component';
+import {
+  SeasonMvpComponent,
+  SeasonMvpStat,
+} from '@pdz/shared/data/season-mvp/season-mvp.component';
 import { SortHeaderComponent } from '@pdz/shared/data/sort/sort-header.component';
 import { Sort, SortDirective } from '@pdz/shared/data/sort/sort.directive';
 import { DialogService } from '@pdz/shared/dialogs/dialog/dialog.service';
@@ -58,6 +62,7 @@ type Matchup = Opponent & {
     CdkTableModule,
     ButtonComponent,
     ScoreComponent,
+    SeasonMvpComponent,
     CardComponent,
     EmptyStateComponent,
     MenuComponent,
@@ -81,6 +86,7 @@ export class OpponentTeamPreviewComponent implements OnInit {
   readonly photoSize = TEAM_PHOTO_SIZE;
   teamStats = new BehaviorSubject<PokemonStat[] | null>(null);
   mvp: PokemonStat | null = null;
+  mvpStatList: SeasonMvpStat[] = [];
   displayedColumns: string[] = [
     'sprite',
     'name',
@@ -101,6 +107,7 @@ export class OpponentTeamPreviewComponent implements OnInit {
     this.matchups = undefined;
     this.teamStats.next(null);
     this.mvp = null;
+    this.mvpStatList = [];
 
     forkJoin({
       matchups: this.draftService.getMatchupList(this.teamId).pipe(
@@ -133,6 +140,7 @@ export class OpponentTeamPreviewComponent implements OnInit {
       if (stats) {
         this.teamStats.next(stats.pokemon);
         this.mvp = this.pickMvp(stats.pokemon);
+        this.mvpStatList = this.mvp ? this.mvpStats(this.mvp) : [];
         this.sort(this.defaultSort);
       }
     });
@@ -155,9 +163,28 @@ export class OpponentTeamPreviewComponent implements OnInit {
   }
 
   mvpLine(stat: PokemonStat): string {
-    const plural = (count: number, word: string) =>
-      `${count} ${word}${count === 1 ? '' : 's'}`;
-    return `${plural(stat.brought, 'game')} · ${plural(stat.kills, 'direct KO')} · ${stat.deaths} fainted`;
+    return `${stat.kills} direct · ${stat.indirect} indirect`;
+  }
+
+  private mvpStats(stat: PokemonStat): SeasonMvpStat[] {
+    const teamKnockouts = (this.teamStats.value ?? []).reduce(
+      (sum, entry) => sum + this.knockouts(entry),
+      0,
+    );
+    return [
+      { label: 'Games', value: stat.brought },
+      { label: 'Fainted', value: stat.deaths },
+      {
+        label: 'KOs/Game',
+        value: stat.brought ? stat.kpg.toFixed(1) : '—',
+      },
+      {
+        label: 'Team KOs',
+        value: teamKnockouts
+          ? `${Math.round((this.knockouts(stat) / teamKnockouts) * 100)}%`
+          : '—',
+      },
+    ];
   }
 
   restNames(team: { name: string }[]): string | null {

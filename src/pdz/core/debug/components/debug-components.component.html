@@ -1834,6 +1834,34 @@
   </div>
 
   <h3 class="section__sub">
+    Season MVP — most KOs, ties to fewer faints; eyebrow and count in secondary
+  </h3>
+  <div class="photos">
+    <pdz-season-mvp
+      [pokemon]="photoTeam[0]"
+      [knockouts]="9"
+      [types]="mvpTypes"
+      [stats]="mvpStats"
+      detail="10 pts"
+    />
+    <div class="photos__pair">
+      <pdz-season-mvp
+        [pokemon]="photoTeam[0]"
+        [knockouts]="9"
+        [stats]="mvpStats"
+        detail="7 direct · 2 indirect"
+      />
+    </div>
+  </div>
+
+  <h3 class="section__sub">
+    Roster pattern — a team page's header backdrop, fading out behind the title
+  </h3>
+  <pdz-page-header title="Neon Nightshades">
+    <pdz-roster-pattern pdz-page-header-backdrop [pokemon]="photoTeam" />
+  </pdz-page-header>
+
+  <h3 class="section__sub">
     Fallback chain — an unreleased mega degrading to its base forme
   </h3>
   <div class="sprites">

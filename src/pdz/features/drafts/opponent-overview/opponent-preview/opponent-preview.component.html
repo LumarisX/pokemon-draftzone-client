@@ -189,26 +189,13 @@
   <section class="stats-section">
     <div class="section-header">Stats</div>
     @if (mvp; as mvp) {
-      <pdz-card class="mvp" padding="sm">
-        <div class="mvp__body">
-          <pdz-sprite
-            class="mvp__sprite"
-            size="5.5rem"
-            grounded
-            [pokemon]="mvp.pokemon"
-            [interactive]="false"
-          />
-          <div class="mvp__text">
-            <span class="mvp__eyebrow">Season MVP</span>
-            <span class="mvp__name">{{ mvp.pokemon.name }}</span>
-            <span class="mvp__line">{{ mvpLine(mvp) }}</span>
-          </div>
-          <span class="mvp__count">
-            <span class="mvp__number">{{ knockouts(mvp) }}</span>
-            <span class="mvp__unit">KOs</span>
-          </span>
-        </div>
-      </pdz-card>
+      <pdz-season-mvp
+        class="mvp"
+        [pokemon]="mvp.pokemon"
+        [knockouts]="knockouts(mvp)"
+        [detail]="mvpLine(mvp)"
+        [stats]="mvpStatList"
+      />
     }
     @if (!teamStats) {
       <pdz-loading></pdz-loading>

@@ -1,0 +1,25 @@
+@use "pdz-theming" as pdz;
+
+:host {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  opacity: 0.14;
+  pointer-events: none;
+}
+
+.pdz-roster-pattern__field {
+  position: absolute;
+  inset: -60% -10%;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, 3rem);
+  grid-auto-rows: 3rem;
+  gap: pdz.space(sm) pdz.space(md);
+  align-content: start;
+  rotate: -8deg;
+
+  pdz-sprite {
+    width: 3rem;
+    height: 3rem;
+  }
+}

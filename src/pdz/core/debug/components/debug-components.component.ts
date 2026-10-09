@@ -46,6 +46,8 @@ import {
 import { DialogService } from '@pdz/shared/dialogs/dialog/dialog.service';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
 import { TeamPhotoComponent } from '@pdz/shared/images/team-photo/team-photo.component';
+import { RosterPatternComponent } from '@pdz/shared/images/roster-pattern/roster-pattern.component';
+import { SeasonMvpComponent } from '@pdz/shared/data/season-mvp/season-mvp.component';
 import { TooltipDirective } from '@pdz/shared/tooltip/tooltip.directive';
 import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
 import { WidgetComponent } from '@pdz/shared/layout/widget/widget.component';
@@ -135,6 +137,8 @@ const MODE_ATTR = 'pdz-theme-mode';
     PokemonTypeComponent,
     SpriteComponent,
     TeamPhotoComponent,
+    RosterPatternComponent,
+    SeasonMvpComponent,
     ScoreEntryGameComponent,
     ScoreEntryMatchComponent,
     CountdownComponent,
@@ -206,7 +210,14 @@ export class DebugComponentsComponent {
     { id: 'corviknight', name: 'Corviknight' },
     { id: 'tinglu', name: 'Ting-Lu' },
   ];
-  protected readonly photoCounts = [12, 8, 5].map((count) =>
+  protected readonly mvpTypes = ['Dragon', 'Ground'];
+  protected readonly mvpStats = [
+    { label: 'Games', value: 4 },
+    { label: 'Fainted', value: 2 },
+    { label: 'KOs/Game', value: '2.3' },
+    { label: 'Team KOs', value: '39%' },
+  ];
+  protected readonly photoCounts =[12, 8, 5].map((count) =>
     this.photoTeam.slice(0, count),
   );
   protected readonly photoDrafting = [

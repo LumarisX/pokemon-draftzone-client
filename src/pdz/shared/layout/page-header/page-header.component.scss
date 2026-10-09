@@ -17,6 +17,22 @@
   mask-image: linear-gradient(180deg, pdz.color(on-surface) 35%, transparent);
 }
 
+.pdz-page-header__backdrop {
+  position: absolute;
+  inset: calc(#{pdz.space(lg)} * -1) 0 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+  mask-image:
+    linear-gradient(90deg, transparent 10%, pdz.color(on-surface) 55%),
+    linear-gradient(180deg, pdz.color(on-surface) 45%, transparent);
+  mask-composite: intersect;
+
+  &:empty {
+    display: none;
+  }
+}
+
 .pdz-page-header__bar {
   display: flex;
   flex-wrap: wrap;

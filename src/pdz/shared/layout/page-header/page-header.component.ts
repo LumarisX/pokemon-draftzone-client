@@ -14,6 +14,10 @@ export type PageHeaderTone = 'panel' | 'plain';
   selector: 'pdz-page-header',
   imports: [RouterLink, IconComponent, TeamLogoComponent],
   template: `
+    <div class="pdz-page-header__backdrop" aria-hidden="true">
+      <ng-content select="[pdz-page-header-backdrop]" />
+    </div>
+
     <div class="pdz-page-header__bar">
       @if (logo(); as src) {
         <pdz-team-logo

@@ -33,10 +33,15 @@ import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 import { CardComponent } from '@pdz/shared/data/card/card.component';
 import { ChipComponent } from '@pdz/shared/data/chip/chip.component';
 import { RecordComponent } from '@pdz/shared/data/record/record.component';
+import {
+  SeasonMvpComponent,
+  SeasonMvpStat,
+} from '@pdz/shared/data/season-mvp/season-mvp.component';
 import { DialogService } from '@pdz/shared/dialogs/dialog/dialog.service';
 import { EmptyStateComponent } from '@pdz/shared/feedback/empty-state/empty-state.component';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
+import { RosterPatternComponent } from '@pdz/shared/images/roster-pattern/roster-pattern.component';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
 import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
 import { TooltipDirective } from '@pdz/shared/tooltip/tooltip.directive';
@@ -70,6 +75,8 @@ const CLOCK_TICK_MS = 30_000;
     LoadingComponent,
     PageHeaderComponent,
     RecordComponent,
+    RosterPatternComponent,
+    SeasonMvpComponent,
     SpriteComponent,
     TooltipDirective,
   ],
@@ -129,6 +136,18 @@ export class LeagueTeamComponent implements OnInit {
     ),
   );
 
+  readonly mvp = computed(() => {
+    const ranked = (this.teamData()?.draft ?? [])
+      .filter((pokemon) => (pokemon.record?.kills ?? 0) > 0)
+      .sort(
+        (a, b) =>
+          (b.record?.kills ?? 0) - (a.record?.kills ?? 0) ||
+          (a.record?.deaths ?? 0) - (b.record?.deaths ?? 0) ||
+          (a.record?.brought ?? 0) - (b.record?.brought ?? 0),
+      );
+    return ranked[0] ?? null;
+  });
+
   ngOnInit(): void {
     this.leagueService
       .listStages()
@@ -157,6 +176,23 @@ export class LeagueTeamComponent implements OnInit {
     if (deaths) return (kills / deaths).toFixed(1);
     return kills > 0 ? `${kills}` : '—';
   }
+
+  readonly mvpStats = computed<SeasonMvpStat[]>(() => {
+    const pokemon = this.mvp();
+    if (!pokemon) return [];
+    const kills = pokemon.record?.kills ?? 0;
+    const games = pokemon.record?.brought ?? 0;
+    const teamKills = this.totals().kills;
+    return [
+      { label: 'Games', value: games },
+      { label: 'Fainted', value: pokemon.record?.deaths ?? 0 },
+      { label: 'KOs/Game', value: games ? (kills / games).toFixed(1) : '—' },
+      {
+        label: 'Team KOs',
+        value: teamKills ? `${Math.round((kills / teamKills) * 100)}%` : '—',
+      },
+    ];
+  });
 
   async openTeamEdit(): Promise<void> {
     const team = this.teamData();

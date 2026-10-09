@@ -1,0 +1,117 @@
+@use "pdz-theming" as pdz;
+
+:host {
+  display: block;
+  container: pdz-season-mvp / inline-size;
+}
+
+.pdz-season-mvp {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  grid-template-areas:
+    "sprite text count"
+    "stats stats stats";
+  align-items: center;
+  gap: pdz.space(sm) pdz.space(md);
+
+  @container pdz-season-mvp (min-width: 40rem) {
+    grid-template-columns: auto minmax(0, 1fr) auto auto;
+    grid-template-areas: "sprite text stats count";
+  }
+}
+
+.pdz-season-mvp__sprite {
+  grid-area: sprite;
+}
+
+.pdz-season-mvp__text {
+  display: flex;
+  flex-direction: column;
+  grid-area: text;
+  gap: pdz.space(3xs);
+  min-width: 0;
+}
+
+.pdz-season-mvp__eyebrow {
+  @include pdz.text(label-caps);
+  color: pdz.color(secondary-accent);
+}
+
+.pdz-season-mvp__name {
+  @include pdz.text(card-title);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pdz-season-mvp__detail {
+  @include pdz.text(meta);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: pdz.space(2xs);
+  color: pdz.color(on-surface-variant);
+}
+
+.pdz-season-mvp__stats {
+  display: grid;
+  grid-area: stats;
+  grid-template-columns: repeat(auto-fit, minmax(4.5rem, 1fr));
+  gap: pdz.space(sm);
+  margin: 0;
+  padding-top: pdz.space(sm);
+  border-top: 1px solid pdz.color(border-subtle);
+
+  @container pdz-season-mvp (min-width: 40rem) {
+    grid-auto-flow: column;
+    grid-template-columns: none;
+    grid-auto-columns: minmax(4.5rem, auto);
+    gap: pdz.space(lg);
+    padding: 0 pdz.space(lg);
+    border-top: 0;
+    border-inline: 1px solid pdz.color(border-subtle);
+  }
+}
+
+.pdz-season-mvp__stat {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(3xs);
+  min-width: 0;
+
+  dt {
+    @include pdz.text(label-caps);
+    color: pdz.color(on-surface-muted);
+  }
+
+  dd {
+    @include pdz.text(subtitle);
+    @include pdz.numeric;
+    margin: 0;
+    color: pdz.color(on-surface);
+  }
+}
+
+.pdz-season-mvp__count {
+  display: flex;
+  flex-direction: column;
+  grid-area: count;
+  align-items: center;
+  min-width: 3rem;
+
+  @container pdz-season-mvp (min-width: 40rem) {
+    padding-inline-start: pdz.space(xs);
+  }
+}
+
+.pdz-season-mvp__number {
+  @include pdz.text(headline);
+  @include pdz.numeric;
+  color: pdz.color(secondary-accent);
+  line-height: 1;
+}
+
+.pdz-season-mvp__unit {
+  @include pdz.text(label-caps);
+  color: pdz.color(on-surface-variant);
+}

@@ -1,5 +1,8 @@
 @if (teamData(); as team) {
   <pdz-page-header [title]="team.name" [logo]="logoSrc()">
+    @if (team.draft.length) {
+      <pdz-roster-pattern pdz-page-header-backdrop [pokemon]="team.draft" />
+    }
     <span pdz-page-header-detail class="team-header__coach">
       <span class="team-header__coach-name">{{ team.coach }}</span>
       @if (team.isCoach) {
@@ -62,98 +65,115 @@
       </section>
     </pdz-card>
 
-    <pdz-card padding="none" class="team-body__roster">
-      <section class="section" aria-labelledby="team-roster">
-        <h2 class="section__title section__title--padded" id="team-roster">
-          Draft Roster
-        </h2>
-        @if (team.draft.length) {
-          @let sum = totals();
-          <div class="pdz-table-wrapper">
-            <table class="pdz-table" data-density="compact">
-              <thead>
-                <tr>
-                  <th scope="col">Pokémon</th>
-                  <th class="pdz-table__num" scope="col">Brought</th>
-                  <th class="pdz-table__num" scope="col">Kills</th>
-                  <th class="pdz-table__num" scope="col">Deaths</th>
-                  <th class="pdz-table__num" scope="col">K/D</th>
-                </tr>
-              </thead>
-              <tbody>
-                @for (pokemon of team.draft; track pokemon.id) {
+    <div class="team-body__roster">
+      @if (mvp(); as mvp) {
+        <pdz-season-mvp
+          [pokemon]="mvp"
+          [knockouts]="mvp.record?.kills ?? 0"
+          [detail]="mvp.cost + ' pts'"
+          [types]="mvp.types ?? []"
+          [stats]="mvpStats()"
+        />
+      }
+      <pdz-card padding="none">
+        <section class="section" aria-labelledby="team-roster">
+          <h2 class="section__title section__title--padded" id="team-roster">
+            Draft Roster
+          </h2>
+          @if (team.draft.length) {
+            @let sum = totals();
+            <div class="pdz-table-wrapper">
+              <table class="pdz-table" data-density="compact">
+                <thead>
                   <tr>
-                    <td>
-                      <span class="mon">
-                        <pdz-sprite size="2.5rem" flipped [pokemon]="pokemon" />
-                        <span class="mon__text">
-                          <span class="mon__name">{{ pokemon.name }}</span>
-                          <span class="mon__details">
-                            <span class="mon__cost">{{ pokemon.cost }} pts</span>
-                            @if (pokemon.capt?.tera) {
-                              <pdz-icon
-                                name="tera"
-                                ariaLabel="Tera captain"
-                                [size]="14"
-                              />
-                            }
-                            @if (pokemon.missingFromTierList) {
-                              <pdz-chip
-                                size="xs"
-                                tone="danger"
-                                icon="warning"
-                                pdzTooltip="Drafted, but no longer on the tier list. It is not priced, so this roster may be illegal."
-                                >Off list</pdz-chip
+                    <th scope="col">Pokémon</th>
+                    <th class="pdz-table__num" scope="col">Brought</th>
+                    <th class="pdz-table__num" scope="col">Kills</th>
+                    <th class="pdz-table__num" scope="col">Deaths</th>
+                    <th class="pdz-table__num" scope="col">K/D</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (pokemon of team.draft; track pokemon.id) {
+                    <tr>
+                      <td>
+                        <span class="mon">
+                          <pdz-sprite
+                            size="2.5rem"
+                            flipped
+                            [pokemon]="pokemon"
+                          />
+                          <span class="mon__text">
+                            <span class="mon__name">{{ pokemon.name }}</span>
+                            <span class="mon__details">
+                              <span class="mon__cost"
+                                >{{ pokemon.cost }} pts</span
                               >
-                            }
+                              @if (pokemon.capt?.tera) {
+                                <pdz-icon
+                                  name="tera"
+                                  ariaLabel="Tera captain"
+                                  [size]="14"
+                                />
+                              }
+                              @if (pokemon.missingFromTierList) {
+                                <pdz-chip
+                                  size="xs"
+                                  tone="danger"
+                                  icon="warning"
+                                  pdzTooltip="Drafted, but no longer on the tier list. It is not priced, so this roster may be illegal."
+                                  >Off list</pdz-chip
+                                >
+                              }
+                            </span>
                           </span>
                         </span>
-                      </span>
-                    </td>
-                    <td class="pdz-table__num">
-                      {{ pokemon.record?.brought ?? 0 }}
-                    </td>
-                    <td class="pdz-table__num">
-                      {{ pokemon.record?.kills ?? 0 }}
-                    </td>
-                    <td class="pdz-table__num">
-                      {{ pokemon.record?.deaths ?? 0 }}
-                    </td>
-                    <td class="pdz-table__num">{{ killRatio(pokemon) }}</td>
+                      </td>
+                      <td class="pdz-table__num">
+                        {{ pokemon.record?.brought ?? 0 }}
+                      </td>
+                      <td class="pdz-table__num">
+                        {{ pokemon.record?.kills ?? 0 }}
+                      </td>
+                      <td class="pdz-table__num">
+                        {{ pokemon.record?.deaths ?? 0 }}
+                      </td>
+                      <td class="pdz-table__num">{{ killRatio(pokemon) }}</td>
+                    </tr>
+                  }
+                </tbody>
+                <tfoot>
+                  <tr>
+                    <th scope="row">{{ sum.cost }} pts total</th>
+                    <td class="pdz-table__num"></td>
+                    <td class="pdz-table__num">{{ sum.kills }}</td>
+                    <td class="pdz-table__num">{{ sum.deaths }}</td>
+                    <td class="pdz-table__num"></td>
                   </tr>
-                }
-              </tbody>
-              <tfoot>
-                <tr>
-                  <th scope="row">{{ sum.cost }} pts total</th>
-                  <td class="pdz-table__num"></td>
-                  <td class="pdz-table__num">{{ sum.kills }}</td>
-                  <td class="pdz-table__num">{{ sum.deaths }}</td>
-                  <td class="pdz-table__num"></td>
-                </tr>
-              </tfoot>
-            </table>
-          </div>
-        } @else if (team.picksHidden) {
-          <pdz-empty-state
-            size="sm"
-            icon="lock"
-            heading="Picks hidden until the draft ends"
-            [message]="
-              (team.pickCount ?? 0) +
-              ((team.pickCount ?? 0) === 1 ? ' pick' : ' picks') +
-              ' made so far.'
-            "
-          />
-        } @else {
-          <pdz-empty-state
-            size="sm"
-            icon="catching_pokemon"
-            message="No Pokémon drafted yet."
-          />
-        }
-      </section>
-    </pdz-card>
+                </tfoot>
+              </table>
+            </div>
+          } @else if (team.picksHidden) {
+            <pdz-empty-state
+              size="sm"
+              icon="lock"
+              heading="Picks hidden until the draft ends"
+              [message]="
+                (team.pickCount ?? 0) +
+                ((team.pickCount ?? 0) === 1 ? ' pick' : ' picks') +
+                ' made so far.'
+              "
+            />
+          } @else {
+            <pdz-empty-state
+              size="sm"
+              icon="catching_pokemon"
+              message="No Pokémon drafted yet."
+            />
+          }
+        </section>
+      </pdz-card>
+    </div>
 
     <pdz-card padding="lg" class="team-body__trades">
       <section class="section" aria-labelledby="team-trades">

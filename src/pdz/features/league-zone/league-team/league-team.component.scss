@@ -57,7 +57,11 @@
 }
 
 .team-body__roster {
+  display: flex;
+  flex-direction: column;
   grid-area: roster;
+  gap: pdz.layout(stack);
+  min-width: 0;
 }
 
 .team-body__trades {
