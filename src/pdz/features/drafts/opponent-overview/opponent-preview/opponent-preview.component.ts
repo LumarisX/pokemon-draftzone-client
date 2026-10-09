@@ -15,6 +15,10 @@ import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
 import { TeamLogoComponent } from '@pdz/shared/images/team-logo/team-logo.component';
+import {
+  TEAM_PHOTO_SIZE,
+  TeamPhotoComponent,
+} from '@pdz/shared/images/team-photo/team-photo.component';
 import { MenuComponent } from '@pdz/shared/menu/menu.component';
 import { MenuItemComponent } from '@pdz/shared/menu/menu-item.component';
 import { MenuTriggerDirective } from '@pdz/shared/menu/menu-trigger.directive';
@@ -46,6 +50,7 @@ type Matchup = Opponent & {
     RouterModule,
     SpriteComponent,
     TeamLogoComponent,
+    TeamPhotoComponent,
     LoadingComponent,
     IconComponent,
     SortDirective,
@@ -73,7 +78,9 @@ export class OpponentTeamPreviewComponent implements OnInit {
   matchups?: Matchup[];
   teamId: string = '';
   readonly draftPath = DRAFT_OVERVIEW_PATH;
+  readonly photoSize = TEAM_PHOTO_SIZE;
   teamStats = new BehaviorSubject<PokemonStat[] | null>(null);
+  mvp: PokemonStat | null = null;
   displayedColumns: string[] = [
     'sprite',
     'name',
@@ -93,6 +100,7 @@ export class OpponentTeamPreviewComponent implements OnInit {
   reload() {
     this.matchups = undefined;
     this.teamStats.next(null);
+    this.mvp = null;
 
     forkJoin({
       matchups: this.draftService.getMatchupList(this.teamId).pipe(
@@ -124,9 +132,37 @@ export class OpponentTeamPreviewComponent implements OnInit {
 
       if (stats) {
         this.teamStats.next(stats.pokemon);
+        this.mvp = this.pickMvp(stats.pokemon);
         this.sort(this.defaultSort);
       }
     });
+  }
+
+  private pickMvp(stats: PokemonStat[]): PokemonStat | null {
+    const ranked = stats
+      .filter((stat) => this.knockouts(stat) > 0)
+      .sort(
+        (a, b) =>
+          this.knockouts(b) - this.knockouts(a) ||
+          a.deaths - b.deaths ||
+          a.brought - b.brought,
+      );
+    return ranked[0] ?? null;
+  }
+
+  knockouts(stat: PokemonStat): number {
+    return stat.kills + stat.indirect;
+  }
+
+  mvpLine(stat: PokemonStat): string {
+    const plural = (count: number, word: string) =>
+      `${count} ${word}${count === 1 ? '' : 's'}`;
+    return `${plural(stat.brought, 'game')} · ${plural(stat.kills, 'direct KO')} · ${stat.deaths} fainted`;
+  }
+
+  restNames(team: { name: string }[]): string | null {
+    const rest = team.slice(TEAM_PHOTO_SIZE);
+    return rest.length ? rest.map((pokemon) => pokemon.name).join(', ') : null;
   }
 
   private calculateScore(matchup: Opponent): [number, number] | null {

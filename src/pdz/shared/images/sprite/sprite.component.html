@@ -9,6 +9,9 @@
   (keydown)="onKeydown($event)"
   (contextmenu)="onContextMenu($event)"
 >
+  @if (activeForme()?.shiny) {
+    <span class="sparkles" aria-hidden="true"><i></i><i></i><i></i></span>
+  }
   @for (slot of slots(); track slot.index) {
     <div
       class="forme-slot"
@@ -30,5 +33,14 @@
         (loadedEvent)="onSlotLoaded(slot)"
       ></pdz-sprite-image>
     </div>
+  }
+  @if (stateLabel(); as label) {
+    <span class="state-badge" role="img" [attr.aria-label]="label">
+      @if (state() === 'taken') {
+        <pdz-team-logo size="xs" shape="circle" decorative [src]="takenLogo()" [name]="takenBy()" />
+      } @else {
+        <pdz-icon name="block" [size]="14" />
+      }
+    </span>
   }
 </div>

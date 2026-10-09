@@ -7,6 +7,15 @@
       [title]="draft.teamName"
       [backLink]="backLink"
     >
+      <div pdz-page-header-center class="draft-bar" aria-label="Your team">
+        @for (pokemon of draft.team; track $index) {
+          <pdz-sprite
+            grounded
+            [pokemon]="pokemon"
+            [class.unresolved-sprite]="pokemon.unresolved"
+          />
+        }
+      </div>
       <span pdz-page-header-detail class="opponent-main__facts">
         <span>{{ draft.leagueName }}</span>
         <span>{{ draft.format }}</span>
@@ -47,14 +56,6 @@
             pdzTooltip="Open league document"
             [href]="draft.doc"
           ></a>
-        }
-      </div>
-      <div class="draft-bar" aria-label="Your team">
-        @for (pokemon of draft.team; track $index) {
-          <pdz-sprite
-            [pokemon]="pokemon"
-            [class.unresolved-sprite]="pokemon.unresolved"
-          />
         }
       </div>
     </pdz-page-header>

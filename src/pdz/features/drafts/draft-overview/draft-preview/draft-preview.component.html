@@ -15,6 +15,12 @@
       <div class="drafts-grid" role="status" aria-label="Loading your drafts">
         @for (card of skeletonCards; track $index) {
           <pdz-card class="draft-card--skeleton" padding="sm">
+            <pdz-skeleton
+              pdz-card-media
+              variant="block"
+              width="100%"
+              height="8.5rem"
+            ></pdz-skeleton>
             <div pdz-card-header>
               <pdz-skeleton
                 variant="block"
@@ -28,11 +34,6 @@
               width="9rem"
               height="0.75rem"
             ></pdz-skeleton>
-            <div class="sprites">
-              @for (sprite of skeletonSprites; track $index) {
-                <pdz-skeleton variant="circle" width="2.25rem"></pdz-skeleton>
-              }
-            </div>
             <div pdz-card-footer>
               <pdz-skeleton
                 variant="block"
@@ -62,6 +63,21 @@
         <div class="drafts-grid">
           @for (tournament of tournaments(); track tournament.tournamentSlug) {
             <pdz-card padding="sm">
+              <div pdz-card-media class="card-photo">
+                <pdz-team-photo
+                  [pokemon]="tournament.draft"
+                  [name]="tournament.tournamentName"
+                />
+                @if (restNames(tournament.draft); as rest) {
+                  <span
+                    class="card-photo__more"
+                    tabindex="0"
+                    [pdzTooltip]="rest"
+                    [attr.aria-label]="'Also on the team: ' + rest"
+                    >+{{ tournament.draft.length - photoSize }} more</span
+                  >
+                }
+              </div>
               <div pdz-card-header>
                 <div class="card-title">
                   <span class="league-label">{{ tournament.leagueName }}</span>
@@ -77,11 +93,6 @@
               <p class="body-header">
                 {{ tournament.ruleset }} · {{ tournament.format }}
               </p>
-              <div class="sprites">
-                @for (pokemon of tournament.draft; track pokemon.name) {
-                  <pdz-sprite [pokemon]="pokemon"></pdz-sprite>
-                }
-              </div>
 
               <div pdz-card-footer>
                 <a
@@ -109,6 +120,21 @@
           }
           @for (draft of drafts(); track draft.slug) {
             <pdz-card class="draft-card" padding="sm">
+              <div pdz-card-media class="card-photo">
+                <pdz-team-photo
+                  [pokemon]="draft.team"
+                  [name]="draft.teamName"
+                />
+                @if (restNames(draft.team); as rest) {
+                  <span
+                    class="card-photo__more"
+                    tabindex="0"
+                    [pdzTooltip]="rest"
+                    [attr.aria-label]="'Also on the team: ' + rest"
+                    >+{{ draft.team.length - photoSize }} more</span
+                  >
+                }
+              </div>
               <div pdz-card-header>
                 <div class="card-title">
                   <h2 class="league-name">{{ draft.leagueName }}</h2>
@@ -175,14 +201,6 @@
               <p class="body-header">
                 {{ draft.ruleset }} · {{ draft.format }}
               </p>
-              <div class="sprites">
-                @for (pokemon of draft.team; track pokemon.name) {
-                  <pdz-sprite
-                    [pokemon]="pokemon"
-                    [class.unresolved-sprite]="pokemon.unresolved"
-                  ></pdz-sprite>
-                }
-              </div>
 
               <div pdz-card-footer>
                 <a

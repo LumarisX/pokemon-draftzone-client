@@ -28,6 +28,10 @@ import { EmptyStateComponent } from '@pdz/shared/feedback/empty-state/empty-stat
 import { ToastService } from '@pdz/shared/feedback/toast/toast.service';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
+import {
+  TEAM_PHOTO_SIZE,
+  TeamPhotoComponent,
+} from '@pdz/shared/images/team-photo/team-photo.component';
 import { DisclosureComponent } from '@pdz/shared/layout/disclosure/disclosure.component';
 import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
 import { PageComponent } from '@pdz/shared/layout/page/page.component';
@@ -48,6 +52,7 @@ type Score = { wins: number; losses: number };
     RouterLink,
     TooltipDirective,
     SpriteComponent,
+    TeamPhotoComponent,
     IconComponent,
     ButtonComponent,
     ScoreComponent,
@@ -69,7 +74,7 @@ export class DraftPreviewComponent {
   private toasts = inject(ToastService);
 
   readonly skeletonCards = [0, 1, 2];
-  readonly skeletonSprites = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
+  readonly photoSize = TEAM_PHOTO_SIZE;
   readonly draftPath = DRAFT_OVERVIEW_PATH;
   readonly plannerPath = PLANNER_PATH;
 
@@ -192,6 +197,11 @@ export class DraftPreviewComponent {
     if (score.wins > score.losses) return 'success';
     if (score.wins < score.losses) return 'danger';
     return 'neutral';
+  }
+
+  restNames(team: { name: string }[]): string | null {
+    const rest = team.slice(TEAM_PHOTO_SIZE);
+    return rest.length ? rest.map((pokemon) => pokemon.name).join(', ') : null;
   }
 
   unresolvedWarning(draft: Draft): string | null {

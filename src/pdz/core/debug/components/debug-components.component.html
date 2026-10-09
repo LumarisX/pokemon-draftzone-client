@@ -1779,7 +1779,7 @@
 
   <h3 class="section__sub">Grounded: a soft shadow under the sprite</h3>
   <div class="sprites">
-    @for (pokemon of photoTeam; track pokemon.id) {
+    @for (pokemon of photoCounts[2]; track pokemon.id) {
       <div class="sprites__demo">
         <span class="sprites__name">{{ pokemon.name }}</span>
         <pdz-sprite [pokemon]="pokemon" size="5rem" grounded [interactive]="false" />
@@ -1788,14 +1788,48 @@
   </div>
 
   <h3 class="section__sub">
-    Team photo — aces in front, the last two raised into the gaps, empty spots
-    while a draft runs
+    States — shiny sparkles (twinkle on load and hover), fainted, and draft
+    availability with a badge that says why
+  </h3>
+  <div class="sprites">
+    <div class="sprites__demo">
+      <span class="sprites__name">shiny</span>
+      <pdz-sprite [pokemon]="spriteShinyGrounded" size="5rem" grounded [interactive]="false" />
+    </div>
+    <div class="sprites__demo">
+      <span class="sprites__name">fainted</span>
+      <pdz-sprite [pokemon]="photoTeam[2]" size="5rem" grounded state="fainted" [interactive]="false" />
+    </div>
+    <div class="sprites__demo">
+      <span class="sprites__name">taken</span>
+      <pdz-sprite
+        [pokemon]="photoDrafting[0]"
+        size="5rem"
+        state="taken"
+        takenBy="Rocket Grunts"
+        [interactive]="false"
+      />
+    </div>
+    <div class="sprites__demo">
+      <span class="sprites__name">banned</span>
+      <pdz-sprite [pokemon]="photoDrafting[2]" size="5rem" state="banned" [interactive]="false" />
+    </div>
+  </div>
+
+  <h3 class="section__sub">
+    Team photo — up to fourteen, aces front and center, later picks raised into
+    the gaps behind, empty spots while a draft runs, side="team2" for the
+    opponent
   </h3>
   <div class="photos">
     <pdz-team-photo [pokemon]="photoTeam" size="lg" name="Inglorious Surfers" />
     <div class="photos__pair">
       <pdz-team-photo [pokemon]="photoTeam" name="Inglorious Surfers" />
-      <pdz-team-photo [pokemon]="photoDrafting" [spots]="6" name="Champions Cup" />
+      <pdz-team-photo [pokemon]="photoDrafting" [spots]="12" name="Champions Cup" />
+      @for (team of photoCounts; track team.length) {
+        <pdz-team-photo [pokemon]="team" name="Inglorious Surfers" />
+      }
+      <pdz-team-photo [pokemon]="photoCounts[0]" side="team2" name="Viridian Vipers" />
     </div>
   </div>
 

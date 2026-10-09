@@ -33,11 +33,26 @@
       <div class="matchups-container">
         @for (matchup of matchups; track $index) {
           <pdz-card class="matchup-card" padding="sm">
+            <div pdz-card-media class="card-photo">
+              <pdz-team-photo
+                side="team2"
+                [pokemon]="matchup.team"
+                [name]="matchup.teamName"
+              />
+              @if (restNames(matchup.team); as rest) {
+                <span
+                  class="card-photo__more"
+                  tabindex="0"
+                  [pdzTooltip]="rest"
+                  [attr.aria-label]="'Also on the team: ' + rest"
+                  >+{{ matchup.team.length - photoSize }} more</span
+                >
+              }
+            </div>
             <div pdz-card-header>
               <div class="card-title">
                 <pdz-team-logo
                   size="lg"
-                  team="team2"
                   [src]="matchup.logo"
                   [name]="matchup.teamName"
                 />
@@ -123,14 +138,6 @@
                 </span>
               }
             </div>
-            <div class="sprites">
-              @for (pokemon of matchup.team; track pokemon.name) {
-                <pdz-sprite
-                  [pokemon]="pokemon"
-                  [class.unresolved-sprite]="pokemon.unresolved"
-                ></pdz-sprite>
-              }
-            </div>
 
             <div pdz-card-footer>
               @if (matchup.score) {
@@ -181,6 +188,28 @@
   </section>
   <section class="stats-section">
     <div class="section-header">Stats</div>
+    @if (mvp; as mvp) {
+      <pdz-card class="mvp" padding="sm">
+        <div class="mvp__body">
+          <pdz-sprite
+            class="mvp__sprite"
+            size="5.5rem"
+            grounded
+            [pokemon]="mvp.pokemon"
+            [interactive]="false"
+          />
+          <div class="mvp__text">
+            <span class="mvp__eyebrow">Season MVP</span>
+            <span class="mvp__name">{{ mvp.pokemon.name }}</span>
+            <span class="mvp__line">{{ mvpLine(mvp) }}</span>
+          </div>
+          <span class="mvp__count">
+            <span class="mvp__number">{{ knockouts(mvp) }}</span>
+            <span class="mvp__unit">KOs</span>
+          </span>
+        </div>
+      </pdz-card>
+    }
     @if (!teamStats) {
       <pdz-loading></pdz-loading>
     } @else {

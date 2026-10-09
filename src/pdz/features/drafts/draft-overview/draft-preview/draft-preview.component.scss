@@ -60,6 +60,28 @@
   gap: pdz.space(sm);
 }
 
+.card-photo {
+  position: relative;
+}
+
+.card-photo__more {
+  @include pdz.text(label-strong);
+  position: absolute;
+  top: pdz.space(xs);
+  right: pdz.space(xs);
+  z-index: 3;
+  padding: pdz.space(3xs) pdz.space(sm);
+  border-radius: pdz.shape(corner-full);
+  background: pdz.color(raised);
+  box-shadow: 0 0 0 1px pdz.color(border-subtle);
+  color: pdz.color(on-surface-variant);
+  cursor: default;
+
+  &:focus-visible {
+    @include pdz.focus-ring;
+  }
+}
+
 .draft-warning {
   display: inline-flex;
   align-items: center;
@@ -73,11 +95,6 @@
   }
 }
 
-.unresolved-sprite {
-  opacity: 0.45;
-  filter: grayscale(1);
-}
-
 .load-error {
   @include pdz.text(body-sm);
   display: flex;
@@ -87,8 +104,4 @@
 
 .draft-card--skeleton {
   pointer-events: none;
-
-  .sprites pdz-skeleton {
-    justify-self: center;
-  }
 }

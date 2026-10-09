@@ -14,13 +14,34 @@ $sizes: (
 
 :host {
   --pdz-team-photo-spread: 0.9;
-  --pdz-team-photo-rise: 0.55;
-  --pdz-team-photo-back: calc(var(--pdz-team-photo-front) * 0.72);
-  --pdz-team-photo-floor: calc(var(--pdz-team-photo-front) * 0.42);
+  --pdz-team-photo-depth: 0.88;
+  --pdz-team-photo-rise: 0.38;
+  --pdz-team-photo-stack: 0;
+  --pdz-team-photo-crown: 1;
+  --pdz-team-photo-front: min(
+    var(--pdz-team-photo-base),
+    calc(
+      96cqw /
+        (2 * var(--pdz-team-photo-reach) * var(--pdz-team-photo-spread) + 1)
+    ),
+    calc(
+      var(--pdz-team-photo-height) * 0.94 /
+        (
+          0.08 + var(--pdz-team-photo-rise) * var(--pdz-team-photo-stack) +
+            var(--pdz-team-photo-crown)
+        )
+    )
+  );
+  --pdz-team-photo-floor: calc(
+    var(--pdz-team-photo-front) *
+      (
+        0.4 + var(--pdz-team-photo-rise) * var(--pdz-team-photo-stack) +
+          var(--pdz-team-photo-crown) * 0.15
+      )
+  );
   --pdz-team-photo-feet: calc(var(--pdz-team-photo-front) * 0.08);
-  --pdz-team-photo-pitch: min(
-    calc(var(--pdz-team-photo-front) * var(--pdz-team-photo-spread)),
-    21cqw
+  --pdz-team-photo-pitch: calc(
+    var(--pdz-team-photo-front) * var(--pdz-team-photo-spread)
   );
   position: relative;
   isolation: isolate;
@@ -35,8 +56,24 @@ $sizes: (
     position: absolute;
     inset: auto 0 0;
     height: var(--pdz-team-photo-floor);
-    background: pdz.color(state-hover);
+    background: linear-gradient(0deg, pdz.color(state-hover) 30%, transparent);
   }
+}
+
+:host([data-side="team2"]) {
+  background: linear-gradient(180deg, pdz.color(team2-wash), transparent 80%);
+}
+
+:host([data-rows="2"]) {
+  --pdz-team-photo-stack: 1;
+  --pdz-team-photo-crown: var(--pdz-team-photo-depth);
+}
+
+:host([data-rows="3"]) {
+  --pdz-team-photo-stack: calc(1 + var(--pdz-team-photo-depth));
+  --pdz-team-photo-crown: calc(
+    var(--pdz-team-photo-depth) * var(--pdz-team-photo-depth)
+  );
 }
 
 :host([data-kind="pixel"]) {
@@ -50,37 +87,49 @@ $sizes: (
 
 @each $name, $s in $sizes {
   :host([data-size="#{$name}"]) {
-    --pdz-team-photo-front: #{map.get($s, front)};
+    --pdz-team-photo-base: #{map.get($s, front)};
     --pdz-team-photo-height: #{map.get($s, height)};
   }
 }
 
 .pdz-team-photo__slot {
+  --pdz-team-photo-scale: 1;
+  --pdz-team-photo-lift: 0;
+  --pdz-team-photo-slot: calc(
+    var(--pdz-team-photo-front) * var(--pdz-team-photo-scale)
+  );
   position: absolute;
-  bottom: var(--pdz-team-photo-feet);
+  bottom: calc(
+    var(--pdz-team-photo-feet) + var(--pdz-team-photo-front) *
+      var(--pdz-team-photo-rise) * var(--pdz-team-photo-lift)
+  );
   left: calc(50% + var(--pdz-team-photo-offset) * var(--pdz-team-photo-pitch));
-  z-index: 2;
+  z-index: 3;
   display: flex;
   align-items: flex-end;
   justify-content: center;
-  width: var(--pdz-team-photo-front);
-  height: var(--pdz-team-photo-front);
+  width: var(--pdz-team-photo-slot);
+  height: var(--pdz-team-photo-slot);
   translate: -50% 0;
+
+  &[data-row="1"] {
+    --pdz-team-photo-scale: var(--pdz-team-photo-depth);
+    --pdz-team-photo-lift: 1;
+    z-index: 2;
+  }
+
+  &[data-row="2"] {
+    --pdz-team-photo-scale: calc(
+      var(--pdz-team-photo-depth) * var(--pdz-team-photo-depth)
+    );
+    --pdz-team-photo-lift: calc(1 + var(--pdz-team-photo-depth));
+    z-index: 1;
+  }
 
   pdz-sprite {
     width: 100%;
     height: 100%;
   }
-}
-
-.pdz-team-photo__slot--back {
-  bottom: calc(
-    var(--pdz-team-photo-feet) + var(--pdz-team-photo-front) *
-      var(--pdz-team-photo-rise)
-  );
-  z-index: 1;
-  width: var(--pdz-team-photo-back);
-  height: var(--pdz-team-photo-back);
 }
 
 .pdz-team-photo__spot {

@@ -43,21 +43,21 @@ $draft-sprite-size: 3.5rem;
 
 .draft-bar {
   display: flex;
+  flex: 1 1 0;
+  justify-content: center;
   gap: pdz.space(2xs);
-  padding: pdz.space(2xs) pdz.space(xs);
-  border-radius: pdz.shape(corner-lg);
-  background: linear-gradient(90deg, #{pdz.color(team1-wash)}, transparent 85%);
-  overflow-x: auto;
-  scrollbar-width: thin;
+  width: 0;
+  min-width: 0;
 
   @include pdz.respond-below(medium) {
     display: none;
   }
 
   pdz-sprite {
-    flex: 0 0 $draft-sprite-size;
-    width: $draft-sprite-size;
-    height: $draft-sprite-size;
+    flex: 0 1 $draft-sprite-size;
+    min-width: 0;
+    max-width: $draft-sprite-size;
+    aspect-ratio: 1;
   }
 }
 

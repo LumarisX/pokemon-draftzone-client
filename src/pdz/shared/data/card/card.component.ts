@@ -15,9 +15,12 @@ export type CardPadding = 'none' | 'sm' | 'md' | 'lg';
 @Component({
   selector: 'pdz-card, button[pdz-card], a[pdz-card]',
   template: `
+    <ng-content select="[pdz-card-media]" />
     <ng-content select="[pdz-card-header]" />
     <div class="pdz-card__body">
-      <ng-content select=":not([pdz-card-header]):not([pdz-card-footer])" />
+      <ng-content
+        select=":not([pdz-card-media]):not([pdz-card-header]):not([pdz-card-footer])"
+      />
     </div>
     <ng-content select="[pdz-card-footer]" />
   `,

@@ -185,6 +185,11 @@ export class DebugComponentsComponent {
     name: 'Charizard',
     shiny: true,
   };
+  protected readonly spriteShinyGrounded = {
+    id: 'garchomp',
+    name: 'Garchomp',
+    shiny: true,
+  };
   protected readonly photoTeam = [
     { id: 'garchomp', name: 'Garchomp' },
     { id: 'rotomheat', name: 'Rotom-Heat' },
@@ -192,7 +197,18 @@ export class DebugComponentsComponent {
     { id: 'hawlucha', name: 'Hawlucha' },
     { id: 'florges', name: 'Florges' },
     { id: 'skarmory', name: 'Skarmory' },
+    { id: 'toxapex', name: 'Toxapex' },
+    { id: 'weavile', name: 'Weavile' },
+    { id: 'amoonguss', name: 'Amoonguss' },
+    { id: 'kingambit', name: 'Kingambit' },
+    { id: 'clefable', name: 'Clefable' },
+    { id: 'gholdengo', name: 'Gholdengo' },
+    { id: 'corviknight', name: 'Corviknight' },
+    { id: 'tinglu', name: 'Ting-Lu' },
   ];
+  protected readonly photoCounts = [12, 8, 5].map((count) =>
+    this.photoTeam.slice(0, count),
+  );
   protected readonly photoDrafting = [
     { id: 'dragonite', name: 'Dragonite' },
     { id: 'swampert', name: 'Swampert' },

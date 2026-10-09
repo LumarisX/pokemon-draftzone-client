@@ -126,7 +126,8 @@ and no page header.
 | checkbox / radio | `<input pdz-checkbox>` / `<input pdz-radio>`, or `label[pdz-check]` |
 | a 2–5 way choice | `<pdz-segmented>` + `<pdz-segmented-option>` |
 | icons | `<pdz-icon name="...">` — always, never a raw glyph or `<img>`; buttons take `icon="..."` |
-| a roster shown as a group | `<pdz-team-photo [pokemon] [spots] [name]>` — first six, aces first; `spots` adds empty places while a draft runs. Single sprites standing on a card take `<pdz-sprite grounded>` |
+| a roster shown as a group | `<pdz-team-photo [pokemon] [spots] [name]>` — up to fourteen (`TEAM_PHOTO_SIZE`) in up to three staggered rows, aces front and center; `spots` adds empty places while a draft runs (only pass it when the pick count is known, or a finished team shows empty places); `side="team2"` stands an opponent on the team 2 wash. As a card banner, put it in `pdz-card`'s `[pdz-card-media]` slot. Single sprites standing on a card take `<pdz-sprite grounded>` |
+| a Pokémon you can't pick, or one that fainted | `<pdz-sprite state="taken" [takenLogo] [takenBy]>`, `state="banned"`, `state="fainted"` — never a hand-rolled grayscale or strike-through. Shiny sparkles are automatic |
 | a team or league logo | `<pdz-team-logo [src] [name]>` — a missing or broken image shows the DraftZone logo (`DEFAULT_TEAM_LOGO`), never initials; no ring, plate or team color |
 | W-L or W-D-L | `<pdz-record [wins] [losses] [draws]>` |
 | a Pokémon type | `<pdz-pokemon-type [type]>` |
@@ -188,9 +189,9 @@ empty-state messages and toasts stay sentence case. The brand is "Pokémon Draft
   `themes/_defaults.scss` (`-tint()`: ground and inset 6%, raised rungs 2.5% light /
   1.5% dark, dark `floating` untinted, `border-subtle` 16%). Themes set hues only; never
   hand-tune a theme's surfaces or text.
-- **Page headers (plain tone) paint `header-backdrop`**: faint diagonal lines that fade
-  below the title. The style is one switch, `$-header-backdrop` in `themes/_defaults.scss`
-  (`lines` or `none`). Nothing else uses this backdrop: not cards, empty states or buttons.
+- **Page headers (plain tone) paint `header-backdrop`**, one switch, `$-header-backdrop` in
+  `themes/_defaults.scss`: `none` (current, since 2026-10-09) or `lines` (faint diagonal lines
+  fading below the title). Nothing else uses this backdrop: not cards, empty states or buttons.
 - **Panels and cards are defined by a border, not a shadow**: `raised`,
   `1px solid border-subtle`, `corner-lg`, no resting `box-shadow`. Controls
   (outlined buttons, segmented tracks, dashed drop zones) use `border-control`.

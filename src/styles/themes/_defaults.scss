@@ -2,7 +2,7 @@
 @use "tokens/color" as *;
 @use "tools/accent" as accent;
 
-$-header-backdrop: lines;
+$-header-backdrop: none;
 
 @function -header-backdrop($style) {
   @if $style == lines {

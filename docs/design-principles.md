@@ -88,8 +88,12 @@ not just that the chrome is quiet.
 **The Pokémon are the art**
 
 - **Standing on the ground:** a soft oval shadow under each sprite.
-- **Team photos:** the roster posed on a shared floor, staggered (see below). On My Drafts cards
-  with empty spots during a draft, and as the team page banner.
+- **Team photos:** the roster posed on a shared floor, staggered (see below). On cards: My Drafts,
+  and opponent cards on the draft page (on the team 2 wash), with empty spots during a draft. Not
+  in page headers: tried as the draft page's header banner and inside the header bar 2026-10-09,
+  and the owner judged it wrong there. Instead the team stands in one row of grounded sprites
+  in the header bar's center slot, between the title and the record, taking only the leftover
+  space and shrinking to fit (no full-width strip row of its own).
 - **Season MVP** card on the team page.
 - **Shiny sparkle:** faint sparkles behind a shiny sprite that twinkle once on arrival or hover.
   Never a tag.
@@ -114,7 +118,11 @@ nearest-neighbor scaling, must never touch renders.
 differently, so compositions (team photos, face-offs, podiums) measure each sprite's visible
 bounds once and size and position by those. Renders need this most: placed by canvas they
 overlap and bury each other. Team photos are staggered so no Pokémon stands directly behind
-another: the top four picks in front, aces in the middle, the last two raised into the gaps.
+another. A photo holds up to fourteen, in up to three rows that stand close together, each a
+little smaller and higher than the one in front (twelve stand 5 / 4 / 3, fourteen 5 / 4 / 5). All
+rows share one ground that fades out just behind the back row, so nobody stands in the sky. The first picks fill the front row from the center out, and each later
+row stands in the gaps of the row in front. Sprites scale down to fit the card rather than crowd
+it, and anything past fourteen goes in a "+N more" chip.
 
 Visible-body sprite placement can't be measured in the browser for most players: Showdown (HOME,
 BW and the other PS sets) and Serebii send no CORS headers, so their pixels can't be read. Bounds
@@ -162,7 +170,7 @@ The owner has decided these and they're applied app-wide. CLAUDE.md has the enfo
 | **A primitive that's missing something gets extended.** Call sites don't get bespoke styles. | Per-feature styling is what made the site feel like separate tools. | 08-23 |
 | **Themes tint surfaces by one formula (F9, P1).** Ground and inset take 6% of the theme's primary, raised rungs 2.5% (1.5% in dark, where the primary is lighter), `border-subtle` 16%; dark `floating` stays neutral to keep muted text above 4.5:1. Text stays neutral ink. Sunset's hand-tuned surfaces and text are gone. | Each theme feels like its own room without hand-tuning, and `check:contrast` verifies every theme. | 10-09 |
 | **Strong team washes (P1).** `team1-wash` / `team2-wash` are 28% of the side's hue in light, 36% in dark. | The owner chose them over softer washes in the Personality Lab. | 10-09 |
-| **Page-header line backdrop (P1).** Plain-tone page headers paint `header-backdrop`, faint diagonal lines fading below the title, set by one switch (`$-header-backdrop`: `lines` or `none`). Only page headers use it. | Lines were chosen with "an easy way out", so it's one line to change. | 10-09 |
+| **Page-header line backdrop (P1).** Plain-tone page headers paint `header-backdrop`, faint diagonal lines fading below the title, set by one switch (`$-header-backdrop`: `lines` or `none`). Only page headers use it. | Lines were chosen with "an easy way out", so it's one line to change. Switched to `none` the same day: the owner was "not loving them on the header". | 10-09 |
 | **Team logos are images (P2).** `pdz-team-logo` always renders an image; a missing or broken one shows the DraftZone logo (`DEFAULT_TEAM_LOGO`). No initials, no team color. | The owner expects 80%+ of teams to upload a logo, and the default logo is the site's own fallback. | 10-09 |
 | **Accessibility floor: keep what's automated.** Contrast in every theme (`check:contrast`), the focus-ring mixin, reduced motion through the duration tokens, and whatever the linters already enforce. New accessibility work is not a priority right now. | Owner, F13: "accessibility is not a priority currently". The automated checks cost nothing to keep. | 10-09 |
 
@@ -186,9 +194,9 @@ come first").
 | P1 | Applied 2026-10-09; now in §2 (tint formula, strong washes, header backdrop). |
 | P2 | Applied 2026-10-09; now in §2 (logo fallback). |
 | P3 | On hold (2026-10-09): sprites stay on their CDNs, and P4/P5 were built with whole-image placement first to see whether bounds are needed. Spacing is tuned per sprite kind (`SpriteService.kind`) instead. **Sprite bounds.** An offline script measures every sprite's visible bounds in each sprite set and writes them as generated data (Showdown and Serebii block browser pixel reads). `pdz-sprite` gains a mode that sizes and places by the body. |
-| P4 | In progress: `grounded` (the ground shadow, with a `sprite-shadow` token) is built and in the gallery. **`pdz-sprite` treatments.** Ground shadow, shiny sparkle, the draft-availability badge, and the fainted fade, each adapting to renders, pixel sprites and headshots. |
-| P5 | Primitive built and in the gallery (2026-10-09); not yet placed on My Drafts or the team page. **`pdz-team-photo`.** The staggered team photo, with empty spots during a draft. Used on My Drafts cards and the team page banner. |
-| P6 | **Team page.** Roster-pattern header and the season MVP card (needs per-Pokémon KO totals). |
+| P4 | Built 2026-10-09 and in the gallery: `grounded`, automatic shiny sparkles, and `state` (`fainted`, `taken` with `takenLogo`/`takenBy`, `banned`). Not yet wired into the draft board, score entry or replays. **`pdz-sprite` treatments.** Ground shadow, shiny sparkle, the draft-availability badge, and the fainted fade, each adapting to renders, pixel sprites and headshots. |
+| P5 | On My Drafts (2026-10-09): every draft and tournament card opens with a team photo of up to fourteen (in the order the team was entered) through a new `pdz-card-media` slot, plus a "+N more" chip whose tooltip names the rest. Raised from six to fourteen the same day at the owner's request. On the draft page (`/drafts/:slug`): each opponent card opens with the opponent's photo on `side="team2"`; your team is a row of grounded sprites inside the header bar (a header photo was tried and dropped; the old full-width strip wasted a row). League team page still to do. **`pdz-team-photo`.** The staggered team photo, with empty spots during a draft. Used on My Drafts cards and the team page banner. |
+| P6 | Season MVP card on the draft page's Stats column (2026-10-09): most KOs (direct + indirect), ties to fewer faints then fewer games; a grounded sprite, a `secondary-accent` eyebrow and a hero KO count. Hidden until a Pokémon has a KO. **Team page.** Roster-pattern header and the season MVP card (needs per-Pokémon KO totals). |
 | P7 | **Season end.** The podium on final standings and the Hall of Fame on the league page. |
 | P8 | **Pokémon actors** in `pdz-empty-state` and the other F11 screen states. |
 

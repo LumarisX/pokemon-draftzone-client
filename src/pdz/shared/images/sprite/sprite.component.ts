@@ -11,10 +11,14 @@ import {
 } from '@angular/core';
 import { SpriteService } from '@pdz/core/services/sprite.service';
 import { DraftOptions, Pokemon } from '@pdz/core/utils/pokemon';
+import { IconComponent } from '@pdz/shared/images/icon/icon.component';
+import { TeamLogoComponent } from '@pdz/shared/images/team-logo/team-logo.component';
 import { TooltipDirective } from '@pdz/shared/tooltip/tooltip.directive';
 import { SpriteImageComponent } from '../sprite-image/sprite-image.component';
 
 type SpritePokemon = Pokemon<DraftOptions>;
+
+export type SpriteState = 'fainted' | 'taken' | 'banned';
 
 type FormeSlot = {
   pokemon: SpritePokemon;
@@ -27,13 +31,14 @@ type FormeSlot = {
 
 @Component({
   selector: 'pdz-sprite',
-  imports: [SpriteImageComponent, TooltipDirective],
+  imports: [SpriteImageComponent, TooltipDirective, TeamLogoComponent, IconComponent],
   templateUrl: './sprite.component.html',
   styleUrl: './sprite.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
     '[attr.data-grounded]': 'grounded() ? "" : null',
     '[attr.data-kind]': 'kind()',
+    '[attr.data-state]': 'state()',
   },
 })
 export class SpriteComponent {
@@ -41,6 +46,9 @@ export class SpriteComponent {
 
   pokemon = input.required<SpritePokemon>();
   grounded = input(false, { transform: booleanAttribute });
+  state = input<SpriteState | null>(null);
+  takenLogo = input<string | null | undefined>();
+  takenBy = input('');
   tooltipPosition = input<
     'before' | 'after' | 'above' | 'below' | 'left' | 'right' | null
   >(null);
@@ -127,6 +135,17 @@ export class SpriteComponent {
   protected readonly stateCount = computed(
     () => this.formes().length + (this.cycleDisabled() ? 1 : 0),
   );
+
+  protected readonly stateLabel = computed(() => {
+    switch (this.state()) {
+      case 'taken':
+        return this.takenBy() ? `Taken by ${this.takenBy()}` : 'Taken';
+      case 'banned':
+        return 'Banned';
+      default:
+        return null;
+    }
+  });
 
   protected readonly isInteractive = computed(
     () => this.interactive() && this.stateCount() > 1,
