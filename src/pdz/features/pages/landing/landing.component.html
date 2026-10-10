@@ -88,7 +88,7 @@
     } @else if (failed()) {
       <pdz-empty-state
         bordered
-        icon="error"
+        kind="error"
         heading="Could not load leagues"
         message="Something went wrong reaching the league list. Please refresh and try again."
       >
@@ -105,7 +105,7 @@
     } @else if (!preview().length) {
       <pdz-empty-state
         bordered
-        icon="search_off"
+        kind="empty"
         heading="No open leagues match"
         [message]="
           filtering()

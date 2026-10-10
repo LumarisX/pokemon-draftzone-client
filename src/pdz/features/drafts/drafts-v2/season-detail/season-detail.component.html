@@ -207,7 +207,7 @@
 } @else if (detail()?.failed) {
   <pdz-empty-state
     bordered
-    icon="error"
+    kind="error"
     heading="Could not load this season"
     message="The schedule and stats did not come back. Refresh and try again."
   />
@@ -254,7 +254,7 @@
           @if (!matches().length) {
             <pdz-empty-state
               bordered
-              icon="groups"
+              kind="empty"
               heading="No matches yet"
               message="Add an opponent to start prepping for the season."
             >
@@ -306,7 +306,7 @@
         } @else {
           <pdz-empty-state
             bordered
-            icon="query_stats"
+            kind="empty"
             heading="No stats yet"
             message="Score a match to see who is carrying the season."
           />

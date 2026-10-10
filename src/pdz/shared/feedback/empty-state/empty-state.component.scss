@@ -41,6 +41,10 @@ $sizes: (
   color: pdz.color(outline);
 }
 
+.pdz-empty-state__actor {
+  margin-bottom: pdz.space(2xs);
+}
+
 .pdz-empty-state__heading {
   @include pdz.text(card-title);
   margin: 0;

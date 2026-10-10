@@ -52,6 +52,7 @@ import {
   PodiumComponent,
   PodiumPlace,
 } from '@pdz/shared/data/podium/podium.component';
+import { EmptyStateComponent } from '@pdz/shared/feedback/empty-state/empty-state.component';
 import { TooltipDirective } from '@pdz/shared/tooltip/tooltip.directive';
 import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
 import { WidgetComponent } from '@pdz/shared/layout/widget/widget.component';
@@ -144,6 +145,7 @@ const MODE_ATTR = 'pdz-theme-mode';
     RosterPatternComponent,
     SeasonMvpComponent,
     PodiumComponent,
+    EmptyStateComponent,
     ScoreEntryGameComponent,
     ScoreEntryMatchComponent,
     CountdownComponent,

@@ -464,6 +464,15 @@
   }
 }
 
+.screen-states {
+  display: grid;
+  gap: pdz.space(md);
+
+  @include pdz.respond-above(medium) {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
 .photos__pair {
   display: grid;
   gap: pdz.space(md);

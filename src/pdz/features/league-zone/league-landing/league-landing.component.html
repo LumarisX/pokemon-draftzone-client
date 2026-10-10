@@ -36,7 +36,7 @@
         @if (tournaments().length === 0) {
           <pdz-empty-state
             bordered
-            icon="emoji_events"
+            kind="empty"
             heading="No tournaments yet"
             [message]="
               league.hosting?.canHost
@@ -164,7 +164,7 @@
   <pdz-page width="wide">
     <pdz-empty-state
       bordered
-      icon="error"
+      kind="error"
       heading="Could not load this league"
       message="Refresh the page to try again."
     />

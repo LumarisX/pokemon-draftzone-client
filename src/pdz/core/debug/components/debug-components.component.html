@@ -1867,6 +1867,42 @@
   </div>
 
   <h3 class="section__sub">
+    Screen states — kind="empty | waiting | error | no-access" puts Ditto,
+    Slowpoke, Psyduck or Snorlax above the message at md and lg; sm keeps an
+    icon
+  </h3>
+  <div class="screen-states">
+    <pdz-empty-state
+      bordered
+      kind="empty"
+      heading="No drafts yet"
+      message="Add your first draft to start prepping against opponents."
+    >
+      <button pdz-empty-state-actions pdz-button icon="add">New Draft</button>
+    </pdz-empty-state>
+    <pdz-empty-state
+      bordered
+      kind="waiting"
+      heading="No matches scheduled yet"
+      message="The schedule appears here once the organizers publish it."
+    />
+    <pdz-empty-state
+      bordered
+      kind="error"
+      heading="Could not load standings"
+      message="Refresh the page to try again."
+    />
+    <pdz-empty-state
+      bordered
+      kind="no-access"
+      heading="Only the league owner can edit it"
+      message="Ask the owner to make the change, or head back to the league."
+    />
+    <pdz-empty-state bordered size="sm" kind="error" message="Could not load trades." />
+    <pdz-empty-state bordered size="lg" kind="empty" heading="No Pokémon found" message="Try adjusting your search or filters." />
+  </div>
+
+  <h3 class="section__sub">
     Roster pattern — a team page's header backdrop, fading out behind the title
   </h3>
   <pdz-page-header title="Neon Nightshades">

@@ -9,7 +9,7 @@
     @if (loadFailed()) {
       <pdz-empty-state
         bordered
-        icon="error"
+        kind="error"
         heading="Couldn't load this league"
         message="Reload the page to try again."
       />
@@ -64,7 +64,7 @@
       } @else {
         <pdz-empty-state
           bordered
-          icon="lock"
+          kind="no-access"
           heading="Only the league owner can edit it"
         >
           <a pdz-empty-state-actions pdz-button [routerLink]="leagueLink">

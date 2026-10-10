@@ -10,7 +10,7 @@
     @if (loadFailed()) {
       <pdz-empty-state
         bordered
-        icon="error"
+        kind="error"
         heading="Couldn't load this league"
         message="Reload the page to try again."
       />
@@ -143,7 +143,7 @@
       } @else if (league.isOwner && league.hosting?.reason === "limit") {
         <pdz-empty-state
           bordered
-          icon="block"
+          kind="no-access"
           heading="You're at the active tournament limit"
           message="Archive a finished tournament from its settings to start another."
         >
@@ -154,7 +154,7 @@
       } @else if (league.isOwner) {
         <pdz-empty-state
           bordered
-          icon="science"
+          kind="no-access"
           heading="Hosting on DraftZone is in beta"
           message="Running tournaments on DraftZone is open to a small group for now. Ask in the DraftZone Discord if you'd like access."
         >
@@ -165,7 +165,7 @@
       } @else {
         <pdz-empty-state
           bordered
-          icon="lock"
+          kind="no-access"
           heading="Only the league owner can add tournaments"
           [message]="
             'Ask the owner of ' + league.name + ' to set up the next season.'

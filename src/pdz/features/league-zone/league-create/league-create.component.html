@@ -9,7 +9,7 @@
     @if (loadFailed()) {
       <pdz-empty-state
         bordered
-        icon="error"
+        kind="error"
         heading="Couldn't check league access"
         message="Reload the page to try again."
       />
@@ -61,7 +61,7 @@
       } @else {
         <pdz-empty-state
           bordered
-          icon="science"
+          kind="no-access"
           heading="Hosting on DraftZone is in beta"
           message="Running leagues and tournaments on DraftZone is open to a small group for now. Ask in the DraftZone Discord if you'd like access."
         >

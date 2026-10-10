@@ -97,7 +97,7 @@
 } @else if (loadError()) {
   <pdz-empty-state
     bordered
-    icon="error"
+    kind="error"
     heading="Could not load this matchup"
     [message]="loadError() ?? ''"
   />

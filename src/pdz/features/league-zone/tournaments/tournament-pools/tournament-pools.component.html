@@ -13,7 +13,7 @@
     } @else {
       <pdz-empty-state
         bordered
-        icon="groups"
+        kind="waiting"
         heading="No pools yet"
         message="No pools have been set up for this tournament yet."
       />
@@ -22,7 +22,7 @@
 } @else if (leagueInfo() === null) {
   <pdz-empty-state
     bordered
-    icon="error"
+    kind="error"
     heading="Could not load this tournament"
   />
 } @else {

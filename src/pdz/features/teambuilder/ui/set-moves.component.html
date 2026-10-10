@@ -64,13 +64,13 @@
       </div>
     } @else if (learnset.error()) {
       <pdz-empty-state
-        icon="cloud_off"
+        kind="error"
         heading="Could not load moves"
         message="The learnset request failed. Check your connection and try again."
       />
     } @else if (visible().length === 0) {
       <pdz-empty-state
-        icon="search_off"
+        kind="empty"
         heading="No moves match"
         message="Nothing in this learnset matches that filter."
       />

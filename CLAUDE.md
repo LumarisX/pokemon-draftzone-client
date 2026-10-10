@@ -85,7 +85,9 @@ layer behind the header that fades out toward the title: a team page's
 `<pdz-roster-pattern [pokemon]>`), and default content below the bar (tab navs, switchers). The page root
 then owns its own vertical rhythm with `gap: pdz.layout(section-gap)`, not
 per-section padding. A page with no data shows `<pdz-empty-state>`, never a bare
-sentence or an endless spinner.
+sentence or an endless spinner. Give every `md`/`lg` empty state a `kind`
+(`empty` | `waiting` | `error` | `no-access`); it stands Ditto, Slowpoke, Psyduck or
+Snorlax above the message. `sm` keeps an inline icon.
 
 Pages inside the tournament shell get **no back button** — the nav does that. The
 one exception is the tournament landing page, whose `backLink`/`backLabel` render

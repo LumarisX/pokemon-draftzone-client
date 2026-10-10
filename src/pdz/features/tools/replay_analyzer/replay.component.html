@@ -144,7 +144,7 @@
           @case ("idle") {
             <pdz-empty-state
               bordered
-              icon="query_stats"
+              kind="empty"
               heading="No replay analyzed yet"
               message="Drop a replay link above and press Enter."
             />
@@ -235,7 +235,7 @@
           @case ("error") {
             <pdz-empty-state
               bordered
-              icon="error"
+              kind="error"
               heading="That replay could not be analyzed"
               message="Check that the link points at a public Showdown replay, then try again."
             />
@@ -692,7 +692,7 @@
                       </div>
                     } @else if (timelineMode() === "visual") {
                       <pdz-empty-state
-                        icon="timeline"
+                        kind="empty"
                         heading="No knockouts to plot"
                         message="This replay has no recorded KOs. Switch to Text for the full event log."
                       />

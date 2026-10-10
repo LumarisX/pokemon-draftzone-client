@@ -160,13 +160,13 @@
         </div>
       } @else if (hasRoster()) {
         <pdz-empty-state
-          icon="add_circle"
+          kind="empty"
           heading="No Pokémon yet"
           message="Search your roster above to add your first one."
         />
       } @else {
         <pdz-empty-state
-          icon="catching_pokemon"
+          kind="empty"
           heading="No roster available"
           message="This context did not provide a roster to draw from."
         />
