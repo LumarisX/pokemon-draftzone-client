@@ -5,14 +5,13 @@ import {
   computed,
   input,
 } from '@angular/core';
-import { RouterLink } from '@angular/router';
 import { League } from '@pdz/features/league-zone/league.interface';
 import { getTeamLogoSrc } from '@pdz/features/league-zone/league.util';
 import { BadgeTone } from '@pdz/shared/data/badge/badge.component';
 import { RecordComponent } from '@pdz/shared/data/record/record.component';
 import { ScoreComponent } from '@pdz/shared/data/score/score.component';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
-import { TeamLogoComponent } from '@pdz/shared/images/team-logo/team-logo.component';
+import { TeamComponent } from '@pdz/shared/data/team/team.component';
 import { PlusSignPipe } from '@pdz/shared/pipes/plus-sign.pipe';
 
 type ResultOutcome = League.TeamStandingData['results'][number];
@@ -31,9 +30,8 @@ const OUTCOME_LABELS: Record<NonNullable<ResultOutcome>['outcome'], string> = {
     IconComponent,
     PlusSignPipe,
     RecordComponent,
-    RouterLink,
     ScoreComponent,
-    TeamLogoComponent,
+    TeamComponent,
     UpperCasePipe,
   ],
   templateUrl: './team-standings.component.html',

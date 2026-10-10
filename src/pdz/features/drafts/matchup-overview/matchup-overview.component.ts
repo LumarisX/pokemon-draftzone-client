@@ -18,7 +18,7 @@ import {
   matchupPath,
   MatchupService,
 } from './matchup.service';
-import { MatchupComponent } from './matchup/matchup.component';
+import { MatchupBreakdownComponent } from './matchup/matchup-breakdown.component';
 import {
   ShareDialogComponent,
   ShareDialogData,
@@ -39,7 +39,7 @@ type PanelTool = 'teambuilder' | 'notes';
     ButtonComponent,
     CountdownComponent,
     IconComponent,
-    MatchupComponent,
+    MatchupBreakdownComponent,
     MatchupNotesComponent,
     PageHeaderComponent,
     SkeletonComponent,

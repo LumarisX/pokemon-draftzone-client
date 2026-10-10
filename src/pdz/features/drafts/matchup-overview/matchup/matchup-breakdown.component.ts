@@ -9,9 +9,9 @@ import { CoveragechartComponent } from './coveragechart/coveragechart.component'
 import { SpeedchartComponent } from './speedchart/speedchart.component';
 
 @Component({
-  selector: 'pdz-matchup',
-  templateUrl: './matchup.component.html',
-  styleUrl: './matchup.component.scss',
+  selector: 'pdz-matchup-breakdown',
+  templateUrl: './matchup-breakdown.component.html',
+  styleUrl: './matchup-breakdown.component.scss',
   imports: [
     RouterModule,
     SummaryComponent,
@@ -22,6 +22,6 @@ import { SpeedchartComponent } from './speedchart/speedchart.component';
     OverviewComponent,
   ],
 })
-export class MatchupComponent {
+export class MatchupBreakdownComponent {
   readonly matchupData = input.required<MatchupData>();
 }

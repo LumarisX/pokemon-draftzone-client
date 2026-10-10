@@ -14,7 +14,7 @@ import { RecordComponent } from '@pdz/shared/data/record/record.component';
 import { EmptyStateComponent } from '@pdz/shared/feedback/empty-state/empty-state.component';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
-import { TeamLogoComponent } from '@pdz/shared/images/team-logo/team-logo.component';
+import { TeamComponent } from '@pdz/shared/data/team/team.component';
 
 @Component({
   selector: 'pdz-league-team-card',
@@ -26,7 +26,7 @@ import { TeamLogoComponent } from '@pdz/shared/images/team-logo/team-logo.compon
     IconComponent,
     RecordComponent,
     RouterLink,
-    TeamLogoComponent,
+    TeamComponent,
   ],
   templateUrl: './league-team-card.component.html',
   styleUrl: './league-team-card.component.scss',

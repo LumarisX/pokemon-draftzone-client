@@ -7,7 +7,7 @@ import {
   inject,
   signal,
 } from '@angular/core';
-import { DatePipe, NgTemplateOutlet } from '@angular/common';
+import { DatePipe } from '@angular/common';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 import { LEAGUE_ZONE_PATH } from '@pdz/core/route-paths';
@@ -30,7 +30,7 @@ import { RecordComponent } from '@pdz/shared/data/record/record.component';
 import { ScoreComponent } from '@pdz/shared/data/score/score.component';
 import { SkeletonComponent } from '@pdz/shared/data/skeleton/skeleton.component';
 import { EmptyStateComponent } from '@pdz/shared/feedback/empty-state/empty-state.component';
-import { TeamLogoComponent } from '@pdz/shared/images/team-logo/team-logo.component';
+import { TeamComponent } from '@pdz/shared/data/team/team.component';
 import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
 import { PlusSignPipe } from '@pdz/shared/pipes/plus-sign.pipe';
 import { catchError, of, switchMap } from 'rxjs';
@@ -73,7 +73,6 @@ const STANDINGS_PREVIEW_ROWS = 8;
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     DatePipe,
-    NgTemplateOutlet,
     RouterLink,
     ButtonComponent,
     ChipComponent,
@@ -84,7 +83,7 @@ const STANDINGS_PREVIEW_ROWS = 8;
     RecordComponent,
     ScoreComponent,
     SkeletonComponent,
-    TeamLogoComponent,
+    TeamComponent,
   ],
 })
 export class TournamentLandingComponent implements OnInit {

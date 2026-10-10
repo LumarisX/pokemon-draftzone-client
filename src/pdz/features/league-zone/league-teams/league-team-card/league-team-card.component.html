@@ -1,16 +1,15 @@
 <pdz-card padding="sm">
   <div class="team">
     <div class="team__header">
-      <pdz-team-logo
-        size="xl"
-        decorative
-        [src]="logoSrc()"
+      <pdz-team
+        class="team__identity"
+        size="card"
+        [headingLevel]="2"
         [name]="teamDetails().name"
-      />
-      <div class="team__info">
-        <h2 class="team__name">{{ teamDetails().name }}</h2>
-        <p class="team__coach">{{ teamDetails().coach }}</p>
-        <div class="team__meta">
+        [logo]="logoSrc()"
+        [coach]="teamDetails().coach"
+      >
+        <div pdz-team-meta class="team__meta">
           @if (localTime(); as time) {
             <span class="team__time">
               <pdz-icon name="schedule" [size]="14" />
@@ -26,7 +25,7 @@
             />
           }
         </div>
-      </div>
+      </pdz-team>
       <div class="team__views">
         <button
           pdz-button

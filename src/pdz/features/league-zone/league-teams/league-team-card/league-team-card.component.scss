@@ -25,24 +25,8 @@ pdz-card {
   border-bottom: 1px solid pdz.color(border-subtle);
 }
 
-.team__info {
-  display: flex;
+.team__identity {
   flex: 1 1 auto;
-  flex-direction: column;
-  gap: pdz.space(2xs);
-  min-width: 0;
-}
-
-.team__name {
-  @include pdz.text(card-title);
-  margin: 0;
-  overflow-wrap: anywhere;
-}
-
-.team__coach {
-  @include pdz.text(meta);
-  margin: 0;
-  color: pdz.color(on-surface-variant);
 }
 
 .team__meta {

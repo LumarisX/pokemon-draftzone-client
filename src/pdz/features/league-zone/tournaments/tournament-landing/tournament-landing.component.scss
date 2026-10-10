@@ -156,7 +156,7 @@
 
 .standings-preview__row {
   display: grid;
-  grid-template-columns: 1.5rem 2rem minmax(0, 1fr) auto auto;
+  grid-template-columns: 1.5rem minmax(0, 1fr) auto auto;
   align-items: center;
   gap: pdz.space(sm);
   padding: pdz.space(2xs) pdz.space(xs);
@@ -181,44 +181,6 @@
   @include pdz.numeric;
   color: pdz.color(on-surface-variant);
   text-align: right;
-}
-
-.standings-preview__team {
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
-  color: inherit;
-  text-decoration: none;
-  border-radius: pdz.shape(corner-xs);
-
-  &:hover .standings-preview__name {
-    color: pdz.color(primary-accent);
-  }
-
-  &:focus-visible {
-    @include pdz.focus-ring;
-  }
-}
-
-.standings-preview__name {
-  @include pdz.text(body-sm-strong);
-  display: flex;
-  align-items: center;
-  gap: pdz.space(xs);
-  min-width: 0;
-  overflow: hidden;
-  color: pdz.color(on-surface);
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  transition: color pdz.duration(fast) pdz.easing(standard);
-}
-
-.standings-preview__coach {
-  @include pdz.text(meta);
-  overflow: hidden;
-  color: pdz.color(on-surface-variant);
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
 .standings-preview__footer {

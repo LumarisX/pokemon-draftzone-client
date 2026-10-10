@@ -1,0 +1,85 @@
+@use "pdz-theming" as pdz;
+
+:host {
+  display: inline-flex;
+  align-items: center;
+  gap: pdz.space(sm);
+  min-width: 0;
+  max-width: 100%;
+  color: pdz.color(on-surface);
+}
+
+:host([data-size="inline"]) {
+  gap: pdz.space(xs);
+}
+
+:host([data-size="hero"]) {
+  gap: pdz.space(md);
+}
+
+:host([data-align="end"]) {
+  flex-direction: row-reverse;
+  text-align: end;
+
+  .pdz-team__text {
+    align-items: flex-end;
+  }
+
+  .pdz-team__title {
+    flex-direction: row-reverse;
+  }
+}
+
+.pdz-team__logo {
+  flex: none;
+}
+
+.pdz-team__text {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(3xs);
+  min-width: 0;
+}
+
+.pdz-team__title {
+  display: flex;
+  align-items: center;
+  gap: pdz.space(xs);
+  min-width: 0;
+}
+
+.pdz-team__name {
+  @include pdz.text(body-sm-strong);
+  overflow: hidden;
+  color: inherit;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  :host([data-size="card"]) & {
+    @include pdz.text(card-title);
+  }
+
+  :host([data-size="hero"]) & {
+    @include pdz.text(title);
+  }
+}
+
+.pdz-team__name--link {
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+
+  &:focus-visible {
+    @include pdz.focus-ring;
+  }
+}
+
+.pdz-team__coach {
+  @include pdz.text(meta);
+  overflow: hidden;
+  color: pdz.color(on-surface-variant);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

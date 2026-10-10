@@ -1867,6 +1867,24 @@
   </div>
 
   <h3 class="section__sub">
+    Team — one identity lockup in four sizes (inline, row, card, hero); a link
+    makes the name clickable, align="end" mirrors it for the far side
+  </h3>
+  <div class="team-lockups">
+    <pdz-team size="inline" name="Inglorious Surfers" coach="aaronmarshall" />
+    <pdz-team name="Inglorious Surfers" coach="aaronmarshall" [link]="['.']" you />
+    <pdz-team size="card" name="Viridian Vipers" coach="misty" [logo]="teamLogoSample" />
+    <pdz-team size="hero" name="Neon Nightshades" coach="brock" [headingLevel]="3" />
+    <div class="team-lockups__versus">
+      <pdz-team size="card" name="Inglorious Surfers" coach="aaronmarshall" you />
+      <pdz-team size="card" align="end" name="Viridian Vipers" coach="misty" [logo]="teamLogoSample" />
+    </div>
+    <div class="team-lockups__narrow">
+      <pdz-team name="A Team Name That Keeps Going Well Past Its Box" coach="a-coach-with-a-long-handle" />
+    </div>
+  </div>
+
+  <h3 class="section__sub">
     Screen states — kind="empty | waiting | error | no-access" puts Ditto,
     Slowpoke, Psyduck or Snorlax above the message at md and lg; sm keeps an
     icon

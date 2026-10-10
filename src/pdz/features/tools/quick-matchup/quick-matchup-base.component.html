@@ -29,7 +29,7 @@
   </div>
 } @else {
   @if (matchupData(); as data) {
-    <pdz-matchup [matchupData]="data"></pdz-matchup>
+    <pdz-matchup-breakdown [matchupData]="data" />
   } @else {
     <pdz-loading />
   }

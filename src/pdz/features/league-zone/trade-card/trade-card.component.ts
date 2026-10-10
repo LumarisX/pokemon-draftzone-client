@@ -19,7 +19,7 @@ import {
 import { CardComponent } from '@pdz/shared/data/card/card.component';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
-import { TeamLogoComponent } from '@pdz/shared/images/team-logo/team-logo.component';
+import { TeamComponent } from '@pdz/shared/data/team/team.component';
 
 @Component({
   selector: 'pdz-trade-card',
@@ -29,7 +29,7 @@ import { TeamLogoComponent } from '@pdz/shared/images/team-logo/team-logo.compon
     CardComponent,
     IconComponent,
     SpriteComponent,
-    TeamLogoComponent,
+    TeamComponent,
   ],
   templateUrl: './trade-card.component.html',
   styleUrl: './trade-card.component.scss',

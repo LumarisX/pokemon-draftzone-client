@@ -139,33 +139,17 @@
                   [class.standings-preview__row--you]="row.teamId === ownTeamId()"
                 >
                   <span class="standings-preview__rank">{{ row.rank }}</span>
-                  <pdz-team-logo
-                    size="sm"
-                    decorative
-                    [src]="logoSrc(row.logo)"
+                  <pdz-team
                     [name]="row.name"
+                    [logo]="logoSrc(row.logo)"
+                    [coach]="row.coach"
+                    [link]="
+                      row.teamSlug
+                        ? [...tournamentBase(), 'teams', row.teamSlug]
+                        : null
+                    "
+                    [you]="row.teamId === ownTeamId()"
                   />
-                  <ng-template #teamText>
-                    <span class="standings-preview__name">
-                      {{ row.name }}
-                      @if (row.teamId === ownTeamId()) {
-                        <span class="pdz-you-tag">You</span>
-                      }
-                    </span>
-                    <span class="standings-preview__coach">{{ row.coach }}</span>
-                  </ng-template>
-                  @if (row.teamSlug; as slug) {
-                    <a
-                      class="standings-preview__team"
-                      [routerLink]="[...tournamentBase(), 'teams', slug]"
-                    >
-                      <ng-container [ngTemplateOutlet]="teamText" />
-                    </a>
-                  } @else {
-                    <span class="standings-preview__team">
-                      <ng-container [ngTemplateOutlet]="teamText" />
-                    </span>
-                  }
                   <pdz-record
                     size="sm"
                     [wins]="row.wins"

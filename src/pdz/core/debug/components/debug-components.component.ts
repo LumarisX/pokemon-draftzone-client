@@ -53,6 +53,7 @@ import {
   PodiumPlace,
 } from '@pdz/shared/data/podium/podium.component';
 import { EmptyStateComponent } from '@pdz/shared/feedback/empty-state/empty-state.component';
+import { TeamComponent } from '@pdz/shared/data/team/team.component';
 import { TooltipDirective } from '@pdz/shared/tooltip/tooltip.directive';
 import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
 import { WidgetComponent } from '@pdz/shared/layout/widget/widget.component';
@@ -146,6 +147,7 @@ const MODE_ATTR = 'pdz-theme-mode';
     SeasonMvpComponent,
     PodiumComponent,
     EmptyStateComponent,
+    TeamComponent,
     ScoreEntryGameComponent,
     ScoreEntryMatchComponent,
     CountdownComponent,
@@ -251,6 +253,8 @@ export class DebugComponentsComponent {
       pokemon: this.photoTeam[4],
     },
   ];
+  protected readonly teamLogoSample =
+    'https://play.pokemonshowdown.com/sprites/trainers/cynthia.png';
   protected readonly podiumPlacesNoActors = this.podiumPlaces.map(
     (place) => ({ ...place, pokemon: null, you: false }),
   );

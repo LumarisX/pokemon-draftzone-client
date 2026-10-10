@@ -28,29 +28,22 @@
       <section class="trade-side" [attr.data-team]="side.slot">
         <div class="trade-side__team">
           @if (participant.team; as team) {
-            <pdz-team-logo
-              size="sm"
-              shape="circle"
-              decorative
-              [src]="logo(participant)"
+            <pdz-team
               [name]="team.name"
+              [logo]="logo(participant)"
+              [coach]="team.coach"
+              [you]="side.you"
+              [align]="side.slot === 'team2' ? 'end' : 'start'"
             />
           } @else {
             <span class="trade-side__free">
               <pdz-icon name="public" [size]="18" />
             </span>
-          }
-          <span class="trade-side__identity">
-            <span class="trade-side__name">
-              {{ participant.team?.name ?? "Free agency" }}
-              @if (side.you) {
-                <span class="pdz-you-tag">You</span>
-              }
+            <span class="trade-side__identity">
+              <span class="trade-side__name">Free agency</span>
+              <span class="trade-side__coach">Draft pool</span>
             </span>
-            <span class="trade-side__coach">{{
-              participant.team?.coach ?? "Draft pool"
-            }}</span>
-          </span>
+          }
         </div>
 
         <ul class="pick-list">

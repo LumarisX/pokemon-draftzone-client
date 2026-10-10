@@ -36,38 +36,7 @@
 }
 
 .team {
-  display: flex;
-  align-items: center;
-  gap: pdz.space(sm);
   min-width: 12rem;
-}
-
-.team__text {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  column-gap: pdz.space(xs);
-  min-width: 0;
-}
-
-.team__name {
-  @include pdz.text(body-sm-strong);
-  color: pdz.color(on-surface);
-  text-decoration: none;
-}
-
-.team__name--link:hover {
-  text-decoration: underline;
-}
-
-.team__name--link:focus-visible {
-  @include pdz.focus-ring;
-}
-
-.team__coach {
-  @include pdz.text(meta);
-  flex-basis: 100%;
-  color: pdz.color(on-surface-variant);
 }
 
 .form {

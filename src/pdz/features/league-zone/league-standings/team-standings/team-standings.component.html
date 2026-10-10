@@ -40,29 +40,18 @@
             </span>
           </td>
           <td>
-            <span class="team">
-              <pdz-team-logo
-                size="sm"
-                decorative
-                [src]="logo(team)"
-                [name]="team.name"
-              />
-              <span class="team__text">
-                @if (teamLinkBase() && team.teamSlug) {
-                  <a
-                    class="team__name team__name--link"
-                    [routerLink]="[...teamLinkBase()!, team.teamSlug]"
-                    >{{ team.name }}</a
-                  >
-                } @else {
-                  <span class="team__name">{{ team.name }}</span>
-                }
-                @if (you) {
-                  <span class="pdz-you-tag">You</span>
-                }
-                <span class="team__coach">{{ team.coach }}</span>
-              </span>
-            </span>
+            <pdz-team
+              class="team"
+              [name]="team.name"
+              [logo]="logo(team)"
+              [coach]="team.coach"
+              [link]="
+                teamLinkBase() && team.teamSlug
+                  ? [...teamLinkBase()!, team.teamSlug]
+                  : null
+              "
+              [you]="you"
+            />
           </td>
           <td class="pdz-table__center">
             <pdz-record

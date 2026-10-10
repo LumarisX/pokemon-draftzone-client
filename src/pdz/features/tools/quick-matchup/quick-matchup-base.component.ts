@@ -1,7 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
 import { MatchupData } from '@pdz/features/drafts/matchup-overview/matchup-interface';
 import { MatchupService } from '@pdz/features/drafts/matchup-overview/matchup.service';
-import { MatchupComponent } from '@pdz/features/drafts/matchup-overview/matchup/matchup.component';
+import { MatchupBreakdownComponent } from '@pdz/features/drafts/matchup-overview/matchup/matchup-breakdown.component';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
 import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
@@ -14,7 +14,7 @@ import {
   selector: 'pdz-quick-matchup-base',
   imports: [
     QuickMatchupFormComponent,
-    MatchupComponent,
+    MatchupBreakdownComponent,
     ButtonComponent,
     LoadingComponent,
     PageHeaderComponent,

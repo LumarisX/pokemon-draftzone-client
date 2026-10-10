@@ -464,6 +464,26 @@
   }
 }
 
+.team-lockups {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: pdz.space(md);
+}
+
+.team-lockups__versus {
+  display: flex;
+  justify-content: space-between;
+  gap: pdz.space(md);
+  width: 100%;
+  max-width: pdz.content-width(narrow);
+}
+
+.team-lockups__narrow {
+  display: flex;
+  width: 12rem;
+}
+
 .screen-states {
   display: grid;
   gap: pdz.space(md);
