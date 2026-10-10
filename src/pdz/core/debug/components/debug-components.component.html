@@ -1817,9 +1817,9 @@
   </div>
 
   <h3 class="section__sub">
-    Team photo — up to fourteen, aces front and center, later picks raised into
-    the gaps behind, empty spots while a draft runs, side="team2" for the
-    opponent
+    Team photo — up to nineteen in rows of 6 / 7 / 6, aces front and center,
+    later picks raised into the gaps behind, empty spots while a draft runs,
+    side="team2" for the opponent
   </h3>
   <div class="photos">
     <pdz-team-photo [pokemon]="photoTeam" size="lg" name="Inglorious Surfers" />
@@ -1881,6 +1881,41 @@
     </div>
     <div class="team-lockups__narrow">
       <pdz-team name="A Team Name That Keeps Going Well Past Its Box" coach="a-coach-with-a-long-handle" />
+    </div>
+  </div>
+
+  <h3 class="section__sub">
+    Matchup — two pdz-teams in three sizes: hero (the scoreboard, rosters facing
+    off on the versus wash), card (schedule and bracket), row; you are always
+    team 1
+  </h3>
+  <div class="matchups">
+    <pdz-matchup size="hero" [team1]="matchupHero.team1" [team2]="matchupHero.team2">
+      <span pdz-matchup-center class="matchups__meta">Week 4 · Final</span>
+    </pdz-matchup>
+    <pdz-matchup size="hero" [team1]="matchupUpcoming.team1" [team2]="matchupUpcoming.team2">
+      <span pdz-matchup-center class="matchups__meta">Fri 8:00 PM</span>
+    </pdz-matchup>
+    <div class="matchups__cards">
+      <pdz-matchup label="Week 4" [team1]="matchupHero.team1" [team2]="matchupHero.team2">
+        <span pdz-matchup-actions class="matchups__actions">
+          <a pdz-button size="xs" variant="tonal" [routerLink]="['.']">View</a>
+          <a pdz-button size="xs" variant="outlined" color="neutral" icon="play_circle" href="https://replay.pokemonshowdown.com">Replay</a>
+        </span>
+      </pdz-matchup>
+      <pdz-matchup label="Week 5" [team1]="matchupUpcoming.team1" [team2]="matchupUpcoming.team2">
+        <span pdz-matchup-actions class="matchups__actions">
+          <a pdz-button size="xs" variant="tonal" [routerLink]="['.']">View</a>
+          <a pdz-button size="xs" variant="outlined" color="neutral" [routerLink]="['.']">Breakdown</a>
+        </span>
+      </pdz-matchup>
+      <pdz-matchup label="Semifinal" [team1]="matchupPending.team1" [team2]="matchupPending.team2">
+        <pdz-chip pdz-matchup-status size="xs">Advanced</pdz-chip>
+      </pdz-matchup>
+    </div>
+    <div class="matchups__rows">
+      <pdz-matchup size="row" [team1]="matchupHero.team1" [team2]="matchupHero.team2" />
+      <pdz-matchup size="row" label="Week 5" [team1]="matchupUpcoming.team1" [team2]="matchupUpcoming.team2" />
     </div>
   </div>
 

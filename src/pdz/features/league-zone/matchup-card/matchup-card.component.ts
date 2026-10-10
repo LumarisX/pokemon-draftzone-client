@@ -1,4 +1,3 @@
-import { NgTemplateOutlet } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
@@ -7,21 +6,37 @@ import {
   output,
 } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { TeamSlot } from '@pdz/core/utils/versus';
 import { getTeamLogoSrc } from '@pdz/features/league-zone/league.util';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
-import { IconComponent } from '@pdz/shared/images/icon/icon.component';
-import { TeamLogoComponent } from '@pdz/shared/images/team-logo/team-logo.component';
-import { MatchupCard } from './matchup-card.model';
+import { ChipComponent } from '@pdz/shared/data/chip/chip.component';
+import {
+  MatchupComponent,
+  MatchupTeam,
+} from '@pdz/shared/data/matchup/matchup.component';
+import { MatchupCard, MatchupCardSlot } from './matchup-card.model';
+
+function toTeam(slot: MatchupCardSlot): MatchupTeam {
+  return {
+    name: slot.name,
+    logo: getTeamLogoSrc(slot.logo),
+    coach: slot.coach,
+    link: slot.link,
+    pending: slot.pending,
+    selectable: !!slot.sourceId,
+    score: slot.score,
+    result:
+      slot.status === 'winner'
+        ? 'win'
+        : slot.status === 'loser'
+          ? 'loss'
+          : null,
+  };
+}
 
 @Component({
   selector: 'pdz-matchup-card',
-  imports: [
-    NgTemplateOutlet,
-    RouterLink,
-    IconComponent,
-    ButtonComponent,
-    TeamLogoComponent,
-  ],
+  imports: [RouterLink, ButtonComponent, ChipComponent, MatchupComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   templateUrl: './matchup-card.component.html',
   styleUrl: './matchup-card.component.scss',
@@ -34,15 +49,16 @@ export class MatchupCardComponent {
   readonly remove = output<string>();
   readonly focusSource = output<string>();
 
-  protected readonly logoSrc = getTeamLogoSrc;
-
-  protected readonly hasHeader = computed(() => {
-    const card = this.card();
-    return !!card.label || this.editable() || card.forfeit;
-  });
+  protected readonly team1 = computed(() => toTeam(this.card().slots[0]));
+  protected readonly team2 = computed(() => toTeam(this.card().slots[1]));
 
   protected readonly hasFooter = computed(() => {
     const card = this.card();
     return !!card.viewLink || !!card.breakdownLink || card.replays.length > 0;
   });
+
+  protected selectSide(slot: TeamSlot): void {
+    const sourceId = this.card().slots[slot === 'team1' ? 0 : 1].sourceId;
+    if (sourceId) this.focusSource.emit(sourceId);
+  }
 }

@@ -484,6 +484,37 @@
   width: 12rem;
 }
 
+.matchups {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(md);
+}
+
+.matchups__cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(18rem, 100%), 1fr));
+  gap: pdz.space(md);
+  align-items: start;
+}
+
+.matchups__rows {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(md);
+  max-width: pdz.content-width(narrow);
+}
+
+.matchups__meta {
+  @include pdz.text(meta);
+  color: pdz.color(on-surface-variant);
+}
+
+.matchups__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: pdz.space(2xs);
+}
+
 .screen-states {
   display: grid;
   gap: pdz.space(md);

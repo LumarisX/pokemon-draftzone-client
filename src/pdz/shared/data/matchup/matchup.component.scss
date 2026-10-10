@@ -1,0 +1,340 @@
+@use "pdz-theming" as pdz;
+
+$card-row-height: 3rem;
+
+:host {
+  --pdz-matchup-sprite: 2.5rem;
+  display: block;
+  container: pdz-matchup / inline-size;
+  min-width: 0;
+  color: pdz.color(on-surface);
+}
+
+.pdz-matchup__frame {
+  :host([data-size="card"]) &,
+  :host([data-size="hero"]) & {
+    overflow: hidden;
+    border: 1px solid pdz.color(border-subtle);
+    border-radius: pdz.shape(corner-lg);
+    background-color: pdz.color(raised);
+  }
+
+  :host([data-size="card"]) & {
+    transition:
+      box-shadow pdz.duration(base) pdz.easing(standard),
+      border-color pdz.duration(base) pdz.easing(standard);
+
+    &:hover {
+      border-color: pdz.color(border-control);
+      box-shadow: var(--pdz-elevation-1);
+    }
+  }
+
+  :host([data-size="hero"]) & {
+    background-image: pdz.color(versus-wash-vertical);
+
+    @container pdz-matchup (min-width: 40rem) {
+      background-image: pdz.color(versus-wash);
+    }
+  }
+}
+
+.pdz-matchup__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: pdz.space(xs);
+
+  &:not(:has(*)) {
+    display: none;
+  }
+
+  :host([data-size="row"]) & {
+    margin-block-end: pdz.space(2xs);
+  }
+
+  :host([data-size="card"]) & {
+    min-height: pdz.control-height(sm);
+    padding: pdz.space(3xs) pdz.space(sm);
+    border-bottom: 1px solid pdz.color(border-subtle);
+  }
+
+  :host([data-size="hero"]) & {
+    justify-content: center;
+    padding: pdz.space(md) pdz.space(md) 0;
+  }
+}
+
+.pdz-matchup__label {
+  @include pdz.text(label-strong);
+  overflow: hidden;
+  color: pdz.color(on-surface-variant);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  :host([data-size="row"]) &,
+  :host([data-size="hero"]) & {
+    @include pdz.text(label-caps);
+  }
+}
+
+.pdz-matchup__body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
+  gap: pdz.space(sm);
+
+  :host([data-size="card"]) & {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0;
+  }
+
+  :host([data-size="hero"]) & {
+    grid-template-columns: minmax(0, 1fr);
+    gap: pdz.space(md);
+    padding: pdz.space(md);
+
+    @container pdz-matchup (min-width: 40rem) {
+      grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+      padding: pdz.space(lg);
+    }
+  }
+}
+
+.pdz-matchup__side {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(xs);
+  min-width: 0;
+
+  :host([data-size="row"]) &--team2 {
+    align-items: flex-end;
+  }
+
+  :host([data-size="card"]) & {
+    justify-content: center;
+    min-height: $card-row-height;
+    padding: pdz.space(2xs) pdz.space(sm);
+  }
+
+  :host([data-size="card"]) &--team2 {
+    border-top: 1px solid pdz.color(border-subtle);
+  }
+
+  :host([data-size="card"]) &--you {
+    background: linear-gradient(
+      90deg,
+      #{pdz.color(team1-wash)},
+      transparent 75%
+    );
+  }
+
+  :host([data-size="hero"]) & {
+    gap: pdz.space(sm);
+  }
+
+  :host([data-size="hero"]) &--team2 {
+    align-items: flex-end;
+    text-align: end;
+  }
+}
+
+.pdz-matchup__identity {
+  display: flex;
+  align-items: center;
+  gap: pdz.space(xs);
+  min-width: 0;
+  max-width: 100%;
+
+  :host([data-size="row"]) .pdz-matchup__side--team2 &,
+  :host([data-size="hero"]) .pdz-matchup__side--team2 & {
+    flex-direction: row-reverse;
+  }
+}
+
+.pdz-matchup__team {
+  flex: 0 1 auto;
+
+  :host([data-size="card"]) & {
+    flex: 1 1 auto;
+  }
+
+  .pdz-matchup__side[data-result="loss"] & {
+    color: pdz.color(on-surface-muted);
+  }
+}
+
+.pdz-matchup__trophy {
+  flex: none;
+  color: pdz.color(positive);
+}
+
+.pdz-matchup__side-score {
+  @include pdz.text(subtitle);
+  @include pdz.numeric;
+  flex: none;
+  min-width: 1.25rem;
+  margin-inline-start: auto;
+  text-align: end;
+
+  .pdz-matchup__side[data-result="win"] & {
+    font-weight: pdz.font-weight(semibold);
+  }
+
+  .pdz-matchup__side[data-result="loss"] & {
+    color: pdz.color(on-surface-muted);
+  }
+}
+
+.pdz-matchup__pending {
+  display: flex;
+  flex: 1 1 auto;
+  align-items: center;
+  gap: pdz.space(sm);
+  min-width: 0;
+}
+
+.pdz-matchup__pending-logo {
+  flex: none;
+  width: 2rem;
+  height: 2rem;
+  border: 1px dashed pdz.color(border-control);
+  border-radius: pdz.shape(corner-full);
+}
+
+.pdz-matchup__pending-name {
+  @include pdz.text(body-sm);
+  overflow: hidden;
+  padding: 0;
+  border: none;
+  background: none;
+  color: pdz.color(on-surface-variant);
+  font-style: italic;
+  text-align: start;
+  text-decoration: none;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  &--action {
+    color: pdz.color(primary-accent);
+    cursor: pointer;
+
+    &:hover {
+      text-decoration: underline;
+    }
+
+    &:focus-visible {
+      @include pdz.focus-ring;
+    }
+  }
+}
+
+.pdz-matchup__center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: pdz.space(3xs);
+
+  :host([data-size="card"]) & {
+    display: none;
+  }
+
+  :host([data-size="hero"]) & {
+    gap: pdz.space(xs);
+  }
+}
+
+.pdz-matchup__score {
+  display: flex;
+  align-items: center;
+  gap: pdz.space(xs);
+
+  :host([data-size="hero"]) & {
+    gap: pdz.space(md);
+  }
+}
+
+.pdz-matchup__points {
+  @include pdz.text(title);
+  @include pdz.numeric;
+
+  :host([data-size="hero"]) & {
+    @include pdz.text(display);
+  }
+
+  &--team1 {
+    color: pdz.color(team1-accent);
+  }
+
+  &--team2 {
+    color: pdz.color(team2-accent);
+  }
+}
+
+.pdz-matchup__dash {
+  @include pdz.text(body);
+  color: pdz.color(on-surface-muted);
+
+  :host([data-size="hero"]) & {
+    @include pdz.text(headline);
+  }
+}
+
+.pdz-matchup__vs {
+  @include pdz.text(label-caps);
+  color: pdz.color(on-surface-muted);
+
+  :host([data-size="hero"]) & {
+    @include pdz.text(title);
+    text-transform: uppercase;
+  }
+}
+
+.pdz-matchup__roster {
+  display: flex;
+  align-self: stretch;
+  gap: pdz.space(3xs);
+  min-width: 0;
+
+  .pdz-matchup__side--team2 & {
+    justify-content: flex-end;
+  }
+
+  @container pdz-matchup (min-width: 56rem) {
+    --pdz-matchup-sprite: 3rem;
+  }
+}
+
+.pdz-matchup__sprite {
+  flex: 0 1 var(--pdz-matchup-sprite);
+  min-width: 0;
+  max-width: var(--pdz-matchup-sprite);
+  aspect-ratio: 1;
+}
+
+.pdz-matchup__footer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: pdz.space(2xs);
+
+  &:not(:has(*)) {
+    display: none;
+  }
+
+  :host([data-size="row"]) & {
+    margin-block-start: pdz.space(2xs);
+  }
+
+  :host([data-size="card"]) & {
+    padding: pdz.space(2xs) pdz.space(sm);
+    border-top: 1px solid pdz.color(border-subtle);
+  }
+
+  :host([data-size="hero"]) & {
+    justify-content: center;
+    padding: 0 pdz.space(md) pdz.space(md);
+  }
+}

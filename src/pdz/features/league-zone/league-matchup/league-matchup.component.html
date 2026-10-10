@@ -1,58 +1,29 @@
-<ng-template #sideTpl let-side let-m="matchup">
-  <div
-    class="scoreboard__side"
-    [class.scoreboard__side--end]="side.slot === 'team2'"
-  >
-    <a class="scoreboard__identity" [routerLink]="teamPath(side.value.slug)">
-      <pdz-team-logo
-        size="lg"
-        decorative
-        [src]="logoSrc(side.value.logo)"
-        [name]="side.value.name"
+<ng-template #contactTpl let-side>
+  @if (handleFor(side); as handle) {
+    <button
+      pdz-button
+      size="xs"
+      [variant]="copiedHandle() === handle ? 'tonal' : 'ghost'"
+      [color]="copiedHandle() === handle ? 'success' : 'neutral'"
+      [attr.aria-label]="'Copy ' + handle"
+      (click)="copyHandle(side)"
+    >
+      <pdz-icon name="discord" [size]="14" />
+      <span class="scoreboard__handle">{{ handle }}</span>
+      <pdz-icon
+        class="scoreboard__copy"
+        [name]="copiedHandle() === handle ? 'check' : 'content_copy'"
+        [size]="14"
       />
-      <span class="scoreboard__names">
-        <span class="scoreboard__team">
-          {{ side.value.name }}
-          @if (side.you) {
-            <span class="pdz-you-tag">You</span>
-          }
-        </span>
-        <span class="scoreboard__coach">{{ side.value.coach }}</span>
-      </span>
-    </a>
+    </button>
+  }
 
-    @if (isWinner(m, side.stored)) {
-      <pdz-chip tone="success" size="xs" icon="emoji_events">Winner</pdz-chip>
-    }
-
-    <div class="scoreboard__contact">
-      @if (handleFor(side.value); as handle) {
-        <button
-          pdz-button
-          size="xs"
-          [variant]="copiedHandle() === handle ? 'tonal' : 'ghost'"
-          [color]="copiedHandle() === handle ? 'success' : 'neutral'"
-          [attr.aria-label]="'Copy ' + handle"
-          (click)="copyHandle(side.value)"
-        >
-          <pdz-icon name="discord" [size]="14" />
-          <span class="scoreboard__handle">{{ handle }}</span>
-          <pdz-icon
-            class="scoreboard__copy"
-            [name]="copiedHandle() === handle ? 'check' : 'content_copy'"
-            [size]="14"
-          />
-        </button>
-      }
-
-      @if (localTime(side.value); as time) {
-        <span class="scoreboard__time">
-          <pdz-icon name="schedule" [size]="14" />
-          <span>{{ time }}</span>
-        </span>
-      }
-    </div>
-  </div>
+  @if (localTime(side); as time) {
+    <span class="scoreboard__time">
+      <pdz-icon name="schedule" [size]="14" />
+      <span>{{ time }}</span>
+    </span>
+  }
 </ng-template>
 
 @if (loading()) {
@@ -112,28 +83,22 @@
       }
     </pdz-page-header>
 
-    <section class="scoreboard" aria-label="Scoreboard">
-      <ng-container
-        [ngTemplateOutlet]="sideTpl"
-        [ngTemplateOutletContext]="{ $implicit: v.team1, matchup: m }"
-      ></ng-container>
+    @let hero = heroTeams()!;
+    <pdz-matchup
+      size="hero"
+      role="region"
+      aria-label="Scoreboard"
+      [team1]="hero.team1"
+      [team2]="hero.team2"
+    >
+      <div pdz-matchup-team1 class="scoreboard__contact">
+        <ng-container
+          [ngTemplateOutlet]="contactTpl"
+          [ngTemplateOutletContext]="{ $implicit: v.team1.value }"
+        ></ng-container>
+      </div>
 
-      <div class="scoreboard__center">
-        <div
-          class="scoreboard__score"
-          [attr.aria-label]="
-            'Score ' + v.team1.value.score + ' to ' + v.team2.value.score
-          "
-        >
-          <span class="scoreboard__points scoreboard__points--team1">{{
-            v.team1.value.score
-          }}</span>
-          <span class="scoreboard__dash" aria-hidden="true">–</span>
-          <span class="scoreboard__points scoreboard__points--team2">{{
-            v.team2.value.score
-          }}</span>
-        </div>
-
+      <div pdz-matchup-center class="scoreboard__center">
         <div class="scoreboard__schedule">
           @if (m.scheduledDate) {
             <span
@@ -172,11 +137,13 @@
         }
       </div>
 
-      <ng-container
-        [ngTemplateOutlet]="sideTpl"
-        [ngTemplateOutletContext]="{ $implicit: v.team2, matchup: m }"
-      ></ng-container>
-    </section>
+      <div pdz-matchup-team2 class="scoreboard__contact">
+        <ng-container
+          [ngTemplateOutlet]="contactTpl"
+          [ngTemplateOutletContext]="{ $implicit: v.team2.value }"
+        ></ng-container>
+      </div>
+    </pdz-matchup>
 
     <a pdz-card class="breakdown-cta" padding="sm" [routerLink]="['breakdown']">
       <span class="breakdown-cta__inner">

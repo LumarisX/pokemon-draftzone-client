@@ -18,12 +18,16 @@ import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 import { CardComponent } from '@pdz/shared/data/card/card.component';
 import { ChipComponent, ChipTone } from '@pdz/shared/data/chip/chip.component';
 import { getNameByPid } from '@pdz/shared/data/namedex';
+import {
+  MatchupComponent,
+  MatchupResult,
+  MatchupTeam,
+} from '@pdz/shared/data/matchup/matchup.component';
 import { SkeletonComponent } from '@pdz/shared/data/skeleton/skeleton.component';
 import { DialogService } from '@pdz/shared/dialogs/dialog/dialog.service';
 import { EmptyStateComponent } from '@pdz/shared/feedback/empty-state/empty-state.component';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
-import { TeamLogoComponent } from '@pdz/shared/images/team-logo/team-logo.component';
 import { SegmentedOptionComponent } from '@pdz/shared/inputs/segmented/segmented-option.component';
 import { SegmentedComponent } from '@pdz/shared/inputs/segmented/segmented.component';
 import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
@@ -71,7 +75,7 @@ type StatusTone = { label: string; tone: ChipTone };
     CountdownComponent,
     TooltipDirective,
     PageHeaderComponent,
-    TeamLogoComponent,
+    MatchupComponent,
   ],
   templateUrl: './league-matchup.component.html',
   styleUrl: './league-matchup.component.scss',
@@ -82,8 +86,6 @@ export class LeagueMatchupComponent {
   private dialogs = inject(DialogService);
   private destroyRef = inject(DestroyRef);
   private clock = signal(Date.now());
-
-  protected readonly logoSrc = getTeamLogoSrc;
 
   readonly matchup = signal<MatchupDetail | null>(null);
   readonly loading = signal(true);
@@ -99,6 +101,27 @@ export class LeagueMatchupComponent {
   readonly versus = computed(() => {
     const m = this.matchup();
     return m ? orderForViewer(m.team1, m.team2, m.viewer.side) : null;
+  });
+
+  readonly heroTeams = computed(() => {
+    const m = this.matchup();
+    const v = this.versus();
+    if (!m || !v) return null;
+    const played = !!m.winner || m.matches.length > 0;
+    const toTeam = (side: VersusSide<MatchupSideDetail>): MatchupTeam => ({
+      name: side.value.name,
+      logo: getTeamLogoSrc(side.value.logo),
+      coach: side.value.coach,
+      link: this.teamPath(side.value.slug),
+      you: side.you,
+      score: played ? side.value.score : null,
+      result: this.resultFor(m, side.stored),
+      pokemon: side.value.draft.map(({ id }) => ({
+        id,
+        name: getNameByPid(id),
+      })),
+    });
+    return { team1: toTeam(v.team1), team2: toTeam(v.team2) };
   });
 
   readonly status = computed<StatusTone | null>(() => {
@@ -164,9 +187,14 @@ export class LeagueMatchupComponent {
     return parts.join(' · ') || 'Matchup';
   }
 
-  isWinner(matchup: MatchupDetail, side: MatchupSideKey): boolean {
-    if (!matchup.winner) return false;
-    return matchup.winner.startsWith(side);
+  private resultFor(
+    matchup: MatchupDetail,
+    side: MatchupSideKey,
+  ): MatchupResult | null {
+    if (!matchup.winner) return null;
+    if (matchup.winner === 'draw') return 'draw';
+    if (matchup.winner === 'dffl') return 'loss';
+    return matchup.winner.startsWith(side) ? 'win' : 'loss';
   }
 
   ownTeamIds(matchup: MatchupDetail): string[] {

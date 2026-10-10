@@ -1,137 +1,84 @@
-<ng-template #slotBody let-slot>
-  @if (slot.pending) {
-    <span class="card__logo card__logo--empty" aria-hidden="true"></span>
-  } @else {
-    <pdz-team-logo
-      class="card__logo"
-      size="sm"
-      decorative
-      [src]="logoSrc(slot.logo)"
-      [name]="slot.name"
-    />
-  }
-
-  <span class="card__names">
-    <span class="card__team" [title]="slot.name">{{ slot.name }}</span>
-    @if (slot.coach) {
-      <span class="card__coach">{{ slot.coach }}</span>
-    }
-  </span>
-
-  @if (slot.score !== null) {
-    <span class="card__score">{{ slot.score }}</span>
-  }
-</ng-template>
-
-<div class="card">
-  @if (hasHeader()) {
-    <div class="card__header">
-      <span class="card__label">{{ card().label }}</span>
-
-      @if (editable()) {
-        <span class="card__actions">
-          <button
-            pdz-button
-            iconOnly
-            icon="edit"
-            size="xs"
-            variant="ghost"
-            color="neutral"
-            aria-label="Edit match"
-            (click)="edit.emit(card().id)"
-          ></button>
-          <button
-            pdz-button
-            iconOnly
-            icon="close"
-            size="xs"
-            variant="ghost"
-            color="danger"
-            aria-label="Delete match"
-            (click)="remove.emit(card().id)"
-          ></button>
-        </span>
-      } @else if (card().forfeit) {
-        <span class="card__status">Forfeit</span>
-      } @else if (card().advanced) {
-        <span class="card__status">Advanced</span>
-      }
-    </div>
-  }
-
-  @for (slot of card().slots; track $index) {
-    @if (slot.link) {
-      <a
-        [class]="'card__slot card__slot--linked card__slot--' + slot.status"
-        [class.card__slot--pending]="slot.pending"
-        [routerLink]="slot.link"
-      >
-        <ng-container
-          [ngTemplateOutlet]="slotBody"
-          [ngTemplateOutletContext]="{ $implicit: slot }"
-        ></ng-container>
-      </a>
-    } @else if (slot.sourceId) {
+<pdz-matchup
+  size="card"
+  [label]="card().label"
+  [team1]="team1()"
+  [team2]="team2()"
+  (sideSelect)="selectSide($event)"
+>
+  @if (editable()) {
+    <span pdz-matchup-status class="card__actions">
       <button
-        type="button"
-        [class]="'card__slot card__slot--linked card__slot--' + slot.status"
-        [class.card__slot--pending]="slot.pending"
-        [attr.aria-label]="'Show ' + slot.name"
-        (click)="focusSource.emit(slot.sourceId)"
-      >
-        <ng-container
-          [ngTemplateOutlet]="slotBody"
-          [ngTemplateOutletContext]="{ $implicit: slot }"
-        ></ng-container>
-      </button>
-    } @else {
-      <div
-        [class]="'card__slot card__slot--' + slot.status"
-        [class.card__slot--pending]="slot.pending"
-      >
-        <ng-container
-          [ngTemplateOutlet]="slotBody"
-          [ngTemplateOutletContext]="{ $implicit: slot }"
-        ></ng-container>
-      </div>
-    }
+        pdz-button
+        iconOnly
+        icon="edit"
+        size="xs"
+        variant="ghost"
+        color="neutral"
+        aria-label="Edit match"
+        (click)="edit.emit(card().id)"
+      ></button>
+      <button
+        pdz-button
+        iconOnly
+        icon="close"
+        size="xs"
+        variant="ghost"
+        color="danger"
+        aria-label="Delete match"
+        (click)="remove.emit(card().id)"
+      ></button>
+    </span>
+  } @else if (card().forfeit) {
+    <pdz-chip pdz-matchup-status tone="warning" size="xs">Forfeit</pdz-chip>
+  } @else if (card().advanced) {
+    <pdz-chip pdz-matchup-status size="xs">Advanced</pdz-chip>
   }
 
   @if (hasFooter()) {
-    <div class="card__footer">
+    <span pdz-matchup-actions class="card__footer">
       @if (card().viewLink; as link) {
-        <a class="card__link card__link--primary" [routerLink]="link">View</a>
+        <a pdz-button size="xs" variant="tonal" [routerLink]="link">View</a>
       }
 
       @if (card().breakdownLink; as link) {
-        <a class="card__link" [routerLink]="link">Breakdown</a>
+        <a
+          pdz-button
+          size="xs"
+          variant="outlined"
+          color="neutral"
+          [routerLink]="link"
+          >Breakdown</a
+        >
       }
 
       @if (card().replays.length === 1) {
         <a
-          class="card__link"
+          pdz-button
+          size="xs"
+          variant="outlined"
+          color="neutral"
+          icon="play_circle"
           target="_blank"
           rel="noopener"
           [href]="card().replays[0]"
+          >Replay</a
         >
-          <pdz-icon name="play_circle" [size]="14" />
-          <span>Replay</span>
-        </a>
-      } @else if (card().replays.length > 1) {
-        <span class="card__replays">
-          <pdz-icon name="play_circle" [size]="14" />
-          @for (replay of card().replays; track $index) {
-            <a
-              class="card__replay"
-              target="_blank"
-              rel="noopener"
-              [href]="replay"
-              [attr.aria-label]="'Replay for game ' + ($index + 1)"
-              >{{ $index + 1 }}</a
-            >
-          }
-        </span>
+      } @else {
+        @for (replay of card().replays; track $index) {
+          <a
+            pdz-button
+            size="xs"
+            variant="outlined"
+            color="neutral"
+            [icon]="$first ? 'play_circle' : undefined"
+            target="_blank"
+            rel="noopener"
+            [href]="replay"
+            [attr.aria-label]="'Replay for game ' + ($index + 1)"
+            >G{{ $index + 1 }}</a
+          >
+        }
       }
-    </div>
+    </span>
   }
-</div>
+</pdz-matchup>

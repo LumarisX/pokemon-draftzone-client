@@ -56,59 +56,6 @@
   min-width: 0;
 }
 
-.scoreboard__side--end {
-  @include pdz.respond-above(medium) {
-    align-items: flex-end;
-    text-align: right;
-  }
-}
-
-.scoreboard__identity {
-  display: flex;
-  align-items: center;
-  gap: pdz.space(sm);
-  min-width: 0;
-  color: inherit;
-  text-decoration: none;
-  border-radius: pdz.shape(corner-sm);
-
-  &:hover .scoreboard__team {
-    text-decoration: underline;
-  }
-
-  &:focus-visible {
-    @include pdz.focus-ring;
-  }
-}
-
-.scoreboard__side--end .scoreboard__identity {
-  @include pdz.respond-above(medium) {
-    flex-direction: row-reverse;
-  }
-}
-
-.scoreboard__names {
-  display: flex;
-  flex-direction: column;
-  gap: pdz.space(2xs);
-  min-width: 0;
-}
-
-.scoreboard__team {
-  @include pdz.text(section-title);
-  display: inline-flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: pdz.space(xs);
-  color: pdz.color(on-surface);
-  overflow-wrap: anywhere;
-}
-
-.scoreboard__coach {
-  @include pdz.text(meta);
-  color: pdz.color(on-surface-variant);
-}
-
 .scoreboard__contact {
   display: flex;
   flex-wrap: wrap;
@@ -140,30 +87,6 @@
   flex-direction: column;
   align-items: center;
   gap: pdz.space(xs);
-}
-
-.scoreboard__score {
-  display: flex;
-  align-items: center;
-  gap: pdz.space(md);
-}
-
-.scoreboard__points {
-  @include pdz.text(display);
-  @include pdz.numeric;
-}
-
-.scoreboard__points--team1 {
-  color: pdz.color(team1-accent);
-}
-
-.scoreboard__points--team2 {
-  color: pdz.color(team2-accent);
-}
-
-.scoreboard__dash {
-  @include pdz.text(headline);
-  color: pdz.color(on-surface-muted);
 }
 
 .scoreboard__when {

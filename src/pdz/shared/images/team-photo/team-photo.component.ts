@@ -19,42 +19,32 @@ type SlotPlace = {
 
 type PhotoSlot = SlotPlace & { pokemon: Pokemon<DraftOptions> | null };
 
-export const TEAM_PHOTO_SIZE = 14;
+const ROW_CAPACITY = [6, 7, 6] as const;
 
-const ROWS: Readonly<Record<number, readonly number[]>> = {
-  1: [1],
-  2: [2],
-  3: [3],
-  4: [4],
-  5: [4, 1],
-  6: [4, 2],
-  7: [4, 3],
-  8: [5, 2, 1],
-  9: [5, 4],
-  10: [5, 4, 1],
-  11: [5, 4, 2],
-  12: [5, 4, 3],
-  13: [5, 4, 4],
-  14: [5, 4, 5],
-};
+export const TEAM_PHOTO_SIZE = ROW_CAPACITY.reduce((sum, size) => sum + size, 0);
+
+function rowSizes(count: number): number[] {
+  const sizes: number[] = [];
+  let left = count;
+  for (const capacity of ROW_CAPACITY) {
+    if (left <= 0) break;
+    const size = Math.min(capacity, left);
+    sizes.push(size);
+    left -= size;
+  }
+  return sizes;
+}
 
 function rowOffsets(count: number, halfSteps: boolean): number[] {
-  const offsets: number[] = [];
-  if (halfSteps) {
-    for (let i = 0; i < Math.floor(count / 2); i++) {
-      offsets.push(-(i + 0.5), i + 0.5);
-    }
-    return offsets;
-  }
-  if (count % 2) offsets.push(0);
-  for (let i = 1; offsets.length < count; i++) {
+  const offsets: number[] = halfSteps ? [] : [0];
+  for (let i = halfSteps ? 0.5 : 1; offsets.length < count; i++) {
     offsets.push(-i, i);
   }
-  return offsets;
+  return offsets.slice(0, count);
 }
 
 function arrange(count: number): SlotPlace[] {
-  const rows = ROWS[count] ?? [];
+  const rows = rowSizes(count);
   let halfSteps = rows[0] % 2 === 0;
   return rows.flatMap((size, row) => {
     const places = rowOffsets(size, halfSteps).map((offset) => ({

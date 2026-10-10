@@ -53,6 +53,10 @@ import {
   PodiumPlace,
 } from '@pdz/shared/data/podium/podium.component';
 import { EmptyStateComponent } from '@pdz/shared/feedback/empty-state/empty-state.component';
+import {
+  MatchupComponent,
+  MatchupTeam,
+} from '@pdz/shared/data/matchup/matchup.component';
 import { TeamComponent } from '@pdz/shared/data/team/team.component';
 import { TooltipDirective } from '@pdz/shared/tooltip/tooltip.directive';
 import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
@@ -148,6 +152,7 @@ const MODE_ATTR = 'pdz-theme-mode';
     PodiumComponent,
     EmptyStateComponent,
     TeamComponent,
+    MatchupComponent,
     ScoreEntryGameComponent,
     ScoreEntryMatchComponent,
     CountdownComponent,
@@ -218,6 +223,11 @@ export class DebugComponentsComponent {
     { id: 'gholdengo', name: 'Gholdengo' },
     { id: 'corviknight', name: 'Corviknight' },
     { id: 'tinglu', name: 'Ting-Lu' },
+    { id: 'dragapult', name: 'Dragapult' },
+    { id: 'rillaboom', name: 'Rillaboom' },
+    { id: 'volcarona', name: 'Volcarona' },
+    { id: 'greattusk', name: 'Great Tusk' },
+    { id: 'primarina', name: 'Primarina' },
   ];
   protected readonly mvpTypes = ['Dragon', 'Ground'];
   protected readonly mvpStats = [
@@ -226,7 +236,7 @@ export class DebugComponentsComponent {
     { label: 'KOs/Game', value: '2.3' },
     { label: 'Team KOs', value: '39%' },
   ];
-  protected readonly photoCounts =[12, 8, 5].map((count) =>
+  protected readonly photoCounts = [12, 8, 5, 13, 10, 14].map((count) =>
     this.photoTeam.slice(0, count),
   );
   protected readonly podiumPlaces: PodiumPlace[] = [
@@ -255,6 +265,50 @@ export class DebugComponentsComponent {
   ];
   protected readonly teamLogoSample =
     'https://play.pokemonshowdown.com/sprites/trainers/cynthia.png';
+  protected readonly matchupHero: { team1: MatchupTeam; team2: MatchupTeam } = {
+    team1: {
+      name: 'Inglorious Surfers',
+      coach: 'aaronmarshall',
+      you: true,
+      score: 4,
+      result: 'win',
+      link: ['.'],
+      pokemon: this.photoTeam.slice(0, 10),
+    },
+    team2: {
+      name: 'Viridian Vipers',
+      coach: 'misty',
+      logo: this.teamLogoSample,
+      score: 2,
+      result: 'loss',
+      link: ['.'],
+      pokemon: [
+        { id: 'dragonite', name: 'Dragonite' },
+        { id: 'pelipper', name: 'Pelipper' },
+        { id: 'barraskewda', name: 'Barraskewda' },
+        { id: 'ferrothorn', name: 'Ferrothorn' },
+        { id: 'heatran', name: 'Heatran' },
+        { id: 'tapulele', name: 'Tapu Lele' },
+        { id: 'excadrill', name: 'Excadrill' },
+        { id: 'blissey', name: 'Blissey' },
+        { id: 'zapdos', name: 'Zapdos' },
+        { id: 'scizor', name: 'Scizor' },
+      ],
+    },
+  };
+  protected readonly matchupUpcoming: { team1: MatchupTeam; team2: MatchupTeam } = {
+    team1: { ...this.matchupHero.team1, score: null, result: null },
+    team2: {
+      name: 'Neon Nightshades',
+      coach: 'brock',
+      link: ['.'],
+      pokemon: this.matchupHero.team2.pokemon?.slice(0, 8),
+    },
+  };
+  protected readonly matchupPending: { team1: MatchupTeam; team2: MatchupTeam } = {
+    team1: { name: 'Viridian Vipers', coach: 'misty', logo: this.teamLogoSample },
+    team2: { name: 'Winner of QF 2', pending: true, selectable: true },
+  };
   protected readonly podiumPlacesNoActors = this.podiumPlaces.map(
     (place) => ({ ...place, pokemon: null, you: false }),
   );
