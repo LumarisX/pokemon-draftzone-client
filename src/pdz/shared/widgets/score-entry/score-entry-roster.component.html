@@ -31,6 +31,9 @@
             [pokemon]="spriteFor(entry)"
             [flipped]="facingRight()"
             [disabled]="entry.controls.status.value === null"
+            [state]="
+              entry.controls.status.value === 'fainted' ? 'fainted' : null
+            "
             [interactive]="false"
           ></pdz-sprite>
           <div class="mon__identity">

@@ -379,11 +379,6 @@
 
 .games__slot--fainted {
   border-color: pdz.color(negative);
-  opacity: 0.6;
-
-  pdz-sprite {
-    filter: grayscale(100%);
-  }
 }
 
 .games__kills {

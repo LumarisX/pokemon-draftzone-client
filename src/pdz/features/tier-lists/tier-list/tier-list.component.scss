@@ -245,11 +245,9 @@
   &.is-drafted {
     background-color: pdz.color(surface-disabled);
     cursor: default;
-    opacity: 0.75;
 
-    .pokemon-entry__sprite {
-      filter: grayscale(100%);
-      opacity: 0.65;
+    .pokemon-entry__name {
+      color: pdz.color(on-surface-variant);
     }
   }
 }
@@ -280,11 +278,5 @@
 
   &.is-drafted {
     cursor: default;
-    opacity: 0.75;
-
-    pdz-sprite {
-      filter: grayscale(100%);
-      opacity: 0.65;
-    }
   }
 }

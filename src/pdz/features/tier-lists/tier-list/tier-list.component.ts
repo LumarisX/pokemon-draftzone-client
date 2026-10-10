@@ -44,7 +44,12 @@ import { Subject } from 'rxjs';
 import { first, takeUntil } from 'rxjs/operators';
 import { League } from '@pdz/features/league-zone/league.interface';
 import { LeagueTier, TierPokemon } from '../tier-list.model';
-import { TierListService } from '../tier-list.service';
+import {
+  DraftedPick,
+  DraftedPools,
+  TierListService,
+} from '../tier-list.service';
+import { SpriteState } from '@pdz/shared/images/sprite/sprite.component';
 import {
   filterBySearch,
   makeBanString,
@@ -93,10 +98,8 @@ export class TierListComponent implements OnInit, OnDestroy {
   readonly header = input<string>();
   readonly showHeader = input(true, { transform: booleanAttribute });
 
-  localDraftedIds = input<string[]>([]);
-  drafted = signal<{
-    [pool: string]: { pokemonId: string; teamId?: string }[];
-  }>({});
+  localDrafted = input<DraftedPick[]>([]);
+  drafted = signal<DraftedPools['pools']>({});
   private sharedPools = new Set<string>();
   private coachedTeamIds = new Set<string>();
   tiers = signal<LeagueTier[] | undefined>(undefined);
@@ -137,13 +140,12 @@ export class TierListComponent implements OnInit, OnDestroy {
     return tiers.filter((tier) => tier.name === expanded);
   });
 
-  readonly draftedPokemonIds = computed(() => {
+  readonly draftedBy = computed(() => {
     const selectedPool = this.selectedPool();
-    const drafted = this.drafted();
-    const serverIds = selectedPool
-      ? (drafted[selectedPool]?.map((p) => p.pokemonId) ?? [])
-      : [];
-    return new Set([...serverIds, ...this.localDraftedIds()]);
+    const server = selectedPool ? (this.drafted()[selectedPool] ?? []) : [];
+    return new Map(
+      [...server, ...this.localDrafted()].map((pick) => [pick.pokemonId, pick]),
+    );
   });
 
   private readonly filterMenu = viewChild<MenuComponent>('filterMenu');
@@ -281,11 +283,20 @@ export class TierListComponent implements OnInit, OnDestroy {
           return;
 
         const currentDrafted = this.drafted();
+        const team = data.pick.team;
+        const teamLogo = Object.values(currentDrafted)
+          .flat()
+          .find((pick) => pick.teamId === team.id)?.teamLogo;
         this.drafted.set({
           ...currentDrafted,
           [pool]: [
             ...(currentDrafted[pool] ?? []),
-            { pokemonId: pokemon.id, teamId: data.pick.team.id },
+            {
+              pokemonId: pokemon.id,
+              teamId: team.id,
+              teamName: team.name,
+              teamLogo,
+            },
           ],
         });
       });
@@ -433,7 +444,16 @@ export class TierListComponent implements OnInit, OnDestroy {
   }
 
   isPokemonDrafted(pokemon: Pokemon): boolean {
-    return this.draftedPokemonIds().has(pokemon.id);
+    return this.draftedBy().has(pokemon.id);
+  }
+
+  draftPick(pokemon: Pokemon): DraftedPick | undefined {
+    return this.draftedBy().get(pokemon.id);
+  }
+
+  spriteState(pokemon: Pokemon, tier: LeagueTier): SpriteState | null {
+    if (this.isBanTier(tier)) return 'banned';
+    return this.isPokemonDrafted(pokemon) ? 'taken' : null;
   }
 
   isBanTier(tier: LeagueTier): boolean {

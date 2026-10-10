@@ -214,6 +214,9 @@
                   <pdz-sprite
                     [pokemon]="spriteFor(pokemon)"
                     [tooltipPosition]="null"
+                    [state]="spriteState(pokemon, tier)"
+                    [takenLogo]="draftPick(pokemon)?.teamLogo"
+                    [takenBy]="draftPick(pokemon)?.teamName ?? ''"
                   ></pdz-sprite>
                 </button>
               }
@@ -229,6 +232,9 @@
                     <pdz-sprite
                       [pokemon]="spriteFor(pokemon)"
                       [tooltipPosition]="null"
+                      [state]="spriteState(pokemon, tier)"
+                      [takenLogo]="draftPick(pokemon)?.teamLogo"
+                      [takenBy]="draftPick(pokemon)?.teamName ?? ''"
                     ></pdz-sprite>
                   </span>
                   <span class="pokemon-entry__info">

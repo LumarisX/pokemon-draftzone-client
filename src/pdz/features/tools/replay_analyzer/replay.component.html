@@ -599,6 +599,9 @@
                                       class="ko-timeline__sprite"
                                       size="3rem"
                                       [pokemon]="mon.pokemon"
+                                      [state]="
+                                        mon.role === 'victim' ? 'fainted' : null
+                                      "
                                       [showFormes]="false"
                                       [interactive]="false"
                                     />
@@ -671,6 +674,9 @@
                                       class="ko-timeline__sprite"
                                       size="3rem"
                                       [pokemon]="mon.pokemon"
+                                      [state]="
+                                        mon.role === 'victim' ? 'fainted' : null
+                                      "
                                       [showFormes]="false"
                                       [interactive]="false"
                                     />

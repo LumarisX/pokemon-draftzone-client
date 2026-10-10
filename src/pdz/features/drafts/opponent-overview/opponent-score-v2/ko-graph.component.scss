@@ -165,10 +165,6 @@
   &[data-state="fainted"] {
     border-color: pdz.color(danger);
 
-    .mon__sprite {
-      opacity: 0.65;
-    }
-
     .mon__state {
       color: pdz.color(danger);
     }

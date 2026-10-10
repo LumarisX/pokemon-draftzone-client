@@ -15,6 +15,7 @@ import { LeagueZoneService } from '@pdz/features/league-zone/league-zone.service
 import { League } from '@pdz/features/league-zone/league.interface';
 import { formatCountdown } from '@pdz/features/league-zone/league.util';
 import { TierListComponent } from '@pdz/features/tier-lists/tier-list/tier-list.component';
+import { DraftedPick } from '@pdz/features/tier-lists/tier-list.service';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 import { ChipComponent, ChipTone } from '@pdz/shared/data/chip/chip.component';
 import { PokemonTypeComponent } from '@pdz/shared/data/pokemon-type/pokemon-type.component';
@@ -281,14 +282,19 @@ export class LeagueDraftComponent implements OnInit {
     );
   }
 
-  get draftedIds(): string[] {
+  get drafted(): DraftedPick[] {
+    const picksOf = (team: League.LeagueTeam): DraftedPick[] =>
+      team.draft.map((p) => ({
+        pokemonId: p.id,
+        teamId: team.id,
+        teamName: team.name,
+        teamLogo: team.logo,
+      }));
+    const selected = this.selectedTeam;
     if (this.draftDetails.allowDuplicates)
-      return (this.selectedTeam?.draft ?? []).map((p) => p.id);
+      return selected ? picksOf(selected) : [];
     return this.teams.flatMap((team) =>
-      (team.id === this.selectedTeam?.id
-        ? this.selectedTeam.draft
-        : team.draft
-      ).map((p) => p.id),
+      picksOf(team.id === selected?.id ? selected : team),
     );
   }
 

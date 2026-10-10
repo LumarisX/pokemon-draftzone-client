@@ -602,11 +602,6 @@
     max-width: 5.5rem;
 
     &--victim {
-      .ko-timeline__sprite {
-        opacity: 0.55;
-        filter: grayscale(0.65);
-      }
-
       .ko-timeline__mon-name {
         color: pdz.color(danger);
       }

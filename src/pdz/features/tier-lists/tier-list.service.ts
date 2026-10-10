@@ -50,8 +50,15 @@ export type TierListBrowseQuery = {
   skip?: number;
 };
 
+export type DraftedPick = {
+  pokemonId: string;
+  teamId?: string;
+  teamName?: string;
+  teamLogo?: string;
+};
+
 export type DraftedPools = {
-  pools: { [pool: string]: { pokemonId: string; teamId: string }[] };
+  pools: { [pool: string]: DraftedPick[] };
   selected?: string;
   sharedPools?: string[];
   coachedTeamIds?: string[];
@@ -188,7 +195,12 @@ export class TierListService {
             }
             if (group.allowDuplicates && !team.isCoach) continue;
             for (const pokemon of team.draft) {
-              held.push({ pokemonId: pokemon.id, teamId: team.id });
+              held.push({
+                pokemonId: pokemon.id,
+                teamId: team.id,
+                teamName: team.name,
+                teamLogo: team.logo,
+              });
             }
           }
         }

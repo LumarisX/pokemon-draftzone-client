@@ -319,6 +319,7 @@
                       <pdz-sprite
                         [pokemon]="slot"
                         [flipped]="side.slot === 'team1'"
+                        [state]="slot.status === 'fainted' ? 'fainted' : null"
                       ></pdz-sprite>
                       <span class="games__kills">
                         {{ slot.kills }}
