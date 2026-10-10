@@ -21,6 +21,9 @@
     />
   }
   @default {
+    @if (podium().length) {
+      <pdz-podium [places]="podium()" />
+    }
     <section class="standings__block" aria-label="Team standings">
       @if (showSwitchers()) {
         <pdz-stage-switcher

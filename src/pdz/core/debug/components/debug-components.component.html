@@ -1855,6 +1855,18 @@
   </div>
 
   <h3 class="section__sub">
+    Podium — the top three once a season ends, each team's top scorer standing
+    on its step; the champion's step is the loud one
+  </h3>
+  <div class="photos">
+    <pdz-podium [places]="podiumPlaces" />
+    <div class="photos__pair">
+      <pdz-podium [places]="podiumPlaces.slice(0, 2)" />
+      <pdz-podium [places]="podiumPlacesNoActors" />
+    </div>
+  </div>
+
+  <h3 class="section__sub">
     Roster pattern — a team page's header backdrop, fading out behind the title
   </h3>
   <pdz-page-header title="Neon Nightshades">

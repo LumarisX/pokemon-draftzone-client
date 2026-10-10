@@ -10,6 +10,13 @@ import { LEAGUE_ZONE_PATH } from '@pdz/core/route-paths';
 import { AuthService } from '@pdz/core/services/auth0.service';
 import { LeagueZoneService } from '@pdz/features/league-zone/league-zone.service';
 import { League } from '@pdz/features/league-zone/league.interface';
+import { getTeamLogoSrc } from '@pdz/features/league-zone/league.util';
+import { Pokemon } from '@pdz/core/utils/pokemon';
+import {
+  PODIUM_SIZE,
+  PodiumComponent,
+  PodiumPlace,
+} from '@pdz/shared/data/podium/podium.component';
 import { StageSwitcherComponent } from '@pdz/features/league-zone/league-widgets/stage-switcher/stage-switcher.component';
 import { SkeletonComponent } from '@pdz/shared/data/skeleton/skeleton.component';
 import { EmptyStateComponent } from '@pdz/shared/feedback/empty-state/empty-state.component';
@@ -17,6 +24,21 @@ import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.
 import { catchError, map, of, switchMap } from 'rxjs';
 import { PokemonStandingsComponent } from './pokemon-standings/pokemon-standings.component';
 import { TeamStandingsComponent } from './team-standings/team-standings.component';
+
+function topScorer(
+  standings: League.PokemonStanding[],
+  teamName: string,
+): Pokemon | null {
+  const best = standings
+    .filter((p) => p.teamName === teamName && p.record.kills > 0)
+    .sort(
+      (a, b) =>
+        b.record.kills - a.record.kills ||
+        a.record.deaths - b.record.deaths ||
+        a.record.brought - b.record.brought,
+    )[0];
+  return best ? { id: best.id, name: best.name } : null;
+}
 
 type StandingsState =
   | { status: 'loading' }
@@ -32,6 +54,7 @@ type StandingsState =
   imports: [
     EmptyStateComponent,
     PageHeaderComponent,
+    PodiumComponent,
     PokemonStandingsComponent,
     SkeletonComponent,
     StageSwitcherComponent,
@@ -102,6 +125,37 @@ export class LeagueStandingsComponent {
     const state = this.state();
     if (state.status !== 'ready') return null;
     return state.views[this.teamFilter()]?.teamStandings ?? null;
+  });
+
+  private readonly info = toSignal(
+    this.leagueService.getLeagueInfo().pipe(catchError(() => of(null))),
+    { initialValue: null },
+  );
+
+  readonly podium = computed((): PodiumPlace[] => {
+    const state = this.state();
+    const seasonEnd = this.info()?.seasonEnd;
+    if (state.status !== 'ready' || !seasonEnd) return [];
+    if (Date.now() <= new Date(seasonEnd).getTime()) return [];
+    const view = state.views['all'] ?? Object.values(state.views)[0];
+    if (!view) return [];
+    const played = view.teamStandings.teams.filter(
+      (team) => team.wins + team.losses + (team.draws ?? 0) > 0,
+    );
+    if (played.length < 2) return [];
+    const linkBase = this.teamLinkBase();
+    const ownTeamId = this.ownTeamId();
+    return played.slice(0, PODIUM_SIZE).map((team) => ({
+      name: team.name,
+      logo: getTeamLogoSrc(team.logo),
+      coach: team.coach,
+      wins: team.wins,
+      losses: team.losses,
+      draws: team.draws,
+      pokemon: topScorer(view.pokemonStandings, team.name),
+      link: linkBase && team.teamSlug ? [...linkBase, team.teamSlug] : null,
+      you: team.id === ownTeamId,
+    }));
   });
 
   readonly pokemonStandings = computed(() => {

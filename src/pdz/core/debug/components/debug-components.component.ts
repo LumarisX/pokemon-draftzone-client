@@ -48,6 +48,10 @@ import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
 import { TeamPhotoComponent } from '@pdz/shared/images/team-photo/team-photo.component';
 import { RosterPatternComponent } from '@pdz/shared/images/roster-pattern/roster-pattern.component';
 import { SeasonMvpComponent } from '@pdz/shared/data/season-mvp/season-mvp.component';
+import {
+  PodiumComponent,
+  PodiumPlace,
+} from '@pdz/shared/data/podium/podium.component';
 import { TooltipDirective } from '@pdz/shared/tooltip/tooltip.directive';
 import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
 import { WidgetComponent } from '@pdz/shared/layout/widget/widget.component';
@@ -139,6 +143,7 @@ const MODE_ATTR = 'pdz-theme-mode';
     TeamPhotoComponent,
     RosterPatternComponent,
     SeasonMvpComponent,
+    PodiumComponent,
     ScoreEntryGameComponent,
     ScoreEntryMatchComponent,
     CountdownComponent,
@@ -219,6 +224,33 @@ export class DebugComponentsComponent {
   ];
   protected readonly photoCounts =[12, 8, 5].map((count) =>
     this.photoTeam.slice(0, count),
+  );
+  protected readonly podiumPlaces: PodiumPlace[] = [
+    {
+      name: 'Inglorious Surfers',
+      coach: 'aaronmarshall',
+      wins: 9,
+      losses: 2,
+      pokemon: this.photoTeam[0],
+      you: true,
+    },
+    {
+      name: 'Viridian Vipers',
+      coach: 'misty',
+      wins: 8,
+      losses: 3,
+      pokemon: this.photoTeam[11],
+    },
+    {
+      name: 'Neon Nightshades With A Long Name',
+      coach: 'brock',
+      wins: 7,
+      losses: 4,
+      pokemon: this.photoTeam[4],
+    },
+  ];
+  protected readonly podiumPlacesNoActors = this.podiumPlaces.map(
+    (place) => ({ ...place, pokemon: null, you: false }),
   );
   protected readonly photoDrafting = [
     { id: 'dragonite', name: 'Dragonite' },

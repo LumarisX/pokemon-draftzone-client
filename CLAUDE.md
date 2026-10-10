@@ -69,7 +69,7 @@ enforceable form of the settled rules.
 
 `src/pdz/shared/` holds the primitives. **Prefer an existing primitive over
 hand-rolled markup.** Current inventory: buttons, data (badge, card, chip, record,
-score, season-mvp, skeleton, sort, pokemon-type), dialogs, dropdowns (select, pokemon-search,
+podium, score, season-mvp, skeleton, sort, pokemon-type), dialogs, dropdowns (select, pokemon-search,
 format, ruleset), feedback (empty-state, toast), images (icon, sprite, team-logo,
 team-photo, roster-pattern, loading), inputs (field, choice, segmented, slide-toggle, slider), layout (page,
 page-header, tabs, tab-nav, widget, disclosure, masonry), menu, pipes, time,
@@ -130,6 +130,7 @@ and no page header.
 | icons | `<pdz-icon name="...">` — always, never a raw glyph or `<img>`; buttons take `icon="..."` |
 | a roster shown as a group | `<pdz-team-photo [pokemon] [spots] [name]>` — up to fourteen (`TEAM_PHOTO_SIZE`) in up to three staggered rows, aces front and center; `spots` adds empty places while a draft runs (only pass it when the pick count is known, or a finished team shows empty places); `side="team2"` stands an opponent on the team 2 wash. As a card banner, put it in `pdz-card`'s `[pdz-card-media]` slot. Single sprites standing on a card take `<pdz-sprite grounded>` |
 | a team's standout Pokémon | `<pdz-season-mvp [pokemon] [knockouts] [detail] [types] [stats]>` — most KOs, ties to fewer faints then fewer games; the page picks the Pokémon and builds `stats` (`SeasonMvpStat[]`: games, fainted, KOs/game, share of team KOs), the card owns the look (sprite faces right; stats sit inline when the card is 40rem+, under the name when narrower). Hide it until something has a KO |
+| a season's top three | `<pdz-podium [places]>` (`PodiumPlace[]` in finishing order: name, logo, coach, record, the team's top scorer as `pokemon`, `link`, `you`). Show it only once the season has ended |
 | a Pokémon you can't pick, or one that fainted | `<pdz-sprite state="taken" [takenLogo] [takenBy]>`, `state="banned"`, `state="fainted"` — never a hand-rolled grayscale or strike-through. Shiny sparkles are automatic |
 | a team or league logo | `<pdz-team-logo [src] [name]>` — a missing or broken image shows the DraftZone logo (`DEFAULT_TEAM_LOGO`), never initials; no ring, plate or team color |
 | W-L or W-D-L | `<pdz-record [wins] [losses] [draws]>` |
