@@ -204,8 +204,8 @@ for (const [name, vars] of [...themes].sort(([a], [b]) => a.localeCompare(b))) {
   const versus = gradientStops(vars.get("--pdz-color-versus-gradient") ?? base.get("--pdz-color-versus-gradient"), vars);
   if (!versus) failures.push(`${name}  versus-gradient: could not resolve its stops`);
   else {
-    check("on-primary on versus-gradient (weakest point)", "on-primary", null, 3, weakestStop(versus, color("on-primary"), 0, 100));
-    check("on-primary on versus-gradient (middle)", "on-primary", null, 4.5, weakestStop(versus, color("on-primary"), 40, 60));
+    check("on-versus-gradient on versus-gradient (weakest point)", "on-versus-gradient", null, 3, weakestStop(versus, color("on-versus-gradient"), 0, 100));
+    check("on-versus-gradient on versus-gradient (middle)", "on-versus-gradient", null, 4.5, weakestStop(versus, color("on-versus-gradient"), 40, 60));
   }
   for (const role of ["primary", "secondary", "danger", "warning", "success", "info"])
     check(`on-${role}-container on ${role}-container`, `on-${role}-container`, `${role}-container`, 4.5);

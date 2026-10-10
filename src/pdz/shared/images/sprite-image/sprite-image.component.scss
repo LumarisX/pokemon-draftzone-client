@@ -2,6 +2,7 @@
 
 :host {
   display: inline-flex;
+  filter: pdz.color(image-tone);
 }
 
 .sprite-container {

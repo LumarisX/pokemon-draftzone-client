@@ -36,15 +36,23 @@ $-header-backdrop: none;
   }
   @return linear-gradient(
     135deg,
-    var(--pdz-color-primary),
-    var(--pdz-color-secondary)
+    color-mix(in srgb, var(--pdz-color-primary) 60%, var(--pdz-color-ground)),
+    color-mix(in srgb, var(--pdz-color-secondary) 60%, var(--pdz-color-ground))
   );
+}
+
+@function -on-versus-gradient($mode) {
+  @if $mode == light {
+    @return "white";
+  }
+  @return "gray-50";
 }
 
 @function -teams($wash, $mode) {
   $out: (
     focus-ring: var(--pdz-color-primary-accent),
     versus-gradient: -versus-gradient($mode),
+    on-versus-gradient: -on-versus-gradient($mode),
     versus-wash: linear-gradient(
         90deg,
         var(--pdz-color-team1-wash),
@@ -131,6 +139,7 @@ $-light-base: (
 
   shadow: #4d4d4d,
   sprite-shadow: color-mix(in srgb, var(--pdz-color-shadow) 45%, transparent),
+  image-tone: brightness(1),
   scrim: "black",
 
   logo-ring-1: "orange-175",
@@ -246,6 +255,7 @@ $-dark-base: (
 
   shadow: "black",
   sprite-shadow: color-mix(in srgb, var(--pdz-color-shadow) 65%, transparent),
+  image-tone: brightness(0.9) saturate(0.88),
   scrim: "black",
 
   logo-ring-1: "orange-175",
@@ -255,9 +265,9 @@ $-dark-base: (
   logo-ring-5: "orange-400",
   logo-ring-6: "orange-450",
   logo-ring-7: "orange-500",
-  logo-core-1: "white",
+  logo-core-1: "gray-125",
   logo-core-2: "logo-core-color",
-  logo-background: "white",
+  logo-background: "gray-900",
 
   positive: "mint-300",
   on-positive: "mint-800",

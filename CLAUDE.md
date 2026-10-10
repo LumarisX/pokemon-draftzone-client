@@ -180,6 +180,8 @@ empty-state messages and toasts stay sentence case. The brand is "Pokémon Draft
 - Color ramp steps are semantic roles shared across hues (`soft`/`accent`/`strong`
   are roles, not lightness levels).
 - SCSS `font-size` on `pdz-icon` does nothing — size it via the `size`/`width`/`height` inputs.
+- Images dim in dark mode through `filter: pdz.color(image-tone)`. `pdz-sprite-image` and
+  `pdz-team-logo` already apply it; any other art or uploaded image takes it too.
 - Selection and active states use `state-selected` and the primary accent, not
   hardcoded highlights.
 - **Surfaces rise, they never sink.** The ladder is `ground` (page, sticky page
