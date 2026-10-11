@@ -4,6 +4,7 @@ import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
 import { NavContextService } from '@pdz/core/services/nav-context.service';
 import { TournamentNavComponent } from '@pdz/features/league-zone/tournaments/tournament-nav/tournament-nav.component';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
+import { PAGE_SHELL } from '@pdz/shared/layout/page/page.component';
 import { RouteEnterDirective } from '@pdz/shared/layout/route-enter.directive';
 import { filter } from 'rxjs/operators';
 
@@ -17,6 +18,7 @@ import { filter } from 'rxjs/operators';
     TournamentNavComponent,
     ButtonComponent,
   ],
+  providers: [{ provide: PAGE_SHELL, useValue: true }],
   host: {
     '(document:keydown.escape)': 'closeNav()',
   },

@@ -21,6 +21,7 @@ import { FieldComponent } from '@pdz/shared/inputs/field/field.component';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
 import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
+import { PageComponent } from '@pdz/shared/layout/page/page.component';
 import { SegmentedComponent } from '@pdz/shared/inputs/segmented/segmented.component';
 import { SegmentedOptionComponent } from '@pdz/shared/inputs/segmented/segmented-option.component';
 import { SelectComponent } from '@pdz/shared/dropdowns/select/select.component';
@@ -63,6 +64,7 @@ type ResultRound = {
     IconComponent,
     LoadingComponent,
     MatchupReportComponent,
+    PageComponent,
     PageHeaderComponent,
     MatchupComponent,
     SegmentedComponent,

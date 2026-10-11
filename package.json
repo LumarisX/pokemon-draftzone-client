@@ -8,7 +8,7 @@
     "build": "ng build --configuration=production",
     "deploy": "ng build --configuration=production && node tools/deploy.mjs",
     "local-dev-broadcast": "ng serve --configuration=broadcast --ssl --host 0.0.0.0",
-    "lint": "node tools/lint-styles.mjs && node tools/lint-templates.mjs && node tools/lint-ts.mjs && node tools/audit-client.mjs --fail-on=hdr,log,cmt,lvl,imp,mq,w,rad,hov,route,cm && node tools/check-contrast.mjs",
+    "lint": "node tools/lint-styles.mjs && node tools/lint-templates.mjs && node tools/lint-ts.mjs && node tools/audit-client.mjs --fail-on=hdr,page,log,cmt,lvl,imp,mq,w,rad,hov,route,cm && node tools/check-contrast.mjs",
     "lint:styles": "node tools/lint-styles.mjs",
     "lint:templates": "node tools/lint-templates.mjs",
     "lint:ts": "node tools/lint-ts.mjs",

@@ -2,16 +2,12 @@
 
 :host {
   display: block;
-  padding: pdz.space(md);
-  box-sizing: border-box;
 }
 
 .score {
   display: flex;
   flex-direction: column;
   gap: pdz.space(md);
-  max-width: 90rem;
-  margin: 0 auto;
 }
 
 .score__games {

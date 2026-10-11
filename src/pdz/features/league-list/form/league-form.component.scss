@@ -5,16 +5,6 @@
 
 :host {
   display: block;
-  padding: pdz.space(lg);
-  min-height: 100vh;
-}
-
-.league-form-container {
-  display: flex;
-  flex-direction: column;
-  gap: pdz.layout(section-gap);
-  max-width: pdz.content-width(default);
-  margin: 0 auto;
 }
 
 .league-form {

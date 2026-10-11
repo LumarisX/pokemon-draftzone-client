@@ -24,14 +24,6 @@ $fab-stack-clearance: calc(
   overflow-y: auto;
 }
 
-.matchup__main > pdz-page-header {
-  padding: pdz.space(sm) pdz.space(sm) 0;
-
-  @include pdz.respond-above(medium) {
-    padding: pdz.space(lg) pdz.space(lg) 0;
-  }
-}
-
 .matchup__facts {
   display: inline-flex;
   flex-wrap: wrap;
@@ -99,23 +91,16 @@ $fab-stack-clearance: calc(
   display: flex;
   flex-direction: column;
   gap: pdz.space(xs);
-  padding: pdz.space(lg);
 }
 
 .matchup__body {
-  padding: pdz.space(sm);
-
-  @include pdz.respond-above(medium) {
-    padding: pdz.space(lg);
-  }
-
   &--fabs {
     padding-block-end: calc(
       #{$fab-stack-clearance} + env(safe-area-inset-bottom)
     );
 
     @include pdz.respond-above(medium) {
-      padding-block-end: pdz.space(lg);
+      padding-block-end: 0;
     }
   }
 }

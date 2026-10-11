@@ -1,36 +1,38 @@
-<pdz-page-header title="Quick Matchup" class="quick-header">
-  @if (!editing() && matchupData(); as data) {
-    <span pdz-page-header-detail>
-      {{ data.details.ruleset }} · {{ data.details.format }}
-    </span>
-  }
-  @if (!editing()) {
-    <button
-      pdz-page-header-actions
-      pdz-button
-      type="button"
-      variant="tonal"
-      icon="edit"
-      (click)="editing.set(true)"
-    >
-      Edit Teams
-    </button>
-  }
-</pdz-page-header>
+<pdz-page type="dashboard">
+  <pdz-page-header title="Quick Matchup" class="quick-header">
+    @if (!editing() && matchupData(); as data) {
+      <span pdz-page-header-detail>
+        {{ data.details.ruleset }} · {{ data.details.format }}
+      </span>
+    }
+    @if (!editing()) {
+      <button
+        pdz-page-header-actions
+        pdz-button
+        type="button"
+        variant="tonal"
+        icon="edit"
+        (click)="editing.set(true)"
+      >
+        Edit Teams
+      </button>
+    }
+  </pdz-page-header>
 
-@if (editing()) {
-  <div class="quick-form-row">
-    <div class="quick-form-row__inner">
-      <pdz-quick-matchup-form
-        [quickForm]="formData()"
-        (formSubmitted)="getMatchupData($event)"
-      ></pdz-quick-matchup-form>
+  @if (editing()) {
+    <div class="quick-form-row">
+      <div class="quick-form-row__inner">
+        <pdz-quick-matchup-form
+          [quickForm]="formData()"
+          (formSubmitted)="getMatchupData($event)"
+        ></pdz-quick-matchup-form>
+      </div>
     </div>
-  </div>
-} @else {
-  @if (matchupData(); as data) {
-    <pdz-matchup-breakdown [matchupData]="data" />
   } @else {
-    <pdz-loading />
+    @if (matchupData(); as data) {
+      <pdz-matchup-breakdown [matchupData]="data" />
+    } @else {
+      <pdz-loading />
+    }
   }
-}
+</pdz-page>

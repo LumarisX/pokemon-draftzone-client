@@ -19,6 +19,7 @@ import { InputDirective } from '@pdz/shared/inputs/field/input.directive';
 import { SelectComponent } from '@pdz/shared/dropdowns/select/select.component';
 import { SelectOptionComponent } from '@pdz/shared/dropdowns/select/select-option.component';
 import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
+import { PageComponent } from '@pdz/shared/layout/page/page.component';
 import { MenuComponent } from '@pdz/shared/menu/menu.component';
 import { MenuItemComponent } from '@pdz/shared/menu/menu-item.component';
 import { MenuTriggerDirective } from '@pdz/shared/menu/menu-trigger.directive';
@@ -85,6 +86,7 @@ interface EditableTier {
     MenuComponent,
     MenuItemComponent,
     MenuTriggerDirective,
+    PageComponent,
     PageHeaderComponent,
   ],
   templateUrl: './tier-list-form.component.html',

@@ -1,5 +1,5 @@
-@if (leagueInfo(); as info) {
-  <div class="pools">
+<pdz-page type="index">
+  @if (leagueInfo(); as info) {
     <pdz-page-header title="Pools" [eyebrow]="info.name" />
 
     @if (info.pools.length) {
@@ -18,15 +18,15 @@
         message="No pools have been set up for this tournament yet."
       />
     }
-  </div>
-} @else if (leagueInfo() === null) {
-  <pdz-empty-state
-    bordered
-    kind="error"
-    heading="Could not load this tournament"
-  />
-} @else {
-  <div class="loading-state">
-    <pdz-loading />
-  </div>
-}
+  } @else if (leagueInfo() === null) {
+    <pdz-empty-state
+      bordered
+      kind="error"
+      heading="Could not load this tournament"
+    />
+  } @else {
+    <div class="loading-state">
+      <pdz-loading />
+    </div>
+  }
+</pdz-page>

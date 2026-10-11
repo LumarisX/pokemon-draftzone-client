@@ -1,7 +1,13 @@
 @if (showHeader()) {
-  <pdz-page-header [title]="header() ?? tierListName()" />
+  <pdz-page type="workspace">
+    <pdz-page-header [title]="header() ?? tierListName()" />
+    <ng-container [ngTemplateOutlet]="body" />
+  </pdz-page>
+} @else {
+  <ng-container [ngTemplateOutlet]="body" />
 }
 
+<ng-template #body>
 <div class="toolbar">
   <div class="toolbar__search">
     <pdz-icon name="search" size="xs"></pdz-icon>
@@ -264,3 +270,4 @@
     </div>
   }
 </div>
+</ng-template>

@@ -1,36 +1,38 @@
-<pdz-page-header title="My League Ads" backLabel="Open Leagues" backLink="../">
-  <a pdz-page-header-actions pdz-button icon="add" routerLink="new">New Ad</a>
-  <pdz-segmented
-    size="sm"
-    aria-label="Filter by status"
-    [value]="filter()"
-    (valueChange)="filter.set($any($event))"
-  >
-    <pdz-segmented-option value="All" label="All" />
-    <pdz-segmented-option value="Pending" label="Pending" />
-    <pdz-segmented-option value="Approved" label="Approved" />
-    <pdz-segmented-option value="Denied" label="Denied" />
-  </pdz-segmented>
-</pdz-page-header>
+<pdz-page type="index">
+  <pdz-page-header title="My League Ads" backLabel="Open Leagues" backLink="../">
+    <a pdz-page-header-actions pdz-button icon="add" routerLink="new">New Ad</a>
+    <pdz-segmented
+      size="sm"
+      aria-label="Filter by status"
+      [value]="filter()"
+      (valueChange)="filter.set($any($event))"
+    >
+      <pdz-segmented-option value="All" label="All" />
+      <pdz-segmented-option value="Pending" label="Pending" />
+      <pdz-segmented-option value="Approved" label="Approved" />
+      <pdz-segmented-option value="Denied" label="Denied" />
+    </pdz-segmented>
+  </pdz-page-header>
 
-@if (filteredLeagues().length) {
-  <div class="leagues-grid">
-    @for (league of filteredLeagues(); track league._id; let i = $index) {
-      <pdz-league-ad
-        mode="manage"
-        [league]="league"
-        [index]="i"
-        (delete)="deleteLeague($event)"
-      />
-    }
-  </div>
-} @else {
-  <pdz-empty-state
-    bordered
-    kind="empty"
-    heading="No league ads yet"
-    message="Post an ad to fill your league's roster from the community."
-  >
-    <a pdz-button pdz-empty-state-actions routerLink="new">Post Your First Ad</a>
-  </pdz-empty-state>
-}
+  @if (filteredLeagues().length) {
+    <div class="leagues-grid">
+      @for (league of filteredLeagues(); track league._id; let i = $index) {
+        <pdz-league-ad
+          mode="manage"
+          [league]="league"
+          [index]="i"
+          (delete)="deleteLeague($event)"
+        />
+      }
+    </div>
+  } @else {
+    <pdz-empty-state
+      bordered
+      kind="empty"
+      heading="No league ads yet"
+      message="Post an ad to fill your league's roster from the community."
+    >
+      <a pdz-button pdz-empty-state-actions routerLink="new">Post Your First Ad</a>
+    </pdz-empty-state>
+  }
+</pdz-page>

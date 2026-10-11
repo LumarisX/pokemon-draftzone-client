@@ -2,10 +2,13 @@ import {
   ChangeDetectionStrategy,
   Component,
   booleanAttribute,
+  computed,
+  inject,
   input,
 } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
+import { PageComponent } from '@pdz/shared/layout/page/page.component';
 import { TeamLogoComponent } from '@pdz/shared/images/team-logo/team-logo.component';
 
 export type PageHeaderTone = 'panel' | 'plain';
@@ -72,10 +75,12 @@ export type PageHeaderTone = 'panel' | 'plain';
   host: {
     class: 'pdz-page-header',
     '[attr.data-tone]': 'tone()',
-    '[class.pdz-page-header--compact]': 'compact()',
+    '[class.pdz-page-header--compact]': 'isCompact()',
   },
 })
 export class PageHeaderComponent {
+  private readonly page = inject(PageComponent, { optional: true });
+
   readonly title = input.required<string>();
   readonly eyebrow = input<string>();
   readonly subtitle = input<string>();
@@ -86,5 +91,12 @@ export class PageHeaderComponent {
   readonly logo = input<string>();
 
   readonly tone = input<PageHeaderTone>('plain');
-  readonly compact = input(false, { transform: booleanAttribute });
+  readonly compact = input<boolean | undefined, unknown>(undefined, {
+    transform: (value: unknown) =>
+      value === undefined ? undefined : booleanAttribute(value),
+  });
+
+  protected readonly isCompact = computed(
+    () => this.compact() ?? this.page?.compactHeader() ?? false,
+  );
 }

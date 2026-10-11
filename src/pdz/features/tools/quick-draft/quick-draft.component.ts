@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
+import { PageComponent } from '@pdz/shared/layout/page/page.component';
 import { QuickDraftFinalComponent } from './quick-draft-final/quick-draft-final.component';
 import {
   QDPokemon,
@@ -13,6 +14,7 @@ import {
 @Component({
   selector: 'pdz-quick-draft',
   imports: [
+    PageComponent,
     PageHeaderComponent,
     QuickDraftFinalComponent,
     QuickDraftPicksComponent,

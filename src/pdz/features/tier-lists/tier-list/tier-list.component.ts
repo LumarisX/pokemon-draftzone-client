@@ -15,6 +15,7 @@ import {
   untracked,
   viewChild,
 } from '@angular/core';
+import { NgTemplateOutlet } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TooltipDirective } from '@pdz/shared/tooltip/tooltip.directive';
 import { RouterModule } from '@angular/router';
@@ -39,6 +40,7 @@ import { InputDirective } from '@pdz/shared/inputs/field/input.directive';
 import { SelectComponent } from '@pdz/shared/dropdowns/select/select.component';
 import { SelectOptionComponent } from '@pdz/shared/dropdowns/select/select-option.component';
 import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
+import { PageComponent } from '@pdz/shared/layout/page/page.component';
 import { MenuComponent } from '@pdz/shared/menu/menu.component';
 import { MenuTriggerDirective } from '@pdz/shared/menu/menu-trigger.directive';
 import { Subject } from 'rxjs';
@@ -87,6 +89,8 @@ interface DraftPokemonAction {
     SelectOptionComponent,
     MenuComponent,
     MenuTriggerDirective,
+    NgTemplateOutlet,
+    PageComponent,
     PageHeaderComponent,
   ],
   styleUrls: ['./tier-list.component.scss'],

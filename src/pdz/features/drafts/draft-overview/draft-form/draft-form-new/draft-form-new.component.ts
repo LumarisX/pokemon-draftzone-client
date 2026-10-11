@@ -9,10 +9,11 @@ import {
   DraftFormData,
 } from '../draft-form-core/draft-form-core.component';
 import { DRAFT_OVERVIEW_PATH } from '@pdz/core/route-paths';
+import { PageComponent } from '@pdz/shared/layout/page/page.component';
 
 @Component({
   selector: 'pdz-draft-form-new',
-  imports: [DraftFormCoreComponent],
+  imports: [DraftFormCoreComponent, PageComponent],
   templateUrl: './draft-form-new.component.html',
   styleUrl: '../draft-form.component.scss',
 })

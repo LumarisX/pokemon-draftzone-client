@@ -75,6 +75,15 @@ team-photo, roster-pattern, loading), inputs (field, choice, segmented, slide-to
 page-header, tabs, tab-nav, widget, disclosure, masonry), menu, pipes, time,
 tooltip, widgets.
 
+Every routed page is wrapped in `<pdz-page type="hub|index|detail|workspace|tool|form|dashboard">`,
+in the routed component's own template. The type sets the width (hub, detail and tool 64rem;
+index and dashboard 96rem; form 40rem; workspace full width and full height), the
+`section-gap` between its children, and the header (index and workspace default to
+`compact`). The page never sets its own max-width, padding or section gap; its `:host`
+is just `display: block` (plus `height: 100%` for a workspace). Inside the tournament
+shell the page drops its padding on its own (`PAGE_SHELL`); `flush` is only for a
+workspace that owns its edges. `npm run lint` fails a routed page without a type.
+
 Every routed page opens with `<pdz-page-header>` — never a hand-rolled title bar.
 It carries `title`/`eyebrow`/`subtitle`/`logo`/`backLink`/`backLabel`/`compact`,
 and projects `[pdz-page-header-detail]` (meta line under the title),
@@ -82,20 +91,20 @@ and projects `[pdz-page-header-detail]` (meta line under the title),
 (buttons), `[pdz-page-header-center]` (fills the bar between title and actions, e.g.
 the matchup versus strip, or a team's sprite row), `[pdz-page-header-backdrop]` (a faint
 layer behind the header that fades out toward the title: a team page's
-`<pdz-roster-pattern [pokemon]>`), and default content below the bar (tab navs, switchers). The page root
-then owns its own vertical rhythm with `gap: pdz.layout(section-gap)`, not
-per-section padding. A page with no data shows `<pdz-empty-state>`, never a bare
+`<pdz-roster-pattern [pokemon]>`), and default content below the bar (tab navs, switchers).
+A page with no data shows `<pdz-empty-state>`, never a bare
 sentence or an endless spinner. Give every `md`/`lg` empty state a `kind`
 (`empty` | `waiting` | `error` | `no-access`); it stands Ditto, Slowpoke, Psyduck or
 Snorlax above the message. `sm` keeps an inline icon.
 
 Pages inside the tournament shell get **no back button** — the nav does that. The
 one exception is the tournament landing page, whose `backLink`/`backLabel` render
-the eyebrow as a link up to the league. Sub-pages inside the drafts shell (opponent
-form, score entry) use a `compact` header with a back link to the draft.
+the eyebrow as a link up to the league. The draft page (`/drafts/:team`) carries the
+draft header with the sprite strip itself; its sub-pages (opponent form, score entry)
+are their own pages with a `compact` header and a back link to the draft.
 
 `homepage`, `not-found` and `external-link` are deliberate exceptions with their own
-hero or interstitial layout. The planner is a full-height workspace with a tab strip
+hero or interstitial layout. The planner is a `flush` workspace with a tab strip
 and no page header.
 
 ### Hard rules

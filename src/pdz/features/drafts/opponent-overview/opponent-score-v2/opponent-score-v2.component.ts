@@ -15,6 +15,7 @@ import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
 import { InputDirective } from '@pdz/shared/inputs/field/input.directive';
 import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
+import { PageComponent } from '@pdz/shared/layout/page/page.component';
 import { WidgetComponent } from '@pdz/shared/layout/widget/widget.component';
 import { isReplayUrl } from '@pdz/shared/widgets/score-entry/score-entry.model';
 import {
@@ -66,6 +67,7 @@ const SIDE_OF: Record<KoSide, MatchSide> = { side1: 'a', side2: 'b' };
     InputDirective,
     KoGraphComponent,
     LoadingComponent,
+    PageComponent,
     PageHeaderComponent,
     RouterModule,
     WidgetComponent,

@@ -18,6 +18,7 @@ import { EmptyStateComponent } from '@pdz/shared/feedback/empty-state/empty-stat
 import { SegmentedOptionComponent } from '@pdz/shared/inputs/segmented/segmented-option.component';
 import { SegmentedComponent } from '@pdz/shared/inputs/segmented/segmented.component';
 import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
+import { PageComponent } from '@pdz/shared/layout/page/page.component';
 
 type FilterStatus = 'All' | 'Pending' | 'Approved' | 'Denied';
 
@@ -29,6 +30,7 @@ type FilterStatus = 'All' | 'Pending' | 'Approved' | 'Denied';
     ButtonComponent,
     EmptyStateComponent,
     LeagueAdComponent,
+    PageComponent,
     PageHeaderComponent,
     RouterLink,
     SegmentedComponent,

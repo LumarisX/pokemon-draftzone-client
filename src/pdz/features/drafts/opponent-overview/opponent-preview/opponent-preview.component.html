@@ -1,3 +1,65 @@
+<pdz-page type="dashboard">
+@if (draft(); as draft) {
+  <pdz-page-header
+    compact
+    backLabel="My Drafts"
+    [title]="draft.teamName"
+    [backLink]="backLink"
+  >
+    <div pdz-page-header-center class="draft-bar" aria-label="Your team">
+      @for (pokemon of draft.team; track $index) {
+        <pdz-sprite
+          size="fill"
+          grounded
+          [pokemon]="pokemon"
+          [class.unresolved-sprite]="pokemon.unresolved"
+        />
+      }
+    </div>
+    <span pdz-page-header-detail class="draft-facts">
+      <span>{{ draft.leagueName }}</span>
+      <span>{{ draft.format }}</span>
+      <span>{{ draft.ruleset }}</span>
+    </span>
+    @if (draft.score) {
+      <span pdz-page-header-meta class="draft-record">
+        <pdz-record
+          size="sm"
+          [wins]="draft.score.wins"
+          [losses]="draft.score.losses"
+        />
+        <span class="draft-record__diff">{{ draft.score.diff }}</span>
+      </span>
+    }
+    <div pdz-page-header-actions class="draft-actions">
+      <a
+        pdz-button
+        iconOnly
+        icon="edit"
+        variant="outlined"
+        color="neutral"
+        aria-label="Edit draft"
+        pdzTooltip="Edit draft"
+        [routerLink]="['/', draftPath, 'edit']"
+        [queryParams]="{ draft: draftParam(draft.slug) }"
+      ></a>
+      @if (draft.doc) {
+        <a
+          pdz-button
+          iconOnly
+          icon="dataset_linked"
+          variant="outlined"
+          color="neutral"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Open league document"
+          pdzTooltip="Open league document"
+          [href]="draft.doc"
+        ></a>
+      }
+    </div>
+  </pdz-page-header>
+}
 <div class="preview-main">
   <section class="matchups-section alternate">
     <div class="section-header">
@@ -336,3 +398,4 @@
     }
   </section>
 </div>
+</pdz-page>

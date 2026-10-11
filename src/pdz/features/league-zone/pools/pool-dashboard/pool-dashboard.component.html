@@ -1,32 +1,34 @@
-<pdz-page-header
-  [title]="details()?.poolName ?? ''"
-  [eyebrow]="details()?.leagueName ?? ''"
-  [logo]="logoUrl()"
->
-  <pdz-tab-nav align="stretch" label="Pool sections">
-    <a pdz-tab-link [routerLink]="['../../teams']" routerLinkActive>Teams</a>
-    <a pdz-tab-link routerLink="./tier-list" routerLinkActive>Tier List</a>
-    <a pdz-tab-link routerLink="./draft" routerLinkActive>Draft</a>
-  </pdz-tab-nav>
-  <pdz-stage-switcher
-    [currentStageSlug]="stageSlug()"
-    (stageSelected)="onStageSelected($event)"
-  />
-</pdz-page-header>
+<pdz-page type="hub">
+  <pdz-page-header
+    [title]="details()?.poolName ?? ''"
+    [eyebrow]="details()?.leagueName ?? ''"
+    [logo]="logoUrl()"
+  >
+    <pdz-tab-nav align="stretch" label="Pool sections">
+      <a pdz-tab-link [routerLink]="['../../teams']" routerLinkActive>Teams</a>
+      <a pdz-tab-link routerLink="./tier-list" routerLinkActive>Tier List</a>
+      <a pdz-tab-link routerLink="./draft" routerLinkActive>Draft</a>
+    </pdz-tab-nav>
+    <pdz-stage-switcher
+      [currentStageSlug]="stageSlug()"
+      (stageSelected)="onStageSelected($event)"
+    />
+  </pdz-page-header>
 
-@if (stageSlug(); as slug) {
-  <div class="pool-body">
-    <pdz-card padding="lg">
-      <section class="section" aria-labelledby="pool-matchups">
-        <h2 class="section__title" id="pool-matchups">Matchups</h2>
-        <pdz-league-schedule-widget />
-      </section>
-    </pdz-card>
-    <pdz-card padding="lg">
-      <section class="section" aria-labelledby="pool-trades">
-        <h2 class="section__title" id="pool-trades">Active Trades</h2>
-        <pdz-league-trade-widget [stageSlug]="slug" />
-      </section>
-    </pdz-card>
-  </div>
-}
+  @if (stageSlug(); as slug) {
+    <div class="pool-body">
+      <pdz-card padding="lg">
+        <section class="section" aria-labelledby="pool-matchups">
+          <h2 class="section__title" id="pool-matchups">Matchups</h2>
+          <pdz-league-schedule-widget />
+        </section>
+      </pdz-card>
+      <pdz-card padding="lg">
+        <section class="section" aria-labelledby="pool-trades">
+          <h2 class="section__title" id="pool-trades">Active Trades</h2>
+          <pdz-league-trade-widget [stageSlug]="slug" />
+        </section>
+      </pdz-card>
+    </div>
+  }
+</pdz-page>

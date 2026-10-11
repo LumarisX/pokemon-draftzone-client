@@ -2,14 +2,6 @@
 
 :host {
   display: block;
-  width: 100%;
-  min-height: 100%;
-}
-
-.pools {
-  display: flex;
-  flex-direction: column;
-  gap: pdz.layout(section-gap);
 }
 
 .pools__grid {

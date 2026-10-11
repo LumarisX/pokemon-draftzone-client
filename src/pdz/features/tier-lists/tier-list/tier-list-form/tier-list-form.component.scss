@@ -4,11 +4,9 @@
 
 @include tier-list-shared();
 
-.tier-form {
-  display: flex;
-  flex-direction: column;
+:host {
+  display: block;
   height: 100%;
-  gap: pdz.space(md);
 }
 
 .tier-main {

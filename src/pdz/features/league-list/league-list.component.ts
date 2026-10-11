@@ -8,6 +8,7 @@ import { SelectOptionComponent } from '@pdz/shared/dropdowns/select/select-optio
 import { SelectComponent } from '@pdz/shared/dropdowns/select/select.component';
 import { EmptyStateComponent } from '@pdz/shared/feedback/empty-state/empty-state.component';
 import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
+import { PageComponent } from '@pdz/shared/layout/page/page.component';
 import { forkJoin } from 'rxjs';
 import { LeagueAdComponent } from './league-ad/league-ad.component';
 import { LeagueAd, LeagueAdsService } from './league-ads.service';
@@ -22,6 +23,7 @@ import { LeagueAd, LeagueAdsService } from './league-ads.service';
     RouterModule,
     ButtonComponent,
     EmptyStateComponent,
+    PageComponent,
     PageHeaderComponent,
     SelectComponent,
     SelectOptionComponent,

@@ -1,27 +1,5 @@
 @use "pdz-theming" as pdz;
 
 :host {
-  display: flex;
-  flex-direction: column;
-  gap: pdz.space(lg);
-  min-height: 100%;
-}
-
-.quick-header {
-  padding-inline: pdz.space(md);
-
-  @include pdz.respond-above(medium) {
-    padding-inline: pdz.space(lg);
-  }
-}
-
-.quick-form-row {
-  display: flex;
-  justify-content: center;
-  width: 100%;
-}
-
-.quick-form-row__inner {
-  width: 100%;
-  max-width: 100rem;
+  display: block;
 }

@@ -1,11 +1,7 @@
 @use "pdz-theming" as pdz;
 
 :host {
-  display: flex;
-  flex-direction: column;
-  gap: pdz.layout(section-gap);
-  max-width: pdz.content-width(narrow);
-  margin-inline: auto;
+  display: block;
 }
 
 .sign-up {

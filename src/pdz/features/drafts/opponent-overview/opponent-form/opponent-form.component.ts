@@ -5,6 +5,7 @@ import { Draft } from '@pdz/features/drafts/draft.model';
 import { Opponent } from '../opponent.model';
 import { DraftService } from '@pdz/features/drafts/draft-overview/draft.service';
 import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
+import { PageComponent } from '@pdz/shared/layout/page/page.component';
 import {
   OpponentFormCoreComponent,
   OpponentFormData,
@@ -12,7 +13,7 @@ import {
 
 @Component({
   selector: 'pdz-opponent-form',
-  imports: [OpponentFormCoreComponent, LoadingComponent],
+  imports: [OpponentFormCoreComponent, LoadingComponent, PageComponent],
   styleUrl: './opponent-form.component.scss',
   templateUrl: './opponent-form.component.html',
 })

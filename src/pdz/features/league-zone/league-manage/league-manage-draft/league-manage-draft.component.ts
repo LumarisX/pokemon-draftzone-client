@@ -42,6 +42,7 @@ import { InputDirective } from '@pdz/shared/inputs/field/input.directive';
 import { SegmentedOptionComponent } from '@pdz/shared/inputs/segmented/segmented-option.component';
 import { SegmentedComponent } from '@pdz/shared/inputs/segmented/segmented.component';
 import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
+import { PageComponent } from '@pdz/shared/layout/page/page.component';
 import { TooltipDirective } from '@pdz/shared/tooltip/tooltip.directive';
 import { BehaviorSubject, Observable, Subject, interval } from 'rxjs';
 import {
@@ -155,6 +156,7 @@ const EMPTY_SETTINGS: DraftSettings = {
     SegmentedComponent,
     SegmentedOptionComponent,
     PoolSwitcherComponent,
+    PageComponent,
     PageHeaderComponent,
   ],
   templateUrl: './league-manage-draft.component.html',

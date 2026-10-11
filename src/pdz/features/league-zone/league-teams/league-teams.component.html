@@ -1,45 +1,47 @@
 @let groups = pools();
 
-<pdz-page-header title="Teams">
-  @if (groups?.length === 1) {
-    <span pdz-page-header-detail>{{ activeGroup()?.name }}</span>
-  }
+<pdz-page type="index">
+  <pdz-page-header title="Teams">
+    @if (groups?.length === 1) {
+      <span pdz-page-header-detail>{{ activeGroup()?.name }}</span>
+    }
 
-  @if (groups && groups.length > 1) {
-    <pdz-segmented
-      size="sm"
-      aria-label="Pool"
-      [value]="selected()"
-      (valueChange)="selected.set($any($event))"
-    >
-      @for (group of groups; track groupKey(group)) {
-        <pdz-segmented-option [value]="groupKey(group)" [label]="group.name" />
-      }
-    </pdz-segmented>
-  }
-</pdz-page-header>
+    @if (groups && groups.length > 1) {
+      <pdz-segmented
+        size="sm"
+        aria-label="Pool"
+        [value]="selected()"
+        (valueChange)="selected.set($any($event))"
+      >
+        @for (group of groups; track groupKey(group)) {
+          <pdz-segmented-option [value]="groupKey(group)" [label]="group.name" />
+        }
+      </pdz-segmented>
+    }
+  </pdz-page-header>
 
-@if (!groups) {
-  <pdz-loading />
-} @else if (activeGroup(); as group) {
-  @if (group.teams.length) {
-    <div class="teams__grid">
-      @for (team of group.teams; track team.id) {
-        <pdz-league-team-card [teamDetails]="team" />
-      }
-    </div>
+  @if (!groups) {
+    <pdz-loading />
+  } @else if (activeGroup(); as group) {
+    @if (group.teams.length) {
+      <div class="teams__grid">
+        @for (team of group.teams; track team.id) {
+          <pdz-league-team-card [teamDetails]="team" />
+        }
+      </div>
+    } @else {
+      <pdz-empty-state
+        bordered
+        kind="waiting"
+        message="No teams added to this pool yet."
+      />
+    }
   } @else {
     <pdz-empty-state
       bordered
       kind="waiting"
-      message="No teams added to this pool yet."
+      heading="No teams yet"
+      message="Teams appear here once coaches are approved."
     />
   }
-} @else {
-  <pdz-empty-state
-    bordered
-    kind="waiting"
-    heading="No teams yet"
-    message="Teams appear here once coaches are approved."
-  />
-}
+</pdz-page>

@@ -6,6 +6,7 @@ import { EmptyStateComponent } from '@pdz/shared/feedback/empty-state/empty-stat
 import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
 import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
+import { PageComponent } from '@pdz/shared/layout/page/page.component';
 
 type DraftStatsSplitBy = 'none' | 'format' | 'ruleset' | 'format-ruleset';
 
@@ -65,6 +66,7 @@ interface DraftStatsView {
   imports: [
     EmptyStateComponent,
     LoadingComponent,
+    PageComponent,
     PageHeaderComponent,
     SpriteComponent,
   ],

@@ -9,6 +9,7 @@ import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
 import { DialogService } from '@pdz/shared/dialogs/dialog/dialog.service';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
+import { PageComponent } from '@pdz/shared/layout/page/page.component';
 import { CountdownComponent } from '@pdz/shared/time/countdown/countdown.component';
 import { Observable, combineLatest } from 'rxjs';
 import { MatchupData, Summary } from './matchup-interface';
@@ -41,6 +42,7 @@ type PanelTool = 'teambuilder' | 'notes';
     IconComponent,
     MatchupBreakdownComponent,
     MatchupNotesComponent,
+    PageComponent,
     PageHeaderComponent,
     SkeletonComponent,
     SpriteComponent,

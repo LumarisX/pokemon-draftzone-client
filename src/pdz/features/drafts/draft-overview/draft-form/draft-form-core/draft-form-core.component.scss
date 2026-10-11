@@ -17,13 +17,8 @@
     position: sticky;
     top: 0;
     z-index: pdz.z(sticky);
-    padding: pdz.space(sm) pdz.space(lg);
+    padding-block: pdz.space(sm);
     background: pdz.color(ground);
-  }
-
-  &__header-inner {
-    max-width: 90rem;
-    margin: 0 auto;
   }
 
   &__body {
@@ -32,10 +27,7 @@
     grid-template-columns: minmax(20rem, 26rem) minmax(0, 1fr);
     align-items: stretch;
     gap: pdz.space(lg);
-    padding: 0 pdz.space(lg) pdz.space(lg);
     width: 100%;
-    max-width: 90rem;
-    margin: 0 auto;
   }
 
   &__panel {
@@ -101,12 +93,7 @@
 }
 
 @include pdz.respond-below(small) {
-  .draft-builder__header {
-    padding: pdz.space(sm);
-  }
-
   .draft-builder__body {
-    padding: pdz.space(sm);
     gap: pdz.space(sm);
   }
 

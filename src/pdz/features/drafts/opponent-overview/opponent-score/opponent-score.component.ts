@@ -53,6 +53,7 @@ import { ReplayService } from '@pdz/features/tools/replay_analyzer/replay.servic
 import { DraftService } from '@pdz/features/drafts/draft-overview/draft.service';
 import { DraftPokemon } from '@pdz/features/drafts/draft.model';
 import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
+import { PageComponent } from '@pdz/shared/layout/page/page.component';
 import {
   ForfeitSide,
   MatchSide,
@@ -77,6 +78,7 @@ const SIDE_OF: Record<ScoreEntrySide, MatchSide> = { side1: 'a', side2: 'b' };
     LoadingComponent,
     ScoreEntryGameComponent,
     ScoreEntryMatchComponent,
+    PageComponent,
     PageHeaderComponent,
   ],
 })

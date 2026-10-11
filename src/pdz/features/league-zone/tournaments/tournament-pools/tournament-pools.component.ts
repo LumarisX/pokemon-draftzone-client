@@ -6,6 +6,7 @@ import { CardComponent } from '@pdz/shared/data/card/card.component';
 import { EmptyStateComponent } from '@pdz/shared/feedback/empty-state/empty-state.component';
 import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
 import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
+import { PageComponent } from '@pdz/shared/layout/page/page.component';
 import { catchError, of } from 'rxjs';
 
 @Component({
@@ -18,6 +19,7 @@ import { catchError, of } from 'rxjs';
     CardComponent,
     EmptyStateComponent,
     LoadingComponent,
+    PageComponent,
     PageHeaderComponent,
   ],
 })

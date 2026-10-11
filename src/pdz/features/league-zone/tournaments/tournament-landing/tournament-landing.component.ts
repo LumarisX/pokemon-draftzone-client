@@ -32,6 +32,7 @@ import { SkeletonComponent } from '@pdz/shared/data/skeleton/skeleton.component'
 import { EmptyStateComponent } from '@pdz/shared/feedback/empty-state/empty-state.component';
 import { TeamComponent } from '@pdz/shared/data/team/team.component';
 import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
+import { PageComponent } from '@pdz/shared/layout/page/page.component';
 import { PlusSignPipe } from '@pdz/shared/pipes/plus-sign.pipe';
 import { catchError, of, switchMap } from 'rxjs';
 
@@ -77,6 +78,7 @@ const STANDINGS_PREVIEW_ROWS = 8;
     ButtonComponent,
     ChipComponent,
     EmptyStateComponent,
+    PageComponent,
     PageHeaderComponent,
     LeagueScheduleWidgetComponent,
     PlusSignPipe,

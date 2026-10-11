@@ -1,5 +1,6 @@
 @let info = leagueInfo();
 
+<pdz-page type="form">
 @if (isCheckingSignUp() || !info) {
   <pdz-loading />
 } @else {
@@ -324,3 +325,4 @@
     </div>
   </form>
 }
+</pdz-page>

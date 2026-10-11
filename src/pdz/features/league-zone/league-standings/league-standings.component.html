@@ -1,71 +1,73 @@
-<pdz-page-header title="Standings" />
+<pdz-page type="index">
+  <pdz-page-header title="Standings" />
 
-@switch (state().status) {
-  @case ("loading") {
-    <div class="standings__skeleton" role="status" aria-label="Loading standings">
-      @for (row of skeletonRows; track row) {
-        <pdz-skeleton
-          variant="block"
-          height="2.75rem"
-          radius="var(--pdz-shape-corner-sm)"
-        />
-      }
-    </div>
-  }
-  @case ("error") {
-    <pdz-empty-state
-      bordered
-      kind="error"
-      heading="Could not load standings"
-      message="Refresh the page to try again."
-    />
-  }
-  @default {
-    @if (podium().length) {
-      <pdz-podium [places]="podium()" />
+  @switch (state().status) {
+    @case ("loading") {
+      <div class="standings__skeleton" role="status" aria-label="Loading standings">
+        @for (row of skeletonRows; track row) {
+          <pdz-skeleton
+            variant="block"
+            height="2.75rem"
+            radius="var(--pdz-shape-corner-sm)"
+          />
+        }
+      </div>
     }
-    <section class="standings__block" aria-label="Team standings">
-      @if (showSwitchers()) {
-        <pdz-stage-switcher
-          allStagesLabel="All stages"
-          [currentStageSlug]="teamFilter()"
-          (stageSelected)="teamFilter.set($event)"
-        />
+    @case ("error") {
+      <pdz-empty-state
+        bordered
+        kind="error"
+        heading="Could not load standings"
+        message="Refresh the page to try again."
+      />
+    }
+    @default {
+      @if (podium().length) {
+        <pdz-podium [places]="podium()" />
       }
-      @if (teamStandings(); as table) {
-        <pdz-team-standings
-          [standingData]="table"
-          [ownTeamId]="ownTeamId()"
-          [teamLinkBase]="teamLinkBase()"
-        />
-      } @else {
-        <pdz-empty-state
-          bordered
-          size="sm"
-          icon="leaderboard"
-          message="No results recorded yet."
-        />
-      }
-    </section>
+      <section class="standings__block" aria-label="Team standings">
+        @if (showSwitchers()) {
+          <pdz-stage-switcher
+            allStagesLabel="All stages"
+            [currentStageSlug]="teamFilter()"
+            (stageSelected)="teamFilter.set($event)"
+          />
+        }
+        @if (teamStandings(); as table) {
+          <pdz-team-standings
+            [standingData]="table"
+            [ownTeamId]="ownTeamId()"
+            [teamLinkBase]="teamLinkBase()"
+          />
+        } @else {
+          <pdz-empty-state
+            bordered
+            size="sm"
+            icon="leaderboard"
+            message="No results recorded yet."
+          />
+        }
+      </section>
 
-    <section class="standings__block" aria-label="Pokémon standings">
-      @if (showSwitchers()) {
-        <pdz-stage-switcher
-          allStagesLabel="All stages"
-          [currentStageSlug]="pokemonFilter()"
-          (stageSelected)="pokemonFilter.set($event)"
-        />
-      }
-      @if (pokemonStandings().length) {
-        <pdz-pokemon-standings [standingData]="pokemonStandings()" />
-      } @else {
-        <pdz-empty-state
-          bordered
-          size="sm"
-          icon="catching_pokemon"
-          message="No Pokémon standings yet."
-        />
-      }
-    </section>
+      <section class="standings__block" aria-label="Pokémon standings">
+        @if (showSwitchers()) {
+          <pdz-stage-switcher
+            allStagesLabel="All stages"
+            [currentStageSlug]="pokemonFilter()"
+            (stageSelected)="pokemonFilter.set($event)"
+          />
+        }
+        @if (pokemonStandings().length) {
+          <pdz-pokemon-standings [standingData]="pokemonStandings()" />
+        } @else {
+          <pdz-empty-state
+            bordered
+            size="sm"
+            icon="catching_pokemon"
+            message="No Pokémon standings yet."
+          />
+        }
+      </section>
+    }
   }
-}
+</pdz-page>

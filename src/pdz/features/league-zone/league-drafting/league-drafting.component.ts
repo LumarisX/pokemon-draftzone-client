@@ -23,6 +23,7 @@ import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
 import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
+import { PageComponent } from '@pdz/shared/layout/page/page.component';
 import { MenuItemComponent } from '@pdz/shared/menu/menu-item.component';
 import { MenuTriggerDirective } from '@pdz/shared/menu/menu-trigger.directive';
 import { MenuComponent } from '@pdz/shared/menu/menu.component';
@@ -127,6 +128,7 @@ const STATUS_TONES: Record<DraftStatus, ChipTone> = {
     MenuComponent,
     MenuItemComponent,
     MenuTriggerDirective,
+    PageComponent,
     PageHeaderComponent,
   ],
   templateUrl: './league-drafting.component.html',

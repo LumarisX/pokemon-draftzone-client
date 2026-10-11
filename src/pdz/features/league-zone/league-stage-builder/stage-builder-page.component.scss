@@ -2,10 +2,7 @@
 
 :host {
   display: block;
-
-  @include pdz.respond-above(medium) {
-    height: 100%;
-  }
+  height: 100%;
 }
 
 .loading-state {

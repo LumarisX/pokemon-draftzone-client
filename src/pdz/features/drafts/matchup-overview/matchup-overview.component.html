@@ -1,6 +1,7 @@
 @if (matchupId && matchupData) {
   @let details = matchupData.details;
   <div class="matchup__main">
+    <pdz-page type="dashboard">
     <pdz-page-header
       compact
       [title]="matchupTitle()"
@@ -61,6 +62,7 @@
     <div class="matchup__body" [class.matchup__body--fabs]="panelEnabled">
       <pdz-matchup-breakdown [matchupData]="matchupData" />
     </div>
+    </pdz-page>
   </div>
 
   @if (panelEnabled) {
@@ -132,6 +134,7 @@
   }
 } @else {
   <div class="matchup__main" role="status" aria-label="Loading matchup">
+    <pdz-page type="dashboard">
     <div class="matchup__header-skeleton">
       <pdz-skeleton variant="block" width="8rem" height="0.75rem" />
       <pdz-skeleton variant="block" width="16rem" height="1.75rem" />
@@ -155,5 +158,6 @@
         </div>
       }
     </div>
+    </pdz-page>
   </div>
 }

@@ -1,11 +1,13 @@
 import { CdkTableModule } from '@angular/cdk/table';
 import { DecimalPipe } from '@angular/common';
 import { Component, inject, OnInit } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { DRAFT_OVERVIEW_PATH } from '@pdz/core/route-paths';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 import { BadgeTone } from '@pdz/shared/data/badge/badge.component';
 import { CardComponent } from '@pdz/shared/data/card/card.component';
+import { RecordComponent } from '@pdz/shared/data/record/record.component';
 import { ScoreComponent } from '@pdz/shared/data/score/score.component';
 import { TeamComponent } from '@pdz/shared/data/team/team.component';
 import {
@@ -23,13 +25,15 @@ import {
   TEAM_PHOTO_SIZE,
   TeamPhotoComponent,
 } from '@pdz/shared/images/team-photo/team-photo.component';
+import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
+import { PageComponent } from '@pdz/shared/layout/page/page.component';
 import { MenuComponent } from '@pdz/shared/menu/menu.component';
 import { MenuItemComponent } from '@pdz/shared/menu/menu-item.component';
 import { MenuTriggerDirective } from '@pdz/shared/menu/menu-trigger.directive';
 import { CountdownComponent } from '@pdz/shared/time/countdown/countdown.component';
 import { formatExactTime } from '@pdz/shared/time/timezone';
 import { TooltipDirective } from '@pdz/shared/tooltip/tooltip.directive';
-import { BehaviorSubject, catchError, forkJoin, of, take } from 'rxjs';
+import { BehaviorSubject, catchError, forkJoin, of, switchMap, take } from 'rxjs';
 import { DraftService, PokemonStat } from '@pdz/features/drafts/draft-overview/draft.service';
 import {
   MatchTimeDialogComponent,
@@ -69,6 +73,9 @@ type Matchup = Opponent & {
     MenuItemComponent,
     MenuTriggerDirective,
     CountdownComponent,
+    PageComponent,
+    PageHeaderComponent,
+    RecordComponent,
     TooltipDirective,
   ],
 })
@@ -78,6 +85,16 @@ export class OpponentTeamPreviewComponent implements OnInit {
   private draftService = inject(DraftService);
   private route = inject(ActivatedRoute);
   private dialogs = inject(DialogService);
+
+  readonly backLink = ['/', DRAFT_OVERVIEW_PATH];
+
+  readonly draft = toSignal(
+    this.route.paramMap.pipe(
+      switchMap((params) =>
+        this.draftService.getDraft(params.get('teamId') ?? ''),
+      ),
+    ),
+  );
 
   index = 0;
   matchups?: Matchup[];
@@ -228,6 +245,10 @@ export class OpponentTeamPreviewComponent implements OnInit {
     if (score[0] > score[1]) return 'success';
     if (score[0] < score[1]) return 'danger';
     return 'neutral';
+  }
+
+  draftParam(slug: string): string {
+    return JSON.stringify(slug);
   }
 
   scheduledExact(matchup: Matchup): string | null {

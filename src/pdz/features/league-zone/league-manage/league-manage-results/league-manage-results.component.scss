@@ -1,12 +1,7 @@
 @use "pdz-theming" as pdz;
 
 :host {
-  display: flex;
-  flex-direction: column;
-  gap: pdz.layout(section-gap);
-  width: 100%;
-  max-width: pdz.content-width(default);
-  margin-inline: auto;
+  display: block;
 }
 
 .results__counts {

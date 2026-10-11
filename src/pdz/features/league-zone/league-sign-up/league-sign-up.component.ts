@@ -40,6 +40,7 @@ import {
 import { FieldComponent } from '@pdz/shared/inputs/field/field.component';
 import { InputDirective } from '@pdz/shared/inputs/field/input.directive';
 import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
+import { PageComponent } from '@pdz/shared/layout/page/page.component';
 import { catchError, filter, firstValueFrom, map, of, take } from 'rxjs';
 
 type AnswerValue = string | string[];
@@ -61,6 +62,7 @@ type AnswerValue = string | string[];
     FieldHintDirective,
     InputDirective,
     LoadingComponent,
+    PageComponent,
     PageHeaderComponent,
     SelectComponent,
     SelectOptionComponent,

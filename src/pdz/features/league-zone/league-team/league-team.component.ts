@@ -44,6 +44,7 @@ import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
 import { RosterPatternComponent } from '@pdz/shared/images/roster-pattern/roster-pattern.component';
 import { PokemonComponent } from '@pdz/shared/data/pokemon/pokemon.component';
 import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
+import { PageComponent } from '@pdz/shared/layout/page/page.component';
 import { TooltipDirective } from '@pdz/shared/tooltip/tooltip.directive';
 import { Observable, catchError, interval, map, of, startWith, switchMap } from 'rxjs';
 import { distinctUntilChanged, filter, finalize } from 'rxjs/operators';
@@ -73,6 +74,7 @@ const CLOCK_TICK_MS = 30_000;
     LeagueScheduleWidgetComponent,
     LeagueTradeWidgetComponent,
     LoadingComponent,
+    PageComponent,
     PageHeaderComponent,
     RecordComponent,
     RosterPatternComponent,

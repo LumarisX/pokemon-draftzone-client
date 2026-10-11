@@ -28,6 +28,7 @@ import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
 import { FieldComponent } from '@pdz/shared/inputs/field/field.component';
 import { InputDirective } from '@pdz/shared/inputs/field/input.directive';
 import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
+import { PageComponent } from '@pdz/shared/layout/page/page.component';
 import { TooltipDirective } from '@pdz/shared/tooltip/tooltip.directive';
 
 @Component({
@@ -44,6 +45,7 @@ import { TooltipDirective } from '@pdz/shared/tooltip/tooltip.directive';
     LoadingComponent,
     FieldComponent,
     InputDirective,
+    PageComponent,
     PageHeaderComponent,
     TooltipDirective,
   ],

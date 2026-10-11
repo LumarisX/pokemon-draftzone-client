@@ -31,6 +31,7 @@ import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
 import { SegmentedOptionComponent } from '@pdz/shared/inputs/segmented/segmented-option.component';
 import { SegmentedComponent } from '@pdz/shared/inputs/segmented/segmented.component';
 import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
+import { PageComponent } from '@pdz/shared/layout/page/page.component';
 import { CountdownComponent } from '@pdz/shared/time/countdown/countdown.component';
 import {
   MatchTimeDialogComponent,
@@ -74,6 +75,7 @@ type StatusTone = { label: string; tone: ChipTone };
     SegmentedOptionComponent,
     CountdownComponent,
     TooltipDirective,
+    PageComponent,
     PageHeaderComponent,
     MatchupComponent,
   ],

@@ -6,6 +6,9 @@
 }
 
 .pdz-page__inner {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.layout(section-gap);
   width: 100%;
   margin-inline: auto;
   padding-inline: pdz.space(md);
@@ -23,25 +26,19 @@
   }
 }
 
-:host([data-width="full"]) .pdz-page__inner {
-  max-width: none;
+:host([data-flush]) .pdz-page__inner {
+  padding-inline: 0;
+  padding-block: 0;
 }
 
-:host(.pdz-page--fill) {
+:host([data-type="workspace"]) {
   display: flex;
   flex-direction: column;
   height: 100%;
   min-height: 0;
-}
 
-:host(.pdz-page--fill) .pdz-page__inner {
-  display: flex;
-  flex-direction: column;
-  flex: 1 1 auto;
-  min-height: 0;
-}
-
-:host(.pdz-page--flush) .pdz-page__inner {
-  padding-inline: 0;
-  padding-block: 0;
+  .pdz-page__inner {
+    flex: 1 1 auto;
+    min-height: 0;
+  }
 }

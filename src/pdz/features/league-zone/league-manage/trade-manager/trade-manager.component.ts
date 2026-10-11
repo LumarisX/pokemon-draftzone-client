@@ -33,6 +33,7 @@ import { PokemonComponent } from '@pdz/shared/data/pokemon/pokemon.component';
 import { FieldComponent } from '@pdz/shared/inputs/field/field.component';
 import { InputDirective } from '@pdz/shared/inputs/field/input.directive';
 import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
+import { PageComponent } from '@pdz/shared/layout/page/page.component';
 import {
   BehaviorSubject,
   catchError,
@@ -87,6 +88,7 @@ const BLANK_SIDE: SideDraft = { teamId: '', picks: [], tradePoints: 0 };
     FieldComponent,
     InputDirective,
     LoadingComponent,
+    PageComponent,
     PageHeaderComponent,
     PokemonSearchComponent,
     PoolSwitcherComponent,

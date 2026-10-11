@@ -5,6 +5,7 @@ import { MatchupBreakdownComponent } from '@pdz/features/drafts/matchup-overview
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
 import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
+import { PageComponent } from '@pdz/shared/layout/page/page.component';
 import {
   QuickForm,
   QuickMatchupFormComponent,
@@ -17,6 +18,7 @@ import {
     MatchupBreakdownComponent,
     ButtonComponent,
     LoadingComponent,
+    PageComponent,
     PageHeaderComponent,
   ],
   templateUrl: './quick-matchup-base.component.html',

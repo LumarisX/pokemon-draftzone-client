@@ -5,6 +5,7 @@ import { CardComponent } from '@pdz/shared/data/card/card.component';
 import { EmptyStateComponent } from '@pdz/shared/feedback/empty-state/empty-state.component';
 import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
 import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
+import { PageComponent } from '@pdz/shared/layout/page/page.component';
 import { MarkdownModule } from 'ngx-markdown';
 import { catchError, map, of } from 'rxjs';
 
@@ -15,6 +16,7 @@ import { catchError, map, of } from 'rxjs';
     EmptyStateComponent,
     LoadingComponent,
     MarkdownModule,
+    PageComponent,
     PageHeaderComponent,
   ],
   templateUrl: './league-rules-overview.component.html',

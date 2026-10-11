@@ -13,6 +13,7 @@ import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
 import { SegmentedOptionComponent } from '@pdz/shared/inputs/segmented/segmented-option.component';
 import { SegmentedComponent } from '@pdz/shared/inputs/segmented/segmented.component';
 import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
+import { PageComponent } from '@pdz/shared/layout/page/page.component';
 import { catchError, map, of } from 'rxjs';
 import { LeagueTeamCardComponent } from './league-team-card/league-team-card.component';
 
@@ -28,6 +29,7 @@ type PoolGroup = {
     EmptyStateComponent,
     LeagueTeamCardComponent,
     LoadingComponent,
+    PageComponent,
     PageHeaderComponent,
     SegmentedComponent,
     SegmentedOptionComponent,

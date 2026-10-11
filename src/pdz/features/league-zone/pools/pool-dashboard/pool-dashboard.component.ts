@@ -15,6 +15,7 @@ import { LeagueZoneService } from '@pdz/features/league-zone/league-zone.service
 import { getLeagueLogoUrl } from '@pdz/features/league-zone/league.util';
 import { CardComponent } from '@pdz/shared/data/card/card.component';
 import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
+import { PageComponent } from '@pdz/shared/layout/page/page.component';
 import { TabNavLinkComponent } from '@pdz/shared/layout/tab-nav/tab-nav-link.component';
 import { TabNavComponent } from '@pdz/shared/layout/tab-nav/tab-nav.component';
 import { catchError, of } from 'rxjs';
@@ -25,6 +26,7 @@ import { catchError, of } from 'rxjs';
     CardComponent,
     LeagueScheduleWidgetComponent,
     LeagueTradeWidgetComponent,
+    PageComponent,
     PageHeaderComponent,
     RouterLink,
     RouterLinkActive,

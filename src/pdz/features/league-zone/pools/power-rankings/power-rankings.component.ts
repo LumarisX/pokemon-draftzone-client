@@ -27,6 +27,7 @@ import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
 import { FieldComponent } from '@pdz/shared/inputs/field/field.component';
 import { InputDirective } from '@pdz/shared/inputs/field/input.directive';
 import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
+import { PageComponent } from '@pdz/shared/layout/page/page.component';
 import { Subject, catchError, debounceTime, of } from 'rxjs';
 
 type Scores = Record<string, number>;
@@ -42,6 +43,7 @@ const SAVE_DEBOUNCE_MS = 1000;
     InputDirective,
     LoadingComponent,
     MoveComponent,
+    PageComponent,
     PageHeaderComponent,
     PlannerMoveCoverageComponent,
     PlannerSummaryComponent,

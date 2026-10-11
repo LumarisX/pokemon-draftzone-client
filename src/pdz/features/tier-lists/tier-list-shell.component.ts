@@ -1,12 +1,11 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
-import { PageComponent } from '@pdz/shared/layout/page/page.component';
 
 @Component({
   selector: 'pdz-tier-list-shell',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [PageComponent, RouterOutlet],
-  template: `<pdz-page width="full" fill><router-outlet /></pdz-page>`,
+  imports: [RouterOutlet],
+  template: `<router-outlet />`,
   styles: [
     `
       :host {

@@ -1,16 +1,7 @@
 @use "pdz-theming" as pdz;
 
 :host {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: pdz.layout(section-gap);
-  width: 100%;
-  padding: pdz.layout(page-gap) pdz.space(md);
-}
-
-:host > pdz-page-header {
-  align-self: stretch;
+  display: block;
 }
 
 h2 {

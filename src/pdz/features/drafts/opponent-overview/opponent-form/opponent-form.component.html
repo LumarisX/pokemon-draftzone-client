@@ -1,12 +1,14 @@
-@if (oppParams) {
-  <pdz-opponent-form-core
-    [title]="title"
-    [submitLabel]="submitLabel"
-    [params]="oppParams"
-    (formSubmitted)="saveOpponent($event)"
-  ></pdz-opponent-form-core>
-} @else {
-  <div class="opponent-form__loading">
-    <pdz-loading></pdz-loading>
-  </div>
-}
+<pdz-page type="detail">
+  @if (oppParams) {
+    <pdz-opponent-form-core
+      [title]="title"
+      [submitLabel]="submitLabel"
+      [params]="oppParams"
+      (formSubmitted)="saveOpponent($event)"
+    ></pdz-opponent-form-core>
+  } @else {
+    <div class="opponent-form__loading">
+      <pdz-loading></pdz-loading>
+    </div>
+  }
+</pdz-page>

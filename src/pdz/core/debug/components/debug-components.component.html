@@ -1,3 +1,4 @@
+<pdz-page type="dashboard">
 <header class="gallery__head">
   <h1 class="gallery__title">Component Gallery</h1>
   <p class="gallery__note">
@@ -1346,6 +1347,38 @@
 </section>
 
 <section class="section">
+  <h2 class="section__title">Page Types</h2>
+  <p class="section__note">
+    Every routed page declares one type on pdz-page, which sets its width, its
+    section gap and the header style. Inside the tournament shell the page drops
+    its own padding; flush is only for workspaces that own their edges (the
+    planner).
+  </p>
+  <div class="pdz-table-wrapper">
+    <table class="pdz-table" data-density="compact">
+      <thead>
+        <tr>
+          <th>Type</th>
+          <th>Width</th>
+          <th>Header</th>
+          <th>Pages</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (row of pageTypes; track row.type) {
+          <tr>
+            <td>{{ row.type }}</td>
+            <td>{{ row.width }}</td>
+            <td>{{ row.header }}</td>
+            <td>{{ row.pages }}</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="section">
   <h2 class="section__title">Page Header</h2>
   <p class="section__note">
     The banner every routed page opens with: optional logo, an eyebrow that
@@ -2169,3 +2202,4 @@
 
   <pdz-time-converter [(value)]="converterValue" />
 </section>
+</pdz-page>

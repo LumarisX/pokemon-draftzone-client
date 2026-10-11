@@ -23,6 +23,7 @@ import { FieldComponent } from '@pdz/shared/inputs/field/field.component';
 import { InputDirective } from '@pdz/shared/inputs/field/input.directive';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
+import { PageComponent } from '@pdz/shared/layout/page/page.component';
 import { DEFAULT_RULESET } from '@pdz/core/rulesets';
 
 @Component({
@@ -40,6 +41,7 @@ import { DEFAULT_RULESET } from '@pdz/core/rulesets';
     InputDirective,
     FieldErrorDirective,
     ButtonComponent,
+    PageComponent,
     PageHeaderComponent,
   ],
 })

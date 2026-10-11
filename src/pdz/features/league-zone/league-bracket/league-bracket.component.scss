@@ -2,36 +2,14 @@
 
 :host {
   display: block;
-  width: 100%;
-
-  @include pdz.respond-above(medium) {
-    height: 100%;
-  }
-}
-
-.schedule {
-  display: flex;
-  flex-direction: column;
-  gap: pdz.space(md);
-
-  @include pdz.respond-above(medium) {
-    height: 100%;
-    min-height: 0;
-  }
 }
 
 .schedule__body {
   display: flex;
   flex-direction: column;
 
-  @include pdz.respond-above(medium) {
-    flex: 1 1 auto;
-    min-height: 0;
-
-    > pdz-stage-builder {
-      flex: 1 1 auto;
-      min-height: 14rem;
-    }
+  > pdz-stage-builder {
+    min-height: 14rem;
   }
 }
 

@@ -1,9 +1,7 @@
 @use "pdz-theming" as pdz;
 
 :host {
-  display: flex;
-  flex-direction: column;
-  gap: pdz.layout(section-gap);
+  display: block;
 }
 
 .pool-body {

@@ -1,3 +1,4 @@
+<pdz-page type="detail">
 @if (teamData(); as team) {
   <pdz-page-header [title]="team.name" [logo]="logoSrc()">
     @if (team.draft.length) {
@@ -188,3 +189,4 @@
 } @else {
   <pdz-loading />
 }
+</pdz-page>

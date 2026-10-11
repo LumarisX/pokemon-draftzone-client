@@ -21,6 +21,7 @@ import { StageSwitcherComponent } from '@pdz/features/league-zone/league-widgets
 import { SkeletonComponent } from '@pdz/shared/data/skeleton/skeleton.component';
 import { EmptyStateComponent } from '@pdz/shared/feedback/empty-state/empty-state.component';
 import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
+import { PageComponent } from '@pdz/shared/layout/page/page.component';
 import { catchError, map, of, switchMap } from 'rxjs';
 import { PokemonStandingsComponent } from './pokemon-standings/pokemon-standings.component';
 import { TeamStandingsComponent } from './team-standings/team-standings.component';
@@ -53,6 +54,7 @@ type StandingsState =
   selector: 'pdz-league-standings',
   imports: [
     EmptyStateComponent,
+    PageComponent,
     PageHeaderComponent,
     PodiumComponent,
     PokemonStandingsComponent,

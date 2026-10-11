@@ -1,5 +1,5 @@
 @if (league(); as league) {
-  <pdz-page width="wide">
+  <pdz-page type="hub">
     <div class="landing">
       <pdz-page-header
         eyebrow="League"
@@ -161,7 +161,7 @@
     </div>
   </pdz-page>
 } @else if (league() === null) {
-  <pdz-page width="wide">
+  <pdz-page type="hub">
     <pdz-empty-state
       bordered
       kind="error"

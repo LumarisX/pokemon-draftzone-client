@@ -15,6 +15,7 @@ import { ChipComponent } from '@pdz/shared/data/chip/chip.component';
 import { EmptyStateComponent } from '@pdz/shared/feedback/empty-state/empty-state.component';
 import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
 import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
+import { PageComponent } from '@pdz/shared/layout/page/page.component';
 import { BracketTeamFlex } from './bracket.model';
 
 @Component({
@@ -24,6 +25,7 @@ import { BracketTeamFlex } from './bracket.model';
     StageBuilderComponent,
     ChipComponent,
     EmptyStateComponent,
+    PageComponent,
     PageHeaderComponent,
   ],
   templateUrl: './league-bracket.component.html',

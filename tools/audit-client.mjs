@@ -7,6 +7,7 @@ const args = new Set(process.argv.slice(2));
 
 const CODES = [
   ["hdr", "routed page without `<pdz-page-header>`"],
+  ["page", "routed page without `<pdz-page type>`"],
   ["ctl", "native control without a pdz attribute"],
   ["a11y", "click handler or `routerLink` on a non-interactive element"],
   ["img", "raw `<img>`"],
@@ -44,6 +45,14 @@ const PAGE_HEADER_EXEMPT = new Set([
   "features/pages/external-link/external-link.component",
   "features/league-zone/tournaments/tournament-draft/tournament-draft.component",
   "features/planner/planner.component",
+]);
+
+const PAGE_TYPE_EXEMPT = new Set([
+  "features/pages/homepage/homepage.component",
+  "features/pages/landing/landing.component",
+  "features/pages/not-found/not-found.component",
+  "features/pages/external-link/external-link.component",
+  "features/league-zone/tournaments/tournament-draft/tournament-draft.component",
 ]);
 
 const ALLOW = {
@@ -257,19 +266,25 @@ function selectorIndex() {
   return index;
 }
 
-function rendersPageHeader(u, selectors, seen = new Set()) {
+function renders(pattern, u, selectors, seen = new Set()) {
   if (seen.has(u)) return false;
   seen.add(u);
   const entry = units.get(u);
   if (!entry) return false;
   const tpl = templateOfUnit(entry);
-  if (/<pdz-page-header\b/.test(tpl)) return true;
+  if (pattern.test(tpl)) return true;
   for (const m of tpl.matchAll(/<(pdz-[\w-]+)\b/g)) {
     const child = selectors.get(m[1]);
-    if (child && rendersPageHeader(child, selectors, seen)) return true;
+    if (child && renders(pattern, child, selectors, seen)) return true;
   }
   return false;
 }
+
+const rendersPageHeader = (u, selectors) => renders(/<pdz-page-header\b/, u, selectors);
+const rendersTypedPage = (u) => {
+  const entry = units.get(u);
+  return !!entry && /<pdz-page\s[^>]*\btype="/.test(templateOfUnit(entry));
+};
 
 const units = new Map();
 const empty = () => Object.fromEntries(CODES.map(([c]) => [c, 0]));
@@ -310,8 +325,9 @@ for (const routed of routeFiles()) {
   });
   for (const u of routed) {
     const entry = units.get(u);
-    if (!entry || PAGE_HEADER_EXEMPT.has(u) || shellHasHeader) continue;
-    if (/<router-outlet/.test(templateOfUnit(entry))) continue;
+    if (!entry || /<router-outlet/.test(templateOfUnit(entry))) continue;
+    if (!PAGE_TYPE_EXEMPT.has(u) && !rendersTypedPage(u)) entry.f.page++;
+    if (PAGE_HEADER_EXEMPT.has(u) || shellHasHeader) continue;
     if (!rendersPageHeader(u, selectors)) entry.f.hdr++;
   }
 }
@@ -327,7 +343,7 @@ const inArea = (u) => {
   return parts[0] === "features" ? parts.slice(2).join("/") : parts.length === 1 ? parts[0] : parts.slice(1).join("/");
 };
 
-const BOOL = new Set(["hdr", "push", "cm"]);
+const BOOL = new Set(["hdr", "page", "push", "cm"]);
 const fmt = (f) =>
   CODES.filter(([c]) => f[c] > 0)
     .map(([c]) => (BOOL.has(c) ? c : `${c} ${f[c]}`))

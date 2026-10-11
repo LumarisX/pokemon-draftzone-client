@@ -27,6 +27,7 @@ import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { SegmentedOptionComponent } from '@pdz/shared/inputs/segmented/segmented-option.component';
 import { SegmentedComponent } from '@pdz/shared/inputs/segmented/segmented.component';
 import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
+import { PageComponent } from '@pdz/shared/layout/page/page.component';
 import { debounceTime, distinctUntilChanged, merge } from 'rxjs';
 import { DraftPokemon } from '../drafts/draft.model';
 import {
@@ -90,6 +91,7 @@ const DEFAULT_PANEL_MAX_WIDTH_REM = 32;
     SegmentedOptionComponent,
     LoadingComponent,
     MoveComponent,
+    PageComponent,
     PlannerMoveCoverageComponent,
     PlannerTeamCoverageComponent,
     PlannerSettingsComponent,

@@ -1,8 +1,62 @@
 @use "pdz-theming" as pdz;
 
+$draft-sprite-size: pdz.sprite-size(lg);
+
 :host {
-  flex-grow: 1;
+  display: block;
+}
+
+.draft-facts {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: pdz.space(xs);
+
+  span:not(:first-child)::before {
+    content: "·";
+    padding-inline-end: pdz.space(xs);
+  }
+}
+
+.draft-record {
+  display: inline-flex;
+  align-items: center;
+  gap: pdz.space(sm);
+}
+
+.draft-record__diff {
+  @include pdz.text(body-sm-strong);
+  @include pdz.numeric;
+  color: pdz.color(on-surface-variant);
+}
+
+.draft-actions {
   display: flex;
+  gap: pdz.space(xs);
+}
+
+.draft-bar {
+  display: flex;
+  flex: 1 1 0;
+  justify-content: center;
+  gap: pdz.space(2xs);
+  width: 0;
+  min-width: 0;
+
+  @include pdz.respond-below(medium) {
+    display: none;
+  }
+
+  pdz-sprite {
+    flex: 0 1 $draft-sprite-size;
+    min-width: 0;
+    max-width: $draft-sprite-size;
+    aspect-ratio: 1;
+  }
+}
+
+.unresolved-sprite {
+  opacity: 0.45;
+  filter: grayscale(1);
 }
 
 .preview-main {
@@ -10,7 +64,6 @@
   flex-direction: column;
   gap: pdz.space(sm);
   width: 100%;
-  padding: 0 pdz.space(sm) pdz.space(sm);
 
   @include pdz.respond-above(desktop) {
     flex-direction: row;

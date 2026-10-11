@@ -19,6 +19,7 @@ import { ToastService } from '@pdz/shared/feedback/toast/toast.service';
 import { FieldComponent } from '@pdz/shared/inputs/field/field.component';
 import { InputDirective } from '@pdz/shared/inputs/field/input.directive';
 import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
+import { PageComponent } from '@pdz/shared/layout/page/page.component';
 
 @Component({
   selector: 'pdz-league-rules-form',
@@ -28,6 +29,7 @@ import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.
     EmptyStateComponent,
     FieldComponent,
     InputDirective,
+    PageComponent,
     PageHeaderComponent,
   ],
   templateUrl: './league-rules-form.component.html',

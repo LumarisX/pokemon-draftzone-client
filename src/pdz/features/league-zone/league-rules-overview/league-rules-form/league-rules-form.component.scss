@@ -1,10 +1,7 @@
 @use "pdz-theming" as pdz;
 
 :host {
-  display: flex;
-  flex-direction: column;
-  gap: pdz.layout(section-gap);
-  max-width: pdz.content-width(default);
+  display: block;
 }
 
 .rules-editor__dirty {

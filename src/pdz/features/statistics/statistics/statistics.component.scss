@@ -3,13 +3,6 @@
 
 :host {
   display: block;
-  width: 100%;
-}
-
-.statistics {
-  padding: pdz.layout(page-gap) pdz.space(md);
-  display: grid;
-  gap: pdz.layout(section-gap);
 }
 
 .statistics__formats {

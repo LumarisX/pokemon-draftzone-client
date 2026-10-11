@@ -3,9 +3,6 @@
 
 :host {
   display: block;
-  width: 100%;
-  height: 100%;
-  overflow-y: auto;
 
   --wheel-slice-0: var(--pdz-color-cyan-400);
   --wheel-slice-1: var(--pdz-color-orange-400);
@@ -21,17 +18,6 @@
 }
 
 .wheel-page {
-  display: flex;
-  flex-direction: column;
-  gap: pdz.space(xl);
-  max-width: 66rem;
-  margin: 0 auto;
-  padding: pdz.space(xl) pdz.space(lg) pdz.space(3xl);
-
-  @include respond-above(desktop) {
-    max-width: 84rem;
-  }
-
   &__body {
     display: grid;
     grid-template-columns: minmax(0, 1fr);

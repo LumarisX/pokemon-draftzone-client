@@ -1,45 +1,47 @@
-<pdz-page-header title="Rules" />
+<pdz-page type="detail">
+  <pdz-page-header title="Rules" />
 
-@if (rules(); as sections) {
-  @if (sections.length) {
-    <div class="rules">
-      <nav class="rules__nav" aria-label="Rule sections">
-        <h2 class="rules__nav-title">Sections</h2>
-        @for (rule of sections; track $index) {
-          <a
-            class="rules__nav-link"
-            [href]="'#section-' + $index"
-            (click)="scrollToSection($event, $index)"
-            >{{ rule.title }}</a
-          >
-        }
-      </nav>
-
-      <div class="rules__content">
-        @for (rule of sections; track $index) {
-          <pdz-card padding="lg">
-            <section
-              class="rules__section"
-              [id]="'section-' + $index"
-              [attr.aria-labelledby]="'section-title-' + $index"
+  @if (rules(); as sections) {
+    @if (sections.length) {
+      <div class="rules">
+        <nav class="rules__nav" aria-label="Rule sections">
+          <h2 class="rules__nav-title">Sections</h2>
+          @for (rule of sections; track $index) {
+            <a
+              class="rules__nav-link"
+              [href]="'#section-' + $index"
+              (click)="scrollToSection($event, $index)"
+              >{{ rule.title }}</a
             >
-              <h2 class="rules__section-title" [id]="'section-title-' + $index">
-                {{ rule.title }}
-              </h2>
-              <markdown class="markdown-content" [data]="rule.body" />
-            </section>
-          </pdz-card>
-        }
+          }
+        </nav>
+
+        <div class="rules__content">
+          @for (rule of sections; track $index) {
+            <pdz-card padding="lg">
+              <section
+                class="rules__section"
+                [id]="'section-' + $index"
+                [attr.aria-labelledby]="'section-title-' + $index"
+              >
+                <h2 class="rules__section-title" [id]="'section-title-' + $index">
+                  {{ rule.title }}
+                </h2>
+                <markdown class="markdown-content" [data]="rule.body" />
+              </section>
+            </pdz-card>
+          }
+        </div>
       </div>
-    </div>
+    } @else {
+      <pdz-empty-state
+        bordered
+        kind="waiting"
+        heading="No rules yet"
+        message="The organizers haven't posted rules for this tournament."
+      />
+    }
   } @else {
-    <pdz-empty-state
-      bordered
-      kind="waiting"
-      heading="No rules yet"
-      message="The organizers haven't posted rules for this tournament."
-    />
+    <pdz-loading />
   }
-} @else {
-  <pdz-loading />
-}
+</pdz-page>

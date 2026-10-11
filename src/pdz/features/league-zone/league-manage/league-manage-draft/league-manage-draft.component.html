@@ -2,6 +2,7 @@
 @let draft = pending();
 @let turnNow = currentTurn();
 
+<pdz-page type="workspace">
 <pdz-page-header
   [title]="saved.name || 'Draft control'"
   eyebrow="Draft Control"
@@ -416,3 +417,4 @@
     bordered
   />
 }
+</pdz-page>

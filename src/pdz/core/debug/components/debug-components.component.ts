@@ -64,6 +64,7 @@ import { PokemonComponent } from '@pdz/shared/data/pokemon/pokemon.component';
 import { TeamComponent } from '@pdz/shared/data/team/team.component';
 import { TooltipDirective } from '@pdz/shared/tooltip/tooltip.directive';
 import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
+import { PageComponent } from '@pdz/shared/layout/page/page.component';
 import { WidgetComponent } from '@pdz/shared/layout/widget/widget.component';
 import { SlideToggleComponent } from '@pdz/shared/inputs/slide-toggle/slide-toggle.component';
 import {
@@ -140,6 +141,7 @@ const MODE_ATTR = 'pdz-theme-mode';
     TooltipDirective,
     DialogComponent,
     WidgetComponent,
+    PageComponent,
     PageHeaderComponent,
     SlideToggleComponent,
     SliderComponent,
@@ -182,6 +184,15 @@ export class DebugComponentsComponent {
     this.countdownSamples[0].target,
   );
 
+  protected readonly pageTypes = [
+    { type: 'hub', width: 'default 64rem', header: 'full', pages: 'My Drafts, league and tournament home, pool, tools list' },
+    { type: 'index', width: 'wide 96rem', header: 'compact', pages: 'Teams, standings, schedule, trades, results, lists' },
+    { type: 'detail', width: 'default 64rem', header: 'full', pages: 'One team, matchup, rules, settings sections, draft and score forms' },
+    { type: 'workspace', width: 'full, fills the height', header: 'compact', pages: 'Planner, drafting room, tier list and its editor, stage builder' },
+    { type: 'tool', width: 'default 64rem', header: 'full', pages: 'Quick draft, random draft, wheel, time converter' },
+    { type: 'form', width: 'narrow 40rem', header: 'full', pages: 'Create league or tournament, sign up, organizers, rules editor' },
+    { type: 'dashboard', width: 'wide 96rem', header: 'full', pages: 'Draft page, matchup breakdowns, draft stats, replay analyzer, Pokémon search' },
+  ];
   protected readonly spriteBasic = { id: 'charizard', name: 'Charizard' };
   protected readonly spriteSizes: SpriteSize[] = ['xs', 'sm', 'md', 'lg', 'xl'];
   protected readonly nestTeams = [

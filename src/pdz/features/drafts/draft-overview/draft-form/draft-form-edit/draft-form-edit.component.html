@@ -1,12 +1,14 @@
-@if (draftParams) {
-  <pdz-draft-form-core
-    title="Edit Draft"
-    submitLabel="Save Changes"
-    [params]="draftParams"
-    (formSubmitted)="editDraft($event)"
-  ></pdz-draft-form-core>
-} @else {
-  <div class="draft-form__loading">
-    <pdz-loading></pdz-loading>
-  </div>
-}
+<pdz-page type="detail">
+  @if (draftParams) {
+    <pdz-draft-form-core
+      title="Edit Draft"
+      submitLabel="Save Changes"
+      [params]="draftParams"
+      (formSubmitted)="editDraft($event)"
+    ></pdz-draft-form-core>
+  } @else {
+    <div class="draft-form__loading">
+      <pdz-loading></pdz-loading>
+    </div>
+  }
+</pdz-page>
