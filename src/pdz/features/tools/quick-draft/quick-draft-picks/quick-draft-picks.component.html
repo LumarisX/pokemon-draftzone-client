@@ -7,7 +7,7 @@
           @let pokemon = draftOptions[selectedOption];
           <div class="option-breakdown">
             <div class="sprite-wrapper">
-              <pdz-sprite [pokemon]="pokemon" />
+              <pdz-sprite size="fill" [pokemon]="pokemon" />
             </div>
             <div class="option-info">
               <div class="option-name">
@@ -90,7 +90,7 @@
               (click)="clickOption($index)"
             >
               <div class="sprite-wrapper">
-                <pdz-sprite [pokemon]="draftOption" />
+                <pdz-sprite size="fill" [pokemon]="draftOption" />
               </div>
               <div class="option-info">
                 <div class="option-name">

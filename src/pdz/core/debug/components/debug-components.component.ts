@@ -44,7 +44,10 @@ import {
   DialogSize,
 } from '@pdz/shared/dialogs/dialog/dialog.component';
 import { DialogService } from '@pdz/shared/dialogs/dialog/dialog.service';
-import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
+import {
+  SpriteComponent,
+  SpriteSize,
+} from '@pdz/shared/images/sprite/sprite.component';
 import { TeamPhotoComponent } from '@pdz/shared/images/team-photo/team-photo.component';
 import { RosterPatternComponent } from '@pdz/shared/images/roster-pattern/roster-pattern.component';
 import { SeasonMvpComponent } from '@pdz/shared/data/season-mvp/season-mvp.component';
@@ -180,6 +183,7 @@ export class DebugComponentsComponent {
   );
 
   protected readonly spriteBasic = { id: 'charizard', name: 'Charizard' };
+  protected readonly spriteSizes: SpriteSize[] = ['xs', 'sm', 'md', 'lg', 'xl'];
   protected readonly nestTeams = [
     { name: 'Ruin Valley Ravagers', coach: 'Cal' },
     { name: 'Tidepool Tyrants', coach: 'Mira' },

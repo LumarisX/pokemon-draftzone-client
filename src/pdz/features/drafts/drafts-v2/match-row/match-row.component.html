@@ -49,7 +49,7 @@
 @if (match().roster.length) {
   <div class="dz-match__roster">
     @for (pokemon of match().roster; track $index) {
-      <pdz-sprite size="2.5rem" [pokemon]="pokemon" />
+      <pdz-sprite size="md" [pokemon]="pokemon" />
     }
   </div>
 }

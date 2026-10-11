@@ -1,6 +1,6 @@
 <span class="speedtier__speed">{{ tier().speed }}</span>
 <div class="speedtier__sprite">
-  <pdz-sprite [pokemon]="tier().pokemon" flipped></pdz-sprite>
+  <pdz-sprite size="sm" [pokemon]="tier().pokemon" flipped></pdz-sprite>
 </div>
 <div class="speedtier__modifiers">
   @for (modifier of tier().modifiers; track modifier) {

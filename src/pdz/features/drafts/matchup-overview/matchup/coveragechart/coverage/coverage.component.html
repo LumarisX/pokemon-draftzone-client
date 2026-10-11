@@ -2,7 +2,7 @@
   <div class="sprite-container">
     <div class="sprite-spacer">
       <div class="sprite-wrapper">
-        <pdz-sprite [pokemon]="pokemon()" flipped></pdz-sprite>
+        <pdz-sprite size="fill" [pokemon]="pokemon()" flipped></pdz-sprite>
       </div>
     </div>
     <button
@@ -76,6 +76,7 @@
     <div class="sprite-container">
       @for (pokemon of coverage; track pokemon) {
         <pdz-sprite
+          size="sm"
           [style.background]="weaknessColor(pokemon.max)"
           [pokemon]="pokemon.pokemon"
         ></pdz-sprite>

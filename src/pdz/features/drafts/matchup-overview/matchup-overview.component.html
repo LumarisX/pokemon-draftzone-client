@@ -20,7 +20,7 @@
               <pdz-sprite
                 flipped
                 grounded
-                size="var(--versus-sprite)"
+                size="fill"
                 [pokemon]="pokemon"
               />
             }
@@ -30,7 +30,7 @@
             @for (pokemon of matchupData.summary[1].team; track pokemon.index) {
               <pdz-sprite
                 grounded
-                size="var(--versus-sprite)"
+                size="fill"
                 [pokemon]="pokemon"
               />
             }

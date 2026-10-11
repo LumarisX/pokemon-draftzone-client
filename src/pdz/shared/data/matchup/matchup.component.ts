@@ -129,6 +129,7 @@ const TEAM_SIZES: Record<MatchupSize, TeamSize> = {
                 @for (pokemon of side.team.pokemon; track $index) {
                   <pdz-sprite
                     class="pdz-matchup__sprite"
+                    size="fill"
                     grounded
                     [pokemon]="pokemon"
                     [flipped]="side.slot === 'team1'"

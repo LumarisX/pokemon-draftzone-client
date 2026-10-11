@@ -74,13 +74,13 @@
 
 .row__sprite {
   flex-shrink: 0;
-  width: 4rem;
-  height: 4rem;
+  width: pdz.sprite-size(lg);
+  height: pdz.sprite-size(lg);
   padding: 1px;
 
   @include pdz.respond-below(medium) {
-    width: 2rem;
-    height: 2rem;
+    width: pdz.sprite-size(sm);
+    height: pdz.sprite-size(sm);
   }
 
   pdz-sprite {

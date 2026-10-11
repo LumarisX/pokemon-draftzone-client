@@ -19,6 +19,7 @@ import { SpriteImageComponent } from '../sprite-image/sprite-image.component';
 type SpritePokemon = Pokemon<DraftOptions>;
 
 export type SpriteState = 'fainted' | 'taken' | 'banned';
+export type SpriteSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'fill';
 
 type FormeSlot = {
   pokemon: SpritePokemon;
@@ -39,6 +40,7 @@ type FormeSlot = {
     '[attr.data-grounded]': 'grounded() ? "" : null',
     '[attr.data-kind]': 'kind()',
     '[attr.data-state]': 'state()',
+    '[attr.data-size]': 'size()',
   },
 })
 export class SpriteComponent {
@@ -52,7 +54,7 @@ export class SpriteComponent {
   tooltipPosition = input<
     'before' | 'after' | 'above' | 'below' | 'left' | 'right' | null
   >(null);
-  size = input<string>();
+  size = input<SpriteSize>('md');
   flipped = input(false, { transform: booleanAttribute });
   disabled = model(false);
   showFormes = input(true, { transform: booleanAttribute });

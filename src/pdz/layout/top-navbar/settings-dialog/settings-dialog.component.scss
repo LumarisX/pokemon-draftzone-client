@@ -55,9 +55,8 @@
 }
 
 .sprite-wrapper {
+  display: flex;
   flex: none;
-  width: 4rem;
-  height: 4rem;
 }
 
 .save-error {

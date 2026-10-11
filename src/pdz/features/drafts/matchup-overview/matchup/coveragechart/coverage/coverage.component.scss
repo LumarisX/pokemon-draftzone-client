@@ -26,14 +26,19 @@
       display: flex;
       align-items: center;
       .sprite-wrapper {
-        width: 6rem;
-        height: 6rem;
+        width: pdz.sprite-size(xl);
+        height: pdz.sprite-size(xl);
         align-self: center;
         flex-shrink: 0;
 
         @include pdz.respond-below(medium) {
-          width: 3rem;
-          height: 3rem;
+          width: pdz.sprite-size(md);
+          height: pdz.sprite-size(md);
+        }
+
+        pdz-sprite {
+          width: 100%;
+          height: 100%;
         }
       }
     }
@@ -102,8 +107,6 @@
       }
 
       pdz-sprite {
-        height: 2rem;
-        width: 2rem;
         border-radius: pdz.shape(corner-sm);
         background-color: pdz.color(state-hover);
       }

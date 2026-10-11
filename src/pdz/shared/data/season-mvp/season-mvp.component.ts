@@ -17,7 +17,7 @@ export type SeasonMvpStat = {
       <div class="pdz-season-mvp">
         <pdz-sprite
           class="pdz-season-mvp__sprite"
-          size="5.5rem"
+          size="xl"
           grounded
           flipped
           [pokemon]="pokemon()"

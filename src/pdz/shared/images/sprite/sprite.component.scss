@@ -2,6 +2,17 @@
 
 :host {
   display: inline-flex;
+  flex: none;
+}
+
+@each $name in (xs, sm, md, lg, xl) {
+  :host([data-size="#{$name}"]) {
+    --pdz-sprite-box: #{pdz.sprite-size($name)};
+  }
+}
+
+:host([data-size="fill"]) {
+  --pdz-sprite-box: 100%;
 }
 
 .forme-stack {
@@ -10,8 +21,8 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  min-width: 1.5rem;
-  min-height: 1.5rem;
+  width: var(--pdz-sprite-box);
+  height: var(--pdz-sprite-box);
   aspect-ratio: 1 / 1;
   overflow: visible;
 

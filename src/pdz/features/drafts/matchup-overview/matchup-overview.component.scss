@@ -44,7 +44,7 @@ $fab-stack-clearance: calc(
 }
 
 .versus {
-  --versus-sprite: 2rem;
+  --versus-sprite: #{pdz.sprite-size(sm)};
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
   align-items: center;
@@ -56,7 +56,7 @@ $fab-stack-clearance: calc(
   background: pdz.color(versus-wash);
 
   @include pdz.respond-above(medium) {
-    --versus-sprite: 2.5rem;
+    --versus-sprite: #{pdz.sprite-size(md)};
   }
 }
 
@@ -66,6 +66,11 @@ $fab-stack-clearance: calc(
   align-items: center;
   gap: pdz.space(3xs);
   min-width: 0;
+
+  pdz-sprite {
+    width: var(--versus-sprite);
+    height: var(--versus-sprite);
+  }
 
   &--team1 {
     justify-content: flex-end;

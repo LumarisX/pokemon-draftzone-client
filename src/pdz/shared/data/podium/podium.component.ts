@@ -34,7 +34,7 @@ export const PODIUM_SIZE = 3;
                 @if (place.pokemon; as pokemon) {
                   <pdz-sprite
                     class="pdz-podium__sprite"
-                    size="100%"
+                    size="fill"
                     grounded
                     [pokemon]="pokemon"
                     [flipped]="$index === 1"

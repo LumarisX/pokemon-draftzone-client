@@ -69,7 +69,7 @@ function arrange(count: number): SlotPlace[] {
         @if (slot.pokemon; as pokemon) {
           <pdz-sprite
             [pokemon]="pokemon"
-            size="100%"
+            size="fill"
             grounded
             tooltipPosition="above"
             [showFormes]="false"

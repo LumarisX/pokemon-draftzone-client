@@ -38,11 +38,6 @@
       .pokemon-search__selection {
         gap: pdz.space(xs);
       }
-
-      .pokemon-search__selection-sprite {
-        width: 2.75rem;
-        height: 2.75rem;
-      }
     }
   }
 
@@ -71,8 +66,6 @@
   }
 
   &__selection-sprite {
-    width: 2.5rem;
-    height: 2.5rem;
     flex-shrink: 0;
   }
 
@@ -141,12 +134,6 @@
     cursor: pointer;
     color: pdz.color(on-surface);
     transition: background-color pdz.duration(fast) pdz.easing(standard);
-
-    pdz-sprite {
-      width: 40px;
-      height: 40px;
-      flex-shrink: 0;
-    }
 
     &:hover,
     &--highlighted {

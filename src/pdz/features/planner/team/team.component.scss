@@ -324,8 +324,7 @@
   }
 
   &__drag-preview {
-    width: 4rem;
-    height: 4rem;
+    display: flex;
     border-radius: pdz.shape(corner-xs);
     box-shadow: var(--pdz-elevation-3);
   }

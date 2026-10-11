@@ -101,6 +101,10 @@
         .sprite-wrapper {
           position: relative;
 
+          pdz-sprite {
+            width: 100%;
+          }
+
           .capt-label {
             display: flex;
             flex-direction: column;

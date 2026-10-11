@@ -7,7 +7,10 @@ import {
 } from '@angular/core';
 import { Pokemon } from '@pdz/core/utils/pokemon';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
-import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
+import {
+  SpriteComponent,
+  SpriteSize,
+} from '@pdz/shared/images/sprite/sprite.component';
 
 export type EmptyStateSize = 'sm' | 'md' | 'lg';
 export type EmptyStateKind = 'empty' | 'waiting' | 'error' | 'no-access';
@@ -18,10 +21,10 @@ const ICON_SIZES: Record<EmptyStateSize, number> = {
   lg: 48,
 };
 
-const ACTOR_SIZES: Record<EmptyStateSize, string | null> = {
+const ACTOR_SIZES: Record<EmptyStateSize, SpriteSize | null> = {
   sm: null,
-  md: '5rem',
-  lg: '7rem',
+  md: 'lg',
+  lg: 'xl',
 };
 
 const ACTORS: Record<EmptyStateKind, { pokemon: Pokemon; icon: string }> = {

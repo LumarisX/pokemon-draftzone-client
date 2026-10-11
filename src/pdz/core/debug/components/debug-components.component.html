@@ -1365,14 +1365,14 @@
       <div pdz-page-header-center class="versus-demo" aria-hidden="true">
         <div class="versus-demo__side versus-demo__side--team1">
           @for (pokemon of versusTeams[0]; track pokemon.id) {
-            <pdz-sprite size="2.5rem" [pokemon]="pokemon" />
+            <pdz-sprite size="md" [pokemon]="pokemon" />
           }
         </div>
         <span class="versus-demo__vs">vs</span>
         <div class="versus-demo__side">
           @for (pokemon of versusTeams[1]; track pokemon.id) {
             <pdz-sprite
-              size="2.5rem"
+              size="md"
               flipped
               [pokemon]="pokemon"
             />
@@ -1760,19 +1760,19 @@
   <div class="sprites">
     <div class="sprites__demo">
       <span class="sprites__name">default</span>
-      <pdz-sprite [pokemon]="spriteBasic" size="5rem" />
+      <pdz-sprite [pokemon]="spriteBasic" size="xl" />
     </div>
     <div class="sprites__demo">
       <span class="sprites__name">shiny</span>
-      <pdz-sprite [pokemon]="spriteShiny" size="5rem" />
+      <pdz-sprite [pokemon]="spriteShiny" size="xl" />
     </div>
     <div class="sprites__demo">
       <span class="sprites__name">flipped</span>
-      <pdz-sprite [pokemon]="spriteBordered" size="5rem" flipped />
+      <pdz-sprite [pokemon]="spriteBordered" size="xl" flipped />
     </div>
     <div class="sprites__demo">
       <span class="sprites__name">unknown id</span>
-      <pdz-sprite [pokemon]="spriteUnknown" size="5rem" />
+      <pdz-sprite [pokemon]="spriteUnknown" size="xl" />
     </div>
   </div>
 
@@ -1781,7 +1781,7 @@
     @for (pokemon of photoCounts[2]; track pokemon.id) {
       <div class="sprites__demo">
         <span class="sprites__name">{{ pokemon.name }}</span>
-        <pdz-sprite [pokemon]="pokemon" size="5rem" grounded />
+        <pdz-sprite [pokemon]="pokemon" size="xl" grounded />
       </div>
     }
   </div>
@@ -1793,24 +1793,24 @@
   <div class="sprites">
     <div class="sprites__demo">
       <span class="sprites__name">shiny</span>
-      <pdz-sprite [pokemon]="spriteShinyGrounded" size="5rem" grounded />
+      <pdz-sprite [pokemon]="spriteShinyGrounded" size="xl" grounded />
     </div>
     <div class="sprites__demo">
       <span class="sprites__name">fainted</span>
-      <pdz-sprite [pokemon]="photoTeam[2]" size="5rem" grounded state="fainted" />
+      <pdz-sprite [pokemon]="photoTeam[2]" size="xl" grounded state="fainted" />
     </div>
     <div class="sprites__demo">
       <span class="sprites__name">taken</span>
       <pdz-sprite
         [pokemon]="photoDrafting[0]"
-        size="5rem"
+        size="xl"
         state="taken"
         takenBy="Rocket Grunts"
       />
     </div>
     <div class="sprites__demo">
       <span class="sprites__name">banned</span>
-      <pdz-sprite [pokemon]="photoDrafting[2]" size="5rem" state="banned" />
+      <pdz-sprite [pokemon]="photoDrafting[2]" size="xl" state="banned" />
     </div>
   </div>
 
@@ -1996,7 +1996,7 @@
   <div class="sprites">
     <div class="sprites__demo">
       <span class="sprites__name">magearna-original-mega</span>
-      <pdz-sprite [pokemon]="spriteUnreleased" size="5rem" />
+      <pdz-sprite [pokemon]="spriteUnreleased" size="xl" />
     </div>
   </div>
 
@@ -2010,24 +2010,24 @@
       <span class="sprites__name">interactive</span>
       <pdz-sprite
         [pokemon]="spriteFormes"
-        size="5rem"
+        size="xl"
         interactive
         [(formeIndex)]="spriteFormeIndex"
       />
     </div>
     <div class="sprites__demo">
       <span class="sprites__name">default (not interactive)</span>
-      <pdz-sprite [pokemon]="spriteFormes" size="5rem" />
+      <pdz-sprite [pokemon]="spriteFormes" size="xl" />
     </div>
     <div class="sprites__demo">
       <span class="sprites__name">formes hidden</span>
-      <pdz-sprite [pokemon]="spriteFormes" size="5rem" [showFormes]="false" />
+      <pdz-sprite [pokemon]="spriteFormes" size="xl" [showFormes]="false" />
     </div>
     <div class="sprites__demo">
       <span class="sprites__name">index: {{ spriteFormeIndex() }}</span>
       <pdz-sprite
         [pokemon]="spriteFormes"
-        size="5rem"
+        size="xl"
         [formeIndex]="spriteFormeIndex()"
       />
     </div>
@@ -2037,7 +2037,7 @@
   <div class="sprites">
     <div class="sprites__demo">
       <span class="sprites__name">disabled</span>
-      <pdz-sprite [pokemon]="spriteBasic" size="5rem" [disabled]="true" />
+      <pdz-sprite [pokemon]="spriteBasic" size="xl" [disabled]="true" />
     </div>
     <div class="sprites__demo">
       <span class="sprites__name">
@@ -2045,7 +2045,7 @@
       </span>
       <pdz-sprite
         [pokemon]="spriteFormes"
-        size="5rem"
+        size="xl"
         interactive
         cycleDisabled
         [(disabled)]="spriteDisabled"
@@ -2060,16 +2060,16 @@
         <span class="sprites__name">{{ pos }}</span>
         <pdz-sprite
           [pokemon]="spriteBasic"
-          size="4rem"
+          size="lg"
           [tooltipPosition]="$any(pos)"
         />
       </div>
     }
   </div>
 
-  <h3 class="section__sub">Sizes</h3>
+  <h3 class="section__sub">Sizes — xs 24 · sm 32 · md 48 · lg 64 · xl 96</h3>
   <div class="sprites">
-    @for (s of ["1.5rem", "2.5rem", "4rem", "6rem"]; track s) {
+    @for (s of spriteSizes; track s) {
       <div class="sprites__demo">
         <span class="sprites__name">{{ s }}</span>
         <pdz-sprite [pokemon]="spriteBasic" [size]="s" />

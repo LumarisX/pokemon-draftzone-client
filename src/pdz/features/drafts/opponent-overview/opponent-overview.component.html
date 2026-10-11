@@ -10,6 +10,7 @@
       <div pdz-page-header-center class="draft-bar" aria-label="Your team">
         @for (pokemon of draft.team; track $index) {
           <pdz-sprite
+            size="fill"
             grounded
             [pokemon]="pokemon"
             [class.unresolved-sprite]="pokemon.unresolved"

@@ -11,6 +11,7 @@ import { PokemonTypeComponent } from '@pdz/shared/data/pokemon-type/pokemon-type
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import {
   SpriteComponent,
+  SpriteSize,
   SpriteState,
 } from '@pdz/shared/images/sprite/sprite.component';
 import { TooltipDirective } from '@pdz/shared/tooltip/tooltip.directive';
@@ -24,11 +25,11 @@ function captainTypes(types: readonly string[]): string {
   return types.length && types.length < TYPES.length ? types.join(', ') : 'any type';
 }
 
-const SPRITE_SIZES: Record<PokemonSize, string> = {
-  inline: '2rem',
-  row: '3rem',
-  card: '4rem',
-  hero: '6rem',
+const SPRITE_SIZES: Record<PokemonSize, SpriteSize> = {
+  inline: 'sm',
+  row: 'md',
+  card: 'lg',
+  hero: 'xl',
 };
 
 @Component({

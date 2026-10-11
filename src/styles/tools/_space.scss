@@ -28,3 +28,10 @@
   }
   @return var(--pdz-control-height-#{$name});
 }
+
+@function sprite-size($name) {
+  @if not map.has-key(spacing-tokens.$sprite-size, $name) {
+    @error "'#{$name}' is not a valid PDZ sprite size. Available tokens: #{map.keys(spacing-tokens.$sprite-size)}";
+  }
+  @return var(--pdz-sprite-size-#{$name});
+}

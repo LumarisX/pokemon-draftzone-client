@@ -68,7 +68,7 @@
               @for (pid of move.pokemon; track pid) {
                 @let pokemon = getPokemon(pid);
                 @if (pokemon) {
-                  <pdz-sprite [pokemon]="pokemon" size="2.5rem"></pdz-sprite>
+                  <pdz-sprite [pokemon]="pokemon" size="md"></pdz-sprite>
                 }
               }
             </div>
@@ -101,7 +101,7 @@
             @for (pid of move.pokemon; track pid) {
               @let pokemon = getPokemon(pid);
               @if (pokemon) {
-                <pdz-sprite [pokemon]="pokemon" size="2rem"></pdz-sprite>
+                <pdz-sprite [pokemon]="pokemon" size="sm"></pdz-sprite>
               }
             }
           </div>

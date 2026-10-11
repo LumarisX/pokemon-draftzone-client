@@ -14,7 +14,7 @@ import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
     <div class="pdz-roster-pattern__field">
       @for (pokemon of tiles(); track $index) {
         <pdz-sprite
-          size="100%"
+          size="fill"
           [pokemon]="pokemon"
           [showFormes]="false"
         />

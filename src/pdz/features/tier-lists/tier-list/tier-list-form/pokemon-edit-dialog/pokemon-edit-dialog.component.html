@@ -2,7 +2,7 @@
   <div class="edit-dialog__body">
     <div class="edit-dialog__aside">
       <div class="edit-dialog__sprite">
-        <pdz-sprite size="100%" [pokemon]="spritePokemon"></pdz-sprite>
+        <pdz-sprite size="xl" [pokemon]="spritePokemon"></pdz-sprite>
       </div>
       @if (
         data.pokemon.originalTierName &&
@@ -65,7 +65,7 @@
                 [attr.aria-pressed]="isFormeSelected(forme)"
                 (click)="toggleForme(forme)"
               >
-                <pdz-sprite flipped [pokemon]="forme"></pdz-sprite>
+                <pdz-sprite size="xs" flipped [pokemon]="forme"></pdz-sprite>
                 <span>{{ forme.name }}</span>
               </button>
             }

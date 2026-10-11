@@ -1,6 +1,6 @@
 @use "pdz-theming" as pdz;
 
-$draft-sprite-size: 3.5rem;
+$draft-sprite-size: pdz.sprite-size(lg);
 
 .opponent-main {
   display: flex;

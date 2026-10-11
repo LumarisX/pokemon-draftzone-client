@@ -1,8 +1,6 @@
 <div
   class="forme-stack"
   [class.interactive]="isInteractive()"
-  [style.width]="size()"
-  [style.height]="size()"
   [attr.role]="isInteractive() ? 'button' : null"
   [attr.tabindex]="isInteractive() ? 0 : null"
   [attr.aria-label]="isInteractive() ? ariaLabel() : null"

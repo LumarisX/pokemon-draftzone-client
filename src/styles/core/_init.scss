@@ -47,6 +47,10 @@
       --pdz-control-height-#{$name}: #{$value};
     }
 
+    @each $name, $value in spacing-tokens.$sprite-size {
+      --pdz-sprite-size-#{$name}: #{$value};
+    }
+
     @each $name, $steps in spacing-tokens.$layout {
       --pdz-layout-#{$name}: var(--pdz-space-#{map.get($steps, base)});
     }

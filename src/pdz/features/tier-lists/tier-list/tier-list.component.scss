@@ -132,7 +132,7 @@
     align-content: start;
 
     &--compact {
-      grid-template-columns: repeat(auto-fill, minmax(3rem, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(pdz.sprite-size(md), 1fr));
       gap: pdz.space(2xs);
       padding: pdz.space(2xs);
     }
@@ -255,5 +255,10 @@
 
   &.is-drafted {
     cursor: default;
+  }
+
+  pdz-sprite {
+    width: 100%;
+    height: 100%;
   }
 }

@@ -124,7 +124,7 @@
                         <pdz-sprite
                           [pokemon]="choice"
                           flipped
-                          size="2.5rem"
+                          size="md"
                         ></pdz-sprite>
                       </span>
                       <span class="choice__text">
@@ -244,7 +244,7 @@
                         <div class="pick__icon">
                           @switch (state) {
                             @case ("drafted") {
-                              <pdz-sprite [pokemon]="pokemon"></pdz-sprite>
+                              <pdz-sprite size="lg" [pokemon]="pokemon"></pdz-sprite>
                             }
                             @case ("hidden") {
                               <pdz-icon name="lock" />

@@ -384,8 +384,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 4rem;
-  height: 4rem;
+  width: pdz.sprite-size(lg);
+  height: pdz.sprite-size(lg);
   color: pdz.color(on-surface-muted);
 }
 

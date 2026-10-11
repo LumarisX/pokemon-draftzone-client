@@ -3,7 +3,7 @@
 $card-row-height: 3rem;
 
 :host {
-  --pdz-matchup-sprite: 2.5rem;
+  --pdz-matchup-sprite: #{pdz.sprite-size(sm)};
   display: block;
   container: pdz-matchup / inline-size;
   min-width: 0;
@@ -303,7 +303,7 @@ $card-row-height: 3rem;
   }
 
   @container pdz-matchup (min-width: 56rem) {
-    --pdz-matchup-sprite: 3rem;
+    --pdz-matchup-sprite: #{pdz.sprite-size(md)};
   }
 }
 

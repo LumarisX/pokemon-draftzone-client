@@ -49,7 +49,7 @@
         <div class="team-body">
           @for (pokemon of side.team; track pokemon) {
             <div class="sprite-wrapper">
-              <pdz-sprite [pokemon]="pokemon" [flipped]="side$ === 0" />
+              <pdz-sprite size="fill" [pokemon]="pokemon" [flipped]="side$ === 0" />
               <div class="capt-label">
                 @if (pokemon.capt?.tera) {
                   <pdz-icon name="tera" size="sm" />

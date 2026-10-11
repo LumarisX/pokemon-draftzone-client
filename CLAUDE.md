@@ -162,6 +162,7 @@ padding: pdz.space(md);                 // not 12px
 gap: pdz.layout(section-gap);           // page-gap, section-gap, card-pad, stack, inline
 max-width: pdz.content-width(default);  // narrow, default, wide
 height: pdz.control-height(sm);         // xs, sm, md, lg
+width: pdz.sprite-size(md);             // xs 24, sm 32, md 48, lg 64, xl 96
 color: pdz.color(on-surface);           // not #ccc
 border-radius: pdz.shape(corner-sm);
 @include pdz.text(body-sm);             // typography roles, see below
@@ -186,6 +187,9 @@ empty-state messages and toasts stay sentence case. The brand is "Pokémon Draft
 - Color ramp steps are semantic roles shared across hues (`soft`/`accent`/`strong`
   are roles, not lightness levels).
 - SCSS `font-size` on `pdz-icon` does nothing — size it via the `size`/`width`/`height` inputs.
+- `pdz-sprite` takes `size="xs|sm|md|lg|xl"` (default `md`), never a length. Use `size="fill"`
+  only when the layout computes the size, and size the host from `pdz.sprite-size()`. Forme
+  cycling is opt-in with `interactive`.
 - Images dim in dark mode through `filter: pdz.color(image-tone)`. `pdz-sprite-image` and
   `pdz-team-logo` already apply it; any other art or uploaded image takes it too.
 - Selection and active states use `state-selected` and the primary accent, not

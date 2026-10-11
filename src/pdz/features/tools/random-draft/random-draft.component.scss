@@ -19,8 +19,12 @@
 
 .random__team {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(4.5rem, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(pdz.sprite-size(lg), 1fr));
   gap: pdz.space(xs);
+
+  pdz-sprite {
+    width: 100%;
+  }
 }
 
 .random__actions {

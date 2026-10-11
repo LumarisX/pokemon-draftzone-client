@@ -25,7 +25,7 @@
       <pdz-card padding="md">
         <div class="random__team">
           @for (pokemon of team(); track $index) {
-            <pdz-sprite [pokemon]="pokemon" />
+            <pdz-sprite size="fill" [pokemon]="pokemon" />
           }
         </div>
       </pdz-card>
