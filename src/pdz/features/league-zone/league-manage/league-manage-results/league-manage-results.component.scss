@@ -59,42 +59,11 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  justify-content: space-between;
-  gap: pdz.space(sm) pdz.space(md);
+  gap: pdz.space(sm) pdz.space(lg);
 }
 
-.row__info {
-  display: flex;
-  flex: 1 1 16rem;
-  flex-direction: column;
-  gap: pdz.space(xs);
-  min-width: 0;
-}
-
-.row__teams {
-  @include pdz.text(body-sm);
-  margin: 0;
-  color: pdz.color(on-surface);
-  overflow-wrap: anywhere;
-}
-
-.row__name {
-  font-weight: pdz.font-weight(semibold);
-}
-
-.row__coach {
-  @include pdz.text(meta);
-  color: pdz.color(on-surface-variant);
-
-  &::before {
-    content: " ";
-  }
-}
-
-.row__vs {
-  @include pdz.text(meta);
-  padding-inline: pdz.space(xs);
-  color: pdz.color(on-surface-variant);
+.row__matchup {
+  flex: 1 1 24rem;
 }
 
 .row__meta {
@@ -122,6 +91,7 @@
   align-items: center;
   justify-content: flex-end;
   gap: pdz.space(xs) pdz.space(sm);
+  margin-inline-start: auto;
 }
 
 .row__action {

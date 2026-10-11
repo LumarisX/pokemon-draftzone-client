@@ -80,6 +80,9 @@ function toPixels(size: IconSize): number {
         [innerHTML]="svg$ | async"
         [style.width.px]="width()"
         [style.height.px]="height()"
+        [attr.role]="ariaLabel() ? 'img' : null"
+        [attr.aria-label]="ariaLabel() ?? null"
+        [attr.aria-hidden]="ariaLabel() ? null : 'true'"
       ></span>
     } @else {
       <span

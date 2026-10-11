@@ -198,27 +198,8 @@
     transform: scale(0.98);
   }
 
-  &__sprite {
-    width: 2.5rem;
-    height: 2.5rem;
-    flex-shrink: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  &__info {
+  &__pokemon {
     flex: 1;
-    min-width: 0;
-    display: flex;
-    flex-direction: column;
-    gap: pdz.space(2xs);
-  }
-
-  &__name {
-    @include text(body-sm-strong);
-    color: pdz.color(on-surface);
-    word-break: break-word;
   }
 
   &__side {
@@ -245,10 +226,6 @@
   &.is-drafted {
     background-color: pdz.color(surface-disabled);
     cursor: default;
-
-    .pokemon-entry__name {
-      color: pdz.color(on-surface-variant);
-    }
   }
 }
 

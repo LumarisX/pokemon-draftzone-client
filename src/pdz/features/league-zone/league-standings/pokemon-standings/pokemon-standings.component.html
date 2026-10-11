@@ -57,13 +57,11 @@
             </span>
           </td>
           <td>
-            <span class="mon">
-              <pdz-sprite size="2.5rem" flipped [pokemon]="pokemon" />
-              <span class="mon__text">
-                <span class="mon__name">{{ pokemon.name }}</span>
-                <span class="mon__team">{{ pokemon.teamName }}</span>
-              </span>
-            </span>
+            <pdz-pokemon class="mon" [pokemon]="pokemon">
+              <span pdz-pokemon-meta class="mon__team">{{
+                pokemon.teamName
+              }}</span>
+            </pdz-pokemon>
           </td>
           <td class="pdz-table__num">{{ pokemon.record.brought }}</td>
           <td class="pdz-table__num">{{ pokemon.record.kills }}</td>

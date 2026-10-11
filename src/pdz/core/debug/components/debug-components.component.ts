@@ -57,6 +57,7 @@ import {
   MatchupComponent,
   MatchupTeam,
 } from '@pdz/shared/data/matchup/matchup.component';
+import { PokemonComponent } from '@pdz/shared/data/pokemon/pokemon.component';
 import { TeamComponent } from '@pdz/shared/data/team/team.component';
 import { TooltipDirective } from '@pdz/shared/tooltip/tooltip.directive';
 import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
@@ -152,6 +153,7 @@ const MODE_ATTR = 'pdz-theme-mode';
     PodiumComponent,
     EmptyStateComponent,
     TeamComponent,
+    PokemonComponent,
     MatchupComponent,
     ScoreEntryGameComponent,
     ScoreEntryMatchComponent,
@@ -229,6 +231,21 @@ export class DebugComponentsComponent {
     { id: 'greattusk', name: 'Great Tusk' },
     { id: 'primarina', name: 'Primarina' },
   ];
+  protected readonly lockupCaptain = {
+    id: 'garchomp',
+    name: 'Garchomp',
+    capt: { tera: ['Steel', 'Fire'] },
+  };
+  protected readonly lockupShiny = {
+    id: 'kingambit',
+    name: 'Kingambit',
+    shiny: true,
+    capt: { z: [], dmax: true },
+  };
+  protected readonly lockupLong = {
+    id: 'urshifurapidstrike',
+    name: 'Urshifu-Rapid-Strike-Gmax With A Long Name',
+  };
   protected readonly mvpTypes = ['Dragon', 'Ground'];
   protected readonly mvpStats = [
     { label: 'Games', value: 4 },

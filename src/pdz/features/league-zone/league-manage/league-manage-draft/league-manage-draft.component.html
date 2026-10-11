@@ -308,18 +308,11 @@
 
               <div class="turn__pick">
                 @if (turn.pokemon; as pokemon) {
-                  <pdz-sprite size="3rem" [pokemon]="pokemon" />
-                  <span class="turn__pick-info">
-                    <span class="turn__pokemon" [title]="pokemon.name">{{
-                      pokemon.name
-                    }}</span>
-                    <span class="turn__meta">
-                      <span class="turn__tier">{{
-                        pokemon.tier || "Untiered"
-                      }}</span>
-                      <span>{{ pokemon.cost }} pts</span>
-                    </span>
-                  </span>
+                  <pdz-pokemon
+                    [pokemon]="pokemon"
+                    [tier]="pokemon.tier || 'Untiered'"
+                    [cost]="pokemon.cost"
+                  />
                 } @else {
                   <span class="turn__empty">
                     <pdz-icon

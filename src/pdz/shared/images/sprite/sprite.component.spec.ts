@@ -71,6 +71,16 @@ describe('SpriteComponent', () => {
     expect(stack().getAttribute('aria-label')).toBe('Charizard, forme 1 of 3');
   });
 
+  it('is not interactive unless asked', () => {
+    const plain = TestBed.createComponent(SpriteComponent);
+    plain.componentRef.setInput('pokemon', host.pokemon());
+    plain.detectChanges();
+    const plainStack: HTMLElement = plain.nativeElement.querySelector('.forme-stack');
+    expect(plainStack.getAttribute('role')).toBeNull();
+    expect(plainStack.getAttribute('tabindex')).toBeNull();
+    expect(plain.nativeElement.querySelectorAll('.forme-slot').length).toBe(3);
+  });
+
   it('drops role, tabindex and label when not interactive', () => {
     host.interactive.set(false);
     fixture.detectChanges();

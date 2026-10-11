@@ -7,6 +7,7 @@ import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 import { BadgeTone } from '@pdz/shared/data/badge/badge.component';
 import { CardComponent } from '@pdz/shared/data/card/card.component';
 import { ScoreComponent } from '@pdz/shared/data/score/score.component';
+import { TeamComponent } from '@pdz/shared/data/team/team.component';
 import {
   SeasonMvpComponent,
   SeasonMvpStat,
@@ -18,7 +19,6 @@ import { EmptyStateComponent } from '@pdz/shared/feedback/empty-state/empty-stat
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
-import { TeamLogoComponent } from '@pdz/shared/images/team-logo/team-logo.component';
 import {
   TEAM_PHOTO_SIZE,
   TeamPhotoComponent,
@@ -53,7 +53,7 @@ type Matchup = Opponent & {
     DecimalPipe,
     RouterModule,
     SpriteComponent,
-    TeamLogoComponent,
+    TeamComponent,
     TeamPhotoComponent,
     LoadingComponent,
     IconComponent,

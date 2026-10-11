@@ -10,12 +10,11 @@
           @for (pokemon of picks; track pokemon.id) {
             <li class="pick">
               <span class="pick__cost">{{ pokemon.cost }}</span>
-              <pdz-sprite
-                class="pick__sprite"
-                [flipped]="side === 'team1'"
+              <pdz-pokemon
+                class="pick__pokemon"
+                size="inline"
                 [pokemon]="pokemon"
               />
-              <span class="pick__name">{{ pokemon.name }}</span>
               <span class="pick__tier">{{ pokemon.tier }}</span>
               <button
                 pdz-button

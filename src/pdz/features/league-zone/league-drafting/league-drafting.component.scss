@@ -195,28 +195,8 @@
   color: pdz.color(primary-accent);
 }
 
-.slot__sprite {
-  flex: none;
-  width: 2.5rem;
-  height: 2.5rem;
-  border-radius: pdz.shape(corner-full);
-  overflow: hidden;
-}
-
-.slot__info {
-  display: flex;
+.slot__pokemon {
   flex: 1;
-  flex-direction: column;
-  gap: pdz.space(3xs);
-  min-width: 0;
-}
-
-.slot__name {
-  @include pdz.text(body-sm-strong);
-  color: pdz.color(on-surface);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
 .slot__capt {

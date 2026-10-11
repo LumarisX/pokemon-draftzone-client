@@ -38,30 +38,7 @@ section {
 }
 
 .card-title {
-  display: flex;
-  align-items: center;
-  gap: pdz.space(xs);
   flex-grow: 1;
-  min-width: 0;
-}
-
-.matchup-team-info {
-  justify-content: center;
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
-
-  .team-name,
-  .coach-name {
-    white-space: nowrap;
-    text-overflow: ellipsis;
-    overflow: hidden;
-  }
-
-  .coach-name {
-    @include pdz.text(body-sm);
-    color: pdz.color(on-surface-variant);
-  }
 }
 
 .matchup-meta {

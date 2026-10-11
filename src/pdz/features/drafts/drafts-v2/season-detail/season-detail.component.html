@@ -282,14 +282,7 @@
           <ol class="dz-detail__leaders">
             @for (leader of leaders(); track leader.pokemon.id) {
               <li class="dz-detail__leader">
-                <pdz-sprite
-                  size="2.5rem"
-                  [pokemon]="leader.pokemon"
-                  [interactive]="false"
-                />
-                <span class="dz-detail__leader-name">{{
-                  leader.pokemon.name
-                }}</span>
+                <pdz-pokemon [pokemon]="leader.pokemon" />
                 <span class="dz-detail__leader-bar" aria-hidden="true">
                   <span
                     class="dz-detail__leader-fill"

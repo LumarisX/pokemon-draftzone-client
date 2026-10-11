@@ -59,13 +59,6 @@ pdz-card {
   overflow: auto;
 }
 
-.sprite-wrapper {
-  display: inline-block;
-  width: 2rem;
-  height: 2rem;
-  vertical-align: middle;
-}
-
 .roster-table {
   table-layout: fixed;
 
@@ -73,17 +66,6 @@ pdz-card {
   td {
     overflow: hidden;
     text-overflow: ellipsis;
-  }
-
-  .col-sprite,
-  .cell-sprite {
-    width: 3.5rem;
-  }
-
-  .col-capt,
-  .cell-capt {
-    width: 4.5rem;
-    white-space: nowrap;
   }
 
   .col-tier,

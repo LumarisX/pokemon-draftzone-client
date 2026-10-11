@@ -42,7 +42,6 @@ const ACTORS: Record<EmptyStateKind, { pokemon: Pokemon; icon: string }> = {
         grounded
         [pokemon]="actor.pokemon"
         [size]="actor.size"
-        [interactive]="false"
         [showFormes]="false"
         [tooltipPosition]="null"
       />

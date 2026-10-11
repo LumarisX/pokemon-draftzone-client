@@ -132,7 +132,6 @@ const TEAM_SIZES: Record<MatchupSize, TeamSize> = {
                     grounded
                     [pokemon]="pokemon"
                     [flipped]="side.slot === 'team1'"
-                    [interactive]="false"
                     [showFormes]="false"
                   />
                 }

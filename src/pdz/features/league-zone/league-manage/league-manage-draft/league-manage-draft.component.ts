@@ -34,7 +34,7 @@ import { ChipComponent, ChipTone } from '@pdz/shared/data/chip/chip.component';
 import { PokemonSearchComponent } from '@pdz/shared/dropdowns/pokemon-search/pokemon-search.component';
 import { EmptyStateComponent } from '@pdz/shared/feedback/empty-state/empty-state.component';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
-import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
+import { PokemonComponent } from '@pdz/shared/data/pokemon/pokemon.component';
 import { CheckComponent } from '@pdz/shared/inputs/choice/check.component';
 import { ChoiceDirective } from '@pdz/shared/inputs/choice/choice.directive';
 import { FieldComponent } from '@pdz/shared/inputs/field/field.component';
@@ -138,7 +138,7 @@ const EMPTY_SETTINGS: DraftSettings = {
   selector: 'pdz-league-manage-draft',
   imports: [
     PokemonSearchComponent,
-    SpriteComponent,
+    PokemonComponent,
     ButtonComponent,
     IconComponent,
     TooltipDirective,

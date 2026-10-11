@@ -21,13 +21,12 @@ import { SortHeaderComponent } from '@pdz/shared/data/sort/sort-header.component
 import { Sort, SortDirective } from '@pdz/shared/data/sort/sort.directive';
 import { SelectOptionComponent } from '@pdz/shared/dropdowns/select/select-option.component';
 import { SelectComponent } from '@pdz/shared/dropdowns/select/select.component';
-import { IconComponent } from '@pdz/shared/images/icon/icon.component';
+import { PokemonComponent } from '@pdz/shared/data/pokemon/pokemon.component';
 import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
 import { FieldComponent } from '@pdz/shared/inputs/field/field.component';
 import { InputDirective } from '@pdz/shared/inputs/field/input.directive';
 import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
-import { TooltipDirective } from '@pdz/shared/tooltip/tooltip.directive';
 import { Subject, catchError, debounceTime, of } from 'rxjs';
 
 type Scores = Record<string, number>;
@@ -40,7 +39,6 @@ const SAVE_DEBOUNCE_MS = 1000;
   imports: [
     CardComponent,
     FieldComponent,
-    IconComponent,
     InputDirective,
     LoadingComponent,
     MoveComponent,
@@ -49,12 +47,12 @@ const SAVE_DEBOUNCE_MS = 1000;
     PlannerSummaryComponent,
     PlannerTeamCoverageComponent,
     PlannerTypechartComponent,
+    PokemonComponent,
     SelectComponent,
     SelectOptionComponent,
     SortDirective,
     SortHeaderComponent,
     SpriteComponent,
-    TooltipDirective,
   ],
   templateUrl: './power-rankings.component.html',
   styleUrl: './power-rankings.component.scss',
@@ -117,9 +115,5 @@ export class PowerRankingsComponent {
 
   onSort(sort: Sort): void {
     this.sortDescending.set(sort.direction !== 'asc');
-  }
-
-  captTypes(types: string[] | undefined, limit = Infinity): string {
-    return types?.length && types.length < limit ? types.join(', ') : 'All types';
   }
 }

@@ -18,7 +18,7 @@ import {
 } from '@pdz/shared/data/badge/badge.component';
 import { CardComponent } from '@pdz/shared/data/card/card.component';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
-import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
+import { PokemonComponent } from '@pdz/shared/data/pokemon/pokemon.component';
 import { TeamComponent } from '@pdz/shared/data/team/team.component';
 
 @Component({
@@ -28,7 +28,7 @@ import { TeamComponent } from '@pdz/shared/data/team/team.component';
     BadgeComponent,
     CardComponent,
     IconComponent,
-    SpriteComponent,
+    PokemonComponent,
     TeamComponent,
   ],
   templateUrl: './trade-card.component.html',

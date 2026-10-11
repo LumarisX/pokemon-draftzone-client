@@ -228,26 +228,14 @@
                   [class.is-drafted]="isPokemonDrafted(pokemon)"
                   (click)="openPokemonDetails(pokemon, tier)"
                 >
-                  <span class="pokemon-entry__sprite">
-                    <pdz-sprite
-                      [pokemon]="spriteFor(pokemon)"
-                      [tooltipPosition]="null"
-                      [state]="spriteState(pokemon, tier)"
-                      [takenLogo]="draftPick(pokemon)?.teamLogo"
-                      [takenBy]="draftPick(pokemon)?.teamName ?? ''"
-                    ></pdz-sprite>
-                  </span>
-                  <span class="pokemon-entry__info">
-                    <span class="pokemon-entry__name">{{ pokemon.name }}</span>
-                    <span class="pdz-types">
-                      @for (type of pokemon.types; track $index) {
-                        <pdz-pokemon-type
-                          [type]="type"
-                          content="icon"
-                        ></pdz-pokemon-type>
-                      }
-                    </span>
-                  </span>
+                  <pdz-pokemon
+                    class="pokemon-entry__pokemon"
+                    [pokemon]="spriteFor(pokemon)"
+                    [types]="pokemon.types"
+                    [state]="spriteState(pokemon, tier)"
+                    [takenLogo]="draftPick(pokemon)?.teamLogo"
+                    [takenBy]="draftPick(pokemon)?.teamName ?? ''"
+                  />
                   <span class="pokemon-entry__side">
                     @if (pokemon.addons?.length) {
                       <span class="pokemon-entry__tera">

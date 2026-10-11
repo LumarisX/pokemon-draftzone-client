@@ -56,7 +56,7 @@ export class SpriteComponent {
   flipped = input(false, { transform: booleanAttribute });
   disabled = model(false);
   showFormes = input(true, { transform: booleanAttribute });
-  interactive = input(true, { transform: booleanAttribute });
+  interactive = input(false, { transform: booleanAttribute });
   cycleDisabled = input(false, { transform: booleanAttribute });
   formeIndex = model(0);
   loadedEvent = output<void>();

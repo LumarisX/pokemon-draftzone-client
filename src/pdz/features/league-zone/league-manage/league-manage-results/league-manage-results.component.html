@@ -100,43 +100,14 @@
             @for (row of round.rows; track row.matchup.id) {
               <pdz-card class="row" tone="raised-high" padding="md">
                 <div class="row__main">
-                  <div class="row__info">
-                    <p class="row__teams">
-                      <span class="row__name">{{ row.matchup.team1.name }}</span>
-                      @if (row.matchup.team1.coach) {
-                        <span class="row__coach">{{
-                          row.matchup.team1.coach
-                        }}</span>
-                      }
-                      <span class="row__vs">vs</span>
-                      <span class="row__name">{{ row.matchup.team2.name }}</span>
-                      @if (row.matchup.team2.coach) {
-                        <span class="row__coach">{{
-                          row.matchup.team2.coach
-                        }}</span>
-                      }
-                    </p>
-
-                    <p class="row__meta">
-                      @if (row.stageName) {
-                        <span>{{ row.stageName }}</span>
-                      }
-                      @if (row.matchup.label) {
-                        <span>{{ row.matchup.label }}</span>
-                      }
-                      @if (outcomeLabel(row); as outcome) {
-                        <span>{{ outcome }}</span>
-                      }
-                      @if (rulingLabel(row); as ruling) {
-                        <span>{{ ruling }}</span>
-                      }
-                    </p>
-                  </div>
-
+                  <pdz-matchup
+                    class="row__matchup"
+                    size="row"
+                    [label]="row.label"
+                    [team1]="row.team1"
+                    [team2]="row.team2"
+                  />
                   <div class="row__aside">
-                    @if (scoreLine(row); as score) {
-                      <pdz-score>{{ score }}</pdz-score>
-                    }
                     @if (row.pending) {
                       <pdz-chip tone="warning" variant="soft" size="xs">
                         Awaiting review
@@ -167,6 +138,14 @@
                     }
                   </div>
                 </div>
+
+                @if (row.notes.length) {
+                  <p class="row__meta">
+                    @for (note of row.notes; track $index) {
+                      <span>{{ note }}</span>
+                    }
+                  </p>
+                }
 
                 @if (row.pending) {
                   <div class="review">

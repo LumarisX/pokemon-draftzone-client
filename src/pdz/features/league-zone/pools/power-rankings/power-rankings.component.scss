@@ -73,14 +73,8 @@
   }
 }
 
-.roster__name {
-  @include pdz.text(body-sm-strong);
-  display: inline-flex;
+.roster__pokemon {
   flex: 1 1 auto;
-  align-items: center;
-  gap: pdz.space(2xs);
-  min-width: 0;
-  color: pdz.color(on-surface);
 }
 
 .roster__speed {

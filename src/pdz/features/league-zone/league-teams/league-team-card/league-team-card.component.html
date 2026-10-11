@@ -74,49 +74,28 @@
         <table class="pdz-table roster-table" data-density="compact">
           <thead>
             <tr>
-              <th class="col-sprite pdz-table__center"></th>
               <th class="col-name">Name</th>
-              @if (hasCapt()) {
-                <th class="col-capt pdz-table__center">Capt</th>
-              }
               <th class="col-tier pdz-table__num">Tier</th>
             </tr>
           </thead>
           <tbody>
             @for (pokemon of teamDetails().draft; track pokemon) {
               <tr>
-                <td class="cell-sprite pdz-table__center">
-                  <div class="sprite-wrapper">
-                    <pdz-sprite [pokemon]="pokemon" flipped></pdz-sprite>
-                  </div>
+                <td class="cell-name">
+                  <pdz-pokemon size="inline" [pokemon]="pokemon" />
                 </td>
-                <td class="cell-name">{{ pokemon.name }}</td>
-                @if (hasCapt()) {
-                  <td class="cell-capt pdz-table__center">
-                    @if (pokemon.capt?.tera) {
-                      <pdz-icon name="tera" [size]="18" ariaLabel="Tera" />
-                    }
-                    @if (pokemon.capt?.z) {
-                      <pdz-icon name="z" [size]="18" ariaLabel="Z-move" />
-                    }
-                    @if (pokemon.capt?.dmax) {
-                      <pdz-icon name="dmax" [size]="18" ariaLabel="Dynamax" />
-                    }
-                  </td>
-                }
                 <td class="cell-tier pdz-table__num">{{ pokemon.cost }}</td>
               </tr>
             }
           </tbody>
           <tfoot>
             <tr>
-              <th class="col-sprite pdz-table__center"></th>
-              <th class="col-name"></th>
-              @if (hasCapt()) {
-                <th class="col-capt pdz-table__center">
+              <th class="col-name">
+                @if (hasCapt()) {
                   {{ totalCaptCount() }}
-                </th>
-              }
+                  {{ totalCaptCount() === 1 ? "captain" : "captains" }}
+                }
+              </th>
               <th class="col-tier pdz-table__num">{{ totalCost() }}</th>
             </tr>
           </tfoot>
@@ -125,7 +104,6 @@
         <table class="pdz-table roster-table" data-density="compact">
           <thead>
             <tr>
-              <th class="col-sprite pdz-table__center"></th>
               <th class="col-name">Name</th>
               <th class="col-record pdz-table__num">Games</th>
               <th class="col-record pdz-table__num">Kills</th>
@@ -135,12 +113,9 @@
           <tbody>
             @for (pokemon of teamDetails().draft; track pokemon) {
               <tr>
-                <td class="cell-sprite pdz-table__center">
-                  <div class="sprite-wrapper">
-                    <pdz-sprite flipped [pokemon]="pokemon"></pdz-sprite>
-                  </div>
+                <td class="cell-name">
+                  <pdz-pokemon size="inline" [pokemon]="pokemon" />
                 </td>
-                <td class="cell-name">{{ pokemon.name }}</td>
                 <td class="cell-record pdz-table__num">
                   {{ pokemon.record?.brought ?? 0 }}
                 </td>

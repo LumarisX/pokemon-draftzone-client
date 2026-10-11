@@ -28,6 +28,7 @@ import {
   PokemonDialogData,
 } from '@pdz/shared/dialogs/pokemon-dialog/pokemon-dialog.component';
 import { PokemonTypeComponent } from '@pdz/shared/data/pokemon-type/pokemon-type.component';
+import { PokemonComponent } from '@pdz/shared/data/pokemon/pokemon.component';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { ChoiceDirective } from '@pdz/shared/inputs/choice/choice.directive';
 import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
@@ -78,6 +79,7 @@ interface DraftPokemonAction {
     SpriteComponent,
     IconComponent,
     PokemonTypeComponent,
+    PokemonComponent,
     ButtonComponent,
     FieldComponent,
     InputDirective,

@@ -13,7 +13,7 @@ import { CardComponent } from '@pdz/shared/data/card/card.component';
 import { RecordComponent } from '@pdz/shared/data/record/record.component';
 import { EmptyStateComponent } from '@pdz/shared/feedback/empty-state/empty-state.component';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
-import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
+import { PokemonComponent } from '@pdz/shared/data/pokemon/pokemon.component';
 import { TeamComponent } from '@pdz/shared/data/team/team.component';
 
 @Component({
@@ -22,7 +22,7 @@ import { TeamComponent } from '@pdz/shared/data/team/team.component';
     ButtonComponent,
     CardComponent,
     EmptyStateComponent,
-    SpriteComponent,
+    PokemonComponent,
     IconComponent,
     RecordComponent,
     RouterLink,

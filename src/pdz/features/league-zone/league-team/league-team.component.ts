@@ -42,7 +42,7 @@ import { EmptyStateComponent } from '@pdz/shared/feedback/empty-state/empty-stat
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
 import { RosterPatternComponent } from '@pdz/shared/images/roster-pattern/roster-pattern.component';
-import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
+import { PokemonComponent } from '@pdz/shared/data/pokemon/pokemon.component';
 import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
 import { TooltipDirective } from '@pdz/shared/tooltip/tooltip.directive';
 import { Observable, catchError, interval, map, of, startWith, switchMap } from 'rxjs';
@@ -77,7 +77,7 @@ const CLOCK_TICK_MS = 30_000;
     RecordComponent,
     RosterPatternComponent,
     SeasonMvpComponent,
-    SpriteComponent,
+    PokemonComponent,
     TooltipDirective,
   ],
   templateUrl: './league-team.component.html',

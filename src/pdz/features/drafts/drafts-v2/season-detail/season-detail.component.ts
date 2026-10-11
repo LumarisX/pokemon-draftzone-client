@@ -19,6 +19,7 @@ import { DialogService } from '@pdz/shared/dialogs/dialog/dialog.service';
 import { EmptyStateComponent } from '@pdz/shared/feedback/empty-state/empty-state.component';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
+import { PokemonComponent } from '@pdz/shared/data/pokemon/pokemon.component';
 import { TabComponent } from '@pdz/shared/layout/tabs/tab.component';
 import { TabsComponent } from '@pdz/shared/layout/tabs/tabs.component';
 import { MenuItemComponent } from '@pdz/shared/menu/menu-item.component';
@@ -66,6 +67,7 @@ const STATUS_TONE: Record<Season['status'], ChipTone> = {
     MenuTriggerDirective,
     SkeletonComponent,
     SpriteComponent,
+    PokemonComponent,
     TeamLogoComponent,
     TabComponent,
     TabsComponent,

@@ -181,20 +181,6 @@
   white-space: nowrap;
 }
 
-.pick__sprite {
-  flex-shrink: 0;
-  width: 1.75rem;
-  height: 1.75rem;
-}
-
-.pick__name {
-  @include pdz.text(body-sm);
-  min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
 .pick__tera {
   flex-shrink: 0;
   color: pdz.color(on-surface-variant);

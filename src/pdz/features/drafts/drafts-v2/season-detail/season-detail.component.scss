@@ -228,20 +228,13 @@
 
 .dz-detail__leader {
   display: grid;
-  grid-template-columns: auto minmax(6rem, 10rem) minmax(0, 1fr) auto;
+  grid-template-columns: minmax(9rem, 14rem) minmax(0, 1fr) auto;
   align-items: center;
   gap: pdz.space(md);
   padding: pdz.space(sm) pdz.space(md);
   border: 1px solid pdz.color(border-subtle);
   border-radius: pdz.shape(corner-md);
   background-color: pdz.color(raised);
-}
-
-.dz-detail__leader-name {
-  @include pdz.text(body-sm-strong);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
 .dz-detail__leader-bar {
@@ -275,7 +268,7 @@
   }
 
   .dz-detail__leader {
-    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-columns: minmax(0, 1fr);
     row-gap: pdz.space(xs);
   }
 

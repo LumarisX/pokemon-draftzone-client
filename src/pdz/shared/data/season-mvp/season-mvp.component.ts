@@ -21,7 +21,6 @@ export type SeasonMvpStat = {
           grounded
           flipped
           [pokemon]="pokemon()"
-          [interactive]="false"
         />
         <div class="pdz-season-mvp__text">
           <span class="pdz-season-mvp__eyebrow">{{ label() }}</span>

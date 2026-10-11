@@ -12,20 +12,13 @@
     }
   </span>
 
-  <pdz-team-logo
-    decorative
-    size="md"
-    team="team2"
-    [src]="logoUrl()"
+  <pdz-team
+    class="dz-match__who"
+    size="card"
     [name]="match().teamName"
+    [logo]="logoUrl()"
+    [coach]="match().coach"
   />
-
-  <span class="dz-match__who">
-    <span class="dz-match__team">{{ match().teamName }}</span>
-    @if (match().coach; as coach) {
-      <span class="dz-match__coach">{{ coach }}</span>
-    }
-  </span>
 
   <span class="dz-match__status">
     @if (match().score; as score) {

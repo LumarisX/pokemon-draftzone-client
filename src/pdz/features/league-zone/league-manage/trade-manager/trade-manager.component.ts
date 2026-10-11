@@ -29,7 +29,7 @@ import { SelectOptionComponent } from '@pdz/shared/dropdowns/select/select-optio
 import { SelectComponent } from '@pdz/shared/dropdowns/select/select.component';
 import { EmptyStateComponent } from '@pdz/shared/feedback/empty-state/empty-state.component';
 import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
-import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
+import { PokemonComponent } from '@pdz/shared/data/pokemon/pokemon.component';
 import { FieldComponent } from '@pdz/shared/inputs/field/field.component';
 import { InputDirective } from '@pdz/shared/inputs/field/input.directive';
 import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
@@ -92,7 +92,7 @@ const BLANK_SIDE: SideDraft = { teamId: '', picks: [], tradePoints: 0 };
     PoolSwitcherComponent,
     SelectComponent,
     SelectOptionComponent,
-    SpriteComponent,
+    PokemonComponent,
     TradeCardComponent,
   ],
   templateUrl: './trade-manager.component.html',

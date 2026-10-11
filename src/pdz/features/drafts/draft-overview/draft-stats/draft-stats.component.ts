@@ -17,7 +17,7 @@ import { SortHeaderComponent } from '@pdz/shared/data/sort/sort-header.component
 import { Sort, SortDirective } from '@pdz/shared/data/sort/sort.directive';
 import { EmptyStateComponent } from '@pdz/shared/feedback/empty-state/empty-state.component';
 import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
-import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
+import { PokemonComponent } from '@pdz/shared/data/pokemon/pokemon.component';
 import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
 import { PageComponent } from '@pdz/shared/layout/page/page.component';
 import { catchError, map, of } from 'rxjs';
@@ -45,8 +45,8 @@ const SORT_VALUES: Record<SortKey, (stat: PokemonStat) => number | string> = {
     PageComponent,
     PageHeaderComponent,
     SortDirective,
+    PokemonComponent,
     SortHeaderComponent,
-    SpriteComponent,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

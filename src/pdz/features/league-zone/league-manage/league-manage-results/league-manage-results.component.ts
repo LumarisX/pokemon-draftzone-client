@@ -6,6 +6,12 @@ import { MatchupReportComponent } from '@pdz/features/league-zone/league-matchup
 import { LeagueManageService } from '@pdz/features/league-zone/league-manage/league-manage.service';
 import { LeagueZoneService } from '@pdz/features/league-zone/league-zone.service';
 import { League } from '@pdz/features/league-zone/league.interface';
+import { getTeamLogoSrc } from '@pdz/features/league-zone/league.util';
+import {
+  MatchupComponent,
+  MatchupResult,
+  MatchupTeam,
+} from '@pdz/shared/data/matchup/matchup.component';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 import { CardComponent } from '@pdz/shared/data/card/card.component';
 import { ChipComponent } from '@pdz/shared/data/chip/chip.component';
@@ -16,7 +22,6 @@ import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
 import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
 import { SegmentedComponent } from '@pdz/shared/inputs/segmented/segmented.component';
-import { ScoreComponent } from '@pdz/shared/data/score/score.component';
 import { SegmentedOptionComponent } from '@pdz/shared/inputs/segmented/segmented-option.component';
 import { SelectComponent } from '@pdz/shared/dropdowns/select/select.component';
 import { SelectOptionComponent } from '@pdz/shared/dropdowns/select/select-option.component';
@@ -25,7 +30,10 @@ type ResultsScope = 'attention' | 'all';
 
 type ResultRow = {
   matchup: League.Matchup;
-  stageName: string | null;
+  label: string;
+  team1: MatchupTeam;
+  team2: MatchupTeam;
+  notes: string[];
   pending: boolean;
   recorded: boolean;
   walkover: boolean;
@@ -56,7 +64,7 @@ type ResultRound = {
     LoadingComponent,
     MatchupReportComponent,
     PageHeaderComponent,
-    ScoreComponent,
+    MatchupComponent,
     SegmentedComponent,
     SegmentedOptionComponent,
     SelectComponent,
@@ -301,8 +309,8 @@ export class LeagueManageResultsComponent {
     return row.recorded || row.pending ? 'Edit' : 'Record';
   }
 
-  protected rulingLabel(row: ResultRow): string | null {
-    const { advances, team1, team2 } = row.matchup;
+  private rulingLabel(matchup: League.Matchup): string | null {
+    const { advances, team1, team2 } = matchup;
     switch (advances) {
       case 'side1':
         return `Ruling: ${team1.name} advances`;
@@ -315,20 +323,11 @@ export class LeagueManageResultsComponent {
     }
   }
 
-  protected scoreLine(row: ResultRow): string | null {
-    if (!row.recorded) return null;
-    return `${row.matchup.team1.score ?? 0}–${row.matchup.team2.score ?? 0}`;
-  }
-
-  protected outcomeLabel(row: ResultRow): string | null {
-    const { winner, walkover, team1, team2 } = row.matchup;
+  private outcomeLabel(matchup: League.Matchup): string | null {
+    const { winner, walkover, team1, team2 } = matchup;
     if (walkover === 'side1') return `${team1.name} advances by walkover`;
     if (walkover === 'side2') return `${team2.name} advances by walkover`;
     switch (winner) {
-      case 'side1':
-        return `${team1.name} won`;
-      case 'side2':
-        return `${team2.name} won`;
       case 'side1ffw':
         return `${team1.name} won by forfeit`;
       case 'side2ffw':
@@ -347,14 +346,44 @@ export class LeagueManageResultsComponent {
     stage: League.ScheduleRound['stages'][number],
     multiStage: boolean,
   ): ResultRow {
+    const recorded = !matchup.walkover && this.isRecorded(matchup);
+    const side = (team: League.MatchupSide, key: 'side1' | 'side2'): MatchupTeam => ({
+      name: team.name,
+      logo: getTeamLogoSrc(team.logo),
+      coach: team.coach || null,
+      pending: !team.id,
+      score: recorded ? (team.score ?? 0) : null,
+      result: this.resultFor(matchup, key),
+    });
     return {
       matchup,
-      stageName: multiStage ? stage.name : null,
+      label: [multiStage ? stage.name : null, matchup.label]
+        .filter(Boolean)
+        .join(' · '),
+      team1: side(matchup.team1, 'side1'),
+      team2: side(matchup.team2, 'side2'),
+      notes: [this.outcomeLabel(matchup), this.rulingLabel(matchup)].filter(
+        (note): note is string => !!note,
+      ),
       pending: matchup.status === 'pending' && !!matchup.report,
-      recorded: !matchup.walkover && this.isRecorded(matchup),
+      recorded,
       walkover: !!matchup.walkover,
       playable: !!matchup.team1.id && !!matchup.team2.id,
     };
+  }
+
+  private resultFor(
+    matchup: League.Matchup,
+    key: 'side1' | 'side2',
+  ): MatchupResult | null {
+    const { winner, walkover } = matchup;
+    if (walkover === 'side1' || walkover === 'side2') {
+      return walkover === key ? 'win' : 'loss';
+    }
+    if (!winner) return null;
+    if (winner === 'draw') return 'draw';
+    if (winner === 'dffl') return 'loss';
+    return winner.startsWith(key) ? 'win' : 'loss';
   }
 
   private isRecorded(matchup: League.Matchup): boolean {

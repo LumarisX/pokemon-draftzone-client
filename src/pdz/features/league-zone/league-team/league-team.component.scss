@@ -92,33 +92,3 @@
   padding: pdz.space(lg) pdz.space(lg) 0;
 }
 
-.mon {
-  display: flex;
-  align-items: center;
-  gap: pdz.space(sm);
-}
-
-.mon__text {
-  display: flex;
-  flex-direction: column;
-  gap: pdz.space(3xs);
-  min-width: 0;
-}
-
-.mon__name {
-  @include pdz.text(body-sm-strong);
-  color: pdz.color(on-surface);
-}
-
-.mon__details {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: pdz.space(xs);
-  color: pdz.color(on-surface-variant);
-}
-
-.mon__cost {
-  @include pdz.text(meta);
-  @include pdz.numeric;
-}

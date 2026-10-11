@@ -45,21 +45,7 @@
 }
 
 .mon {
-  display: flex;
-  align-items: center;
-  gap: pdz.space(sm);
   min-width: 11rem;
-}
-
-.mon__text {
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
-}
-
-.mon__name {
-  @include pdz.text(body-sm-strong);
-  color: pdz.color(on-surface);
 }
 
 .mon__team {

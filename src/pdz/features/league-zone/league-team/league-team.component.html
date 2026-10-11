@@ -97,37 +97,18 @@
                   @for (pokemon of team.draft; track pokemon.id) {
                     <tr>
                       <td>
-                        <span class="mon">
-                          <pdz-sprite
-                            size="2.5rem"
-                            flipped
-                            [pokemon]="pokemon"
-                          />
-                          <span class="mon__text">
-                            <span class="mon__name">{{ pokemon.name }}</span>
-                            <span class="mon__details">
-                              <span class="mon__cost"
-                                >{{ pokemon.cost }} pts</span
-                              >
-                              @if (pokemon.capt?.tera) {
-                                <pdz-icon
-                                  name="tera"
-                                  ariaLabel="Tera captain"
-                                  [size]="14"
-                                />
-                              }
-                              @if (pokemon.missingFromTierList) {
-                                <pdz-chip
-                                  size="xs"
-                                  tone="danger"
-                                  icon="warning"
-                                  pdzTooltip="Drafted, but no longer on the tier list. It is not priced, so this roster may be illegal."
-                                  >Off list</pdz-chip
-                                >
-                              }
-                            </span>
-                          </span>
-                        </span>
+                        <pdz-pokemon [pokemon]="pokemon" [cost]="pokemon.cost">
+                          @if (pokemon.missingFromTierList) {
+                            <pdz-chip
+                              pdz-pokemon-badge
+                              size="xs"
+                              tone="danger"
+                              icon="warning"
+                              pdzTooltip="Drafted, but no longer on the tier list. It is not priced, so this roster may be illegal."
+                              >Off list</pdz-chip
+                            >
+                          }
+                        </pdz-pokemon>
                       </td>
                       <td class="pdz-table__num">
                         {{ pokemon.record?.brought ?? 0 }}

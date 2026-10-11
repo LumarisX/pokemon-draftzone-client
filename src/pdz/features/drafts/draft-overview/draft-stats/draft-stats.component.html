@@ -19,7 +19,6 @@
           >
             <thead>
               <tr>
-                <th scope="col" aria-label="Sprite"></th>
                 <th scope="col" pdzSortHeader="name">Pokémon</th>
                 <th class="pdz-table__num" scope="col" pdzSortHeader="gb" start="desc">
                   Brought
@@ -44,10 +43,9 @@
             <tbody>
               @for (stat of stats; track stat.pokemon.id) {
                 <tr>
-                  <td class="stats__sprite">
-                    <pdz-sprite size="3rem" flipped [pokemon]="stat.pokemon" />
+                  <td>
+                    <pdz-pokemon [pokemon]="stat.pokemon" />
                   </td>
-                  <td class="stats__name">{{ stat.pokemon.name }}</td>
                   <td class="pdz-table__num">{{ stat.brought }}</td>
                   <td class="pdz-table__num">{{ stat.kills }}</td>
                   <td class="pdz-table__num">{{ stat.indirect }}</td>

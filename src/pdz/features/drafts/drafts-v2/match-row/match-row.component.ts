@@ -12,7 +12,7 @@ import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
 import { getLogoUrl } from '@pdz/features/league-zone/league.util';
-import { TeamLogoComponent } from '@pdz/shared/images/team-logo/team-logo.component';
+import { TeamComponent } from '@pdz/shared/data/team/team.component';
 import { CountdownComponent } from '@pdz/shared/time/countdown/countdown.component';
 import { formatExactTime } from '@pdz/shared/time/timezone';
 import { TooltipDirective } from '@pdz/shared/tooltip/tooltip.directive';
@@ -27,7 +27,7 @@ let nextRowId = 0;
     ButtonComponent,
     IconComponent,
     SpriteComponent,
-    TeamLogoComponent,
+    TeamComponent,
     CountdownComponent,
     TooltipDirective,
   ],

@@ -18,7 +18,7 @@ import { TierListComponent } from '@pdz/features/tier-lists/tier-list/tier-list.
 import { DraftedPick } from '@pdz/features/tier-lists/tier-list.service';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 import { ChipComponent, ChipTone } from '@pdz/shared/data/chip/chip.component';
-import { PokemonTypeComponent } from '@pdz/shared/data/pokemon-type/pokemon-type.component';
+import { PokemonComponent } from '@pdz/shared/data/pokemon/pokemon.component';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
@@ -121,7 +121,7 @@ const STATUS_TONES: Record<DraftStatus, ChipTone> = {
     NumberSuffixPipe,
     LoadingComponent,
     RouterLink,
-    PokemonTypeComponent,
+    PokemonComponent,
     ButtonComponent,
     ChipComponent,
     MenuComponent,

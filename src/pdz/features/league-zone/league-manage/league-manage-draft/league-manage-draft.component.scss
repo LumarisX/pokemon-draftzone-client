@@ -140,8 +140,7 @@
 }
 
 .order__who,
-.turn__who,
-.turn__pick-info {
+.turn__who {
   display: flex;
   flex-direction: column;
   min-width: 0;
@@ -253,37 +252,6 @@
   gap: pdz.space(xs);
   min-height: 3rem;
   min-width: 0;
-
-  pdz-sprite {
-    flex: 0 0 auto;
-  }
-}
-
-.turn__pokemon {
-  @include pdz.text(label);
-  color: pdz.color(on-surface);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.turn__meta {
-  @include pdz.text(meta);
-  @include pdz.numeric;
-  display: flex;
-  align-items: center;
-  gap: pdz.space(xs);
-  color: pdz.color(on-surface-variant);
-  white-space: nowrap;
-}
-
-.turn__tier {
-  padding-inline: pdz.space(2xs);
-  border-radius: pdz.shape(corner-xs);
-  background: pdz.color(state-hover);
-  color: pdz.color(on-surface);
-  overflow: hidden;
-  text-overflow: ellipsis;
 }
 
 .turn__empty {

@@ -59,22 +59,11 @@
             [class.slot--pending]="pendingPokemonIds.has(pokemon.id)"
           >
             <span class="slot__index">{{ $index + 1 }}</span>
-            <span class="slot__sprite">
-              <pdz-sprite [pokemon]="pokemon" flipped></pdz-sprite>
-            </span>
-            <span class="slot__info">
-              <span class="slot__name">{{ pokemon.name }}</span>
-              @if (pokemon.types?.length) {
-                <span class="pdz-types">
-                  @for (type of pokemon.types; track $index) {
-                    <pdz-pokemon-type [type]="type" content="icon" />
-                  }
-                </span>
-              }
-            </span>
-            @if (pokemon.capt?.tera) {
-              <pdz-icon class="slot__capt" name="tera" ariaLabel="Tera captain" />
-            }
+            <pdz-pokemon
+              class="slot__pokemon"
+              [pokemon]="pokemon"
+              [types]="pokemon.types ?? []"
+            />
             <span class="slot__cost">{{ pokemon.cost || pokemon.tier }}</span>
             @if (
               isInProgress &&

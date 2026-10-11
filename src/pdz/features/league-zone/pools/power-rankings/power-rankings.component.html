@@ -41,31 +41,7 @@
         <ul class="roster__list">
           @for (pokemon of team.summary.team; track $index) {
             <li class="roster__row">
-              <pdz-sprite size="2.5rem" flipped [pokemon]="pokemon" />
-              <span class="roster__name">
-                {{ pokemon.name }}
-                @if (pokemon.capt?.tera) {
-                  <pdz-icon
-                    name="tera"
-                    ariaLabel="Tera captain"
-                    pdzTooltipPosition="below"
-                    [pdzTooltip]="captTypes(pokemon.capt!.tera!)"
-                    [size]="16"
-                  />
-                }
-                @if (pokemon.capt?.z) {
-                  <pdz-icon
-                    name="z"
-                    ariaLabel="Z captain"
-                    pdzTooltipPosition="below"
-                    [pdzTooltip]="captTypes(pokemon.capt!.z!, 18)"
-                    [size]="16"
-                  />
-                }
-                @if (pokemon.capt?.dmax) {
-                  <pdz-icon name="dmax" ariaLabel="Dynamax" [size]="16" />
-                }
-              </span>
+              <pdz-pokemon class="roster__pokemon" [pokemon]="pokemon" />
               <span class="roster__speed" title="Base speed">{{
                 pokemon.baseStats.spe
               }}</span>

@@ -38,7 +38,6 @@ export const PODIUM_SIZE = 3;
                     grounded
                     [pokemon]="pokemon"
                     [flipped]="$index === 1"
-                    [interactive]="false"
                     [showFormes]="false"
                   />
                 }

@@ -10,11 +10,3 @@
   --pdz-table-max-height: calc(100vh - 16rem);
   border: 1px solid pdz.color(border-subtle);
 }
-
-.stats__sprite {
-  width: 4rem;
-}
-
-.stats__name {
-  @include pdz.text(body-sm-strong);
-}

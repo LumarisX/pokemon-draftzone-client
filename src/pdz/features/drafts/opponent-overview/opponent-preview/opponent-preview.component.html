@@ -50,19 +50,14 @@
               }
             </div>
             <div pdz-card-header>
-              <div class="card-title">
-                <pdz-team-logo
-                  size="lg"
-                  [src]="matchup.logo"
-                  [name]="matchup.teamName"
-                />
-                <div class="matchup-team-info">
-                  <div class="team-name">{{ matchup.teamName }}</div>
-                  @if (matchup.coach) {
-                    <div class="coach-name">{{ matchup.coach }}</div>
-                  }
-                </div>
-              </div>
+              <pdz-team
+                class="card-title"
+                size="card"
+                [name]="matchup.teamName"
+                [logo]="matchup.logo"
+                [coach]="matchup.coach"
+                [headingLevel]="3"
+              />
 
               @if (matchup.score) {
                 <pdz-score [tone]="matchup.scoreTone ?? 'neutral'">{{

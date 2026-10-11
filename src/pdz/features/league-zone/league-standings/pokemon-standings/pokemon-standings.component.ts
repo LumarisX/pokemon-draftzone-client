@@ -11,7 +11,7 @@ import { ScoreComponent } from '@pdz/shared/data/score/score.component';
 import { SortHeaderComponent } from '@pdz/shared/data/sort/sort-header.component';
 import { Sort, SortDirective } from '@pdz/shared/data/sort/sort.directive';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
-import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
+import { PokemonComponent } from '@pdz/shared/data/pokemon/pokemon.component';
 import { CheckComponent } from '@pdz/shared/inputs/choice/check.component';
 import { ChoiceDirective } from '@pdz/shared/inputs/choice/choice.directive';
 import { PlusSignPipe } from '@pdz/shared/pipes/plus-sign.pipe';
@@ -30,7 +30,7 @@ const SORT_KEYS: SortKey[] = ['brought', 'kills', 'deaths', 'diff'];
     ScoreComponent,
     SortDirective,
     SortHeaderComponent,
-    SpriteComponent,
+    PokemonComponent,
   ],
   templateUrl: './pokemon-standings.component.html',
   styleUrl: './pokemon-standings.component.scss',

@@ -20,7 +20,7 @@
 
 .dz-match__summary {
   display: grid;
-  grid-template-columns: 6.5rem auto minmax(0, 1fr) auto auto;
+  grid-template-columns: 6.5rem minmax(0, 1fr) auto auto;
   align-items: center;
   gap: pdz.space(md);
   width: 100%;
@@ -56,24 +56,7 @@
 }
 
 .dz-match__who {
-  display: flex;
-  flex-direction: column;
   min-width: 0;
-}
-
-.dz-match__team {
-  @include pdz.text(card-title);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.dz-match__coach {
-  @include pdz.text(label);
-  color: pdz.color(on-surface-variant);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
 .dz-match__status {
@@ -222,7 +205,7 @@
 
 @include pdz.respond-below(medium) {
   .dz-match__summary {
-    grid-template-columns: auto minmax(0, 1fr) auto auto;
+    grid-template-columns: minmax(0, 1fr) auto auto;
     gap: pdz.space(sm);
     row-gap: pdz.space(xs);
   }

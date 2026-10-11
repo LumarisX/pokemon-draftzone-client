@@ -1,0 +1,121 @@
+@use "pdz-theming" as pdz;
+
+:host {
+  display: inline-flex;
+  align-items: center;
+  gap: pdz.space(sm);
+  min-width: 0;
+  max-width: 100%;
+  color: pdz.color(on-surface);
+}
+
+:host([data-size="inline"]) {
+  gap: pdz.space(xs);
+}
+
+:host([data-size="card"]) {
+  flex-direction: column;
+  gap: pdz.space(xs);
+  text-align: center;
+
+  .pdz-pokemon__text {
+    align-items: center;
+  }
+}
+
+:host([data-size="hero"]) {
+  gap: pdz.space(md);
+}
+
+:host([data-align="end"]:not([data-size="card"])) {
+  flex-direction: row-reverse;
+  text-align: end;
+
+  .pdz-pokemon__text {
+    align-items: flex-end;
+  }
+
+  .pdz-pokemon__title,
+  .pdz-pokemon__detail {
+    flex-direction: row-reverse;
+  }
+}
+
+:host([data-state="fainted"]),
+:host([data-state="taken"]),
+:host([data-state="banned"]) {
+  .pdz-pokemon__name {
+    color: pdz.color(on-surface-muted);
+  }
+}
+
+:host([data-state="banned"]) .pdz-pokemon__name {
+  text-decoration: line-through;
+}
+
+.pdz-pokemon__sprite {
+  flex: none;
+}
+
+.pdz-pokemon__text {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(3xs);
+  min-width: 0;
+  max-width: 100%;
+}
+
+.pdz-pokemon__title {
+  display: flex;
+  align-items: center;
+  gap: pdz.space(xs);
+  min-width: 0;
+  max-width: 100%;
+}
+
+.pdz-pokemon__name {
+  @include pdz.text(body-sm-strong);
+  overflow: hidden;
+  color: inherit;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  :host([data-size="card"]) & {
+    @include pdz.text(card-title);
+  }
+
+  :host([data-size="hero"]) & {
+    @include pdz.text(title);
+  }
+}
+
+.pdz-pokemon__captain {
+  flex: none;
+  color: pdz.color(on-surface-variant);
+}
+
+.pdz-pokemon__detail {
+  @include pdz.text(meta);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: pdz.space(xs);
+  color: pdz.color(on-surface-variant);
+
+  :host([data-size="card"]) & {
+    justify-content: center;
+  }
+}
+
+.pdz-pokemon__cost {
+  @include pdz.numeric;
+}
+
+.pdz-pokemon__unit {
+  color: pdz.color(on-surface-muted);
+}
+
+.pdz-pokemon__types {
+  display: inline-flex;
+  gap: pdz.space(3xs);
+}

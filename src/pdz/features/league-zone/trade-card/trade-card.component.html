@@ -52,20 +52,21 @@
               @if (pickValue(pokemon); as value) {
                 <span class="pick__value" [title]="value">{{ value }}</span>
               }
-              <pdz-sprite
-                class="pick__sprite"
+              <pdz-pokemon
+                size="inline"
                 [pokemon]="pokemon"
-                [flipped]="side.slot === 'team1'"
-              />
-              <span class="pick__name">{{ pokemon.name }}</span>
-              @if (pokemon.tera) {
-                <pdz-icon
-                  class="pick__tera"
-                  name="tera"
-                  ariaLabel="Tera captain"
-                  [size]="14"
-                />
-              }
+                [align]="side.slot === 'team2' ? 'end' : 'start'"
+              >
+                @if (pokemon.tera) {
+                  <pdz-icon
+                    pdz-pokemon-badge
+                    class="pick__tera"
+                    name="tera"
+                    ariaLabel="Tera captain"
+                    [size]="14"
+                  />
+                }
+              </pdz-pokemon>
             </li>
           } @empty {
             <li class="pick-list__empty">Nothing</li>

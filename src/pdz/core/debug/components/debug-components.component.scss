@@ -484,6 +484,13 @@
   width: 12rem;
 }
 
+.pokemon-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(8rem, 1fr));
+  gap: pdz.space(md);
+  width: 100%;
+}
+
 .matchups {
   display: flex;
   flex-direction: column;

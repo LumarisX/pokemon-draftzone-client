@@ -24,7 +24,7 @@ import {
 } from '@pdz/shared/dropdowns/pokemon-search/pokemon-search.component';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
-import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
+import { PokemonComponent } from '@pdz/shared/data/pokemon/pokemon.component';
 import { BehaviorSubject, catchError, forkJoin, of } from 'rxjs';
 
 export interface TradeProposeDialogData {
@@ -56,7 +56,7 @@ const sumCost = (options: TradeOption[]) =>
     LoadingComponent,
     NgTemplateOutlet,
     PokemonSearchComponent,
-    SpriteComponent,
+    PokemonComponent,
   ],
   templateUrl: './trade-propose-dialog.component.html',
   styleUrl: './trade-propose-dialog.component.scss',

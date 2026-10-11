@@ -16,7 +16,6 @@ import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
         <pdz-sprite
           size="100%"
           [pokemon]="pokemon"
-          [interactive]="false"
           [showFormes]="false"
         />
       }

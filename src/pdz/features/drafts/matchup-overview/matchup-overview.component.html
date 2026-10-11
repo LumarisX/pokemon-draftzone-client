@@ -18,8 +18,9 @@
           <div class="versus__side versus__side--team1">
             @for (pokemon of matchupData.summary[0].team; track pokemon.index) {
               <pdz-sprite
+                flipped
+                grounded
                 size="var(--versus-sprite)"
-                [interactive]="false"
                 [pokemon]="pokemon"
               />
             }
@@ -28,9 +29,8 @@
           <div class="versus__side versus__side--team2">
             @for (pokemon of matchupData.summary[1].team; track pokemon.index) {
               <pdz-sprite
-                flipped
+                grounded
                 size="var(--versus-sprite)"
-                [interactive]="false"
                 [pokemon]="pokemon"
               />
             }

@@ -72,7 +72,6 @@ function arrange(count: number): SlotPlace[] {
             size="100%"
             grounded
             tooltipPosition="above"
-            [interactive]="false"
             [showFormes]="false"
           />
         } @else {

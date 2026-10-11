@@ -1365,7 +1365,7 @@
       <div pdz-page-header-center class="versus-demo" aria-hidden="true">
         <div class="versus-demo__side versus-demo__side--team1">
           @for (pokemon of versusTeams[0]; track pokemon.id) {
-            <pdz-sprite size="2.5rem" [interactive]="false" [pokemon]="pokemon" />
+            <pdz-sprite size="2.5rem" [pokemon]="pokemon" />
           }
         </div>
         <span class="versus-demo__vs">vs</span>
@@ -1374,7 +1374,6 @@
             <pdz-sprite
               size="2.5rem"
               flipped
-              [interactive]="false"
               [pokemon]="pokemon"
             />
           }
@@ -1782,7 +1781,7 @@
     @for (pokemon of photoCounts[2]; track pokemon.id) {
       <div class="sprites__demo">
         <span class="sprites__name">{{ pokemon.name }}</span>
-        <pdz-sprite [pokemon]="pokemon" size="5rem" grounded [interactive]="false" />
+        <pdz-sprite [pokemon]="pokemon" size="5rem" grounded />
       </div>
     }
   </div>
@@ -1794,11 +1793,11 @@
   <div class="sprites">
     <div class="sprites__demo">
       <span class="sprites__name">shiny</span>
-      <pdz-sprite [pokemon]="spriteShinyGrounded" size="5rem" grounded [interactive]="false" />
+      <pdz-sprite [pokemon]="spriteShinyGrounded" size="5rem" grounded />
     </div>
     <div class="sprites__demo">
       <span class="sprites__name">fainted</span>
-      <pdz-sprite [pokemon]="photoTeam[2]" size="5rem" grounded state="fainted" [interactive]="false" />
+      <pdz-sprite [pokemon]="photoTeam[2]" size="5rem" grounded state="fainted" />
     </div>
     <div class="sprites__demo">
       <span class="sprites__name">taken</span>
@@ -1807,12 +1806,11 @@
         size="5rem"
         state="taken"
         takenBy="Rocket Grunts"
-        [interactive]="false"
       />
     </div>
     <div class="sprites__demo">
       <span class="sprites__name">banned</span>
-      <pdz-sprite [pokemon]="photoDrafting[2]" size="5rem" state="banned" [interactive]="false" />
+      <pdz-sprite [pokemon]="photoDrafting[2]" size="5rem" state="banned" />
     </div>
   </div>
 
@@ -1920,6 +1918,36 @@
   </div>
 
   <h3 class="section__sub">
+    Pokémon — one lockup in four sizes (inline, row, card, hero); tier, cost and
+    type icons on the detail line, captain marks after the name, the sprite
+    always faces the name, align="end" mirrors it
+  </h3>
+  <div class="team-lockups">
+    <pdz-pokemon size="inline" [pokemon]="lockupCaptain" />
+    <pdz-pokemon [pokemon]="lockupCaptain" tier="OU" [cost]="18" [types]="mvpTypes" />
+    <pdz-pokemon [pokemon]="lockupShiny" [cost]="14">
+      <pdz-chip pdz-pokemon-badge size="xs" tone="danger" icon="warning">Off list</pdz-chip>
+    </pdz-pokemon>
+    <pdz-pokemon [pokemon]="photoTeam[2]">
+      <span pdz-pokemon-meta class="matchups__meta">Inglorious Surfers</span>
+    </pdz-pokemon>
+    <pdz-pokemon size="hero" [pokemon]="lockupCaptain" tier="OU" [cost]="18" [types]="mvpTypes" [headingLevel]="3" />
+    <div class="team-lockups__versus">
+      <pdz-pokemon [pokemon]="photoTeam[1]" [cost]="12" />
+      <pdz-pokemon align="end" [pokemon]="photoTeam[6]" [cost]="9" />
+    </div>
+    <div class="pokemon-cards">
+      <pdz-pokemon size="card" [pokemon]="photoTeam[0]" tier="OU" [types]="mvpTypes" />
+      <pdz-pokemon size="card" [pokemon]="photoTeam[11]" [cost]="16" state="taken" [takenLogo]="teamLogoSample" takenBy="Viridian Vipers" />
+      <pdz-pokemon size="card" [pokemon]="photoTeam[3]" tier="Ban" state="banned" />
+      <pdz-pokemon size="card" [pokemon]="photoTeam[8]" state="fainted" />
+    </div>
+    <div class="team-lockups__narrow">
+      <pdz-pokemon [pokemon]="lockupLong" tier="UU" [cost]="7" />
+    </div>
+  </div>
+
+  <h3 class="section__sub">
     Screen states — kind="empty | waiting | error | no-access" puts Ditto,
     Slowpoke, Psyduck or Snorlax above the message at md and lg; sm keeps an
     icon
@@ -1973,7 +2001,9 @@
   </div>
 
   <h3 class="section__sub">
-    Formes — click, right-click, or focus and use the arrow keys
+    Formes — every sprite shows its other formes behind it; only an
+    interactive sprite cycles them (click, right-click, or focus and use the
+    arrow keys)
   </h3>
   <div class="sprites">
     <div class="sprites__demo">
@@ -1981,12 +2011,13 @@
       <pdz-sprite
         [pokemon]="spriteFormes"
         size="5rem"
+        interactive
         [(formeIndex)]="spriteFormeIndex"
       />
     </div>
     <div class="sprites__demo">
-      <span class="sprites__name">non-interactive</span>
-      <pdz-sprite [pokemon]="spriteFormes" size="5rem" [interactive]="false" />
+      <span class="sprites__name">default (not interactive)</span>
+      <pdz-sprite [pokemon]="spriteFormes" size="5rem" />
     </div>
     <div class="sprites__demo">
       <span class="sprites__name">formes hidden</span>
@@ -1998,7 +2029,6 @@
         [pokemon]="spriteFormes"
         size="5rem"
         [formeIndex]="spriteFormeIndex()"
-        [interactive]="false"
       />
     </div>
   </div>
@@ -2016,6 +2046,7 @@
       <pdz-sprite
         [pokemon]="spriteFormes"
         size="5rem"
+        interactive
         cycleDisabled
         [(disabled)]="spriteDisabled"
       />

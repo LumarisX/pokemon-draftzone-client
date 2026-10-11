@@ -159,19 +159,8 @@
   color: var(--side-on);
 }
 
-.pick__sprite {
-  flex-shrink: 0;
-  width: 2rem;
-  height: 2rem;
-}
-
-.pick__name {
-  @include pdz.text(body-sm);
+.pick__pokemon {
   flex: 1 1 auto;
-  min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
 }
 
 .pick__tier {

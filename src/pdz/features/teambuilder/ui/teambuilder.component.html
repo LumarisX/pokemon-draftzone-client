@@ -52,7 +52,6 @@
           <span class="tb__slot-inner">
             <pdz-sprite
               size="2.5rem"
-              [interactive]="false"
               [pokemon]="rosterSprites()[$index]"
             />
             <span class="tb__slot-name">{{ store.displayName(set) }}</span>
@@ -93,7 +92,6 @@
         <div class="tb__active">
           <pdz-sprite
             size="2rem"
-            [interactive]="false"
             [pokemon]="activeSprite()"
           />
           <span class="tb__active-name">{{ store.displayName(active) }}</span>
