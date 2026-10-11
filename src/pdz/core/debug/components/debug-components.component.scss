@@ -357,6 +357,33 @@
   margin-bottom: pdz.space(xs);
 }
 
+.densities {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+  gap: pdz.space(xl);
+}
+
+.densities__column {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.layout(stack);
+}
+
+.densities__stack {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.layout(stack);
+}
+
+.densities__title {
+  @include pdz.text(card-title);
+}
+
+.densities__meta {
+  @include pdz.text(meta);
+  color: pdz.color(on-surface-muted);
+}
+
 .tables__demo--scroll {
   --pdz-table-max-height: 14rem;
 }

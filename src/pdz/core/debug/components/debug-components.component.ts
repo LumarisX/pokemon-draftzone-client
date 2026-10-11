@@ -92,6 +92,7 @@ import {
 } from '@pdz/shared/data/pokemon-type/pokemon-type.component';
 import {
   ChipComponent,
+  ChipSize,
   ChipTone,
   ChipVariant,
 } from '@pdz/shared/data/chip/chip.component';
@@ -185,13 +186,13 @@ export class DebugComponentsComponent {
   );
 
   protected readonly pageTypes = [
-    { type: 'hub', width: 'default 64rem', header: 'full', pages: 'My Drafts, league and tournament home, pool, tools list' },
-    { type: 'index', width: 'wide 96rem', header: 'compact', pages: 'Teams, standings, schedule, trades, results, lists' },
-    { type: 'detail', width: 'default 64rem', header: 'full', pages: 'One team, matchup, rules, settings sections, draft and score forms' },
-    { type: 'workspace', width: 'full, fills the height', header: 'compact', pages: 'Planner, drafting room, tier list and its editor, stage builder' },
-    { type: 'tool', width: 'default 64rem', header: 'full', pages: 'Quick draft, random draft, wheel, time converter' },
-    { type: 'form', width: 'narrow 40rem', header: 'full', pages: 'Create league or tournament, sign up, organizers, rules editor' },
-    { type: 'dashboard', width: 'wide 96rem', header: 'full', pages: 'Draft page, matchup breakdowns, draft stats, replay analyzer, Pokémon search' },
+    { type: 'hub', width: 'default 64rem', density: 'comfortable', header: 'full', pages: 'My Drafts, league and tournament home, pool, tools list' },
+    { type: 'index', width: 'wide 96rem', density: 'compact', header: 'compact', pages: 'Teams, standings, schedule, trades, results, lists' },
+    { type: 'detail', width: 'default 64rem', density: 'comfortable', header: 'full', pages: 'One team, matchup, rules, settings sections, draft and score forms' },
+    { type: 'workspace', width: 'full, fills the height', density: 'compact', header: 'compact', pages: 'Planner, drafting room, tier list and its editor, stage builder' },
+    { type: 'tool', width: 'default 64rem', density: 'compact', header: 'full', pages: 'Quick draft, random draft, wheel, time converter' },
+    { type: 'form', width: 'narrow 40rem', density: 'comfortable', header: 'full', pages: 'Create league or tournament, sign up, organizers, rules editor' },
+    { type: 'dashboard', width: 'wide 96rem', density: 'compact', header: 'full', pages: 'Draft page, matchup breakdowns, draft stats, replay analyzer, Pokémon search' },
   ];
   protected readonly spriteBasic = { id: 'charizard', name: 'Charizard' };
   protected readonly spriteSizes: SpriteSize[] = ['xs', 'sm', 'md', 'lg', 'xl'];
@@ -408,7 +409,8 @@ export class DebugComponentsComponent {
     { name: 'Dragapult', brought: 12, kills: 21, deaths: 11, kdr: '1.91' },
   ];
 
-  readonly tableDensities = ['compact', 'default', 'relaxed'];
+  readonly tableDensities = ['comfortable', 'compact'];
+  readonly chipSizes: ChipSize[] = ['xs', 'sm', 'md'];
 
   readonly sortState = signal<Sort>({ active: 'kills', direction: 'desc' });
 

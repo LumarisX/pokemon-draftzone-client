@@ -58,11 +58,11 @@
     <pdz-card padding="lg" class="team-body__schedule">
       <section class="section" aria-labelledby="team-schedule">
         <h2 class="section__title" id="team-schedule">Schedule</h2>
-        @if (stageSlug()) {
-          <pdz-league-schedule-widget />
-        } @else {
-          <pdz-empty-state size="sm" icon="event" message="No schedule yet." />
-        }
+        <pdz-team-season
+          [rounds]="scheduleRounds()"
+          [teamSlug]="team.slug"
+          [currentRoundIndex]="currentRoundIndex()"
+        />
       </section>
     </pdz-card>
 
@@ -77,6 +77,13 @@
         />
       }
       <pdz-card padding="none">
+        @if (team.draft.length) {
+          <pdz-team-photo
+            pdz-card-media
+            [pokemon]="aces()"
+            [name]="team.name"
+          />
+        }
         <section class="section" aria-labelledby="team-roster">
           <h2 class="section__title section__title--padded" id="team-roster">
             Draft Roster

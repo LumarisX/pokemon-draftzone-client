@@ -74,8 +74,8 @@
 
       z-index: 1;
       background-color: pdz.color(ground);
-      color: pdz.color(on-surface);
-      font-weight: var(--pdz-font-weight-bold);
+      color: pdz.color(primary-accent);
+      font-weight: pdz.font-weight(semibold);
 
       &:hover {
         background-color: pdz.color(ground);

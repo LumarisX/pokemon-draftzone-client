@@ -139,7 +139,9 @@ $sizes: (
 
 .pdz-chip__action {
   display: inline-flex;
+  flex: 1 1 auto;
   align-items: center;
+  justify-content: center;
   min-width: 0;
   border: none;
   background: none;
@@ -167,6 +169,7 @@ $sizes: (
 
 @each $name, $s in $sizes {
   :host([data-size="#{$name}"]) {
+    min-width: map.get($s, height);
     min-height: map.get($s, height);
     @include pdz.text(map.get($s, role), $family: false);
 

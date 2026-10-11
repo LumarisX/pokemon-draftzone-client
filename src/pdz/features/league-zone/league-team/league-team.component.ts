@@ -21,7 +21,6 @@ import {
   TeamEditDialogData,
   TeamEditDialogResult,
 } from '@pdz/features/league-zone/dialogs/team-edit-dialog/team-edit-dialog.component';
-import { LeagueScheduleWidgetComponent } from '@pdz/features/league-zone/league-widgets/league-schedule-widget/league-schedule-widget.component';
 import { LeagueTradeWidgetComponent } from '@pdz/features/league-zone/league-widgets/league-trade-widget/league-trade-widget.component';
 import { LeagueZoneService } from '@pdz/features/league-zone/league-zone.service';
 import { League } from '@pdz/features/league-zone/league.interface';
@@ -42,6 +41,8 @@ import { EmptyStateComponent } from '@pdz/shared/feedback/empty-state/empty-stat
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
 import { RosterPatternComponent } from '@pdz/shared/images/roster-pattern/roster-pattern.component';
+import { TeamPhotoComponent } from '@pdz/shared/images/team-photo/team-photo.component';
+import { TeamSeasonComponent } from './team-season/team-season.component';
 import { PokemonComponent } from '@pdz/shared/data/pokemon/pokemon.component';
 import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
 import { PageComponent } from '@pdz/shared/layout/page/page.component';
@@ -71,7 +72,6 @@ const CLOCK_TICK_MS = 30_000;
     ChipComponent,
     EmptyStateComponent,
     IconComponent,
-    LeagueScheduleWidgetComponent,
     LeagueTradeWidgetComponent,
     LoadingComponent,
     PageComponent,
@@ -80,6 +80,8 @@ const CLOCK_TICK_MS = 30_000;
     RosterPatternComponent,
     SeasonMvpComponent,
     PokemonComponent,
+    TeamPhotoComponent,
+    TeamSeasonComponent,
     TooltipDirective,
   ],
   templateUrl: './league-team.component.html',
@@ -99,8 +101,10 @@ export class LeagueTeamComponent implements OnInit {
   readonly saving = signal(false);
   readonly saveError = signal('');
 
-  private readonly scheduleRounds = signal<League.ScheduleRound[]>([]);
-  private readonly currentRoundIndex = signal(0);
+  protected readonly scheduleRounds = signal<League.ScheduleRound[] | null>(
+    null,
+  );
+  protected readonly currentRoundIndex = signal(0);
 
   private readonly now = toSignal(
     interval(CLOCK_TICK_MS).pipe(
@@ -138,16 +142,18 @@ export class LeagueTeamComponent implements OnInit {
     ),
   );
 
+  readonly aces = computed(() =>
+    [...(this.teamData()?.draft ?? [])].sort(
+      (a, b) =>
+        (b.record?.kills ?? 0) - (a.record?.kills ?? 0) ||
+        (a.record?.deaths ?? 0) - (b.record?.deaths ?? 0) ||
+        (a.record?.brought ?? 0) - (b.record?.brought ?? 0),
+    ),
+  );
+
   readonly mvp = computed(() => {
-    const ranked = (this.teamData()?.draft ?? [])
-      .filter((pokemon) => (pokemon.record?.kills ?? 0) > 0)
-      .sort(
-        (a, b) =>
-          (b.record?.kills ?? 0) - (a.record?.kills ?? 0) ||
-          (a.record?.deaths ?? 0) - (b.record?.deaths ?? 0) ||
-          (a.record?.brought ?? 0) - (b.record?.brought ?? 0),
-      );
-    return ranked[0] ?? null;
+    const top = this.aces()[0];
+    return top && (top.record?.kills ?? 0) > 0 ? top : null;
   });
 
   ngOnInit(): void {
@@ -252,7 +258,7 @@ export class LeagueTeamComponent implements OnInit {
         rosterCost: this.totals().cost,
         pointTotal: team.pointTotal,
         roundIndex,
-        roundName: this.scheduleRounds()[roundIndex]?.name,
+        roundName: this.scheduleRounds()?.[roundIndex]?.name,
       },
     }).closed;
 

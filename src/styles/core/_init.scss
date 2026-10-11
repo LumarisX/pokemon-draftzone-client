@@ -12,6 +12,7 @@
 @use "tools/typography" as *;
 @use "tools/theme" as *;
 @use "tools/breakpoints" as *;
+@use "tools/space" as *;
 
 @mixin -apply-elevation($mode) {
   @each $level, $value in map.get(shadow-tokens.$elevation, $mode) {
@@ -54,6 +55,8 @@
     @each $name, $steps in spacing-tokens.$layout {
       --pdz-layout-#{$name}: var(--pdz-space-#{map.get($steps, base)});
     }
+
+    @include density(comfortable);
 
     @each $breakpoint in map.keys(bp-tokens.$breakpoints) {
       @include respond-above($breakpoint) {
@@ -111,6 +114,12 @@
           @include -apply-elevation($variation-name);
         }
       }
+    }
+  }
+
+  @each $name in map.keys(spacing-tokens.$density) {
+    [data-density="#{$name}"] {
+      @include density($name);
     }
   }
 

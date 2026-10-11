@@ -79,11 +79,7 @@ export class DraftStatsComponent {
 
   private loadStats() {
     const teamId = this.route.snapshot.paramMap.get('teamId') ?? '';
-    const archived = this.route.snapshot.data['archived'] === true;
-    const stats$ = archived
-      ? this.draftService.getArchiveStats(teamId)
-      : this.draftService.getStats(teamId);
-    return stats$.pipe(
+    return this.draftService.getArchiveStats(teamId).pipe(
       map((data) => data.pokemon),
       catchError(() => of<PokemonStat[]>([])),
     );

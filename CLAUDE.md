@@ -78,8 +78,12 @@ tooltip, widgets.
 Every routed page is wrapped in `<pdz-page type="hub|index|detail|workspace|tool|form|dashboard">`,
 in the routed component's own template. The type sets the width (hub, detail and tool 64rem;
 index and dashboard 96rem; form 40rem; workspace full width and full height), the
-`section-gap` between its children, and the header (index and workspace default to
-`compact`). The page never sets its own max-width, padding or section gap; its `:host`
+density, and the header (index and workspace default to `compact`). Hub, detail and
+form are comfortable; index, workspace, tool and dashboard are compact. The density
+switches `section-gap`, `stack`, `card-pad` and the table cell padding for everything
+inside the page, so never hardcode a table's `data-density` to match its page; the
+`density` input (or `data-density` on a subtree) asks for the other one, and that is an
+owner call. The page never sets its own max-width, padding or section gap; its `:host`
 is just `display: block` (plus `height: 100%` for a workspace). Inside the tournament
 shell the page drops its padding on its own (`PAGE_SHELL`); `flush` is only for a
 workspace that owns its edges. `npm run lint` fails a routed page without a type.
@@ -149,7 +153,7 @@ and no page header.
 | a team or league logo | `<pdz-team-logo [src] [name]>` — a missing or broken image shows the DraftZone logo (`DEFAULT_TEAM_LOGO`), never initials; no ring, plate or team color |
 | W-L or W-D-L | `<pdz-record [wins] [losses] [draws]>` |
 | a Pokémon type | `<pdz-pokemon-type [type]>` |
-| a tabular list | `<table class="pdz-table">` (`data-density`, `data-sticky`, `pdzSort`) |
+| a tabular list | `<table class="pdz-table">` (`data-sticky`, `pdzSort`; padding follows the page's density) |
 
 `pdz-select` notes: `searchable` adds a filter box (use it for long lists);
 `showGroupInTrigger` (default true) prefixes the trigger with the option's group;
@@ -168,7 +172,7 @@ functions, never literals:
 
 ```scss
 padding: pdz.space(md);                 // not 12px
-gap: pdz.layout(section-gap);           // page-gap, section-gap, card-pad, stack, inline
+gap: pdz.layout(section-gap);           // page-gap, section-gap, card-pad, stack, inline, cell-*
 max-width: pdz.content-width(default);  // narrow, default, wide
 height: pdz.control-height(sm);         // xs, sm, md, lg
 width: pdz.sprite-size(md);             // xs 24, sm 32, md 48, lg 64, xl 96

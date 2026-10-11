@@ -68,7 +68,7 @@
   height: 2px;
   width: 0;
   border-radius: pdz.shape(corner-full) pdz.shape(corner-full) 0 0;
-  background-color: pdz.color(primary-accent);
+  background-color: pdz.color(primary);
   transition:
     transform pdz.duration(base) pdz.easing(standard),
     width pdz.duration(base) pdz.easing(standard);

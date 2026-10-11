@@ -694,6 +694,20 @@
     <pdz-chip disabled>Disabled</pdz-chip>
   </div>
 
+  <h3 class="section__sub">Single Character</h3>
+  <p class="section__hint">
+    A chip is never narrower than it is tall, so one letter or digit reads as
+    a circle.
+  </p>
+  <div class="row">
+    @for (size of chipSizes; track size) {
+      <pdz-chip tone="success" [size]="size">W</pdz-chip>
+      <pdz-chip tone="danger" [size]="size">L</pdz-chip>
+      <pdz-chip [size]="size">D</pdz-chip>
+      <pdz-chip tone="primary" [size]="size">1</pdz-chip>
+    }
+  </div>
+
   <h3 class="section__sub">
     <code>block</code> — fills its container and centres the label, for a status
     bar rather than an inline tag
@@ -1074,9 +1088,9 @@
 
   <h3 class="section__sub">Density</h3>
   <p class="section__hint">
-    Only the padding moves. Each step also insets the first and last cell
-    further than the ones between, so content clears the container's corner
-    radius instead of crowding it.
+    Only the padding moves, and it follows the page's density. Each step also
+    insets the first and last cell further than the ones between, so content
+    clears the container's corner radius instead of crowding it.
   </p>
   @for (density of tableDensities; track density) {
     <p class="tables__name">{{ density }}</p>
@@ -1350,16 +1364,17 @@
   <h2 class="section__title">Page Types</h2>
   <p class="section__note">
     Every routed page declares one type on pdz-page, which sets its width, its
-    section gap and the header style. Inside the tournament shell the page drops
+    density and the header style. Inside the tournament shell the page drops
     its own padding; flush is only for workspaces that own their edges (the
     planner).
   </p>
   <div class="pdz-table-wrapper">
-    <table class="pdz-table" data-density="compact">
+    <table class="pdz-table">
       <thead>
         <tr>
           <th>Type</th>
           <th>Width</th>
+          <th>Density</th>
           <th>Header</th>
           <th>Pages</th>
         </tr>
@@ -1369,12 +1384,45 @@
           <tr>
             <td>{{ row.type }}</td>
             <td>{{ row.width }}</td>
+            <td>{{ row.density }}</td>
             <td>{{ row.header }}</td>
             <td>{{ row.pages }}</td>
           </tr>
         }
       </tbody>
     </table>
+  </div>
+
+  <h3 class="section__sub">Density</h3>
+  <p class="section__hint">
+    The page type sets the density on everything inside it: section gap, stack
+    gap, card padding and table cells. Controls and type keep their size.
+    <code>data-density</code> on any element switches its subtree.
+  </p>
+  <div class="densities">
+    @for (density of tableDensities; track density) {
+      <div class="densities__column" [attr.data-density]="density">
+        <p class="tables__name">{{ density }}</p>
+        <pdz-card>
+          <div class="densities__stack">
+            <span class="densities__title">Neon Nightshades</span>
+            <span class="densities__meta">Coach Jett · 4–1</span>
+          </div>
+        </pdz-card>
+        <div class="pdz-table-wrapper tables__demo">
+          <table class="pdz-table">
+            <tbody>
+              @for (row of tableRows.slice(0, 3); track $index) {
+                <tr>
+                  <td>{{ row.name }}</td>
+                  <td class="pdz-table__num">{{ row.kills }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+    }
   </div>
 </section>
 

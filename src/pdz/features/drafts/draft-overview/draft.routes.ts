@@ -24,14 +24,12 @@ export const routes: Routes = [
 
   {
     path: ':teamId/stats',
-    component: DraftStatsComponent,
-    canActivate: [AuthGuard],
+    redirectTo: ':teamId',
   },
   {
     path: 'archives/:teamId/stats',
     component: DraftStatsComponent,
     canActivate: [AuthGuard],
-    data: { archived: true },
   },
   {
     path: ':teamId',

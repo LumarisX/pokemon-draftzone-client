@@ -4,7 +4,7 @@
 $paddings: (
   none: 0,
   sm: pdz.space(sm),
-  md: pdz.space(lg),
+  md: pdz.layout(card-pad),
   lg: pdz.space(xl),
 );
 

@@ -9,10 +9,25 @@
 }
 
 @function layout($name) {
-  @if not map.has-key(spacing-tokens.$layout, $name) {
-    @error "'#{$name}' is not a valid PDZ layout token. Available tokens: #{map.keys(spacing-tokens.$layout)}";
+  $density-steps: map.get(spacing-tokens.$density, comfortable);
+  @if not
+    (
+      map.has-key(spacing-tokens.$layout, $name) or
+        map.has-key($density-steps, $name)
+    )
+  {
+    @error "'#{$name}' is not a valid PDZ layout token. Available tokens: #{map.keys(spacing-tokens.$layout)} #{map.keys($density-steps)}";
   }
   @return var(--pdz-layout-#{$name});
+}
+
+@mixin density($name) {
+  @if not map.has-key(spacing-tokens.$density, $name) {
+    @error "'#{$name}' is not a valid PDZ density. Available densities: #{map.keys(spacing-tokens.$density)}";
+  }
+  @each $token, $step in map.get(spacing-tokens.$density, $name) {
+    --pdz-layout-#{$token}: var(--pdz-space-#{$step});
+  }
 }
 
 @function content-width($name) {

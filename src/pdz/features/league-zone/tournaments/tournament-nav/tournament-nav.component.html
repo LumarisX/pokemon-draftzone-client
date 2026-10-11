@@ -43,6 +43,7 @@
           [routerLink]="link.route"
           [routerLinkActiveOptions]="{ exact: !!link.exact }"
         >
+          <pdz-icon [name]="link.icon" size="sm" />
           <span class="link-button__label">{{ link.label }}</span>
           @if (link.status) {
             <span class="link-button__status">{{ link.status }}</span>

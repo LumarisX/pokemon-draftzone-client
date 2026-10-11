@@ -174,7 +174,7 @@ export class SeasonDetailComponent {
   protected readonly statsLink = computed(() => {
     const source = this.season().source;
     if (source.type === 'draft') {
-      return ['/', DRAFT_OVERVIEW_PATH, source.slug, 'stats'];
+      return ['/', DRAFT_OVERVIEW_PATH, source.slug];
     }
     if (source.type === 'archive') {
       return ['/', DRAFT_OVERVIEW_PATH, 'archives', source.archiveId, 'stats'];

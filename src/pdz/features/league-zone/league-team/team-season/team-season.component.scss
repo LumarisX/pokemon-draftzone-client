@@ -1,0 +1,165 @@
+@use "pdz-theming" as pdz;
+
+:host {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.layout(stack);
+}
+
+.form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: pdz.space(2xs);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.form__pip {
+  @include pdz.text(label-strong);
+  display: inline-grid;
+  place-items: center;
+  width: pdz.control-height(xs);
+  height: pdz.control-height(xs);
+  border-radius: pdz.shape(corner-full);
+  background: pdz.color(state-strong);
+  color: pdz.color(on-surface-variant);
+
+  &[data-result="win"] {
+    background: pdz.color(success-container);
+    color: pdz.color(on-success-container);
+  }
+
+  &[data-result="loss"] {
+    background: pdz.color(danger-container);
+    color: pdz.color(on-danger-container);
+  }
+}
+
+.season {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.season__item {
+  @include pdz.row-divider;
+  display: flex;
+  flex-direction: column;
+  padding-block: pdz.space(2xs);
+}
+
+.season__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: pdz.space(md);
+  padding: pdz.space(sm);
+  border-radius: pdz.shape(corner-sm);
+  color: inherit;
+  text-decoration: none;
+}
+
+.season__row--link {
+  cursor: pointer;
+  transition: background-color pdz.duration(fast) pdz.easing(standard);
+
+  &:hover {
+    background: pdz.color(state-hover);
+  }
+
+  &:focus-visible {
+    @include pdz.focus-ring(-2px);
+  }
+}
+
+.season__main {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  gap: pdz.space(2xs);
+  min-width: 0;
+}
+
+.season__round {
+  @include pdz.text(label-caps);
+  display: inline-flex;
+  align-items: center;
+  gap: pdz.space(xs);
+  color: pdz.color(on-surface-muted);
+}
+
+.season__outcome {
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: pdz.space(sm);
+}
+
+.season__outcome--stack {
+  flex-direction: column;
+  align-items: flex-end;
+  gap: pdz.space(3xs);
+  text-align: end;
+}
+
+.season__value {
+  min-width: 3.5rem;
+  text-align: end;
+}
+
+.season__score {
+  @include pdz.text(subtitle);
+  color: pdz.color(on-surface);
+}
+
+.season__chevron {
+  flex: none;
+  margin-inline-start: calc(-1 * #{pdz.space(xs)});
+  color: pdz.color(on-surface-muted);
+  transition: color pdz.duration(fast) pdz.easing(standard);
+}
+
+.season__chevron--none {
+  visibility: hidden;
+}
+
+.season__row--link:hover .season__chevron {
+  color: pdz.color(on-surface);
+}
+
+.season__countdown {
+  @include pdz.text(body-sm-strong);
+  color: pdz.color(on-surface);
+}
+
+.season__detail {
+  @include pdz.text(meta);
+  color: pdz.color(on-surface-muted);
+}
+
+.season__roster {
+  display: flex;
+  flex-wrap: wrap;
+  gap: pdz.space(xs);
+  padding: 0 pdz.space(sm) pdz.space(sm);
+}
+
+.season__placeholder {
+  display: flex;
+  align-items: center;
+  gap: pdz.space(sm);
+  padding: pdz.space(sm);
+}
+
+.season__placeholder-text {
+  flex: 1 1 auto;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .season__row--link {
+    transition: none;
+  }
+}

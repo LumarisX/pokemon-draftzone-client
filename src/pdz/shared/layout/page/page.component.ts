@@ -29,6 +29,18 @@ const PAGE_WIDTHS: Record<PageType, PageWidth> = {
   dashboard: 'wide',
 };
 
+export type PageDensity = 'comfortable' | 'compact';
+
+const PAGE_DENSITIES: Record<PageType, PageDensity> = {
+  hub: 'comfortable',
+  index: 'compact',
+  detail: 'comfortable',
+  workspace: 'compact',
+  tool: 'compact',
+  form: 'comfortable',
+  dashboard: 'compact',
+};
+
 const COMPACT_HEADER: ReadonlySet<PageType> = new Set(['index', 'workspace']);
 
 export const PAGE_SHELL = new InjectionToken<true>('PAGE_SHELL');
@@ -41,15 +53,20 @@ export const PAGE_SHELL = new InjectionToken<true>('PAGE_SHELL');
   host: {
     '[attr.data-type]': 'type()',
     '[attr.data-width]': 'width()',
+    '[attr.data-density]': 'resolvedDensity()',
     '[attr.data-flush]': 'inShell || flush() ? "" : null',
   },
 })
 export class PageComponent {
   readonly type = input.required<PageType>();
+  readonly density = input<PageDensity>();
   readonly flush = input(false, { transform: booleanAttribute });
 
   protected readonly inShell = inject(PAGE_SHELL, { optional: true }) !== null;
 
   readonly width = computed(() => PAGE_WIDTHS[this.type()]);
+  readonly resolvedDensity = computed(
+    () => this.density() ?? PAGE_DENSITIES[this.type()],
+  );
   readonly compactHeader = computed(() => COMPACT_HEADER.has(this.type()));
 }

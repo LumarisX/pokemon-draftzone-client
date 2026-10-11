@@ -1,0 +1,97 @@
+@if (rows(); as rows) {
+  @if (rows.length) {
+    @if (form().length) {
+      <ol class="form" [attr.aria-label]="'Results so far: ' + formLabel()">
+        @for (result of form(); track $index) {
+          <li class="form__pip" [attr.data-result]="result" aria-hidden="true">
+            {{ letter[result] }}
+          </li>
+        }
+      </ol>
+    }
+
+    <ol class="season">
+      @for (row of rows; track row.id) {
+        <li class="season__item" [class.season__item--next]="row.next">
+          <a
+            class="season__row"
+            [class.season__row--link]="row.link"
+            [routerLink]="row.link"
+          >
+            <span class="season__main">
+              <span class="season__round">
+                {{ row.round }}
+                @if (row.next) {
+                  <pdz-chip size="xs" tone="primary">Next</pdz-chip>
+                }
+              </span>
+              <pdz-team
+                size="row"
+                [name]="row.opponent.name"
+                [coach]="row.opponent.coach"
+                [logo]="row.opponent.logo"
+              />
+            </span>
+
+            <span
+              class="season__outcome"
+              [class.season__outcome--stack]="!row.result"
+            >
+              @if (row.result; as result) {
+                <pdz-chip
+                  size="sm"
+                  [tone]="tone[result]"
+                  [attr.aria-label]="resultLabel[result]"
+                  >{{ letter[result] }}</pdz-chip
+                >
+                @if (row.forfeit) {
+                  <span class="season__value season__detail">Forfeit</span>
+                } @else if (row.score; as score) {
+                  <span
+                    class="season__value season__score"
+                    [attr.aria-label]="score.mine + ' to ' + score.theirs"
+                    >{{ score.mine }}-{{ score.theirs }}</span
+                  >
+                }
+              } @else if (row.when; as when) {
+                @if (row.next) {
+                  <pdz-countdown class="season__countdown" [target]="when" />
+                }
+                <span class="season__detail">{{
+                  dateLabel(when, row.exactTime)
+                }}</span>
+              } @else {
+                <span class="season__detail">Not scheduled</span>
+              }
+            </span>
+            <pdz-icon
+              class="season__chevron"
+              name="chevron_right"
+              size="sm"
+              [class.season__chevron--none]="!row.link"
+            />
+          </a>
+
+          @if (row.next && row.roster.length) {
+            <div class="season__roster" [attr.aria-label]="row.opponent.name + ' roster'">
+              @for (pokemon of row.roster; track $index) {
+                <pdz-sprite size="sm" grounded [pokemon]="pokemon" />
+              }
+            </div>
+          }
+        </li>
+      }
+    </ol>
+  } @else {
+    <pdz-empty-state size="sm" icon="event" message="No matchups scheduled yet." />
+  }
+} @else {
+  <div class="season" aria-hidden="true">
+    @for (placeholder of placeholders; track placeholder) {
+      <div class="season__placeholder">
+        <pdz-skeleton variant="circle" width="2rem" height="2rem" />
+        <pdz-skeleton class="season__placeholder-text" lines="2" />
+      </div>
+    }
+  </div>
+}

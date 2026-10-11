@@ -18,18 +18,27 @@ $layout: (
     base: xl,
     medium: 2xl,
   ),
-  section-gap: (
-    base: xl,
-  ),
-  card-pad: (
-    base: lg,
-    medium: xl,
-  ),
-  stack: (
-    base: md,
-  ),
   inline: (
     base: sm,
+  ),
+);
+
+$density: (
+  comfortable: (
+    section-gap: xl,
+    stack: md,
+    card-pad: lg,
+    cell-block: sm,
+    cell-inline: md,
+    cell-edge: lg,
+  ),
+  compact: (
+    section-gap: lg,
+    stack: sm,
+    card-pad: md,
+    cell-block: xs,
+    cell-inline: sm,
+    cell-edge: md,
   ),
 );
 

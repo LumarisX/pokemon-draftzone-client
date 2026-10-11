@@ -86,7 +86,8 @@ function arrange(count: number): SlotPlace[] {
     class: 'pdz-team-photo',
     role: 'img',
     '[attr.data-size]': 'size()',
-    '[attr.data-side]': 'side()',    '[attr.data-kind]': 'kind()',
+    '[attr.data-side]': 'side()',
+    '[attr.data-kind]': 'kind()',
     '[attr.aria-label]': 'label()',
     '[attr.data-rows]': 'frame().rows',
     '[style.--pdz-team-photo-reach]': 'frame().reach',
@@ -98,7 +99,8 @@ export class TeamPhotoComponent {
   readonly pokemon = input.required<Pokemon<DraftOptions>[]>();
   readonly spots = input(0);
   readonly size = input<TeamPhotoSize>('md');
-  readonly side = input<TeamPhotoSide>('team1');  readonly name = input('');
+  readonly side = input<TeamPhotoSide>('team1');
+  readonly name = input('');
 
   private readonly shown = computed(() =>
     this.pokemon().slice(0, TEAM_PHOTO_SIZE),

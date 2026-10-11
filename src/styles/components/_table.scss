@@ -1,40 +1,4 @@
-@use "sass:map";
 @use "pdz-theming" as pdz;
-
-$densities: (
-  compact: (
-    block: pdz.space(xs),
-    inline: pdz.space(sm),
-    edge: pdz.space(md),
-  ),
-  default: (
-    block: pdz.space(sm),
-    inline: pdz.space(md),
-    edge: pdz.space(lg),
-  ),
-  relaxed: (
-    block: pdz.space(md),
-    inline: pdz.space(lg),
-    edge: pdz.space(xl),
-  ),
-);
-
-@mixin density($name) {
-  $steps: map.get($densities, $name);
-
-  th,
-  td {
-    padding: map.get($steps, block) map.get($steps, inline);
-
-    &:first-child {
-      padding-left: map.get($steps, edge);
-    }
-
-    &:last-child {
-      padding-right: map.get($steps, edge);
-    }
-  }
-}
 
 .pdz-table-wrapper {
   width: 100%;
@@ -50,12 +14,19 @@ $densities: (
   color: pdz.color(on-surface);
   @include pdz.numeric;
 
-  @include density(default);
-
   th,
   td {
+    padding: pdz.layout(cell-block) pdz.layout(cell-inline);
     text-align: left;
     vertical-align: middle;
+
+    &:first-child {
+      padding-left: pdz.layout(cell-edge);
+    }
+
+    &:last-child {
+      padding-right: pdz.layout(cell-edge);
+    }
   }
 
   thead th {
@@ -101,12 +72,6 @@ $densities: (
   th.pdz-table__num.pdz-table__center,
   td.pdz-table__num.pdz-table__center {
     text-align: center;
-  }
-}
-
-@each $name, $steps in $densities {
-  .pdz-table[data-density="#{$name}"] {
-    @include density($name);
   }
 }
 
