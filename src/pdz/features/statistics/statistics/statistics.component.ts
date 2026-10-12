@@ -3,7 +3,7 @@ import { Subject, takeUntil } from 'rxjs';
 import { Pokemon } from '@pdz/core/utils/pokemon';
 import { StatisticsService } from '../statistics.service';
 import { EmptyStateComponent } from '@pdz/shared/feedback/empty-state/empty-state.component';
-import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
+import { SkeletonLayoutComponent } from '@pdz/shared/data/skeleton/skeleton-layout.component';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
 import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
 import { PageComponent } from '@pdz/shared/layout/page/page.component';
@@ -65,7 +65,7 @@ interface DraftStatsView {
   selector: 'pdz-statistics',
   imports: [
     EmptyStateComponent,
-    LoadingComponent,
+    SkeletonLayoutComponent,
     PageComponent,
     PageHeaderComponent,
     SpriteComponent,

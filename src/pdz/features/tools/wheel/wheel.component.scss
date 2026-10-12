@@ -168,7 +168,7 @@
   &__weight {
     @include text(label);
     @include pdz.numeric;
-    font-size: pdz.font-size(2xs);
+    font-size: pdz.font-size(xs);
     color: pdz.color(on-surface-muted);
   }
 

@@ -4,9 +4,15 @@
 
     <section class="summary">
       @if (summaryLoading()) {
-        <div class="loading-block"><pdz-loading></pdz-loading></div>
+        <pdz-skeleton-layout layout="cards" count="4" />
       } @else if (summaryError()) {
-        <div class="error-block">Failed to load summary.</div>
+        <pdz-empty-state
+          size="sm"
+          kind="error"
+          message="The user summary did not come back from the server."
+          retry="event"
+          (retried)="loadSummary()"
+        />
       } @else {
         <div class="summary-grid">
           @for (card of summaryCards; track $index) {
@@ -39,11 +45,17 @@
     <section class="charts-grid">
       @if (seriesLoading()) {
         <div class="chart-card chart-card--wide">
-          <div class="loading-block"><pdz-loading></pdz-loading></div>
+          <pdz-skeleton-layout layout="chart" />
         </div>
       } @else if (seriesError()) {
         <div class="chart-card chart-card--wide">
-          <div class="error-block">Failed to load chart data.</div>
+          <pdz-empty-state
+            size="sm"
+            kind="error"
+            message="The user chart data did not come back from the server."
+            retry="event"
+            (retried)="loadSeries()"
+          />
         </div>
       } @else if (series(); as data) {
         <div class="chart-card chart-card--wide">
@@ -89,7 +101,7 @@
             centerLabel="users"
           ></pdz-pie-chart>
         } @else {
-          <div class="loading-block"><pdz-loading></pdz-loading></div>
+          <pdz-skeleton-layout layout="chart" />
         }
       </div>
 
@@ -101,7 +113,7 @@
             centerLabel="users"
           ></pdz-pie-chart>
         } @else {
-          <div class="loading-block"><pdz-loading></pdz-loading></div>
+          <pdz-skeleton-layout layout="chart" />
         }
       </div>
 
@@ -110,7 +122,7 @@
         @if (accountAge()) {
           <pdz-bar-chart [data]="accountAgeData"></pdz-bar-chart>
         } @else {
-          <div class="loading-block"><pdz-loading></pdz-loading></div>
+          <pdz-skeleton-layout layout="chart" />
         }
       </div>
 
@@ -119,7 +131,7 @@
         @if (settings()) {
           <pdz-bar-chart [data]="themeData"></pdz-bar-chart>
         } @else {
-          <div class="loading-block"><pdz-loading></pdz-loading></div>
+          <pdz-skeleton-layout layout="chart" />
         }
       </div>
 
@@ -128,7 +140,7 @@
         @if (settings()) {
           <pdz-bar-chart [data]="spriteData"></pdz-bar-chart>
         } @else {
-          <div class="loading-block"><pdz-loading></pdz-loading></div>
+          <pdz-skeleton-layout layout="chart" />
         }
       </div>
 
@@ -137,7 +149,7 @@
         @if (settings()) {
           <pdz-pie-chart [data]="shinyData" centerLabel="users"></pdz-pie-chart>
         } @else {
-          <div class="loading-block"><pdz-loading></pdz-loading></div>
+          <pdz-skeleton-layout layout="chart" />
         }
       </div>
     </section>

@@ -1,20 +1,26 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+} from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { LeagueZoneService } from '@pdz/features/league-zone/league-zone.service';
 import { CardComponent } from '@pdz/shared/data/card/card.component';
 import { EmptyStateComponent } from '@pdz/shared/feedback/empty-state/empty-state.component';
-import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
+import { SkeletonLayoutComponent } from '@pdz/shared/data/skeleton/skeleton-layout.component';
 import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
 import { PageComponent } from '@pdz/shared/layout/page/page.component';
 import { MarkdownModule } from 'ngx-markdown';
 import { catchError, map, of } from 'rxjs';
+import { waitingMessage } from '../tournament-milestones';
 
 @Component({
   selector: 'pdz-league-rules-overview',
   imports: [
     CardComponent,
     EmptyStateComponent,
-    LoadingComponent,
+    SkeletonLayoutComponent,
     MarkdownModule,
     PageComponent,
     PageHeaderComponent,
@@ -35,6 +41,17 @@ export class LeagueRulesOverviewComponent {
         })),
       ),
       catchError(() => of([])),
+    ),
+  );
+
+  private readonly info = toSignal(
+    this.leagueZoneService.getLeagueInfo().pipe(catchError(() => of(null))),
+  );
+
+  readonly noRulesMessage = computed(() =>
+    waitingMessage(
+      "The organizers haven't posted rules for this tournament yet.",
+      this.info(),
     ),
   );
 

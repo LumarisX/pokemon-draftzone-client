@@ -37,7 +37,7 @@ $content-max: 80rem;
     @include pdz.text(subtitle);
     margin: pdz.space(md) 0 0;
     max-width: 40rem;
-    opacity: 0.85;
+    color: pdz.color(on-surface-variant);
   }
 
   &__search {

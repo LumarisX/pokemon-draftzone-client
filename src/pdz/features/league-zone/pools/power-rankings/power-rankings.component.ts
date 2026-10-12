@@ -22,7 +22,7 @@ import { Sort, SortDirective } from '@pdz/shared/data/sort/sort.directive';
 import { SelectOptionComponent } from '@pdz/shared/dropdowns/select/select-option.component';
 import { SelectComponent } from '@pdz/shared/dropdowns/select/select.component';
 import { PokemonComponent } from '@pdz/shared/data/pokemon/pokemon.component';
-import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
+import { SkeletonLayoutComponent } from '@pdz/shared/data/skeleton/skeleton-layout.component';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
 import { FieldComponent } from '@pdz/shared/inputs/field/field.component';
 import { InputDirective } from '@pdz/shared/inputs/field/input.directive';
@@ -41,7 +41,7 @@ const SAVE_DEBOUNCE_MS = 1000;
     CardComponent,
     FieldComponent,
     InputDirective,
-    LoadingComponent,
+    SkeletonLayoutComponent,
     MoveComponent,
     PageComponent,
     PageHeaderComponent,

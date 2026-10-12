@@ -37,7 +37,7 @@
     color: pdz.color(on-surface-variant);
     @include pdz.text(label-strong);
     @include pdz.caps;
-    font-size: pdz.font-size(2xs);
+    font-size: pdz.font-size(xs);
   }
 
   &__num {
@@ -173,7 +173,7 @@
     transition: opacity pdz.duration(fast) pdz.easing(standard);
     @include pdz.text(label);
     @include pdz.caps;
-    font-size: pdz.font-size(2xs);
+    font-size: pdz.font-size(xs);
   }
 
   &__grip {
@@ -273,7 +273,7 @@
     text-align: center;
     @include pdz.text(label);
     @include pdz.caps;
-    font-size: pdz.font-size(2xs);
+    font-size: pdz.font-size(xs);
     line-height: 1;
     letter-spacing: 0.04em;
   }
@@ -315,7 +315,7 @@
 
   &__remaining {
     @include pdz.numeric;
-    font-weight: pdz.font-weight(bold);
+    font-weight: pdz.font-weight(semibold);
     color: pdz.color(secondary-accent);
 
     &--over {

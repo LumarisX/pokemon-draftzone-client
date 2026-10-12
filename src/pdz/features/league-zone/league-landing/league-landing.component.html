@@ -166,11 +166,12 @@
       bordered
       kind="error"
       heading="Could not load this league"
-      message="Refresh the page to try again."
+      message="The league and its tournaments did not come back from the server."
+      retry="reload"
     />
   </pdz-page>
 } @else {
-  <div class="loading-state">
-    <pdz-loading />
-  </div>
+  <pdz-page type="hub">
+    <pdz-skeleton-layout layout="cards" count="4" />
+  </pdz-page>
 }

@@ -43,7 +43,7 @@
     }
     .detail-text {
       @include pdz.text(body-sm);
-      font-weight: var(--pdz-font-weight-bold);
+      font-weight: var(--pdz-font-weight-semibold);
     }
   }
 
@@ -84,7 +84,7 @@
           text-overflow: ellipsis;
           white-space: nowrap;
           text-align: center;
-          font-weight: var(--pdz-font-weight-bold);
+          font-weight: var(--pdz-font-weight-semibold);
           color: var(--pdz-cmp-color-title);
         }
 

@@ -6,8 +6,9 @@ import {
 } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { ChipComponent } from '@pdz/shared/data/chip/chip.component';
+import { EmptyStateComponent } from '@pdz/shared/feedback/empty-state/empty-state.component';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
-import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
+import { SkeletonLayoutComponent } from '@pdz/shared/data/skeleton/skeleton-layout.component';
 import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
 import { PageComponent } from '@pdz/shared/layout/page/page.component';
 import { LeagueZoneService } from '../league-zone.service';
@@ -38,9 +39,10 @@ interface AttentionItem {
   imports: [
     RouterLink,
     ChipComponent,
+    EmptyStateComponent,
     IconComponent,
     LaunchChecklistComponent,
-    LoadingComponent,
+    SkeletonLayoutComponent,
     PageComponent,
     PageHeaderComponent,
   ],

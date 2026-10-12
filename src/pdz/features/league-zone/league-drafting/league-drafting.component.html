@@ -1,11 +1,23 @@
 <pdz-page type="workspace">
 @if (isLoading) {
-  <pdz-loading />
+  <pdz-skeleton-layout layout="board" count="6" />
 } @else {
   <pdz-page-header compact [title]="poolName" [eyebrow]="leagueName">
     <pdz-chip pdz-page-header-meta size="sm" [tone]="statusTone">{{
       statusLabel
     }}</pdz-chip>
+    @if (onTheClock) {
+      <pdz-chip
+        pdz-page-header-meta
+        size="sm"
+        tone="primary"
+        variant="solid"
+        icon="timer"
+        >You're on the Clock{{
+          skipTimeDisplay ? " · " + skipTimeDisplay : ""
+        }}</pdz-chip
+      >
+    }
     <a
       pdz-page-header-actions
       pdz-button
@@ -241,6 +253,9 @@
                       <div
                         class="pick__body"
                         [class.pick__body--picking]="state === 'picking'"
+                        [class.pick__body--yours]="
+                          state === 'picking' && position.isCoach && isInProgress
+                        "
                       >
                         <div class="pick__icon">
                           @switch (state) {
@@ -279,7 +294,7 @@
                               Hidden
                             }
                             @case ("picking") {
-                              Picking
+                              {{ position.isCoach && isInProgress ? "Your Pick" : "Picking" }}
                             }
                             @case ("skipped") {
                               Skipped

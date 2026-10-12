@@ -185,7 +185,7 @@
     white-space: nowrap;
     @include pdz.text(label);
     @include pdz.caps;
-    font-size: pdz.font-size(2xs);
+    font-size: pdz.font-size(xs);
     transition:
       color pdz.duration(base) pdz.easing(standard),
       background-color pdz.duration(base) pdz.easing(standard);
@@ -376,7 +376,7 @@
     opacity: 0;
     @include pdz.text(label);
     @include pdz.caps;
-    font-size: pdz.font-size(2xs);
+    font-size: pdz.font-size(xs);
     transition: opacity pdz.duration(base) pdz.easing(standard);
 
     &--shown {

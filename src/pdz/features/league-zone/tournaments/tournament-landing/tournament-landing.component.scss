@@ -23,7 +23,7 @@
 .landing-header__countdown {
   @include pdz.numeric;
   margin-left: pdz.space(xs);
-  font-weight: pdz.font-weight(bold);
+  font-weight: pdz.font-weight(semibold);
 }
 
 .landing-header__facts {

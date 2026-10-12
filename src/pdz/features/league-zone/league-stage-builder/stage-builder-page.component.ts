@@ -4,7 +4,7 @@ import { apiErrorMessage } from '@pdz/core/services/api.service';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 import { CardComponent } from '@pdz/shared/data/card/card.component';
 import { DialogService } from '@pdz/shared/dialogs/dialog/dialog.service';
-import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
+import { SkeletonLayoutComponent } from '@pdz/shared/data/skeleton/skeleton-layout.component';
 import { CheckComponent } from '@pdz/shared/inputs/choice/check.component';
 import { FieldComponent } from '@pdz/shared/inputs/field/field.component';
 import { InputDirective } from '@pdz/shared/inputs/field/input.directive';
@@ -72,7 +72,7 @@ interface TeamOption {
     CheckComponent,
     FieldComponent,
     InputDirective,
-    LoadingComponent,
+    SkeletonLayoutComponent,
     StageBuilderComponent,
     SelectComponent,
     SelectOptionComponent,

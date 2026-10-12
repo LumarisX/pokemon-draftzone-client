@@ -3,7 +3,7 @@ import { MatchupData } from '@pdz/features/drafts/matchup-overview/matchup-inter
 import { MatchupService } from '@pdz/features/drafts/matchup-overview/matchup.service';
 import { MatchupBreakdownComponent } from '@pdz/features/drafts/matchup-overview/matchup/matchup-breakdown.component';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
-import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
+import { SkeletonLayoutComponent } from '@pdz/shared/data/skeleton/skeleton-layout.component';
 import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
 import { PageComponent } from '@pdz/shared/layout/page/page.component';
 import {
@@ -17,7 +17,7 @@ import {
     QuickMatchupFormComponent,
     MatchupBreakdownComponent,
     ButtonComponent,
-    LoadingComponent,
+    SkeletonLayoutComponent,
     PageComponent,
     PageHeaderComponent,
   ],

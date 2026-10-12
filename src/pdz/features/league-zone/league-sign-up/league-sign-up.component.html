@@ -2,7 +2,7 @@
 
 <pdz-page type="form">
 @if (isCheckingSignUp() || !info) {
-  <pdz-loading />
+  <pdz-skeleton-layout layout="form" />
 } @else {
   <pdz-page-header title="Sign Up" [eyebrow]="info.name" [logo]="logoUrl()" />
 

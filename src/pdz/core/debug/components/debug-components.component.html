@@ -1050,6 +1050,24 @@
       </div>
     </pdz-card>
   </div>
+
+  <h3 class="section__sub">Page Layouts</h3>
+  <p class="section__hint">
+    <code>pdz-skeleton-layout</code> stands in for a whole page or panel while
+    it loads, shaped like what is coming, and announces "Loading" to screen
+    readers. Spinners are only for a busy button.
+  </p>
+  <div class="skeleton-layouts">
+    @for (layout of skeletonLayouts; track layout) {
+      <div class="skeleton-layouts__demo">
+        <span class="skeletons__name">{{ layout }}</span>
+        <pdz-skeleton-layout
+          [layout]="layout"
+          [count]="layout === 'chart' ? 1 : 3"
+        />
+      </div>
+    }
+  </div>
 </section>
 
 <section class="section">
@@ -2046,13 +2064,14 @@
       bordered
       kind="waiting"
       heading="No matches scheduled yet"
-      message="The schedule appears here once the organizers publish it."
+      message="The schedule appears here once the organizers publish it. The season starts Fri, Oct 24, 8:00 PM."
     />
     <pdz-empty-state
       bordered
       kind="error"
       heading="Could not load standings"
-      message="Refresh the page to try again."
+      message="The standings did not come back from the server."
+      retry="event"
     />
     <pdz-empty-state
       bordered
@@ -2060,7 +2079,7 @@
       heading="Only the league owner can edit it"
       message="Ask the owner to make the change, or head back to the league."
     />
-    <pdz-empty-state bordered size="sm" kind="error" message="Could not load trades." />
+    <pdz-empty-state bordered size="sm" kind="error" message="Could not load trades." retry="event" />
     <pdz-empty-state bordered size="lg" kind="empty" heading="No Pokémon found" message="Try adjusting your search or filters." />
   </div>
 

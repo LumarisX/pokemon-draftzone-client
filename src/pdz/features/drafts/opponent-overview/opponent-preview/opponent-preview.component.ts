@@ -19,7 +19,7 @@ import { Sort, SortDirective } from '@pdz/shared/data/sort/sort.directive';
 import { DialogService } from '@pdz/shared/dialogs/dialog/dialog.service';
 import { EmptyStateComponent } from '@pdz/shared/feedback/empty-state/empty-state.component';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
-import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
+import { SkeletonLayoutComponent } from '@pdz/shared/data/skeleton/skeleton-layout.component';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
 import {
   TEAM_PHOTO_SIZE,
@@ -59,7 +59,7 @@ type Matchup = Opponent & {
     SpriteComponent,
     TeamComponent,
     TeamPhotoComponent,
-    LoadingComponent,
+    SkeletonLayoutComponent,
     IconComponent,
     SortDirective,
     SortHeaderComponent,

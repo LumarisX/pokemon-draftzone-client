@@ -51,18 +51,18 @@
   place-items: center;
   width: pdz.control-height(xs);
   height: pdz.control-height(xs);
-  border-radius: pdz.shape(corner-xs);
+  border-radius: pdz.shape(corner-full);
   background: pdz.color(state-pressed);
-  color: pdz.color(on-surface);
+  color: pdz.color(on-surface-variant);
 
   &[data-outcome="w"] {
-    background: pdz.color(positive);
-    color: pdz.color(on-positive);
+    background: pdz.color(success-container);
+    color: pdz.color(on-success-container);
   }
 
   &[data-outcome="l"],
   &[data-outcome="ff"] {
-    background: pdz.color(negative);
-    color: pdz.color(on-negative);
+    background: pdz.color(danger-container);
+    color: pdz.color(on-danger-container);
   }
 }

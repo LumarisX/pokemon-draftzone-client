@@ -20,7 +20,7 @@ import { DialogService } from '@pdz/shared/dialogs/dialog/dialog.service';
 import { EmptyStateComponent } from '@pdz/shared/feedback/empty-state/empty-state.component';
 import { ToastService } from '@pdz/shared/feedback/toast/toast.service';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
-import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
+import { SkeletonLayoutComponent } from '@pdz/shared/data/skeleton/skeleton-layout.component';
 import { SelectOptionComponent } from '@pdz/shared/dropdowns/select/select-option.component';
 import { SelectComponent } from '@pdz/shared/dropdowns/select/select.component';
 import { FieldComponent } from '@pdz/shared/inputs/field/field.component';
@@ -46,7 +46,7 @@ type Scope = 'public' | 'mine';
     FieldComponent,
     IconComponent,
     InputDirective,
-    LoadingComponent,
+    SkeletonLayoutComponent,
     PageComponent,
     PageHeaderComponent,
     SegmentedComponent,

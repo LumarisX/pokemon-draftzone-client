@@ -119,7 +119,7 @@
   border-color: pdz.color(success);
   background: pdz.color(success-container);
   color: pdz.color(on-success-container);
-  font-weight: pdz.font-weight(bold);
+  font-weight: pdz.font-weight(semibold);
 }
 
 .stat__milestone--locked {
@@ -166,7 +166,7 @@
 }
 
 .stat__input--jump {
-  font-weight: pdz.font-weight(bold);
+  font-weight: pdz.font-weight(semibold);
 }
 
 .stat__input--wasted {

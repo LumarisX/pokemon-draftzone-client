@@ -5,7 +5,7 @@ import {
   inject,
   signal,
 } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { LEAGUE_ZONE_PATH } from '@pdz/core/route-paths';
 import { toBuilderDraft } from '@pdz/features/league-zone/league-stage-builder/stage-builder.adapter';
 import { BuilderDraft } from '@pdz/features/league-zone/league-stage-builder/stage-builder.model';
@@ -13,15 +13,17 @@ import { StageBuilderComponent } from '@pdz/features/league-zone/league-stage-bu
 import { LeagueZoneService } from '@pdz/features/league-zone/league-zone.service';
 import { ChipComponent } from '@pdz/shared/data/chip/chip.component';
 import { EmptyStateComponent } from '@pdz/shared/feedback/empty-state/empty-state.component';
-import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
+import { SkeletonLayoutComponent } from '@pdz/shared/data/skeleton/skeleton-layout.component';
 import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
 import { PageComponent } from '@pdz/shared/layout/page/page.component';
+import { catchError, of } from 'rxjs';
+import { waitingMessage } from '../tournament-milestones';
 import { BracketTeamFlex } from './bracket.model';
 
 @Component({
   selector: 'pdz-league-bracket',
   imports: [
-    LoadingComponent,
+    SkeletonLayoutComponent,
     StageBuilderComponent,
     ChipComponent,
     EmptyStateComponent,
@@ -39,6 +41,17 @@ export class LeagueBracketComponent {
   readonly draft = signal<BuilderDraft>({ rounds: [], stages: [], matches: [] });
   readonly teamsByStage = signal(new Map<string, BracketTeamFlex[]>());
   readonly currentRoundIndex = signal(-1);
+
+  private readonly info = toSignal(
+    this.leagueService.getLeagueInfo().pipe(catchError(() => of(null))),
+  );
+
+  readonly noScheduleMessage = computed(() =>
+    waitingMessage(
+      'The schedule appears here once the organizers publish it.',
+      this.info(),
+    ),
+  );
 
   readonly hasBracket = computed(() => this.draft().matches.length > 0);
   readonly currentRoundName = computed(

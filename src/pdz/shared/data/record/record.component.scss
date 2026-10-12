@@ -30,16 +30,16 @@
 }
 
 .pdz-record__box--win {
-  background-color: pdz.color(positive);
-  color: pdz.color(on-positive);
+  background-color: pdz.color(success-container);
+  color: pdz.color(on-success-container);
 }
 
 .pdz-record__box--draw {
   background-color: pdz.color(state-pressed);
-  color: pdz.color(on-surface);
+  color: pdz.color(on-surface-variant);
 }
 
 .pdz-record__box--loss {
-  background-color: pdz.color(negative);
-  color: pdz.color(on-negative);
+  background-color: pdz.color(danger-container);
+  color: pdz.color(on-danger-container);
 }

@@ -1,6 +1,7 @@
 import { DecimalPipe } from '@angular/common';
+import { EmptyStateComponent } from '@pdz/shared/feedback/empty-state/empty-state.component';
 import { Component, inject, OnInit, signal } from '@angular/core';
-import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
+import { SkeletonLayoutComponent } from '@pdz/shared/data/skeleton/skeleton-layout.component';
 import { PageComponent } from '@pdz/shared/layout/page/page.component';
 import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
 import {
@@ -57,7 +58,8 @@ function titleCase(value: string): string {
   selector: 'pdz-admin-dashboard',
   imports: [
     DecimalPipe,
-    LoadingComponent,
+    EmptyStateComponent,
+    SkeletonLayoutComponent,
     TimeSeriesChartComponent,
     PieChartComponent,
     BarChartComponent,
@@ -173,7 +175,7 @@ export class AdminDashboardComponent implements OnInit {
     ];
   }
 
-  private loadSummary(): void {
+  protected loadSummary(): void {
     this.summaryLoading.set(true);
     this.summaryError.set(false);
     this.adminService.getSummary().subscribe({
@@ -188,7 +190,7 @@ export class AdminDashboardComponent implements OnInit {
     });
   }
 
-  private loadSeries(): void {
+  protected loadSeries(): void {
     this.seriesLoading.set(true);
     this.seriesError.set(false);
     this.adminService.getUserTimeSeries(this.bucket()).subscribe({

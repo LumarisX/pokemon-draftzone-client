@@ -7,8 +7,6 @@
       (formSubmitted)="editDraft($event)"
     ></pdz-draft-form-core>
   } @else {
-    <div class="draft-form__loading">
-      <pdz-loading></pdz-loading>
-    </div>
+    <pdz-skeleton-layout layout="form" count="6" />
   }
 </pdz-page>

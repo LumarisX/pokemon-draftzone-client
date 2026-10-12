@@ -38,10 +38,10 @@
         bordered
         kind="waiting"
         heading="No rules yet"
-        message="The organizers haven't posted rules for this tournament."
+        [message]="noRulesMessage()"
       />
     }
   } @else {
-    <pdz-loading />
+    <pdz-skeleton-layout layout="text" />
   }
 </pdz-page>

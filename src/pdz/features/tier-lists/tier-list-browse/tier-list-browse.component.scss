@@ -38,12 +38,6 @@
   gap: pdz.space(lg);
 }
 
-.browse__loading {
-  display: grid;
-  place-items: center;
-  padding: pdz.space(3xl) 0;
-}
-
 .list-card__inner {
   display: flex;
   flex-direction: column;

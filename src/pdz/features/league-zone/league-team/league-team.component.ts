@@ -39,7 +39,7 @@ import {
 import { DialogService } from '@pdz/shared/dialogs/dialog/dialog.service';
 import { EmptyStateComponent } from '@pdz/shared/feedback/empty-state/empty-state.component';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
-import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
+import { SkeletonLayoutComponent } from '@pdz/shared/data/skeleton/skeleton-layout.component';
 import { RosterPatternComponent } from '@pdz/shared/images/roster-pattern/roster-pattern.component';
 import { TeamPhotoComponent } from '@pdz/shared/images/team-photo/team-photo.component';
 import { TeamSeasonComponent } from './team-season/team-season.component';
@@ -73,7 +73,7 @@ const CLOCK_TICK_MS = 30_000;
     EmptyStateComponent,
     IconComponent,
     LeagueTradeWidgetComponent,
-    LoadingComponent,
+    SkeletonLayoutComponent,
     PageComponent,
     PageHeaderComponent,
     RecordComponent,
@@ -100,6 +100,7 @@ export class LeagueTeamComponent implements OnInit {
   readonly stageSlug = signal<string | null>(null);
   readonly saving = signal(false);
   readonly saveError = signal('');
+  readonly teamLoadFailed = signal(false);
 
   protected readonly scheduleRounds = signal<League.ScheduleRound[] | null>(
     null,
@@ -173,7 +174,7 @@ export class LeagueTeamComponent implements OnInit {
       )
       .subscribe(() => {
         this.teamData.set(null);
-        this.loadTeam();
+        this.retryTeam();
         this.loadSchedule();
       });
   }
@@ -269,13 +270,18 @@ export class LeagueTeamComponent implements OnInit {
     this.teamData.update((team) => (team ? { ...team, ...patch } : team));
   }
 
+  protected retryTeam(): void {
+    this.teamLoadFailed.set(false);
+    this.loadTeam();
+  }
+
   private loadTeam(): void {
     this.leagueService
       .getTeam()
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (data) => this.teamData.set(data),
-        error: () => this.saveError.set('Could not load this team.'),
+        error: () => this.teamLoadFailed.set(true),
       });
   }
 

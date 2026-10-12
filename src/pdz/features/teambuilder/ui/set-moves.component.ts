@@ -14,7 +14,7 @@ import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 import { PokemonTypeComponent } from '@pdz/shared/data/pokemon-type/pokemon-type.component';
 import { EmptyStateComponent } from '@pdz/shared/feedback/empty-state/empty-state.component';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
-import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
+import { SkeletonLayoutComponent } from '@pdz/shared/data/skeleton/skeleton-layout.component';
 import { FieldComponent } from '@pdz/shared/inputs/field/field.component';
 import { InputDirective } from '@pdz/shared/inputs/field/input.directive';
 import type { LearnsetMove } from '../data/teambuilder.models';
@@ -41,7 +41,7 @@ interface MoveSlot {
     FieldComponent,
     IconComponent,
     InputDirective,
-    LoadingComponent,
+    SkeletonLayoutComponent,
     PokemonTypeComponent,
   ],
 })

@@ -148,7 +148,7 @@
 
 .trade-summary__value {
   @include pdz.numeric;
-  font-weight: pdz.font-weight(bold);
+  font-weight: pdz.font-weight(semibold);
   color: pdz.color(on-surface-variant);
 
   &--over {

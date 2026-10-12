@@ -32,7 +32,7 @@ import { PokemonTypeComponent } from '@pdz/shared/data/pokemon-type/pokemon-type
 import { PokemonComponent } from '@pdz/shared/data/pokemon/pokemon.component';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { ChoiceDirective } from '@pdz/shared/inputs/choice/choice.directive';
-import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
+import { SkeletonLayoutComponent } from '@pdz/shared/data/skeleton/skeleton-layout.component';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 import { FieldComponent } from '@pdz/shared/inputs/field/field.component';
@@ -77,7 +77,7 @@ interface DraftPokemonAction {
     ChoiceDirective,
     TooltipDirective,
     ReactiveFormsModule,
-    LoadingComponent,
+    SkeletonLayoutComponent,
     SpriteComponent,
     IconComponent,
     PokemonTypeComponent,

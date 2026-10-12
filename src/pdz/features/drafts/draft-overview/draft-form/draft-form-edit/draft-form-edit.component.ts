@@ -1,7 +1,7 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { DraftService } from '@pdz/features/drafts/draft-overview/draft.service';
-import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
+import { SkeletonLayoutComponent } from '@pdz/shared/data/skeleton/skeleton-layout.component';
 import { Draft } from '@pdz/features/drafts/draft.model';
 import {
   DraftFormCoreComponent,
@@ -12,7 +12,7 @@ import { PageComponent } from '@pdz/shared/layout/page/page.component';
 
 @Component({
   selector: 'pdz-draft-form-edit',
-  imports: [DraftFormCoreComponent, LoadingComponent, PageComponent],
+  imports: [DraftFormCoreComponent, SkeletonLayoutComponent, PageComponent],
   styleUrl: '../draft-form.component.scss',
   templateUrl: './draft-form-edit.component.html',
 })

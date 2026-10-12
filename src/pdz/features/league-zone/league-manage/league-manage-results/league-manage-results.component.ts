@@ -19,7 +19,7 @@ import { DisclosureComponent } from '@pdz/shared/layout/disclosure/disclosure.co
 import { EmptyStateComponent } from '@pdz/shared/feedback/empty-state/empty-state.component';
 import { FieldComponent } from '@pdz/shared/inputs/field/field.component';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
-import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
+import { SkeletonLayoutComponent } from '@pdz/shared/data/skeleton/skeleton-layout.component';
 import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
 import { PageComponent } from '@pdz/shared/layout/page/page.component';
 import { SegmentedComponent } from '@pdz/shared/inputs/segmented/segmented.component';
@@ -62,7 +62,7 @@ type ResultRound = {
     EmptyStateComponent,
     FieldComponent,
     IconComponent,
-    LoadingComponent,
+    SkeletonLayoutComponent,
     MatchupReportComponent,
     PageComponent,
     PageHeaderComponent,
@@ -411,7 +411,7 @@ export class LeagueManageResultsComponent {
     return 2;
   }
 
-  private load(): void {
+  protected load(): void {
     this.manageService
       .getSchedule()
       .pipe(takeUntilDestroyed(this.destroyRef))

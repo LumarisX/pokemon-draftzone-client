@@ -178,8 +178,7 @@
 
   &__count {
     @include text(label);
-    color: pdz.color(on-surface-variant);
-    opacity: 0.6;
+    color: pdz.color(on-surface-muted);
     padding: pdz.space(2xs) pdz.space(xs);
     text-align: right;
   }

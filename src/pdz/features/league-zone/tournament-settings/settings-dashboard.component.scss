@@ -6,24 +6,6 @@
   gap: pdz.space(lg);
 }
 
-.dash__loading {
-  display: flex;
-  justify-content: center;
-  padding: pdz.space(2xl) 0;
-}
-
-.dash__error {
-  display: flex;
-  align-items: center;
-  gap: pdz.space(xs);
-  padding: pdz.space(md);
-  background: pdz.color(raised);
-  border: 1px solid pdz.color(danger-border);
-  border-radius: pdz.shape(corner-lg);
-  color: pdz.color(danger);
-  @include pdz.text(body-sm);
-}
-
 .dash__sep {
   color: pdz.color(on-surface-variant);
 }

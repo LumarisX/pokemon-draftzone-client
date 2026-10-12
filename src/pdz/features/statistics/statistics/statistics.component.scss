@@ -33,7 +33,7 @@
 
 .bucket-card__title {
   margin: 0;
-  @include text(headline);
+  @include text(section-title);
   color: pdz.color(on-surface);
 }
 
@@ -101,7 +101,7 @@
 .usage-chart__bar {
   height: 100%;
   border-radius: inherit;
-  background: linear-gradient(90deg, pdz.color(primary), pdz.color(info));
+  background: pdz.color(primary);
 }
 
 .usage-chart__count {

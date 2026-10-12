@@ -193,7 +193,16 @@
       </section>
     </pdz-card>
   </div>
+} @else if (teamLoadFailed()) {
+  <pdz-empty-state
+    bordered
+    kind="error"
+    heading="Could not load this team"
+    message="The roster and record did not come back from the server."
+    retry="event"
+    (retried)="retryTeam()"
+  />
 } @else {
-  <pdz-loading />
+  <pdz-skeleton-layout layout="cards" count="3" />
 }
 </pdz-page>

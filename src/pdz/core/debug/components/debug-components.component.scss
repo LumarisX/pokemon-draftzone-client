@@ -107,7 +107,7 @@
 
 .elevation__text-ink {
   @include pdz.text(body);
-  font-weight: pdz.font-weight(bold);
+  font-weight: pdz.font-weight(semibold);
   color: pdz.color(on-surface);
 }
 
@@ -331,6 +331,19 @@
   grid-template-columns: repeat(auto-fill, minmax(15rem, 1fr));
   gap: pdz.space(lg);
   align-items: start;
+}
+
+.skeleton-layouts {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(28rem, 100%), 1fr));
+  gap: pdz.space(lg);
+}
+
+.skeleton-layouts__demo {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(sm);
+  min-width: 0;
 }
 
 .skeletons__demo {

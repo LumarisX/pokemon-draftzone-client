@@ -48,7 +48,7 @@ $border: 1px solid $border-color;
 
     &--sorted {
       color: pdz.color(primary-accent);
-      font-weight: pdz.font-weight(bold);
+      font-weight: pdz.font-weight(semibold);
     }
   }
 
@@ -180,7 +180,7 @@ $border: 1px solid $border-color;
   }
 
   &__slider-value {
-    font-weight: pdz.font-weight(bold);
+    font-weight: pdz.font-weight(semibold);
   }
 }
 

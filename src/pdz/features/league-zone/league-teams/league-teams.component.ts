@@ -9,12 +9,13 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { LeagueZoneService } from '@pdz/features/league-zone/league-zone.service';
 import { League } from '@pdz/features/league-zone/league.interface';
 import { EmptyStateComponent } from '@pdz/shared/feedback/empty-state/empty-state.component';
-import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
+import { SkeletonLayoutComponent } from '@pdz/shared/data/skeleton/skeleton-layout.component';
 import { SegmentedOptionComponent } from '@pdz/shared/inputs/segmented/segmented-option.component';
 import { SegmentedComponent } from '@pdz/shared/inputs/segmented/segmented.component';
 import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
 import { PageComponent } from '@pdz/shared/layout/page/page.component';
 import { catchError, map, of } from 'rxjs';
+import { waitingMessage } from '../tournament-milestones';
 import { LeagueTeamCardComponent } from './league-team-card/league-team-card.component';
 
 type PoolGroup = {
@@ -28,7 +29,7 @@ type PoolGroup = {
   imports: [
     EmptyStateComponent,
     LeagueTeamCardComponent,
-    LoadingComponent,
+    SkeletonLayoutComponent,
     PageComponent,
     PageHeaderComponent,
     SegmentedComponent,
@@ -45,6 +46,21 @@ export class LeagueTeamsComponent {
     this.leagueService.getTeamsByPool().pipe(
       map((data): PoolGroup[] => data.pools),
       catchError(() => of<PoolGroup[]>([])),
+    ),
+  );
+
+  private readonly info = toSignal(
+    this.leagueService.getLeagueInfo().pipe(catchError(() => of(null))),
+  );
+
+  readonly noTeamsMessage = computed(() =>
+    waitingMessage('Teams appear here once coaches are approved.', this.info()),
+  );
+
+  readonly emptyPoolMessage = computed(() =>
+    waitingMessage(
+      'Organizers place teams in pools after sign-ups.',
+      this.info(),
     ),
   );
 

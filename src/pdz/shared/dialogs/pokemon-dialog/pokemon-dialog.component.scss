@@ -85,7 +85,7 @@
 
     &--stab {
       .learnset__col--name {
-        font-weight: pdz.font-weight(bold);
+        font-weight: pdz.font-weight(semibold);
       }
     }
   }
@@ -226,8 +226,8 @@
   line-height: 1.6;
 
   &--tier {
-    background-color: pdz.color(primary);
-    color: pdz.color(on-primary);
+    background-color: pdz.color(primary-container);
+    color: pdz.color(on-primary-container);
   }
 
   &--cost {
@@ -390,6 +390,6 @@
 
   &__detail {
     margin-left: pdz.space(2xs);
-    font-weight: pdz.font-weight(bold);
+    font-weight: pdz.font-weight(semibold);
   }
 }

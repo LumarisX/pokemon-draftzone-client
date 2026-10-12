@@ -17,7 +17,7 @@
 
   <div class="schedule__body">
     @if (isLoading()) {
-      <div class="schedule__loading"><pdz-loading /></div>
+      <pdz-skeleton-layout layout="board" />
     } @else if (hasBracket()) {
       <pdz-stage-builder
         [draft]="draft()"
@@ -31,7 +31,7 @@
         bordered
         kind="waiting"
         heading="No matches scheduled yet"
-        message="The schedule appears here once the organizers publish it."
+        [message]="noScheduleMessage()"
       />
     }
   </div>

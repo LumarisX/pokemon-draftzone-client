@@ -155,7 +155,7 @@
 
 <div class="tier-main">
   @if (!sortedTiers()) {
-    <pdz-loading></pdz-loading>
+    <pdz-skeleton-layout layout="board" count="6" />
   } @else {
     <div class="tiers-container" #tiersContainer>
       @for (tier of displayedTiers()!; track $index) {

@@ -12,7 +12,7 @@ import { DRAFT_OVERVIEW_PATH } from '@pdz/core/route-paths';
 import { ReplayService } from '@pdz/features/tools/replay_analyzer/replay.service';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
-import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
+import { SkeletonLayoutComponent } from '@pdz/shared/data/skeleton/skeleton-layout.component';
 import { InputDirective } from '@pdz/shared/inputs/field/input.directive';
 import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
 import { PageComponent } from '@pdz/shared/layout/page/page.component';
@@ -66,7 +66,7 @@ const SIDE_OF: Record<KoSide, MatchSide> = { side1: 'a', side2: 'b' };
     IconComponent,
     InputDirective,
     KoGraphComponent,
-    LoadingComponent,
+    SkeletonLayoutComponent,
     PageComponent,
     PageHeaderComponent,
     RouterModule,

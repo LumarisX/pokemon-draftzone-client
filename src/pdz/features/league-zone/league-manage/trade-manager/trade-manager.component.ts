@@ -28,7 +28,7 @@ import { PokemonSearchComponent } from '@pdz/shared/dropdowns/pokemon-search/pok
 import { SelectOptionComponent } from '@pdz/shared/dropdowns/select/select-option.component';
 import { SelectComponent } from '@pdz/shared/dropdowns/select/select.component';
 import { EmptyStateComponent } from '@pdz/shared/feedback/empty-state/empty-state.component';
-import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
+import { SkeletonLayoutComponent } from '@pdz/shared/data/skeleton/skeleton-layout.component';
 import { PokemonComponent } from '@pdz/shared/data/pokemon/pokemon.component';
 import { FieldComponent } from '@pdz/shared/inputs/field/field.component';
 import { InputDirective } from '@pdz/shared/inputs/field/input.directive';
@@ -87,7 +87,7 @@ const BLANK_SIDE: SideDraft = { teamId: '', picks: [], tradePoints: 0 };
     EmptyStateComponent,
     FieldComponent,
     InputDirective,
-    LoadingComponent,
+    SkeletonLayoutComponent,
     PageComponent,
     PageHeaderComponent,
     PokemonSearchComponent,

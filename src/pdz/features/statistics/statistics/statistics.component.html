@@ -3,7 +3,7 @@
 
   <div class="statistics__formats">
     @if (singlesLoading) {
-      <pdz-loading></pdz-loading>
+      <pdz-skeleton-layout layout="list" count="8" />
     } @else if (!singlesData) {
       <pdz-empty-state
         bordered
@@ -48,7 +48,7 @@
     }
 
     @if (vgcLoading) {
-      <pdz-loading></pdz-loading>
+      <pdz-skeleton-layout layout="list" count="8" />
     } @else if (!vgcData) {
       <pdz-empty-state
         bordered

@@ -27,12 +27,27 @@ const BESPOKE_DENSITY = ["src/pdz/features/tools/wheel/wheel.component.scss"];
 
 const BESPOKE_RENDERING = ["src/pdz/features/tools/wheel/wheel.component.scss"];
 
-const DISPLAY_FONT_MOMENTS = [
-  "src/pdz/shared/layout/page-header/page-header.component.scss",
-  "src/pdz/features/pages/homepage/homepage.component.scss",
-  "src/pdz/features/league-zone/league-drafting/league-drafting.component.scss",
-  "src/pdz/features/league-zone/tournaments/tournament-nav/tournament-nav.component.scss",
-];
+const LOUD_MOMENTS = {
+  "src/pdz/shared/layout/page-header/page-header.component.scss": "the page title",
+  "src/pdz/features/pages/homepage/homepage.component.scss": "the homepage band",
+  "src/pdz/shared/data/matchup/matchup.component.scss": "the matchup scoreboard numerals",
+  "src/pdz/features/league-zone/league-drafting/league-drafting.component.scss": "on the clock in a live draft",
+  "src/pdz/shared/data/podium/podium.component.scss": "final results and the champion",
+  "src/pdz/features/league-zone/tournaments/tournament-nav/tournament-nav.component.scss":
+    "exception: the tournament name heads its rail as the area's title",
+  "src/pdz/shared/data/season-mvp/season-mvp.component.scss":
+    "exception: a team's standout Pokémon carries a hero KO count (P6)",
+  "src/pdz/features/pages/landing/landing.component.scss":
+    "exception: the landing hero, a marketing page like the homepage",
+  "src/pdz/features/tools/wheel/wheel.component.scss":
+    "exception: the wheel's pick is the tool's whole payoff",
+  "src/pdz/features/drafts/drafts-v2/season-detail/season-detail.component.scss":
+    "exception: the owner's drafts-v2 test page",
+  "src/pdz/core/debug/components/debug-components.component.scss":
+    "exception: the gallery shows every role",
+};
+
+const DISPLAY_FONT_MOMENTS = Object.keys(LOUD_MOMENTS);
 
 const DRAG_OBJECTS_AND_SLOTS = [
   "src/pdz/features/drafts/draft-overview/draft-form/components/team-editor/team-editor.component.scss",
@@ -61,6 +76,8 @@ const ALLOW_BY_RULE = {
   "raw-color": new Set([...BESPOKE_RENDERING]),
   "raw-spacing": new Set([...BESPOKE_DISPLAY]),
   "display-font": new Set([...DISPLAY_FONT_MOMENTS]),
+  "loud-type": new Set([...DISPLAY_FONT_MOMENTS]),
+  "bold-weight": new Set([...DISPLAY_FONT_MOMENTS, ...BESPOKE_DISPLAY]),
 };
 
 const TOKEN_SOURCES = /^src\/styles\/(tokens|themes|tools)\//;
@@ -129,6 +146,12 @@ const DECL_RULES = [
     test: (v) =>
       !/^(pdz\.font-weight\(\w+\)|var\(--pdz-font-weight-\w+\)|inherit|initial|unset|normal|bolder|lighter)$/.test(v),
     msg: "raw font-weight; use @include pdz.text(<role>) or pdz.font-weight(regular|semibold|bold)",
+  },
+  {
+    id: "bold-weight",
+    props: /^font-weight$/,
+    test: (v) => /font-weight\(bold\)|--pdz-font-weight-bold|^bold$|^700$/.test(v),
+    msg: "weight 700 is only for Nasalization moments (S2); use pdz.font-weight(semibold) or a text role",
   },
   {
     id: "raw-color",
@@ -213,6 +236,11 @@ const MEDIA_RULE = {
 };
 
 const RULES = [
+  {
+    id: "loud-type",
+    re: /text\((display|headline)\b|font-size\((2xl|3xl)\)/,
+    msg: "display/headline type and 32-40px numbers belong to the six loud moments (F6); add the file to LOUD_MOMENTS with a one-line reason if this is one",
+  },
   {
     id: "raw-font-size",
     re: /font-size\s*:\s*[0-9.]+(rem|px)\s*(;|$)/,

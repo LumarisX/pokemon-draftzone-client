@@ -261,7 +261,7 @@
     justify-content: center;
     align-items: center;
     @include text(body-sm);
-    font-weight: pdz.font-weight(bold);
+    font-weight: pdz.font-weight(semibold);
   }
 
   &__card-stat {
@@ -307,7 +307,7 @@
   &__list-name {
     margin: 0;
     flex: 0 0 9rem;
-    font-weight: pdz.font-weight(bold);
+    font-weight: pdz.font-weight(semibold);
     color: pdz.color(on-surface);
     overflow: hidden;
     text-overflow: ellipsis;

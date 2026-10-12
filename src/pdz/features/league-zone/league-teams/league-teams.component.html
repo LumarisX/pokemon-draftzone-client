@@ -21,7 +21,7 @@
   </pdz-page-header>
 
   @if (!groups) {
-    <pdz-loading />
+    <pdz-skeleton-layout layout="cards" />
   } @else if (activeGroup(); as group) {
     @if (group.teams.length) {
       <div class="teams__grid">
@@ -33,7 +33,8 @@
       <pdz-empty-state
         bordered
         kind="waiting"
-        message="No teams added to this pool yet."
+        heading="No teams in this pool yet"
+        [message]="emptyPoolMessage()"
       />
     }
   } @else {
@@ -41,7 +42,7 @@
       bordered
       kind="waiting"
       heading="No teams yet"
-      message="Teams appear here once coaches are approved."
+      [message]="noTeamsMessage()"
     />
   }
 </pdz-page>

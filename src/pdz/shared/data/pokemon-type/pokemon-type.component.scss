@@ -4,7 +4,7 @@
 $sizes: (
   xs: (
     height: 0.875rem,
-    font: 2xs,
+    font: xs,
     pad-x: 2xs,
     pad-y: 3xs,
     gap: 2xs,
@@ -13,7 +13,7 @@ $sizes: (
   ),
   sm: (
     height: 1rem,
-    font: 2xs,
+    font: xs,
     pad-x: xs,
     pad-y: 2xs,
     gap: 2xs,
@@ -22,7 +22,7 @@ $sizes: (
   ),
   md: (
     height: 1.25rem,
-    font: 2xs,
+    font: xs,
     pad-x: xs,
     pad-y: 2xs,
     gap: xs,
@@ -62,7 +62,7 @@ $sizes: (
   border: 1px solid transparent;
   border-radius: pdz.shape(corner-xs);
   font-family: var(--pdz-font-body);
-  font-weight: pdz.font-weight(bold);
+  font-weight: pdz.font-weight(semibold);
   line-height: 1;
   vertical-align: middle;
   user-select: none;

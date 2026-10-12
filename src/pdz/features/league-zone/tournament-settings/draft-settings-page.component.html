@@ -1,6 +1,6 @@
 <pdz-page type="detail">
   @if (store.loading()) {
-    <div class="draft-page__loading"><pdz-loading /></div>
+    <pdz-skeleton-layout layout="form" />
   } @else {
   <div class="draft-page">
     <pdz-page-header

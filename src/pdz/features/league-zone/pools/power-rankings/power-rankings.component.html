@@ -33,7 +33,7 @@
 </pdz-page-header>
 
 @if (!teams()) {
-  <pdz-loading />
+  <pdz-skeleton-layout layout="chart" />
 } @else if (selectedTeam(); as team) {
   <div class="analysis">
     <pdz-card padding="md" class="analysis__roster">

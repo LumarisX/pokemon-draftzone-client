@@ -49,13 +49,15 @@
 </pdz-page-header>
 
 @if (loading()) {
-  <pdz-loading />
+  <pdz-skeleton-layout layout="list" />
 } @else if (loadError(); as error) {
   <pdz-empty-state
     bordered
     kind="error"
     heading="Could not load the schedule"
     [message]="error"
+    retry="event"
+    (retried)="load()"
   />
 } @else if (isEmpty()) {
   <pdz-empty-state
@@ -223,7 +225,7 @@
 
                     @if (row.playable) {
                       @if (detailLoading()) {
-                        <pdz-loading />
+                        <pdz-skeleton-layout layout="form" count="2" />
                       } @else if (detailError(); as error) {
                         <p class="row__error">{{ error }}</p>
                       } @else if (detail(); as matchup) {

@@ -1,0 +1,69 @@
+<span class="pdz-skeleton-layout__label">{{ label() }}</span>
+
+@switch (layout()) {
+  @case ("list") {
+    @for (item of items(); track item) {
+      <div class="pdz-skeleton-layout__row">
+        <pdz-skeleton class="pdz-skeleton-layout__avatar" variant="circle" />
+        <pdz-skeleton class="pdz-skeleton-layout__grow" lines="2" />
+      </div>
+    }
+  }
+  @case ("table") {
+    <div class="pdz-skeleton-layout__table">
+      <div class="pdz-skeleton-layout__cells pdz-skeleton-layout__cells--head">
+        @for (width of cellWidths; track $index) {
+          <pdz-skeleton [width]="width" />
+        }
+      </div>
+      @for (item of items(); track item) {
+        <div class="pdz-skeleton-layout__cells">
+          @for (width of cellWidths; track $index) {
+            <pdz-skeleton [width]="width" />
+          }
+        </div>
+      }
+    </div>
+  }
+  @case ("cards") {
+    <div class="pdz-skeleton-layout__grid">
+      @for (item of items(); track item) {
+        <div class="pdz-skeleton-layout__card">
+          <pdz-skeleton class="pdz-skeleton-layout__media" variant="block" />
+          <pdz-skeleton lines="2" />
+        </div>
+      }
+    </div>
+  }
+  @case ("form") {
+    @for (item of items(); track item) {
+      <div class="pdz-skeleton-layout__field">
+        <pdz-skeleton width="30%" />
+        <pdz-skeleton class="pdz-skeleton-layout__control" variant="block" />
+      </div>
+    }
+  }
+  @case ("text") {
+    <pdz-skeleton width="40%" height="1.25rem" />
+    @for (item of items(); track item) {
+      <pdz-skeleton lines="4" />
+    }
+  }
+  @case ("board") {
+    <div class="pdz-skeleton-layout__board">
+      @for (item of items(); track item) {
+        <div class="pdz-skeleton-layout__column">
+          <pdz-skeleton width="50%" />
+          @for (slot of [0, 1, 2, 3, 4]; track slot) {
+            <pdz-skeleton class="pdz-skeleton-layout__slot" variant="block" />
+          }
+        </div>
+      }
+    </div>
+  }
+  @case ("chart") {
+    @for (item of items(); track item) {
+      <pdz-skeleton class="pdz-skeleton-layout__chart" variant="block" />
+    }
+  }
+}

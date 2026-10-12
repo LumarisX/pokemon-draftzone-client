@@ -10,7 +10,7 @@ import { CardComponent } from '@pdz/shared/data/card/card.component';
 import { DialogService } from '@pdz/shared/dialogs/dialog/dialog.service';
 import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
 import { PageComponent } from '@pdz/shared/layout/page/page.component';
-import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
+import { SkeletonLayoutComponent } from '@pdz/shared/data/skeleton/skeleton-layout.component';
 import { RiskBannerComponent } from './risk-banner.component';
 import { SaveBarComponent } from './save-bar.component';
 import { SettingsNodeComponent } from './settings-node.component';
@@ -31,7 +31,7 @@ import { TournamentSettingsStore } from './tournament-settings.store';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     CardComponent,
-    LoadingComponent,
+    SkeletonLayoutComponent,
     PageComponent,
     PageHeaderComponent,
     RiskBannerComponent,

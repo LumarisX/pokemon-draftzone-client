@@ -7,7 +7,7 @@
 </pdz-page-header>
 
 @if (loading()) {
-  <pdz-loading />
+  <pdz-skeleton-layout layout="list" />
 } @else if (noPools()) {
   <pdz-empty-state
     bordered

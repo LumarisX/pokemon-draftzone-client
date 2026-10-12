@@ -10,7 +10,7 @@ import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { Stat } from '@pdz/shared/data';
 import { Pokemon } from '@pdz/core/utils/pokemon';
 import { DataService } from '@pdz/core/services/data.service';
-import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
+import { SkeletonLayoutComponent } from '@pdz/shared/data/skeleton/skeleton-layout.component';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
 import { QDSettings } from '../quick-draft-setting/quick-draft-setting.component';
 import { PokemonTypeComponent } from '@pdz/shared/data/pokemon-type/pokemon-type.component';
@@ -35,7 +35,7 @@ export type QDPokemon = Pokemon<{
   imports: [
     IconComponent,
     SpriteComponent,
-    LoadingComponent,
+    SkeletonLayoutComponent,
     ButtonComponent,
     CardComponent,
     PokemonTypeComponent,

@@ -1,11 +1,15 @@
 <pdz-page type="hub">
   @if (store.loading()) {
-    <div class="dash__loading"><pdz-loading /></div>
+    <pdz-skeleton-layout layout="cards" />
   } @else if (store.loadError(); as message) {
-    <div class="dash__error">
-      <pdz-icon name="error" [size]="20" aria-hidden="true" />
-      {{ message }}
-    </div>
+    <pdz-empty-state
+      bordered
+      kind="error"
+      heading="Could not load this tournament's settings"
+      [message]="message"
+      retry="event"
+      (retried)="store.load()"
+    />
   } @else {
     <div class="dash">
       <pdz-page-header

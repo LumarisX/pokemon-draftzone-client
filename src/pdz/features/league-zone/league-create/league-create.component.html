@@ -11,7 +11,8 @@
         bordered
         kind="error"
         heading="Couldn't check league access"
-        message="Reload the page to try again."
+        message="We couldn't reach the server to see whether you can create a league."
+        retry="reload"
       />
     } @else if (capabilities(); as access) {
       @if (access.canCreateLeague) {
@@ -71,7 +72,7 @@
         </pdz-empty-state>
       }
     } @else {
-      <pdz-loading />
+      <pdz-skeleton-layout layout="form" />
     }
   </div>
 </pdz-page>

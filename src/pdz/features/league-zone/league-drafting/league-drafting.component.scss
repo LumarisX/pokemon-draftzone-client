@@ -373,9 +373,15 @@
 }
 
 .pick__body--picking {
-  border-color: pdz.color(primary-border);
-  background: pdz.color(primary-container);
-  color: pdz.color(on-primary-container);
+  border-color: pdz.color(border-control);
+  background: pdz.color(state-strong);
+  color: pdz.color(on-surface);
+}
+
+.pick__body--yours {
+  border-color: pdz.color(primary);
+  background: pdz.color(primary);
+  color: pdz.color(on-primary);
 }
 
 .pick__icon {

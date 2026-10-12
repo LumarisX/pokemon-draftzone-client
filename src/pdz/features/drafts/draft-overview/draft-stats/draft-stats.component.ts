@@ -16,7 +16,7 @@ import {
 import { SortHeaderComponent } from '@pdz/shared/data/sort/sort-header.component';
 import { Sort, SortDirective } from '@pdz/shared/data/sort/sort.directive';
 import { EmptyStateComponent } from '@pdz/shared/feedback/empty-state/empty-state.component';
-import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
+import { SkeletonLayoutComponent } from '@pdz/shared/data/skeleton/skeleton-layout.component';
 import { PokemonComponent } from '@pdz/shared/data/pokemon/pokemon.component';
 import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
 import { PageComponent } from '@pdz/shared/layout/page/page.component';
@@ -41,7 +41,7 @@ const SORT_VALUES: Record<SortKey, (stat: PokemonStat) => number | string> = {
   imports: [
     DecimalPipe,
     EmptyStateComponent,
-    LoadingComponent,
+    SkeletonLayoutComponent,
     PageComponent,
     PageHeaderComponent,
     SortDirective,

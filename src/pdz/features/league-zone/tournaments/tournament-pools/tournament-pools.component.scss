@@ -29,11 +29,3 @@
   color: pdz.color(on-surface);
   transition: color pdz.duration(fast) pdz.easing(standard);
 }
-
-.loading-state {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  min-height: 60vh;
-}

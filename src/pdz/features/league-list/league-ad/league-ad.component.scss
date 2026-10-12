@@ -178,7 +178,7 @@
         > strong {
           display: block;
           margin-bottom: pdz.space(sm);
-          font-weight: var(--pdz-font-weight-bold);
+          font-weight: var(--pdz-font-weight-semibold);
         }
 
         .divisions-grid {
@@ -274,7 +274,7 @@
         align-items: center;
 
         strong {
-          font-weight: var(--pdz-font-weight-bold);
+          font-weight: var(--pdz-font-weight-semibold);
         }
 
         .info-content {
@@ -318,13 +318,13 @@
   }
 
   &.status-approved {
-    background-color: pdz.color(success);
-    color: pdz.color(on-success);
+    background-color: pdz.color(success-container);
+    color: pdz.color(on-success-container);
   }
 
   &.status-denied {
-    background-color: pdz.color(danger);
-    color: pdz.color(on-danger);
+    background-color: pdz.color(danger-container);
+    color: pdz.color(on-danger-container);
   }
 }
 

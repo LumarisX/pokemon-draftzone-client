@@ -11,7 +11,8 @@
         bordered
         kind="error"
         heading="Couldn't load this league"
-        message="Reload the page to try again."
+        message="The league's settings did not come back from the server."
+        retry="reload"
       />
     } @else if (league(); as league) {
       @if (league.isOwner) {
@@ -73,7 +74,7 @@
         </pdz-empty-state>
       }
     } @else {
-      <pdz-loading />
+      <pdz-skeleton-layout layout="form" />
     }
   </div>
 </pdz-page>

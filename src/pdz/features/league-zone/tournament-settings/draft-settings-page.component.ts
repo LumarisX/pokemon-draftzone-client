@@ -12,7 +12,7 @@ import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.
 import { PageComponent } from '@pdz/shared/layout/page/page.component';
 import { TabNavLinkComponent } from '@pdz/shared/layout/tab-nav/tab-nav-link.component';
 import { TabNavComponent } from '@pdz/shared/layout/tab-nav/tab-nav.component';
-import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
+import { SkeletonLayoutComponent } from '@pdz/shared/data/skeleton/skeleton-layout.component';
 import { RouterLink } from '@angular/router';
 import { LeagueZoneService } from '../league-zone.service';
 import { RiskBannerComponent } from './risk-banner.component';
@@ -36,7 +36,7 @@ const HIDDEN_WHEN_COLLAPSED = new Set(['pool.name']);
   imports: [
     RouterLink,
     ButtonComponent,
-    LoadingComponent,
+    SkeletonLayoutComponent,
     CardComponent,
     IconComponent,
     PageComponent,

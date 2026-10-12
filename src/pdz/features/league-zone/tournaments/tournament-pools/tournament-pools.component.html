@@ -15,7 +15,7 @@
         bordered
         kind="waiting"
         heading="No pools yet"
-        message="No pools have been set up for this tournament yet."
+        [message]="noPoolsMessage()"
       />
     }
   } @else if (leagueInfo() === null) {
@@ -23,10 +23,10 @@
       bordered
       kind="error"
       heading="Could not load this tournament"
+      message="Its pools did not come back from the server."
+      retry="reload"
     />
   } @else {
-    <div class="loading-state">
-      <pdz-loading />
-    </div>
+    <pdz-skeleton-layout layout="cards" count="3" />
   }
 </pdz-page>

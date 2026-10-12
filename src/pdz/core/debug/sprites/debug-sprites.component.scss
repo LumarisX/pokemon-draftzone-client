@@ -43,7 +43,7 @@
 
 .sprite-grid__id {
   @include pdz.text(label);
-  font-size: pdz.font-size(2xs);
+  font-size: pdz.font-size(xs);
   color: pdz.color(on-surface-variant);
   max-width: 100%;
   overflow: hidden;

@@ -191,8 +191,7 @@
 }
 
 .pdz-select__option--selected .pdz-select__option-description {
-  color: inherit;
-  opacity: 0.75;
+  color: pdz.color(on-surface-muted);
 }
 
 .pdz-select__empty {

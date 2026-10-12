@@ -33,6 +33,10 @@ import { MenuComponent } from '@pdz/shared/menu/menu.component';
 import { MenuItemComponent } from '@pdz/shared/menu/menu-item.component';
 import { MenuTriggerDirective } from '@pdz/shared/menu/menu-trigger.directive';
 import { SkeletonComponent } from '@pdz/shared/data/skeleton/skeleton.component';
+import {
+  SkeletonLayout,
+  SkeletonLayoutComponent,
+} from '@pdz/shared/data/skeleton/skeleton-layout.component';
 import { SegmentedComponent } from '@pdz/shared/inputs/segmented/segmented.component';
 import { SegmentedOptionComponent } from '@pdz/shared/inputs/segmented/segmented-option.component';
 import { DisclosureComponent } from '@pdz/shared/layout/disclosure/disclosure.component';
@@ -132,6 +136,7 @@ const MODE_ATTR = 'pdz-theme-mode';
     MenuItemComponent,
     MenuTriggerDirective,
     SkeletonComponent,
+    SkeletonLayoutComponent,
     SegmentedComponent,
     SegmentedOptionComponent,
     DisclosureComponent,
@@ -411,6 +416,15 @@ export class DebugComponentsComponent {
 
   readonly tableDensities = ['comfortable', 'compact'];
   readonly chipSizes: ChipSize[] = ['xs', 'sm', 'md'];
+  readonly skeletonLayouts: SkeletonLayout[] = [
+    'list',
+    'table',
+    'cards',
+    'form',
+    'text',
+    'board',
+    'chart',
+  ];
 
   readonly sortState = signal<Sort>({ active: 'kills', direction: 'desc' });
 

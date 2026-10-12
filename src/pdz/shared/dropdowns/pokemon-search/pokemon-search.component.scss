@@ -166,8 +166,8 @@
     height: 1.5rem;
     padding: 0 pdz.space(xs);
     border-radius: pdz.shape(corner-xs);
-    background: pdz.color(primary);
-    color: pdz.color(on-primary);
+    background: pdz.color(primary-container);
+    color: pdz.color(on-primary-container);
     @include pdz.text(label-strong, $family: false);
     flex-shrink: 0;
   }

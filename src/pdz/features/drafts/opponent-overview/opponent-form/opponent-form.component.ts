@@ -4,7 +4,7 @@ import { DRAFT_OVERVIEW_PATH } from '@pdz/core/route-paths';
 import { Draft } from '@pdz/features/drafts/draft.model';
 import { Opponent } from '../opponent.model';
 import { DraftService } from '@pdz/features/drafts/draft-overview/draft.service';
-import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
+import { SkeletonLayoutComponent } from '@pdz/shared/data/skeleton/skeleton-layout.component';
 import { PageComponent } from '@pdz/shared/layout/page/page.component';
 import {
   OpponentFormCoreComponent,
@@ -13,7 +13,7 @@ import {
 
 @Component({
   selector: 'pdz-opponent-form',
-  imports: [OpponentFormCoreComponent, LoadingComponent, PageComponent],
+  imports: [OpponentFormCoreComponent, SkeletonLayoutComponent, PageComponent],
   styleUrl: './opponent-form.component.scss',
   templateUrl: './opponent-form.component.html',
 })

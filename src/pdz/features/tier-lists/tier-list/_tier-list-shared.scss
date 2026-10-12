@@ -67,9 +67,8 @@
 
     &__empty {
       @include text(body);
-      color: pdz.color(on-surface-variant);
+      color: pdz.color(on-surface-muted);
       margin: auto;
-      opacity: 0.6;
     }
   }
 

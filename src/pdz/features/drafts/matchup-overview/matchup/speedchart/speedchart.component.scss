@@ -104,11 +104,10 @@
   }
 
   &__speed {
+    @include pdz.text(card-title);
     @include pdz.numeric;
     text-align: center;
     line-height: 2rem;
-    font-size: pdz.font-size(md);
-    font-weight: pdz.font-weight(bold);
     color: var(--speedchart-ink);
   }
 

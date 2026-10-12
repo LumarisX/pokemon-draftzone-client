@@ -1,0 +1,110 @@
+@use "pdz-theming" as pdz;
+
+:host {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.layout(stack);
+  width: 100%;
+}
+
+.pdz-skeleton-layout__label {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+:host([data-layout="list"]) {
+  gap: 0;
+}
+
+.pdz-skeleton-layout__row {
+  @include pdz.row-divider;
+  display: flex;
+  align-items: center;
+  gap: pdz.space(sm);
+  padding: pdz.space(sm);
+}
+
+.pdz-skeleton-layout__avatar {
+  flex: none;
+  width: pdz.sprite-size(sm);
+}
+
+.pdz-skeleton-layout__grow {
+  flex: 1 1 auto;
+}
+
+.pdz-skeleton-layout__table {
+  display: flex;
+  flex-direction: column;
+  border-radius: pdz.shape(corner-lg);
+  background: pdz.color(raised);
+}
+
+.pdz-skeleton-layout__cells {
+  @include pdz.row-divider;
+  display: grid;
+  grid-template-columns: 3fr repeat(3, 1fr);
+  align-items: center;
+  gap: pdz.layout(cell-inline);
+  padding: pdz.layout(cell-block) pdz.layout(cell-edge);
+  min-height: pdz.control-height(lg);
+}
+
+.pdz-skeleton-layout__cells--head {
+  min-height: pdz.control-height(md);
+  opacity: 0.6;
+}
+
+.pdz-skeleton-layout__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(16rem, 100%), 1fr));
+  gap: pdz.layout(stack);
+}
+
+.pdz-skeleton-layout__card {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(md);
+  padding: pdz.layout(card-pad);
+  border: 1px solid pdz.color(border-subtle);
+  border-radius: pdz.shape(corner-lg);
+  background: pdz.color(raised);
+}
+
+.pdz-skeleton-layout__media {
+  height: pdz.sprite-size(xl);
+}
+
+.pdz-skeleton-layout__field {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(xs);
+}
+
+.pdz-skeleton-layout__control {
+  height: pdz.control-height(md);
+}
+
+.pdz-skeleton-layout__board {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(12rem, 100%), 1fr));
+  gap: pdz.layout(stack);
+}
+
+.pdz-skeleton-layout__column {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(sm);
+}
+
+.pdz-skeleton-layout__slot {
+  height: pdz.control-height(lg);
+}
+
+.pdz-skeleton-layout__chart {
+  height: 16rem;
+}

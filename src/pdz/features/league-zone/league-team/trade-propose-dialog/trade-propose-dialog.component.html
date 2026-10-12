@@ -1,6 +1,6 @@
 <div class="dialog-body">
   @if (loading()) {
-    <pdz-loading />
+    <pdz-skeleton-layout layout="list" count="4" />
   } @else if (loadError(); as error) {
     <p class="trade-form__error" role="alert">{{ error }}</p>
   } @else {

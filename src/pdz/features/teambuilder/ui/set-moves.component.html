@@ -59,14 +59,14 @@
     </label>
 
     @if (learnset.isLoading()) {
-      <div class="moves__loading">
-        <pdz-loading />
-      </div>
+      <pdz-skeleton-layout layout="list" count="4" />
     } @else if (learnset.error()) {
       <pdz-empty-state
         kind="error"
         heading="Could not load moves"
-        message="The learnset request failed. Check your connection and try again."
+        message="This Pokémon's learnset did not come back from the server."
+        retry="event"
+        (retried)="learnset.reload()"
       />
     } @else if (visible().length === 0) {
       <pdz-empty-state

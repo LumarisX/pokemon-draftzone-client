@@ -23,7 +23,7 @@ import {
   PokemonSearchOption,
 } from '@pdz/shared/dropdowns/pokemon-search/pokemon-search.component';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
-import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
+import { SkeletonLayoutComponent } from '@pdz/shared/data/skeleton/skeleton-layout.component';
 import { PokemonComponent } from '@pdz/shared/data/pokemon/pokemon.component';
 import { BehaviorSubject, catchError, forkJoin, of } from 'rxjs';
 
@@ -53,7 +53,7 @@ const sumCost = (options: TradeOption[]) =>
   imports: [
     ButtonComponent,
     IconComponent,
-    LoadingComponent,
+    SkeletonLayoutComponent,
     NgTemplateOutlet,
     PokemonSearchComponent,
     PokemonComponent,

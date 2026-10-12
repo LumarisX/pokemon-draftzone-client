@@ -90,7 +90,7 @@
       </div>
     </div>
     @if (!matchups) {
-      <pdz-loading></pdz-loading>
+      <pdz-skeleton-layout layout="cards" count="3" />
     } @else {
       <div class="matchups-container">
         @for (matchup of matchups; track $index) {
@@ -255,7 +255,7 @@
       />
     }
     @if (!teamStats) {
-      <pdz-loading></pdz-loading>
+      <pdz-skeleton-layout layout="table" />
     } @else {
       @if (teamStats.value && teamStats.value.length > 0) {
         <div class="table-container">

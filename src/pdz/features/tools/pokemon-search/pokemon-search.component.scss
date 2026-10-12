@@ -90,7 +90,7 @@
 
   &__empty-hint {
     @include text(body-sm);
-    opacity: 0.7;
+    color: pdz.color(on-surface-muted);
   }
 
   &__item {

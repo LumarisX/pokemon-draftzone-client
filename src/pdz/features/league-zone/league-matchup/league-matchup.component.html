@@ -72,6 +72,8 @@
     kind="error"
     heading="Could not load this matchup"
     [message]="loadError() ?? ''"
+    retry="event"
+    (retried)="load()"
   />
 } @else if (matchup(); as m) {
   @let v = versus()!;

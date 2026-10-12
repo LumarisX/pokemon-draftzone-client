@@ -32,7 +32,7 @@
     @if (matchupData(); as data) {
       <pdz-matchup-breakdown [matchupData]="data" />
     } @else {
-      <pdz-loading />
+      <pdz-skeleton-layout layout="chart" count="2" />
     }
   }
 </pdz-page>

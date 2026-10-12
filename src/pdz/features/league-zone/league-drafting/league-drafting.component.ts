@@ -20,7 +20,7 @@ import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 import { ChipComponent, ChipTone } from '@pdz/shared/data/chip/chip.component';
 import { PokemonComponent } from '@pdz/shared/data/pokemon/pokemon.component';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
-import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
+import { SkeletonLayoutComponent } from '@pdz/shared/data/skeleton/skeleton-layout.component';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
 import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
 import { PageComponent } from '@pdz/shared/layout/page/page.component';
@@ -120,7 +120,7 @@ const STATUS_TONES: Record<DraftStatus, ChipTone> = {
     SpriteComponent,
     IconComponent,
     NumberSuffixPipe,
-    LoadingComponent,
+    SkeletonLayoutComponent,
     RouterLink,
     PokemonComponent,
     ButtonComponent,
@@ -841,6 +841,10 @@ export class LeagueDraftComponent implements OnInit {
 
   get isInProgress(): boolean {
     return this.draftDetails.status === 'IN_PROGRESS';
+  }
+
+  get onTheClock(): boolean {
+    return this.isInProgress && !!this.currentPickingTeam()?.isCoach;
   }
 
   canDraft(): boolean {

@@ -256,7 +256,7 @@ markdown {
       content: "•";
       position: absolute;
       left: pdz.space(sm);
-      font-weight: pdz.font-weight(bold);
+      font-weight: pdz.font-weight(semibold);
     }
   }
 
@@ -271,7 +271,7 @@ markdown {
 
     &::before {
       content: "•";
-      font-weight: pdz.font-weight(bold);
+      font-weight: pdz.font-weight(semibold);
       font-size: 1em;
     }
   }
@@ -298,7 +298,7 @@ markdown {
   }
 
   strong {
-    font-weight: pdz.font-weight(bold);
+    font-weight: pdz.font-weight(semibold);
   }
 
   a {

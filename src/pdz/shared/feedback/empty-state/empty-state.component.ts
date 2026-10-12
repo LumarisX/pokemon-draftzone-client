@@ -1,11 +1,15 @@
+import { DOCUMENT } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
   booleanAttribute,
   computed,
+  inject,
   input,
+  output,
 } from '@angular/core';
 import { Pokemon } from '@pdz/core/utils/pokemon';
+import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import {
   SpriteComponent,
@@ -14,6 +18,7 @@ import {
 
 export type EmptyStateSize = 'sm' | 'md' | 'lg';
 export type EmptyStateKind = 'empty' | 'waiting' | 'error' | 'no-access';
+export type EmptyStateRetry = 'event' | 'reload';
 
 const ICON_SIZES: Record<EmptyStateSize, number> = {
   sm: 20,
@@ -36,7 +41,7 @@ const ACTORS: Record<EmptyStateKind, { pokemon: Pokemon; icon: string }> = {
 
 @Component({
   selector: 'pdz-empty-state',
-  imports: [IconComponent, SpriteComponent],
+  imports: [ButtonComponent, IconComponent, SpriteComponent],
   template: `
     @if (actor(); as actor) {
       <pdz-sprite
@@ -63,7 +68,21 @@ const ACTORS: Record<EmptyStateKind, { pokemon: Pokemon; icon: string }> = {
       <p class="pdz-empty-state__message">{{ message() }}</p>
     }
     <ng-content />
-    <div class="pdz-empty-state__actions"><ng-content select="[pdz-empty-state-actions]" /></div>
+    <div class="pdz-empty-state__actions">
+      @if (retry()) {
+        <button
+          pdz-button
+          icon="refresh"
+          variant="outlined"
+          color="neutral"
+          [size]="size() === 'sm' ? 'sm' : 'md'"
+          (click)="tryAgain()"
+        >
+          {{ retryLabel() }}
+        </button>
+      }
+      <ng-content select="[pdz-empty-state-actions]" />
+    </div>
   `,
   styleUrl: './empty-state.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -81,6 +100,19 @@ export class EmptyStateComponent {
   message = input<string>();
   size = input<EmptyStateSize>('md');
   bordered = input(false, { transform: booleanAttribute });
+  retry = input<EmptyStateRetry>();
+  retryLabel = input('Try Again');
+  retried = output<void>();
+
+  private readonly document = inject(DOCUMENT);
+
+  protected tryAgain(): void {
+    if (this.retry() === 'reload') {
+      this.document.defaultView?.location.reload();
+      return;
+    }
+    this.retried.emit();
+  }
 
   protected iconSize = computed(() => ICON_SIZES[this.size()]);
 

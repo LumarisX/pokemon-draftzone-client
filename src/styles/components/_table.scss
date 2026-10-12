@@ -30,7 +30,7 @@
   }
 
   thead th {
-    @include pdz.text(label-caps);
+    @include pdz.text(label-strong);
     background: pdz.color(raised);
     color: pdz.color(on-surface-muted);
     white-space: nowrap;

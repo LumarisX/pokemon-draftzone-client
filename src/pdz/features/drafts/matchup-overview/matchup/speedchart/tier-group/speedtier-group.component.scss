@@ -66,9 +66,8 @@
   }
 
   &__speed {
+    @include pdz.text(card-title);
     @include pdz.numeric;
-    font-size: pdz.font-size(md);
-    font-weight: pdz.font-weight(bold);
     line-height: 1;
   }
 

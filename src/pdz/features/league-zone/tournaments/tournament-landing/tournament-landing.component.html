@@ -4,7 +4,8 @@
     bordered
     kind="error"
     heading="Could not load this tournament"
-    message="Refresh the page to try again."
+    message="The tournament's details did not come back from the server."
+    retry="reload"
   />
 } @else {
   @if (info(); as tournament) {

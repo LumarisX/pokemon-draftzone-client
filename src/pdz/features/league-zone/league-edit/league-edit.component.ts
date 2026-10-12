@@ -16,7 +16,7 @@ import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 import { CardComponent } from '@pdz/shared/data/card/card.component';
 import { EmptyStateComponent } from '@pdz/shared/feedback/empty-state/empty-state.component';
 import { ToastService } from '@pdz/shared/feedback/toast/toast.service';
-import { LoadingComponent } from '@pdz/shared/images/loading/loading.component';
+import { SkeletonLayoutComponent } from '@pdz/shared/data/skeleton/skeleton-layout.component';
 import { FieldComponent } from '@pdz/shared/inputs/field/field.component';
 import { InputDirective } from '@pdz/shared/inputs/field/input.directive';
 import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
@@ -42,7 +42,7 @@ import { LogoFieldComponent } from '../logo-field/logo-field.component';
     EmptyStateComponent,
     FieldComponent,
     InputDirective,
-    LoadingComponent,
+    SkeletonLayoutComponent,
     LogoFieldComponent,
     PageComponent,
     PageHeaderComponent,

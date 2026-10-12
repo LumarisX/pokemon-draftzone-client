@@ -99,7 +99,11 @@ layer behind the header that fades out toward the title: a team page's
 A page with no data shows `<pdz-empty-state>`, never a bare
 sentence or an endless spinner. Give every `md`/`lg` empty state a `kind`
 (`empty` | `waiting` | `error` | `no-access`); it stands Ditto, Slowpoke, Psyduck or
-Snorlax above the message. `sm` keeps an inline icon.
+Snorlax above the message. `sm` keeps an inline icon. An `error` state says what did
+not come back and offers Try Again: `retry="event"` + `(retried)` to re-run the page's
+load, or `retry="reload"` when the page only loads once; never write "refresh the page".
+A `waiting` state says who and when; tournament pages use `waitingMessage()` from
+`@pdz/features/league-zone/tournament-milestones` to append the next milestone.
 
 Pages inside the tournament shell get **no back button** — the nav does that. The
 one exception is the tournament landing page, whose `backLink`/`backLabel` render
@@ -153,6 +157,7 @@ and no page header.
 | a team or league logo | `<pdz-team-logo [src] [name]>` — a missing or broken image shows the DraftZone logo (`DEFAULT_TEAM_LOGO`), never initials; no ring, plate or team color |
 | W-L or W-D-L | `<pdz-record [wins] [losses] [draws]>` |
 | a Pokémon type | `<pdz-pokemon-type [type]>` |
+| a page or panel that is loading | `<pdz-skeleton-layout layout="list\|table\|cards\|form\|text\|board\|chart" [count]>` shaped like what is coming — never `pdz-loading` or a bare spinner; a spinner belongs only inside a busy button |
 | a tabular list | `<table class="pdz-table">` (`data-sticky`, `pdzSort`; padding follows the page's density) |
 
 `pdz-select` notes: `searchable` adds a filter box (use it for long lists);
@@ -189,9 +194,14 @@ transition: color pdz.duration(fast) pdz.easing(standard);
 
 Type roles: `display`, `headline`, `title`, `subtitle`, `section-title` (panel and
 card headings), `card-title`, `body`, `body-sm`, `body-sm-strong`, `meta` (secondary
-lines, timestamps), `field-label`, `label`, `label-strong`, `label-caps` (eyebrows,
-table heads, group labels). The display font (Nasalization) is for page titles and
-hero numbers only. Page titles, section and card headings, buttons, tabs, nav items and
+lines, timestamps), `field-label`, `label`, `label-strong` (table heads, muted Title
+Case), `label-caps` (eyebrows and group labels, the only uppercase). The display font (Nasalization) is for page titles and
+hero numbers only, and is the only text that takes weight 700 (`bold`); everything
+else is 400 or 600, and `lint:styles` fails `font-weight(bold)` elsewhere. Muted text
+uses `on-surface-muted`, never opacity. Solid fills, gradients, Nasalization and 32–40px
+numbers belong to the six loud moments (homepage band, matchup scoreboard, your pick on
+the clock, final results, page title, your own row as a tint); a genuine exception goes
+in `LOUD_MOMENTS` in `tools/lint-styles.mjs` with a one-line reason. Page titles, section and card headings, buttons, tabs, nav items and
 menu items are Title Case ("My Drafts", "New Draft", "View Matchup"). Body text, hints,
 empty-state messages and toasts stay sentence case. The brand is "Pokémon DraftZone".
 
