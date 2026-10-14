@@ -9,6 +9,8 @@ import {
 } from '../draft-form-core/draft-form-core.component';
 import { DRAFT_OVERVIEW_PATH } from '@pdz/core/route-paths';
 import { PageComponent } from '@pdz/shared/layout/page/page.component';
+import { ToastService } from '@pdz/shared/feedback/toast/toast.service';
+import { apiErrorMessage } from '@pdz/core/services/api.service';
 
 @Component({
   selector: 'pdz-draft-form-edit',
@@ -20,6 +22,7 @@ export class DraftFormEditComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private draftService = inject(DraftService);
+  private toast = inject(ToastService);
 
   teamId: string = '';
   draftParams!: Draft;
@@ -39,7 +42,8 @@ export class DraftFormEditComponent implements OnInit {
       next: () => {
         this.router.navigate(['/', DRAFT_OVERVIEW_PATH]);
       },
-      error: (error) => console.error('Error!', error),
+      error: (error) =>
+        this.toast.error(apiErrorMessage(error, 'Could not save the draft.')),
     });
   }
 }

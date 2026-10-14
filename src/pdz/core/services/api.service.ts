@@ -15,6 +15,7 @@ import {
   throwError,
 } from 'rxjs';
 import { ErrorService } from '@pdz/layout/error/error.service';
+import { ApiError, toApiError } from './api-error';
 import { environment } from '@pdz/environments/environment';
 
 interface ErrorHandlingOptions {
@@ -23,10 +24,7 @@ interface ErrorHandlingOptions {
 }
 
 export function apiErrorMessage(err: unknown, fallback: string): string {
-  const body = (err as HttpErrorResponse | undefined)?.error;
-  const reason = body?.error?.details?.reason;
-  if (typeof reason === 'string' && reason) return reason;
-  return body?.error?.message ?? body?.message ?? fallback;
+  return toApiError(err)?.message || fallback;
 }
 
 @Injectable({
@@ -82,8 +80,8 @@ export class ApiService {
         params: options.params,
       })
       .pipe(
-        shareReplay({ bufferSize: 1, refCount: true }),
         this.handleError(options.errorHandlingOptions),
+        shareReplay({ bufferSize: 1, refCount: true }),
         finalize(() => {
           this.pendingRequests.delete(key);
         }),
@@ -172,16 +170,19 @@ export class ApiService {
   private handleError<T>(
     options: ErrorHandlingOptions = {},
   ): OperatorFunction<T, T> {
-    return catchError((error: HttpErrorResponse) => {
+    return catchError((error: unknown) => {
+      if (!(error instanceof HttpErrorResponse)) return throwError(() => error);
+
+      const apiError = new ApiError(error);
       const shouldSuppress =
         options.suppressErrorReporting ||
-        options.suppressStatuses?.includes(error.status);
+        options.suppressStatuses?.includes(apiError.status);
 
       if (!shouldSuppress) {
-        this.errorService.reportError(error);
+        this.errorService.recordError(apiError);
       }
 
-      return throwError(() => error);
+      return throwError(() => apiError);
     });
   }
 }

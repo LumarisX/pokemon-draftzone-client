@@ -13,6 +13,7 @@ import {
   LEAGUE_ZONE_PATH,
   ORGANIZER_INVITE_PATH,
 } from '@pdz/core/route-paths';
+import { apiErrorMessage } from '@pdz/core/services/api.service';
 import { LeagueZoneService } from '@pdz/features/league-zone/league-zone.service';
 import { League } from '@pdz/features/league-zone/league.interface';
 import {
@@ -149,7 +150,7 @@ export class LeagueOrganizersComponent implements OnInit {
         error: (err) => {
           this.creatingInvite.set(false);
           this.toast.error(
-            err?.error?.error?.message ?? 'Could not create an invite link.',
+            apiErrorMessage(err, 'Could not create an invite link.'),
           );
         },
       });
@@ -219,7 +220,10 @@ export class LeagueOrganizersComponent implements OnInit {
           this.setState(result);
           this.loading.set(false);
         },
-        error: () => this.loading.set(false),
+        error: () => {
+          this.loading.set(false);
+          this.toast.error('Could not load the organizers.');
+        },
       });
   }
 }

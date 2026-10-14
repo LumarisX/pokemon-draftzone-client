@@ -1,367 +1,199 @@
-import { CdkTableModule } from '@angular/cdk/table';
-import { DecimalPipe } from '@angular/common';
-import { Component, inject, OnInit } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { ActivatedRoute, RouterModule } from '@angular/router';
-import { DRAFT_OVERVIEW_PATH } from '@pdz/core/route-paths';
-import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
-import { BadgeTone } from '@pdz/shared/data/badge/badge.component';
-import { CardComponent } from '@pdz/shared/data/card/card.component';
-import { RecordComponent } from '@pdz/shared/data/record/record.component';
-import { ScoreComponent } from '@pdz/shared/data/score/score.component';
-import { TeamComponent } from '@pdz/shared/data/team/team.component';
 import {
-  SeasonMvpComponent,
-  SeasonMvpStat,
-} from '@pdz/shared/data/season-mvp/season-mvp.component';
-import { SortHeaderComponent } from '@pdz/shared/data/sort/sort-header.component';
-import { Sort, SortDirective } from '@pdz/shared/data/sort/sort.directive';
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  inject,
+  signal,
+} from '@angular/core';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { DRAFT_OVERVIEW_PATH, PLANNER_PATH } from '@pdz/core/route-paths';
+import { DraftMatchActionsService } from '@pdz/features/drafts/draft-overview/draft-match-actions.service';
+import { DraftService } from '@pdz/features/drafts/draft-overview/draft.service';
+import { Draft } from '@pdz/features/drafts/draft.model';
+import { TeamSeasonComponent } from '@pdz/features/league-zone/league-team/team-season/team-season.component';
+import { LSDraftData } from '@pdz/features/planner/planner.component';
+import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
+import { CardComponent } from '@pdz/shared/data/card/card.component';
+import { ChipComponent } from '@pdz/shared/data/chip/chip.component';
+import { RecordComponent } from '@pdz/shared/data/record/record.component';
+import { SkeletonLayoutComponent } from '@pdz/shared/data/skeleton/skeleton-layout.component';
 import { DialogService } from '@pdz/shared/dialogs/dialog/dialog.service';
 import { EmptyStateComponent } from '@pdz/shared/feedback/empty-state/empty-state.component';
-import { IconComponent } from '@pdz/shared/images/icon/icon.component';
-import { SkeletonLayoutComponent } from '@pdz/shared/data/skeleton/skeleton-layout.component';
-import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
-import {
-  TEAM_PHOTO_SIZE,
-  TeamPhotoComponent,
-} from '@pdz/shared/images/team-photo/team-photo.component';
+import { ToastService } from '@pdz/shared/feedback/toast/toast.service';
+import { RosterPatternComponent } from '@pdz/shared/images/roster-pattern/roster-pattern.component';
 import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
 import { PageComponent } from '@pdz/shared/layout/page/page.component';
-import { MenuComponent } from '@pdz/shared/menu/menu.component';
 import { MenuItemComponent } from '@pdz/shared/menu/menu-item.component';
 import { MenuTriggerDirective } from '@pdz/shared/menu/menu-trigger.directive';
-import { CountdownComponent } from '@pdz/shared/time/countdown/countdown.component';
-import { formatExactTime } from '@pdz/shared/time/timezone';
+import { MenuComponent } from '@pdz/shared/menu/menu.component';
 import { TooltipDirective } from '@pdz/shared/tooltip/tooltip.directive';
-import { BehaviorSubject, catchError, forkJoin, of, switchMap, take } from 'rxjs';
-import { DraftService, PokemonStat } from '@pdz/features/drafts/draft-overview/draft.service';
+import { combineLatest, map, switchMap } from 'rxjs';
+import { DraftRosterComponent } from '@pdz/features/drafts/draft-roster/draft-roster.component';
 import {
-  MatchTimeDialogComponent,
-  MatchTimeDialogData,
-  MatchTimeDialogResult,
-} from '@pdz/shared/time/match-time-dialog/match-time-dialog.component';
-import { Opponent } from '../opponent.model';
-
-type Matchup = Opponent & {
-  score?: [number, number] | null;
-  scoreString?: string;
-  scoreTone?: BadgeTone;
-  logo?: string | null;
-};
+  draftLinks,
+  loadSeason,
+  SeasonMatch,
+} from '@pdz/features/drafts/draft-season';
 
 @Component({
   selector: 'pdz-opponent-preview',
   templateUrl: './opponent-preview.component.html',
   styleUrl: './opponent-preview.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    DecimalPipe,
-    RouterModule,
-    SpriteComponent,
-    TeamComponent,
-    TeamPhotoComponent,
-    SkeletonLayoutComponent,
-    IconComponent,
-    SortDirective,
-    SortHeaderComponent,
-    CdkTableModule,
+    RouterLink,
     ButtonComponent,
-    ScoreComponent,
-    SeasonMvpComponent,
     CardComponent,
+    ChipComponent,
+    DraftRosterComponent,
     EmptyStateComponent,
     MenuComponent,
     MenuItemComponent,
     MenuTriggerDirective,
-    CountdownComponent,
     PageComponent,
     PageHeaderComponent,
     RecordComponent,
+    RosterPatternComponent,
+    SkeletonLayoutComponent,
+    TeamSeasonComponent,
     TooltipDirective,
   ],
 })
-export class OpponentTeamPreviewComponent implements OnInit {
-  private readonly defaultSort: Sort = { active: 'kpg', direction: 'desc' };
+export class OpponentTeamPreviewComponent {
+  private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
+  private readonly drafts = inject(DraftService);
+  private readonly matchActions = inject(DraftMatchActionsService);
+  private readonly dialogs = inject(DialogService);
+  private readonly toasts = inject(ToastService);
 
-  private draftService = inject(DraftService);
-  private route = inject(ActivatedRoute);
-  private dialogs = inject(DialogService);
+  protected readonly backLink = ['/', DRAFT_OVERVIEW_PATH];
+  protected readonly plannerPath = PLANNER_PATH;
+  private readonly refresh = signal(0);
+  protected readonly busy = signal(false);
 
-  readonly backLink = ['/', DRAFT_OVERVIEW_PATH];
+  protected readonly teamId = toSignal(
+    this.route.paramMap.pipe(map((params) => params.get('teamId') ?? '')),
+    { initialValue: '' },
+  );
 
-  readonly draft = toSignal(
-    this.route.paramMap.pipe(
-      switchMap((params) =>
-        this.draftService.getDraft(params.get('teamId') ?? ''),
+  private readonly load = toSignal(
+    combineLatest([this.route.paramMap, toObservable(this.refresh)]).pipe(
+      switchMap(([params]) =>
+        loadSeason(this.drafts, params.get('teamId') ?? ''),
       ),
     ),
   );
 
-  index = 0;
-  matchups?: Matchup[];
-  teamId: string = '';
-  readonly draftPath = DRAFT_OVERVIEW_PATH;
-  readonly photoSize = TEAM_PHOTO_SIZE;
-  teamStats = new BehaviorSubject<PokemonStat[] | null>(null);
-  mvp: PokemonStat | null = null;
-  mvpStatList: SeasonMvpStat[] = [];
-  displayedColumns: string[] = [
-    'sprite',
-    'name',
-    'gb',
-    'dk',
-    'ik',
-    'deaths',
-    'kdr',
-    'kpg',
-  ];
+  protected readonly season = computed(() => {
+    const load = this.load();
+    return load?.state === 'ready' ? load.season : null;
+  });
 
-  ngOnInit(): void {
-    this.teamId = this.route.snapshot.paramMap.get('teamId') ?? '';
-    this.reload();
+  protected readonly failed = computed(() => this.load()?.state === 'failed');
+
+  protected readonly links = computed(() => draftLinks(this.teamId()));
+
+  protected matchFor(id: string): SeasonMatch | undefined {
+    return this.season()?.matches.find((match) => match.id === id);
   }
 
-  reload() {
-    this.matchups = undefined;
-    this.teamStats.next(null);
-    this.mvp = null;
-    this.mvpStatList = [];
-
-    forkJoin({
-      matchups: this.draftService.getMatchupList(this.teamId).pipe(
-        take(1),
-        catchError((err) => {
-          console.error('Error fetching matchups:', err);
-          return of([]);
-        }),
-      ),
-      stats: this.draftService.getStats(this.teamId).pipe(
-        take(1),
-        catchError((err) => {
-          console.error('Error fetching stats:', err);
-          return of(null);
-        }),
-      ),
-    }).subscribe(({ matchups, stats }) => {
-      if (matchups) {
-        this.matchups = matchups.map((m) => {
-          const score = this.calculateScore(m);
-          return {
-            ...m,
-            score,
-            scoreString: this.getScoreString(score),
-            scoreTone: this.getScoreTone(score),
-          };
-        });
-      }
-
-      if (stats) {
-        this.teamStats.next(stats.pokemon);
-        this.mvp = this.pickMvp(stats.pokemon);
-        this.mvpStatList = this.mvp ? this.mvpStats(this.mvp) : [];
-        this.sort(this.defaultSort);
-      }
-    });
+  protected nextStage(count: number): string {
+    return `Week ${count + 1}`;
   }
 
-  private pickMvp(stats: PokemonStat[]): PokemonStat | null {
-    const ranked = stats
-      .filter((stat) => this.knockouts(stat) > 0)
-      .sort(
-        (a, b) =>
-          this.knockouts(b) - this.knockouts(a) ||
-          a.deaths - b.deaths ||
-          a.brought - b.brought,
-      );
-    return ranked[0] ?? null;
-  }
-
-  knockouts(stat: PokemonStat): number {
-    return stat.kills + stat.indirect;
-  }
-
-  mvpLine(stat: PokemonStat): string {
-    return `${stat.kills} direct · ${stat.indirect} indirect`;
-  }
-
-  private mvpStats(stat: PokemonStat): SeasonMvpStat[] {
-    const teamKnockouts = (this.teamStats.value ?? []).reduce(
-      (sum, entry) => sum + this.knockouts(entry),
-      0,
-    );
-    return [
-      { label: 'Games', value: stat.brought },
-      { label: 'Fainted', value: stat.deaths },
-      {
-        label: 'KOs/Game',
-        value: stat.brought ? stat.kpg.toFixed(1) : '—',
-      },
-      {
-        label: 'Team KOs',
-        value: teamKnockouts
-          ? `${Math.round((this.knockouts(stat) / teamKnockouts) * 100)}%`
-          : '—',
-      },
-    ];
-  }
-
-  restNames(team: { name: string }[]): string | null {
-    const rest = team.slice(TEAM_PHOTO_SIZE);
-    return rest.length ? rest.map((pokemon) => pokemon.name).join(', ') : null;
-  }
-
-  private calculateScore(matchup: Opponent): [number, number] | null {
-    if (!matchup || !Array.isArray(matchup.matches)) {
-      return null;
-    }
-
-    if (matchup.matches.length > 1) {
-      let aScore = 0;
-      let bScore = 0;
-      matchup.matches.forEach((match) => {
-        if (match.winner === 'a') {
-          aScore++;
-        } else if (match.winner === 'b') {
-          bScore++;
-        }
-      });
-      return [aScore, bScore];
-    } else if (matchup.matches.length > 0) {
-      const match = matchup.matches[0];
-      const aScore = match.aTeam?.score ?? 0;
-      const bScore = match.bTeam?.score ?? 0;
-      return [aScore, bScore];
-    } else {
-      return null;
-    }
-  }
-
-  private getScoreString(score: [number, number] | null): string {
-    if (score) return `${score[0]} - ${score[1]}`;
-    return `Unscored`;
-  }
-
-  private getScoreTone(score: [number, number] | null): BadgeTone {
-    if (!score) return 'neutral';
-    if (score[0] > score[1]) return 'success';
-    if (score[0] < score[1]) return 'danger';
-    return 'neutral';
-  }
-
-  draftParam(slug: string): string {
+  protected draftParam(slug: string): string {
     return JSON.stringify(slug);
   }
 
-  scheduledExact(matchup: Matchup): string | null {
-    if (!matchup.scheduledDate) return null;
-    const date = new Date(matchup.scheduledDate);
-    if (Number.isNaN(date.getTime())) return null;
-    return formatExactTime(date);
+  protected plannerParam(draft: Draft): string {
+    const plannerData: Partial<LSDraftData> = {
+      team: draft.team.map((pokemon) => ({
+        id: pokemon.id,
+        locked: true,
+        value: null,
+        tier: '',
+      })),
+      format: draft.format,
+      ruleset: draft.ruleset,
+      draftName: draft.leagueName,
+    };
+    return JSON.stringify(plannerData);
   }
 
-  async setMatchTime(matchup: Matchup) {
-    const result = await this.dialogs.open<
-      MatchTimeDialogComponent,
-      MatchTimeDialogResult,
-      MatchTimeDialogData
-    >(MatchTimeDialogComponent, {
-      heading: matchup.scheduledDate ? 'Edit Match Time' : 'Set Match Time',
-      subheading: `${matchup.stage} vs ${matchup.teamName}`,
-      size: 'lg',
-      data: {
-        opponentName: matchup.teamName,
-        scheduledDate: matchup.scheduledDate,
-        opponentTimezone: matchup.opponentTimezone,
-      },
-    }).closed;
+  protected openReplays(match: SeasonMatch): void {
+    match.replays.forEach((replay) => window.open(replay, '_blank'));
+  }
 
-    if (!result) return;
+  private ref(match: SeasonMatch) {
+    return {
+      id: match.id,
+      stage: match.stage,
+      opponentName: match.opponent.teamName,
+      scheduledDate: match.opponent.scheduledDate,
+      opponentTimezone: match.opponent.opponentTimezone,
+    };
+  }
 
-    this.draftService
-      .updateMatchupSchedule(matchup._id, this.teamId, result)
-      .subscribe({
-        next: () => {
-          matchup.scheduledDate = result.scheduledDate;
-          matchup.opponentTimezone = result.opponentTimezone ?? null;
-        },
-        error: (error) => console.error('Failed to save match time', error),
+  private reload(): void {
+    this.refresh.update((count) => count + 1);
+  }
+
+  protected async setMatchTime(match: SeasonMatch): Promise<void> {
+    const saved = await this.matchActions.setMatchTime(
+      this.teamId(),
+      this.ref(match),
+    );
+    if (saved) this.reload();
+  }
+
+  protected async removeMatch(match: SeasonMatch): Promise<void> {
+    const deleted = await this.matchActions.remove(
+      this.teamId(),
+      this.ref(match),
+    );
+    if (deleted) this.reload();
+  }
+
+  protected async toggleCompleted(draft: Draft): Promise<void> {
+    if (!draft.completedAt) {
+      const confirmed = await this.dialogs.confirm('Mark season completed?', {
+        message: `${draft.leagueName} moves to Completed on My Leagues with its final record. You can reopen it any time.`,
+        confirmLabel: 'Mark Completed',
       });
+      if (!confirmed) return;
+    }
+    this.busy.set(true);
+    const request = draft.completedAt
+      ? this.drafts.reopenDraft(draft.slug)
+      : this.drafts.completeDraft(draft.slug);
+    request.subscribe({
+      next: () => {
+        this.busy.set(false);
+        this.reload();
+      },
+      error: () => {
+        this.busy.set(false);
+        this.toasts.error(
+          draft.completedAt
+            ? 'Could not reopen this season.'
+            : 'Could not mark this season completed.',
+        );
+      },
+    });
   }
 
-  async deleteMatchup(matchupId: string) {
-    const confirmed = await this.dialogs.confirm('Delete matchup', {
-      message: 'Are you sure you want to delete this matchup?',
+  protected async deleteDraft(draft: Draft): Promise<void> {
+    const confirmed = await this.dialogs.confirm('Delete draft', {
+      message: `Delete ${draft.leagueName}? This cannot be undone.`,
       confirmLabel: 'Delete',
       confirmColor: 'danger',
     });
     if (!confirmed) return;
-
-    this.draftService.deleteMatchup(matchupId, this.teamId).subscribe({
-      next: () => this.reload(),
-      error: (error) => console.error('Failed to delete matchup', error),
+    this.drafts.deleteDraft(draft.slug).subscribe({
+      next: () => this.router.navigate(this.backLink),
+      error: () => this.toasts.error('Could not delete that draft.'),
     });
-  }
-
-  private compare(
-    a: number | string | null | undefined,
-    b: number | string | null | undefined,
-    isAsc: boolean,
-  ) {
-    if (a == null && b == null) return 0;
-    if (a == null) return isAsc ? 1 : -1;
-    if (b == null) return isAsc ? -1 : 1;
-
-    let comparison = 0;
-    if (typeof a === 'string' && typeof b === 'string') {
-      comparison = a.localeCompare(b);
-    } else if (typeof a === 'number' && typeof b === 'number') {
-      comparison = a - b;
-    } else {
-      comparison = String(a).localeCompare(String(b));
-    }
-    return comparison * (isAsc ? 1 : -1);
-  }
-
-  sort(sort: Sort) {
-    const isAsc = sort.direction === 'asc';
-
-    if (this.teamStats.value) {
-      const sortedData = [...this.teamStats.value].sort((a, b) => {
-        switch (sort.active) {
-          case 'name':
-            return this.compare(a.pokemon.name, b.pokemon.name, isAsc);
-          case 'gb':
-            return this.compare(a.brought, b.brought, isAsc);
-          case 'dk':
-            return this.compare(a.kills, b.kills, isAsc);
-          case 'ik':
-            return this.compare(a.indirect, b.indirect, isAsc);
-          case 'deaths':
-            return this.compare(a.deaths, b.deaths, isAsc);
-          case 'kdr':
-            return this.compare(a.kdr, b.kdr, isAsc);
-          case 'kpg':
-            return this.compare(a.kpg, b.kpg, isAsc);
-          default:
-            return 0;
-        }
-      });
-      this.teamStats.next(sortedData);
-    }
-  }
-
-  openReplays(matchup: Matchup) {
-    matchup.matches
-      .filter((match) => match.replay)
-      .forEach((match) => {
-        window.open(match.replay, '_blank');
-      });
-  }
-
-  directionUp: boolean = false;
-
-  toggleDirection() {
-    this.directionUp = !this.directionUp;
-    if (!this.matchups) return;
-    this.matchups = this.matchups.reverse();
   }
 }

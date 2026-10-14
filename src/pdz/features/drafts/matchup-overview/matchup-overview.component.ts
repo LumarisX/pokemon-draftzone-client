@@ -27,6 +27,14 @@ import {
 import { TeambuilderComponent } from '@pdz/features/teambuilder/ui/teambuilder.component';
 import type { TeambuilderContext } from '@pdz/features/teambuilder/teambuilder.context';
 import { MatchupNotesComponent } from './notes/matchup-notes.component';
+import {
+  DraftMatchActionsService,
+  DraftMatchRef,
+} from '@pdz/features/drafts/draft-overview/draft-match-actions.service';
+import { MenuComponent } from '@pdz/shared/menu/menu.component';
+import { MenuItemComponent } from '@pdz/shared/menu/menu-item.component';
+import { MenuTriggerDirective } from '@pdz/shared/menu/menu-trigger.directive';
+import { RouterLink } from '@angular/router';
 
 const SITE_URL = 'https://pokemondraftzone.com';
 
@@ -42,7 +50,11 @@ type PanelTool = 'teambuilder' | 'notes';
     IconComponent,
     MatchupBreakdownComponent,
     MatchupNotesComponent,
+    MenuComponent,
+    MenuItemComponent,
+    MenuTriggerDirective,
     PageComponent,
+    RouterLink,
     PageHeaderComponent,
     SkeletonComponent,
     SpriteComponent,
@@ -56,6 +68,7 @@ export class MatchupOverviewComponent implements OnInit {
   private errorService = inject(ErrorService);
   private meta = inject(Meta);
   private dialogs = inject(DialogService);
+  private matchActions = inject(DraftMatchActionsService);
 
   readonly skeletonWidgets = ['14rem', '10rem', '18rem', '12rem'];
 
@@ -209,6 +222,48 @@ export class MatchupOverviewComponent implements OnInit {
     return this.tournamentId
       ? ['/' + DRAFT_OVERVIEW_PATH, this.tournamentId]
       : ['/' + DRAFT_OVERVIEW_PATH];
+  }
+
+  get manageable(): boolean {
+    return (
+      this.config.manage === true &&
+      this.config.source === 'draft' &&
+      !!this.tournamentId
+    );
+  }
+
+  draftLink(...segments: string[]): unknown[] {
+    return ['/', DRAFT_OVERVIEW_PATH, this.tournamentId, ...segments];
+  }
+
+  private matchRef(): DraftMatchRef {
+    const [, opponent] = this.matchupData?.summary ?? [];
+    return {
+      id: this.matchupId,
+      stage: this.matchupData?.details.stage ?? '',
+      opponentName: opponent ? `${opponent.teamName}` : 'your opponent',
+      scheduledDate: this.matchupData?.details.scheduledDate,
+    };
+  }
+
+  async setMatchTime(): Promise<void> {
+    if (!this.tournamentId) return;
+    const saved = await this.matchActions.setMatchTime(
+      this.tournamentId,
+      this.matchRef(),
+    );
+    if (saved && this.matchupData) {
+      this.matchupData.details.scheduledDate = saved.scheduledDate;
+    }
+  }
+
+  async deleteMatch(): Promise<void> {
+    if (!this.tournamentId) return;
+    const deleted = await this.matchActions.remove(
+      this.tournamentId,
+      this.matchRef(),
+    );
+    if (deleted) this.router.navigate(this.backLink);
   }
 
   private fetch(params: Params): Observable<MatchupData> {

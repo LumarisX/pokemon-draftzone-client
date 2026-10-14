@@ -16,6 +16,8 @@ import { DraftService } from '@pdz/features/drafts/draft-overview/draft.service'
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 import { SkeletonComponent } from '@pdz/shared/data/skeleton/skeleton.component';
 import { DialogService } from '@pdz/shared/dialogs/dialog/dialog.service';
+import { ToastService } from '@pdz/shared/feedback/toast/toast.service';
+import { apiErrorMessage } from '@pdz/core/services/api.service';
 import { EmptyStateComponent } from '@pdz/shared/feedback/empty-state/empty-state.component';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { FieldComponent } from '@pdz/shared/inputs/field/field.component';
@@ -67,6 +69,7 @@ export class DraftsV2Component {
   private readonly seasonService = inject(DraftsV2Service);
   private readonly draftService = inject(DraftService);
   private readonly dialogs = inject(DialogService);
+  private readonly toast = inject(ToastService);
 
   private readonly cards = viewChildren<ElementRef<HTMLElement>>('seasonCard');
   private readonly detailPane =
@@ -237,21 +240,23 @@ export class DraftsV2Component {
     });
     if (!confirmed) return;
 
-    this.draftService.archiveDraft(season.source.slug).subscribe({
+    this.draftService.completeDraft(season.source.slug).subscribe({
       next: () => {
         this.showArchived.set(true);
         this.loadSeasons();
       },
-      error: (error) => console.error('Failed to archive draft', error),
+      error: (error) =>
+        this.toast.error(apiErrorMessage(error, 'Could not archive the draft.')),
     });
   }
 
   protected restore(season: Season) {
     if (season.source.type !== 'archive' || !season.source.slug) return;
 
-    this.draftService.unarchiveDraft(season.source.slug).subscribe({
+    this.draftService.reopenDraft(season.source.slug).subscribe({
       next: () => this.loadSeasons(),
-      error: (error) => console.error('Failed to restore draft', error),
+      error: (error) =>
+        this.toast.error(apiErrorMessage(error, 'Could not restore the draft.')),
     });
   }
 
@@ -267,7 +272,8 @@ export class DraftsV2Component {
 
     this.draftService.deleteDraft(season.source.slug).subscribe({
       next: () => this.loadSeasons(),
-      error: (error) => console.error('Failed to delete draft', error),
+      error: (error) =>
+        this.toast.error(apiErrorMessage(error, 'Could not delete the draft.')),
     });
   }
 

@@ -21,7 +21,22 @@ export type TournamentLinkContext = {
   profile: League.CoachProfile | null;
   draftStatus: string | null;
   canManage: boolean;
+  pools: { poolSlug: string }[];
 };
+
+export function myTeamRoute(
+  base: string[],
+  profile: League.CoachProfile | null,
+): string[] | null {
+  if (!base.length || !profile?.pool || !profile.teamSlug) return null;
+  return [...base, 'teams', profile.teamSlug];
+}
+
+function draftsRoute(base: string[], pools: { poolSlug: string }[]): string[] {
+  return pools.length === 1
+    ? [...base, 'pools', pools[0].poolSlug, 'draft']
+    : [...base, 'pools'];
+}
 
 export function tournamentLinkGroups(
   context: TournamentLinkContext,
@@ -30,14 +45,20 @@ export function tournamentLinkGroups(
   if (!base.length) return [];
 
   const groups: TournamentLinkGroup[] = [];
-  const team = teamGroup(context);
-  if (team) groups.push(team);
 
   groups.push(
     {
       id: 'tournament',
       label: 'Tournament',
       links: [
+        {
+          id: 'drafts',
+          label: 'Draft Pools',
+          route: draftsRoute(base, context.pools),
+          icon: 'pokeball',
+          description: 'Every pool’s draft, live progress and picks',
+          ...(context.draftStatus ? { status: context.draftStatus } : {}),
+        },
         {
           id: 'standings',
           label: 'Standings',
@@ -219,31 +240,3 @@ export function manageAccessLink(base: string[]): TournamentLink | null {
   };
 }
 
-function teamGroup(
-  context: TournamentLinkContext,
-): TournamentLinkGroup | null {
-  const { base, profile, draftStatus } = context;
-  if (!profile?.pool || !profile.teamSlug) return null;
-
-  return {
-    id: 'team',
-    label: profile.teamName || 'Your Team',
-    links: [
-      {
-        id: 'team-overview',
-        label: 'Overview',
-        route: [...base, 'teams', profile.teamSlug],
-        icon: 'shield',
-        description: 'Your roster and record',
-      },
-      {
-        id: 'team-draft',
-        label: 'Draft',
-        route: [...base, 'pools', profile.pool.poolSlug, 'draft'],
-        icon: 'sports_esports',
-        description: 'Make your picks',
-        ...(draftStatus ? { status: draftStatus } : {}),
-      },
-    ],
-  };
-}

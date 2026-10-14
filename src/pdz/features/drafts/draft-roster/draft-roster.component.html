@@ -1,0 +1,64 @@
+@let s = season();
+@if (s.mvp; as mvp) {
+  <pdz-season-mvp
+    [pokemon]="mvp.pokemon"
+    [knockouts]="mvp.knockouts"
+    [detail]="mvpLine(s)"
+    [stats]="s.mvpStats"
+  />
+}
+<pdz-card padding="none">
+  @if (s.draft.team.length) {
+    <pdz-roster-sprites
+      pdz-card-media
+      [pokemon]="s.draft.team"
+      [name]="s.draft.teamName"
+    />
+  }
+  <section class="roster" aria-labelledby="draft-roster-title">
+    <h2 class="roster__title" id="draft-roster-title">Draft Roster</h2>
+    <div class="pdz-table-wrapper">
+      <table class="pdz-table" data-density="compact">
+        <thead>
+          <tr>
+            <th scope="col">Pokémon</th>
+            <th class="pdz-table__num" scope="col">Brought</th>
+            <th class="pdz-table__num" scope="col">Kills</th>
+            <th class="pdz-table__num" scope="col">Indirect</th>
+            <th class="pdz-table__num" scope="col">Deaths</th>
+            <th class="pdz-table__num" scope="col">K/D</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (line of s.roster; track line.pokemon.id) {
+            <tr>
+              <td><pdz-pokemon [pokemon]="line.pokemon" /></td>
+              <td class="pdz-table__num">{{ line.brought }}</td>
+              <td class="pdz-table__num">{{ line.kills }}</td>
+              <td class="pdz-table__num">{{ line.indirect }}</td>
+              <td class="pdz-table__num">{{ line.deaths }}</td>
+              <td class="pdz-table__num">{{ killRatio(line) }}</td>
+            </tr>
+          }
+        </tbody>
+        <tfoot>
+          <tr>
+            <th scope="row">{{ s.roster.length }} Pokémon</th>
+            <td class="pdz-table__num"></td>
+            <td class="pdz-table__num">{{ s.totals.kills }}</td>
+            <td class="pdz-table__num">{{ s.totals.indirect }}</td>
+            <td class="pdz-table__num">{{ s.totals.deaths }}</td>
+            <td class="pdz-table__num"></td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+    @if (!s.hasStats) {
+      <pdz-empty-state
+        size="sm"
+        icon="scoreboard"
+        message="Score your first match to see your stats."
+      />
+    }
+  </section>
+</pdz-card>

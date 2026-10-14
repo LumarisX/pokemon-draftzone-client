@@ -1,8 +1,22 @@
 <pdz-page type="workspace">
-@if (isLoading) {
+@if (loadFailed) {
+  <pdz-empty-state
+    kind="error"
+    heading="Couldn't load this draft"
+    message="The pool's draft board did not come back from the server."
+    retry="event"
+    (retried)="loadDraftDetails()"
+  />
+} @else if (isLoading) {
   <pdz-skeleton-layout layout="board" count="6" />
 } @else {
-  <pdz-page-header compact [title]="poolName" [eyebrow]="leagueName">
+  <pdz-page-header
+    compact
+    [title]="poolName"
+    [eyebrow]="leagueName"
+    [backLink]="poolsLink"
+    backLabel="Draft Pools"
+  >
     <pdz-chip pdz-page-header-meta size="sm" [tone]="statusTone">{{
       statusLabel
     }}</pdz-chip>

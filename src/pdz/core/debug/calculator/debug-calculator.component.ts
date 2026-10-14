@@ -12,6 +12,7 @@ import { SelectComponent } from '@pdz/shared/dropdowns/select/select.component';
 import { SelectOptionComponent } from '@pdz/shared/dropdowns/select/select-option.component';
 import { SegmentedComponent } from '@pdz/shared/inputs/segmented/segmented.component';
 import { DEFAULT_RULESET } from '@pdz/core/rulesets';
+import { toApiError } from '@pdz/core/services/api-error';
 import { SegmentedOptionComponent } from '@pdz/shared/inputs/segmented/segmented-option.component';
 import { CalcChartsComponent } from './calc-charts.component';
 import {
@@ -188,7 +189,7 @@ export class DebugCalculatorComponent {
         this.loading.set(false);
       },
       error: (err) => {
-        this.error.set(err?.error?.message ?? err?.message ?? 'Request failed');
+        this.error.set(toApiError(err)?.serverMessage ?? 'Request failed');
         this.result.set(undefined);
         this.loading.set(false);
       },

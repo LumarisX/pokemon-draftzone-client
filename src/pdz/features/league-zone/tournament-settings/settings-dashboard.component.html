@@ -35,8 +35,8 @@
           @if (store.phase() === "season") {
             <pdz-chip tone="primary">Season Active</pdz-chip>
           }
-          @if (store.draft().archived) {
-            <pdz-chip>Archived</pdz-chip>
+          @if (store.draft().completed) {
+            <pdz-chip icon="flag">Completed</pdz-chip>
           }
         </div>
       </pdz-page-header>

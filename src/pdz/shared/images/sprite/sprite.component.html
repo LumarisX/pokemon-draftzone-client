@@ -33,9 +33,14 @@
     </div>
   }
   @if (stateLabel(); as label) {
-    <span class="state-badge" role="img" [attr.aria-label]="label">
+    <span
+      class="state-badge"
+      role="img"
+      [class.state-badge--logo]="state() === 'taken'"
+      [attr.aria-label]="label"
+    >
       @if (state() === 'taken') {
-        <pdz-team-logo size="xs" shape="circle" decorative [src]="takenLogo()" [name]="takenBy()" />
+        <pdz-team-logo size="xs" decorative [src]="takenLogo()" [name]="takenBy()" />
       } @else {
         <pdz-icon name="block" [size]="12" />
       }

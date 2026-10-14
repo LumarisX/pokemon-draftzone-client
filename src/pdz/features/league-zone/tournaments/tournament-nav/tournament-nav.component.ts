@@ -13,12 +13,15 @@ import { AuthService } from '@pdz/core/services/auth0.service';
 import { LeagueManageService } from '@pdz/features/league-zone/league-manage/league-manage.service';
 import { LeagueZoneService } from '@pdz/features/league-zone/league-zone.service';
 import { League } from '@pdz/features/league-zone/league.interface';
-import { getLeagueLogoUrl } from '@pdz/features/league-zone/league.util';
+import {
+  getLeagueLogoUrl,
+  getTeamLogoSrc,
+} from '@pdz/features/league-zone/league.util';
 import { SkeletonComponent } from '@pdz/shared/data/skeleton/skeleton.component';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { TeamLogoComponent } from '@pdz/shared/images/team-logo/team-logo.component';
 import { catchError, of, switchMap } from 'rxjs';
-import { tournamentLinkGroups } from '../tournament-links';
+import { myTeamRoute, tournamentLinkGroups } from '../tournament-links';
 
 @Component({
   selector: 'pdz-tournament-nav',
@@ -59,8 +62,20 @@ export class TournamentNavComponent {
       profile: this.profile(),
       draftStatus: this.draftStatus(),
       canManage: this.canManage(),
+      pools: this.leagueInfo()?.pools ?? [],
     }),
   );
+
+  readonly myTeam = computed(() => {
+    const profile = this.profile();
+    const route = myTeamRoute(this.tournamentBase(), profile);
+    if (!profile || !route) return null;
+    return {
+      route,
+      name: profile.teamName,
+      logo: getTeamLogoSrc(profile.logo),
+    };
+  });
 
   readonly logoSrc = computed(() => getLeagueLogoUrl(this.leagueInfo()?.logo));
 

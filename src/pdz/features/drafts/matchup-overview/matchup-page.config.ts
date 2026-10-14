@@ -4,6 +4,7 @@ export interface MatchupPageConfig {
   share: boolean;
   teambuilder: boolean;
   notes: boolean;
+  manage?: boolean;
 }
 
 export const DRAFT_MATCHUP_PAGE: MatchupPageConfig = {
@@ -12,6 +13,7 @@ export const DRAFT_MATCHUP_PAGE: MatchupPageConfig = {
   share: true,
   teambuilder: true,
   notes: true,
+  manage: true,
 };
 
 export const LEAGUE_MATCHUP_PAGE: MatchupPageConfig = {

@@ -30,15 +30,18 @@ export function nextMilestone(
   return null;
 }
 
-export function milestoneSentence(milestone: TournamentMilestone): string {
-  const when = milestone.at.toLocaleString(undefined, {
+export function formatMilestoneTime(at: Date): string {
+  return at.toLocaleString(undefined, {
     weekday: 'short',
     month: 'short',
     day: 'numeric',
     hour: 'numeric',
     minute: '2-digit',
   });
-  return `${milestone.label} ${when}.`;
+}
+
+export function milestoneSentence(milestone: TournamentMilestone): string {
+  return `${milestone.label} ${formatMilestoneTime(milestone.at)}.`;
 }
 
 export function waitingMessage(

@@ -46,6 +46,7 @@ import { MenuTriggerDirective } from '@pdz/shared/menu/menu-trigger.directive';
 import { Subject } from 'rxjs';
 import { first, takeUntil } from 'rxjs/operators';
 import { League } from '@pdz/features/league-zone/league.interface';
+import { getTeamLogoSrc } from '@pdz/features/league-zone/league.util';
 import { LeagueTier, TierPokemon } from '../tier-list.model';
 import {
   DraftedPick,
@@ -457,9 +458,12 @@ export class TierListComponent implements OnInit, OnDestroy {
     return this.draftedBy().get(pokemon.id);
   }
 
-  spriteState(pokemon: Pokemon, tier: LeagueTier): SpriteState | null {
-    if (this.isBanTier(tier)) return 'banned';
+  spriteState(pokemon: Pokemon): SpriteState | null {
     return this.isPokemonDrafted(pokemon) ? 'taken' : null;
+  }
+
+  takenLogo(pokemon: Pokemon): string | undefined {
+    return getTeamLogoSrc(this.draftPick(pokemon)?.teamLogo);
   }
 
   isBanTier(tier: LeagueTier): boolean {

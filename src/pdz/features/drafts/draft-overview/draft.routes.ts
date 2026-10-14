@@ -2,13 +2,13 @@ import { Routes } from '@angular/router';
 import { AuthGuard } from '@auth0/auth0-angular';
 import { DraftFormEditComponent } from './draft-form/draft-form-edit/draft-form-edit.component';
 import { DraftFormNewComponent } from './draft-form/draft-form-new/draft-form-new.component';
-import { DraftPreviewComponent } from './draft-preview/draft-preview.component';
+import { MyLeaguesComponent } from '../my-leagues/my-leagues.component';
 import { DraftStatsComponent } from './draft-stats/draft-stats.component';
 
 export const routes: Routes = [
   {
     path: '',
-    component: DraftPreviewComponent,
+    component: MyLeaguesComponent,
     canActivate: [AuthGuard],
   },
   {

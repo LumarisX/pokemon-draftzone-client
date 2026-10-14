@@ -78,6 +78,12 @@ $fab-stack-clearance: calc(
   color: pdz.color(on-surface-muted);
 }
 
+.matchup__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: pdz.space(xs);
+}
+
 .matchup__when {
   @include pdz.text(meta);
   @include pdz.numeric;

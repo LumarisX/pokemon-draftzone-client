@@ -1,0 +1,21 @@
+@use "tools/color" as *;
+@use "tools/space" as *;
+
+$section-nav-width: 13rem;
+
+@mixin nav-current($fill: true) {
+  --pdz-icon-fill: 1;
+  color: color(on-surface);
+
+  @if $fill {
+    background-color: color(state-pressed);
+  }
+}
+
+@function nav-indicator() {
+  @return color(on-surface);
+}
+
+@function section-nav-span() {
+  @return calc(#{$section-nav-width} + #{space(xl)});
+}

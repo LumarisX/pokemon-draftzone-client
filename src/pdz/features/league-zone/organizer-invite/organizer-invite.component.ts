@@ -14,6 +14,7 @@ import {
   LEAGUE_ZONE_MANAGE_PATH,
   LEAGUE_ZONE_PATH,
 } from '@pdz/core/route-paths';
+import { apiErrorMessage } from '@pdz/core/services/api.service';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 import { EmptyStateComponent } from '@pdz/shared/feedback/empty-state/empty-state.component';
 import { ToastService } from '@pdz/shared/feedback/toast/toast.service';
@@ -120,7 +121,7 @@ export class OrganizerInviteComponent implements OnInit {
         error: (err) => {
           this.accepting.set(false);
           this.toast.error(
-            err?.error?.error?.message ?? 'Could not accept this invite.',
+            apiErrorMessage(err, 'Could not accept this invite.'),
           );
         },
       });

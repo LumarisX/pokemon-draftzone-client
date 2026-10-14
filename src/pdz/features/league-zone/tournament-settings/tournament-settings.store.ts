@@ -87,7 +87,7 @@ const EMPTY_SETTINGS: SettingsValue = {
   adPrizeValue: '0',
   adPlatforms: [],
   prizeSplit: [],
-  archived: false,
+  completed: false,
 };
 
 const EMPTY_ARTIFACTS: ArtifactState = {
@@ -218,7 +218,7 @@ export class TournamentSettingsStore {
       return date ? date.getTime() : null;
     };
 
-    if (value.archived) return 'complete';
+    if (value.completed) return 'complete';
 
     const seasonEnd = at(value.seasonEnd);
     if (seasonEnd && now > seasonEnd) return 'complete';
@@ -408,7 +408,7 @@ export class TournamentSettingsStore {
       prizeSplit: [...(settings.prizeSplit ?? [])].sort(
         (a, b) => a.place - b.place,
       ),
-      archived: settings.archived ?? false,
+      completed: settings.completed ?? false,
     };
 
     this.signUpTokenValue.set(settings.signUpToken ?? null);
@@ -696,7 +696,7 @@ export class TournamentSettingsStore {
         ? { description: v.description || undefined }
         : {}),
       ...(touched('logo') ? { logo: v.logo } : {}),
-      ...(touched('archived') ? { archived: v.archived } : {}),
+      ...(touched('completed') ? { completed: v.completed } : {}),
       ...(touched('signUpDeadline')
         ? { signUpDeadline: fromLocalInput(v.signUpDeadline) }
         : {}),

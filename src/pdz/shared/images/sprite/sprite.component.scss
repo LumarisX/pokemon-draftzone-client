@@ -194,3 +194,14 @@
     height: 100%;
   }
 }
+
+.state-badge--logo {
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+  overflow: visible;
+
+  pdz-team-logo {
+    border-radius: 0;
+  }
+}

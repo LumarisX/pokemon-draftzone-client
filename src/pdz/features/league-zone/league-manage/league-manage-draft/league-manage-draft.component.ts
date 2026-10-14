@@ -20,6 +20,7 @@ import {
   LEAGUE_ZONE_MANAGE_PATH,
   LEAGUE_ZONE_PATH,
 } from '@pdz/core/route-paths';
+import { apiErrorMessage } from '@pdz/core/services/api.service';
 import { EventStreamService } from '@pdz/core/services/event-stream.service';
 import { DraftPokemon } from '@pdz/features/drafts/draft.model';
 import { LeagueNotificationService } from '@pdz/features/league-zone/league-notification.service';
@@ -660,11 +661,9 @@ export class LeagueManageDraftComponent implements OnInit {
   }
 
   private showError(message: string, error: unknown): void {
-    const reason = (
-      error as { error?: { error?: { details?: { reason?: unknown } } } }
-    )?.error?.error?.details?.reason;
+    const reason = apiErrorMessage(error, '');
     this.notificationService.show(
-      typeof reason === 'string' ? `${message} ${reason}` : message,
+      reason ? `${message} ${reason}` : message,
       'error',
     );
   }

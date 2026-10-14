@@ -1,400 +1,178 @@
-<pdz-page type="dashboard">
-@if (draft(); as draft) {
-  <pdz-page-header
-    compact
-    backLabel="My Drafts"
-    [title]="draft.teamName"
-    [backLink]="backLink"
-  >
-    <div pdz-page-header-center class="draft-bar" aria-label="Your team">
-      @for (pokemon of draft.team; track $index) {
-        <pdz-sprite
-          size="fill"
-          grounded
-          [pokemon]="pokemon"
-          [class.unresolved-sprite]="pokemon.unresolved"
-        />
+<pdz-page type="detail">
+  @if (season(); as season) {
+    @let draft = season.draft;
+    @let link = links();
+    <pdz-page-header
+      backLabel="My Leagues"
+      [title]="draft.teamName"
+      [backLink]="backLink"
+    >
+      @if (draft.team.length) {
+        <pdz-roster-pattern pdz-page-header-backdrop [pokemon]="draft.team" />
       }
-    </div>
-    <span pdz-page-header-detail class="draft-facts">
-      <span>{{ draft.leagueName }}</span>
-      <span>{{ draft.format }}</span>
-      <span>{{ draft.ruleset }}</span>
-    </span>
-    @if (draft.score) {
-      <span pdz-page-header-meta class="draft-record">
-        <pdz-record
-          size="sm"
-          [wins]="draft.score.wins"
-          [losses]="draft.score.losses"
-        />
-        <span class="draft-record__diff">{{ draft.score.diff }}</span>
+      <span pdz-page-header-detail class="facts">
+        @if (draft.coach) {
+          <span class="facts__coach">{{ draft.coach }}</span>
+        }
+        <span>{{ draft.leagueName }}</span>
+        <span>{{ draft.format }}</span>
+        <span>{{ draft.ruleset }}</span>
       </span>
-    }
-    <div pdz-page-header-actions class="draft-actions">
-      <a
-        pdz-button
-        iconOnly
-        icon="edit"
-        variant="outlined"
-        color="neutral"
-        aria-label="Edit draft"
-        pdzTooltip="Edit draft"
-        [routerLink]="['/', draftPath, 'edit']"
-        [queryParams]="{ draft: draftParam(draft.slug) }"
-      ></a>
-      @if (draft.doc) {
+
+      <span pdz-page-header-meta class="meta">
+        @if (draft.completedAt) {
+          <pdz-chip size="sm" icon="flag">Completed</pdz-chip>
+        }
+        <pdz-record [wins]="draft.score.wins" [losses]="draft.score.losses" />
+      </span>
+
+      <div pdz-page-header-actions class="actions">
+        @if (draft.doc) {
+          <a
+            pdz-button
+            iconOnly
+            icon="dataset_linked"
+            variant="outlined"
+            color="neutral"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Open league document"
+            pdzTooltip="Open league document"
+            [href]="draft.doc"
+          ></a>
+        }
         <a
           pdz-button
-          iconOnly
-          icon="dataset_linked"
+          icon="edit"
           variant="outlined"
           color="neutral"
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label="Open league document"
-          pdzTooltip="Open league document"
-          [href]="draft.doc"
-        ></a>
-      }
-    </div>
-  </pdz-page-header>
-}
-<div class="preview-main">
-  <section class="matchups-section alternate">
-    <div class="section-header">
-      <h3>Matches</h3>
-      <div class="button-container">
-        <button
-          pdz-button
-          iconOnly
-          variant="tonal"
-          color="neutral"
-          class="direction-btn"
-          aria-label="Reverse order"
-          [class.up]="directionUp"
-          (click)="toggleDirection()"
+          [routerLink]="link.edit"
+          [queryParams]="{ draft: draftParam(draft.slug) }"
+          >Edit Team</a
         >
-          <pdz-icon name="arrow_downward"></pdz-icon>
-        </button>
-        <a
-          pdz-button
-          iconOnly
-          icon="add"
-          variant="tonal"
-          color="neutral"
-          aria-label="Add a matchup"
-          [routerLink]="['/', draftPath, this.teamId, 'form']"
-          [queryParams]="{ stage: `Week ${(this.matchups?.length ?? 0) + 1}` }"
-        ></a>
-      </div>
-    </div>
-    @if (!matchups) {
-      <pdz-skeleton-layout layout="cards" count="3" />
-    } @else {
-      <div class="matchups-container">
-        @for (matchup of matchups; track $index) {
-          <pdz-card class="matchup-card" padding="sm">
-            <div pdz-card-media class="card-photo">
-              <pdz-team-photo
-                side="team2"
-                [pokemon]="matchup.team"
-                [name]="matchup.teamName"
-              />
-              @if (restNames(matchup.team); as rest) {
-                <span
-                  class="card-photo__more"
-                  tabindex="0"
-                  [pdzTooltip]="rest"
-                  [attr.aria-label]="'Also on the team: ' + rest"
-                  >+{{ matchup.team.length - photoSize }} more</span
-                >
-              }
-            </div>
-            <div pdz-card-header>
-              <pdz-team
-                class="card-title"
-                size="card"
-                [name]="matchup.teamName"
-                [logo]="matchup.logo"
-                [coach]="matchup.coach"
-                [headingLevel]="3"
-              />
-
-              @if (matchup.score) {
-                <pdz-score [tone]="matchup.scoreTone ?? 'neutral'">{{
-                  matchup.scoreString
-                }}</pdz-score>
-              }
-
-              <pdz-menu aria-label="Match actions">
-                <button
-                  pdz-button
-                  iconOnly
-                  size="sm"
-                  variant="ghost"
-                  color="neutral"
-                  pdz-menu-trigger
-                  [attr.aria-label]="'Actions for ' + matchup.teamName"
-                >
-                  <pdz-icon name="more_vert"></pdz-icon>
-                </button>
-                @if (matchup.score) {
-                  <a
-                    pdz-menu-item
-                    icon="search_insights"
-                    [routerLink]="['matchup', matchup._id]"
-                    >View Matchup</a
-                  >
-                }
-                <a
-                  pdz-menu-item
-                  icon="edit_document"
-                  routerLink="form"
-                  [queryParams]="{ matchup: matchup._id }"
-                  >Edit Match</a
-                >
-                <a
-                  pdz-menu-item
-                  icon="scoreboard"
-                  routerLink="score"
-                  [queryParams]="{ matchup: matchup._id }"
-                  >{{ matchup.score ? "Edit" : "Add" }} Score</a
-                >
-                <button
-                  pdz-menu-item
-                  icon="schedule"
-                  (click)="setMatchTime(matchup)"
-                >
-                  {{ matchup.scheduledDate ? "Edit" : "Set" }} Match Time
-                </button>
-                <button
-                  pdz-menu-item
-                  icon="delete_forever"
-                  tone="danger"
-                  (click)="deleteMatchup(matchup._id)"
-                >
-                  Delete
-                </button>
-              </pdz-menu>
-            </div>
-
-            <div class="matchup-meta">
-              <span class="matchup-meta__stage">{{ matchup.stage }}</span>
-              @if (scheduledExact(matchup); as exact) {
-                <span
-                  class="matchup-meta__time"
-                  tabindex="0"
-                  [pdzTooltip]="exact"
-                >
-                  <pdz-icon name="schedule" [size]="12"></pdz-icon>
-                  <pdz-countdown
-                    [target]="matchup.scheduledDate ?? null"
-                    [showTitle]="false"
-                  />
-                </span>
-              }
-            </div>
-
-            <div pdz-card-footer>
-              @if (matchup.score) {
-                <button
-                  pdz-button
-                  size="sm"
-                  variant="ghost"
-                  color="neutral"
-                  [disabled]="!matchup.matches.length"
-                  (click)="openReplays(matchup)"
-                >
-                  {{ "View Replay" + (matchup.matches.length > 1 ? "s" : "") }}
-                </button>
-              } @else {
-                <a
-                  pdz-button
-                  size="sm"
-                  variant="ghost"
-                  color="neutral"
-                  [routerLink]="['matchup', matchup._id]"
-                  >View Matchup</a
-                >
-              }
-            </div>
-          </pdz-card>
-        } @empty {
-          <pdz-empty-state
-            kind="empty"
-            heading="No matches yet"
-            message="Add your first opponent to start prepping for the season."
+        <pdz-menu aria-label="Draft actions">
+          <button
+            pdz-button
+            iconOnly
+            icon="more_vert"
+            variant="outlined"
+            color="neutral"
+            pdz-menu-trigger
+            aria-label="More draft actions"
+          ></button>
+          <a
+            pdz-menu-item
+            icon="event_list"
+            [routerLink]="['/', plannerPath]"
+            [queryParams]="{ draft: plannerParam(draft) }"
+            >Open in Planner</a
           >
-            <div pdz-empty-state-actions>
-              <a
-                pdz-button
-                size="sm"
-                color="neutral"
-                [routerLink]="['/', draftPath, this.teamId, 'form']"
-                [queryParams]="{ stage: 'Week 1' }"
-              >
-                <pdz-icon name="add"></pdz-icon>
-                Add Opponent
-              </a>
-            </div>
-          </pdz-empty-state>
-        }
+          <button
+            pdz-menu-item
+            [icon]="draft.completedAt ? 'replay' : 'flag'"
+            [disabled]="busy()"
+            (click)="toggleCompleted(draft)"
+          >
+            {{ draft.completedAt ? "Reopen Season" : "Mark Season Completed" }}
+          </button>
+          <button
+            pdz-menu-item
+            icon="delete_forever"
+            tone="danger"
+            (click)="deleteDraft(draft)"
+          >
+            Delete Draft
+          </button>
+        </pdz-menu>
       </div>
-    }
-  </section>
-  <section class="stats-section">
-    <div class="section-header">Stats</div>
-    @if (mvp; as mvp) {
-      <pdz-season-mvp
-        class="mvp"
-        [pokemon]="mvp.pokemon"
-        [knockouts]="knockouts(mvp)"
-        [detail]="mvpLine(mvp)"
-        [stats]="mvpStatList"
-      />
-    }
-    @if (!teamStats) {
-      <pdz-skeleton-layout layout="table" />
-    } @else {
-      @if (teamStats.value && teamStats.value.length > 0) {
-        <div class="table-container">
-          <div class="table-wrapper">
-            <table
-              class="pdz-table"
-              data-sticky
-              cdk-table
-              [dataSource]="teamStats.value!"
-              pdzSort
-              (pdzSortChange)="sort($event)"
-              pdzSortActive="kpg"
-              pdzSortDirection="desc"
-              pdzSortDisableClear
+    </pdz-page-header>
+
+    <div class="body">
+      <pdz-card padding="lg" class="body__schedule">
+        <section class="section" aria-labelledby="draft-schedule">
+          <div class="section__header">
+            <h2 class="section__title" id="draft-schedule">Schedule</h2>
+            <a
+              pdz-button
+              icon="add"
+              size="sm"
+              variant="outlined"
+              color="neutral"
+              [routerLink]="link.form"
+              [queryParams]="{ stage: nextStage(season.matches.length) }"
+              >Add Opponent</a
             >
-              <ng-container cdkColumnDef="sprite">
-                <th
-                  class="pdz-table__center"
-                  cdk-header-cell
-                  *cdkHeaderCellDef
-                ></th>
-                <td
-                  class="pdz-table__center"
-                  cdk-cell
-                  *cdkCellDef="let element"
-                >
-                  <div class="sprite-wrapper">
-                    <pdz-sprite
-                      size="lg"
-                      [flipped]="true"
-                      [pokemon]="element.pokemon"
-                    ></pdz-sprite>
-                  </div>
-                </td>
-              </ng-container>
-              <ng-container cdkColumnDef="name">
-                <th cdk-header-cell *cdkHeaderCellDef pdzSortHeader="name">
-                  Name
-                </th>
-                <td cdk-cell *cdkCellDef="let element">
-                  {{ element.pokemon.name }}
-                </td>
-              </ng-container>
-
-              <ng-container cdkColumnDef="gb">
-                <th
-                  class="pdz-table__num"
-                  cdk-header-cell
-                  *cdkHeaderCellDef
-                  pdzSortHeader="gb"
-                >
-                  Games Brought
-                </th>
-                <td class="pdz-table__num" cdk-cell *cdkCellDef="let element">
-                  {{ element.brought }}
-                </td>
-              </ng-container>
-
-              <ng-container cdkColumnDef="dk">
-                <th
-                  class="pdz-table__num"
-                  cdk-header-cell
-                  *cdkHeaderCellDef
-                  pdzSortHeader="dk"
-                >
-                  Direct Kills
-                </th>
-                <td class="pdz-table__num" cdk-cell *cdkCellDef="let element">
-                  {{ element.kills }}
-                </td>
-              </ng-container>
-
-              <ng-container cdkColumnDef="ik">
-                <th
-                  class="pdz-table__num"
-                  cdk-header-cell
-                  *cdkHeaderCellDef
-                  pdzSortHeader="ik"
-                >
-                  Indirect Kills
-                </th>
-                <td class="pdz-table__num" cdk-cell *cdkCellDef="let element">
-                  {{ element.indirect }}
-                </td>
-              </ng-container>
-
-              <ng-container cdkColumnDef="deaths">
-                <th
-                  class="pdz-table__num"
-                  cdk-header-cell
-                  *cdkHeaderCellDef
-                  pdzSortHeader="deaths"
-                >
-                  Deaths
-                </th>
-                <td class="pdz-table__num" cdk-cell *cdkCellDef="let element">
-                  {{ element.deaths }}
-                </td>
-              </ng-container>
-
-              <ng-container cdkColumnDef="kdr">
-                <th
-                  class="pdz-table__num"
-                  cdk-header-cell
-                  *cdkHeaderCellDef
-                  pdzSortHeader="kdr"
-                >
-                  Kills/Deaths
-                </th>
-                <td class="pdz-table__num" cdk-cell *cdkCellDef="let element">
-                  {{ element.kdr | number: "1.0-2" }}
-                </td>
-              </ng-container>
-
-              <ng-container cdkColumnDef="kpg">
-                <th
-                  class="pdz-table__num"
-                  cdk-header-cell
-                  *cdkHeaderCellDef
-                  pdzSortHeader="kpg"
-                >
-                  Kills/Game
-                </th>
-                <td class="pdz-table__num" cdk-cell *cdkCellDef="let element">
-                  {{ element.kpg | number: "1.0-2" }}
-                </td>
-              </ng-container>
-
-              <tr cdk-header-row *cdkHeaderRowDef="displayedColumns"></tr>
-              <tr cdk-row *cdkRowDef="let row; columns: displayedColumns"></tr>
-            </table>
           </div>
-        </div>
-      } @else {
-        <div class="score-placeholder">
-          Score your first match to see your stats
-        </div>
-      }
-    }
-  </section>
-</div>
+          @if (season.rows.length) {
+            <pdz-team-season [entries]="season.rows" [rowActions]="rowMenu" />
+          } @else {
+            <pdz-empty-state
+              size="sm"
+              icon="event"
+              message="Add your first opponent to start prepping for the season."
+            />
+          }
+        </section>
+      </pdz-card>
+
+      <pdz-draft-roster class="body__roster" [season]="season" />
+    </div>
+  } @else if (failed()) {
+    <pdz-empty-state
+      bordered
+      kind="error"
+      heading="Could not load this draft"
+      message="The draft did not come back from the server."
+      retry="reload"
+    />
+  } @else {
+    <pdz-skeleton-layout layout="cards" count="3" />
+  }
 </pdz-page>
+
+<ng-template #rowMenu let-row>
+  @if (matchFor(row.id); as match) {
+    <pdz-menu aria-label="Match actions">
+      <button
+        pdz-button
+        iconOnly
+        icon="more_vert"
+        size="sm"
+        variant="ghost"
+        color="neutral"
+        pdz-menu-trigger
+        [attr.aria-label]="'Actions for ' + match.stage"
+      ></button>
+      <a
+        pdz-menu-item
+        icon="scoreboard"
+        [routerLink]="links().score"
+        [queryParams]="{ matchup: match.id }"
+        >{{ match.score ? "Edit" : "Add" }} Score</a
+      >
+      <a
+        pdz-menu-item
+        icon="edit_document"
+        [routerLink]="links().form"
+        [queryParams]="{ matchup: match.id }"
+        >Edit Match</a
+      >
+      <button pdz-menu-item icon="schedule" (click)="setMatchTime(match)">
+        {{ match.when ? "Edit" : "Set" }} Match Time
+      </button>
+      @if (match.replays.length) {
+        <button pdz-menu-item icon="play_circle" (click)="openReplays(match)">
+          View Replay{{ match.replays.length > 1 ? "s" : "" }}
+        </button>
+      }
+      <button
+        pdz-menu-item
+        icon="delete_forever"
+        tone="danger"
+        (click)="removeMatch(match)"
+      >
+        Delete
+      </button>
+    </pdz-menu>
+  }
+</ng-template>

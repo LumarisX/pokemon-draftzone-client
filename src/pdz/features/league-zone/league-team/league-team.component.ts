@@ -9,7 +9,8 @@ import {
   viewChild,
 } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterLink } from '@angular/router';
+import { LEAGUE_ZONE_PATH } from '@pdz/core/route-paths';
 import { UploadService } from '@pdz/core/services/upload.service';
 import {
   CoachEditDialogComponent,
@@ -40,12 +41,13 @@ import { DialogService } from '@pdz/shared/dialogs/dialog/dialog.service';
 import { EmptyStateComponent } from '@pdz/shared/feedback/empty-state/empty-state.component';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { SkeletonLayoutComponent } from '@pdz/shared/data/skeleton/skeleton-layout.component';
-import { RosterPatternComponent } from '@pdz/shared/images/roster-pattern/roster-pattern.component';
-import { TeamPhotoComponent } from '@pdz/shared/images/team-photo/team-photo.component';
 import { TeamSeasonComponent } from './team-season/team-season.component';
 import { PokemonComponent } from '@pdz/shared/data/pokemon/pokemon.component';
 import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
 import { PageComponent } from '@pdz/shared/layout/page/page.component';
+import { MenuItemComponent } from '@pdz/shared/menu/menu-item.component';
+import { MenuTriggerDirective } from '@pdz/shared/menu/menu-trigger.directive';
+import { MenuComponent } from '@pdz/shared/menu/menu.component';
 import { TooltipDirective } from '@pdz/shared/tooltip/tooltip.directive';
 import { Observable, catchError, interval, map, of, startWith, switchMap } from 'rxjs';
 import { distinctUntilChanged, filter, finalize } from 'rxjs/operators';
@@ -73,14 +75,16 @@ const CLOCK_TICK_MS = 30_000;
     EmptyStateComponent,
     IconComponent,
     LeagueTradeWidgetComponent,
+    MenuComponent,
+    MenuItemComponent,
+    MenuTriggerDirective,
     SkeletonLayoutComponent,
     PageComponent,
     PageHeaderComponent,
     RecordComponent,
-    RosterPatternComponent,
+    RouterLink,
     SeasonMvpComponent,
     PokemonComponent,
-    TeamPhotoComponent,
     TeamSeasonComponent,
     TooltipDirective,
   ],
@@ -131,6 +135,23 @@ export class LeagueTeamComponent implements OnInit {
   });
 
   readonly logoSrc = computed(() => getLogoUrl(this.teamData()?.logo));
+
+  private readonly tournamentBase = computed(() => [
+    '/',
+    LEAGUE_ZONE_PATH,
+    this.leagueService.leagueSlug(),
+    'tournaments',
+    this.leagueService.tournamentSlug(),
+  ]);
+
+  readonly teamsLink = computed(() => [...this.tournamentBase(), 'teams']);
+
+  readonly poolLink = computed(() => {
+    const pool = this.teamData()?.pool;
+    return pool
+      ? [...this.tournamentBase(), 'pools', pool.poolSlug, 'draft']
+      : null;
+  });
 
   readonly totals = computed(() =>
     (this.teamData()?.draft ?? []).reduce(
@@ -202,6 +223,40 @@ export class LeagueTeamComponent implements OnInit {
       },
     ];
   });
+
+  async toggleMySeason(): Promise<void> {
+    const team = this.teamData();
+    const leagueSlug = this.leagueService.leagueSlug();
+    const tournamentSlug = this.leagueService.tournamentSlug();
+    if (!team?.isCoach || !leagueSlug || !tournamentSlug) return;
+
+    const completing = !team.completedForMe;
+    if (completing) {
+      const confirmed = await this.dialogs.confirm('Mark season completed?', {
+        message:
+          'This season moves to Completed on your My Leagues. Only you see the change, and you can reopen it any time.',
+        confirmLabel: 'Mark Completed',
+      });
+      if (!confirmed) return;
+    }
+
+    this.saving.set(true);
+    const request = completing
+      ? this.leagueService.completeMySeason(leagueSlug, tournamentSlug)
+      : this.leagueService.reopenMySeason(leagueSlug, tournamentSlug);
+    request.pipe(finalize(() => this.saving.set(false))).subscribe({
+      next: () =>
+        this.teamData.update((current) =>
+          current ? { ...current, completedForMe: completing } : current,
+        ),
+      error: () =>
+        this.saveError.set(
+          completing
+            ? 'Could not mark this season completed.'
+            : 'Could not reopen this season.',
+        ),
+    });
+  }
 
   async openTeamEdit(): Promise<void> {
     const team = this.teamData();

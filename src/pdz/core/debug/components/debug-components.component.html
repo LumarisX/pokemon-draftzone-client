@@ -196,9 +196,7 @@
     <div class="versus__side">
       <pdz-team-logo size="lg" name="Cerulean Surfers" decorative />
       <div class="versus__names">
-        <span class="versus__team">
-          Cerulean Surfers <span class="pdz-you-tag">You</span>
-        </span>
+        <span class="versus__team">Cerulean Surfers</span>
         <span class="versus__coach">misty_w</span>
       </div>
     </div>
@@ -291,7 +289,7 @@
         </tr>
         <tr class="pdz-table__row--you">
           <td class="pdz-table__num">2</td>
-          <td>Cerulean Surfers <span class="pdz-you-tag">You</span></td>
+          <td>Cerulean Surfers</td>
           <td class="pdz-table__center">
             <pdz-record size="sm" [wins]="4" [losses]="1" />
           </td>
@@ -341,6 +339,19 @@
     <pdz-record [wins]="2" [draws]="1" [losses]="2" />
     <pdz-record size="sm" [wins]="4" [losses]="1" />
     <pdz-record variant="inline" [wins]="4" [draws]="1" [losses]="1" />
+  </div>
+</section>
+
+<section class="section">
+  <h2 class="section__title">Meter</h2>
+  <div class="stack">
+    <pdz-meter [value]="37" [max]="96" label="Draft progress" />
+    <pdz-meter tone="primary" [value]="37" [max]="96" label="Your pool's draft progress" />
+    <pdz-meter tone="neutral" [value]="12" [max]="12" label="Tier fully taken" />
+    <pdz-meter tone="warning" [value]="90" [max]="100" label="Points used" />
+    <pdz-meter size="sm" [value]="4" [max]="10" label="Tier taken" />
+    <pdz-meter [value]="27" [max]="99" [segments]="11" label="Round 4 of 11" />
+    <pdz-meter tone="primary" [value]="99" [max]="99" [segments]="11" label="All 11 rounds done" />
   </div>
 </section>
 
@@ -1523,6 +1534,35 @@
 </section>
 
 <section class="section">
+  <h2 class="section__title">Page Sections</h2>
+  <p class="section__note">
+    A page split into sections with jump links (Rules, a tournament's Teams).
+    A sticky column on the left once the content is 768px or wider; a sticky
+    strip of links above it when narrower. The link for the section in view is
+    selected. Each projected section carries the matching id.
+  </p>
+  <div class="page-sections-demo">
+    @for (frame of pageSectionFrames; track frame.width) {
+      <div class="page-sections-demo__frame" [attr.data-width]="frame.width">
+        <pdz-page-sections heading="Pools" [sections]="frame.sections">
+          @for (section of frame.sections; track section.id) {
+            <pdz-card [id]="section.id">
+              <div class="page-sections-demo__body">
+                <h3 class="page-sections-demo__title">{{ section.label }}</h3>
+                <p>
+                  {{ section.count }} teams. Scroll this frame to watch the
+                  selected link follow along.
+                </p>
+              </div>
+            </pdz-card>
+          }
+        </pdz-page-sections>
+      </div>
+    }
+  </div>
+</section>
+
+<section class="section">
   <h2 class="section__title">Widget</h2>
   <p class="section__note">
     Card shell for a board panel: header label, projected
@@ -1914,19 +1954,29 @@
   </div>
 
   <h3 class="section__sub">
-    Team photo — up to nineteen in rows of 6 / 7 / 6, aces front and center,
-    later picks raised into the gaps behind, empty spots while a draft runs,
-    side="team2" for the opponent
+    Roster sprites — every Pokémon, bare; wrap for roster cards, two tiers
+    for team cards (the first picks 1.4× bigger), empty spots while a draft
+    runs; tone="team2" for another coach's team
   </h3>
-  <div class="photos">
-    <pdz-team-photo [pokemon]="photoTeam" size="lg" name="Inglorious Surfers" />
-    <div class="photos__pair">
-      <pdz-team-photo [pokemon]="photoTeam" name="Inglorious Surfers" />
-      <pdz-team-photo [pokemon]="photoDrafting" [spots]="12" name="Champions Cup" />
+  <div class="roster-sprites">
+    <pdz-roster-sprites [pokemon]="photoTeam" name="Inglorious Surfers" />
+    <div class="roster-sprites__cards">
       @for (team of photoCounts; track team.length) {
-        <pdz-team-photo [pokemon]="team" name="Inglorious Surfers" />
+        <pdz-roster-sprites layout="tiers" [pokemon]="team" name="Inglorious Surfers" />
       }
-      <pdz-team-photo [pokemon]="photoCounts[0]" side="team2" name="Viridian Vipers" />
+      <pdz-roster-sprites layout="tiers" [pokemon]="photoTeam" name="Inglorious Surfers" />
+      <pdz-roster-sprites
+        layout="tiers"
+        [pokemon]="photoDrafting"
+        [spots]="12"
+        name="Champions Cup"
+      />
+      <pdz-roster-sprites
+        layout="tiers"
+        tone="team2"
+        [pokemon]="photoTeam"
+        name="Inglorious Surfers"
+      />
     </div>
   </div>
 
@@ -1969,11 +2019,11 @@
   </h3>
   <div class="team-lockups">
     <pdz-team size="inline" name="Inglorious Surfers" coach="aaronmarshall" />
-    <pdz-team name="Inglorious Surfers" coach="aaronmarshall" [link]="['.']" you />
+    <pdz-team name="Inglorious Surfers" coach="aaronmarshall" [link]="['.']" />
     <pdz-team size="card" name="Viridian Vipers" coach="misty" [logo]="teamLogoSample" />
     <pdz-team size="hero" name="Neon Nightshades" coach="brock" [headingLevel]="3" />
     <div class="team-lockups__versus">
-      <pdz-team size="card" name="Inglorious Surfers" coach="aaronmarshall" you />
+      <pdz-team size="card" name="Inglorious Surfers" coach="aaronmarshall" />
       <pdz-team size="card" align="end" name="Viridian Vipers" coach="misty" [logo]="teamLogoSample" />
     </div>
     <div class="team-lockups__narrow">

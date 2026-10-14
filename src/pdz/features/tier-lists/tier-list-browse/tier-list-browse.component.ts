@@ -161,8 +161,7 @@ export class TierListBrowseComponent {
       error: (err) => {
         this.deleting.set(null);
         this.toasts.error(
-          err?.error?.error?.details?.reason ??
-            apiErrorMessage(err, 'Could not delete that tier list.'),
+          apiErrorMessage(err, 'Could not delete that tier list.'),
         );
       },
     });

@@ -11,6 +11,10 @@ import { EmptyStateComponent } from '@pdz/shared/feedback/empty-state/empty-stat
 import { SkeletonLayoutComponent } from '@pdz/shared/data/skeleton/skeleton-layout.component';
 import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
 import { PageComponent } from '@pdz/shared/layout/page/page.component';
+import {
+  PageSection,
+  PageSectionsComponent,
+} from '@pdz/shared/layout/page-sections/page-sections.component';
 import { MarkdownModule } from 'ngx-markdown';
 import { catchError, map, of } from 'rxjs';
 import { waitingMessage } from '../tournament-milestones';
@@ -24,6 +28,7 @@ import { waitingMessage } from '../tournament-milestones';
     MarkdownModule,
     PageComponent,
     PageHeaderComponent,
+    PageSectionsComponent,
   ],
   templateUrl: './league-rules-overview.component.html',
   styleUrl: './league-rules-overview.component.scss',
@@ -55,10 +60,14 @@ export class LeagueRulesOverviewComponent {
     ),
   );
 
-  scrollToSection(event: Event, index: number): void {
-    event.preventDefault();
-    document
-      .getElementById(`section-${index}`)
-      ?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  readonly sections = computed<PageSection[]>(() =>
+    (this.rules() ?? []).map((rule, index) => ({
+      id: this.sectionId(index),
+      label: rule.title,
+    })),
+  );
+
+  sectionId(index: number): string {
+    return `rule-${index}`;
   }
 }

@@ -4,69 +4,10 @@
   display: block;
 }
 
-.rules {
-  display: flex;
-  gap: pdz.space(xl);
-}
-
-.rules__nav {
-  display: none;
-
-  @include pdz.respond-above(medium) {
-    position: sticky;
-    top: pdz.space(md);
-    display: flex;
-    flex-direction: column;
-    flex-shrink: 0;
-    align-self: flex-start;
-    gap: pdz.space(2xs);
-    width: 14rem;
-    max-height: calc(100vh - #{pdz.space(2xl)});
-    overflow-y: auto;
-  }
-}
-
-.rules__nav-title {
-  @include pdz.text(label-caps);
-  margin: 0 0 pdz.space(xs);
-  padding-inline: pdz.space(sm);
-  color: pdz.color(on-surface-variant);
-}
-
-.rules__nav-link {
-  @include pdz.text(body-sm);
-  display: block;
-  padding: pdz.space(xs) pdz.space(sm);
-  border-radius: pdz.shape(corner-sm);
-  color: pdz.color(on-surface-variant);
-  text-decoration: none;
-  transition:
-    background-color pdz.duration(fast) pdz.easing(standard),
-    color pdz.duration(fast) pdz.easing(standard);
-
-  &:hover {
-    background: pdz.color(state-hover);
-    color: pdz.color(on-surface);
-  }
-
-  &:focus-visible {
-    @include pdz.focus-ring(-2px);
-  }
-}
-
-.rules__content {
-  display: flex;
-  flex: 1 1 auto;
-  flex-direction: column;
-  gap: pdz.layout(stack);
-  min-width: 0;
-}
-
 .rules__section {
   display: flex;
   flex-direction: column;
   gap: pdz.space(md);
-  scroll-margin-top: pdz.space(xl);
 }
 
 .rules__section-title {

@@ -34,6 +34,9 @@ export namespace League {
     pointTotal: number;
     picksHidden?: boolean;
     pickCount?: number;
+    tournamentCompleted?: boolean;
+    completedForMe?: boolean;
+    pool?: { poolSlug: string; name: string };
     record?: {
       wins: number;
       draws?: number;
@@ -334,6 +337,44 @@ export namespace League {
 
   export type SignUpAccessMode = 'open' | 'invite' | 'closed';
 
+  export type PoolStatus = 'PRE_DRAFT' | 'IN_PROGRESS' | 'PAUSED' | 'COMPLETED';
+
+  export type PoolTeamRef = {
+    id: string;
+    slug: string;
+    name: string;
+    logo?: string;
+  };
+
+  export type PoolOverview = {
+    poolSlug: string;
+    name: string;
+    status: PoolStatus;
+    sequentialTurns: boolean;
+    picksHidden: boolean;
+    teamCount: number;
+    rounds: number;
+    progress?: { done: number; total: number };
+    currentRound?: number;
+    onTheClock?: PoolTeamRef;
+    skipTime?: string;
+    noTimer: boolean;
+    draftStart?: string;
+    completedAt?: string;
+    yourTeam?: PoolTeamRef;
+    yourPickIn?: number;
+    recentPicks: {
+      pokemon: { id: string; name: string };
+      team: PoolTeamRef;
+      round: number;
+      timestamp: string;
+    }[];
+    pace: {
+      medianPickSeconds?: number;
+      snipes?: number;
+    };
+  };
+
   export type LeagueInfo = {
     name: string;
     tournamentSlug: string;
@@ -345,6 +386,7 @@ export namespace League {
     draftEnd?: Date;
     seasonStart?: Date;
     seasonEnd?: Date;
+    completedAt?: string | null;
     logo?: string;
     pools: { name: string; poolSlug: string }[];
     discord?: string;

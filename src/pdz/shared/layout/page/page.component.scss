@@ -21,8 +21,18 @@
 }
 
 @each $width in (narrow, default, wide) {
+  :host([data-width="#{$width}"]) {
+    --pdz-page-content-width: #{pdz.content-width($width)};
+  }
+
   :host([data-width="#{$width}"]) .pdz-page__inner {
     max-width: pdz.content-width($width);
+  }
+
+  :host([data-width="#{$width}"][data-section-nav]) .pdz-page__inner {
+    max-width: calc(
+      #{pdz.content-width($width)} + 2 * #{pdz.section-nav-span()}
+    );
   }
 }
 

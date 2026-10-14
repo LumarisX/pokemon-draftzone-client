@@ -1,5 +1,37 @@
 import { Pokemon } from '@pdz/core/utils/pokemon';
 
+export type TournamentPhase = 'upcoming' | 'drafting' | 'season' | 'completed';
+
+export type TournamentOutcome = {
+  placement: number;
+  of: number;
+  label: string | null;
+  champion: boolean;
+};
+
+export type TournamentNextMatch = {
+  round: string;
+  matchupSlug: string;
+  when: string | null;
+  exactTime: boolean;
+  opponent: {
+    name: string;
+    coach: string | null;
+    logo: string | null;
+    teamSlug: string | null;
+  } | null;
+};
+
+export type TournamentDraftState = {
+  status: string;
+  picksMade: number;
+  rosterSize: number | null;
+  onClock: boolean;
+  round: number | null;
+  pick: number | null;
+  deadline: string | null;
+};
+
 export type TournamentDetails = {
   name: string;
   teamName: string;
@@ -21,4 +53,13 @@ export type TournamentDetails = {
     losses: number;
     diff: number;
   };
+  phase?: TournamentPhase;
+  completedAt?: string | null;
+  completedByOrganizer?: boolean;
+  startsAt?: string | null;
+  form?: ('win' | 'loss' | 'draw')[];
+  next?: TournamentNextMatch | null;
+  standing?: { rank: number; of: number } | null;
+  draftState?: TournamentDraftState | null;
+  outcome?: TournamentOutcome | null;
 };

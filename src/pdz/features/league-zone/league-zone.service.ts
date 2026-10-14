@@ -94,6 +94,21 @@ export class LeagueZoneService {
     return this.apiService.get<{ tournaments: TournamentDetails[] }>(ROOTPATH);
   }
 
+  completeMySeason(leagueSlug: string, tournamentSlug: string) {
+    return this.apiService.post(
+      `${ROOTPATH}/${leagueSlug}/tournaments/${tournamentSlug}/my-team/completed`,
+      {},
+      { invalidateCache: [ROOTPATH] },
+    );
+  }
+
+  reopenMySeason(leagueSlug: string, tournamentSlug: string) {
+    return this.apiService.delete(
+      `${ROOTPATH}/${leagueSlug}/tournaments/${tournamentSlug}/my-team/completed`,
+      { invalidateCache: [ROOTPATH] },
+    );
+  }
+
   getRules(): Observable<League.RuleSection[]> {
     return this.apiService.get<League.RuleSection[]>(
       `${ROOTPATH}/${this.leagueSlug()}/tournaments/${this.tournamentSlug()}/rules`,
@@ -270,6 +285,12 @@ export class LeagueZoneService {
       {
         errorHandlingOptions: { suppressStatuses: options?.suppressStatuses },
       },
+    );
+  }
+
+  getDraftOverview(): Observable<{ pools: League.PoolOverview[] }> {
+    return this.apiService.get(
+      `${ROOTPATH}/${this.leagueSlug()}/tournaments/${this.tournamentSlug()}/draft-overview`,
     );
   }
 

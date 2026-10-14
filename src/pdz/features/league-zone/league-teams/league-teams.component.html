@@ -1,48 +1,78 @@
 @let groups = pools();
+@let only = onlyPool();
 
 <pdz-page type="index">
-  <pdz-page-header title="Teams">
-    @if (groups?.length === 1) {
-      <span pdz-page-header-detail>{{ activeGroup()?.name }}</span>
-    }
+  <pdz-page-sections heading="Pools" [sections]="sections()">
+    <pdz-page-header title="Teams">
+      @if (only) {
+        <span pdz-page-header-detail>{{ only.name }}</span>
+      }
+    </pdz-page-header>
 
-    @if (groups && groups.length > 1) {
-      <pdz-segmented
-        size="sm"
-        aria-label="Pool"
-        [value]="selected()"
-        (valueChange)="selected.set($any($event))"
-      >
-        @for (group of groups; track groupKey(group)) {
-          <pdz-segmented-option [value]="groupKey(group)" [label]="group.name" />
-        }
-      </pdz-segmented>
-    }
-  </pdz-page-header>
-
-  @if (!groups) {
-    <pdz-skeleton-layout layout="cards" />
-  } @else if (activeGroup(); as group) {
-    @if (group.teams.length) {
-      <div class="teams__grid">
-        @for (team of group.teams; track team.id) {
-          <pdz-league-team-card [teamDetails]="team" />
-        }
-      </div>
+    @if (!groups) {
+      <pdz-skeleton-layout layout="cards" />
+    } @else if (groups.length > 1) {
+      @for (group of groups; track groupKey(group)) {
+        <section
+          class="pool"
+          [id]="sectionId(group)"
+          [attr.aria-labelledby]="sectionId(group) + '-title'"
+        >
+          <div class="pool__header">
+            <h2 class="pool__title" [id]="sectionId(group) + '-title'">
+              {{ group.name }}
+              <span class="pool__count">{{ group.teams.length }}</span>
+            </h2>
+            @if (group.poolSlug) {
+              <a
+                pdz-button
+                variant="ghost"
+                color="neutral"
+                size="sm"
+                [routerLink]="['..', 'pools', group.poolSlug]"
+                [attr.aria-label]="'View ' + group.name"
+                >View Pool</a
+              >
+            }
+          </div>
+          @if (group.teams.length) {
+            <div class="teams__grid">
+              @for (team of group.teams; track team.id) {
+                <pdz-league-team-card [teamDetails]="team" [headingLevel]="3" />
+              }
+            </div>
+          } @else {
+            <pdz-empty-state
+              size="sm"
+              kind="waiting"
+              heading="No teams in this pool yet"
+              [message]="emptyPoolMessage()"
+            />
+          }
+        </section>
+      }
+    } @else if (only) {
+      @if (only.teams.length) {
+        <div class="teams__grid">
+          @for (team of only.teams; track team.id) {
+            <pdz-league-team-card [teamDetails]="team" />
+          }
+        </div>
+      } @else {
+        <pdz-empty-state
+          bordered
+          kind="waiting"
+          heading="No teams in this pool yet"
+          [message]="emptyPoolMessage()"
+        />
+      }
     } @else {
       <pdz-empty-state
         bordered
         kind="waiting"
-        heading="No teams in this pool yet"
-        [message]="emptyPoolMessage()"
+        heading="No teams yet"
+        [message]="noTeamsMessage()"
       />
     }
-  } @else {
-    <pdz-empty-state
-      bordered
-      kind="waiting"
-      heading="No teams yet"
-      [message]="noTeamsMessage()"
-    />
-  }
+  </pdz-page-sections>
 </pdz-page>

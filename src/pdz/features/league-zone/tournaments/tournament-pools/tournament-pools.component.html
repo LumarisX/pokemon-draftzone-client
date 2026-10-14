@@ -1,32 +1,126 @@
 <pdz-page type="index">
-  @if (leagueInfo(); as info) {
-    <pdz-page-header title="Pools" [eyebrow]="info.name" />
+  <pdz-page-header title="Draft Pools" [eyebrow]="leagueInfo()?.name ?? ''" />
 
-    @if (info.pools.length) {
-      <div class="pools__grid">
-        @for (pool of info.pools; track pool.poolSlug) {
-          <a pdz-card class="pools__pool" [routerLink]="pool.poolSlug">
-            <span class="pools__name">{{ pool.name }}</span>
-          </a>
-        }
-      </div>
-    } @else {
-      <pdz-empty-state
-        bordered
-        kind="waiting"
-        heading="No pools yet"
-        [message]="noPoolsMessage()"
-      />
-    }
-  } @else if (leagueInfo() === null) {
+  @if (pools() === null) {
     <pdz-empty-state
       bordered
       kind="error"
-      heading="Could not load this tournament"
-      message="Its pools did not come back from the server."
-      retry="reload"
+      heading="Couldn't load the drafts"
+      message="The pools' draft progress did not come back from the server."
+      retry="event"
+      (retried)="load()"
+    />
+  } @else if (pools() === undefined) {
+    <pdz-skeleton-layout layout="cards" count="3" />
+  } @else if (!cards().length) {
+    <pdz-empty-state
+      bordered
+      kind="waiting"
+      heading="No pools yet"
+      [message]="noPoolsMessage()"
     />
   } @else {
-    <pdz-skeleton-layout layout="cards" count="3" />
+    <div class="pools">
+      @for (card of cards(); track card.pool.poolSlug) {
+        <a
+          pdz-card
+          interactive
+          class="pool"
+          [routerLink]="[card.pool.poolSlug, 'draft']"
+        >
+          <div class="pool__body">
+            <div class="pool__head">
+              <h2 class="pool__name">{{ card.pool.name }}</h2>
+              <pdz-chip
+                class="pool__status"
+                size="sm"
+                [tone]="card.statusTone"
+                >{{ card.statusLabel }}</pdz-chip
+              >
+            </div>
+
+            @if (card.clock; as clock) {
+              @if (clock.yours) {
+                <pdz-chip
+                  class="pool__your-clock"
+                  tone="primary"
+                  variant="solid"
+                  icon="timer"
+                  >You're on the Clock{{
+                    clock.timer ? " · " + clock.timer : ""
+                  }}</pdz-chip
+                >
+              } @else {
+                <div class="pool__clock">
+                  <span class="pool__label">On the Clock</span>
+                  <div class="pool__clock-row">
+                    <pdz-team
+                      size="row"
+                      [name]="clock.name"
+                      [logo]="clock.logo"
+                    />
+                    @if (clock.timer) {
+                      <span class="pool__timer">{{ clock.timer }}</span>
+                    }
+                  </div>
+                </div>
+              }
+            }
+
+            @if (card.turnLine) {
+              <p class="pool__turn">{{ card.turnLine }}</p>
+            }
+
+            <div class="pool__rounds">
+              @if (card.pool.progress; as progress) {
+                <pdz-meter
+                  [value]="progress.done"
+                  [max]="progress.total"
+                  [segments]="card.pool.rounds"
+                  [tone]="card.pool.yourTeam ? 'primary' : 'secondary'"
+                />
+              }
+            </div>
+
+            <dl class="stats">
+              @for (stat of card.stats; track stat.label) {
+                <div class="stats__item">
+                  <dt class="pool__label">{{ stat.label }}</dt>
+                  <dd class="stats__value">{{ stat.value }}</dd>
+                </div>
+              }
+            </dl>
+
+            @if (card.picks.length) {
+              <div class="pool__picks">
+                <span class="pool__label">Recent Picks</span>
+                <ol class="picks">
+                  @for (pick of card.picks; track pick.key) {
+                    <li class="picks__row">
+                      <pdz-pokemon size="row" [pokemon]="pick.pokemon">
+                        <span pdz-pokemon-meta class="picks__meta"
+                          >{{ pick.teamName }} · Round {{ pick.round }}
+                          @if (card.live) {
+                            ·
+                            <pdz-countdown
+                              [target]="pick.timestamp"
+                              [liveWindowMinutes]="0"
+                            />
+                          }
+                        </span>
+                      </pdz-pokemon>
+                    </li>
+                  }
+                </ol>
+              </div>
+            } @else if (
+              card.pool.picksHidden && card.pool.status !== "PRE_DRAFT"
+            ) {
+              <p class="pool__note">Picks stay hidden until the draft ends.</p>
+            }
+          </div>
+        </a>
+      }
+    </div>
   }
 </pdz-page>

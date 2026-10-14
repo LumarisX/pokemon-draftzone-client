@@ -2,6 +2,7 @@
 
 :host {
   display: block;
+  height: 100%;
 }
 
 .schedule__body {
@@ -10,5 +11,14 @@
 
   > pdz-stage-builder {
     min-height: 14rem;
+  }
+
+  @include pdz.respond-above(medium) {
+    flex: 1 1 auto;
+    min-height: 0;
+
+    > pdz-stage-builder {
+      flex: 1 1 auto;
+    }
   }
 }

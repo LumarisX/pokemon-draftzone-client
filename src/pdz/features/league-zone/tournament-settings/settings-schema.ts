@@ -231,7 +231,7 @@ export interface SettingsValue {
   adPlatforms: string[];
   prizeSplit: PrizeShare[];
 
-  archived: boolean;
+  completed: boolean;
 }
 
 export type OrderProgression = 'snake' | 'linear';
@@ -564,12 +564,16 @@ export const SETTINGS_NODES: readonly SettingsNode[] = [
     controls: [],
   },
   {
-    id: 'identity.archived',
+    id: 'identity.completed',
     section: 'identity',
-    title: 'Archive',
-    help: 'Archived tournaments stay readable but drop out of league listings.',
+    title: 'Completed',
+    help: 'Marking the tournament completed records every team\'s final placement, locks results and settings, and moves the season to Completed on each coach\'s My Leagues. Turn it off to make changes; turning it back on records the placements again.',
     controls: [
-      { kind: 'toggle', key: 'archived', label: 'Archive this tournament' },
+      {
+        kind: 'toggle',
+        key: 'completed',
+        label: 'Mark this tournament completed',
+      },
     ],
   },
   {

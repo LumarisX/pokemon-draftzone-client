@@ -34,6 +34,7 @@ import { FieldComponent } from '@pdz/shared/inputs/field/field.component';
 import { InputDirective } from '@pdz/shared/inputs/field/input.directive';
 import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
 import { PageComponent } from '@pdz/shared/layout/page/page.component';
+import { ToastService } from '@pdz/shared/feedback/toast/toast.service';
 import {
   BehaviorSubject,
   catchError,
@@ -106,6 +107,7 @@ export class TradeManagerComponent implements OnInit {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly toast = inject(ToastService);
 
   readonly sideKeys: SideKey[] = ['side1', 'side2'];
   readonly freeAgency = FREE_AGENCY;
@@ -344,7 +346,10 @@ export class TradeManagerComponent implements OnInit {
     })
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
-        error: () => this.loading.set(false),
+        error: () => {
+          this.loading.set(false);
+          this.toast.error('Could not load the trades.');
+        },
         next: ({ tierList, teams, trades }) => {
           const inPool = teams.teams.filter(
             (team) => team.pool?.poolSlug === poolSlug,

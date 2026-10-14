@@ -1,9 +1,11 @@
+import { NgTemplateOutlet } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
   computed,
   inject,
   input,
+  TemplateRef,
 } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { LEAGUE_ZONE_PATH } from '@pdz/core/route-paths';
@@ -128,6 +130,7 @@ export function seasonRows(
     CountdownComponent,
     EmptyStateComponent,
     IconComponent,
+    NgTemplateOutlet,
     RouterLink,
     SkeletonComponent,
     SpriteComponent,
@@ -140,9 +143,13 @@ export function seasonRows(
 export class TeamSeasonComponent {
   private readonly leagueService = inject(LeagueZoneService);
 
-  readonly rounds = input.required<League.ScheduleRound[] | null>();
-  readonly teamSlug = input.required<string>();
+  readonly rounds = input<League.ScheduleRound[] | null>(null);
+  readonly teamSlug = input('');
   readonly currentRoundIndex = input(0);
+  readonly entries = input<SeasonRow[] | null>(null);
+  readonly rowActions = input<TemplateRef<{ $implicit: SeasonRow }> | null>(
+    null,
+  );
 
   protected readonly letter = RESULT_LETTER;
   protected readonly tone = RESULT_TONE;
@@ -158,6 +165,8 @@ export class TeamSeasonComponent {
   ]);
 
   readonly rows = computed(() => {
+    const entries = this.entries();
+    if (entries) return entries;
     const rounds = this.rounds();
     if (!rounds) return null;
     return seasonRows(

@@ -26,6 +26,13 @@
   color: pdz.color(on-surface-variant);
 }
 
+.team-header__meta,
+.team-header__actions {
+  display: inline-flex;
+  align-items: center;
+  gap: pdz.space(xs);
+}
+
 .team-error {
   @include pdz.text(body-sm);
   margin: 0;
@@ -36,8 +43,8 @@
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   grid-template-areas:
-    "roster"
     "schedule"
+    "roster"
     "trades";
   gap: pdz.layout(section-gap);
   align-items: start;
@@ -86,7 +93,7 @@
   color: pdz.color(on-surface);
 }
 
-.section__title--padded {
+.section__header--padded {
   padding: pdz.space(lg) pdz.space(lg) 0;
 }
 

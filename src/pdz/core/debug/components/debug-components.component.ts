@@ -52,7 +52,7 @@ import {
   SpriteComponent,
   SpriteSize,
 } from '@pdz/shared/images/sprite/sprite.component';
-import { TeamPhotoComponent } from '@pdz/shared/images/team-photo/team-photo.component';
+import { RosterSpritesComponent } from '@pdz/shared/images/roster-sprites/roster-sprites.component';
 import { RosterPatternComponent } from '@pdz/shared/images/roster-pattern/roster-pattern.component';
 import { SeasonMvpComponent } from '@pdz/shared/data/season-mvp/season-mvp.component';
 import {
@@ -69,6 +69,10 @@ import { TeamComponent } from '@pdz/shared/data/team/team.component';
 import { TooltipDirective } from '@pdz/shared/tooltip/tooltip.directive';
 import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
 import { PageComponent } from '@pdz/shared/layout/page/page.component';
+import {
+  PageSection,
+  PageSectionsComponent,
+} from '@pdz/shared/layout/page-sections/page-sections.component';
 import { WidgetComponent } from '@pdz/shared/layout/widget/widget.component';
 import { SlideToggleComponent } from '@pdz/shared/inputs/slide-toggle/slide-toggle.component';
 import {
@@ -101,6 +105,7 @@ import {
   ChipVariant,
 } from '@pdz/shared/data/chip/chip.component';
 import { RecordComponent } from '@pdz/shared/data/record/record.component';
+import { MeterComponent } from '@pdz/shared/data/meter/meter.component';
 import {
   TeamLogoComponent,
   TeamLogoSize,
@@ -149,6 +154,7 @@ const MODE_ATTR = 'pdz-theme-mode';
     WidgetComponent,
     PageComponent,
     PageHeaderComponent,
+    PageSectionsComponent,
     SlideToggleComponent,
     SliderComponent,
     SortDirective,
@@ -158,7 +164,7 @@ const MODE_ATTR = 'pdz-theme-mode';
     ChipComponent,
     PokemonTypeComponent,
     SpriteComponent,
-    TeamPhotoComponent,
+    RosterSpritesComponent,
     RosterPatternComponent,
     SeasonMvpComponent,
     PodiumComponent,
@@ -173,6 +179,7 @@ const MODE_ATTR = 'pdz-theme-mode';
     TimeConverterComponent,
     TeamLogoComponent,
     RecordComponent,
+    MeterComponent,
   ],
   templateUrl: './debug-components.component.html',
   styleUrl: './debug-components.component.scss',
@@ -276,6 +283,24 @@ export class DebugComponentsComponent {
   ];
   protected readonly photoCounts = [12, 8, 5, 13, 10, 14].map((count) =>
     this.photoTeam.slice(0, count),
+  );
+  protected readonly pageSectionFrames = (['wide', 'narrow'] as const).map(
+    (width) => ({
+      width,
+      sections: [
+        ['Kanto', 12],
+        ['Johto', 10],
+        ['Hoenn', 12],
+        ['Sinnoh', 8],
+        ['Unova', 14],
+      ].map(
+        ([label, count]): PageSection => ({
+          id: `demo-${width}-${String(label).toLowerCase()}`,
+          label: String(label),
+          count: Number(count),
+        }),
+      ),
+    }),
   );
   protected readonly podiumPlaces: PodiumPlace[] = [
     {

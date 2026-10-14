@@ -1,7 +1,6 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  booleanAttribute,
   computed,
   input,
 } from '@angular/core';
@@ -48,9 +47,6 @@ const LOGO_SIZES: Record<TeamSize, TeamLogoSize> = {
         } @else {
           <span class="pdz-team__name" [title]="name()">{{ name() }}</span>
         }
-        @if (you()) {
-          <span class="pdz-you-tag">You</span>
-        }
       </span>
       @if (coach() && size() !== 'inline') {
         <span class="pdz-team__coach">{{ coach() }}</span>
@@ -71,7 +67,6 @@ export class TeamComponent {
   readonly logo = input<string | null | undefined>();
   readonly coach = input<string | null | undefined>();
   readonly link = input<readonly unknown[] | string | null | undefined>();
-  readonly you = input(false, { transform: booleanAttribute });
   readonly size = input<TeamSize>('row');
   readonly align = input<TeamAlign>('start');
   readonly headingLevel = input<2 | 3 | 4 | null>(null);

@@ -6,6 +6,8 @@ import { Opponent } from '../opponent.model';
 import { DraftService } from '@pdz/features/drafts/draft-overview/draft.service';
 import { SkeletonLayoutComponent } from '@pdz/shared/data/skeleton/skeleton-layout.component';
 import { PageComponent } from '@pdz/shared/layout/page/page.component';
+import { ToastService } from '@pdz/shared/feedback/toast/toast.service';
+import { apiErrorMessage } from '@pdz/core/services/api.service';
 import {
   OpponentFormCoreComponent,
   OpponentFormData,
@@ -21,6 +23,7 @@ export class OpponentFormComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private draftService = inject(DraftService);
+  private toast = inject(ToastService);
 
   teamId: string = '';
   matchupId: string | null = null;
@@ -64,7 +67,10 @@ export class OpponentFormComponent implements OnInit {
 
     serviceCall.subscribe({
       next: () => this.router.navigate(['/', this.draftPath, this.teamId]),
-      error: (error) => console.error('Error!', error),
+      error: (error) =>
+        this.toast.error(
+          apiErrorMessage(error, 'Could not save the opponent.'),
+        ),
     });
   }
 }

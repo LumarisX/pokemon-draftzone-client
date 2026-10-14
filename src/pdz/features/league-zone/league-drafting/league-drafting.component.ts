@@ -7,8 +7,8 @@ import {
   viewChild,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { RouterLink } from '@angular/router';
-import { PLANNER_PATH } from '@pdz/core/route-paths';
+import { ActivatedRoute, RouterLink } from '@angular/router';
+import { LEAGUE_ZONE_PATH, PLANNER_PATH } from '@pdz/core/route-paths';
 import { EventStreamService } from '@pdz/core/services/event-stream.service';
 import { LeagueNotificationService } from '@pdz/features/league-zone/league-notification.service';
 import { LeagueZoneService } from '@pdz/features/league-zone/league-zone.service';
@@ -17,6 +17,7 @@ import { formatCountdown } from '@pdz/features/league-zone/league.util';
 import { TierListComponent } from '@pdz/features/tier-lists/tier-list/tier-list.component';
 import { DraftedPick } from '@pdz/features/tier-lists/tier-list.service';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
+import { EmptyStateComponent } from '@pdz/shared/feedback/empty-state/empty-state.component';
 import { ChipComponent, ChipTone } from '@pdz/shared/data/chip/chip.component';
 import { PokemonComponent } from '@pdz/shared/data/pokemon/pokemon.component';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
@@ -28,8 +29,14 @@ import { MenuItemComponent } from '@pdz/shared/menu/menu-item.component';
 import { MenuTriggerDirective } from '@pdz/shared/menu/menu-trigger.directive';
 import { MenuComponent } from '@pdz/shared/menu/menu.component';
 import { NumberSuffixPipe } from '@pdz/shared/pipes/number-suffix.pipe';
-import { Observable, Subject, interval, takeUntil } from 'rxjs';
-import { finalize } from 'rxjs/operators';
+import { EMPTY, Observable, Subject, interval, takeUntil } from 'rxjs';
+import {
+  catchError,
+  distinctUntilChanged,
+  finalize,
+  map,
+  switchMap,
+} from 'rxjs/operators';
 
 interface DraftAddedEvent {
   poolSlug: string;
@@ -130,6 +137,7 @@ const STATUS_TONES: Record<DraftStatus, ChipTone> = {
     MenuTriggerDirective,
     PageComponent,
     PageHeaderComponent,
+    EmptyStateComponent,
   ],
   templateUrl: './league-drafting.component.html',
   styleUrl: './league-drafting.component.scss',
@@ -139,14 +147,17 @@ export class LeagueDraftComponent implements OnInit {
   private eventStream = inject(EventStreamService);
   private leagueService = inject(LeagueZoneService);
   private destroyRef = inject(DestroyRef);
+  private route = inject(ActivatedRoute);
 
   private countdownTick$ = new Subject<void>();
+  private reload$ = new Subject<void>();
   private halfwayReminderTimer?: ReturnType<typeof setTimeout>;
   private hasAutoScrolledToCurrentRound = false;
   private readonly SCROLL_RETRY_DELAY_MS = 50;
   private readonly SCROLL_MAX_ATTEMPTS = 10;
 
   readonly plannerPath = PLANNER_PATH;
+  poolsLink?: unknown[];
 
   private readonly draftRoundsContainer =
     viewChild<ElementRef<HTMLDivElement>>('draftRoundsContainer');
@@ -167,6 +178,7 @@ export class LeagueDraftComponent implements OnInit {
     [];
 
   isLoading = true;
+  loadFailed = false;
 
   currentPick?: {
     round: number;
@@ -333,10 +345,24 @@ export class LeagueDraftComponent implements OnInit {
     this.draftDetails.allowDuplicates = data.allowDuplicates;
   }
 
-  private loadDraftDetails(): void {
-    this.leagueService
-      .getPoolDetails()
-      .pipe(takeUntilDestroyed(this.destroyRef))
+  loadDraftDetails(): void {
+    this.loadFailed = false;
+    this.reload$.next();
+  }
+
+  private watchDraftDetails(): void {
+    this.reload$
+      .pipe(
+        switchMap(() =>
+          this.leagueService.getPoolDetails().pipe(
+            catchError(() => {
+              this.loadFailed = true;
+              return EMPTY;
+            }),
+          ),
+        ),
+        takeUntilDestroyed(this.destroyRef),
+      )
       .subscribe((data) => {
         const previouslySelectedTeamId = this.selectedTeam?.id;
         this.applyDraftDetails(data);
@@ -348,7 +374,33 @@ export class LeagueDraftComponent implements OnInit {
         this.scheduleScrollToCurrentRoundOnLoad();
         this.startCountdown();
       });
+
+    this.route.paramMap
+      .pipe(
+        map((params) => params.get('poolSlug')),
+        distinctUntilChanged(),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe(() => {
+        this.resetBoard();
+        this.loadDraftDetails();
+      });
   }
+
+  private resetBoard(): void {
+    this.countdownTick$.next();
+    this.clearHalfwayReminder();
+    this.isLoading = true;
+    this.teams = [];
+    this.selectedTeam = undefined!;
+    this.originalDraft = [];
+    this.picksChanged = false;
+    this.selectedPick = 0;
+    this.currentPick = undefined;
+    this.skipTimeDisplay = null;
+    this.hasAutoScrolledToCurrentRound = false;
+  }
+
 
   private on<T>(event: string): Observable<T> {
     return this.eventStream
@@ -364,10 +416,21 @@ export class LeagueDraftComponent implements OnInit {
         this.draftStart = info.draftStart
           ? new Date(info.draftStart)
           : undefined;
+        this.poolsLink =
+          info.pools.length > 1
+            ? [
+                '/',
+                LEAGUE_ZONE_PATH,
+                this.leagueService.leagueSlug(),
+                'tournaments',
+                this.leagueService.tournamentSlug(),
+                'pools',
+              ]
+            : undefined;
         this.updateDraftStartDisplay();
       });
 
-    this.loadDraftDetails();
+    this.watchDraftDetails();
 
     this.on<DraftAddedEvent>('league.draft.added').subscribe((data) => {
       if (this.leagueService.poolSlug() !== data.poolSlug) return;

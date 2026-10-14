@@ -1,0 +1,47 @@
+@use "pdz-theming" as pdz;
+
+:host {
+  --pdz-meter-fill: #{pdz.color(secondary)};
+  display: flex;
+  gap: pdz.space(2xs);
+  width: 100%;
+  height: pdz.space(sm);
+}
+
+:host([data-size="sm"]) {
+  height: calc(#{pdz.space(xs)} + #{pdz.space(2xs)});
+}
+
+:host([data-tone="primary"]) {
+  --pdz-meter-fill: #{pdz.color(primary)};
+}
+
+:host([data-tone="neutral"]) {
+  --pdz-meter-fill: #{pdz.color(on-surface-muted)};
+}
+
+:host([data-tone="warning"]) {
+  --pdz-meter-fill: #{pdz.color(warning)};
+}
+
+.pdz-meter__track {
+  flex: 1 1 0;
+  min-width: 0;
+  overflow: hidden;
+  border-radius: pdz.shape(corner-full);
+  background: pdz.color(inset);
+}
+
+.pdz-meter__fill {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--pdz-meter-fill);
+  transition: width pdz.duration(slow) pdz.easing(standard);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pdz-meter__fill {
+    transition: none;
+  }
+}

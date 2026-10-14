@@ -203,8 +203,9 @@ export class LeagueScheduleComponent implements OnInit {
         this.isDirty = false;
         this.isLoading = false;
       },
-      error: () => {
+      error: (err) => {
         this.isLoading = false;
+        this.errorMessage = apiErrorMessage(err, 'Could not load the bracket.');
       },
     });
   }
@@ -465,9 +466,7 @@ export class LeagueScheduleComponent implements OnInit {
       },
       error: (err) => {
         this.isSaving = false;
-        this.errorMessage =
-          err?.error?.error?.details?.reasons?.join(' ') ??
-          apiErrorMessage(err, 'Failed to save the bracket.');
+        this.errorMessage = apiErrorMessage(err, 'Failed to save the bracket.');
       },
     });
   }
@@ -507,9 +506,10 @@ export class LeagueScheduleComponent implements OnInit {
         },
         error: (err) => {
           this.isSaving = false;
-          this.errorMessage =
-            err?.error?.error?.details?.reason ??
-            apiErrorMessage(err, 'Failed to clear the bracket.');
+          this.errorMessage = apiErrorMessage(
+            err,
+            'Failed to clear the bracket.',
+          );
         },
       });
   }

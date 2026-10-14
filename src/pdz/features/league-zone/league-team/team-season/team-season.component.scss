@@ -51,8 +51,21 @@
   padding-block: pdz.space(2xs);
 }
 
+.season__line {
+  display: flex;
+  align-items: center;
+  gap: pdz.space(2xs);
+}
+
+.season__actions {
+  display: flex;
+  flex: none;
+}
+
 .season__row {
   display: flex;
+  flex: 1 1 auto;
+  min-width: 0;
   align-items: center;
   justify-content: space-between;
   gap: pdz.space(md);

@@ -51,9 +51,48 @@
   transition: color pdz.duration(fast) pdz.easing(standard);
 }
 
-.hero:hover .hero__title,
-.hero.active .hero__title {
-  color: pdz.color(primary-accent);
+.hero:hover .hero__title {
+  text-decoration: underline;
+}
+
+.my-team {
+  display: flex;
+  align-items: center;
+  gap: pdz.space(sm);
+  padding: pdz.space(xs) pdz.space(sm);
+  border: 1px solid pdz.color(border-control);
+  border-radius: pdz.shape(corner-sm);
+  color: pdz.color(on-surface);
+  text-decoration: none;
+  transition:
+    background-color pdz.duration(fast) pdz.easing(standard),
+    border-color pdz.duration(fast) pdz.easing(standard);
+
+  &:hover {
+    background-color: pdz.color(state-hover);
+  }
+
+  &:focus-visible {
+    @include pdz.focus-ring(-2px);
+  }
+
+  &.active {
+    @include pdz.nav-current;
+  }
+}
+
+.my-team__name {
+  @include pdz.text(body-sm-strong);
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.my-team__chevron {
+  flex: none;
+  color: pdz.color(on-surface-muted);
 }
 
 .links {
@@ -119,9 +158,7 @@
   }
 
   &.active {
-    --pdz-icon-fill: 1;
-    background-color: pdz.color(state-selected);
-    color: pdz.color(primary-accent);
+    @include pdz.nav-current;
   }
 }
 

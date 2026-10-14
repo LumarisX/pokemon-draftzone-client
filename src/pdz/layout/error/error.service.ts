@@ -1,9 +1,6 @@
-import {
-  HttpClient,
-  HttpErrorResponse,
-  HttpHeaders,
-} from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable, inject, signal } from '@angular/core';
+import { ApiError, toApiError } from '@pdz/core/services/api-error';
 import { RumService } from '@pdz/core/services/rum.service';
 import { environment } from '@pdz/environments/environment';
 import { Observable } from 'rxjs';
@@ -31,21 +28,6 @@ export interface PDZErrorMeta {
   requestId?: string;
   timestamp?: string;
 }
-
-export interface PDZErrorResponse {
-  error: PDZError;
-  meta?: PDZErrorMeta;
-}
-
-type ErrorBody = {
-  error?: {
-    code?: string;
-    message?: unknown;
-    details?: Record<string, unknown>;
-    stack?: string;
-  };
-  meta?: PDZErrorMeta;
-};
 
 function isClientError(value: unknown): value is ClientError {
   return (
@@ -105,6 +87,10 @@ export class ErrorService {
     );
   }
 
+  recordError(error: unknown): void {
+    this.rumService.recordClientError(this.toClientError(error));
+  }
+
   reportError(error: unknown): void {
     const clientError = this.toClientError(error);
     const current = this.errorList();
@@ -112,7 +98,6 @@ export class ErrorService {
       return;
     }
     this.errorList.set([clientError, ...current].slice(0, this.MAX_ERRORS));
-    this.rumService.recordClientError(clientError);
   }
 
   dismissError(errorId: string): void {
@@ -140,7 +125,8 @@ export class ErrorService {
   }
 
   private toClientError(error: unknown): ClientError {
-    if (error instanceof HttpErrorResponse) return this.parseHttpError(error);
+    const apiError = toApiError(error);
+    if (apiError) return this.fromApiError(apiError);
 
     if (isClientError(error)) {
       return { ...error, id: error.id || this.nextErrorId() };
@@ -154,33 +140,32 @@ export class ErrorService {
     };
   }
 
-  private parseHttpError(httpError: HttpErrorResponse): ClientError {
+  private fromApiError(apiError: ApiError): ClientError {
     const clientError: ClientError = {
       id: this.nextErrorId(),
-      message: httpError.message,
-      status: httpError.status,
-      statusText: httpError.statusText,
-      url: httpError.url,
+      message:
+        apiError.message ||
+        apiError.serverMessage ||
+        `Request failed (${apiError.status} ${apiError.statusText})`,
+      status: apiError.status,
+      statusText: apiError.statusText,
+      url: apiError.url,
     };
 
-    if (httpError.error && typeof httpError.error === 'object') {
-      const body = httpError.error as ErrorBody;
+    if (apiError.code) {
+      clientError.error = {
+        code: apiError.code,
+        message: apiError.serverMessage ?? apiError.statusText,
+        details: apiError.details,
+        stack: apiError.serverStack,
+      };
+    }
 
-      if (body.error) {
-        clientError.error = {
-          code: body.error.code || 'UNKNOWN_ERROR',
-          message: toMessageString(body.error.message || httpError.statusText),
-          details: body.error.details,
-          stack: body.error.stack,
-        };
-      }
-
-      if (body.meta) {
-        clientError.meta = {
-          requestId: body.meta.requestId,
-          timestamp: body.meta.timestamp,
-        };
-      }
+    if (apiError.requestId || apiError.timestamp) {
+      clientError.meta = {
+        requestId: apiError.requestId,
+        timestamp: apiError.timestamp,
+      };
     }
 
     return clientError;

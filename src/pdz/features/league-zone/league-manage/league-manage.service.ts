@@ -279,7 +279,7 @@ export class LeagueManageService {
         platforms?: string[];
       };
       matchSettings?: { chat: boolean; coachReporting: boolean };
-      archived?: boolean;
+      completed?: boolean;
     }>(
       `leagues/${this.leagueZoneService.leagueSlug()}/tournaments/${this.leagueZoneService.tournamentSlug()}/settings`,
     );
@@ -329,7 +329,7 @@ export class LeagueManageService {
       platforms?: string[];
     };
     matchSettings?: { chat: boolean; coachReporting: boolean };
-    archived?: boolean;
+    completed?: boolean;
   }) {
     return this.apiService.patch<{ message: string }>(
       `leagues/${this.leagueZoneService.leagueSlug()}/tournaments/${this.leagueZoneService.tournamentSlug()}/settings`,

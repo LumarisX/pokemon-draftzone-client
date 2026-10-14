@@ -74,7 +74,7 @@
 
       z-index: 1;
       background-color: pdz.color(ground);
-      color: pdz.color(primary-accent);
+      color: pdz.color(on-surface);
       font-weight: pdz.font-weight(semibold);
 
       &:hover {
@@ -89,7 +89,7 @@
         left: -1px;
         height: 2px;
         border-radius: pdz.shape(corner-full);
-        background-color: pdz.color(primary);
+        background-color: pdz.nav-indicator();
       }
     }
 

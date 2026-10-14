@@ -98,7 +98,6 @@ const TEAM_SIZES: Record<MatchupSize, TeamSize> = {
                   [logo]="side.team.logo"
                   [coach]="side.team.coach"
                   [link]="side.team.link"
-                  [you]="!!side.team.you"
                 />
               }
 

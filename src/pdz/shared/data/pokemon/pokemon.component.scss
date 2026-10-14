@@ -49,10 +49,6 @@
   }
 }
 
-:host([data-state="banned"]) .pdz-pokemon__name {
-  text-decoration: line-through;
-}
-
 .pdz-pokemon__sprite {
   flex: none;
 }

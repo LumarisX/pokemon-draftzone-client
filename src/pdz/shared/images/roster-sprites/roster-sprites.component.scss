@@ -1,0 +1,70 @@
+@use "pdz-theming" as pdz;
+
+:host {
+  display: flex;
+  flex-wrap: wrap;
+  align-content: center;
+  justify-content: center;
+  padding: pdz.space(xs);
+}
+
+:host([data-layout="tiers"]) {
+  --pdz-roster-unit: min(
+    calc(100cqh / var(--pdz-roster-depth)),
+    calc(100cqw / var(--pdz-roster-span))
+  );
+  container-type: size;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  justify-content: center;
+  height: 8.5rem;
+  padding: 0;
+  overflow: hidden;
+  background: linear-gradient(180deg, pdz.color(team1-subtle), transparent 80%);
+}
+
+:host([data-layout="tiers"][data-tone="team2"]) {
+  background: linear-gradient(180deg, pdz.color(team2-subtle), transparent 80%);
+}
+
+.pdz-roster-sprites__tier {
+  --pdz-roster-size: calc(var(--pdz-roster-unit) * var(--pdz-roster-scale));
+  display: flex;
+  justify-content: space-between;
+  width: min(
+    100%,
+    calc(
+      var(--pdz-roster-size) *
+        (var(--pdz-roster-count) * 1.3 - 0.3)
+    )
+  );
+  margin-inline: auto;
+}
+
+.pdz-roster-sprites__slot {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: none;
+  width: var(--pdz-roster-size);
+  height: var(--pdz-roster-size);
+
+  pdz-sprite {
+    width: 100%;
+    height: 100%;
+  }
+}
+
+.pdz-roster-sprites__spot {
+  width: pdz.sprite-size(sm);
+  height: pdz.sprite-size(sm);
+  margin: calc((pdz.sprite-size(md) - pdz.sprite-size(sm)) / 2);
+  border: 1px dashed pdz.color(border-control);
+  border-radius: pdz.shape(corner-full);
+
+  .pdz-roster-sprites__slot > & {
+    width: 60%;
+    height: 60%;
+    margin: 0;
+  }
+}

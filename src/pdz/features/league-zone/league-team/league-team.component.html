@@ -1,9 +1,11 @@
 <pdz-page type="detail">
 @if (teamData(); as team) {
-  <pdz-page-header [title]="team.name" [logo]="logoSrc()">
-    @if (team.draft.length) {
-      <pdz-roster-pattern pdz-page-header-backdrop [pokemon]="team.draft" />
-    }
+  <pdz-page-header
+    [title]="team.name"
+    [logo]="logoSrc()"
+    [backLink]="teamsLink()"
+    backLabel="Teams"
+  >
     <span pdz-page-header-detail class="team-header__coach">
       <span class="team-header__coach-name">{{ team.coach }}</span>
       @if (team.isCoach) {
@@ -28,25 +30,50 @@
       }
     </span>
 
-    <pdz-record
-      pdz-page-header-meta
-      [wins]="team.record?.wins ?? 0"
-      [draws]="team.record?.draws"
-      [losses]="team.record?.losses ?? 0"
-    />
+    <span pdz-page-header-meta class="team-header__meta">
+      <pdz-record
+        [wins]="team.record?.wins ?? 0"
+        [draws]="team.record?.draws"
+        [losses]="team.record?.losses ?? 0"
+      />
+    </span>
 
     @if (team.isCoach) {
-      <button
-        pdz-page-header-actions
-        pdz-button
-        icon="edit"
-        variant="outlined"
-        color="neutral"
-        [disabled]="saving()"
-        (click)="openTeamEdit()"
-      >
-        Edit Team
-      </button>
+      <div pdz-page-header-actions class="team-header__actions">
+        <button
+          pdz-button
+          icon="edit"
+          variant="outlined"
+          color="neutral"
+          [disabled]="saving()"
+          (click)="openTeamEdit()"
+        >
+          Edit Team
+        </button>
+        @if (!team.tournamentCompleted) {
+          <pdz-menu aria-label="Season actions">
+            <button
+              pdz-button
+              iconOnly
+              icon="more_vert"
+              variant="outlined"
+              color="neutral"
+              pdz-menu-trigger
+              aria-label="More season actions"
+            ></button>
+            <button
+              pdz-menu-item
+              [icon]="team.completedForMe ? 'replay' : 'flag'"
+              [disabled]="saving()"
+              (click)="toggleMySeason()"
+            >
+              {{
+                team.completedForMe ? "Reopen Season" : "Mark Season Completed"
+              }}
+            </button>
+          </pdz-menu>
+        }
+      </div>
     }
   </pdz-page-header>
 
@@ -77,17 +104,22 @@
         />
       }
       <pdz-card padding="none">
-        @if (team.draft.length) {
-          <pdz-team-photo
-            pdz-card-media
-            [pokemon]="aces()"
-            [name]="team.name"
-          />
-        }
         <section class="section" aria-labelledby="team-roster">
-          <h2 class="section__title section__title--padded" id="team-roster">
-            Draft Roster
-          </h2>
+          <div class="section__header section__header--padded">
+            <h2 class="section__title" id="team-roster">Draft Roster</h2>
+            @if (poolLink(); as link) {
+              <a
+                pdz-button
+                size="sm"
+                variant="outlined"
+                color="neutral"
+                icon="pokeball"
+                [routerLink]="link"
+              >
+                View Pool
+              </a>
+            }
+          </div>
           @if (team.draft.length) {
             @let sum = totals();
             <div class="pdz-table-wrapper">

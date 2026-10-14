@@ -4,9 +4,11 @@ import {
   InjectionToken,
   booleanAttribute,
   computed,
+  contentChild,
   inject,
   input,
 } from '@angular/core';
+import { PageSectionsComponent } from '@pdz/shared/layout/page-sections/page-sections.component';
 
 export type PageType =
   | 'hub'
@@ -55,6 +57,7 @@ export const PAGE_SHELL = new InjectionToken<true>('PAGE_SHELL');
     '[attr.data-width]': 'width()',
     '[attr.data-density]': 'resolvedDensity()',
     '[attr.data-flush]': 'inShell || flush() ? "" : null',
+    '[attr.data-section-nav]': 'hasSectionNav() ? "" : null',
   },
 })
 export class PageComponent {
@@ -63,6 +66,14 @@ export class PageComponent {
   readonly flush = input(false, { transform: booleanAttribute });
 
   protected readonly inShell = inject(PAGE_SHELL, { optional: true }) !== null;
+
+  private readonly sectionNav = contentChild(PageSectionsComponent, {
+    descendants: true,
+  });
+
+  readonly hasSectionNav = computed(
+    () => this.sectionNav()?.hasNav() ?? false,
+  );
 
   readonly width = computed(() => PAGE_WIDTHS[this.type()]);
   readonly resolvedDensity = computed(

@@ -57,8 +57,7 @@
 }
 
 .pdz-tabs__tab--active {
-  --pdz-icon-fill: 1;
-  color: pdz.color(primary-accent);
+  @include pdz.nav-current($fill: false);
 }
 
 .pdz-tabs__indicator {
@@ -68,7 +67,7 @@
   height: 2px;
   width: 0;
   border-radius: pdz.shape(corner-full) pdz.shape(corner-full) 0 0;
-  background-color: pdz.color(primary);
+  background-color: pdz.nav-indicator();
   transition:
     transform pdz.duration(base) pdz.easing(standard),
     width pdz.duration(base) pdz.easing(standard);

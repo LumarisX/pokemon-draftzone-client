@@ -179,6 +179,15 @@ export class TournamentLandingComponent implements OnInit {
     const until = (target: number | null) =>
       target === null ? null : formatCountdown(target - now);
 
+    if (info.completedAt) {
+      return {
+        phase: 'complete',
+        icon: 'emoji_events',
+        label: 'Season Complete',
+        countdown: null,
+        tone: 'neutral',
+      };
+    }
     if (signUp !== null && now <= signUp) {
       return {
         phase: 'signup',

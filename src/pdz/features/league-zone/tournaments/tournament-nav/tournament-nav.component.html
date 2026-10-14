@@ -29,6 +29,19 @@
   </div>
 }
 
+@if (myTeam(); as team) {
+  <a
+    class="my-team"
+    routerLinkActive="active"
+    ariaCurrentWhenActive="page"
+    [routerLink]="team.route"
+  >
+    <pdz-team-logo size="xs" decorative [src]="team.logo" [name]="team.name" />
+    <span class="my-team__name">{{ team.name }}</span>
+    <pdz-icon class="my-team__chevron" name="chevron_right" size="sm" />
+  </a>
+}
+
 <nav class="links" aria-label="Tournament">
   @for (group of linkGroups(); track group.id) {
     <div class="group">

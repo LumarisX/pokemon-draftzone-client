@@ -16,6 +16,8 @@ import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 import { ChipComponent, ChipTone } from '@pdz/shared/data/chip/chip.component';
 import { SkeletonComponent } from '@pdz/shared/data/skeleton/skeleton.component';
 import { DialogService } from '@pdz/shared/dialogs/dialog/dialog.service';
+import { ToastService } from '@pdz/shared/feedback/toast/toast.service';
+import { apiErrorMessage } from '@pdz/core/services/api.service';
 import { EmptyStateComponent } from '@pdz/shared/feedback/empty-state/empty-state.component';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
@@ -80,6 +82,7 @@ const STATUS_TONE: Record<Season['status'], ChipTone> = {
 export class SeasonDetailComponent {
   private readonly draftService = inject(DraftService);
   private readonly dialogs = inject(DialogService);
+  private readonly toast = inject(ToastService);
 
   readonly season = input.required<Season>();
   readonly detail = input<SeasonDetail | null>(null);
@@ -223,7 +226,10 @@ export class SeasonDetailComponent {
       .updateMatchupSchedule(match.id, source.slug, result)
       .subscribe({
         next: () => this.changed.emit(this.season()),
-        error: (error) => console.error('Failed to save match time', error),
+        error: (error) =>
+          this.toast.error(
+            apiErrorMessage(error, 'Could not save the match time.'),
+          ),
       });
   }
 
@@ -240,7 +246,8 @@ export class SeasonDetailComponent {
 
     this.draftService.deleteMatchup(match.id, source.slug).subscribe({
       next: () => this.changed.emit(this.season()),
-      error: (error) => console.error('Failed to delete matchup', error),
+      error: (error) =>
+        this.toast.error(apiErrorMessage(error, 'Could not delete the matchup.')),
     });
   }
 

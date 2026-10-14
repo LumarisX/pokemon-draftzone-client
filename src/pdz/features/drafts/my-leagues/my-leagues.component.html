@@ -1,0 +1,395 @@
+<pdz-page type="dashboard">
+  <pdz-page-header title="My Leagues">
+    @if (entries()) {
+      <span pdz-page-header-detail class="summary">
+        <span>{{ active().length }} active</span>
+        <span>{{ completedCount() }} completed</span>
+      </span>
+    }
+    <div pdz-page-header-actions class="actions">
+      <a
+        pdz-button
+        variant="outlined"
+        color="neutral"
+        icon="travel_explore"
+        [routerLink]="findLink"
+        >Find a League</a
+      >
+      <a pdz-button icon="add" [routerLink]="newLink">Add League</a>
+    </div>
+  </pdz-page-header>
+
+  @if (totalFailure()) {
+    <pdz-empty-state
+      bordered
+      kind="error"
+      heading="Could not load your leagues"
+      message="Your leagues and drafts did not come back from the server."
+      retry="event"
+      (retried)="retry()"
+    />
+  } @else if (entries(); as list) {
+    @if (list.length) {
+      <div class="body">
+        @if (partialFailure()) {
+          <pdz-card color="warning" padding="sm" role="alert">
+            <span class="partial">
+              <span>Some of your leagues did not load.</span>
+              <button
+                pdz-button
+                size="sm"
+                variant="ghost"
+                color="neutral"
+                (click)="retry()"
+              >
+                Try Again
+              </button>
+            </span>
+          </pdz-card>
+        }
+
+        @let stats = career();
+        <pdz-card padding="none">
+          <dl class="career">
+            <div class="career__stat">
+              <dt>Leagues</dt>
+              <dd>{{ stats.leagues }}</dd>
+            </div>
+            <div class="career__stat">
+              <dt>All-Time Record</dt>
+              <dd>
+                {{ stats.wins }}–{{ stats.losses }}
+                @if (stats.rate !== null) {
+                  <span class="career__unit">{{ stats.rate }}%</span>
+                }
+              </dd>
+            </div>
+            <div class="career__stat">
+              <dt>Titles</dt>
+              <dd [class.career__titles]="stats.titles">
+                @if (stats.titles) {
+                  <pdz-icon name="trophy" size="sm" />
+                }
+                {{ stats.titles }}
+              </dd>
+            </div>
+            <div class="career__stat">
+              <dt>Best Finish</dt>
+              <dd>
+                @if (stats.best; as best) {
+                  {{ ordinal(best.placement) }}
+                  @if (best.label) {
+                    <span class="career__unit">{{ best.label }}</span>
+                  }
+                } @else {
+                  <span class="career__unit">—</span>
+                }
+              </dd>
+            </div>
+          </dl>
+        </pdz-card>
+
+        @if (active().length) {
+          <section class="section" aria-labelledby="leagues-feed">
+            <div class="section__header">
+              <h2 class="section__title" id="leagues-feed">
+                Feed
+                @if (feed().length) {
+                  <span class="section__count">{{ feed().length }}</span>
+                }
+              </h2>
+            </div>
+            <pdz-card padding="none">
+              @if (feed().length) {
+                <ol class="feed">
+                  @for (item of feed(); track item.id) {
+                    <li
+                      class="feed__item"
+                      [class.feed__item--pick]="item.kind === 'pick'"
+                    >
+                      <span class="feed__icon" aria-hidden="true">
+                        <pdz-icon [name]="item.icon" size="sm" />
+                      </span>
+                      <span class="feed__text">
+                        @if (item.kind === "pick") {
+                          <pdz-chip size="sm" tone="primary" variant="solid">{{
+                            item.title
+                          }}</pdz-chip>
+                        } @else {
+                          <span class="feed__title">{{ item.title }}</span>
+                        }
+                        <span class="feed__detail">{{ item.detail }}</span>
+                      </span>
+                      @if (isFuture(item.when)) {
+                        <span class="feed__when">
+                          <pdz-countdown
+                            [target]="item.when"
+                            [showTitle]="false"
+                          />
+                          @if (item.kind === "pick") {
+                            <span class="feed__unit">left</span>
+                          }
+                        </span>
+                      }
+                      <a
+                        pdz-button
+                        size="sm"
+                        class="feed__action"
+                        [variant]="item.kind === 'pick' ? 'filled' : 'tonal'"
+                        [color]="item.kind === 'pick' ? 'primary' : 'neutral'"
+                        [routerLink]="item.action.link"
+                        >{{ item.action.label }}</a
+                      >
+                    </li>
+                  }
+                </ol>
+              } @else {
+                <div class="caught-up">
+                  <span class="feed__icon" aria-hidden="true">
+                    <pdz-icon name="done_all" size="sm" />
+                  </span>
+                  <span class="feed__text">
+                    <span class="feed__title">You're all caught up</span>
+                    <span class="caught-up__detail">{{
+                      later() ?? "Nothing needs you right now."
+                    }}</span>
+                  </span>
+                </div>
+              }
+            </pdz-card>
+          </section>
+
+          <section class="section" aria-labelledby="leagues-active">
+            <div class="section__header">
+              <h2 class="section__title" id="leagues-active">
+                Your Teams
+                <span class="section__count">{{ active().length }}</span>
+              </h2>
+            </div>
+            <div class="grid">
+              @for (entry of active(); track entry.id) {
+                <a
+                  pdz-card
+                  interactive
+                  padding="sm"
+                  class="team"
+                  [routerLink]="entry.link"
+                >
+                  <div pdz-card-media class="banner">
+                    <pdz-roster-sprites
+                      layout="tiers"
+                      [pokemon]="entry.pokemon"
+                      [spots]="spotsFor(entry)"
+                      [name]="entry.teamName"
+                    />
+                    @if (entry.phase === "drafting" && entry.draft?.onClock) {
+                      <pdz-chip
+                        class="banner__chip"
+                        size="xs"
+                        tone="primary"
+                        variant="solid"
+                        icon="format_list_numbered"
+                        >Your Pick</pdz-chip
+                      >
+                    }
+                  </div>
+                  <div class="team__body">
+                    <div class="team__head">
+                      <pdz-team
+                        size="row"
+                        [name]="entry.teamName"
+                        [logo]="entry.logo"
+                        [headingLevel]="3"
+                      >
+                        <span pdz-team-meta class="team-meta">{{
+                          leagueLine(entry)
+                        }}</span>
+                      </pdz-team>
+                      @if (entry.record || entry.standing) {
+                        <div class="team__score">
+                          @if (entry.record; as record) {
+                            <pdz-record
+                              size="sm"
+                              [wins]="record.wins"
+                              [losses]="record.losses"
+                            />
+                          }
+                          @if (entry.standing; as standing) {
+                            <span class="team__standing"
+                              >{{ ordinal(standing.rank) }}
+                              <span class="team__unit"
+                                >of {{ standing.of }}</span
+                              ></span
+                            >
+                          }
+                        </div>
+                      }
+                    </div>
+
+                    @if (entry.form.length) {
+                      <pdz-league-form [form]="entry.form" />
+                    }
+
+                    <div class="team__next">
+                      @if (
+                        entry.phase === "drafting" && entry.draft;
+                        as draft
+                      ) {
+                        <span class="team__next-text"
+                          >{{ draft.picksMade }}
+                          @if (draft.rosterSize) {
+                            of {{ draft.rosterSize }}
+                          }
+                          picks</span
+                        >
+                        @if (draft.rosterSize) {
+                          <span class="progress" aria-hidden="true">
+                            <span
+                              class="progress__fill"
+                              [style.width.%]="draftProgress(entry)"
+                            ></span>
+                          </span>
+                        }
+                      } @else if (entry.next; as next) {
+                        <span class="team__next-text"
+                          >{{ next.round }}
+                          @if (next.opponent) {
+                            · vs <strong>{{ next.opponent }}</strong>
+                          }
+                        </span>
+                        <span class="team__when">
+                          @if (isFuture(next.when)) {
+                            <pdz-countdown
+                              [target]="next.when"
+                              [showTitle]="false"
+                            />
+                          } @else if (next.when) {
+                            Due {{ next.when | date: "MMM d" }}
+                          } @else {
+                            Not scheduled
+                          }
+                        </span>
+                      } @else if (entry.phase === "upcoming") {
+                        <span class="team__next-text">Draft starts</span>
+                        <span class="team__when">
+                          @if (isFuture(entry.startsAt)) {
+                            <pdz-countdown
+                              [target]="entry.startsAt"
+                              [showTitle]="false"
+                            />
+                          } @else {
+                            Soon
+                          }
+                        </span>
+                      } @else {
+                        <span class="team__next-text team__next-text--quiet"
+                          >No match coming up</span
+                        >
+                      }
+                    </div>
+                  </div>
+                </a>
+              }
+            </div>
+          </section>
+        }
+
+        @if (completed().length) {
+          <section class="section" aria-labelledby="leagues-completed">
+            <div class="section__header">
+              <h2 class="section__title" id="leagues-completed">
+                Completed
+                <span class="section__count">{{ completedCount() }}</span>
+              </h2>
+            </div>
+            @for (group of completed(); track group.year) {
+              <pdz-disclosure [heading]="yearLabel(group)" [open]="$first">
+                <pdz-card padding="none">
+                  <ol class="done-list">
+                    @for (entry of group.entries; track entry.id) {
+                      <li>
+                        <a
+                          class="done"
+                          [class.done--champion]="entry.outcome?.champion"
+                          [routerLink]="entry.link"
+                        >
+                          <pdz-team
+                            size="row"
+                            class="done__team"
+                            [name]="entry.teamName"
+                            [logo]="entry.logo"
+                          >
+                            <span pdz-team-meta class="team-meta">{{
+                              leagueLine(entry)
+                            }}</span>
+                          </pdz-team>
+                          @if (entry.outcome; as outcome) {
+                            <span class="done__result">
+                              @if (outcome.label) {
+                                <pdz-chip
+                                  size="sm"
+                                  [tone]="
+                                    outcome.champion ? 'secondary' : 'neutral'
+                                  "
+                                  [variant]="
+                                    outcome.champion ? 'solid' : 'soft'
+                                  "
+                                  [icon]="
+                                    outcome.champion ? 'trophy' : undefined
+                                  "
+                                  >{{ outcome.label }}</pdz-chip
+                                >
+                              }
+                              <span class="done__place"
+                                >{{ ordinal(outcome.placement) }} of
+                                {{ outcome.of }}</span
+                              >
+                            </span>
+                          }
+                          @if (entry.record; as record) {
+                            <pdz-record
+                              class="done__record"
+                              size="sm"
+                              [wins]="record.wins"
+                              [losses]="record.losses"
+                            />
+                          }
+                          <pdz-icon
+                            class="done__chevron"
+                            name="chevron_right"
+                            size="sm"
+                          />
+                        </a>
+                      </li>
+                    }
+                  </ol>
+                </pdz-card>
+              </pdz-disclosure>
+            }
+          </section>
+        }
+      </div>
+    } @else {
+      <pdz-empty-state
+        bordered
+        kind="empty"
+        heading="No leagues yet"
+        message="Join a league on DraftZone, or add one you play somewhere else to prep and track your season."
+      >
+        <div pdz-empty-state-actions class="actions">
+          <a
+            pdz-button
+            variant="outlined"
+            color="neutral"
+            icon="travel_explore"
+            [routerLink]="findLink"
+            >Find a League</a
+          >
+          <a pdz-button icon="add" [routerLink]="newLink">Add League</a>
+        </div>
+      </pdz-empty-state>
+    }
+  } @else {
+    <pdz-skeleton-layout layout="cards" count="3" />
+  }
+</pdz-page>

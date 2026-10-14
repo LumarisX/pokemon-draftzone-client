@@ -29,9 +29,7 @@
 }
 
 :host([aria-current="page"]) {
-  --pdz-icon-fill: 1;
-  background-color: pdz.color(state-selected);
-  color: pdz.color(primary-accent);
+  @include pdz.nav-current;
   @include pdz.text(body-sm-strong, $family: false);
 }
 

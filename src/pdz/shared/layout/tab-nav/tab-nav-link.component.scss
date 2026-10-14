@@ -43,11 +43,10 @@
 }
 
 :host(.pdz-tab-nav__link--active) {
-  --pdz-icon-fill: 1;
-  color: pdz.color(primary-accent);
+  @include pdz.nav-current($fill: false);
 
   &::after {
-    background: pdz.color(primary);
+    background: pdz.nav-indicator();
   }
 }
 

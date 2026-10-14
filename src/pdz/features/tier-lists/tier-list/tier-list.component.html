@@ -221,8 +221,8 @@
                     size="fill"
                     [pokemon]="spriteFor(pokemon)"
                     [tooltipPosition]="null"
-                    [state]="spriteState(pokemon, tier)"
-                    [takenLogo]="draftPick(pokemon)?.teamLogo"
+                    [state]="spriteState(pokemon)"
+                    [takenLogo]="takenLogo(pokemon)"
                     [takenBy]="draftPick(pokemon)?.teamName ?? ''"
                   ></pdz-sprite>
                 </button>
@@ -239,8 +239,8 @@
                     class="pokemon-entry__pokemon"
                     [pokemon]="spriteFor(pokemon)"
                     [types]="pokemon.types"
-                    [state]="spriteState(pokemon, tier)"
-                    [takenLogo]="draftPick(pokemon)?.teamLogo"
+                    [state]="spriteState(pokemon)"
+                    [takenLogo]="takenLogo(pokemon)"
                     [takenBy]="draftPick(pokemon)?.teamName ?? ''"
                   />
                   <span class="pokemon-entry__side">

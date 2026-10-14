@@ -1,135 +1,57 @@
-<pdz-card padding="sm">
-  <div class="team">
-    <div class="team__header">
+@let team = teamDetails();
+
+<a
+  pdz-card
+  interactive
+  padding="sm"
+  class="team"
+  [routerLink]="['..', 'teams', team.slug]"
+>
+  <div pdz-card-media>
+    <pdz-roster-sprites
+      layout="tiers"
+      [tone]="team.isCoach ? 'team1' : 'team2'"
+      [pokemon]="roster()"
+      [spots]="hiddenSpots()"
+      [name]="team.name"
+    />
+  </div>
+
+  <div class="team__body">
+    <div class="team__head">
       <pdz-team
-        class="team__identity"
-        size="card"
-        [headingLevel]="2"
-        [name]="teamDetails().name"
+        size="row"
+        [headingLevel]="headingLevel()"
+        [name]="team.name"
         [logo]="logoSrc()"
-        [coach]="teamDetails().coach"
-      >
-        <div pdz-team-meta class="team__meta">
-          @if (localTime(); as time) {
-            <span class="team__time">
-              <pdz-icon name="schedule" [size]="14" />
-              {{ time }}
-            </span>
-          }
-          @if (teamDetails().record; as record) {
-            <pdz-record
-              size="sm"
-              [wins]="record.wins"
-              [draws]="record.draws"
-              [losses]="record.losses"
-            />
-          }
-        </div>
-      </pdz-team>
-      <div class="team__views">
-        <button
-          pdz-button
-          iconOnly
-          icon="list"
+        [coach]="team.coach"
+      />
+      @if (team.record; as record) {
+        <pdz-record
           size="sm"
-          [variant]="view() === 'overview' ? 'tonal' : 'ghost'"
-          [color]="view() === 'overview' ? 'primary' : 'neutral'"
-          aria-label="Show roster overview"
-          [attr.aria-pressed]="view() === 'overview'"
-          (click)="view.set('overview')"
-        ></button>
-        <button
-          pdz-button
-          iconOnly
-          icon="show_chart"
-          size="sm"
-          [variant]="view() === 'stats' ? 'tonal' : 'ghost'"
-          [color]="view() === 'stats' ? 'primary' : 'neutral'"
-          aria-label="Show team stats"
-          [attr.aria-pressed]="view() === 'stats'"
-          (click)="view.set('stats')"
-        ></button>
-        <a
-          pdz-button
-          iconOnly
-          icon="open_in_new"
-          variant="ghost"
-          color="neutral"
-          size="sm"
-          aria-label="Open full team page"
-          [routerLink]="['..', 'teams', teamDetails().slug]"
-        ></a>
-      </div>
+          [wins]="record.wins"
+          [draws]="record.draws"
+          [losses]="record.losses"
+        />
+      }
     </div>
 
-    <div class="team__body">
-      @if (teamDetails().picksHidden) {
-        <pdz-empty-state
-          size="sm"
-          icon="lock"
-          heading="Picks hidden until the draft ends"
-          [message]="hiddenPicksMessage()"
-        />
-      } @else if (view() === "overview") {
-        <table class="pdz-table roster-table">
-          <thead>
-            <tr>
-              <th class="col-name">Name</th>
-              <th class="col-tier pdz-table__num">Tier</th>
-            </tr>
-          </thead>
-          <tbody>
-            @for (pokemon of teamDetails().draft; track pokemon) {
-              <tr>
-                <td class="cell-name">
-                  <pdz-pokemon size="inline" [pokemon]="pokemon" />
-                </td>
-                <td class="cell-tier pdz-table__num">{{ pokemon.cost }}</td>
-              </tr>
-            }
-          </tbody>
-          <tfoot>
-            <tr>
-              <th class="col-name">
-                @if (hasCapt()) {
-                  {{ totalCaptCount() }}
-                  {{ totalCaptCount() === 1 ? "captain" : "captains" }}
-                }
-              </th>
-              <th class="col-tier pdz-table__num">{{ totalCost() }}</th>
-            </tr>
-          </tfoot>
-        </table>
+    <div class="team__foot">
+      @if (team.picksHidden) {
+        <span class="team__note">
+          <pdz-icon name="lock" [size]="14" aria-hidden="true" />
+          {{ hiddenPicksMessage() }}
+        </span>
       } @else {
-        <table class="pdz-table roster-table">
-          <thead>
-            <tr>
-              <th class="col-name">Name</th>
-              <th class="col-record pdz-table__num">Games</th>
-              <th class="col-record pdz-table__num">Kills</th>
-              <th class="col-record pdz-table__num">Deaths</th>
-            </tr>
-          </thead>
-          <tbody>
-            @for (pokemon of teamDetails().draft; track pokemon) {
-              <tr>
-                <td class="cell-name">
-                  <pdz-pokemon size="inline" [pokemon]="pokemon" />
-                </td>
-                <td class="cell-record pdz-table__num">
-                  {{ pokemon.record?.brought ?? 0 }}
-                </td>
-                <td class="cell-record pdz-table__num">
-                  {{ pokemon.record?.kills ?? 0 }}
-                </td>
-                <td class="cell-record pdz-table__num">
-                  {{ pokemon.record?.deaths ?? 0 }}
-                </td>
-              </tr>
-            }
-          </tbody>
-        </table>
+        <span class="team__note">{{ team.draft.length }} Pokémon</span>
+        <span class="team__points"
+          >{{ totalCost() }}
+          @if (team.pointTotal) {
+            <span class="team__unit">of {{ team.pointTotal }}</span>
+          }
+          <span class="team__unit">pts</span></span
+        >
       }
     </div>
   </div>
-</pdz-card>
+</a>

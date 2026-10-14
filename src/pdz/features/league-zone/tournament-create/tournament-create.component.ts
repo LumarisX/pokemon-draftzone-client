@@ -14,6 +14,7 @@ import {
   LEAGUE_ZONE_MANAGE_PATH,
   LEAGUE_ZONE_PATH,
 } from '@pdz/core/route-paths';
+import { apiErrorMessage } from '@pdz/core/services/api.service';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 import { CardComponent } from '@pdz/shared/data/card/card.component';
 import { EmptyStateComponent } from '@pdz/shared/feedback/empty-state/empty-state.component';
@@ -157,7 +158,7 @@ export class TournamentCreateComponent implements OnInit {
         error: (err) => {
           this.saving.set(false);
           this.toast.error(
-            err?.error?.error?.message ?? 'Could not create the tournament.',
+            apiErrorMessage(err, 'Could not create the tournament.'),
           );
         },
       });

@@ -1,5 +1,6 @@
 import {
   ApplicationConfig,
+  ErrorHandler,
   provideZoneChangeDetection,
   inject,
   provideAppInitializer,
@@ -14,12 +15,14 @@ import { routes } from '@pdz/pdz.routes';
 import { environment } from '@pdz/environments/environment';
 import { authRecoveryInterceptor } from '@pdz/core/interceptors/auth-recovery.interceptor';
 import { AuthRecoveryService } from '@pdz/core/services/auth-recovery.service';
+import { PdzErrorHandler } from '@pdz/core/services/pdz-error-handler';
 import { RumService } from '@pdz/core/services/rum.service';
 import { SwUpdateService } from '@pdz/core/services/sw-update.service';
 
 export const pdzConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
+    { provide: ErrorHandler, useClass: PdzErrorHandler },
     provideRouter(
       routes,
       withRouterConfig({ paramsInheritanceStrategy: 'always' }),

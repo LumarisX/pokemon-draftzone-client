@@ -109,6 +109,7 @@ type SpriteSetConfig = {
   classes: string[];
   flip?: boolean;
   source: SourceKey;
+  facingSource?: SourceKey;
   fallback?: (id: string, shiny?: boolean) => string;
 };
 
@@ -196,6 +197,7 @@ export const SpriteSets: Record<SpriteSetKey, SpriteSetConfig> = {
     },
     classes: ['sprite-border'],
     source: 'pokeapi',
+    facingSource: 'ps',
     fallback: function (id: string) {
       return `https://${Sources.pokeapi}/${id}.png`;
     },

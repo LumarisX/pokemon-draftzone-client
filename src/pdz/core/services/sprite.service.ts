@@ -84,7 +84,10 @@ export class SpriteService {
       (candidate) => candidate && candidate !== path,
     );
     const classes = [...config.classes];
-    const flip = !!(config.flip || props.flip);
+    const facing = config.facingSource
+      ? pokemonData.sources[config.facingSource]
+      : props;
+    const flip = !!(config.flip || facing?.flip);
 
     return { path, fallbackPaths, classes, flip };
   }

@@ -129,7 +129,6 @@
   align-items: center;
   gap: pdz.space(xs);
   padding: pdz.space(xs);
-  border-radius: pdz.shape(corner-sm);
   transition: background-color pdz.duration(base) pdz.easing(standard);
   @include pdz.row-divider;
 }

@@ -14,6 +14,8 @@ import {
 import { Router, RouterLink } from '@angular/router';
 import { LEAGUE_ADS_PATH } from '@pdz/core/route-paths';
 import { DataService } from '@pdz/core/services/data.service';
+import { apiErrorMessage } from '@pdz/core/services/api.service';
+import { ToastService } from '@pdz/shared/feedback/toast/toast.service';
 import { SelectOptionComponent } from '@pdz/shared/dropdowns/select/select-option.component';
 import { SelectComponent } from '@pdz/shared/dropdowns/select/select.component';
 import { LeagueAdsService } from '../league-ads.service';
@@ -51,6 +53,7 @@ export class LeagueFormComponent implements OnInit {
   private dataService = inject(DataService);
   private router = inject(Router);
   private destroyRef = inject(DestroyRef);
+  private toast = inject(ToastService);
 
   leagueForm!: FormGroup;
   formats: string[] = [];
@@ -153,9 +156,7 @@ export class LeagueFormComponent implements OnInit {
           this.formats = formats;
           this.initializeFormatsArray();
         },
-        error: (error) => {
-          console.error('Error loading formats:', error);
-        },
+        error: () => this.toast.error('Could not load the formats.'),
       });
 
     this.dataService
@@ -166,9 +167,7 @@ export class LeagueFormComponent implements OnInit {
           this.rulesets = rulesets;
           this.initializeRulesetsArray();
         },
-        error: (error) => {
-          console.error('Error loading rulesets:', error);
-        },
+        error: () => this.toast.error('Could not load the rulesets.'),
       });
   }
 
@@ -209,7 +208,9 @@ export class LeagueFormComponent implements OnInit {
           this.router.navigate(['/', LEAGUE_ADS_PATH, 'manage']);
         },
         error: (error) => {
-          console.error('Error submitting league ad:', error);
+          this.toast.error(
+            apiErrorMessage(error, 'Could not submit the league ad.'),
+          );
           this.isSubmitting = false;
         },
       });

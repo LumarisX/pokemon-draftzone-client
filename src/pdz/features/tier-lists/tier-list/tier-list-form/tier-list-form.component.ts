@@ -8,6 +8,7 @@ import {
   signal,
 } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { apiErrorMessage } from '@pdz/core/services/api.service';
 import { DialogService } from '@pdz/shared/dialogs/dialog/dialog.service';
 import { ToastService } from '@pdz/shared/feedback/toast/toast.service';
 import { TooltipDirective } from '@pdz/shared/tooltip/tooltip.directive';
@@ -1163,9 +1164,8 @@ export class TierListFormComponent implements OnInit, OnDestroy {
         error: (err) => {
           this.isLoading.set(false);
           this.toasts.error(
-            'Failed to save tier list: ' + (err.error?.message || err.message),
+            apiErrorMessage(err, 'Could not save the tier list.'),
           );
-          console.error('Failed to save tier list:', err);
         },
       });
   }

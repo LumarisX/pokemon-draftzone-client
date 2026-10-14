@@ -73,7 +73,7 @@ export class TopNavbarComponent {
   readonly newsBadge = this.unreadService.newsCount;
 
   readonly tabs: NavTab[] = [
-    { title: 'My Drafts', route: `/${DRAFT_OVERVIEW_PATH}` },
+    { title: 'My Leagues', route: `/${DRAFT_OVERVIEW_PATH}` },
     { title: 'Planner', route: `/${PLANNER_PATH}` },
     { title: 'Replay Analyzer', route: tool('replay-analyzer') },
     {

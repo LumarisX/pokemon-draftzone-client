@@ -45,6 +45,48 @@
           <pdz-countdown [target]="details.scheduledDate ?? null" />
         </span>
       }
+      @if (manageable) {
+        <div pdz-page-header-actions class="matchup__actions">
+          <a
+            pdz-button
+            icon="scoreboard"
+            [routerLink]="draftLink('score')"
+            [queryParams]="{ matchup: matchupId }"
+            >Score</a
+          >
+          <a
+            pdz-button
+            icon="edit_document"
+            variant="outlined"
+            color="neutral"
+            [routerLink]="draftLink('form')"
+            [queryParams]="{ matchup: matchupId }"
+            >Edit Match</a
+          >
+          <pdz-menu aria-label="Match actions">
+            <button
+              pdz-button
+              iconOnly
+              icon="more_vert"
+              variant="outlined"
+              color="neutral"
+              pdz-menu-trigger
+              aria-label="More match actions"
+            ></button>
+            <button pdz-menu-item icon="schedule" (click)="setMatchTime()">
+              {{ details.scheduledDate ? "Edit" : "Set" }} Match Time
+            </button>
+            <button
+              pdz-menu-item
+              icon="delete_forever"
+              tone="danger"
+              (click)="deleteMatch()"
+            >
+              Delete
+            </button>
+          </pdz-menu>
+        </div>
+      }
       @if (config.share) {
         <button
           pdz-page-header-actions

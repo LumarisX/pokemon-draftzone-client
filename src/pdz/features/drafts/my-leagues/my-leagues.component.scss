@@ -1,0 +1,394 @@
+@use "pdz-theming" as pdz;
+
+:host {
+  display: block;
+}
+
+.partial {
+  @include pdz.text(body-sm);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: pdz.space(sm);
+}
+
+.summary {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: pdz.space(xs);
+
+  span:not(:first-child)::before {
+    content: "·";
+    padding-inline-end: pdz.space(xs);
+  }
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: pdz.space(xs);
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.layout(section-gap);
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.layout(stack);
+  min-width: 0;
+}
+
+.section__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: pdz.space(sm);
+}
+
+.section__title {
+  @include pdz.text(section-title);
+  display: flex;
+  align-items: baseline;
+  gap: pdz.space(xs);
+  margin: 0;
+  color: pdz.color(on-surface);
+}
+
+.section__count {
+  @include pdz.text(meta);
+  @include pdz.numeric;
+  color: pdz.color(on-surface-muted);
+}
+
+.team-meta {
+  @include pdz.text(meta);
+  color: pdz.color(on-surface-muted);
+}
+
+.career {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin: 0;
+
+  @include pdz.respond-above(medium) {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+.career__stat {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(3xs);
+  padding: pdz.layout(card-pad);
+
+  dt {
+    @include pdz.text(label-caps);
+    color: pdz.color(on-surface-muted);
+  }
+
+  dd {
+    @include pdz.text(subtitle);
+    @include pdz.numeric;
+    display: flex;
+    align-items: baseline;
+    gap: pdz.space(xs);
+    margin: 0;
+    color: pdz.color(on-surface);
+  }
+}
+
+.career__titles {
+  color: pdz.color(secondary-accent);
+
+  pdz-icon {
+    align-self: center;
+  }
+}
+
+.career__unit {
+  @include pdz.text(meta);
+  color: pdz.color(on-surface-muted);
+}
+
+.feed {
+  margin: 0;
+  padding: pdz.space(xs);
+  list-style: none;
+
+  li + li {
+    @include pdz.row-divider;
+  }
+}
+
+.feed__item {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  grid-template-areas:
+    "icon text when"
+    "icon action action";
+  align-items: center;
+  gap: pdz.space(xs) pdz.space(md);
+  padding: pdz.space(sm);
+  border-radius: pdz.shape(corner-sm);
+
+  @include pdz.respond-above(medium) {
+    grid-template-columns: auto minmax(0, 1fr) auto 9.5rem;
+    grid-template-areas: "icon text when action";
+  }
+}
+
+.feed__item--pick {
+  background: pdz.color(state-selected);
+}
+
+.feed__icon {
+  display: inline-grid;
+  grid-area: icon;
+  place-items: center;
+  width: pdz.control-height(sm);
+  height: pdz.control-height(sm);
+  border-radius: pdz.shape(corner-full);
+  background: pdz.color(state-hover);
+  color: pdz.color(on-surface-muted);
+
+  .feed__item--pick & {
+    background: pdz.color(primary);
+    color: pdz.color(on-primary);
+  }
+}
+
+.feed__text {
+  display: flex;
+  flex-direction: column;
+  grid-area: text;
+  align-items: flex-start;
+  gap: pdz.space(3xs);
+  min-width: 0;
+}
+
+.feed__title {
+  @include pdz.text(body-sm-strong);
+  color: pdz.color(on-surface);
+}
+
+.feed__detail {
+  @include pdz.text(meta);
+  overflow: hidden;
+  max-width: 100%;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: pdz.color(on-surface-muted);
+}
+
+.feed__when {
+  @include pdz.text(body-sm-strong);
+  @include pdz.numeric;
+  display: flex;
+  grid-area: when;
+  gap: pdz.space(xs);
+  justify-self: end;
+  white-space: nowrap;
+  color: pdz.color(secondary-accent);
+}
+
+.feed__unit {
+  @include pdz.text(meta);
+  color: pdz.color(on-surface-muted);
+}
+
+.caught-up {
+  display: flex;
+  align-items: center;
+  gap: pdz.space(md);
+  padding: pdz.layout(card-pad);
+}
+
+.caught-up__detail {
+  @include pdz.text(meta);
+  color: pdz.color(on-surface-muted);
+}
+
+.feed__action {
+  grid-area: action;
+  justify-self: end;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr));
+  gap: pdz.layout(stack);
+}
+
+.team {
+  color: inherit;
+  text-decoration: none;
+}
+
+.team__body {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(sm);
+}
+
+.banner {
+  position: relative;
+}
+
+.banner__chip {
+  position: absolute;
+  top: pdz.space(xs);
+  left: pdz.space(xs);
+}
+
+.team__head,
+.team__next {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: pdz.space(sm);
+
+  pdz-team {
+    min-width: 0;
+  }
+}
+
+.team__score {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: pdz.space(3xs);
+}
+
+.team__standing {
+  @include pdz.text(body-sm-strong);
+  @include pdz.numeric;
+  color: pdz.color(secondary-accent);
+}
+
+.team__unit {
+  @include pdz.text(meta);
+  color: pdz.color(on-surface-muted);
+}
+
+.team__next {
+  @include pdz.row-divider;
+  padding-top: pdz.space(sm);
+}
+
+.team__next-text {
+  @include pdz.text(body-sm);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: pdz.color(on-surface-muted);
+
+  strong {
+    @include pdz.text(body-sm-strong);
+    color: pdz.color(on-surface);
+  }
+}
+
+.team__next-text--quiet {
+  @include pdz.text(meta);
+}
+
+.team__when {
+  @include pdz.text(body-sm-strong);
+  @include pdz.numeric;
+  flex: none;
+  color: pdz.color(on-surface);
+}
+
+.progress {
+  flex: 0 0 40%;
+  height: pdz.space(xs);
+  overflow: hidden;
+  border-radius: pdz.shape(corner-full);
+  background: pdz.color(inset);
+}
+
+.progress__fill {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: pdz.color(primary);
+}
+
+.done-list {
+  margin: 0;
+  padding: pdz.space(xs);
+  list-style: none;
+
+  li + li {
+    @include pdz.row-divider;
+  }
+}
+
+.done {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  grid-template-areas:
+    "team team chevron"
+    "result record chevron";
+  align-items: center;
+  gap: pdz.space(xs) pdz.space(md);
+  padding: pdz.space(sm);
+  border-radius: pdz.shape(corner-sm);
+  color: inherit;
+  text-decoration: none;
+  transition: background-color pdz.duration(fast) pdz.easing(standard);
+
+  &:hover {
+    background: pdz.color(state-hover);
+  }
+
+  &:focus-visible {
+    @include pdz.focus-ring(-2px);
+  }
+
+  @include pdz.respond-above(medium) {
+    grid-template-columns: minmax(0, 1fr) 13rem 5rem auto;
+    grid-template-areas: "team result record chevron";
+  }
+}
+
+.done--champion {
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, #{pdz.color(secondary)} 22%, transparent),
+    transparent 70%
+  );
+}
+
+.done__team {
+  grid-area: team;
+  min-width: 0;
+}
+
+.done__result {
+  display: flex;
+  align-items: center;
+  gap: pdz.space(sm);
+  grid-area: result;
+}
+
+.done__place {
+  @include pdz.text(meta);
+  @include pdz.numeric;
+  color: pdz.color(on-surface-muted);
+}
+
+.done__record {
+  grid-area: record;
+  justify-self: end;
+}
+
+.done__chevron {
+  grid-area: chevron;
+  color: pdz.color(on-surface-muted);
+}

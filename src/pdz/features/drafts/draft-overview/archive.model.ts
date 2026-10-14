@@ -13,4 +13,5 @@ export type Archive = {
   owner: string;
   team: { id: string; name: string }[];
   slug?: string;
+  completedAt?: string | null;
 };

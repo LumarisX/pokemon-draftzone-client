@@ -9,6 +9,8 @@ import { RouterLink } from '@angular/router';
 import { DRAFT_OVERVIEW_PATH, TOOLS_PATH } from '@pdz/core/route-paths';
 import { DEFAULT_RULESET } from '@pdz/core/rulesets';
 import { DataService } from '@pdz/core/services/data.service';
+import { apiErrorMessage } from '@pdz/core/services/api.service';
+import { ToastService } from '@pdz/shared/feedback/toast/toast.service';
 import { DraftPokemon } from '@pdz/features/drafts/draft.model';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 import { CardComponent } from '@pdz/shared/data/card/card.component';
@@ -39,6 +41,7 @@ const MAX_COUNT = 20;
 })
 export class RandomDraftComponent {
   private readonly dataService = inject(DataService);
+  private readonly toast = inject(ToastService);
 
   readonly newDraftLink = ['/', DRAFT_OVERVIEW_PATH, 'new'];
   readonly quickMatchupLink = ['/', TOOLS_PATH, 'quick-matchup'];
@@ -72,7 +75,10 @@ export class RandomDraftComponent {
           this.team.set(team);
           this.rolling.set(false);
         },
-        error: () => this.rolling.set(false),
+        error: (error) => {
+          this.rolling.set(false);
+          this.toast.error(apiErrorMessage(error, 'Could not roll a team.'));
+        },
       });
   }
 }

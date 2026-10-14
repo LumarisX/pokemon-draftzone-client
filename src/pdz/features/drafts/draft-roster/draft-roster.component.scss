@@ -1,0 +1,23 @@
+@use "pdz-theming" as pdz;
+
+:host {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.layout(stack);
+  min-width: 0;
+}
+
+.roster {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.layout(stack);
+  min-width: 0;
+  padding-bottom: pdz.space(xs);
+}
+
+.roster__title {
+  @include pdz.text(section-title);
+  margin: 0;
+  padding: pdz.space(lg) pdz.space(lg) 0;
+  color: pdz.color(on-surface);
+}

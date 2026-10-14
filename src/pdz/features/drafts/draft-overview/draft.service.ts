@@ -120,14 +120,14 @@ export class DraftService {
     );
   }
 
-  archiveDraft(teamName: string) {
-    return this.apiService.post(`${ROOTPATH}/${teamName}/archive`, {}, {
+  completeDraft(teamName: string) {
+    return this.apiService.post(`${ROOTPATH}/${teamName}/completed`, {}, {
       invalidateCache: [ROOTPATH, `${ROOTPATH}/${teamName}`, 'archive/teams'],
     });
   }
 
-  unarchiveDraft(teamName: string) {
-    return this.apiService.delete(`${ROOTPATH}/${teamName}/archive`, {
+  reopenDraft(teamName: string) {
+    return this.apiService.delete(`${ROOTPATH}/${teamName}/completed`, {
       invalidateCache: [ROOTPATH, `${ROOTPATH}/${teamName}`, 'archive/teams'],
     });
   }
