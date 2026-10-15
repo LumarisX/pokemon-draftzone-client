@@ -78,7 +78,7 @@ export class MatchupOverviewComponent implements OnInit {
   shareUrl?: string;
   tournamentId?: string;
   draftPath = DRAFT_OVERVIEW_PATH;
-  backLink: unknown[] = ['/' + DRAFT_OVERVIEW_PATH];
+  backLink: unknown[] = ['/' + LEAGUE_ZONE_PATH];
 
   panelTool: PanelTool | null = null;
   isResizing: boolean = false;
@@ -221,7 +221,7 @@ export class MatchupOverviewComponent implements OnInit {
     }
     return this.tournamentId
       ? ['/' + DRAFT_OVERVIEW_PATH, this.tournamentId]
-      : ['/' + DRAFT_OVERVIEW_PATH];
+      : ['/' + LEAGUE_ZONE_PATH];
   }
 
   get manageable(): boolean {

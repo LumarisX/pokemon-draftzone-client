@@ -20,7 +20,7 @@ import { RouterModule } from '@angular/router';
 import { BehaviorSubject, filter, Subject, takeUntil } from 'rxjs';
 import { Draft, DraftPokemon } from '@pdz/features/drafts/draft.model';
 import { DataService } from '@pdz/core/services/data.service';
-import { DRAFT_OVERVIEW_PATH } from '@pdz/core/route-paths';
+import { LEAGUE_ZONE_PATH } from '@pdz/core/route-paths';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 import { FormatSelectComponent } from '@pdz/shared/dropdowns/format-select/format.component';
 import { RulesetSelectComponent } from '@pdz/shared/dropdowns/ruleset-select/ruleset.component';
@@ -64,7 +64,7 @@ export class DraftFormCoreComponent implements OnInit, OnDestroy {
   isImporting = false;
   submitAttempted = false;
 
-  readonly draftPath = DRAFT_OVERVIEW_PATH;
+  readonly backLink = '/' + LEAGUE_ZONE_PATH;
 
   readonly title = input('New Draft');
   readonly submitLabel = input('Save Draft');

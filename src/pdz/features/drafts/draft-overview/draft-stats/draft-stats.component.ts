@@ -8,7 +8,7 @@ import {
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
-import { DRAFT_OVERVIEW_PATH } from '@pdz/core/route-paths';
+import { LEAGUE_ZONE_PATH } from '@pdz/core/route-paths';
 import {
   DraftService,
   PokemonStat,
@@ -54,7 +54,7 @@ export class DraftStatsComponent {
   private readonly draftService = inject(DraftService);
   private readonly route = inject(ActivatedRoute);
 
-  readonly backLink = ['/', DRAFT_OVERVIEW_PATH];
+  readonly backLink = ['/', LEAGUE_ZONE_PATH];
 
   private readonly stats = toSignal(this.loadStats());
 

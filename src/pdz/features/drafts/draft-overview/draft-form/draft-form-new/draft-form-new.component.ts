@@ -8,7 +8,7 @@ import {
   DraftFormCoreComponent,
   DraftFormData,
 } from '../draft-form-core/draft-form-core.component';
-import { DRAFT_OVERVIEW_PATH } from '@pdz/core/route-paths';
+import { LEAGUE_ZONE_PATH } from '@pdz/core/route-paths';
 import { PageComponent } from '@pdz/shared/layout/page/page.component';
 import { ToastService } from '@pdz/shared/feedback/toast/toast.service';
 import { apiErrorMessage } from '@pdz/core/services/api.service';
@@ -46,7 +46,7 @@ export class DraftFormNewComponent implements OnInit {
   newDraft(formData: DraftFormData) {
     this.draftService.newDraft(formData).subscribe({
       next: () => {
-        this.router.navigate(['/', DRAFT_OVERVIEW_PATH]);
+        this.router.navigate(['/', LEAGUE_ZONE_PATH]);
       },
       error: (error) =>
         this.toast.error(apiErrorMessage(error, 'Could not create the draft.')),

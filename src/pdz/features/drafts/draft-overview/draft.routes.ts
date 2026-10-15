@@ -2,14 +2,14 @@ import { Routes } from '@angular/router';
 import { AuthGuard } from '@auth0/auth0-angular';
 import { DraftFormEditComponent } from './draft-form/draft-form-edit/draft-form-edit.component';
 import { DraftFormNewComponent } from './draft-form/draft-form-new/draft-form-new.component';
-import { MyLeaguesComponent } from '../my-leagues/my-leagues.component';
+import { LEAGUE_ZONE_PATH } from '@pdz/core/route-paths';
 import { DraftStatsComponent } from './draft-stats/draft-stats.component';
 
 export const routes: Routes = [
   {
     path: '',
-    component: MyLeaguesComponent,
-    canActivate: [AuthGuard],
+    redirectTo: `/${LEAGUE_ZONE_PATH}`,
+    pathMatch: 'full',
   },
   {
     path: 'new',

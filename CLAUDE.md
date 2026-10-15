@@ -111,9 +111,10 @@ exceptions, each rendering the eyebrow as a link through `backLink`/`backLabel`:
 tournament landing page (up to the league), a pool's draft board (back to Draft Pools,
 `/pools`, when the tournament has more than one pool), and a team page (back to Teams).
 
-`/drafts` is **My Leagues**: hosted and external leagues on one page (career strip, a
-Feed of what needs the coach, roster-sprite cards for active seasons, Completed grouped by
-year). An external draft's page (`/drafts/:team`) is laid out like the league team page:
+`/leagues` is **My Leagues** (bare `/drafts` redirects there): hosted and external leagues
+on one page (career strip, roster-sprite cards for active seasons, an Organizing list of
+tournaments you own or staff without a team, Completed grouped by year). The Feed is off
+(`showFeed`) until it works. An external draft's page (`/drafts/:team`) is laid out like the league team page:
 roster-pattern header with no logo, a Schedule card on `pdz-team-season` (`entries` plus
 a `rowActions` ⋮ menu), and the season MVP over a roster card. Per-match actions live in
 that row menu and in the breakdown page header (`manage` in `MatchupPageConfig`). Its

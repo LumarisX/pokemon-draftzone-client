@@ -3,6 +3,7 @@ import { DraftOptions, Pokemon } from '@pdz/core/utils/pokemon';
 import { Archive } from '@pdz/features/drafts/draft-overview/archive.model';
 import { Draft, SeasonFormResult } from '@pdz/features/drafts/draft.model';
 import {
+  OrganizedTournament,
   TournamentDetails,
   TournamentOutcome,
   TournamentPhase,
@@ -26,9 +27,12 @@ export type LeagueDraft = {
   link: string[];
 };
 
+export type LeagueRole = 'coach' | 'owner' | 'organizer';
+
 export type LeagueEntry = {
   id: string;
   hosted: boolean;
+  role: LeagueRole;
   teamName: string;
   logo?: string;
   league: string;
@@ -85,6 +89,7 @@ export function fromTournament(tournament: TournamentDetails): LeagueEntry {
   return {
     id: `hosted:${tournament.tournamentSlug}:${tournament.teamId}`,
     hosted: true,
+    role: 'coach',
     teamName: tournament.teamName,
     logo: getTeamLogoSrc(tournament.logo),
     league: tournament.leagueName,
@@ -124,12 +129,48 @@ export function fromTournament(tournament: TournamentDetails): LeagueEntry {
   };
 }
 
+export function fromOrganized(tournament: OrganizedTournament): LeagueEntry {
+  return {
+    id: `organizing:${tournament.leagueSlug}:${tournament.tournamentSlug}`,
+    hosted: true,
+    role: tournament.owner ? 'owner' : 'organizer',
+    teamName: tournament.tournamentName,
+    logo: getTeamLogoSrc(tournament.logo),
+    league: tournament.leagueName,
+    pokemon: [],
+    link: [
+      '/',
+      LEAGUE_ZONE_PATH,
+      tournament.leagueSlug,
+      'tournaments',
+      tournament.tournamentSlug,
+    ],
+    phase: tournament.phase,
+    record: null,
+    form: [],
+    next: null,
+    standing: null,
+    draft: null,
+    startsAt: tournament.startsAt,
+    completedAt: tournament.completedAt,
+    outcome: null,
+  };
+}
+
+export const PHASE_LABEL: Record<TournamentPhase, string> = {
+  upcoming: 'Upcoming',
+  drafting: 'Drafting',
+  season: 'In Season',
+  completed: 'Completed',
+};
+
 export function fromDraft(draft: Draft): LeagueEntry {
   const base = ['/', DRAFT_OVERVIEW_PATH, draft.slug];
   const next = draft.next;
   return {
     id: `draft:${draft.slug}`,
     hosted: false,
+    role: 'coach',
     teamName: draft.teamName,
     league: draft.leagueName,
     pokemon: draft.team,
@@ -159,6 +200,7 @@ export function fromArchive(archive: Archive): LeagueEntry {
   return {
     id: `archive:${archive._id}`,
     hosted: false,
+    role: 'coach',
     teamName: archive.teamName || archive.leagueName,
     league: archive.leagueName,
     pokemon: archive.team,

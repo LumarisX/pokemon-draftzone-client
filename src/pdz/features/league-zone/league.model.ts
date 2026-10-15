@@ -32,6 +32,18 @@ export type TournamentDraftState = {
   deadline: string | null;
 };
 
+export type OrganizedTournament = {
+  tournamentName: string;
+  tournamentSlug: string;
+  leagueName: string;
+  leagueSlug: string;
+  logo?: string;
+  owner: boolean;
+  phase: TournamentPhase;
+  startsAt: string | null;
+  completedAt: string | null;
+};
+
 export type TournamentDetails = {
   name: string;
   teamName: string;

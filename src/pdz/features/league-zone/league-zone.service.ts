@@ -23,7 +23,10 @@ import {
   MatchupDetail,
   MatchupReportPayload,
 } from '@pdz/features/league-zone/league-matchup/league-matchup.model';
-import { TournamentDetails } from '@pdz/features/league-zone/league.model';
+import {
+  OrganizedTournament,
+  TournamentDetails,
+} from '@pdz/features/league-zone/league.model';
 import { Observable } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 import { ApiService } from '@pdz/core/services/api.service';
@@ -91,7 +94,10 @@ export class LeagueZoneService {
   }
 
   getTournamentsList() {
-    return this.apiService.get<{ tournaments: TournamentDetails[] }>(ROOTPATH);
+    return this.apiService.get<{
+      tournaments: TournamentDetails[];
+      organizing?: OrganizedTournament[];
+    }>(ROOTPATH);
   }
 
   completeMySeason(leagueSlug: string, tournamentSlug: string) {

@@ -11,9 +11,22 @@
   gap: pdz.space(xs);
 }
 
+.standings__body {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: pdz.layout(section-gap);
+}
+
 .standings__block {
   display: flex;
+  flex: 0 1 auto;
   flex-direction: column;
-  gap: pdz.space(sm);
+  gap: pdz.layout(stack);
   min-width: 0;
+  max-width: 100%;
+
+  > pdz-stage-switcher {
+    align-self: flex-start;
+  }
 }

@@ -388,6 +388,14 @@
   justify-self: end;
 }
 
+.done__phase {
+  @include pdz.text(meta);
+  grid-area: record;
+  justify-self: end;
+  white-space: nowrap;
+  color: pdz.color(on-surface-muted);
+}
+
 .done__chevron {
   grid-area: chevron;
   color: pdz.color(on-surface-muted);

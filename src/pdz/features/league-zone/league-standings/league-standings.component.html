@@ -23,52 +23,54 @@
       />
     }
     @default {
-      @if (podium().length) {
-        <pdz-podium [places]="podium()" />
-      }
-      <section class="standings__block" aria-label="Team standings">
-        @if (showSwitchers()) {
-          <pdz-stage-switcher
-            allStagesLabel="All stages"
-            [currentStageSlug]="teamFilter()"
-            (stageSelected)="teamFilter.set($event)"
-          />
-        }
-        @if (teamStandings(); as table) {
-          <pdz-team-standings
-            [standingData]="table"
-            [ownTeamId]="ownTeamId()"
-            [teamLinkBase]="teamLinkBase()"
-          />
-        } @else {
-          <pdz-empty-state
-            bordered
-            size="sm"
-            icon="leaderboard"
-            message="No results recorded yet."
-          />
-        }
-      </section>
+      <div class="standings__body">
+        <section class="standings__block" aria-label="Team standings">
+          @if (podium().length) {
+            <pdz-podium [places]="podium()" />
+          }
+          @if (showSwitchers()) {
+            <pdz-stage-switcher
+              allStagesLabel="All stages"
+              [currentStageSlug]="teamFilter()"
+              (stageSelected)="teamFilter.set($event)"
+            />
+          }
+          @if (teamStandings(); as table) {
+            <pdz-team-standings
+              [standingData]="table"
+              [ownTeamId]="ownTeamId()"
+              [teamLinkBase]="teamLinkBase()"
+            />
+          } @else {
+            <pdz-empty-state
+              bordered
+              size="sm"
+              icon="leaderboard"
+              message="No results recorded yet."
+            />
+          }
+        </section>
 
-      <section class="standings__block" aria-label="Pokémon standings">
-        @if (showSwitchers()) {
-          <pdz-stage-switcher
-            allStagesLabel="All stages"
-            [currentStageSlug]="pokemonFilter()"
-            (stageSelected)="pokemonFilter.set($event)"
-          />
-        }
-        @if (pokemonStandings().length) {
-          <pdz-pokemon-standings [standingData]="pokemonStandings()" />
-        } @else {
-          <pdz-empty-state
-            bordered
-            size="sm"
-            icon="catching_pokemon"
-            message="No Pokémon standings yet."
-          />
-        }
-      </section>
+        <section class="standings__block" aria-label="Pokémon standings">
+          @if (showSwitchers()) {
+            <pdz-stage-switcher
+              allStagesLabel="All stages"
+              [currentStageSlug]="pokemonFilter()"
+              (stageSelected)="pokemonFilter.set($event)"
+            />
+          }
+          @if (pokemonStandings().length) {
+            <pdz-pokemon-standings [standingData]="pokemonStandings()" />
+          } @else {
+            <pdz-empty-state
+              bordered
+              size="sm"
+              icon="catching_pokemon"
+              message="No Pokémon standings yet."
+            />
+          }
+        </section>
+      </div>
     }
   }
 </pdz-page>

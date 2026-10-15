@@ -12,7 +12,6 @@ import { DRAFT_OVERVIEW_PATH, LEAGUE_ADS_PATH } from '@pdz/core/route-paths';
 import { Archive } from '@pdz/features/drafts/draft-overview/archive.model';
 import { DraftService } from '@pdz/features/drafts/draft-overview/draft.service';
 import { Draft } from '@pdz/features/drafts/draft.model';
-import { TournamentDetails } from '@pdz/features/league-zone/league.model';
 import { LeagueZoneService } from '@pdz/features/league-zone/league-zone.service';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 import { CardComponent } from '@pdz/shared/data/card/card.component';
@@ -34,10 +33,12 @@ import {
   feedFrom,
   fromArchive,
   fromDraft,
+  fromOrganized,
   fromTournament,
   LeagueEntry,
   leagueLine,
   ordinal,
+  PHASE_LABEL,
   time,
 } from './my-leagues.model';
 
@@ -87,6 +88,7 @@ export class MyLeaguesComponent {
   protected readonly findLink = ['/', LEAGUE_ADS_PATH];
   protected readonly ordinal = ordinal;
   protected readonly leagueLine = leagueLine;
+  protected readonly phaseLabel = PHASE_LABEL;
 
   private readonly attempt = signal(0);
 
@@ -95,8 +97,11 @@ export class MyLeaguesComponent {
       switchMap(() =>
         forkJoin({
           hosted: this.leagues.getTournamentsList().pipe(
-            map((data) => data.tournaments),
-            catchError(() => of(null as TournamentDetails[] | null)),
+            map((data) => [
+              ...data.tournaments.map(fromTournament),
+              ...(data.organizing ?? []).map(fromOrganized),
+            ]),
+            catchError(() => of(null as LeagueEntry[] | null)),
           ),
           external: this.drafts.getDraftsList().pipe(
             map((data) => data.drafts),
@@ -110,7 +115,7 @@ export class MyLeaguesComponent {
       map(
         ({ hosted, external, completed }): LoadResult => ({
           entries: [
-            ...(hosted ?? []).map(fromTournament),
+            ...(hosted ?? []),
             ...(external ?? []).map(fromDraft),
             ...(completed ?? []).map(fromArchive),
           ],
@@ -128,11 +133,27 @@ export class MyLeaguesComponent {
     () => !!this.load()?.failed && !this.load()?.entries.length,
   );
 
+  protected readonly playing = computed(() =>
+    (this.entries() ?? []).filter((entry) => entry.role === 'coach'),
+  );
+
   protected readonly active = computed(() =>
-    (this.entries() ?? [])
+    this.playing()
       .filter((entry) => entry.phase !== 'completed')
       .sort(activeOrder),
   );
+
+  protected readonly organizing = computed(() =>
+    (this.entries() ?? [])
+      .filter((entry) => entry.role !== 'coach' && entry.phase !== 'completed')
+      .sort(activeOrder),
+  );
+
+  protected readonly activeCount = computed(
+    () => this.active().length + this.organizing().length,
+  );
+
+  protected readonly showFeed = false;
 
   protected readonly feed = computed(() => feedFrom(this.active()));
 
@@ -181,7 +202,7 @@ export class MyLeaguesComponent {
   );
 
   protected readonly career = computed(() => {
-    const list = this.entries() ?? [];
+    const list = this.playing();
     const wins = list.reduce((sum, entry) => sum + (entry.record?.wins ?? 0), 0);
     const losses = list.reduce(
       (sum, entry) => sum + (entry.record?.losses ?? 0),
@@ -200,6 +221,10 @@ export class MyLeaguesComponent {
       best: outcomes[0] ?? null,
     };
   });
+
+  protected roleLabel(entry: LeagueEntry): string {
+    return entry.role === 'owner' ? 'Owner' : 'Organizer';
+  }
 
   protected retry(): void {
     this.attempt.update((count) => count + 1);

@@ -11,7 +11,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
 import { catchError, forkJoin, of } from 'rxjs';
-import { DRAFT_OVERVIEW_PATH, LEAGUE_ADS_PATH } from '@pdz/core/route-paths';
+import { LEAGUE_ADS_PATH, LEAGUE_ZONE_PATH } from '@pdz/core/route-paths';
 import {
   LeagueAd,
   LeagueAdsService,
@@ -56,7 +56,7 @@ export class LandingComponent {
 
   protected readonly leagueListPath = '/' + LEAGUE_ADS_PATH;
   protected readonly newAdPath = '/' + LEAGUE_ADS_PATH + '/manage/new';
-  protected readonly draftsPath = '/' + DRAFT_OVERVIEW_PATH;
+  protected readonly draftsPath = '/' + LEAGUE_ZONE_PATH;
   protected readonly previewSlots = Array.from({ length: PREVIEW_COUNT });
 
   protected readonly loading = signal(true);

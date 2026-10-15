@@ -7,7 +7,7 @@ import {
 } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { DRAFT_OVERVIEW_PATH, PLANNER_PATH } from '@pdz/core/route-paths';
+import { LEAGUE_ZONE_PATH, PLANNER_PATH } from '@pdz/core/route-paths';
 import { DraftMatchActionsService } from '@pdz/features/drafts/draft-overview/draft-match-actions.service';
 import { DraftService } from '@pdz/features/drafts/draft-overview/draft.service';
 import { Draft } from '@pdz/features/drafts/draft.model';
@@ -68,7 +68,7 @@ export class OpponentTeamPreviewComponent {
   private readonly dialogs = inject(DialogService);
   private readonly toasts = inject(ToastService);
 
-  protected readonly backLink = ['/', DRAFT_OVERVIEW_PATH];
+  protected readonly backLink = ['/', LEAGUE_ZONE_PATH];
   protected readonly plannerPath = PLANNER_PATH;
   private readonly refresh = signal(0);
   protected readonly busy = signal(false);

@@ -2,7 +2,7 @@
   <pdz-page-header title="My Leagues">
     @if (entries()) {
       <span pdz-page-header-detail class="summary">
-        <span>{{ active().length }} active</span>
+        <span>{{ activeCount() }} active</span>
         <span>{{ completedCount() }} completed</span>
       </span>
     }
@@ -48,48 +48,50 @@
           </pdz-card>
         }
 
-        @let stats = career();
-        <pdz-card padding="none">
-          <dl class="career">
-            <div class="career__stat">
-              <dt>Leagues</dt>
-              <dd>{{ stats.leagues }}</dd>
-            </div>
-            <div class="career__stat">
-              <dt>All-Time Record</dt>
-              <dd>
-                {{ stats.wins }}–{{ stats.losses }}
-                @if (stats.rate !== null) {
-                  <span class="career__unit">{{ stats.rate }}%</span>
-                }
-              </dd>
-            </div>
-            <div class="career__stat">
-              <dt>Titles</dt>
-              <dd [class.career__titles]="stats.titles">
-                @if (stats.titles) {
-                  <pdz-icon name="trophy" size="sm" />
-                }
-                {{ stats.titles }}
-              </dd>
-            </div>
-            <div class="career__stat">
-              <dt>Best Finish</dt>
-              <dd>
-                @if (stats.best; as best) {
-                  {{ ordinal(best.placement) }}
-                  @if (best.label) {
-                    <span class="career__unit">{{ best.label }}</span>
+        @if (playing().length) {
+          @let stats = career();
+          <pdz-card padding="none">
+            <dl class="career">
+              <div class="career__stat">
+                <dt>Leagues</dt>
+                <dd>{{ stats.leagues }}</dd>
+              </div>
+              <div class="career__stat">
+                <dt>All-Time Record</dt>
+                <dd>
+                  {{ stats.wins }}–{{ stats.losses }}
+                  @if (stats.rate !== null) {
+                    <span class="career__unit">{{ stats.rate }}%</span>
                   }
-                } @else {
-                  <span class="career__unit">—</span>
-                }
-              </dd>
-            </div>
-          </dl>
-        </pdz-card>
+                </dd>
+              </div>
+              <div class="career__stat">
+                <dt>Titles</dt>
+                <dd [class.career__titles]="stats.titles">
+                  @if (stats.titles) {
+                    <pdz-icon name="trophy" size="sm" />
+                  }
+                  {{ stats.titles }}
+                </dd>
+              </div>
+              <div class="career__stat">
+                <dt>Best Finish</dt>
+                <dd>
+                  @if (stats.best; as best) {
+                    {{ ordinal(best.placement) }}
+                    @if (best.label) {
+                      <span class="career__unit">{{ best.label }}</span>
+                    }
+                  } @else {
+                    <span class="career__unit">—</span>
+                  }
+                </dd>
+              </div>
+            </dl>
+          </pdz-card>
+        }
 
-        @if (active().length) {
+        @if (showFeed && active().length) {
           <section class="section" aria-labelledby="leagues-feed">
             <div class="section__header">
               <h2 class="section__title" id="leagues-feed">
@@ -158,7 +160,9 @@
               }
             </pdz-card>
           </section>
+        }
 
+        @if (active().length) {
           <section class="section" aria-labelledby="leagues-active">
             <div class="section__header">
               <h2 class="section__title" id="leagues-active">
@@ -294,6 +298,50 @@
           </section>
         }
 
+        @if (organizing().length) {
+          <section class="section" aria-labelledby="leagues-organizing">
+            <div class="section__header">
+              <h2 class="section__title" id="leagues-organizing">
+                Organizing
+                <span class="section__count">{{ organizing().length }}</span>
+              </h2>
+            </div>
+            <pdz-card padding="none">
+              <ol class="done-list">
+                @for (entry of organizing(); track entry.id) {
+                  <li>
+                    <a class="done" [routerLink]="entry.link">
+                      <pdz-team
+                        size="row"
+                        class="done__team"
+                        [name]="entry.teamName"
+                        [logo]="entry.logo"
+                      >
+                        <span pdz-team-meta class="team-meta">{{
+                          entry.league
+                        }}</span>
+                      </pdz-team>
+                      <span class="done__result">
+                        <pdz-chip size="sm" tone="neutral" variant="soft">{{
+                          roleLabel(entry)
+                        }}</pdz-chip>
+                      </span>
+                      <span class="done__phase">{{
+                        phaseLabel[entry.phase]
+                      }}</span>
+                      <pdz-icon
+                        class="done__chevron"
+                        name="chevron_right"
+                        size="sm"
+                      />
+                    </a>
+                  </li>
+                }
+              </ol>
+            </pdz-card>
+          </section>
+        }
+
         @if (completed().length) {
           <section class="section" aria-labelledby="leagues-completed">
             <div class="section__header">
@@ -323,7 +371,13 @@
                               leagueLine(entry)
                             }}</span>
                           </pdz-team>
-                          @if (entry.outcome; as outcome) {
+                          @if (entry.role !== "coach") {
+                            <span class="done__result">
+                              <pdz-chip size="sm" tone="neutral" variant="soft">{{
+                                roleLabel(entry)
+                              }}</pdz-chip>
+                            </span>
+                          } @else if (entry.outcome; as outcome) {
                             <span class="done__result">
                               @if (outcome.label) {
                                 <pdz-chip

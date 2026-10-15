@@ -1,12 +1,12 @@
 import { Routes } from '@angular/router';
 import { AuthGuard } from '@auth0/auth0-angular';
 import {
-  DRAFT_OVERVIEW_PATH,
   LEAGUE_ZONE_MANAGE_PATH,
   ORGANIZER_INVITE_PATH,
 } from '@pdz/core/route-paths';
 import { MatchupOverviewComponent } from '../drafts/matchup-overview/matchup-overview.component';
 import { LEAGUE_MATCHUP_PAGE } from '../drafts/matchup-overview/matchup-page.config';
+import { MyLeaguesComponent } from '../drafts/my-leagues/my-leagues.component';
 import { TierListFormComponent } from '../tier-lists/tier-list/tier-list-form/tier-list-form.component';
 import { unsavedChangesGuard } from '@pdz/core/guards/unsaved-changes/unsaved-changes.guard';
 import { TierListComponent } from '../tier-lists/tier-list/tier-list.component';
@@ -35,8 +35,8 @@ import { TournamentLayoutComponent } from './tournaments/tournament-layout/tourn
 export const routes: Routes = [
   {
     path: '',
-    redirectTo: `/${DRAFT_OVERVIEW_PATH}`,
-    pathMatch: 'full',
+    component: MyLeaguesComponent,
+    canActivate: [AuthGuard],
   },
   {
     path: 'new',
