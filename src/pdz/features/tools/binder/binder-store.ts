@@ -53,6 +53,7 @@ const TYPE_ORDER = [
 const TYPE_RANK = new Map(TYPE_ORDER.map((type, index) => [type, index]));
 
 export type PrintScope = 'missing' | 'all';
+export type PrintFormat = 'placeholders' | 'checklist';
 
 export type BinderCard = {
   id: string;
@@ -230,6 +231,7 @@ export class BinderStore {
     return this.slots().filter((slot) => slot.card && !owned.has(slot.key));
   });
 
+  readonly printFormat = signal<PrintFormat>('placeholders');
   readonly printScope = signal<PrintScope>('missing');
   readonly printFrom = signal<number | null>(null);
   readonly printTo = signal<number | null>(null);
@@ -256,6 +258,21 @@ export class BinderStore {
     }
     return sheets;
   });
+
+  readonly printPages = computed(() => {
+    const groups: { page: number; slots: BinderSlot[] }[] = [];
+    for (const slot of this.printTargets()) {
+      const last = groups.at(-1);
+      if (last?.page === slot.page) last.slots.push(slot);
+      else groups.push({ page: slot.page, slots: [slot] });
+    }
+    return groups;
+  });
+
+  readonly checklistTitle = computed(
+    () =>
+      `${this.activeName()} — ${this.printScope() === 'missing' ? 'Missing Cards' : 'Checklist'}`,
+  );
 
   readonly removed = computed(() => {
     const hidden = this.hidden();
@@ -842,6 +859,50 @@ export class BinderStore {
         : Math.min(Math.max(Math.trunc(value), 1), pages);
     this.printFrom.set(clamp(from));
     this.printTo.set(clamp(to));
+  }
+
+  setPrintFormat(format: PrintFormat): void {
+    this.printFormat.set(format);
+  }
+
+  checklistSummary(date = new Date()): string {
+    const stats = this.stats();
+    const from = this.printFrom();
+    const to = this.printTo();
+    const parts = [
+      `${stats.missing} of ${stats.cards} missing`,
+      `${stats.percent}% complete`,
+    ];
+    if (from !== null || to !== null) {
+      parts.push(`pages ${from ?? 1}–${to ?? stats.pages}`);
+    }
+    parts.push(date.toISOString().slice(0, 10));
+    return parts.join(' · ');
+  }
+
+  checklistText(date = new Date()): string {
+    const owned = this.owned();
+    const pages = this.printPages();
+    const nameWidth = Math.max(
+      0,
+      ...pages.flatMap((group) =>
+        group.slots.map((slot) => slot.card!.name.length),
+      ),
+    );
+
+    const lines = [this.checklistTitle(), this.checklistSummary(date)];
+    for (const group of pages) {
+      lines.push('', `Page ${group.page}`);
+      for (const slot of group.slots) {
+        const card = slot.card!;
+        const mark = owned.has(slot.key) ? '[x]' : '[ ]';
+        const num = `#${String(card.num).padStart(4, '0')}`;
+        lines.push(
+          `  ${mark} ${num}  ${card.name.padEnd(nameWidth)}  pocket ${slot.pocket}`,
+        );
+      }
+    }
+    return `${lines.join('\n')}\n`;
   }
 
   setSort(mode: SortMode): void {

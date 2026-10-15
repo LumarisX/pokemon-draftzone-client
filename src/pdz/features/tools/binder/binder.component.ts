@@ -31,6 +31,7 @@ import { PageComponent } from '@pdz/shared/layout/page/page.component';
 import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
 import { SegmentedComponent } from '@pdz/shared/inputs/segmented/segmented.component';
 import { SegmentedOptionComponent } from '@pdz/shared/inputs/segmented/segmented-option.component';
+import { binderFileName, downloadFile } from './binder-download';
 import { BinderPrintDialogComponent } from './binder-print-dialog.component';
 import {
   BinderCard,
@@ -107,6 +108,59 @@ const PRINT_STYLES = `
     letter-spacing: 0.04em;
     text-transform: uppercase;
   }
+`;
+
+const CHECKLIST_STYLES = `
+  @page { size: 8.5in 11in; margin: 12mm; }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: system-ui, sans-serif;
+    font-size: 9pt;
+    color: #202124;
+  }
+  header { margin-bottom: 5mm; }
+  h1 { margin: 0; font-size: 15pt; }
+  header p { margin: 1mm 0 0; color: #5f6368; }
+  main { column-count: 3; column-gap: 6mm; }
+  .page {
+    break-inside: avoid;
+    page-break-inside: avoid;
+    margin-bottom: 4mm;
+  }
+  h2 {
+    margin: 0 0 1mm;
+    padding-bottom: 0.5mm;
+    font-size: 8pt;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: #5f6368;
+    border-bottom: 0.5pt solid #9aa0a6;
+  }
+  ul { margin: 0; padding: 0; list-style: none; }
+  li {
+    display: grid;
+    grid-template-columns: 3.2mm 6mm 9mm 1fr auto;
+    align-items: center;
+    gap: 1.5mm;
+    height: 6mm;
+  }
+  .box {
+    width: 3.2mm;
+    height: 3.2mm;
+    border: 0.75pt solid #5f6368;
+    border-radius: 0.6mm;
+    font-size: 7pt;
+    line-height: 3mm;
+    text-align: center;
+  }
+  li img { width: 6mm; height: 6mm; object-fit: contain; }
+  .num, .pocket {
+    color: #5f6368;
+    font-variant-numeric: tabular-nums;
+  }
+  .name { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+  .owned .name { color: #5f6368; text-decoration: line-through; }
 `;
 
 function escapeHtml(value: string): string {
@@ -575,8 +629,9 @@ export class BinderComponent {
     const ref = this.dialog.open<BinderPrintDialogComponent, boolean>(
       BinderPrintDialogComponent,
       {
-        heading: 'Print Placeholders',
-        subheading: 'Cut-out cards for the pockets you have not filled yet.',
+        heading: 'Print or Export',
+        subheading:
+          'Cut-out placeholders for empty pockets, or a checklist to shop from.',
         size: 'md',
       },
     );
@@ -658,21 +713,11 @@ export class BinderComponent {
   }
 
   protected exportJson(): void {
-    const blob = new Blob([this.store.exportJson()], {
-      type: 'application/json',
-    });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    const slug =
-      this.store
-        .activeName()
-        .toLowerCase()
-        .replace(/[^a-z0-9]+/g, '-')
-        .replace(/^-|-$/g, '') || 'binder';
-    link.download = `${slug}-${new Date().toISOString().slice(0, 10)}.json`;
-    link.click();
-    URL.revokeObjectURL(url);
+    downloadFile(
+      this.store.exportJson(),
+      binderFileName(this.store.activeName(), '', 'json'),
+      'application/json',
+    );
   }
 
   protected importJson(event: Event): void {
@@ -699,26 +744,70 @@ export class BinderComponent {
   }
 
   protected print(): void {
-    const sheets = this.store.sheets();
-    if (!sheets.length) {
+    if (!this.store.printTargets().length) {
       alert('Nothing to print for the current print options.');
       return;
     }
+    if (this.store.printFormat() === 'checklist') {
+      this.printChecklist();
+      return;
+    }
 
+    const body = this.store
+      .sheets()
+      .map(
+        (sheet) =>
+          `<section class="sheet">${sheet
+            .map((slot) => this.cardHtml(slot))
+            .join('')}</section>`,
+      )
+      .join('');
+    this.printDocument('Binder placeholders', PRINT_STYLES, body);
+  }
+
+  private printChecklist(): void {
+    const owned = this.store.owned();
+    const pages = this.store
+      .printPages()
+      .map(
+        (group) =>
+          `<section class="page"><h2>Page ${group.page}</h2><ul>${group.slots
+            .map((slot) => this.checklistRowHtml(slot, owned.has(slot.key)))
+            .join('')}</ul></section>`,
+      )
+      .join('');
+    const title = this.store.checklistTitle();
+    this.printDocument(
+      title,
+      CHECKLIST_STYLES,
+      `<header><h1>${escapeHtml(title)}</h1><p>${escapeHtml(this.store.checklistSummary())}</p></header><main>${pages}</main>`,
+    );
+  }
+
+  private checklistRowHtml(slot: BinderSlot, owned: boolean): string {
+    const card = slot.card!;
+    const src =
+      this.spriteService.getSpriteData({ id: card.id, shiny: false })?.path ??
+      '';
+    return (
+      `<li${owned ? ' class="owned"' : ''}>` +
+      `<span class="box">${owned ? '&#10003;' : ''}</span>` +
+      (src ? `<img src="${escapeHtml(src)}" alt="">` : '<span></span>') +
+      `<span class="num">#${String(card.num).padStart(4, '0')}</span>` +
+      `<span class="name">${escapeHtml(card.name)}</span>` +
+      `<span class="pocket">${slot.pocket}</span>` +
+      `</li>`
+    );
+  }
+
+  private printDocument(title: string, styles: string, body: string): void {
     const frame = this.printFrame()?.nativeElement;
     const doc = frame?.contentDocument;
     if (!frame || !doc) return;
 
     doc.open();
     doc.write(
-      `<!doctype html><html><head><meta charset="utf-8"><title>Binder placeholders</title><style>${PRINT_STYLES}</style></head><body>${sheets
-        .map(
-          (sheet) =>
-            `<section class="sheet">${sheet
-              .map((slot) => this.cardHtml(slot))
-              .join('')}</section>`,
-        )
-        .join('')}</body></html>`,
+      `<!doctype html><html><head><meta charset="utf-8"><title>${escapeHtml(title)}</title><style>${styles}</style></head><body>${body}</body></html>`,
     );
     doc.close();
 

@@ -512,6 +512,35 @@ describe('BinderStore', () => {
     expect(store.printTargets().length).toBe(ACTIVE.length);
   });
 
+  it('writes the missing cards as a text checklist grouped by page', () => {
+    const store = makeStore();
+    store.toggleOwned(store.slots()[0].key);
+    store.setPrintRange(1, 2);
+
+    const lines = store.checklistText(new Date('2026-10-14T12:00:00Z')).split('\n');
+    expect(lines[0]).toBe('My binder — Missing Cards');
+    expect(lines[1]).toBe(
+      `${ACTIVE.length - 1} of ${ACTIVE.length} missing · 0% complete · pages 1–2 · 2026-10-14`,
+    );
+    expect(lines[3]).toBe('Page 1');
+    expect(lines[4]).toMatch(/^ {2}\[ \] #0002 {2}Ivysaur +pocket 2$/);
+    expect(lines.filter((line) => line.startsWith('  [')).length).toBe(31);
+    expect(lines).toContain('Page 2');
+    expect(store.printPages().map((group) => group.page)).toEqual([1, 2]);
+  });
+
+  it('ticks owned cards when the checklist includes every card', () => {
+    const store = makeStore();
+    store.toggleOwned(store.slots()[0].key);
+    store.setPrintScope('all');
+    store.setPrintRange(1, 1);
+
+    const lines = store.checklistText().split('\n');
+    expect(lines[0]).toBe('My binder — Checklist');
+    expect(lines[4]).toMatch(/^ {2}\[x\] #0001 {2}Bulbasaur +pocket 1$/);
+    expect(lines[5]).toMatch(/^ {2}\[ \] #0002/);
+  });
+
   it('sorts alphabetically', () => {
     const store = makeStore();
     store.setSort('alpha');

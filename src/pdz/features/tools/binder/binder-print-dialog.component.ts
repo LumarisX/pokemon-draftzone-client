@@ -1,10 +1,13 @@
+import { Clipboard } from '@angular/cdk/clipboard';
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 import { DialogRef } from '@pdz/shared/dialogs/dialog/dialog.service';
+import { ToastService } from '@pdz/shared/feedback/toast/toast.service';
 import { FieldComponent } from '@pdz/shared/inputs/field/field.component';
 import { InputDirective } from '@pdz/shared/inputs/field/input.directive';
 import { SegmentedComponent } from '@pdz/shared/inputs/segmented/segmented.component';
 import { SegmentedOptionComponent } from '@pdz/shared/inputs/segmented/segmented-option.component';
+import { binderFileName, downloadFile } from './binder-download';
 import { BinderStore, CARDS_PER_SHEET } from './binder-store';
 
 @Component({
@@ -19,9 +22,18 @@ import { BinderStore, CARDS_PER_SHEET } from './binder-store';
   template: `
     <div class="print-dialog">
       <pdz-segmented
+        [value]="store.printFormat()"
+        (valueChange)="store.setPrintFormat($any($event))"
+        aria-label="Format"
+      >
+        <pdz-segmented-option value="placeholders" label="Placeholders" />
+        <pdz-segmented-option value="checklist" label="Checklist" />
+      </pdz-segmented>
+
+      <pdz-segmented
         [value]="store.printScope()"
         (valueChange)="store.setPrintScope($any($event))"
-        aria-label="Which cards to print"
+        aria-label="Which cards to include"
       >
         <pdz-segmented-option value="missing" label="Missing Only" />
         <pdz-segmented-option value="all" label="All Cards" />
@@ -54,15 +66,27 @@ import { BinderStore, CARDS_PER_SHEET } from './binder-store';
         </label>
       </div>
 
-      <p class="print-dialog__summary">
-        {{ store.printTargets().length }} placeholders ·
-        {{ store.sheets().length }} sheets · {{ perSheet }} per sheet at 63 × 88 mm
-      </p>
-
-      <p class="print-dialog__hint">
-        In the print dialog set Scale to 100% and turn off headers and footers,
-        or the placeholders will not match a real card.
-      </p>
+      @if (store.printFormat() === 'checklist') {
+        <p class="print-dialog__summary">
+          {{ store.printTargets().length }} cards across
+          {{ store.printPages().length }} binder pages, grouped by page with
+          the pocket number
+        </p>
+        <p class="print-dialog__hint">
+          Copy or download it as plain text, or print it and choose Save as PDF
+          as the printer.
+        </p>
+      } @else {
+        <p class="print-dialog__summary">
+          {{ store.printTargets().length }} placeholders ·
+          {{ store.sheets().length }} sheets · {{ perSheet }} per sheet at 63 ×
+          88 mm
+        </p>
+        <p class="print-dialog__hint">
+          In the print dialog set Scale to 100% and turn off headers and
+          footers, or the placeholders will not match a real card.
+        </p>
+      }
     </div>
 
     <div class="pdz-dialog-actions">
@@ -74,10 +98,32 @@ import { BinderStore, CARDS_PER_SHEET } from './binder-store';
       >
         Cancel
       </button>
+      @if (store.printFormat() === 'checklist') {
+        <button
+          pdz-button
+          variant="outlined"
+          color="neutral"
+          icon="content_copy"
+          [disabled]="!store.printTargets().length"
+          (click)="copy()"
+        >
+          Copy
+        </button>
+        <button
+          pdz-button
+          variant="outlined"
+          color="neutral"
+          icon="download"
+          [disabled]="!store.printTargets().length"
+          (click)="download()"
+        >
+          Download
+        </button>
+      }
       <button
         pdz-button
         icon="print"
-        [disabled]="!store.sheets().length"
+        [disabled]="!store.printTargets().length"
         (click)="ref.close(true)"
       >
         Print
@@ -114,6 +160,8 @@ import { BinderStore, CARDS_PER_SHEET } from './binder-store';
 export class BinderPrintDialogComponent {
   protected readonly store = inject(BinderStore);
   protected readonly ref = inject(DialogRef) as DialogRef<boolean>;
+  private readonly clipboard = inject(Clipboard);
+  private readonly toast = inject(ToastService);
   protected readonly perSheet = CARDS_PER_SHEET;
 
   protected setRange(from: string, to: string): void {
@@ -124,5 +172,27 @@ export class BinderPrintDialogComponent {
       return Number.isFinite(parsed) ? parsed : null;
     };
     this.store.setPrintRange(parse(from), parse(to));
+  }
+
+  protected copy(): void {
+    if (this.clipboard.copy(this.store.checklistText())) {
+      this.toast.success(
+        `Copied ${this.store.printTargets().length} cards to the clipboard.`,
+      );
+    } else {
+      this.toast.error('Could not copy the list. Try Download instead.');
+    }
+  }
+
+  protected download(): void {
+    downloadFile(
+      this.store.checklistText(),
+      binderFileName(
+        this.store.activeName(),
+        this.store.printScope() === 'missing' ? 'missing' : 'checklist',
+        'txt',
+      ),
+      'text/plain;charset=utf-8',
+    );
   }
 }
