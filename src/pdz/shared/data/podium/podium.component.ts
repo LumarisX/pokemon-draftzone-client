@@ -35,7 +35,6 @@ export const PODIUM_SIZE = 3;
                   <pdz-sprite
                     class="pdz-podium__sprite"
                     size="fill"
-                    grounded
                     [pokemon]="pokemon"
                     [flipped]="$index === 1"
                     [showFormes]="false"

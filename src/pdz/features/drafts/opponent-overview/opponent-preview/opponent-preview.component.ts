@@ -21,7 +21,6 @@ import { SkeletonLayoutComponent } from '@pdz/shared/data/skeleton/skeleton-layo
 import { DialogService } from '@pdz/shared/dialogs/dialog/dialog.service';
 import { EmptyStateComponent } from '@pdz/shared/feedback/empty-state/empty-state.component';
 import { ToastService } from '@pdz/shared/feedback/toast/toast.service';
-import { RosterPatternComponent } from '@pdz/shared/images/roster-pattern/roster-pattern.component';
 import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
 import { PageComponent } from '@pdz/shared/layout/page/page.component';
 import { MenuItemComponent } from '@pdz/shared/menu/menu-item.component';
@@ -29,7 +28,7 @@ import { MenuTriggerDirective } from '@pdz/shared/menu/menu-trigger.directive';
 import { MenuComponent } from '@pdz/shared/menu/menu.component';
 import { TooltipDirective } from '@pdz/shared/tooltip/tooltip.directive';
 import { combineLatest, map, switchMap } from 'rxjs';
-import { DraftRosterComponent } from '@pdz/features/drafts/draft-roster/draft-roster.component';
+import { TeamRosterComponent } from '@pdz/shared/data/team-roster/team-roster.component';
 import {
   draftLinks,
   loadSeason,
@@ -46,7 +45,6 @@ import {
     ButtonComponent,
     CardComponent,
     ChipComponent,
-    DraftRosterComponent,
     EmptyStateComponent,
     MenuComponent,
     MenuItemComponent,
@@ -54,8 +52,8 @@ import {
     PageComponent,
     PageHeaderComponent,
     RecordComponent,
-    RosterPatternComponent,
     SkeletonLayoutComponent,
+    TeamRosterComponent,
     TeamSeasonComponent,
     TooltipDirective,
   ],

@@ -92,13 +92,6 @@ describe('PokemonComponent', () => {
     expect(sprite().flipped()).toBe(false);
   });
 
-  it('grounds the sprite only at card and hero', () => {
-    expect(sprite().grounded()).toBe(false);
-    host.size.set('card');
-    fixture.detectChanges();
-    expect(sprite().grounded()).toBe(true);
-  });
-
   it('marks each captain role after the name', () => {
     host.pokemon.set({
       id: 'garchomp',

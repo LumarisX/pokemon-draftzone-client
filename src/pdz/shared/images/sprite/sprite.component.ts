@@ -37,7 +37,6 @@ type FormeSlot = {
   styleUrl: './sprite.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
   host: {
-    '[attr.data-grounded]': 'grounded() ? "" : null',
     '[attr.data-kind]': 'kind()',
     '[attr.data-state]': 'state()',
     '[attr.data-size]': 'size()',
@@ -47,7 +46,6 @@ export class SpriteComponent {
   protected readonly kind = inject(SpriteService).kind;
 
   pokemon = input.required<SpritePokemon>();
-  grounded = input(false, { transform: booleanAttribute });
   state = input<SpriteState | null>(null);
   takenLogo = input<string | null | undefined>();
   takenBy = input('');

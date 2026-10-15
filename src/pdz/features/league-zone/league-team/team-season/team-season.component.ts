@@ -19,7 +19,6 @@ import { TeamComponent } from '@pdz/shared/data/team/team.component';
 import { EmptyStateComponent } from '@pdz/shared/feedback/empty-state/empty-state.component';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
-import { CountdownComponent } from '@pdz/shared/time/countdown/countdown.component';
 
 export type SeasonResult = 'win' | 'loss' | 'draw';
 
@@ -33,7 +32,6 @@ export interface SeasonRow {
   when: string | null;
   exactTime: boolean;
   link: string[] | null;
-  next: boolean;
   roster: DraftPokemon[];
 }
 
@@ -69,11 +67,10 @@ function resultFor(
 export function seasonRows(
   rounds: League.ScheduleRound[],
   teamSlug: string,
-  currentRoundIndex: number,
   base: string[],
 ): SeasonRow[] {
   const rows: SeasonRow[] = [];
-  rounds.forEach((round, roundIndex) => {
+  for (const round of rounds) {
     for (const stage of round.stages) {
       for (const matchup of stage.matchups) {
         const mySide =
@@ -105,20 +102,10 @@ export function seasonRows(
           when: matchup.scheduledDate ?? round.matchDeadline ?? null,
           exactTime: !!matchup.scheduledDate,
           link: known ? [...base, 'matchups', matchup.slug] : null,
-          next: false,
           roster: known ? (theirs.draft ?? []) : [],
         });
       }
     }
-    if (roundIndex === currentRoundIndex) {
-      const current = rows.filter((row) => row.round === round.name);
-      current.forEach((row) => (row.next = row.result === null));
-    }
-  });
-
-  if (!rows.some((row) => row.next)) {
-    const upcoming = rows.find((row) => row.result === null);
-    if (upcoming) upcoming.next = true;
   }
   return rows;
 }
@@ -127,7 +114,6 @@ export function seasonRows(
   selector: 'pdz-team-season',
   imports: [
     ChipComponent,
-    CountdownComponent,
     EmptyStateComponent,
     IconComponent,
     NgTemplateOutlet,
@@ -145,7 +131,6 @@ export class TeamSeasonComponent {
 
   readonly rounds = input<League.ScheduleRound[] | null>(null);
   readonly teamSlug = input('');
-  readonly currentRoundIndex = input(0);
   readonly entries = input<SeasonRow[] | null>(null);
   readonly rowActions = input<TemplateRef<{ $implicit: SeasonRow }> | null>(
     null,
@@ -169,12 +154,7 @@ export class TeamSeasonComponent {
     if (entries) return entries;
     const rounds = this.rounds();
     if (!rounds) return null;
-    return seasonRows(
-      rounds,
-      this.teamSlug(),
-      this.currentRoundIndex(),
-      this.base(),
-    );
+    return seasonRows(rounds, this.teamSlug(), this.base());
   });
 
   readonly form = computed(() =>

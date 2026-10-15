@@ -94,15 +94,7 @@ function psGen5Path(id: string, shiny?: boolean) {
 }
 
 export type SpriteSetKey =
-  | 'bw'
-  | 'afd'
-  | 'sv'
-  | 'ani'
-  | 'home'
-  | 'serebii'
-  | 'pmd'
-  | 'rr'
-  | 'pokeapi';
+  'bw' | 'afd' | 'sv' | 'ani' | 'home' | 'serebii' | 'pmd' | 'rr' | 'pokeapi';
 
 type SpriteSetConfig = {
   getPath: (id: string, shiny?: boolean) => string;
@@ -6629,7 +6621,7 @@ const NamedexData = {
   excadrillmega: {
     name: ['Mega Excadrill', 'Excadrill-Mega'],
     sources: {
-      ps: { id: 'excadrill-mega', flip: true },
+      ps: { id: 'excadrill-mega' },
       serebii: { id: '530' },
       pmd: { id: '0530/0001' },
       pokeapi: { id: '10287' },
@@ -6933,7 +6925,11 @@ const NamedexData = {
     },
   },
   darmanitangalarzen: {
-    name: ['Darmanitan-Galar-Zen', 'Galarian Zen Darmanitan', 'Darmanitan-G-Zen'],
+    name: [
+      'Darmanitan-Galar-Zen',
+      'Galarian Zen Darmanitan',
+      'Darmanitan-G-Zen',
+    ],
     sources: {
       ps: { id: 'darmanitan-galarzen' },
       serebii: { id: '555-gz' },

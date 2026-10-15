@@ -9,7 +9,7 @@ function side(slug: string | null, score = 0): League.MatchupSide {
     coach: slug ? `Coach ${slug}` : '',
     logo: '',
     score,
-    draft: [],
+    draft: slug ? [{ id: 'pikachu', name: 'Pikachu' }] : [],
     from: slug ? null : { slug: 'm9', label: 'Winner of Match 9' },
   } as unknown as League.MatchupSide;
 }
@@ -48,7 +48,6 @@ describe('seasonRows', () => {
         round('R3', side('c', 1), side('me', 1), 'draw'),
       ],
       'me',
-      3,
       BASE,
     );
 
@@ -62,7 +61,6 @@ describe('seasonRows', () => {
     const [row] = seasonRows(
       [round('R1', side('me'), side('a'), 'dffl')],
       'me',
-      0,
       BASE,
     );
 
@@ -70,39 +68,23 @@ describe('seasonRows', () => {
     expect(row.forfeit).toBe(true);
   });
 
-  it('marks the undecided match in the current round as next', () => {
-    const rows = seasonRows(
-      [
-        round('R1', side('me'), side('a')),
-        round('R2', side('me'), side('b')),
-      ],
-      'me',
-      1,
-      BASE,
-    );
-
-    expect(rows.map((row) => row.next)).toEqual([false, true]);
-  });
-
-  it('falls back to the first undecided match when the current round is played', () => {
+  it('carries every known opponent’s roster, played or not', () => {
     const rows = seasonRows(
       [
         round('R1', side('me', 2), side('a'), 'side1'),
         round('R2', side('me'), side('b')),
       ],
       'me',
-      0,
       BASE,
     );
 
-    expect(rows.map((row) => row.next)).toEqual([false, true]);
+    expect(rows.map((row) => row.roster.length)).toEqual([1, 1]);
   });
 
   it('names an opponent that is not decided yet and gives it no link', () => {
     const [row] = seasonRows(
       [round('R1', side('me'), side(null))],
       'me',
-      0,
       BASE,
     );
 

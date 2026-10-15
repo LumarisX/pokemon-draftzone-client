@@ -62,11 +62,7 @@
 }
 
 .team-body__roster {
-  display: flex;
-  flex-direction: column;
   grid-area: roster;
-  gap: pdz.layout(stack);
-  min-width: 0;
 }
 
 .team-body__trades {
@@ -91,9 +87,5 @@
   @include pdz.text(section-title);
   margin: 0;
   color: pdz.color(on-surface);
-}
-
-.section__header--padded {
-  padding: pdz.space(lg) pdz.space(lg) 0;
 }
 

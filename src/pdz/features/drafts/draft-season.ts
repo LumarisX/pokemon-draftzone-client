@@ -9,7 +9,7 @@ import {
   SeasonResult,
   SeasonRow,
 } from '@pdz/features/league-zone/league-team/team-season/team-season.component';
-import { SeasonMvpStat } from '@pdz/shared/data/season-mvp/season-mvp.component';
+import { TeamRosterLine } from '@pdz/shared/data/team-roster/team-roster.component';
 import { catchError, forkJoin, map, Observable, of } from 'rxjs';
 
 export type SeasonMatch = {
@@ -23,32 +23,17 @@ export type SeasonMatch = {
   replays: string[];
 };
 
-export type RosterLine = {
-  pokemon: DraftPokemon;
-  brought: number;
-  kills: number;
-  indirect: number;
-  deaths: number;
-  knockouts: number;
-};
-
 export type DraftSeason = {
   draft: Draft;
   matches: SeasonMatch[];
   rows: SeasonRow[];
-  next: SeasonMatch | null;
-  roster: RosterLine[];
-  mvp: RosterLine | null;
-  mvpStats: SeasonMvpStat[];
-  totals: { kills: number; indirect: number; deaths: number };
+  roster: TeamRosterLine[];
   hasStats: boolean;
 };
 
 export type DraftSeasonLoad =
   | { state: 'ready'; season: DraftSeason }
   | { state: 'failed' };
-
-const SCORING_GRACE_MS = 24 * 60 * 60 * 1000;
 
 export function draftLinks(teamId: string) {
   const base = ['/', DRAFT_OVERVIEW_PATH, teamId];
@@ -104,23 +89,7 @@ function toMatch(
   };
 }
 
-export function pickNext(
-  matches: SeasonMatch[],
-  now = Date.now(),
-): SeasonMatch | null {
-  const unscored = matches.filter((match) => match.result === null);
-  const scheduled = unscored
-    .filter(
-      (match) =>
-        match.when && new Date(match.when).getTime() > now - SCORING_GRACE_MS,
-    )
-    .sort(
-      (a, b) => new Date(a.when!).getTime() - new Date(b.when!).getTime(),
-    );
-  return scheduled[0] ?? unscored.find((match) => !match.when) ?? null;
-}
-
-function toRow(match: SeasonMatch, next: boolean): SeasonRow {
+function toRow(match: SeasonMatch): SeasonRow {
   return {
     id: match.id,
     round: match.stage,
@@ -137,48 +106,24 @@ function toRow(match: SeasonMatch, next: boolean): SeasonRow {
     when: match.when,
     exactTime: !!match.when,
     link: match.link,
-    next,
-    roster: next ? match.opponent.team : [],
+    roster: match.opponent.team,
   };
 }
 
-function rosterLines(team: DraftPokemon[], stats: PokemonStat[]): RosterLine[] {
+function rosterLines(
+  team: DraftPokemon[],
+  stats: PokemonStat[],
+): TeamRosterLine[] {
   return team.map((pokemon) => {
     const stat = stats.find((entry) => entry.pokemon.id === pokemon.id);
-    const kills = stat?.kills ?? 0;
-    const indirect = stat?.indirect ?? 0;
     return {
       pokemon,
       brought: stat?.brought ?? 0,
-      kills,
-      indirect,
+      kills: stat?.kills ?? 0,
+      indirect: stat?.indirect ?? 0,
       deaths: stat?.deaths ?? 0,
-      knockouts: kills + indirect,
     };
   });
-}
-
-function byAces(a: RosterLine, b: RosterLine): number {
-  return (
-    b.knockouts - a.knockouts || a.deaths - b.deaths || a.brought - b.brought
-  );
-}
-
-function mvpStats(mvp: RosterLine, teamKnockouts: number): SeasonMvpStat[] {
-  return [
-    { label: 'Games', value: mvp.brought },
-    { label: 'Fainted', value: mvp.deaths },
-    {
-      label: 'KOs/Game',
-      value: mvp.brought ? (mvp.knockouts / mvp.brought).toFixed(1) : '—',
-    },
-    {
-      label: 'Team KOs',
-      value: teamKnockouts
-        ? `${Math.round((mvp.knockouts / teamKnockouts) * 100)}%`
-        : '—',
-    },
-  ];
 }
 
 export function buildSeason(
@@ -188,27 +133,11 @@ export function buildSeason(
   matchupLink: (id: string) => string[],
 ): DraftSeason {
   const matches = opponents.map((opponent) => toMatch(opponent, matchupLink));
-  const next = draft.completedAt ? null : pickNext(matches);
-  const roster = rosterLines(draft.team, stats ?? []);
-  const ranked = [...roster].sort(byAces);
-  const totals = roster.reduce(
-    (sum, line) => ({
-      kills: sum.kills + line.kills,
-      indirect: sum.indirect + line.indirect,
-      deaths: sum.deaths + line.deaths,
-    }),
-    { kills: 0, indirect: 0, deaths: 0 },
-  );
-  const mvp = ranked[0] && ranked[0].knockouts > 0 ? ranked[0] : null;
   return {
     draft,
     matches,
-    rows: matches.map((match) => toRow(match, match === next)),
-    next,
-    roster,
-    mvp,
-    mvpStats: mvp ? mvpStats(mvp, totals.kills + totals.indirect) : [],
-    totals,
+    rows: matches.map(toRow),
+    roster: rosterLines(draft.team, stats ?? []),
     hasStats: !!stats?.length,
   };
 }
@@ -236,9 +165,4 @@ export function loadSeason(
     ),
     catchError(() => of<DraftSeasonLoad>({ state: 'failed' })),
   );
-}
-
-export function killRatio(line: RosterLine): string {
-  if (line.deaths) return (line.knockouts / line.deaths).toFixed(1);
-  return line.knockouts > 0 ? `${line.knockouts}` : '—';
 }

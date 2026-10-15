@@ -43,27 +43,6 @@
   }
 }
 
-:host([data-grounded]) .forme-stack {
-  &::after {
-    content: "";
-    position: absolute;
-    inset: auto 18% -3%;
-    height: 10%;
-    z-index: -1;
-    border-radius: pdz.shape(corner-full);
-    background: radial-gradient(closest-side, pdz.color(sprite-shadow), transparent);
-    pointer-events: none;
-  }
-}
-
-:host([data-grounded][data-kind="pixel"]) .forme-stack::after {
-  bottom: 6%;
-}
-
-:host([data-grounded][data-kind="headshot"]) .forme-stack::after {
-  inset: auto 8% -10%;
-}
-
 .forme-slot {
   display: flex;
   justify-content: center;
@@ -160,10 +139,6 @@
 
 :host([data-state="fainted"]) .forme-slot.active {
   opacity: 0.33;
-}
-
-:host([data-state="fainted"][data-grounded]) .forme-stack::after {
-  opacity: 0.4;
 }
 
 :host([data-state="taken"]),

@@ -47,7 +47,6 @@ const ACTORS: Record<EmptyStateKind, { pokemon: Pokemon; icon: string }> = {
       <pdz-sprite
         class="pdz-empty-state__actor"
         aria-hidden="true"
-        grounded
         [pokemon]="actor.pokemon"
         [size]="actor.size"
         [showFormes]="false"

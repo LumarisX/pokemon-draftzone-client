@@ -98,9 +98,6 @@
 
 .season__round {
   @include pdz.text(label-caps);
-  display: inline-flex;
-  align-items: center;
-  gap: pdz.space(xs);
   color: pdz.color(on-surface-muted);
 }
 
@@ -143,11 +140,6 @@
   color: pdz.color(on-surface);
 }
 
-.season__countdown {
-  @include pdz.text(body-sm-strong);
-  color: pdz.color(on-surface);
-}
-
 .season__detail {
   @include pdz.text(meta);
   color: pdz.color(on-surface-muted);
@@ -155,9 +147,16 @@
 
 .season__roster {
   display: flex;
-  flex-wrap: wrap;
-  gap: pdz.space(xs);
+  gap: pdz.space(3xs);
+  min-width: 0;
   padding: 0 pdz.space(sm) pdz.space(sm);
+}
+
+.season__sprite {
+  flex: 0 1 pdz.sprite-size(sm);
+  min-width: 0;
+  max-width: pdz.sprite-size(sm);
+  aspect-ratio: 1;
 }
 
 .season__placeholder {

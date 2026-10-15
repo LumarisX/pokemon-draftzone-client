@@ -7,7 +7,7 @@
   min-width: 0;
 }
 
-.roster {
+.pdz-team-roster {
   display: flex;
   flex-direction: column;
   gap: pdz.layout(stack);
@@ -15,9 +15,16 @@
   padding-bottom: pdz.space(xs);
 }
 
-.roster__title {
+.pdz-team-roster__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: pdz.space(sm);
+  padding: pdz.space(lg) pdz.space(lg) 0;
+}
+
+.pdz-team-roster__title {
   @include pdz.text(section-title);
   margin: 0;
-  padding: pdz.space(lg) pdz.space(lg) 0;
   color: pdz.color(on-surface);
 }

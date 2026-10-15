@@ -56,6 +56,10 @@ import { RosterSpritesComponent } from '@pdz/shared/images/roster-sprites/roster
 import { RosterPatternComponent } from '@pdz/shared/images/roster-pattern/roster-pattern.component';
 import { SeasonMvpComponent } from '@pdz/shared/data/season-mvp/season-mvp.component';
 import {
+  TeamRosterComponent,
+  TeamRosterLine,
+} from '@pdz/shared/data/team-roster/team-roster.component';
+import {
   PodiumComponent,
   PodiumPlace,
 } from '@pdz/shared/data/podium/podium.component';
@@ -167,6 +171,7 @@ const MODE_ATTR = 'pdz-theme-mode';
     RosterSpritesComponent,
     RosterPatternComponent,
     SeasonMvpComponent,
+    TeamRosterComponent,
     PodiumComponent,
     EmptyStateComponent,
     TeamComponent,
@@ -233,11 +238,6 @@ export class DebugComponentsComponent {
     name: 'Charizard',
     shiny: true,
   };
-  protected readonly spriteShinyGrounded = {
-    id: 'garchomp',
-    name: 'Garchomp',
-    shiny: true,
-  };
   protected readonly photoTeam = [
     { id: 'garchomp', name: 'Garchomp' },
     { id: 'rotomheat', name: 'Rotom-Heat' },
@@ -281,6 +281,26 @@ export class DebugComponentsComponent {
     { label: 'KOs/Game', value: '2.3' },
     { label: 'Team KOs', value: '39%' },
   ];
+  protected readonly leagueRoster: TeamRosterLine[] = this.photoTeam
+    .slice(0, 6)
+    .map((pokemon, index) => ({
+      pokemon,
+      brought: 4 - (index % 3),
+      kills: [9, 3, 0, 5, 1, 2][index],
+      deaths: [2, 3, 1, 4, 2, 3][index],
+      cost: 18 - index * 2,
+      types: index === 0 ? this.mvpTypes : [],
+      offList: index === 5,
+    }));
+  protected readonly draftRoster: TeamRosterLine[] = this.photoTeam
+    .slice(0, 6)
+    .map((pokemon, index) => ({
+      pokemon,
+      brought: 4 - (index % 3),
+      kills: [7, 3, 0, 5, 1, 2][index],
+      indirect: [2, 0, 1, 0, 0, 1][index],
+      deaths: [2, 3, 1, 4, 2, 3][index],
+    }));
   protected readonly photoCounts = [12, 8, 5, 13, 10, 14].map((count) =>
     this.photoTeam.slice(0, count),
   );

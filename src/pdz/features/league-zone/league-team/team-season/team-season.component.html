@@ -12,7 +12,7 @@
 
     <ol class="season">
       @for (row of rows; track row.id) {
-        <li class="season__item" [class.season__item--next]="row.next">
+        <li class="season__item">
           <div class="season__line">
             <a
               class="season__row"
@@ -20,12 +20,7 @@
               [routerLink]="row.link"
             >
               <span class="season__main">
-                <span class="season__round">
-                  {{ row.round }}
-                  @if (row.next) {
-                    <pdz-chip size="xs" tone="primary">Next</pdz-chip>
-                  }
-                </span>
+                <span class="season__round">{{ row.round }}</span>
                 <pdz-team
                   size="row"
                   [name]="row.opponent.name"
@@ -55,9 +50,6 @@
                     >
                   }
                 } @else if (row.when; as when) {
-                  @if (row.next) {
-                    <pdz-countdown class="season__countdown" [target]="when" />
-                  }
                   <span class="season__detail">{{
                     dateLabel(when, row.exactTime)
                   }}</span>
@@ -82,10 +74,15 @@
             }
           </div>
 
-          @if (row.next && row.roster.length) {
+          @if (!row.result && row.roster.length) {
             <div class="season__roster" [attr.aria-label]="row.opponent.name + ' roster'">
               @for (pokemon of row.roster; track $index) {
-                <pdz-sprite size="sm" grounded [pokemon]="pokemon" />
+                <pdz-sprite
+                  class="season__sprite"
+                  size="fill"
+                  [pokemon]="pokemon"
+                  [showFormes]="false"
+                />
               }
             </div>
           }

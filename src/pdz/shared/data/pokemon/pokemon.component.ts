@@ -41,7 +41,6 @@ const SPRITE_SIZES: Record<PokemonSize, SpriteSize> = {
       [pokemon]="pokemon()"
       [size]="spriteSize()"
       [flipped]="align() === 'start'"
-      [grounded]="grounded()"
       [state]="state()"
       [takenLogo]="takenLogo()"
       [takenBy]="takenBy()"
@@ -115,10 +114,6 @@ export class PokemonComponent {
   readonly headingLevel = input<2 | 3 | 4 | null>(null);
 
   protected readonly spriteSize = computed(() => SPRITE_SIZES[this.size()]);
-
-  protected readonly grounded = computed(
-    () => this.size() === 'card' || this.size() === 'hero',
-  );
 
   protected readonly captainSize = computed(() =>
     this.size() === 'hero' ? 18 : 14,

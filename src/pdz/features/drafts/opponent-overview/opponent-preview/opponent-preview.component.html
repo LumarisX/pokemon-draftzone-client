@@ -7,9 +7,6 @@
       [title]="draft.teamName"
       [backLink]="backLink"
     >
-      @if (draft.team.length) {
-        <pdz-roster-pattern pdz-page-header-backdrop [pokemon]="draft.team" />
-      }
       <span pdz-page-header-detail class="facts">
         @if (draft.coach) {
           <span class="facts__coach">{{ draft.coach }}</span>
@@ -100,7 +97,7 @@
               color="neutral"
               [routerLink]="link.form"
               [queryParams]="{ stage: nextStage(season.matches.length) }"
-              >Add Opponent</a
+              >Add Match</a
             >
           </div>
           @if (season.rows.length) {
@@ -109,13 +106,21 @@
             <pdz-empty-state
               size="sm"
               icon="event"
-              message="Add your first opponent to start prepping for the season."
+              message="Add your first match to start prepping for the season."
             />
           }
         </section>
       </pdz-card>
 
-      <pdz-draft-roster class="body__roster" [season]="season" />
+      <pdz-team-roster class="body__roster" [lines]="season.roster">
+        @if (!season.hasStats) {
+          <pdz-empty-state
+            size="sm"
+            icon="scoreboard"
+            message="Score your first match to see your stats."
+          />
+        }
+      </pdz-team-roster>
     </div>
   } @else if (failed()) {
     <pdz-empty-state

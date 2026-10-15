@@ -69,7 +69,7 @@ enforceable form of the settled rules.
 
 `src/pdz/shared/` holds the primitives. **Prefer an existing primitive over
 hand-rolled markup.** Current inventory: buttons, data (badge, card, chip, meter, record,
-podium, score, season-mvp, skeleton, sort, pokemon-type, pokemon, team, matchup), dialogs, dropdowns (select, pokemon-search,
+podium, score, season-mvp, team-roster, skeleton, sort, pokemon-type, pokemon, team, matchup), dialogs, dropdowns (select, pokemon-search,
 format, ruleset), feedback (empty-state, toast), images (icon, sprite, team-logo,
 roster-sprites, roster-pattern, loading), inputs (field, choice, segmented, slide-toggle, slider), layout (page,
 page-header, page-sections, tabs, tab-nav, widget, disclosure, masonry), menu, pipes, time,
@@ -94,8 +94,8 @@ and projects `[pdz-page-header-detail]` (meta line under the title),
 `[pdz-page-header-meta]` (status chips, records), `[pdz-page-header-actions]`
 (buttons), `[pdz-page-header-center]` (fills the bar between title and actions, e.g.
 the matchup versus strip, or a team's sprite row), `[pdz-page-header-backdrop]` (a faint
-layer behind the header that fades out toward the title: an external draft page's
-`<pdz-roster-pattern [pokemon]>`; the league team page dropped it 2026-10-14), and default
+layer behind the header that fades out toward the title, such as `<pdz-roster-pattern [pokemon]>`;
+no page uses one since both team pages dropped it, 2026-10-15), and default
 content below the bar (tab navs, switchers).
 A page with no data shows `<pdz-empty-state>`, never a bare
 sentence or an endless spinner. Give every `md`/`lg` empty state a `kind`
@@ -115,8 +115,9 @@ tournament landing page (up to the league), a pool's draft board (back to Draft 
 on one page (career strip, roster-sprite cards for active seasons, an Organizing list of
 tournaments you own or staff without a team, Completed grouped by year). The Feed is off
 (`showFeed`) until it works. An external draft's page (`/drafts/:team`) is laid out like the league team page:
-roster-pattern header with no logo, a Schedule card on `pdz-team-season` (`entries` plus
-a `rowActions` ⋮ menu), and the season MVP over a roster card. Per-match actions live in
+plain header with no logo, a Schedule card on `pdz-team-season` (`entries` plus
+a `rowActions` ⋮ menu), and `pdz-team-roster` (season MVP over the Draft Roster table),
+the same component as the league team page so the two can't drift. Per-match actions live in
 that row menu and in the breakdown page header (`manage` in `MatchupPageConfig`). Its
 sub-pages (opponent form, score entry) are their own pages with a `compact` header and a
 back link to the draft. Seasons end by being marked **Completed** (archive is legacy):
@@ -159,7 +160,7 @@ and no page header.
 | checkbox / radio | `<input pdz-checkbox>` / `<input pdz-radio>`, or `label[pdz-check]` |
 | a 2–5 way choice | `<pdz-segmented>` + `<pdz-segmented-option>` |
 | icons | `<pdz-icon name="...">` — always, never a raw glyph or `<img>`; buttons take `icon="..."` |
-| a roster shown as a group | `<pdz-roster-sprites [pokemon] [spots] [name] layout="wrap\|tiers">` — every Pokémon as a bare sprite, in draft order, no floor, shadow or fill. `wrap` (default) is the roster card's strip: `md` sprites wrapping and centered. `tiers` is the team card banner: two rows at a fixed height on a faint `team1-subtle` fade (`tone="team2"` for a team that isn't the viewer's), the first picks 1.4× bigger (`TIER_STEP`) with fewer in the top row so the rows even out, sized to fit. `spots` adds empty places while a draft runs (only pass it when the pick count is known, or a finished team shows empty places). As a card banner, put it in `pdz-card`'s `[pdz-card-media]` slot. Single sprites standing on a card take `<pdz-sprite grounded>` |
+| a roster shown as a group | `<pdz-roster-sprites [pokemon] [spots] [name] layout="wrap\|tiers">` — every Pokémon as a bare sprite, in draft order, no floor, shadow or fill. `wrap` (default) is the roster card's strip: `md` sprites wrapping and centered. `tiers` is the team card banner: two rows at a fixed height on a faint `team1-subtle` fade (`tone="team2"` for a team that isn't the viewer's), the first picks 1.4× bigger (`TIER_STEP`) with fewer in the top row so the rows even out, sized to fit. `spots` adds empty places while a draft runs (only pass it when the pick count is known, or a finished team shows empty places). As a card banner, put it in `pdz-card`'s `[pdz-card-media]` slot. Sprites never take a ground shadow; `grounded` was removed 2026-10-15 |
 | a team's standout Pokémon | `<pdz-season-mvp [pokemon] [knockouts] [detail] [types] [stats]>` — most KOs, ties to fewer faints then fewer games; the page picks the Pokémon and builds `stats` (`SeasonMvpStat[]`: games, fainted, KOs/game, share of team KOs), the card owns the look (sprite faces right; stats sit inline when the card is 40rem+, under the name when narrower). Hide it until something has a KO |
 | a season's top three | `<pdz-podium [places]>` (`PodiumPlace[]` in finishing order: name, logo, coach, record, the team's top scorer as `pokemon`, `link`, `you`). Show it only once the season has ended |
 | a Pokémon you can't pick, or one that fainted | `<pdz-sprite state="taken" [takenLogo] [takenBy]>`, `state="banned"`, `state="fainted"` — never a hand-rolled grayscale or strike-through. Shiny sparkles are automatic |

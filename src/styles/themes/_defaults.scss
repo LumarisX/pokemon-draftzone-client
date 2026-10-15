@@ -138,7 +138,6 @@ $-light-base: (
   on-surface-inverse: "gray-75",
 
   shadow: #4d4d4d,
-  sprite-shadow: color-mix(in srgb, var(--pdz-color-shadow) 45%, transparent),
   image-tone: brightness(1),
   scrim: "black",
 
@@ -254,7 +253,6 @@ $-dark-base: (
   on-surface-inverse: "gray-900",
 
   shadow: "black",
-  sprite-shadow: color-mix(in srgb, var(--pdz-color-shadow) 65%, transparent),
   image-tone: brightness(0.9) saturate(0.88),
   scrim: "black",
 
