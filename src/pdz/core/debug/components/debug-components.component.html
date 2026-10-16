@@ -335,10 +335,36 @@
 <section class="section">
   <h2 class="section__title">Record</h2>
   <div class="row">
+    <pdz-record size="lg" [wins]="4" [losses]="1" />
     <pdz-record [wins]="4" [losses]="1" />
     <pdz-record [wins]="2" [draws]="1" [losses]="2" />
     <pdz-record size="sm" [wins]="4" [losses]="1" />
     <pdz-record variant="inline" [wins]="4" [draws]="1" [losses]="1" />
+  </div>
+</section>
+
+<section class="section">
+  <h2 class="section__title">Result Box</h2>
+  <h3 class="section__sub">
+    Outcomes are green won, red lost, gray drew: records, form letters, a
+    match's W/L. Scores are the side's color: team 1 primary, team 2 secondary
+  </h3>
+  <div class="row">
+    <pdz-result-box result="win">W</pdz-result-box>
+    <pdz-result-box side="team1">2</pdz-result-box>
+    <pdz-result-box side="team2">1</pdz-result-box>
+    <pdz-result-box size="sm" side="team1">3</pdz-result-box>
+    <pdz-result-box size="sm" side="team2">0</pdz-result-box>
+  </div>
+  <div class="row">
+    <pdz-result-box size="lg" result="win">3</pdz-result-box>
+    <pdz-result-box size="lg" result="loss">1</pdz-result-box>
+    <pdz-result-box result="win">2</pdz-result-box>
+    <pdz-result-box result="loss">0</pdz-result-box>
+    <pdz-result-box result="draw">1</pdz-result-box>
+    <pdz-result-box size="sm" result="win">W</pdz-result-box>
+    <pdz-result-box size="sm" result="loss">L</pdz-result-box>
+    <pdz-result-box size="sm" result="draw">D</pdz-result-box>
   </div>
 </section>
 
@@ -1929,6 +1955,10 @@
       <pdz-sprite [pokemon]="photoTeam[2]" size="xl" state="fainted" />
     </div>
     <div class="sprites__demo">
+      <span class="sprites__name">benched</span>
+      <pdz-sprite [pokemon]="photoTeam[3]" size="xl" state="benched" />
+    </div>
+    <div class="sprites__demo">
       <span class="sprites__name">taken</span>
       <pdz-sprite
         [pokemon]="photoDrafting[0]"
@@ -1946,7 +1976,8 @@
   <h3 class="section__sub">
     Roster sprites — every Pokémon, bare; wrap for roster cards, two tiers
     for team cards (the first picks 1.4× bigger), empty spots while a draft
-    runs; tone="team2" for another coach's team
+    runs; tone="team2" for another coach's team; [states] lines up a sprite
+    state per Pokémon (benched, fainted) for an opponent after a match
   </h3>
   <div class="roster-sprites">
     <pdz-roster-sprites [pokemon]="photoTeam" name="Inglorious Surfers" />
@@ -1967,11 +1998,19 @@
         [pokemon]="photoTeam"
         name="Inglorious Surfers"
       />
+      <pdz-roster-sprites
+        layout="tiers"
+        tone="team2"
+        [pokemon]="photoTeam.slice(0, 10)"
+        [states]="rosterStatesSample"
+        name="An opponent after a match"
+      />
     </div>
   </div>
 
   <h3 class="section__sub">
-    Season MVP — most KOs, ties to fewer faints; eyebrow and count in secondary
+    Season MVP — most KOs, ties to fewer faints; a faint team 1 wash, eyebrow
+    and count in team 1, since it is the page's own team
   </h3>
   <div class="photos">
     <pdz-season-mvp
@@ -2032,6 +2071,7 @@
   <div class="team-lockups">
     <pdz-team size="inline" name="Inglorious Surfers" coach="aaronmarshall" />
     <pdz-team name="Inglorious Surfers" coach="aaronmarshall" [link]="['.']" />
+    <pdz-team name="External Opponent" coach="no logo" [showLogo]="false" />
     <pdz-team size="card" name="Viridian Vipers" coach="misty" [logo]="teamLogoSample" />
     <pdz-team size="hero" name="Neon Nightshades" coach="brock" [headingLevel]="3" />
     <div class="team-lockups__versus">
@@ -2058,14 +2098,14 @@
     <div class="matchups__cards">
       <pdz-matchup label="Week 4" [team1]="matchupHero.team1" [team2]="matchupHero.team2">
         <span pdz-matchup-actions class="matchups__actions">
-          <a pdz-button size="xs" variant="tonal" [routerLink]="['.']">View</a>
-          <a pdz-button size="xs" variant="outlined" color="neutral" icon="play_circle" href="https://replay.pokemonshowdown.com">Replay</a>
+          <a pdz-button size="xs" variant="ghost" pill [routerLink]="['.']">View</a>
+          <a pdz-button size="xs" variant="ghost" color="neutral" pill icon="play_circle" href="https://replay.pokemonshowdown.com">Replay</a>
         </span>
       </pdz-matchup>
       <pdz-matchup label="Week 5" [team1]="matchupUpcoming.team1" [team2]="matchupUpcoming.team2">
         <span pdz-matchup-actions class="matchups__actions">
-          <a pdz-button size="xs" variant="tonal" [routerLink]="['.']">View</a>
-          <a pdz-button size="xs" variant="outlined" color="neutral" [routerLink]="['.']">Breakdown</a>
+          <a pdz-button size="xs" variant="ghost" pill [routerLink]="['.']">View</a>
+          <a pdz-button size="xs" variant="ghost" color="neutral" pill [routerLink]="['.']">Breakdown</a>
         </span>
       </pdz-matchup>
       <pdz-matchup label="Semifinal" [team1]="matchupPending.team1" [team2]="matchupPending.team2">

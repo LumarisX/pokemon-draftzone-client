@@ -13,6 +13,10 @@ import { ScoreComponent } from '@pdz/shared/data/score/score.component';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { TeamComponent } from '@pdz/shared/data/team/team.component';
 import { PlusSignPipe } from '@pdz/shared/pipes/plus-sign.pipe';
+import {
+  ResultBoxComponent,
+  ResultBoxResult,
+} from '@pdz/shared/data/result-box/result-box.component';
 
 type ResultOutcome = League.TeamStandingData['results'][number];
 
@@ -24,12 +28,24 @@ const OUTCOME_LABELS: Record<NonNullable<ResultOutcome>['outcome'], string> = {
   ff: 'Forfeit loss',
 };
 
+const OUTCOME_RESULTS: Record<
+  NonNullable<ResultOutcome>['outcome'],
+  ResultBoxResult
+> = {
+  w: 'win',
+  d: 'draw',
+  t: 'draw',
+  l: 'loss',
+  ff: 'loss',
+};
+
 @Component({
   selector: 'pdz-team-standings',
   imports: [
     IconComponent,
     PlusSignPipe,
     RecordComponent,
+    ResultBoxComponent,
     ScoreComponent,
     TeamComponent,
     UpperCasePipe,
@@ -61,6 +77,8 @@ export class TeamStandingsComponent {
     if (diff < 0) return 'danger';
     return 'neutral';
   }
+
+  protected readonly outcomeResult = OUTCOME_RESULTS;
 
   protected resultLabel(result: NonNullable<ResultOutcome>): string {
     const score = result.score > 0 ? `+${result.score}` : `${result.score}`;

@@ -230,10 +230,6 @@
                       }
                     </div>
 
-                    @if (entry.form.length) {
-                      <pdz-league-form [form]="entry.form" />
-                    }
-
                     <div class="team__next">
                       @if (
                         entry.phase === "drafting" && entry.draft;
@@ -373,9 +369,12 @@
                           </pdz-team>
                           @if (entry.role !== "coach") {
                             <span class="done__result">
-                              <pdz-chip size="sm" tone="neutral" variant="soft">{{
-                                roleLabel(entry)
-                              }}</pdz-chip>
+                              <pdz-chip
+                                size="sm"
+                                tone="neutral"
+                                variant="soft"
+                                >{{ roleLabel(entry) }}</pdz-chip
+                              >
                             </span>
                           } @else if (entry.outcome; as outcome) {
                             <span class="done__result">

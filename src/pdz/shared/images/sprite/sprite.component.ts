@@ -18,7 +18,7 @@ import { SpriteImageComponent } from '../sprite-image/sprite-image.component';
 
 type SpritePokemon = Pokemon<DraftOptions>;
 
-export type SpriteState = 'fainted' | 'taken' | 'banned';
+export type SpriteState = 'fainted' | 'taken' | 'banned' | 'benched';
 export type SpriteSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'fill';
 
 type FormeSlot = {

@@ -1,5 +1,5 @@
 import { League } from '@pdz/features/league-zone/league.interface';
-import { seasonRows } from './team-season.component';
+import { rosterStates, seasonRows } from './team-season.component';
 
 function side(slug: string | null, score = 0): League.MatchupSide {
   return {
@@ -90,5 +90,29 @@ describe('seasonRows', () => {
 
     expect(row.opponent.name).toBe('Winner of Match 9');
     expect(row.link).toBeNull();
+  });
+});
+
+describe('rosterStates', () => {
+  const roster = ['a', 'b', 'c', 'd'].map((id) => ({ id, name: id }));
+
+  it('leaves every sprite plain before any game is recorded', () => {
+    expect(rosterStates(roster, [])).toEqual([null, null, null, null]);
+    expect(rosterStates(roster, [[]])).toEqual([null, null, null, null]);
+  });
+
+  it('benches the unbrought and faints only what fell in every game it played', () => {
+    const states = rosterStates(roster, [
+      [
+        { id: 'a', fainted: true },
+        { id: 'b', fainted: true },
+      ],
+      [
+        { id: 'a', fainted: false },
+        { id: 'c', fainted: true },
+      ],
+    ]);
+
+    expect(states).toEqual([null, 'fainted', 'fainted', 'benched']);
   });
 });

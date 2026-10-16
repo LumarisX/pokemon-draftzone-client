@@ -55,8 +55,7 @@ $card-row-height: 3rem;
 
   :host([data-size="card"]) & {
     min-height: pdz.control-height(sm);
-    padding: pdz.space(3xs) pdz.space(sm);
-    border-bottom: 1px solid pdz.color(border-subtle);
+    padding: pdz.space(2xs) pdz.space(sm) 0;
   }
 
   :host([data-size="hero"]) & {
@@ -119,10 +118,6 @@ $card-row-height: 3rem;
     padding: pdz.space(2xs) pdz.space(sm);
   }
 
-  :host([data-size="card"]) &--team2 {
-    border-top: 1px solid pdz.color(border-subtle);
-  }
-
   :host([data-size="card"]) &--you {
     background: linear-gradient(
       90deg,
@@ -166,26 +161,8 @@ $card-row-height: 3rem;
   }
 }
 
-.pdz-matchup__trophy {
-  flex: none;
-  color: pdz.color(positive);
-}
-
 .pdz-matchup__side-score {
-  @include pdz.text(subtitle);
-  @include pdz.numeric;
-  flex: none;
-  min-width: 1.25rem;
   margin-inline-start: auto;
-  text-align: end;
-
-  .pdz-matchup__side[data-result="win"] & {
-    font-weight: pdz.font-weight(semibold);
-  }
-
-  .pdz-matchup__side[data-result="loss"] & {
-    color: pdz.color(on-surface-muted);
-  }
 }
 
 .pdz-matchup__pending {
@@ -256,13 +233,16 @@ $card-row-height: 3rem;
   }
 }
 
-.pdz-matchup__points {
-  @include pdz.text(title);
-  @include pdz.numeric;
+.pdz-matchup__tally {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: pdz.space(2xs);
+}
 
-  :host([data-size="hero"]) & {
-    @include pdz.text(display);
-  }
+.pdz-matchup__points {
+  @include pdz.text(display);
+  @include pdz.numeric;
 
   &--team1 {
     color: pdz.color(team1-accent);
@@ -329,8 +309,7 @@ $card-row-height: 3rem;
   }
 
   :host([data-size="card"]) & {
-    padding: pdz.space(2xs) pdz.space(sm);
-    border-top: 1px solid pdz.color(border-subtle);
+    padding: pdz.space(2xs) pdz.space(xs) pdz.space(xs);
   }
 
   :host([data-size="hero"]) & {

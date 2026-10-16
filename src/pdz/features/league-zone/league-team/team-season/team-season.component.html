@@ -1,90 +1,124 @@
 @if (rows(); as rows) {
   @if (rows.length) {
-    @if (form().length) {
-      <ol class="form" [attr.aria-label]="'Results so far: ' + formLabel()">
-        @for (result of form(); track $index) {
-          <li class="form__pip" [attr.data-result]="result" aria-hidden="true">
-            {{ letter[result] }}
-          </li>
-        }
-      </ol>
-    }
-
     <ol class="season">
-      @for (row of rows; track row.id) {
-        <li class="season__item">
-          <div class="season__line">
-            <a
-              class="season__row"
-              [class.season__row--link]="row.link"
-              [routerLink]="row.link"
-            >
-              <span class="season__main">
-                <span class="season__round">{{ row.round }}</span>
-                <pdz-team
-                  size="row"
-                  [name]="row.opponent.name"
-                  [coach]="row.opponent.coach"
-                  [logo]="row.opponent.logo"
+      @for (match of matches(); track match.row.id) {
+        @let row = match.row;
+        <li class="match" [attr.data-result]="row.result">
+          @if (row.result) {
+            <pdz-disclosure chevronPosition="end">
+              <span pdz-disclosure-heading class="match__line">
+                <ng-container
+                  [ngTemplateOutlet]="lineTpl"
+                  [ngTemplateOutletContext]="{ $implicit: match }"
                 />
               </span>
+              @if (rowActions()) {
+                <span pdz-disclosure-trailing class="match__trailing">
+                  <ng-container
+                    [ngTemplateOutlet]="actionsTpl"
+                    [ngTemplateOutletContext]="{ $implicit: row }"
+                  />
+                </span>
+              }
 
-              <span
-                class="season__outcome"
-                [class.season__outcome--stack]="!row.result"
-              >
-                @if (row.result; as result) {
-                  <pdz-chip
-                    size="sm"
-                    [tone]="tone[result]"
-                    [attr.aria-label]="resultLabel[result]"
-                    >{{ letter[result] }}</pdz-chip
-                  >
-                  @if (row.forfeit) {
-                    <span class="season__value season__detail">Forfeit</span>
-                  } @else if (row.score; as score) {
-                    <span
-                      class="season__value season__score"
-                      [attr.aria-label]="score.mine + ' to ' + score.theirs"
-                      >{{ score.mine }}-{{ score.theirs }}</span
+              <div class="match__detail">
+                <ng-container
+                  [ngTemplateOutlet]="rosterTpl"
+                  [ngTemplateOutletContext]="{ $implicit: match }"
+                />
+                <div class="match__side">
+                  @if (row.games.length) {
+                    <ol class="games">
+                      @for (game of row.games; track $index) {
+                        <li class="games__game" [attr.data-result]="game.result">
+                          <span class="games__label">Game {{ $index + 1 }}</span>
+                          <span
+                            class="match__score"
+                            role="img"
+                            [attr.aria-label]="
+                              scoreLabel(game.result, game.mine, game.theirs)
+                            "
+                          >
+                            <pdz-result-box size="sm" side="team1">{{
+                              game.mine
+                            }}</pdz-result-box>
+                            <span class="match__dash" aria-hidden="true"
+                              >–</span
+                            >
+                            <pdz-result-box size="sm" side="team2">{{
+                              game.theirs
+                            }}</pdz-result-box>
+                          </span>
+                          @if (game.replay; as replay) {
+                            <a
+                              pdz-button
+                              size="xs"
+                              variant="ghost"
+                              color="neutral"
+                              pill
+                              iconOnly
+                              icon="play_circle"
+                              target="_blank"
+                              rel="noopener"
+                              pdzTooltip="Watch replay"
+                              [href]="replay"
+                              [attr.aria-label]="
+                                'Replay of game ' + ($index + 1)
+                              "
+                            ></a>
+                          } @else {
+                            <span class="games__no-replay"></span>
+                          }
+                        </li>
+                      }
+                    </ol>
+                  }
+                  @if (row.link; as link) {
+                    <a
+                      pdz-button
+                      size="xs"
+                      variant="ghost"
+                      pill
+                      [routerLink]="link"
+                      >View Matchup</a
                     >
                   }
-                } @else if (row.when; as when) {
-                  <span class="season__detail">{{
-                    dateLabel(when, row.exactTime)
-                  }}</span>
-                } @else {
-                  <span class="season__detail">Not scheduled</span>
-                }
-              </span>
-              <pdz-icon
-                class="season__chevron"
-                name="chevron_right"
-                size="sm"
-                [class.season__chevron--none]="!row.link"
-              />
-            </a>
-            @if (rowActions(); as actions) {
-              <span class="season__actions">
+                </div>
+              </div>
+            </pdz-disclosure>
+          } @else {
+            <div class="match__header">
+              <span class="match__line">
                 <ng-container
-                  [ngTemplateOutlet]="actions"
+                  [ngTemplateOutlet]="lineTpl"
+                  [ngTemplateOutletContext]="{ $implicit: match }"
+                />
+              </span>
+              <span class="match__trailing">
+                @if (row.link; as link) {
+                  <a
+                    pdz-button
+                    size="xs"
+                    variant="ghost"
+                    pill
+                    [routerLink]="link"
+                    >View Matchup</a
+                  >
+                }
+                <ng-container
+                  [ngTemplateOutlet]="actionsTpl"
                   [ngTemplateOutletContext]="{ $implicit: row }"
                 />
               </span>
-            }
-          </div>
-
-          @if (!row.result && row.roster.length) {
-            <div class="season__roster" [attr.aria-label]="row.opponent.name + ' roster'">
-              @for (pokemon of row.roster; track $index) {
-                <pdz-sprite
-                  class="season__sprite"
-                  size="fill"
-                  [pokemon]="pokemon"
-                  [showFormes]="false"
-                />
-              }
             </div>
+            @if (match.row.roster.length) {
+              <div class="match__detail">
+                <ng-container
+                  [ngTemplateOutlet]="rosterTpl"
+                  [ngTemplateOutletContext]="{ $implicit: match }"
+                />
+              </div>
+            }
           }
         </li>
       }
@@ -102,3 +136,56 @@
     }
   </div>
 }
+
+<ng-template #lineTpl let-match>
+  @let row = match.row;
+  <span class="match__round">{{ row.round }}</span>
+  <pdz-team
+    class="match__opponent"
+    size="row"
+    [showLogo]="showLogos()"
+    [name]="row.opponent.name"
+    [coach]="row.opponent.coach"
+    [logo]="row.opponent.logo"
+  />
+  <span class="match__outcome">
+    @if (row.forfeit) {
+      <pdz-chip tone="warning" size="xs">Forfeit</pdz-chip>
+    }
+    @if (row.score; as score) {
+      <span
+        class="match__score"
+        role="img"
+        [attr.aria-label]="scoreLabel(row.result, score.mine, score.theirs)"
+      >
+        <pdz-result-box side="team1">{{ score.mine }}</pdz-result-box>
+        <span class="match__dash" aria-hidden="true">–</span>
+        <pdz-result-box side="team2">{{ score.theirs }}</pdz-result-box>
+      </span>
+    } @else if (row.when) {
+      <span class="match__when">{{ dateLabel(row.when, row.exactTime) }}</span>
+    }
+  </span>
+</ng-template>
+
+<ng-template #rosterTpl let-match>
+  @if (match.row.roster.length) {
+    <pdz-roster-sprites
+      class="match__roster"
+      layout="tiers"
+      [fade]="false"
+      [pokemon]="match.row.roster"
+      [states]="match.states"
+      [name]="match.row.opponent.name"
+    />
+  }
+</ng-template>
+
+<ng-template #actionsTpl let-row>
+  @if (rowActions(); as actions) {
+    <ng-container
+      [ngTemplateOutlet]="actions"
+      [ngTemplateOutletContext]="{ $implicit: row }"
+    />
+  }
+</ng-template>

@@ -6,6 +6,12 @@ import {
 import { Draft, DraftPokemon } from '@pdz/features/drafts/draft.model';
 import { Opponent } from '@pdz/features/drafts/opponent-overview/opponent.model';
 import {
+  MatchPokemonStat,
+  MatchTeam,
+} from '@pdz/features/drafts/matchup-overview/matchup.model';
+import {
+  GameLineup,
+  gameResult,
   SeasonResult,
   SeasonRow,
 } from '@pdz/features/league-zone/league-team/team-season/team-season.component';
@@ -89,7 +95,24 @@ function toMatch(
   };
 }
 
+function statEntries(
+  stats: MatchTeam['stats'] | Record<string, MatchPokemonStat> | undefined,
+): [string, MatchPokemonStat][] {
+  if (!stats) return [];
+  return Array.isArray(stats) ? stats : Object.entries(stats);
+}
+
+function lineup(team: MatchTeam | undefined): GameLineup {
+  return statEntries(team?.stats)
+    .filter(([, stat]) => stat.status || (stat.brought ?? 0) > 0)
+    .map(([id, stat]) => ({
+      id,
+      fainted: stat.status === 'fainted' || (stat.deaths ?? 0) > 0,
+    }));
+}
+
 function toRow(match: SeasonMatch): SeasonRow {
+  const games = match.opponent.matches ?? [];
   return {
     id: match.id,
     round: match.stage,
@@ -107,6 +130,13 @@ function toRow(match: SeasonMatch): SeasonRow {
     exactTime: !!match.when,
     link: match.link,
     roster: match.opponent.team,
+    games: games.map((game) => ({
+      mine: game.aTeam?.score ?? 0,
+      theirs: game.bTeam?.score ?? 0,
+      result: gameResult(game.winner === 'a', game.winner === 'b'),
+      replay: game.replay || null,
+    })),
+    lineups: games.map((game) => lineup(game.bTeam)),
   };
 }
 

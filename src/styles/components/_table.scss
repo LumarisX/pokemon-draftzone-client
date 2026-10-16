@@ -6,6 +6,10 @@
   overflow: auto;
   border-radius: pdz.shape(corner-lg);
   background: pdz.color(raised);
+
+  &[data-surface="clear"] {
+    background: none;
+  }
 }
 
 .pdz-table {
@@ -56,6 +60,14 @@
     color: pdz.color(on-surface-variant);
     white-space: nowrap;
     border-top: 1px solid pdz.color(border-control);
+  }
+
+  &[data-surface="clear"]:not([data-sticky]) {
+    thead th,
+    tfoot th,
+    tfoot td {
+      background: none;
+    }
   }
 
   th.pdz-table__num,

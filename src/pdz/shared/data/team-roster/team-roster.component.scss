@@ -1,10 +1,30 @@
 @use "pdz-theming" as pdz;
 
 :host {
-  display: flex;
-  flex-direction: column;
-  gap: pdz.layout(stack);
+  display: block;
+  container: pdz-team-roster / inline-size;
   min-width: 0;
+}
+
+.pdz-team-roster__layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-items: start;
+  gap: pdz.layout(section-gap);
+
+  @container pdz-team-roster (min-width: 48rem) {
+    &:has(> pdz-season-mvp) {
+      grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+    }
+  }
+}
+
+.pdz-team-roster__card {
+  background-image: linear-gradient(
+    180deg,
+    #{pdz.color(team1-subtle)},
+    transparent 12rem
+  );
 }
 
 .pdz-team-roster {

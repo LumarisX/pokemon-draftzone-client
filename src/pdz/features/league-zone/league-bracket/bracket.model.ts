@@ -36,6 +36,7 @@ export interface FlexBracketMatch {
   forfeit?: boolean;
   advances?: 'side1' | 'side2' | 'none' | null;
   label?: string;
+  scheduledDate?: string | null;
 }
 
 export type BracketSectionKind =

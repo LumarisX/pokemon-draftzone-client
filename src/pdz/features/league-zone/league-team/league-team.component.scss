@@ -59,6 +59,11 @@
 
 .team-body__schedule {
   grid-area: schedule;
+  background-image: linear-gradient(
+    180deg,
+    #{pdz.color(team2-subtle)},
+    transparent 12rem
+  );
 }
 
 .team-body__roster {

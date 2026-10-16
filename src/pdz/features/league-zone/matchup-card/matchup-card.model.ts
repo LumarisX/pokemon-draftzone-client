@@ -22,4 +22,5 @@ export interface MatchupCard {
   viewLink: string[] | null;
   breakdownLink: string[] | null;
   replays: string[];
+  when?: { date: string; exact: boolean } | null;
 }

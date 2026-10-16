@@ -26,6 +26,8 @@
   align-items: center;
   gap: pdz.space(xs);
   width: 100%;
+  border-radius: var(--pdz-disclosure-header-radius, 0);
+  background: var(--pdz-disclosure-header-background, none);
 }
 
 .pdz-disclosure__toggle {

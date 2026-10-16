@@ -34,7 +34,7 @@
 
 .pdz-season-mvp__eyebrow {
   @include pdz.text(label-caps);
-  color: pdz.color(secondary-accent);
+  color: pdz.color(team1-accent);
 }
 
 .pdz-season-mvp__name {
@@ -107,7 +107,7 @@
 .pdz-season-mvp__number {
   @include pdz.text(headline);
   @include pdz.numeric;
-  color: pdz.color(secondary-accent);
+  color: pdz.color(team1-accent);
   line-height: 1;
 }
 

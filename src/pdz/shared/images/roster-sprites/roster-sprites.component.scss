@@ -20,6 +20,9 @@
   height: 8.5rem;
   padding: 0;
   overflow: hidden;
+}
+
+:host([data-layout="tiers"][data-tone="team1"]) {
   background: linear-gradient(180deg, pdz.color(team1-subtle), transparent 80%);
 }
 

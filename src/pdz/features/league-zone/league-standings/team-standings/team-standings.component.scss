@@ -43,26 +43,3 @@
   display: flex;
   gap: pdz.space(2xs);
 }
-
-.form__result {
-  @include pdz.text(label-strong);
-  @include pdz.numeric;
-  display: inline-grid;
-  place-items: center;
-  width: pdz.control-height(xs);
-  height: pdz.control-height(xs);
-  border-radius: pdz.shape(corner-full);
-  background: pdz.color(state-pressed);
-  color: pdz.color(on-surface-variant);
-
-  &[data-outcome="w"] {
-    background: pdz.color(success-container);
-    color: pdz.color(on-success-container);
-  }
-
-  &[data-outcome="l"],
-  &[data-outcome="ff"] {
-    background: pdz.color(danger-container);
-    color: pdz.color(on-danger-container);
-  }
-}

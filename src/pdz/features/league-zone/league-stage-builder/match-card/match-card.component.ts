@@ -45,6 +45,7 @@ export class MatchCardComponent {
   readonly labels = input(new Map<string, string>());
   readonly editable = input(false);
   readonly matchupLinkBase = input<string[] | null>();
+  readonly deadline = input<string | null | undefined>();
 
   readonly edit = output<string>();
   readonly remove = output<string>();
@@ -64,6 +65,7 @@ export class MatchCardComponent {
     const viewLink = this.viewLink(slots);
     const match = this.match();
     const decided = this.decided();
+    const deadline = this.deadline();
 
     return {
       id: match.id,
@@ -75,6 +77,11 @@ export class MatchCardComponent {
       viewLink,
       breakdownLink: viewLink && !decided ? [...viewLink, 'breakdown'] : null,
       replays: this.editable() ? [] : this.replays(match),
+      when: match.scheduledDate
+        ? { date: match.scheduledDate, exact: true }
+        : deadline
+          ? { date: deadline, exact: false }
+          : null,
     };
   });
 

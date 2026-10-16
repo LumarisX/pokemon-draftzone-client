@@ -170,6 +170,7 @@
                   [labels]="labels"
                   [editable]="editable()"
                   [matchupLinkBase]="matchupLinkBase()"
+                  [deadline]="draft().rounds[match.round]?.matchDeadline"
                   (edit)="editMatch.emit($event)"
                   (remove)="onRemoveMatch($event)"
                 ></pdz-match-card>
@@ -514,6 +515,7 @@
                 [labels]="labels"
                 [editable]="editable()"
                 [matchupLinkBase]="matchupLinkBase()"
+                [deadline]="draft().rounds[match.round]?.matchDeadline"
                 (edit)="editMatch.emit($event)"
                 (remove)="onRemoveMatch($event)"
                 (focusMatch)="onFocusMatch($event)"

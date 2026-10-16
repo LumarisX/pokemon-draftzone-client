@@ -1,162 +1,196 @@
 @use "pdz-theming" as pdz;
 
+$round-width: 5rem;
+
 :host {
   display: flex;
   flex-direction: column;
   gap: pdz.layout(stack);
-}
-
-.form {
-  display: flex;
-  flex-wrap: wrap;
-  gap: pdz.space(2xs);
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.form__pip {
-  @include pdz.text(label-strong);
-  display: inline-grid;
-  place-items: center;
-  width: pdz.control-height(xs);
-  height: pdz.control-height(xs);
-  border-radius: pdz.shape(corner-full);
-  background: pdz.color(state-strong);
-  color: pdz.color(on-surface-variant);
-
-  &[data-result="win"] {
-    background: pdz.color(success-container);
-    color: pdz.color(on-success-container);
-  }
-
-  &[data-result="loss"] {
-    background: pdz.color(danger-container);
-    color: pdz.color(on-danger-container);
-  }
+  container: team-season / inline-size;
 }
 
 .season {
   display: flex;
   flex-direction: column;
+  gap: pdz.space(xs);
   margin: 0;
   padding: 0;
   list-style: none;
 }
 
-.season__item {
-  @include pdz.row-divider;
-  display: flex;
-  flex-direction: column;
-  padding-block: pdz.space(2xs);
+@function -wash($role, $start, $end) {
+  @return linear-gradient(
+    90deg,
+    color-mix(in srgb, #{pdz.color($role)} $start, transparent),
+    color-mix(in srgb, #{pdz.color($role)} $end, transparent)
+  );
 }
 
-.season__line {
-  display: flex;
-  align-items: center;
-  gap: pdz.space(2xs);
-}
+$-win-wash: -wash(success-container, 70%, 14%);
+$-loss-wash: -wash(danger-container, 100%, 20%);
 
-.season__actions {
-  display: flex;
-  flex: none;
-}
+.match {
+  overflow: hidden;
+  border-radius: pdz.shape(corner-md);
+  --pdz-disclosure-header-radius: #{pdz.shape(corner-md)};
 
-.season__row {
-  display: flex;
-  flex: 1 1 auto;
-  min-width: 0;
-  align-items: center;
-  justify-content: space-between;
-  gap: pdz.space(md);
-  padding: pdz.space(sm);
-  border-radius: pdz.shape(corner-sm);
-  color: inherit;
-  text-decoration: none;
-}
-
-.season__row--link {
-  cursor: pointer;
-  transition: background-color pdz.duration(fast) pdz.easing(standard);
-
-  &:hover {
-    background: pdz.color(state-hover);
+  &[data-result="win"] {
+    --pdz-disclosure-header-background: #{$-win-wash};
   }
 
-  &:focus-visible {
-    @include pdz.focus-ring(-2px);
+  &[data-result="loss"] {
+    --pdz-disclosure-header-background: #{$-loss-wash};
   }
 }
 
-.season__main {
-  display: flex;
-  flex: 1 1 auto;
-  flex-direction: column;
-  gap: pdz.space(2xs);
-  min-width: 0;
+.match__header {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  grid-template-areas:
+    "round outcome actions"
+    "team team team";
+  align-items: center;
+  gap: pdz.space(2xs) pdz.space(sm);
+  padding: pdz.space(sm) pdz.space(md);
+
+  @container team-season (min-width: 34rem) {
+    grid-template-columns: $round-width minmax(0, 1fr) auto auto;
+    grid-template-areas: "round team outcome actions";
+    gap: pdz.space(md);
+  }
+
+  .match__line {
+    display: contents;
+  }
+
+  .match__trailing {
+    grid-area: actions;
+  }
 }
 
-.season__round {
+.match__line {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  grid-template-areas:
+    "round round"
+    "team outcome";
+  align-items: center;
+  gap: pdz.space(2xs) pdz.space(sm);
+  width: 100%;
+  min-width: 0;
+  contain: inline-size;
+
+  @container team-season (min-width: 34rem) {
+    grid-template-columns: $round-width minmax(0, 1fr) auto;
+    grid-template-areas: "round team outcome";
+    gap: pdz.space(md);
+  }
+}
+
+.match__round {
   @include pdz.text(label-caps);
+  grid-area: round;
   color: pdz.color(on-surface-muted);
 }
 
-.season__outcome {
-  display: flex;
+.match__opponent {
+  grid-area: team;
+  min-width: 0;
+}
+
+.match__outcome {
+  display: inline-flex;
+  grid-area: outcome;
+  align-items: center;
+  justify-content: flex-end;
+  gap: pdz.space(xs);
+}
+
+.match__when {
+  @include pdz.text(meta);
+  @include pdz.numeric;
+  color: pdz.color(on-surface-variant);
+  white-space: nowrap;
+}
+
+.match__trailing {
+  display: inline-flex;
   flex: none;
+  align-items: center;
+  gap: pdz.space(xs);
+}
+
+.match__score {
+  display: inline-flex;
+  align-items: center;
+  gap: pdz.space(2xs);
+}
+
+.match__dash {
+  color: pdz.color(on-surface-muted);
+}
+
+.match__detail {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: pdz.space(sm);
+  padding: 0 pdz.space(md) pdz.space(sm);
+
+  @container team-season (min-width: 34rem) {
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: start;
+    gap: pdz.space(lg);
+    padding-inline-start: calc(#{pdz.space(md)} * 2 + #{$round-width});
+  }
+}
+
+.match__roster {
+  min-width: 0;
+}
+
+.match__side {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: pdz.space(xs);
+
+  @container team-season (min-width: 34rem) {
+    align-items: flex-end;
+  }
+}
+
+.games {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(3xs);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.games__game {
+  display: flex;
   align-items: center;
   gap: pdz.space(sm);
+  padding: pdz.space(3xs) pdz.space(3xs) pdz.space(3xs) pdz.space(sm);
+  border-radius: pdz.shape(corner-sm);
+
+  &[data-result="win"] {
+    background-image: -wash(success-container, 70%, 40%);
+  }
+
+  &[data-result="loss"] {
+    background-image: -wash(danger-container, 100%, 60%);
+  }
 }
 
-.season__outcome--stack {
-  flex-direction: column;
-  align-items: flex-end;
-  gap: pdz.space(3xs);
-  text-align: end;
-}
-
-.season__value {
-  min-width: 3.5rem;
-  text-align: end;
-}
-
-.season__score {
-  @include pdz.text(subtitle);
-  color: pdz.color(on-surface);
-}
-
-.season__chevron {
-  flex: none;
-  margin-inline-start: calc(-1 * #{pdz.space(xs)});
-  color: pdz.color(on-surface-muted);
-  transition: color pdz.duration(fast) pdz.easing(standard);
-}
-
-.season__chevron--none {
-  visibility: hidden;
-}
-
-.season__row--link:hover .season__chevron {
-  color: pdz.color(on-surface);
-}
-
-.season__detail {
+.games__label {
   @include pdz.text(meta);
-  color: pdz.color(on-surface-muted);
+  color: pdz.color(on-surface-variant);
 }
 
-.season__roster {
-  display: flex;
-  gap: pdz.space(3xs);
-  min-width: 0;
-  padding: 0 pdz.space(sm) pdz.space(sm);
-}
-
-.season__sprite {
-  flex: 0 1 pdz.sprite-size(sm);
-  min-width: 0;
-  max-width: pdz.sprite-size(sm);
-  aspect-ratio: 1;
+.games__no-replay {
+  width: pdz.control-height(xs);
 }
 
 .season__placeholder {
@@ -168,10 +202,4 @@
 
 .season__placeholder-text {
   flex: 1 1 auto;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .season__row--link {
-    transition: none;
-  }
 }

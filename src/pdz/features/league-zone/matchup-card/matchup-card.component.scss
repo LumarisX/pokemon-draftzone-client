@@ -17,6 +17,25 @@
   opacity: 1;
 }
 
+.card__status {
+  @include pdz.text(meta);
+  @include pdz.numeric;
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: pdz.space(3xs);
+  color: pdz.color(on-surface-muted);
+  white-space: nowrap;
+
+  &[data-kind="scheduled"] {
+    color: pdz.color(on-surface-variant);
+  }
+
+  &[data-kind="forfeit"] {
+    color: pdz.color(on-warning-container);
+  }
+}
+
 .card__footer {
   display: flex;
   flex-wrap: wrap;

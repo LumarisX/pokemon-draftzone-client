@@ -36,24 +36,20 @@
 .body {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
-  grid-template-areas:
-    "schedule"
-    "roster";
   gap: pdz.layout(section-gap);
   align-items: start;
 
   @include pdz.respond-above(large) {
     grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
-    grid-template-areas: "schedule roster";
   }
 }
 
 .body__schedule {
-  grid-area: schedule;
-}
-
-.body__roster {
-  grid-area: roster;
+  background-image: linear-gradient(
+    180deg,
+    #{pdz.color(team2-subtle)},
+    transparent 12rem
+  );
 }
 
 .section {

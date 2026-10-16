@@ -35,32 +35,31 @@
         [wins]="team.record?.wins ?? 0"
         [draws]="team.record?.draws"
         [losses]="team.record?.losses ?? 0"
+        size="lg"
       />
     </span>
 
     @if (team.isCoach) {
       <div pdz-page-header-actions class="team-header__actions">
-        <button
-          pdz-button
-          icon="edit"
-          variant="outlined"
-          color="neutral"
-          [disabled]="saving()"
-          (click)="openTeamEdit()"
-        >
-          Edit Team
-        </button>
-        @if (!team.tournamentCompleted) {
-          <pdz-menu aria-label="Season actions">
-            <button
-              pdz-button
-              iconOnly
-              icon="more_vert"
-              variant="outlined"
-              color="neutral"
-              pdz-menu-trigger
-              aria-label="More season actions"
-            ></button>
+        <pdz-menu aria-label="Team actions">
+          <button
+            pdz-button
+            iconOnly
+            icon="more_vert"
+            variant="outlined"
+            color="neutral"
+            pdz-menu-trigger
+            aria-label="More team actions"
+          ></button>
+          <button
+            pdz-menu-item
+            icon="edit"
+            [disabled]="saving()"
+            (click)="openTeamEdit()"
+          >
+            Edit Team
+          </button>
+          @if (!team.tournamentCompleted) {
             <button
               pdz-menu-item
               [icon]="team.completedForMe ? 'replay' : 'flag'"
@@ -71,8 +70,8 @@
                 team.completedForMe ? "Reopen Season" : "Mark Season Completed"
               }}
             </button>
-          </pdz-menu>
-        }
+          }
+        </pdz-menu>
       </div>
     }
   </pdz-page-header>
@@ -82,7 +81,7 @@
   }
 
   <div class="team-body">
-    <pdz-card padding="lg" class="team-body__schedule">
+    <pdz-card padding="md" class="team-body__schedule">
       <section class="section" aria-labelledby="team-schedule">
         <h2 class="section__title" id="team-schedule">Schedule</h2>
         <pdz-team-season

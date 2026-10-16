@@ -78,12 +78,12 @@
             <span class="form">
               @for (result of team.results; track $index) {
                 @if (result) {
-                  <span
-                    class="form__result"
-                    [attr.data-outcome]="result.outcome"
+                  <pdz-result-box
+                    size="sm"
+                    [result]="outcomeResult[result.outcome]"
                     [title]="resultLabel(result)"
                     [attr.aria-label]="resultLabel(result)"
-                    >{{ result.outcome | uppercase }}</span
+                    >{{ result.outcome | uppercase }}</pdz-result-box
                   >
                 }
               }

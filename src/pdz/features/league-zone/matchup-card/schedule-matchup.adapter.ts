@@ -39,6 +39,7 @@ function slotFor(
 export function scheduleMatchupToCard(
   matchup: League.Matchup,
   base: string[],
+  deadline?: string | null,
 ): MatchupCard {
   const decided = !!matchup.winner;
   const bothKnown = !!matchup.team1.slug && !!matchup.team2.slug;
@@ -56,5 +57,10 @@ export function scheduleMatchupToCard(
     viewLink,
     breakdownLink: viewLink && !decided ? [...viewLink, 'breakdown'] : null,
     replays: matchup.matches.map((match) => match.link).filter(Boolean),
+    when: matchup.scheduledDate
+      ? { date: matchup.scheduledDate, exact: true }
+      : deadline
+        ? { date: deadline, exact: false }
+        : null,
   };
 }

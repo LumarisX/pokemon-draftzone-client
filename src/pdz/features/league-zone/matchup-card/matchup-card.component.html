@@ -28,24 +28,33 @@
         (click)="remove.emit(card().id)"
       ></button>
     </span>
-  } @else if (card().forfeit) {
-    <pdz-chip pdz-matchup-status tone="warning" size="xs">Forfeit</pdz-chip>
-  } @else if (card().advanced) {
-    <pdz-chip pdz-matchup-status size="xs">Advanced</pdz-chip>
+  } @else if (status(); as status) {
+    <span
+      pdz-matchup-status
+      class="card__status"
+      [attr.data-kind]="status.kind"
+      [pdzTooltip]="status.tooltip"
+    >
+      <pdz-icon aria-hidden="true" [name]="status.icon" [size]="14" />
+      {{ status.label }}
+    </span>
   }
 
   @if (hasFooter()) {
     <span pdz-matchup-actions class="card__footer">
       @if (card().viewLink; as link) {
-        <a pdz-button size="xs" variant="tonal" [routerLink]="link">View</a>
+        <a pdz-button size="xs" variant="ghost" pill [routerLink]="link"
+          >View</a
+        >
       }
 
       @if (card().breakdownLink; as link) {
         <a
           pdz-button
           size="xs"
-          variant="outlined"
+          variant="ghost"
           color="neutral"
+          pill
           [routerLink]="link"
           >Breakdown</a
         >
@@ -55,8 +64,9 @@
         <a
           pdz-button
           size="xs"
-          variant="outlined"
+          variant="ghost"
           color="neutral"
+          pill
           icon="play_circle"
           target="_blank"
           rel="noopener"
@@ -68,8 +78,9 @@
           <a
             pdz-button
             size="xs"
-            variant="outlined"
+            variant="ghost"
             color="neutral"
+            pill
             [icon]="$first ? 'play_circle' : undefined"
             target="_blank"
             rel="noopener"

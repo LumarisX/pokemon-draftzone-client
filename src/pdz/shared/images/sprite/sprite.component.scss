@@ -141,6 +141,11 @@
   opacity: 0.33;
 }
 
+:host([data-state="benched"]) .forme-slot.active {
+  filter: grayscale(1);
+  opacity: 0.35;
+}
+
 :host([data-state="taken"]),
 :host([data-state="banned"]) {
   .forme-slot.active {

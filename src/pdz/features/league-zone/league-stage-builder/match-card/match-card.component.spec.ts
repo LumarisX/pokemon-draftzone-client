@@ -148,4 +148,34 @@ describe('MatchCardComponent', () => {
     expect(card.slots[0].name).toBe('No winner from Match 13');
     expect(card.slots[0].pending).toBe(true);
   });
+
+  it('times a match by its scheduled date before the round deadline', () => {
+    const fixture = TestBed.createComponent(MatchCardComponent);
+    const match: FlexBracketMatch = {
+      id: 'm',
+      round: 0,
+      position: 0,
+      a: seed(1),
+      b: seed(2),
+    };
+    fixture.componentRef.setInput('match', match);
+    fixture.componentRef.setInput('allMatches', [match]);
+    fixture.componentRef.setInput('teams', teams);
+    fixture.componentRef.setInput('deadline', '2026-10-30T00:00:00.000Z');
+
+    expect(fixture.componentInstance.card().when).toEqual({
+      date: '2026-10-30T00:00:00.000Z',
+      exact: false,
+    });
+
+    fixture.componentRef.setInput('match', {
+      ...match,
+      scheduledDate: '2026-10-24T19:00:00.000Z',
+    });
+
+    expect(fixture.componentInstance.card().when).toEqual({
+      date: '2026-10-24T19:00:00.000Z',
+      exact: true,
+    });
+  });
 });

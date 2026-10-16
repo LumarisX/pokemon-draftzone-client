@@ -115,7 +115,7 @@ export class LeagueScheduleWidgetComponent implements OnInit {
               id: stage._id,
               name: stage.name,
               cards: stage.matchups.map((matchup) =>
-                scheduleMatchupToCard(matchup, base),
+                scheduleMatchupToCard(matchup, base, round.matchDeadline),
               ),
             })),
           }));

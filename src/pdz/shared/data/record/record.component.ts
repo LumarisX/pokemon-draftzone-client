@@ -5,21 +5,25 @@ import {
   computed,
   input,
 } from '@angular/core';
+import { ResultBoxComponent } from '@pdz/shared/data/result-box/result-box.component';
 
-export type RecordSize = 'sm' | 'md';
+export type RecordSize = 'sm' | 'md' | 'lg';
 export type RecordVariant = 'boxes' | 'inline';
 
 @Component({
   selector: 'pdz-record',
+  imports: [ResultBoxComponent],
   template: `
     @if (variant() === 'boxes') {
-      <span class="pdz-record__box pdz-record__box--win">{{ wins() }}</span>
+      <pdz-result-box result="win" [size]="size()">{{ wins() }}</pdz-result-box>
       @if (showDraws()) {
-        <span class="pdz-record__box pdz-record__box--draw">{{
+        <pdz-result-box result="draw" [size]="size()">{{
           draws()
-        }}</span>
+        }}</pdz-result-box>
       }
-      <span class="pdz-record__box pdz-record__box--loss">{{ losses() }}</span>
+      <pdz-result-box result="loss" [size]="size()">{{
+        losses()
+      }}</pdz-result-box>
     } @else {
       {{ inline() }}
     }

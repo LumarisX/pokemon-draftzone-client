@@ -1,5 +1,6 @@
 import { NgTemplateOutlet } from '@angular/common';
 import {
+  booleanAttribute,
   ChangeDetectionStrategy,
   Component,
   computed,
@@ -13,19 +14,38 @@ import { DraftPokemon } from '@pdz/features/drafts/draft.model';
 import { League } from '@pdz/features/league-zone/league.interface';
 import { getTeamLogoSrc } from '@pdz/features/league-zone/league.util';
 import { LeagueZoneService } from '@pdz/features/league-zone/league-zone.service';
-import { ChipComponent, ChipTone } from '@pdz/shared/data/chip/chip.component';
+import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
+import { ChipComponent } from '@pdz/shared/data/chip/chip.component';
+import { ResultBoxComponent } from '@pdz/shared/data/result-box/result-box.component';
 import { SkeletonComponent } from '@pdz/shared/data/skeleton/skeleton.component';
 import { TeamComponent } from '@pdz/shared/data/team/team.component';
 import { EmptyStateComponent } from '@pdz/shared/feedback/empty-state/empty-state.component';
-import { IconComponent } from '@pdz/shared/images/icon/icon.component';
-import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
+import { RosterSpritesComponent } from '@pdz/shared/images/roster-sprites/roster-sprites.component';
+import { SpriteState } from '@pdz/shared/images/sprite/sprite.component';
+import { DisclosureComponent } from '@pdz/shared/layout/disclosure/disclosure.component';
+import { formatMatchTime } from '@pdz/shared/time/timezone';
+import { TooltipDirective } from '@pdz/shared/tooltip/tooltip.directive';
 
 export type SeasonResult = 'win' | 'loss' | 'draw';
+
+export interface SeasonGame {
+  mine: number;
+  theirs: number;
+  result: SeasonResult | null;
+  replay: string | null;
+}
+
+export type GameLineup = { id: string; fainted: boolean }[];
 
 export interface SeasonRow {
   id: string;
   round: string;
-  opponent: { name: string; coach: string | null; logo: string | undefined };
+  opponent: {
+    name: string;
+    coach: string | null;
+    logo: string | undefined;
+    pending?: boolean;
+  };
   result: SeasonResult | null;
   forfeit: boolean;
   score: { mine: number; theirs: number } | null;
@@ -33,19 +53,9 @@ export interface SeasonRow {
   exactTime: boolean;
   link: string[] | null;
   roster: DraftPokemon[];
+  games: SeasonGame[];
+  lineups: GameLineup[];
 }
-
-const RESULT_LETTER: Record<SeasonResult, string> = {
-  win: 'W',
-  loss: 'L',
-  draw: 'D',
-};
-
-const RESULT_TONE: Record<SeasonResult, ChipTone> = {
-  win: 'success',
-  loss: 'danger',
-  draw: 'neutral',
-};
 
 const RESULT_LABEL: Record<SeasonResult, string> = {
   win: 'Win',
@@ -62,6 +72,27 @@ function resultFor(
   if (winner === 'dffl') return 'loss';
   const winningSide = winner.startsWith('side1') ? 'side1' : 'side2';
   return winningSide === mySide ? 'win' : 'loss';
+}
+
+export function gameResult(mine: boolean, theirs: boolean): SeasonResult | null {
+  if (mine) return 'win';
+  if (theirs) return 'loss';
+  return null;
+}
+
+export function rosterStates(
+  roster: readonly DraftPokemon[],
+  lineups: readonly GameLineup[],
+): (SpriteState | null)[] {
+  const played = lineups.filter((lineup) => lineup.length);
+  if (!played.length) return roster.map(() => null);
+  return roster.map((pokemon) => {
+    const games = played
+      .map((lineup) => lineup.find((entry) => entry.id === pokemon.id))
+      .filter((entry) => !!entry);
+    if (!games.length) return 'benched';
+    return games.every((entry) => entry.fainted) ? 'fainted' : null;
+  });
 }
 
 export function seasonRows(
@@ -85,6 +116,11 @@ export function seasonRows(
         const theirs = mySide === 'side1' ? matchup.team2 : matchup.team1;
         const result = resultFor(matchup.winner, mySide);
         const known = !!theirs.slug;
+        const games = (matchup.matches ?? []).map((game) => ({
+          mine: mySide === 'side1' ? game.team1 : game.team2,
+          theirs: mySide === 'side1' ? game.team2 : game.team1,
+          replay: game.link || null,
+        }));
 
         rows.push({
           id: matchup.id,
@@ -93,6 +129,7 @@ export function seasonRows(
             name: theirs.name || theirs.from?.label || 'To Be Decided',
             coach: known ? theirs.coach || null : null,
             logo: known ? getTeamLogoSrc(theirs.logo) : undefined,
+            pending: !known,
           },
           result,
           forfeit: !!matchup.winner && /ffw|dffl/.test(matchup.winner),
@@ -103,6 +140,18 @@ export function seasonRows(
           exactTime: !!matchup.scheduledDate,
           link: known ? [...base, 'matchups', matchup.slug] : null,
           roster: known ? (theirs.draft ?? []) : [],
+          games: games.map((game) => ({
+            mine: game.mine.score ?? 0,
+            theirs: game.theirs.score ?? 0,
+            result: gameResult(game.mine.winner, game.theirs.winner),
+            replay: game.replay,
+          })),
+          lineups: games.map((game) =>
+            Object.entries(game.theirs.team ?? {}).map(([id, stats]) => ({
+              id,
+              fainted: stats.status === 'fainted',
+            })),
+          ),
         });
       }
     }
@@ -113,14 +162,17 @@ export function seasonRows(
 @Component({
   selector: 'pdz-team-season',
   imports: [
+    ButtonComponent,
     ChipComponent,
+    DisclosureComponent,
     EmptyStateComponent,
-    IconComponent,
     NgTemplateOutlet,
+    ResultBoxComponent,
     RouterLink,
     SkeletonComponent,
-    SpriteComponent,
+    RosterSpritesComponent,
     TeamComponent,
+    TooltipDirective,
   ],
   templateUrl: './team-season.component.html',
   styleUrl: './team-season.component.scss',
@@ -131,14 +183,12 @@ export class TeamSeasonComponent {
 
   readonly rounds = input<League.ScheduleRound[] | null>(null);
   readonly teamSlug = input('');
+  readonly showLogos = input(true, { transform: booleanAttribute });
   readonly entries = input<SeasonRow[] | null>(null);
   readonly rowActions = input<TemplateRef<{ $implicit: SeasonRow }> | null>(
     null,
   );
 
-  protected readonly letter = RESULT_LETTER;
-  protected readonly tone = RESULT_TONE;
-  protected readonly resultLabel = RESULT_LABEL;
   protected readonly placeholders = [0, 1, 2];
 
   private readonly base = computed(() => [
@@ -157,25 +207,21 @@ export class TeamSeasonComponent {
     return seasonRows(rounds, this.teamSlug(), this.base());
   });
 
-  readonly form = computed(() =>
-    (this.rows() ?? [])
-      .map((row) => row.result)
-      .filter((result): result is SeasonResult => result !== null),
+  protected readonly matches = computed(() =>
+    (this.rows() ?? []).map((row) => ({
+      row,
+      states: rosterStates(row.roster, row.lineups),
+    })),
   );
 
-  readonly formLabel = computed(() =>
-    this.form()
-      .map((result) => RESULT_LABEL[result])
-      .join(', '),
-  );
-
-  protected dateLabel(value: string, exactTime: boolean): string {
-    const date = new Date(value).toLocaleString(undefined, {
-      weekday: 'short',
-      month: 'short',
-      day: 'numeric',
-      ...(exactTime ? { hour: 'numeric', minute: '2-digit' } : {}),
-    });
-    return exactTime ? date : `Due ${date}`;
+  protected scoreLabel(
+    result: SeasonResult | null,
+    mine: number,
+    theirs: number,
+  ): string {
+    const score = `${mine} to ${theirs}`;
+    return result ? `${RESULT_LABEL[result]}, ${score}` : score;
   }
+
+  protected readonly dateLabel = formatMatchTime;
 }

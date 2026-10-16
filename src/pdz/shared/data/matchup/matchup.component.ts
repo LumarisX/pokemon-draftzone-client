@@ -9,7 +9,7 @@ import { RouterLink } from '@angular/router';
 import { DraftOptions, Pokemon } from '@pdz/core/utils/pokemon';
 import { TeamSlot } from '@pdz/core/utils/versus';
 import { TeamComponent, TeamSize } from '@pdz/shared/data/team/team.component';
-import { IconComponent } from '@pdz/shared/images/icon/icon.component';
+import { ResultBoxComponent } from '@pdz/shared/data/result-box/result-box.component';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
 
 export type MatchupSize = 'row' | 'card' | 'hero';
@@ -34,6 +34,18 @@ type SideView = {
   align: 'start' | 'end';
 };
 
+const RESULT_LETTER: Record<MatchupResult, string> = {
+  win: 'W',
+  loss: 'L',
+  draw: 'D',
+};
+
+const RESULT_WORD: Record<MatchupResult, string> = {
+  win: 'won',
+  loss: 'lost',
+  draw: 'drew',
+};
+
 const TEAM_SIZES: Record<MatchupSize, TeamSize> = {
   row: 'row',
   card: 'row',
@@ -42,7 +54,7 @@ const TEAM_SIZES: Record<MatchupSize, TeamSize> = {
 
 @Component({
   selector: 'pdz-matchup',
-  imports: [RouterLink, IconComponent, SpriteComponent, TeamComponent],
+  imports: [RouterLink, ResultBoxComponent, SpriteComponent, TeamComponent],
   template: `
     <div class="pdz-matchup__frame">
       <div class="pdz-matchup__header">
@@ -101,19 +113,13 @@ const TEAM_SIZES: Record<MatchupSize, TeamSize> = {
                 />
               }
 
-              @if (side.team.result === 'win') {
-                <pdz-icon
-                  class="pdz-matchup__trophy"
-                  name="emoji_events"
-                  aria-label="Winner"
-                  [size]="size() === 'hero' ? 20 : 16"
-                />
-              }
-
               @if (size() === 'card' && hasScore()) {
-                <span class="pdz-matchup__side-score">{{
-                  side.team.score ?? 0
-                }}</span>
+                <pdz-result-box
+                  class="pdz-matchup__side-score"
+                  [side]="side.slot"
+                  [attr.aria-label]="sideLabel(side.team)"
+                  >{{ side.team.score ?? 0 }}</pdz-result-box
+                >
               }
             </div>
 
@@ -150,15 +156,39 @@ const TEAM_SIZES: Record<MatchupSize, TeamSize> = {
                     (team2().score ?? 0)
                   "
                 >
-                  <span
-                    class="pdz-matchup__points pdz-matchup__points--team1"
-                    >{{ team1().score ?? 0 }}</span
-                  >
-                  <span class="pdz-matchup__dash" aria-hidden="true">–</span>
-                  <span
-                    class="pdz-matchup__points pdz-matchup__points--team2"
-                    >{{ team2().score ?? 0 }}</span
-                  >
+                  @if (size() === 'hero') {
+                    <span class="pdz-matchup__tally">
+                      <span
+                        class="pdz-matchup__points pdz-matchup__points--team1"
+                        >{{ team1().score ?? 0 }}</span
+                      >
+                      @if (team1().result; as result) {
+                        <pdz-result-box size="sm" [result]="result">{{
+                          letter[result]
+                        }}</pdz-result-box>
+                      }
+                    </span>
+                    <span class="pdz-matchup__dash" aria-hidden="true">–</span>
+                    <span class="pdz-matchup__tally">
+                      <span
+                        class="pdz-matchup__points pdz-matchup__points--team2"
+                        >{{ team2().score ?? 0 }}</span
+                      >
+                      @if (team2().result; as result) {
+                        <pdz-result-box size="sm" [result]="result">{{
+                          letter[result]
+                        }}</pdz-result-box>
+                      }
+                    </span>
+                  } @else {
+                    <pdz-result-box side="team1">{{
+                      team1().score ?? 0
+                    }}</pdz-result-box>
+                    <span class="pdz-matchup__dash" aria-hidden="true">–</span>
+                    <pdz-result-box side="team2">{{
+                      team2().score ?? 0
+                    }}</pdz-result-box>
+                  }
                 </span>
               } @else {
                 <span class="pdz-matchup__vs">vs</span>
@@ -190,6 +220,12 @@ export class MatchupComponent {
   readonly sideSelect = output<TeamSlot>();
 
   protected readonly teamSize = computed(() => TEAM_SIZES[this.size()]);
+  protected readonly letter = RESULT_LETTER;
+
+  protected sideLabel(team: MatchupTeam): string {
+    const score = `${team.name} ${team.score ?? 0}`;
+    return team.result ? `${score}, ${RESULT_WORD[team.result]}` : score;
+  }
 
   protected readonly hasScore = computed(
     () => this.team1().score != null || this.team2().score != null,

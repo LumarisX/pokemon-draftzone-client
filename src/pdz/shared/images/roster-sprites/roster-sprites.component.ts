@@ -1,12 +1,24 @@
-import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
+import {
+  booleanAttribute,
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  input,
+} from '@angular/core';
 import { DraftOptions, Pokemon } from '@pdz/core/utils/pokemon';
-import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
+import {
+  SpriteComponent,
+  SpriteState,
+} from '@pdz/shared/images/sprite/sprite.component';
 
 export type RosterSpritesLayout = 'wrap' | 'tiers';
 
 export type RosterSpritesTone = 'team1' | 'team2';
 
-type RosterSlot = Pokemon<DraftOptions> | null;
+type RosterSlot = {
+  pokemon: Pokemon<DraftOptions> | null;
+  state: SpriteState | null;
+};
 
 type RosterTier = { slots: RosterSlot[]; scale: number };
 
@@ -34,9 +46,10 @@ export function tierSplit(count: number): number {
         >
           @for (slot of tier.slots; track $index) {
             <div class="pdz-roster-sprites__slot">
-              @if (slot; as pokemon) {
+              @if (slot.pokemon; as pokemon) {
                 <pdz-sprite
                   [pokemon]="pokemon"
+                  [state]="slot.state"
                   size="fill"
                   tooltipPosition="above"
                   [showFormes]="false"
@@ -50,8 +63,12 @@ export function tierSplit(count: number): number {
       }
     } @else {
       @for (slot of slots(); track $index) {
-        @if (slot; as pokemon) {
-          <pdz-sprite [pokemon]="pokemon" [showFormes]="false" />
+        @if (slot.pokemon; as pokemon) {
+          <pdz-sprite
+            [pokemon]="pokemon"
+            [state]="slot.state"
+            [showFormes]="false"
+          />
         } @else {
           <span class="pdz-roster-sprites__spot" aria-hidden="true"></span>
         }
@@ -64,7 +81,7 @@ export function tierSplit(count: number): number {
     class: 'pdz-roster-sprites',
     role: 'img',
     '[attr.data-layout]': 'layout()',
-    '[attr.data-tone]': 'tone()',
+    '[attr.data-tone]': 'fade() ? tone() : null',
     '[attr.aria-label]': 'label()',
     '[style.--pdz-roster-span]': 'frame().span',
     '[style.--pdz-roster-depth]': 'frame().depth',
@@ -76,11 +93,17 @@ export class RosterSpritesComponent {
   readonly spots = input(0);
   readonly name = input('');
   readonly tone = input<RosterSpritesTone>('team1');
+  readonly fade = input(true, { transform: booleanAttribute });
+  readonly states = input<readonly (SpriteState | null)[]>([]);
 
   protected readonly slots = computed<RosterSlot[]>(() => {
     const team = this.pokemon();
+    const states = this.states();
     const count = Math.max(this.spots(), team.length);
-    return Array.from({ length: count }, (_, index) => team[index] ?? null);
+    return Array.from({ length: count }, (_, index) => ({
+      pokemon: team[index] ?? null,
+      state: states[index] ?? null,
+    }));
   });
 
   protected readonly tiers = computed<RosterTier[]>(() => {

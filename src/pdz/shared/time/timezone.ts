@@ -79,6 +79,19 @@ export function formatExactTime(value: Date | string | number): string {
   });
 }
 
+export function formatMatchTime(
+  value: Date | string | number,
+  exact: boolean,
+): string {
+  const date = new Date(value).toLocaleString(undefined, {
+    weekday: 'short',
+    month: 'short',
+    day: 'numeric',
+    ...(exact ? { hour: 'numeric', minute: '2-digit' } : {}),
+  });
+  return exact ? date : `Due ${date}`;
+}
+
 export function discordTimestamp(
   value: Date | string | number,
   style: 'f' | 'F' | 'R' | 't' | 'T' | 'd' | 'D' = 'f',

@@ -51,6 +51,7 @@ import { DialogService } from '@pdz/shared/dialogs/dialog/dialog.service';
 import {
   SpriteComponent,
   SpriteSize,
+  SpriteState,
 } from '@pdz/shared/images/sprite/sprite.component';
 import { RosterSpritesComponent } from '@pdz/shared/images/roster-sprites/roster-sprites.component';
 import { RosterPatternComponent } from '@pdz/shared/images/roster-pattern/roster-pattern.component';
@@ -109,6 +110,7 @@ import {
   ChipVariant,
 } from '@pdz/shared/data/chip/chip.component';
 import { RecordComponent } from '@pdz/shared/data/record/record.component';
+import { ResultBoxComponent } from '@pdz/shared/data/result-box/result-box.component';
 import { MeterComponent } from '@pdz/shared/data/meter/meter.component';
 import {
   TeamLogoComponent,
@@ -184,6 +186,7 @@ const MODE_ATTR = 'pdz-theme-mode';
     TimeConverterComponent,
     TeamLogoComponent,
     RecordComponent,
+    ResultBoxComponent,
     MeterComponent,
   ],
   templateUrl: './debug-components.component.html',
@@ -274,6 +277,18 @@ export class DebugComponentsComponent {
     id: 'urshifurapidstrike',
     name: 'Urshifu-Rapid-Strike-Gmax With A Long Name',
   };
+  protected readonly rosterStatesSample: (SpriteState | null)[] = [
+    null,
+    'fainted',
+    null,
+    'benched',
+    null,
+    'benched',
+    'fainted',
+    'benched',
+    null,
+    'benched',
+  ];
   protected readonly mvpTypes = ['Dragon', 'Ground'];
   protected readonly mvpStats = [
     { label: 'Games', value: 4 },

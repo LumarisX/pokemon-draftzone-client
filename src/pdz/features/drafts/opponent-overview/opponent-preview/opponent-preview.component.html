@@ -20,7 +20,11 @@
         @if (draft.completedAt) {
           <pdz-chip size="sm" icon="flag">Completed</pdz-chip>
         }
-        <pdz-record [wins]="draft.score.wins" [losses]="draft.score.losses" />
+        <pdz-record
+          size="lg"
+          [wins]="draft.score.wins"
+          [losses]="draft.score.losses"
+        />
       </span>
 
       <div pdz-page-header-actions class="actions">
@@ -38,15 +42,6 @@
             [href]="draft.doc"
           ></a>
         }
-        <a
-          pdz-button
-          icon="edit"
-          variant="outlined"
-          color="neutral"
-          [routerLink]="link.edit"
-          [queryParams]="{ draft: draftParam(draft.slug) }"
-          >Edit Team</a
-        >
         <pdz-menu aria-label="Draft actions">
           <button
             pdz-button
@@ -57,6 +52,13 @@
             pdz-menu-trigger
             aria-label="More draft actions"
           ></button>
+          <a
+            pdz-menu-item
+            icon="edit"
+            [routerLink]="link.edit"
+            [queryParams]="{ draft: draftParam(draft.slug) }"
+            >Edit Team</a
+          >
           <a
             pdz-menu-item
             icon="event_list"
@@ -85,7 +87,7 @@
     </pdz-page-header>
 
     <div class="body">
-      <pdz-card padding="lg" class="body__schedule">
+      <pdz-card padding="md" class="body__schedule">
         <section class="section" aria-labelledby="draft-schedule">
           <div class="section__header">
             <h2 class="section__title" id="draft-schedule">Schedule</h2>
@@ -101,7 +103,11 @@
             >
           </div>
           @if (season.rows.length) {
-            <pdz-team-season [entries]="season.rows" [rowActions]="rowMenu" />
+            <pdz-team-season
+              [showLogos]="false"
+              [entries]="season.rows"
+              [rowActions]="rowMenu"
+            />
           } @else {
             <pdz-empty-state
               size="sm"
@@ -112,7 +118,7 @@
         </section>
       </pdz-card>
 
-      <pdz-team-roster class="body__roster" [lines]="season.roster">
+      <pdz-team-roster [lines]="season.roster">
         @if (!season.hasStats) {
           <pdz-empty-state
             size="sm"

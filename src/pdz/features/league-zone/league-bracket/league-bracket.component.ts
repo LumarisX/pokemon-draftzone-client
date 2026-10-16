@@ -11,7 +11,6 @@ import { toBuilderDraft } from '@pdz/features/league-zone/league-stage-builder/s
 import { BuilderDraft } from '@pdz/features/league-zone/league-stage-builder/stage-builder.model';
 import { StageBuilderComponent } from '@pdz/features/league-zone/league-stage-builder/stage-builder.component';
 import { LeagueZoneService } from '@pdz/features/league-zone/league-zone.service';
-import { ChipComponent } from '@pdz/shared/data/chip/chip.component';
 import { EmptyStateComponent } from '@pdz/shared/feedback/empty-state/empty-state.component';
 import { SkeletonLayoutComponent } from '@pdz/shared/data/skeleton/skeleton-layout.component';
 import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
@@ -25,7 +24,6 @@ import { BracketTeamFlex } from './bracket.model';
   imports: [
     SkeletonLayoutComponent,
     StageBuilderComponent,
-    ChipComponent,
     EmptyStateComponent,
     PageComponent,
     PageHeaderComponent,
@@ -54,14 +52,6 @@ export class LeagueBracketComponent {
   );
 
   readonly hasBracket = computed(() => this.draft().matches.length > 0);
-  readonly currentRoundName = computed(
-    () => this.draft().rounds[this.currentRoundIndex()]?.name ?? null,
-  );
-  readonly playedCount = computed(
-    () =>
-      this.draft().matches.filter((match) => match.winner !== undefined)
-        .length,
-  );
 
   readonly matchupLinkBase = computed(() => {
     const league = this.leagueService.leagueSlug();

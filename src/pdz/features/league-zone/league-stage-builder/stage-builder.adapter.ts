@@ -55,6 +55,7 @@ export function toBuilderDraft(bracket: TournamentBracket): BuilderDraft {
     ...(match.forfeit ? { forfeit: match.forfeit } : {}),
     ...(match.advances ? { advances: match.advances } : {}),
     ...(match.label ? { label: match.label } : {}),
+    ...(match.scheduledDate ? { scheduledDate: match.scheduledDate } : {}),
   }));
 
   return padRounds({

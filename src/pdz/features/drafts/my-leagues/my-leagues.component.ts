@@ -27,7 +27,6 @@ import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.
 import { PageComponent } from '@pdz/shared/layout/page/page.component';
 import { CountdownComponent } from '@pdz/shared/time/countdown/countdown.component';
 import { catchError, forkJoin, map, of, switchMap } from 'rxjs';
-import { LeagueFormComponent } from './league-form/league-form.component';
 import {
   activeOrder,
   feedFrom,
@@ -68,7 +67,6 @@ function completedTime(entry: LeagueEntry): number {
     DisclosureComponent,
     EmptyStateComponent,
     IconComponent,
-    LeagueFormComponent,
     PageComponent,
     PageHeaderComponent,
     RecordComponent,
@@ -112,16 +110,14 @@ export class MyLeaguesComponent {
             .pipe(catchError(() => of(null as Archive[] | null))),
         }),
       ),
-      map(
-        ({ hosted, external, completed }): LoadResult => ({
-          entries: [
-            ...(hosted ?? []),
-            ...(external ?? []).map(fromDraft),
-            ...(completed ?? []).map(fromArchive),
-          ],
-          failed: hosted === null || external === null || completed === null,
-        }),
-      ),
+      map(({ hosted, external, completed }): LoadResult => ({
+        entries: [
+          ...(hosted ?? []),
+          ...(external ?? []).map(fromDraft),
+          ...(completed ?? []).map(fromArchive),
+        ],
+        failed: hosted === null || external === null || completed === null,
+      })),
     ),
   );
 
@@ -203,7 +199,10 @@ export class MyLeaguesComponent {
 
   protected readonly career = computed(() => {
     const list = this.playing();
-    const wins = list.reduce((sum, entry) => sum + (entry.record?.wins ?? 0), 0);
+    const wins = list.reduce(
+      (sum, entry) => sum + (entry.record?.wins ?? 0),
+      0,
+    );
     const losses = list.reduce(
       (sum, entry) => sum + (entry.record?.losses ?? 0),
       0,
@@ -245,7 +244,10 @@ export class MyLeaguesComponent {
   protected draftProgress(entry: LeagueEntry): number {
     const draft = entry.draft;
     if (!draft?.rosterSize) return 0;
-    return Math.min(100, Math.round((draft.picksMade / draft.rosterSize) * 100));
+    return Math.min(
+      100,
+      Math.round((draft.picksMade / draft.rosterSize) * 100),
+    );
   }
 
   protected spotsFor(entry: LeagueEntry): number {

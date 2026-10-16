@@ -1,4 +1,5 @@
 import {
+  booleanAttribute,
   ChangeDetectionStrategy,
   Component,
   computed,
@@ -24,13 +25,15 @@ const LOGO_SIZES: Record<TeamSize, TeamLogoSize> = {
   selector: 'pdz-team',
   imports: [RouterLink, TeamLogoComponent],
   template: `
-    <pdz-team-logo
-      class="pdz-team__logo"
-      decorative
-      [size]="logoSize()"
-      [src]="logo()"
-      [name]="name()"
-    />
+    @if (showLogo()) {
+      <pdz-team-logo
+        class="pdz-team__logo"
+        decorative
+        [size]="logoSize()"
+        [src]="logo()"
+        [name]="name()"
+      />
+    }
     <span class="pdz-team__text">
       <span
         class="pdz-team__title"
@@ -65,6 +68,7 @@ const LOGO_SIZES: Record<TeamSize, TeamLogoSize> = {
 export class TeamComponent {
   readonly name = input.required<string>();
   readonly logo = input<string | null | undefined>();
+  readonly showLogo = input(true, { transform: booleanAttribute });
   readonly coach = input<string | null | undefined>();
   readonly link = input<readonly unknown[] | string | null | undefined>();
   readonly size = input<TeamSize>('row');

@@ -249,6 +249,29 @@ $gutter-width: var(--gutter-width, 11rem);
     border-top: 1px solid pdz.color("border-subtle");
   }
 
+  .builder--readonly & {
+    padding-top: pdz.space(2xs);
+  }
+
+  .builder--readonly &__row,
+  .builder--readonly &--current &__row {
+    gap: pdz.space(2xs);
+    padding: 0;
+    border: 0;
+    background: none;
+    color: pdz.color("on-surface");
+  }
+
+  .builder--readonly &__name {
+    @include text(section-title);
+  }
+
+  .builder--readonly &__deadline {
+    @include text(meta);
+    @include pdz.numeric;
+    color: pdz.color("on-surface-muted");
+    opacity: 1;
+  }
 }
 
 .round-rule {
@@ -262,6 +285,13 @@ $gutter-width: var(--gutter-width, 11rem);
   z-index: 1;
   opacity: 0.45;
   pointer-events: none;
+
+  .builder--readonly & {
+    grid-column: 1 / -1;
+    z-index: 5;
+    margin-left: 0;
+    opacity: 1;
+  }
 }
 
 $stage-header-height: 2.25rem;
