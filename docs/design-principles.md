@@ -149,7 +149,8 @@ The owner has decided these and they're applied app-wide. CLAUDE.md has the enfo
 
 | Rule | Why | Since |
 | --- | --- | --- |
-| **Surfaces rise, never sink.** ground → raised → raised-high → overlay → floating; only inputs, tracks and empty slots are `inset`. | Cards used to be darker than the page, and nested panels sank below their parent. Closer to the viewer should read as closer. | 10-01 |
+| **Surfaces rise, never sink.** ground → raised → raised-high → overlay → floating; only tracks, code and empty slots are `inset`. | Cards used to be darker than the page, and nested panels sank below their parent. Closer to the viewer should read as closer. | 10-01 |
+| **Fields are filled (owner, 10-16).** Text fields and select triggers fill with `field`, the card color, behind the `outline` border: white wells on the light page, a slight lift in dark, a bordered well on a card. A field inside a box that already frames it (a planner row) goes plain until hover or focus. | Inset fields matched the page, so on the page they read as hollow outlines and inside a white card they read as gray-blue boxes. The `outline` border stays because it is at the 3:1 floor in dark mode. | 10-16 |
 | **Page headers sit on the page.** No box and no gradient behind them. The only backdrop is the faint line pattern (P1); `pdz-roster-pattern` stays available for `[pdz-page-header-backdrop]` but no page uses it since 10-15. | A boxed or washed header read as decoration and competed with content. | 10-03 |
 | **Light ground is gray-50.** | Compared against gray-25 in the app. | 10-07 |
 | **Boxes don't nest.** Inside a card, rows split with a line or space, and groups with space and a heading. | Bordered boxes inside bordered boxes made every screen look like a wireframe. | 10-07 |

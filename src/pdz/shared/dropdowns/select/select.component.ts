@@ -24,6 +24,7 @@ let nextSelectId = 0;
 const TYPEAHEAD_RESET = 700;
 const MIN_LISTBOX_SPACE = 240;
 const VIEWPORT_MARGIN = 8;
+const PANEL_MAX_WIDTH = '24rem';
 
 @Component({
   selector: 'pdz-select',
@@ -474,7 +475,7 @@ export class SelectComponent implements ControlValueAccessor {
 
     listbox.style.minWidth = `${trigger.width}px`;
     listbox.style.left = '0';
-    listbox.style.maxWidth = `${window.innerWidth - VIEWPORT_MARGIN * 2}px`;
+    listbox.style.maxWidth = `min(max(${trigger.width}px, ${PANEL_MAX_WIDTH}), ${window.innerWidth - VIEWPORT_MARGIN * 2}px)`;
     listbox.style.maxHeight = `${Math.max(120, (flip ? trigger.top : below) - 16)}px`;
 
     const width = listbox.getBoundingClientRect().width;

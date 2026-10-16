@@ -320,7 +320,7 @@
     padding: pdz.space(sm) pdz.space(md);
     border: 1px solid pdz.color(border-control);
     border-radius: pdz.shape(corner-sm);
-    background: pdz.color(inset);
+    background: pdz.color(field);
     color: pdz.color(on-surface);
 
     &:focus-visible {
@@ -399,7 +399,7 @@
     &:focus-visible {
       outline: none;
       border-color: pdz.color(primary-accent);
-      background: pdz.color(inset);
+      background: pdz.color(field);
     }
   }
 
@@ -428,7 +428,7 @@
     &:focus-visible {
       outline: none;
       border-color: pdz.color(primary-accent);
-      background: pdz.color(inset);
+      background: pdz.color(field);
     }
   }
 

@@ -196,8 +196,12 @@ for (const [name, vars] of [...themes].sort(([a], [b]) => a.localeCompare(b))) {
     for (const text of TEXT) check(`${text} on ${rung}`, text, rung, 4.5);
     for (const accent of ACCENT_TEXT) check(`${accent} on ${rung}`, accent, rung, 4.5);
   }
+  check("on-surface on field", "on-surface", "field", 4.5);
+  check("on-surface-placeholder on field", "on-surface-placeholder", "field", 4.5);
   check("on-surface-placeholder on inset", "on-surface-placeholder", "inset", 4.5);
   check("outline on raised", "outline", "raised", 3);
+  check("outline on ground", "outline", "ground", 3);
+  check("outline on field", "outline", "field", 3);
   check("outline on inset", "outline", "inset", 3);
   for (const role of ["primary", "secondary", "danger", "success", "positive", "negative"])
     check(`on-${role} on ${role}`, `on-${role}`, role, 4.5);

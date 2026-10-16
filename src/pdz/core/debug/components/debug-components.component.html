@@ -71,7 +71,7 @@
           <span class="elevation__muted">raised · card</span>
         </div>
         <label pdz-field label="Search Teams">
-          <input pdz-input type="text" placeholder="Inset sinks to the ground" />
+          <input pdz-input type="text" placeholder="Fields fill with the card color" />
         </label>
         <pdz-card tone="raised-high" padding="sm">
           <strong>Week 3</strong>
@@ -1659,6 +1659,15 @@
     >
       <pdz-segmented-option value="standard" label="Tonal" />
       <pdz-segmented-option value="forfeit" label="Softer" />
+    </pdz-segmented>
+
+    <pdz-segmented
+      variant="neutral"
+      [(value)]="reportMode"
+      aria-label="Neutral variant"
+    >
+      <pdz-segmented-option value="standard" label="Neutral" />
+      <pdz-segmented-option value="forfeit" label="Views" />
     </pdz-segmented>
   </div>
 </section>

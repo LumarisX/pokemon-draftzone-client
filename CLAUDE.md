@@ -240,7 +240,12 @@ empty-state messages and toasts stay sentence case. The brand is "Pokémon Draft
 - **Surfaces rise, they never sink.** The ladder is `ground` (page, sticky page
   headers) → `raised` (panels, cards) → `raised-high` (a card inside a card) →
   `overlay` (dialogs, drawers, the save bar) → `floating` (menus, popovers,
-  toasts, chart tooltips). Only `inset` sinks: inputs, tracks, code, empty slots.
+  toasts, chart tooltips). Only `inset` sinks: tracks, code, empty slots. Text
+  fields and select triggers fill with `field` (the card color) behind an `outline`
+  border, so they read as filled on the page and as bordered wells on a card. A
+  field inside a box that is already the control's frame (a planner row) goes
+  plain: no fill or border at rest, `state-hover` on hover, `field` on focus
+  (`appearance="plain"` on `pdz-pokemon-search`).
   The old `surface*` / `surface-container*` / `background` / `outline-variant`
   roles and the `--pdz-level-*` shadows are deleted; the linter rejects them.
 - **Surfaces carry a faint tint of the theme's primary** by one formula in

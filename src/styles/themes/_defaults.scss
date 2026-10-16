@@ -97,6 +97,7 @@ $-light-base: (
   overlay: -tint("white", 2.5%),
   floating: -tint("white", 2.5%),
   inset: -tint("gray-50", 6%),
+  field: -tint("white", 2.5%),
   border-subtle: -tint("gray-125", 16%),
   header-backdrop: -header-backdrop($-header-backdrop),
   border-control: "gray-200",
@@ -204,6 +205,7 @@ $-dark-base: (
   overlay: -tint("gray-750", 1.5%),
   floating: "gray-725",
   inset: -tint("gray-875", 6%),
+  field: -tint("gray-825", 1.5%),
   border-subtle: color-mix(
       in srgb,
       var(--pdz-color-primary) 16%,
@@ -222,7 +224,7 @@ $-dark-base: (
   on-surface: "gray-75",
   on-surface-variant: "gray-225",
   on-surface-muted: "gray-300",
-  on-surface-placeholder: "gray-450",
+  on-surface-placeholder: "gray-400",
   outline: "gray-550",
 
   danger: "red-250",

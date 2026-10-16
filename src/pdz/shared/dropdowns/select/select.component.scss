@@ -14,7 +14,7 @@
   padding: pdz.space(xs) pdz.space(md);
   border: 1px solid var(--pdz-select-border, #{pdz.color(outline)});
   border-radius: pdz.shape(corner-sm);
-  background-color: var(--pdz-select-surface, #{pdz.color(inset)});
+  background-color: var(--pdz-select-surface, #{pdz.color(field)});
   color: var(--pdz-select-on-surface, #{pdz.color(on-surface)});
   cursor: pointer;
   text-align: left;
@@ -25,7 +25,10 @@
     background-color pdz.duration(fast) pdz.easing(standard);
 
   &:hover:not(:disabled) {
-    border-color: pdz.color(primary-border);
+    background-image: linear-gradient(
+      pdz.color(state-hover),
+      pdz.color(state-hover)
+    );
   }
 
   &:focus-visible {
@@ -185,9 +188,7 @@
 .pdz-select__option-description {
   @include pdz.text(label, $family: false);
   color: pdz.color(on-surface-variant);
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  text-wrap: pretty;
 }
 
 .pdz-select__option--selected .pdz-select__option-description {

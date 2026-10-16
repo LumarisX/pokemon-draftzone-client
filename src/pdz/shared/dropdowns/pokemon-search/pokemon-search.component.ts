@@ -86,6 +86,7 @@ export class PokemonSearchComponent
 
   readonly mode = input<'search' | 'select'>('search');
   readonly density = input<'comfortable' | 'compact'>('comfortable');
+  readonly appearance = input<'field' | 'plain'>('field');
   readonly locked = input(false, { transform: booleanAttribute });
 
   readonly ruleset = input<string | null>(null);

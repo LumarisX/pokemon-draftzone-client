@@ -2,6 +2,7 @@
   class="pokemon-search__field"
   [class.pokemon-search__field--disabled]="disabled"
   [class.pokemon-search__field--compact]="density() === 'compact'"
+  [class.pokemon-search__field--plain]="appearance() === 'plain'"
   #fieldEl
 >
   @if (showsSelection) {

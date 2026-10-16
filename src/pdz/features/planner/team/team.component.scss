@@ -90,7 +90,6 @@
 
   &__row {
     --planner-row-control: 3rem;
-    --planner-row-accent: transparent;
 
     position: relative;
     display: flex;
@@ -108,21 +107,8 @@
       border-color pdz.duration(fast) pdz.easing(standard),
       background-color pdz.duration(fast) pdz.easing(standard);
 
-    &::before {
-      content: "";
-      position: absolute;
-      inset: 0 auto 0 0;
-      width: 3px;
-      background: var(--planner-row-accent);
-      transition: background pdz.duration(fast) pdz.easing(standard);
-    }
-
     &:hover {
-      border-color: pdz.color(outline);
-    }
-
-    &:focus-within {
-      border-color: pdz.color(primary-border);
+      border-color: pdz.color(border-control);
     }
 
     &--reserve {
@@ -135,8 +121,6 @@
     }
 
     &--locked {
-      --planner-row-accent: #{pdz.color(primary)};
-
       border-style: solid;
     }
 
@@ -231,14 +215,21 @@
     width: 4.5rem;
     height: var(--planner-row-control);
     padding: 0 pdz.space(2xs);
-    border: 1px solid pdz.color(outline);
-    border-radius: pdz.shape(corner-xs);
-    background: pdz.color(inset);
+    border: 1px solid transparent;
+    border-radius: pdz.shape(corner-sm);
+    transition:
+      border-color pdz.duration(base) pdz.easing(standard),
+      background-color pdz.duration(fast) pdz.easing(standard);
+
+    &:hover {
+      background: pdz.color(state-hover);
+    }
 
     &:focus-within {
-      outline: 2px solid pdz.color(primary);
+      outline: 2px solid pdz.color(primary-accent);
       outline-offset: 1px;
-      border-color: pdz.color(primary);
+      border-color: pdz.color(primary-accent);
+      background: pdz.color(field);
     }
   }
 
@@ -316,7 +307,11 @@
   &__remaining {
     @include pdz.numeric;
     font-weight: pdz.font-weight(semibold);
-    color: pdz.color(secondary-accent);
+    color: pdz.color(on-surface);
+
+    &--left {
+      color: pdz.color(secondary-accent);
+    }
 
     &--over {
       color: pdz.color(danger);

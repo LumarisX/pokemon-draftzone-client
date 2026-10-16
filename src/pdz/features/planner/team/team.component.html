@@ -34,7 +34,7 @@
         </span>
         <pdz-segmented
           size="sm"
-          variant="tonal"
+          variant="neutral"
           aria-labelledby="planner-team-system"
           [formControl]="draftFormGroup.controls.system"
         >
@@ -116,6 +116,7 @@
             class="planner-team__pokemon"
             mode="select"
             density="compact"
+            appearance="plain"
             placeholder="Add Pokémon..."
             [locked]="teamCtrl.controls.locked.value"
             [ruleset]="draftFormGroup.controls.ruleset.value"
@@ -157,7 +158,7 @@
               iconOnly
               size="sm"
               class="planner-team__lock"
-              [variant]="teamCtrl.controls.locked.value ? 'tonal' : 'outlined'"
+              variant="ghost"
               [color]="teamCtrl.controls.locked.value ? 'primary' : 'neutral'"
               [attr.aria-pressed]="teamCtrl.controls.locked.value"
               [attr.aria-label]="
@@ -182,6 +183,7 @@
           <dt>Points Remaining</dt>
           <dd
             class="planner-team__remaining"
+            [class.planner-team__remaining--left]="remainingPoints > 0"
             [class.planner-team__remaining--over]="remainingPoints < 0"
           >
             {{ remainingPoints }}

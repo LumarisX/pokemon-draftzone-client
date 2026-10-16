@@ -22,7 +22,7 @@ import { PDZ_SEGMENTED } from './segmented.token';
 
 export type SegmentedSize = 'sm' | 'md' | 'lg';
 export type SegmentedAlign = 'start' | 'stretch';
-export type SegmentedVariant = 'filled' | 'tonal';
+export type SegmentedVariant = 'filled' | 'tonal' | 'neutral';
 
 let nextSegmentedId = 0;
 

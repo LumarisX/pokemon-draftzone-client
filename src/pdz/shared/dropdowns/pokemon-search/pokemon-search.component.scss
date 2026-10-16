@@ -14,14 +14,29 @@
     padding: pdz.space(xs) pdz.space(sm);
     border: 1px solid pdz.color(outline);
     border-radius: pdz.shape(corner-sm);
-    background: pdz.color(inset);
+    background: pdz.color(field);
     color: pdz.color(on-surface);
-    transition: border-color pdz.duration(base) pdz.easing(standard);
+    transition:
+      border-color pdz.duration(base) pdz.easing(standard),
+      background-color pdz.duration(fast) pdz.easing(standard);
 
     &:focus-within {
       outline: 2px solid pdz.color(primary-accent);
       outline-offset: 1px;
       border-color: pdz.color(primary-accent);
+    }
+
+    &--plain {
+      border-color: transparent;
+      background: transparent;
+
+      &:hover {
+        background: pdz.color(state-hover);
+      }
+
+      &:focus-within {
+        background: pdz.color(field);
+      }
     }
 
     &--disabled {
