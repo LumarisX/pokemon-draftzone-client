@@ -43,13 +43,15 @@
 
 .controls {
   display: flex;
-  align-items: center;
-  gap: pdz.space(md);
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: pdz.space(md) pdz.space(xl);
+}
 
-  .controls-label {
-    @include pdz.text(body-sm-strong, $family: false);
-    color: pdz.color(on-surface-variant);
-  }
+.controls-dates {
+  display: flex;
+  flex-wrap: wrap;
+  gap: pdz.space(sm);
 }
 
 .charts-grid {
@@ -93,8 +95,9 @@
     }
 
     .chart-note {
-      font-size: pdz.font-size(xs);
-      color: pdz.color(on-surface-variant);
+      @include pdz.text(meta);
+      @include pdz.numeric;
+      color: pdz.color(on-surface-muted);
     }
   }
 

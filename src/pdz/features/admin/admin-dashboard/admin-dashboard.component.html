@@ -26,17 +26,55 @@
       }
     </section>
 
-    <section class="controls">
-      <span class="controls-label">Bucket</span>
-      <div>
+    <section class="controls" aria-label="Chart range">
+      <div pdz-field label="Range">
         <pdz-segmented
-          align="stretch"
-          [(value)]="bucket"
+          [value]="rangePreset()"
+          (valueChange)="setPreset($event)"
+          aria-label="Range"
+        >
+          @for (preset of rangePresets; track preset.value) {
+            <pdz-segmented-option
+              [value]="preset.value"
+              [label]="preset.label"
+            />
+          }
+        </pdz-segmented>
+      </div>
+
+      <div class="controls-dates">
+        <label pdz-field label="From">
+          <input
+            #fromInput
+            pdz-input
+            type="date"
+            [value]="rangeFrom()"
+            [attr.min]="dataStart() || null"
+            [attr.max]="rangeTo() || today"
+            (change)="setFrom(fromInput.value)"
+          />
+        </label>
+        <label pdz-field label="To">
+          <input
+            #toInput
+            pdz-input
+            type="date"
+            [value]="rangeTo()"
+            [attr.min]="rangeFrom() || null"
+            [attr.max]="today"
+            (change)="setTo(toInput.value)"
+          />
+        </label>
+      </div>
+
+      <div pdz-field label="Bucket">
+        <pdz-segmented
+          [value]="bucket()"
           (valueChange)="setBucket($event)"
-          aria-label="Stretched"
+          aria-label="Bucket"
         >
           @for (b of buckets; track b) {
-            <pdz-segmented-option [value]="b" [label]="b" />
+            <pdz-segmented-option [value]="b" [label]="bucketLabels[b]" />
           }
         </pdz-segmented>
       </div>
@@ -57,7 +95,7 @@
             (retried)="loadSeries()"
           />
         </div>
-      } @else if (series(); as data) {
+      } @else if (visibleSeries(); as data) {
         <div class="chart-card chart-card--wide">
           <div class="chart-card-head"><h2>Total Users</h2></div>
           <pdz-time-series-chart
@@ -71,7 +109,10 @@
         </div>
 
         <div class="chart-card chart-card--wide">
-          <div class="chart-card-head"><h2>New Users</h2></div>
+          <div class="chart-card-head">
+            <h2>New Users</h2>
+            <span class="chart-note">{{ joinedInRange() | number }} in range</span>
+          </div>
           <pdz-time-series-chart
             [data]="data.joined"
             [bucket]="data.bucket"
@@ -83,7 +124,12 @@
         </div>
 
         <div class="chart-card chart-card--wide">
-          <div class="chart-card-head"><h2>Last Logins</h2></div>
+          <div class="chart-card-head">
+            <h2>Last Logins</h2>
+            <span class="chart-note"
+              >{{ lastLoginInRange() | number }} in range</span
+            >
+          </div>
           <pdz-time-series-chart
             [data]="data.lastLogin"
             [bucket]="data.bucket"

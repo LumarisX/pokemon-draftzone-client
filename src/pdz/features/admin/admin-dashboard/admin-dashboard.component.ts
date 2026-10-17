@@ -1,12 +1,15 @@
 import { DecimalPipe } from '@angular/common';
 import { EmptyStateComponent } from '@pdz/shared/feedback/empty-state/empty-state.component';
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
+import { FieldComponent } from '@pdz/shared/inputs/field/field.component';
+import { InputDirective } from '@pdz/shared/inputs/field/input.directive';
 import { SkeletonLayoutComponent } from '@pdz/shared/data/skeleton/skeleton-layout.component';
 import { PageComponent } from '@pdz/shared/layout/page/page.component';
 import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
 import {
   AdminService,
   AgeSegment,
+  BucketCount,
   BucketUnit,
   EngagementSegment,
   KeyedCount,
@@ -50,8 +53,75 @@ const AGE_LABELS: Record<AgeSegment, string> = {
   gt1y: '1 year+',
 };
 
+type RangePreset = '30d' | '90d' | '6m' | '1y' | 'all' | 'custom';
+
+interface RangeOption {
+  value: Exclude<RangePreset, 'custom'>;
+  label: string;
+}
+
+const RANGE_PRESETS: RangeOption[] = [
+  { value: '30d', label: '30D' },
+  { value: '90d', label: '90D' },
+  { value: '6m', label: '6M' },
+  { value: '1y', label: '1Y' },
+  { value: 'all', label: 'All' },
+];
+
+const BUCKET_LABELS: Record<BucketUnit, string> = {
+  day: 'Day',
+  week: 'Week',
+  month: 'Month',
+};
+
+const DAY_MS = 24 * 60 * 60 * 1000;
+
 function titleCase(value: string): string {
   return value.replace(/[-_]/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
+}
+
+function isoDay(date: Date): string {
+  return date.toISOString().slice(0, 10);
+}
+
+function localDay(date: Date): string {
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${date.getFullYear()}-${month}-${day}`;
+}
+
+function presetStart(preset: RangePreset, today: Date): string {
+  const start = new Date(today);
+  if (preset === '30d') start.setUTCDate(start.getUTCDate() - 30);
+  else if (preset === '90d') start.setUTCDate(start.getUTCDate() - 90);
+  else if (preset === '6m') start.setUTCMonth(start.getUTCMonth() - 6);
+  else if (preset === '1y') start.setUTCFullYear(start.getUTCFullYear() - 1);
+  return isoDay(start);
+}
+
+function bucketEnd(start: Date, bucket: BucketUnit): number {
+  const end = new Date(start);
+  if (bucket === 'day') end.setUTCDate(end.getUTCDate() + 1);
+  else if (bucket === 'week') end.setUTCDate(end.getUTCDate() + 7);
+  else end.setUTCMonth(end.getUTCMonth() + 1);
+  return end.getTime();
+}
+
+function inRange(
+  from: string,
+  to: string,
+  bucket: BucketUnit,
+): (point: BucketCount) => boolean {
+  const fromMs = from ? new Date(from).getTime() : -Infinity;
+  const toMs = to ? new Date(to).getTime() + DAY_MS : Infinity;
+  return (point) => {
+    const start = new Date(point.date);
+    return start.getTime() < toMs && bucketEnd(start, bucket) > fromMs;
+  };
+}
+
+function total(points: BucketCount[]): number {
+  return points.reduce((sum, p) => sum + p.count, 0);
 }
 
 @Component({
@@ -67,6 +137,8 @@ function titleCase(value: string): string {
     PageHeaderComponent,
     SegmentedComponent,
     SegmentedOptionComponent,
+    FieldComponent,
+    InputDirective,
   ],
   templateUrl: './admin-dashboard.component.html',
   styleUrl: './admin-dashboard.component.scss',
@@ -75,7 +147,14 @@ export class AdminDashboardComponent implements OnInit {
   private readonly adminService = inject(AdminService);
 
   readonly buckets: BucketUnit[] = ['day', 'week', 'month'];
+  readonly bucketLabels = BUCKET_LABELS;
   readonly bucket = signal<BucketUnit>('week');
+
+  readonly rangePresets = RANGE_PRESETS;
+  readonly rangePreset = signal<RangePreset>('1y');
+  private readonly customFrom = signal('');
+  private readonly customTo = signal('');
+  readonly today = localDay(new Date());
 
   readonly summary = signal<UserStatsSummary | null>(null);
   readonly summaryLoading = signal(true);
@@ -93,6 +172,46 @@ export class AdminDashboardComponent implements OnInit {
   readonly accountAge = signal<KeyedCount<AgeSegment>[] | null>(null);
   readonly settings = signal<SettingsDistributions | null>(null);
 
+  readonly dataStart = computed(() => {
+    const s = this.series();
+    if (!s) return '';
+    const firsts = [s.joined[0]?.date, s.lastLogin[0]?.date]
+      .filter((date): date is string => !!date)
+      .sort();
+    return firsts.length ? firsts[0].slice(0, 10) : '';
+  });
+
+  readonly rangeFrom = computed(() => {
+    const preset = this.rangePreset();
+    if (preset === 'custom') return this.customFrom();
+    if (preset === 'all') return this.dataStart();
+    return presetStart(preset, new Date(this.today));
+  });
+
+  readonly rangeTo = computed(() =>
+    this.rangePreset() === 'custom' ? this.customTo() : this.today,
+  );
+
+  readonly visibleSeries = computed<UserTimeSeries | null>(() => {
+    const s = this.series();
+    if (!s) return null;
+    const keep = inRange(this.rangeFrom(), this.rangeTo(), s.bucket);
+    return {
+      bucket: s.bucket,
+      joined: s.joined.filter(keep),
+      cumulative: s.cumulative.filter(keep),
+      lastLogin: s.lastLogin.filter(keep),
+    };
+  });
+
+  readonly joinedInRange = computed(() =>
+    total(this.visibleSeries()?.joined ?? []),
+  );
+
+  readonly lastLoginInRange = computed(() =>
+    total(this.visibleSeries()?.lastLogin ?? []),
+  );
+
   ngOnInit(): void {
     this.loadSummary();
     this.loadSeries();
@@ -106,6 +225,23 @@ export class AdminDashboardComponent implements OnInit {
     if (bucket === undefined || bucket === this.bucket()) return;
     this.bucket.set(bucket);
     this.loadSeries();
+  }
+
+  setPreset(preset: RangePreset | undefined): void {
+    if (preset === undefined) return;
+    this.rangePreset.set(preset);
+  }
+
+  setFrom(value: string): void {
+    this.customTo.set(this.rangeTo());
+    this.customFrom.set(value);
+    this.rangePreset.set('custom');
+  }
+
+  setTo(value: string): void {
+    this.customFrom.set(this.rangeFrom());
+    this.customTo.set(value);
+    this.rangePreset.set('custom');
   }
 
   get providerData(): PieDatum[] {
