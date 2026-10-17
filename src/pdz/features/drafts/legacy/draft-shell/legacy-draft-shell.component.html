@@ -1,0 +1,71 @@
+<div class="opponent-main">
+  <div class="draft-header">
+    <a
+      class="back-btn"
+      pdz-button
+      variant="tonal"
+      [routerLink]="['/', draftPath]"
+    >
+      Back
+    </a>
+    @if (draft | async; as draft) {
+      <div class="draft-flex">
+        <div class="draft-info-container">
+          <h2>
+            {{ draft.leagueName }}
+          </h2>
+          <div class="details-container">
+            <h4 class="stat">
+              {{ draft.format }}
+            </h4>
+            <h4 class="stat">
+              {{ draft.ruleset }}
+            </h4>
+          </div>
+        </div>
+        <div class="team-info-container">
+          <h3>
+            {{ draft.teamName }}
+          </h3>
+          @if (draft.score) {
+            <h4 class="stat">
+              {{ draft.score.wins }} - {{ draft.score.losses }} |
+              {{ draft.score.diff }}
+            </h4>
+          }
+        </div>
+        <div class="draft-bar">
+          @for (pokemon of draft.team; track $index) {
+            <pdz-sprite
+              [pokemon]="pokemon"
+              [class.unresolved-sprite]="pokemon.unresolved"
+            >
+            </pdz-sprite>
+          }
+        </div>
+      </div>
+      <div class="draft-buttons">
+        <a
+          routerLink="../edit"
+          pdz-button
+          iconOnly
+          variant="tonal"
+          aria-label="Edit draft"
+          [queryParams]="{ draft: draft.slug | json }"
+        >
+          <pdz-icon name="edit"></pdz-icon>
+        </a>
+        <a
+          [href]="draft.doc"
+          target="_blank"
+          pdz-button
+          iconOnly
+          variant="tonal"
+          [class.disabled]="!draft.doc"
+          ><pdz-icon name="dataset_linked"></pdz-icon
+        ></a>
+      </div>
+    }
+  </div>
+  <router-outlet pdzRouteEnter></router-outlet>
+</div>

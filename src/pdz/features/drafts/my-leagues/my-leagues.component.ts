@@ -8,7 +8,8 @@ import {
 } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
-import { DRAFT_OVERVIEW_PATH, LEAGUE_ADS_PATH } from '@pdz/core/route-paths';
+import { LEAGUE_ADS_PATH } from '@pdz/core/route-paths';
+import { EXTERNAL_DRAFTS_AREA } from '@pdz/features/drafts/draft-area';
 import { Archive } from '@pdz/features/drafts/draft-overview/archive.model';
 import { DraftService } from '@pdz/features/drafts/draft-overview/draft.service';
 import { Draft } from '@pdz/features/drafts/draft.model';
@@ -82,7 +83,7 @@ export class MyLeaguesComponent {
   private readonly drafts = inject(DraftService);
   private readonly leagues = inject(LeagueZoneService);
 
-  protected readonly newLink = ['/', DRAFT_OVERVIEW_PATH, 'new'];
+  protected readonly newLink = [...EXTERNAL_DRAFTS_AREA.root, 'new'];
   protected readonly findLink = ['/', LEAGUE_ADS_PATH];
   protected readonly ordinal = ordinal;
   protected readonly leagueLine = leagueLine;

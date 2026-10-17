@@ -1,0 +1,189 @@
+import { JsonPipe } from '@angular/common';
+import { Component, inject } from '@angular/core';
+import { RouterModule } from '@angular/router';
+import { DRAFT_OVERVIEW_PATH, PLANNER_PATH } from '@pdz/core/route-paths';
+import { LeagueZoneService } from '@pdz/features/league-zone/league-zone.service';
+import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
+import { BadgeTone } from '@pdz/shared/data/badge/badge.component';
+import { CardComponent } from '@pdz/shared/data/card/card.component';
+import { ScoreComponent } from '@pdz/shared/data/score/score.component';
+import { SkeletonComponent } from '@pdz/shared/data/skeleton/skeleton.component';
+import { DialogService } from '@pdz/shared/dialogs/dialog/dialog.service';
+import { EmptyStateComponent } from '@pdz/shared/feedback/empty-state/empty-state.component';
+import { IconComponent } from '@pdz/shared/images/icon/icon.component';
+import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
+import { DisclosureComponent } from '@pdz/shared/layout/disclosure/disclosure.component';
+import { MenuItemComponent } from '@pdz/shared/menu/menu-item.component';
+import { MenuTriggerDirective } from '@pdz/shared/menu/menu-trigger.directive';
+import { MenuComponent } from '@pdz/shared/menu/menu.component';
+import { TooltipDirective } from '@pdz/shared/tooltip/tooltip.directive';
+import { TournamentDetails } from '@pdz/features/league-zone/league.model';
+import { LSDraftData } from '@pdz/features/planner/planner.component';
+import { Draft } from '@pdz/features/drafts/draft.model';
+import { Archive } from '@pdz/features/drafts/draft-overview/archive.model';
+import { DraftService } from '@pdz/features/drafts/draft-overview/draft.service';
+
+type Score = { wins: number; losses: number };
+
+@Component({
+  selector: 'pdz-legacy-draft-list',
+  templateUrl: './legacy-draft-list.component.html',
+  styleUrl: './legacy-draft-list.component.scss',
+  imports: [
+    JsonPipe,
+    RouterModule,
+    TooltipDirective,
+    SpriteComponent,
+    IconComponent,
+    ButtonComponent,
+    ScoreComponent,
+    CardComponent,
+    EmptyStateComponent,
+    MenuComponent,
+    MenuItemComponent,
+    MenuTriggerDirective,
+    SkeletonComponent,
+    DisclosureComponent,
+  ],
+})
+export class LegacyDraftListComponent {
+  private draftService = inject(DraftService);
+  private leagueService = inject(LeagueZoneService);
+  private dialogs = inject(DialogService);
+
+  readonly skeletonCards = [0, 1, 2];
+  readonly skeletonSprites = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11];
+
+  drafts?: Draft[];
+  tournaments?: TournamentDetails[];
+  archives?: Archive[];
+  loadError = false;
+  draftPath = DRAFT_OVERVIEW_PATH;
+  readonly plannerPath = PLANNER_PATH;
+
+  ngOnInit() {
+    this.loadDrafts();
+    this.loadTournaments();
+    this.loadArchives();
+  }
+
+  loadDrafts() {
+    this.drafts = undefined;
+    this.loadError = false;
+    this.draftService.getDraftsList().subscribe({
+      next: (data) => {
+        this.drafts = data.drafts;
+      },
+      error: (error) => {
+        console.error('Failed to load drafts', error);
+        this.drafts = [];
+        this.tournaments = [];
+        this.loadError = true;
+      },
+    });
+  }
+
+  loadTournaments() {
+    this.tournaments = undefined;
+    this.leagueService.getTournamentsList().subscribe({
+      next: (data) => {
+        this.tournaments = data.tournaments;
+      },
+      error: (error) => {
+        console.error('Failed to load tournaments', error);
+        this.tournaments = [];
+      },
+    });
+  }
+
+  loadArchives() {
+    this.draftService.getArchiveList().subscribe({
+      next: (data) => {
+        this.archives = data;
+      },
+      error: (error) => {
+        console.error('Failed to load tournaments', error);
+        this.tournaments = [];
+      },
+    });
+  }
+
+  async confirmArchive(draft: Draft) {
+    const confirmed = await this.dialogs.confirm('Are you sure?', {
+      message: `${draft.leagueName} will be archived. This can be undone.`,
+      confirmLabel: 'Archive',
+    });
+    if (!confirmed) return;
+
+    this.draftService.completeDraft(draft.slug).subscribe({
+      next: () => {
+        this.loadDrafts();
+        this.loadArchives();
+      },
+      error: (error) => console.error('Failed to archive draft', error),
+    });
+  }
+
+  restore(archive: Archive) {
+    if (!archive.slug) return;
+
+    this.draftService.reopenDraft(archive.slug).subscribe({
+      next: () => {
+        this.loadDrafts();
+        this.loadArchives();
+      },
+      error: (error) => console.error('Failed to restore draft', error),
+    });
+  }
+
+  async confirmDelete(draft: Draft) {
+    const confirmed = await this.dialogs.confirm('Delete draft', {
+      message: `Delete ${draft.leagueName}? This cannot be undone.`,
+      confirmLabel: 'Delete',
+      confirmColor: 'danger',
+    });
+    if (!confirmed) return;
+
+    this.draftService.deleteDraft(draft.slug).subscribe({
+      next: () => this.loadDrafts(),
+      error: (error) => console.error('Failed to delete draft', error),
+    });
+  }
+
+  toPlanner(draft: Draft): string {
+    const plannerData: Partial<LSDraftData> = {
+      team: draft.team.map((t) => ({
+        id: t.id,
+        locked: true,
+        value: null,
+        tier: '',
+      })),
+      format: draft.format,
+      ruleset: draft.ruleset,
+      draftName: draft.leagueName,
+    };
+    return JSON.stringify(plannerData);
+  }
+
+  scoreString(score: Score) {
+    if (score) return `${score.wins} - ${score.losses}`;
+    return `Unscored`;
+  }
+
+  scoreTone(score: Score): BadgeTone {
+    if (!score) return 'neutral';
+    if (score.wins > score.losses) return 'success';
+    if (score.wins < score.losses) return 'danger';
+    return 'neutral';
+  }
+
+  hasAnyDrafts(): boolean {
+    return (this.drafts?.length ?? 0) + (this.tournaments?.length ?? 0) > 0;
+  }
+
+  unresolvedWarning(draft: Draft): string | null {
+    const count = draft.unresolvedPokemon?.length ?? 0;
+    if (count === 0) return null;
+    return `Some Pokémon are not valid under ${draft.ruleset}`;
+  }
+}

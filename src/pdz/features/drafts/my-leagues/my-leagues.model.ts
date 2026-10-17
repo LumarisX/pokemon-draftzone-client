@@ -1,4 +1,5 @@
-import { DRAFT_OVERVIEW_PATH, LEAGUE_ZONE_PATH } from '@pdz/core/route-paths';
+import { LEAGUE_ZONE_PATH } from '@pdz/core/route-paths';
+import { EXTERNAL_DRAFTS_AREA } from '@pdz/features/drafts/draft-area';
 import { DraftOptions, Pokemon } from '@pdz/core/utils/pokemon';
 import { Archive } from '@pdz/features/drafts/draft-overview/archive.model';
 import { Draft, SeasonFormResult } from '@pdz/features/drafts/draft.model';
@@ -165,7 +166,7 @@ export const PHASE_LABEL: Record<TournamentPhase, string> = {
 };
 
 export function fromDraft(draft: Draft): LeagueEntry {
-  const base = ['/', DRAFT_OVERVIEW_PATH, draft.slug];
+  const base = [...EXTERNAL_DRAFTS_AREA.root, draft.slug];
   const next = draft.next;
   return {
     id: `draft:${draft.slug}`,
@@ -205,8 +206,8 @@ export function fromArchive(archive: Archive): LeagueEntry {
     league: archive.leagueName,
     pokemon: archive.team,
     link: archive.slug
-      ? ['/', DRAFT_OVERVIEW_PATH, archive.slug]
-      : ['/', DRAFT_OVERVIEW_PATH, 'archives', archive._id, 'stats'],
+      ? [...EXTERNAL_DRAFTS_AREA.root, archive.slug]
+      : [...EXTERNAL_DRAFTS_AREA.root, 'archives', archive._id, 'stats'],
     phase: 'completed',
     record: archive.score
       ? { wins: archive.score.wins, losses: archive.score.losses }

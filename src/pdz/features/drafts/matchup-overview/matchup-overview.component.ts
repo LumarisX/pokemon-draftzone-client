@@ -1,7 +1,8 @@
 import { Component, HostListener, inject, OnInit } from '@angular/core';
 import { Meta } from '@angular/platform-browser';
 import { ActivatedRoute, Params, Router } from '@angular/router';
-import { DRAFT_OVERVIEW_PATH, LEAGUE_ZONE_PATH } from '@pdz/core/route-paths';
+import { LEAGUE_ZONE_PATH } from '@pdz/core/route-paths';
+import { DRAFT_AREA } from '@pdz/features/drafts/draft-area';
 import { ErrorService } from '@pdz/layout/error/error.service';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 import { SkeletonComponent } from '@pdz/shared/data/skeleton/skeleton.component';
@@ -77,8 +78,8 @@ export class MatchupOverviewComponent implements OnInit {
   matchupId!: string;
   shareUrl?: string;
   tournamentId?: string;
-  draftPath = DRAFT_OVERVIEW_PATH;
-  backLink: unknown[] = ['/' + LEAGUE_ZONE_PATH];
+  private readonly area = inject(DRAFT_AREA);
+  backLink: unknown[] = this.area.home;
 
   panelTool: PanelTool | null = null;
   isResizing: boolean = false;
@@ -220,8 +221,8 @@ export class MatchupOverviewComponent implements OnInit {
       ];
     }
     return this.tournamentId
-      ? ['/' + DRAFT_OVERVIEW_PATH, this.tournamentId]
-      : ['/' + LEAGUE_ZONE_PATH];
+      ? [...this.area.root, this.tournamentId]
+      : this.area.home;
   }
 
   get manageable(): boolean {
@@ -233,7 +234,7 @@ export class MatchupOverviewComponent implements OnInit {
   }
 
   draftLink(...segments: string[]): unknown[] {
-    return ['/', DRAFT_OVERVIEW_PATH, this.tournamentId, ...segments];
+    return [...this.area.root, this.tournamentId, ...segments];
   }
 
   private matchRef(): DraftMatchRef {

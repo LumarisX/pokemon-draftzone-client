@@ -45,6 +45,8 @@ const PAGE_HEADER_EXEMPT = new Set([
   "features/pages/external-link/external-link.component",
   "features/league-zone/tournaments/tournament-draft/tournament-draft.component",
   "features/planner/planner.component",
+  "features/drafts/legacy/draft-list/legacy-draft-list.component",
+  "features/drafts/legacy/draft-team/legacy-draft-team.component",
 ]);
 
 const PAGE_TYPE_EXEMPT = new Set([
@@ -53,6 +55,8 @@ const PAGE_TYPE_EXEMPT = new Set([
   "features/pages/not-found/not-found.component",
   "features/pages/external-link/external-link.component",
   "features/league-zone/tournaments/tournament-draft/tournament-draft.component",
+  "features/drafts/legacy/draft-list/legacy-draft-list.component",
+  "features/drafts/legacy/draft-team/legacy-draft-team.component",
 ]);
 
 const ALLOW = {
@@ -69,6 +73,8 @@ const ALLOW = {
   a11y: ["shared/images/sprite/"],
   card: ["shared/layout/", "shared/data/card/"],
   nasa: ["shared/layout/page-header/"],
+  w: ["features/drafts/legacy/"],
+  rad: ["features/drafts/legacy/"],
 };
 
 const allowed = (code, unit) => (ALLOW[code] ?? []).some((prefix) => unit.startsWith(prefix));

@@ -1,6 +1,6 @@
 import { Component, OnInit, inject, input } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { DRAFT_OVERVIEW_PATH } from '@pdz/core/route-paths';
+import { DRAFT_AREA, draftLinks } from '@pdz/features/drafts/draft-area';
 import { Draft } from '@pdz/features/drafts/draft.model';
 import { Opponent } from '../opponent.model';
 import { DraftService } from '@pdz/features/drafts/draft-overview/draft.service';
@@ -27,7 +27,7 @@ export class OpponentFormComponent implements OnInit {
 
   teamId: string = '';
   matchupId: string | null = null;
-  readonly draftPath = DRAFT_OVERVIEW_PATH;
+  private readonly area = inject(DRAFT_AREA);
   oppParams: Partial<Opponent> | null = null;
   title: string = '';
   submitLabel: string = '';
@@ -66,7 +66,8 @@ export class OpponentFormComponent implements OnInit {
       : this.draftService.newMatchup(this.teamId, formData);
 
     serviceCall.subscribe({
-      next: () => this.router.navigate(['/', this.draftPath, this.teamId]),
+      next: () =>
+        this.router.navigate(draftLinks(this.teamId, this.area).page),
       error: (error) =>
         this.toast.error(
           apiErrorMessage(error, 'Could not save the opponent.'),

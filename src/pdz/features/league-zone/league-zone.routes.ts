@@ -1,9 +1,14 @@
 import { Routes } from '@angular/router';
 import { AuthGuard } from '@auth0/auth0-angular';
 import {
+  EXTERNAL_DRAFTS_PATH,
   LEAGUE_ZONE_MANAGE_PATH,
   ORGANIZER_INVITE_PATH,
 } from '@pdz/core/route-paths';
+import {
+  DRAFT_AREA,
+  EXTERNAL_DRAFTS_AREA,
+} from '@pdz/features/drafts/draft-area';
 import { MatchupOverviewComponent } from '../drafts/matchup-overview/matchup-overview.component';
 import { LEAGUE_MATCHUP_PAGE } from '../drafts/matchup-overview/matchup-page.config';
 import { MyLeaguesComponent } from '../drafts/my-leagues/my-leagues.component';
@@ -42,6 +47,14 @@ export const routes: Routes = [
     path: 'new',
     component: LeagueCreateComponent,
     canActivate: [AuthGuard],
+  },
+  {
+    path: EXTERNAL_DRAFTS_PATH,
+    providers: [{ provide: DRAFT_AREA, useValue: EXTERNAL_DRAFTS_AREA }],
+    loadChildren: () =>
+      import('../drafts/draft-overview/draft.routes').then(
+        (m) => m.externalRoutes,
+      ),
   },
   {
     path: `:leagueSlug`,

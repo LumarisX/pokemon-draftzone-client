@@ -8,7 +8,7 @@ import {
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute } from '@angular/router';
-import { LEAGUE_ZONE_PATH } from '@pdz/core/route-paths';
+import { DRAFT_AREA } from '@pdz/features/drafts/draft-area';
 import {
   DraftService,
   PokemonStat,
@@ -54,7 +54,7 @@ export class DraftStatsComponent {
   private readonly draftService = inject(DraftService);
   private readonly route = inject(ActivatedRoute);
 
-  readonly backLink = ['/', LEAGUE_ZONE_PATH];
+  readonly backLink = inject(DRAFT_AREA).home;
 
   private readonly stats = toSignal(this.loadStats());
 
@@ -79,7 +79,10 @@ export class DraftStatsComponent {
 
   private loadStats() {
     const teamId = this.route.snapshot.paramMap.get('teamId') ?? '';
-    return this.draftService.getArchiveStats(teamId).pipe(
+    const request = this.route.snapshot.data['live']
+      ? this.draftService.getStats(teamId)
+      : this.draftService.getArchiveStats(teamId);
+    return request.pipe(
       map((data) => data.pokemon),
       catchError(() => of<PokemonStat[]>([])),
     );

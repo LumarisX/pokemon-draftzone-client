@@ -7,7 +7,7 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { DRAFT_OVERVIEW_PATH } from '@pdz/core/route-paths';
+import { DRAFT_AREA, draftLinks } from '@pdz/features/drafts/draft-area';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { SkeletonLayoutComponent } from '@pdz/shared/data/skeleton/skeleton-layout.component';
@@ -91,9 +91,10 @@ export class OpponentScoreComponent implements OnInit, OnDestroy {
   private dialogs = inject(DialogService);
   private readonly destroy$ = new Subject<void>();
 
-  readonly draftPath = DRAFT_OVERVIEW_PATH;
+  private readonly area = inject(DRAFT_AREA);
 
   teamId = '';
+  draftPage: string[] = [];
   matchupId = '';
   matchup?: Matchup;
   pokedex: Record<string, ScoreEntryPokemon> = {};
@@ -117,6 +118,7 @@ export class OpponentScoreComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.teamId = this.route.parent!.snapshot.paramMap.get('teamId') || '';
+    this.draftPage = draftLinks(this.teamId, this.area).page;
     this.route.queryParams
       .pipe(takeUntil(this.destroy$))
       .subscribe((params) => {
@@ -400,7 +402,7 @@ export class OpponentScoreComponent implements OnInit, OnDestroy {
       .subscribe({
         next: () => {
           this.saving.set(false);
-          this.router.navigate(['/', this.draftPath, this.teamId]);
+          this.router.navigate(this.draftPage);
         },
         error: (error) => {
           this.saving.set(false);

@@ -8,7 +8,7 @@ import {
   signal,
 } from '@angular/core';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { DRAFT_OVERVIEW_PATH } from '@pdz/core/route-paths';
+import { DRAFT_AREA, draftLinks } from '@pdz/features/drafts/draft-area';
 import { ReplayService } from '@pdz/features/tools/replay_analyzer/replay.service';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
@@ -80,10 +80,11 @@ export class OpponentScoreV2Component implements OnInit, OnDestroy {
   private readonly router = inject(Router);
   private readonly destroy$ = new Subject<void>();
 
-  protected readonly draftPath = DRAFT_OVERVIEW_PATH;
+  private readonly area = inject(DRAFT_AREA);
   protected readonly sides = KO_SIDES;
 
   protected teamId = '';
+  protected draftPage: string[] = [];
   protected matchupId = '';
 
   protected readonly matchup = signal<Matchup | null>(null);
@@ -140,6 +141,7 @@ export class OpponentScoreV2Component implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.teamId = this.route.parent!.snapshot.paramMap.get('teamId') ?? '';
+    this.draftPage = draftLinks(this.teamId, this.area).page;
     this.route.queryParams
       .pipe(takeUntil(this.destroy$))
       .subscribe((params) => {
@@ -249,7 +251,7 @@ export class OpponentScoreV2Component implements OnInit, OnDestroy {
       .subscribe({
         next: () => {
           this.saving.set(false);
-          this.router.navigate(['/', this.draftPath, this.teamId]);
+          this.router.navigate(this.draftPage);
         },
         error: (error) => {
           this.saving.set(false);

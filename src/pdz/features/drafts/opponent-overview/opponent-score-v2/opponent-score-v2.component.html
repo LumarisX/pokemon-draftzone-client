@@ -5,7 +5,7 @@
       compact
       backLabel="Back to Draft"
       [title]="sideNames().side1 + ' vs ' + sideNames().side2"
-      [backLink]="['/', draftPath, teamId]"
+      [backLink]="draftPage"
     >
       <button
         pdz-page-header-actions
@@ -28,7 +28,7 @@
         size="xs"
         variant="ghost"
         color="neutral"
-        [routerLink]="['/', draftPath, teamId, 'score']"
+        [routerLink]="['../score']"
         [queryParams]="{ matchup: matchupId }"
       >
         Classic Entry

@@ -1,4 +1,7 @@
-import { DRAFT_OVERVIEW_PATH } from '@pdz/core/route-paths';
+import {
+  DraftArea,
+  draftLinks,
+} from '@pdz/features/drafts/draft-area';
 import {
   DraftService,
   PokemonStat,
@@ -40,17 +43,6 @@ export type DraftSeason = {
 export type DraftSeasonLoad =
   | { state: 'ready'; season: DraftSeason }
   | { state: 'failed' };
-
-export function draftLinks(teamId: string) {
-  const base = ['/', DRAFT_OVERVIEW_PATH, teamId];
-  return {
-    page: base,
-    form: [...base, 'form'],
-    score: [...base, 'score'],
-    matchup: (id: string) => [...base, 'matchup', id],
-    edit: ['/', DRAFT_OVERVIEW_PATH, 'edit'],
-  };
-}
 
 function matchScore(opponent: Opponent): [number, number] | null {
   const matches = opponent.matches ?? [];
@@ -175,8 +167,9 @@ export function buildSeason(
 export function loadSeason(
   service: DraftService,
   teamId: string,
+  area: DraftArea,
 ): Observable<DraftSeasonLoad> {
-  const links = draftLinks(teamId);
+  const links = draftLinks(teamId, area);
   return forkJoin({
     draft: service.getDraft(teamId),
     opponents: service

@@ -34,8 +34,10 @@ const OWNER_TEST_PAGES = [
   "src/pdz/features/drafts/opponent-overview/opponent-score-v2/",
 ];
 
+const LEGACY_DRAFT_PAGES = ["src/pdz/features/drafts/legacy/"];
+
 const ALLOW_BY_RULE = {
-  "secondary-button": OWNER_TEST_PAGES,
+  "secondary-button": [...OWNER_TEST_PAGES, ...LEGACY_DRAFT_PAGES],
   "click-non-interactive": [...PRIMITIVE_SOURCES, ...POINTER_ENHANCEMENTS],
   "text-input-primitive": [...PRIMITIVE_SOURCES, ...INLINE_EDITORS],
   "logo-img": [...PRIMITIVE_SOURCES, ...IMAGE_EDITORS],

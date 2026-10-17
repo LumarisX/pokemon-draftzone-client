@@ -7,7 +7,8 @@ import {
 } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-import { LEAGUE_ZONE_PATH, PLANNER_PATH } from '@pdz/core/route-paths';
+import { PLANNER_PATH } from '@pdz/core/route-paths';
+import { DRAFT_AREA, draftLinks } from '@pdz/features/drafts/draft-area';
 import { DraftMatchActionsService } from '@pdz/features/drafts/draft-overview/draft-match-actions.service';
 import { DraftService } from '@pdz/features/drafts/draft-overview/draft.service';
 import { Draft } from '@pdz/features/drafts/draft.model';
@@ -29,11 +30,7 @@ import { MenuComponent } from '@pdz/shared/menu/menu.component';
 import { TooltipDirective } from '@pdz/shared/tooltip/tooltip.directive';
 import { combineLatest, map, switchMap } from 'rxjs';
 import { TeamRosterComponent } from '@pdz/shared/data/team-roster/team-roster.component';
-import {
-  draftLinks,
-  loadSeason,
-  SeasonMatch,
-} from '@pdz/features/drafts/draft-season';
+import { loadSeason, SeasonMatch } from '@pdz/features/drafts/draft-season';
 
 @Component({
   selector: 'pdz-opponent-preview',
@@ -66,7 +63,8 @@ export class OpponentTeamPreviewComponent {
   private readonly dialogs = inject(DialogService);
   private readonly toasts = inject(ToastService);
 
-  protected readonly backLink = ['/', LEAGUE_ZONE_PATH];
+  private readonly area = inject(DRAFT_AREA);
+  protected readonly backLink = this.area.home;
   protected readonly plannerPath = PLANNER_PATH;
   private readonly refresh = signal(0);
   protected readonly busy = signal(false);
@@ -79,7 +77,7 @@ export class OpponentTeamPreviewComponent {
   private readonly load = toSignal(
     combineLatest([this.route.paramMap, toObservable(this.refresh)]).pipe(
       switchMap(([params]) =>
-        loadSeason(this.drafts, params.get('teamId') ?? ''),
+        loadSeason(this.drafts, params.get('teamId') ?? '', this.area),
       ),
     ),
   );
@@ -91,7 +89,9 @@ export class OpponentTeamPreviewComponent {
 
   protected readonly failed = computed(() => this.load()?.state === 'failed');
 
-  protected readonly links = computed(() => draftLinks(this.teamId()));
+  protected readonly links = computed(() =>
+    draftLinks(this.teamId(), this.area),
+  );
 
   protected matchFor(id: string): SeasonMatch | undefined {
     return this.season()?.matches.find((match) => match.id === id);

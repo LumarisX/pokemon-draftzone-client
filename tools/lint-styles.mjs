@@ -64,6 +64,12 @@ const OWNER_TEST_PAGES = [
 
 const GALLERY = ["src/pdz/core/debug/components/debug-components.component.scss"];
 
+const LEGACY_DRAFT_PAGES = [
+  "src/pdz/features/drafts/legacy/draft-list/legacy-draft-list.component.scss",
+  "src/pdz/features/drafts/legacy/draft-shell/legacy-draft-shell.component.scss",
+  "src/pdz/features/drafts/legacy/draft-team/legacy-draft-team.component.scss",
+];
+
 const ALLOW_BY_RULE = {
   "nested-box": new Set([...DRAG_OBJECTS_AND_SLOTS, ...OWNER_TEST_PAGES, ...GALLERY]),
   "raw-font-size": new Set([
@@ -73,11 +79,17 @@ const ALLOW_BY_RULE = {
     ...BESPOKE_DENSITY,
   ]),
   "unroled-type": new Set([]),
-  "raw-color": new Set([...BESPOKE_RENDERING]),
-  "raw-spacing": new Set([...BESPOKE_DISPLAY]),
-  "display-font": new Set([...DISPLAY_FONT_MOMENTS]),
-  "loud-type": new Set([...DISPLAY_FONT_MOMENTS]),
-  "bold-weight": new Set([...DISPLAY_FONT_MOMENTS, ...BESPOKE_DISPLAY]),
+  "raw-color": new Set([...BESPOKE_RENDERING, ...LEGACY_DRAFT_PAGES]),
+  "raw-spacing": new Set([...BESPOKE_DISPLAY, ...LEGACY_DRAFT_PAGES]),
+  "raw-radius": new Set([...LEGACY_DRAFT_PAGES]),
+  "raw-font-weight": new Set([...LEGACY_DRAFT_PAGES]),
+  "display-font": new Set([...DISPLAY_FONT_MOMENTS, ...LEGACY_DRAFT_PAGES]),
+  "loud-type": new Set([...DISPLAY_FONT_MOMENTS, ...LEGACY_DRAFT_PAGES]),
+  "bold-weight": new Set([
+    ...DISPLAY_FONT_MOMENTS,
+    ...BESPOKE_DISPLAY,
+    ...LEGACY_DRAFT_PAGES,
+  ]),
 };
 
 const TOKEN_SOURCES = /^src\/styles\/(tokens|themes|tools)\//;

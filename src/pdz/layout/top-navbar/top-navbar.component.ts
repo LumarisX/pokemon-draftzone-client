@@ -10,8 +10,8 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { NavigationEnd, Router, RouterLink, RouterLinkActive } from '@angular/router';
 import {
   ADMIN_PATH,
+  DRAFT_OVERVIEW_PATH,
   LEAGUE_ADS_PATH,
-  LEAGUE_ZONE_PATH,
   PLANNER_PATH,
   TOOLS_PATH,
 } from '@pdz/core/route-paths';
@@ -73,7 +73,7 @@ export class TopNavbarComponent {
   readonly newsBadge = this.unreadService.newsCount;
 
   readonly tabs: NavTab[] = [
-    { title: 'My Leagues', route: `/${LEAGUE_ZONE_PATH}` },
+    { title: 'My Drafts', route: `/${DRAFT_OVERVIEW_PATH}` },
     { title: 'Planner', route: `/${PLANNER_PATH}` },
     { title: 'Replay Analyzer', route: tool('replay-analyzer') },
     {

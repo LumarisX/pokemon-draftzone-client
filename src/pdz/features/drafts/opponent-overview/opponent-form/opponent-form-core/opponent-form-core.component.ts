@@ -16,7 +16,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { ActivatedRoute, RouterModule } from '@angular/router';
-import { DRAFT_OVERVIEW_PATH } from '@pdz/core/route-paths';
+import { DRAFT_AREA, draftLinks } from '@pdz/features/drafts/draft-area';
 import { DataService } from '@pdz/core/services/data.service';
 import {
   PokemonFormGroup,
@@ -71,8 +71,9 @@ export class OpponentFormCoreComponent implements OnInit {
   readonly scheduledDate = signal<string | null>(null);
   readonly opponentTimezone = signal<string | null>(null);
 
-  readonly draftPath = DRAFT_OVERVIEW_PATH;
+  private readonly area = inject(DRAFT_AREA);
   teamId: string = '';
+  draftPage: string[] = [];
 
   readonly title = input('New Opponent');
   readonly submitLabel = input('Save Opponent');
@@ -86,6 +87,7 @@ export class OpponentFormCoreComponent implements OnInit {
     this.draft = this.route.parent!.paramMap.pipe(
       switchMap((params) => {
         this.teamId = params.get('teamId')!;
+        this.draftPage = draftLinks(this.teamId, this.area).page;
         return this.draftService.getDraft(this.teamId);
       }),
     );
