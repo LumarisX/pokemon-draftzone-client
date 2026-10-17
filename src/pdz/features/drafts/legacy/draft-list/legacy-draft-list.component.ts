@@ -1,4 +1,4 @@
-import { JsonPipe } from '@angular/common';
+import { JsonPipe, NgTemplateOutlet } from '@angular/common';
 import { Component, inject } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { DRAFT_OVERVIEW_PATH, PLANNER_PATH } from '@pdz/core/route-paths';
@@ -25,12 +25,19 @@ import { DraftService } from '@pdz/features/drafts/draft-overview/draft.service'
 
 type Score = { wins: number; losses: number };
 
+function completedTime(tournament: TournamentDetails): number {
+  return tournament.completedAt
+    ? new Date(tournament.completedAt).getTime()
+    : 0;
+}
+
 @Component({
   selector: 'pdz-legacy-draft-list',
   templateUrl: './legacy-draft-list.component.html',
   styleUrl: './legacy-draft-list.component.scss',
   imports: [
     JsonPipe,
+    NgTemplateOutlet,
     RouterModule,
     TooltipDirective,
     SpriteComponent,
@@ -56,6 +63,7 @@ export class LegacyDraftListComponent {
 
   drafts?: Draft[];
   tournaments?: TournamentDetails[];
+  completedTournaments: TournamentDetails[] = [];
   archives?: Archive[];
   loadError = false;
   draftPath = DRAFT_OVERVIEW_PATH;
@@ -87,7 +95,12 @@ export class LegacyDraftListComponent {
     this.tournaments = undefined;
     this.leagueService.getTournamentsList().subscribe({
       next: (data) => {
-        this.tournaments = data.tournaments;
+        this.tournaments = data.tournaments.filter(
+          (tournament) => tournament.phase !== 'completed',
+        );
+        this.completedTournaments = data.tournaments
+          .filter((tournament) => tournament.phase === 'completed')
+          .sort((a, b) => completedTime(b) - completedTime(a));
       },
       error: (error) => {
         console.error('Failed to load tournaments', error);
@@ -102,8 +115,8 @@ export class LegacyDraftListComponent {
         this.archives = data;
       },
       error: (error) => {
-        console.error('Failed to load tournaments', error);
-        this.tournaments = [];
+        console.error('Failed to load archives', error);
+        this.archives = [];
       },
     });
   }

@@ -64,61 +64,10 @@
     @if (hasAnyDrafts()) {
       <div class="drafts-grid">
         @for (tournament of tournaments; track tournament.tournamentSlug) {
-          <pdz-card padding="sm">
-            <div pdz-card-header>
-              <div class="card-title">
-                <span class="league-label">{{ tournament.leagueName }}</span>
-                <h2 class="league-name">{{ tournament.tournamentName }}</h2>
-              </div>
-              @if (tournament.score) {
-                <pdz-score [tone]="scoreTone(tournament.score)">{{
-                  scoreString(tournament.score)
-                }}</pdz-score>
-              }
-            </div>
-
-            <p class="body-header">
-              {{ tournament.ruleset }} - {{ tournament.format }}
-            </p>
-            <div class="sprites">
-              @for (pokemon of tournament.draft; track pokemon.name) {
-                <pdz-sprite [pokemon]="pokemon"></pdz-sprite>
-              }
-            </div>
-
-            <div pdz-card-footer>
-              <a
-                pdz-button
-                size="sm"
-                variant="ghost"
-                color="primary"
-                [routerLink]="[
-                  '/leagues',
-                  tournament.leagueSlug,
-                  'tournaments',
-                  tournament.tournamentSlug,
-                ]"
-                >View Tournament</a
-              >
-              @if (tournament.teamSlug) {
-                <a
-                  pdz-button
-                  size="sm"
-                  variant="ghost"
-                  color="primary"
-                  [routerLink]="[
-                    '/leagues',
-                    tournament.leagueSlug,
-                    'tournaments',
-                    tournament.tournamentSlug,
-                    'teams',
-                    tournament.teamSlug,
-                  ]"
-                  >View My Team</a
-                >
-              }
-            </div>
-          </pdz-card>
+          <ng-container
+            [ngTemplateOutlet]="tournamentCard"
+            [ngTemplateOutletContext]="{ $implicit: tournament }"
+          ></ng-container>
         }
         @for (draft of drafts; track draft.slug) {
           <pdz-card class="draft-card" padding="sm">
@@ -234,6 +183,15 @@
   }
   <pdz-disclosure heading="Archived Drafts">
     <div class="drafts-grid">
+      @for (
+        tournament of completedTournaments;
+        track tournament.tournamentSlug
+      ) {
+        <ng-container
+          [ngTemplateOutlet]="tournamentCard"
+          [ngTemplateOutletContext]="{ $implicit: tournament }"
+        ></ng-container>
+      }
       @for (archive of archives; track archive._id) {
         <pdz-card class="draft-card" padding="sm">
           <div pdz-card-header>
@@ -292,3 +250,59 @@
     </div>
   </pdz-disclosure>
 </div>
+
+<ng-template #tournamentCard let-tournament>
+  <pdz-card padding="sm">
+    <div pdz-card-header>
+      <div class="card-title">
+        <span class="league-label">{{ tournament.leagueName }}</span>
+        <h2 class="league-name">{{ tournament.tournamentName }}</h2>
+      </div>
+      @if (tournament.score) {
+        <pdz-score [tone]="scoreTone(tournament.score)">{{
+          scoreString(tournament.score)
+        }}</pdz-score>
+      }
+    </div>
+
+    <p class="body-header">{{ tournament.ruleset }} - {{ tournament.format }}</p>
+    <div class="sprites">
+      @for (pokemon of tournament.draft; track pokemon.name) {
+        <pdz-sprite [pokemon]="pokemon"></pdz-sprite>
+      }
+    </div>
+
+    <div pdz-card-footer>
+      <a
+        pdz-button
+        size="sm"
+        variant="ghost"
+        color="primary"
+        [routerLink]="[
+          '/leagues',
+          tournament.leagueSlug,
+          'tournaments',
+          tournament.tournamentSlug,
+        ]"
+        >View Tournament</a
+      >
+      @if (tournament.teamSlug) {
+        <a
+          pdz-button
+          size="sm"
+          variant="ghost"
+          color="primary"
+          [routerLink]="[
+            '/leagues',
+            tournament.leagueSlug,
+            'tournaments',
+            tournament.tournamentSlug,
+            'teams',
+            tournament.teamSlug,
+          ]"
+          >View My Team</a
+        >
+      }
+    </div>
+  </pdz-card>
+</ng-template>
