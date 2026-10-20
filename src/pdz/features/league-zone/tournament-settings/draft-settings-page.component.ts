@@ -6,6 +6,7 @@ import {
 } from '@angular/core';
 import { CardComponent } from '@pdz/shared/data/card/card.component';
 import { DialogService } from '@pdz/shared/dialogs/dialog/dialog.service';
+import { EmptyStateComponent } from '@pdz/shared/feedback/empty-state/empty-state.component';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
@@ -38,6 +39,7 @@ const HIDDEN_WHEN_COLLAPSED = new Set(['pool.name']);
     ButtonComponent,
     SkeletonLayoutComponent,
     CardComponent,
+    EmptyStateComponent,
     IconComponent,
     PageComponent,
     PageHeaderComponent,

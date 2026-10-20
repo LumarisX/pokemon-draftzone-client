@@ -7,6 +7,7 @@ import {
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
+import { LEAGUE_ADMINS_PATH } from '@pdz/core/route-paths';
 import { LeagueZoneService } from '@pdz/features/league-zone/league-zone.service';
 import { League } from '@pdz/features/league-zone/league.interface';
 import { getLeagueLogoUrl } from '@pdz/features/league-zone/league.util';
@@ -50,6 +51,7 @@ const STATUS: Record<TournamentStatus, { label: string; tone: ChipTone }> = {
 })
 export class LeagueLandingComponent {
   readonly getLogoUrl = getLeagueLogoUrl;
+  readonly adminsPath = LEAGUE_ADMINS_PATH;
 
   readonly league = toSignal(
     inject(LeagueZoneService)

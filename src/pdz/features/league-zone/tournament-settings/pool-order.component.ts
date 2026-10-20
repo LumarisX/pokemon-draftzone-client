@@ -62,8 +62,16 @@ export class PoolOrderComponent {
     return pool ? !draftNotStarted(pool.status) : false;
   });
 
+  protected readonly ordered = computed(
+    () => this.pool()?.sequentialTurns ?? true,
+  );
+
   protected readonly canReorder = computed(
-    () => !this.disabled() && !this.started() && !this.randomSeeding(),
+    () =>
+      this.ordered() &&
+      !this.disabled() &&
+      !this.started() &&
+      !this.randomSeeding(),
   );
 
   protected readonly otherPools = computed(() =>

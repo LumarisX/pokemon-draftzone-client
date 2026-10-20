@@ -29,7 +29,7 @@
       (retried)="retry()"
     />
   } @else if (entries(); as list) {
-    @if (list.length) {
+    @if (list.length || ownedLeagues().length) {
       <div class="body">
         @if (partialFailure()) {
           <pdz-card color="warning" padding="sm" role="alert">
@@ -312,6 +312,7 @@
                         class="done__team"
                         [name]="entry.teamName"
                         [logo]="entry.logo"
+                        [showLogo]="!!entry.logo"
                       >
                         <span pdz-team-meta class="team-meta">{{
                           entry.league
@@ -334,6 +335,48 @@
                   </li>
                 }
               </ol>
+            </pdz-card>
+          </section>
+        }
+
+        @if (ownedLeagues().length) {
+          <section class="section" aria-labelledby="leagues-owned">
+            <div class="section__header">
+              <h2 class="section__title" id="leagues-owned">
+                Leagues You Run
+                <span class="section__count">{{ ownedLeagues().length }}</span>
+              </h2>
+            </div>
+            <pdz-card padding="none">
+              <ul class="done-list">
+                @for (league of ownedLeagues(); track league.leagueSlug) {
+                  <li class="owned">
+                    <pdz-team
+                      size="row"
+                      class="owned__team"
+                      [name]="league.name"
+                      [logo]="league.logo"
+                      [showLogo]="!!league.logo"
+                      [link]="league.link"
+                    >
+                      <span pdz-team-meta class="team-meta">{{
+                        league.role
+                      }}</span>
+                    </pdz-team>
+                    @if (league.canCreateTournament) {
+                      <a
+                        pdz-button
+                        size="sm"
+                        variant="outlined"
+                        color="neutral"
+                        icon="add"
+                        [routerLink]="league.newTournament"
+                        >New Tournament</a
+                      >
+                    }
+                  </li>
+                }
+              </ul>
             </pdz-card>
           </section>
         }

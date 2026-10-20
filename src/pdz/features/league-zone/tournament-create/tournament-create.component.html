@@ -16,7 +16,7 @@
         retry="reload"
       />
     } @else if (league(); as league) {
-      @if (league.isOwner && league.hosting?.canCreateTournament) {
+      @if (league.hosting?.canCreateTournament) {
         <pdz-card padding="lg">
           <form class="create__form" (ngSubmit)="submit()">
             <label pdz-field label="Tournament Name" required>
@@ -70,9 +70,40 @@
               />
               @if (copySettings()) {
                 <p class="create__note">
-                  Rules, sign-up questions, roster and scoring settings, and a
-                  copy of the tier list carry over. Teams, stages, staff, dates
-                  and the Discord link don't.
+                  Rules, sign-up questions, and roster and scoring settings
+                  carry over. Teams, stages, staff, dates and the Discord link
+                  don't.
+                </p>
+              }
+            }
+
+            @if (tierListSources().length) {
+              <div
+                pdz-field
+                label="Tier List"
+                [hint]="tierListHint()"
+              >
+                <pdz-select
+                  aria-label="Tier List"
+                  [showGroupInTrigger]="false"
+                  [value]="tierListFrom()"
+                  (valueChange)="tierListFrom.set($any($event) ?? '')"
+                >
+                  @for (source of tierListSources(); track source.tournamentSlug) {
+                    <pdz-option
+                      [value]="source.tournamentSlug"
+                      [label]="'Branch from ' + source.name"
+                      [description]="sourceDetail(source)"
+                    />
+                  }
+                  <pdz-option value="" label="Start Without One" />
+                </pdz-select>
+              </div>
+              @if (requirementsDropped()) {
+                <p class="create__note">
+                  Tier requirements only carry over with
+                  {{ copySource()?.name }}'s own list. Set them again in the
+                  tournament's settings.
                 </p>
               }
             }
@@ -167,9 +198,11 @@
         <pdz-empty-state
           bordered
           kind="no-access"
-          heading="Only the league owner can add tournaments"
+          heading="Only the league owner and admins can add tournaments"
           [message]="
-            'Ask the owner of ' + league.name + ' to set up the next season.'
+            'Ask the owner of ' +
+            league.name +
+            ' to set up the next season, or to make you an admin.'
           "
         >
           <a pdz-empty-state-actions pdz-button [routerLink]="leagueLink">

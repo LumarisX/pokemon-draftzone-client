@@ -2,6 +2,8 @@ import { Routes } from '@angular/router';
 import { AuthGuard } from '@auth0/auth0-angular';
 import {
   EXTERNAL_DRAFTS_PATH,
+  LEAGUE_ADMIN_INVITE_PATH,
+  LEAGUE_ADMINS_PATH,
   LEAGUE_ZONE_MANAGE_PATH,
   ORGANIZER_INVITE_PATH,
 } from '@pdz/core/route-paths';
@@ -19,6 +21,8 @@ import { PoolDashboardComponent } from './pools/pool-dashboard/pool-dashboard.co
 import { PowerRankingsComponent } from './pools/power-rankings/power-rankings.component';
 import { SchedulePageComponent } from './schedule/schedule-page.component';
 import { LeagueDraftComponent } from './league-drafting/league-drafting.component';
+import { LeagueAdminInviteComponent } from './league-admin-invite/league-admin-invite.component';
+import { LeagueAdminsComponent } from './league-admins/league-admins.component';
 import { LeagueCreateComponent } from './league-create/league-create.component';
 import { LeagueEditComponent } from './league-edit/league-edit.component';
 import { LeagueLandingComponent } from './league-landing/league-landing.component';
@@ -63,6 +67,16 @@ export const routes: Routes = [
   {
     path: ':leagueSlug/edit',
     component: LeagueEditComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: `:leagueSlug/${LEAGUE_ADMINS_PATH}`,
+    component: LeagueAdminsComponent,
+    canActivate: [AuthGuard],
+  },
+  {
+    path: `:leagueSlug/${LEAGUE_ADMIN_INVITE_PATH}`,
+    component: LeagueAdminInviteComponent,
     canActivate: [AuthGuard],
   },
   {

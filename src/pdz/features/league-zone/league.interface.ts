@@ -419,6 +419,7 @@ export namespace League {
     logo?: string;
     tournaments: TournamentSummary[];
     isOwner: boolean;
+    role: LeagueRole | null;
     newTournamentDefaults: NewTournamentDefaults | null;
     hosting: HostingAccess | null;
   };
@@ -432,6 +433,44 @@ export namespace League {
   export type NewTournamentDefaults = {
     ownerName: string | null;
     copyFrom: { tournamentSlug: string; name: string } | null;
+    tierLists: TierListSource[];
+  };
+
+  export type TierListSource = {
+    tournamentSlug: string;
+    name: string;
+    format: string | null;
+    ruleset: string | null;
+  };
+
+  export type LeagueRole = 'owner' | 'admin';
+
+  export type OwnedLeagues = {
+    leagues: OwnedLeague[];
+  };
+
+  export type LeagueAdmin = {
+    sub: string;
+    name: string;
+    isYou: boolean;
+  };
+
+  export type LeagueAdmins = {
+    canEdit: boolean;
+    ownerIsYou: boolean;
+    admins: LeagueAdmin[];
+    invites: OrganizerInvite[];
+  };
+
+  export type CreatedLeagueAdminInvite = LeagueAdmins & {
+    created: { id: string; token: string };
+  };
+
+  export type LeagueAdminInvitePreview = {
+    leagueName: string;
+    suggestedName: string;
+    expiresAt: string;
+    alreadyAdmin: boolean;
   };
 
   export type LeagueCapabilities = {
@@ -443,6 +482,8 @@ export namespace League {
     name: string;
     leagueSlug: string;
     logo?: string;
+    role: LeagueRole;
+    canCreateTournament: boolean;
   };
 
   export type CreateLeaguePayload = {
@@ -463,6 +504,7 @@ export namespace League {
     diffMode?: 'pokemon' | 'game';
     draftCount?: { min: number; max: number };
     copyFrom?: string;
+    tierListFrom?: string | null;
   };
 
   export type CoachProfile = {

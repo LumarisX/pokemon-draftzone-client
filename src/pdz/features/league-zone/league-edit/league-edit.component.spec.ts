@@ -17,6 +17,7 @@ function summary(
     logo: 'league-logos/spring.png',
     tournaments: [],
     isOwner: true,
+    role: 'owner',
     newTournamentDefaults: null,
     hosting: null,
     ...overrides,

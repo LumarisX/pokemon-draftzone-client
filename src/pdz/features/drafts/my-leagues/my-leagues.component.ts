@@ -8,12 +8,13 @@ import {
 } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
-import { LEAGUE_ADS_PATH } from '@pdz/core/route-paths';
+import { LEAGUE_ADS_PATH, LEAGUE_ZONE_PATH } from '@pdz/core/route-paths';
 import { EXTERNAL_DRAFTS_AREA } from '@pdz/features/drafts/draft-area';
 import { Archive } from '@pdz/features/drafts/draft-overview/archive.model';
 import { DraftService } from '@pdz/features/drafts/draft-overview/draft.service';
 import { Draft } from '@pdz/features/drafts/draft.model';
 import { LeagueZoneService } from '@pdz/features/league-zone/league-zone.service';
+import { getLeagueLogoUrl } from '@pdz/features/league-zone/league.util';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 import { CardComponent } from '@pdz/shared/data/card/card.component';
 import { ChipComponent } from '@pdz/shared/data/chip/chip.component';
@@ -120,6 +121,33 @@ export class MyLeaguesComponent {
         failed: hosted === null || external === null || completed === null,
       })),
     ),
+  );
+
+  private readonly owned = toSignal(
+    toObservable(this.attempt).pipe(
+      switchMap(() =>
+        this.leagues.getOwnedLeagues().pipe(catchError(() => of(null))),
+      ),
+    ),
+    { initialValue: null },
+  );
+
+  protected readonly ownedLeagues = computed(() =>
+    (this.owned()?.leagues ?? []).map((league) => ({
+      leagueSlug: league.leagueSlug,
+      name: league.name,
+      logo: getLeagueLogoUrl(league.logo),
+      role: league.role === 'owner' ? 'Owner' : 'Admin',
+      canCreateTournament: league.canCreateTournament,
+      link: ['/', LEAGUE_ZONE_PATH, league.leagueSlug],
+      newTournament: [
+        '/',
+        LEAGUE_ZONE_PATH,
+        league.leagueSlug,
+        'tournaments',
+        'new',
+      ],
+    })),
   );
 
   protected readonly entries = computed(() => this.load()?.entries ?? null);

@@ -14,9 +14,18 @@ function summary(
     leagueSlug: 'league01',
     tournaments: [],
     isOwner: true,
+    role: 'owner',
     newTournamentDefaults: {
       ownerName: 'Host',
       copyFrom: { tournamentSlug: 'season01', name: 'Season 1' },
+      tierLists: [
+        {
+          tournamentSlug: 'season01',
+          name: 'Season 1',
+          format: 'Singles',
+          ruleset: 'Gen9 NatDex',
+        },
+      ],
     },
     hosting: { canHost: true, canCreateTournament: true, reason: null },
     ...overrides,
@@ -58,6 +67,8 @@ describe('TournamentCreateComponent', () => {
       ownerName: () => string;
       signUpDeadline: { set(value: string): void };
       copySettings: { set(value: boolean): void };
+      tierListFrom: { (): string; set(value: string): void };
+      requirementsDropped: () => boolean;
       draftMin: { set(value: number): void };
       canSubmit: () => boolean;
       submit(): void;
@@ -80,6 +91,7 @@ describe('TournamentCreateComponent', () => {
       name: 'Season 2',
       ownerName: 'Host',
       signUpDeadline: new Date('2026-10-01T12:00').toISOString(),
+      tierListFrom: 'season01',
       diffMode: 'pokemon',
       draftCount: { min: 10, max: 12 },
     });
@@ -107,6 +119,46 @@ describe('TournamentCreateComponent', () => {
     expect(payload).not.toHaveProperty('diffMode');
   });
 
+  it('branches the latest tier list by default', () => {
+    const component = setup();
+    expect(component.tierListFrom()).toBe('season01');
+  });
+
+  it('sends a null tier list source when starting without one', () => {
+    const component = setup();
+    component.name.set('Season 2');
+    component.signUpDeadline.set('2026-10-01T12:00');
+    component.tierListFrom.set('');
+
+    component.submit();
+
+    expect(createTournament.mock.calls[0][1].tierListFrom).toBeNull();
+  });
+
+  it('warns that requirements drop when branching a different list than the copy source', () => {
+    const component = setup(
+      summary({
+        newTournamentDefaults: {
+          ownerName: 'Host',
+          copyFrom: { tournamentSlug: 'season02', name: 'Season 2' },
+          tierLists: [
+            {
+              tournamentSlug: 'season01',
+              name: 'Season 1',
+              format: null,
+              ruleset: null,
+            },
+          ],
+        },
+      }),
+    );
+    component.copySettings.set(true);
+
+    expect(component.requirementsDropped()).toBe(true);
+    component.tierListFrom.set('');
+    expect(component.requirementsDropped()).toBe(false);
+  });
+
   it('blocks submission with an inverted roster size unless copying', () => {
     const component = setup();
     component.name.set('Season 2');
@@ -120,7 +172,9 @@ describe('TournamentCreateComponent', () => {
 
   it('blocks submission without a valid organizer name', () => {
     const component = setup(
-      summary({ newTournamentDefaults: { ownerName: null, copyFrom: null } }),
+      summary({
+        newTournamentDefaults: { ownerName: null, copyFrom: null, tierLists: [] },
+      }),
     );
     component.name.set('Season 2');
     component.signUpDeadline.set('2026-10-01T12:00');

@@ -82,6 +82,11 @@
   flex: 0 0 auto;
 }
 
+.order__hint {
+  color: pdz.color(on-surface-muted);
+  @include pdz.text(body-sm);
+}
+
 .order__empty,
 .order__note {
   display: flex;

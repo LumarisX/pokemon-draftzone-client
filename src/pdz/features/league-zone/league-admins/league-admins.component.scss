@@ -1,0 +1,112 @@
+@use "pdz-theming" as pdz;
+
+:host {
+  display: block;
+}
+
+.admins {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(lg);
+}
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.layout(stack);
+}
+
+.panel__title {
+  @include pdz.text(section-title);
+  margin: 0;
+  color: pdz.color(on-surface);
+}
+
+.panel__subtitle {
+  @include pdz.text(label-caps);
+  margin: pdz.space(sm) 0 0;
+  color: pdz.color(on-surface-muted);
+}
+
+.panel__lead {
+  @include pdz.text(body-sm);
+  margin: 0;
+  color: pdz.color(on-surface-muted);
+}
+
+.invite-form {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: pdz.space(sm);
+}
+
+.invite-form__field {
+  flex: 1 1 16rem;
+}
+
+.invite-created {
+  display: flex;
+  gap: pdz.space(sm);
+
+  [pdz-input] {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+}
+
+.rename {
+  display: flex;
+  flex: 1 1 auto;
+  align-items: center;
+  gap: pdz.space(sm);
+  min-width: 0;
+}
+
+.rename__field {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.people {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.person {
+  display: flex;
+  align-items: center;
+  gap: pdz.space(sm);
+  padding: pdz.space(sm) 0;
+
+  & + & {
+    @include pdz.row-divider;
+  }
+}
+
+.person__icon {
+  flex-shrink: 0;
+  color: pdz.color(on-surface-muted);
+}
+
+.person__body {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.person__name {
+  @include pdz.text(body-sm-strong);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.person__note {
+  @include pdz.text(meta);
+  color: pdz.color(on-surface-muted);
+}

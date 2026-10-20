@@ -15,7 +15,7 @@
         retry="reload"
       />
     } @else if (league(); as league) {
-      @if (league.isOwner) {
+      @if (league.role) {
         <pdz-card padding="lg">
           <form class="edit__form" (ngSubmit)="submit()">
             <label pdz-field label="League Name" required>
@@ -66,7 +66,7 @@
         <pdz-empty-state
           bordered
           kind="no-access"
-          heading="Only the league owner can edit it"
+          heading="Only the league owner and admins can edit it"
         >
           <a pdz-empty-state-actions pdz-button [routerLink]="leagueLink">
             Back to the League

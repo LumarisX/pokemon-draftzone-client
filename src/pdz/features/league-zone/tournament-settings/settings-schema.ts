@@ -907,20 +907,21 @@ export const POOL_NODES: readonly PoolNode[] = [
   },
   {
     id: 'pool.order',
-    title: 'Turn Order',
-    help: 'These lock once the draft starts.',
+    title: 'How Teams Pick',
+    help: 'These lock once the draft starts. Without turns, every coach picks whenever they like until their roster is full.',
     controls: [
+      {
+        kind: 'toggle',
+        key: 'sequentialTurns',
+        label: 'Teams take turns',
+      },
       {
         kind: 'choice',
         key: 'orderProgression',
         label: 'Progression',
         options: DRAFT_ORDERS,
         as: 'radio',
-      },
-      {
-        kind: 'toggle',
-        key: 'sequentialTurns',
-        label: 'Sequential Turns',
+        showWhen: (pool) => pool.sequentialTurns,
       },
       {
         kind: 'toggle',
@@ -933,6 +934,7 @@ export const POOL_NODES: readonly PoolNode[] = [
     id: 'pool.timer',
     title: 'Pick Timer',
     help: 'A missed pick moves to the end of the round rather than stacking.',
+    showWhen: (pool) => pool.sequentialTurns,
     controls: [
       { kind: 'toggle', key: 'pickTimerEnabled', label: 'Time each pick' },
       {
@@ -961,12 +963,13 @@ export const POOL_NODES: readonly PoolNode[] = [
         kind: 'toggle',
         key: 'allowRemovals',
         label: 'Allow pick removals',
+        showWhen: (pool) => pool.sequentialTurns,
       },
     ],
   },
   {
     id: 'pool.teams',
-    title: 'Draft Order',
+    title: 'Teams',
     span: 'full',
     controls: [
       {

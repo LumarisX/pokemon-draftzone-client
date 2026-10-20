@@ -1,15 +1,21 @@
 <div class="order">
   <div class="order__bar">
-    <label pdz-check>
-      <input
-        pdz-checkbox
-        type="checkbox"
-        [disabled]="disabled() || started()"
-        [checked]="randomSeeding()"
-        (change)="toggleSeeding()"
-      />
-      <span>Randomize seeding when the draft opens</span>
-    </label>
+    @if (ordered()) {
+      <label pdz-check>
+        <input
+          pdz-checkbox
+          type="checkbox"
+          [disabled]="disabled() || started()"
+          [checked]="randomSeeding()"
+          (change)="toggleSeeding()"
+        />
+        <span>Randomize seeding when the draft opens</span>
+      </label>
+    } @else {
+      <span class="order__hint">
+        Teams don't take turns, so their order doesn't matter.
+      </span>
+    }
     <span class="order__count">{{ teams().length }} teams</span>
   </div>
 
@@ -32,7 +38,9 @@
               <pdz-icon name="drag_indicator" [size]="18" aria-hidden="true" />
             </span>
           }
-          <span class="order__position">{{ $index + 1 }}</span>
+          @if (ordered()) {
+            <span class="order__position">{{ $index + 1 }}</span>
+          }
           <span class="order__who">
             <span class="order__team">{{ team.teamName }}</span>
             <span class="order__coach">{{ team.coach }}</span>
@@ -80,7 +88,7 @@
     </p>
   }
 
-  @if (randomSeeding() && !started()) {
+  @if (ordered() && randomSeeding() && !started()) {
     <p class="order__note">
       <pdz-icon name="casino" [size]="16" aria-hidden="true" />
       The server draws this order once when the draft opens. It cannot be

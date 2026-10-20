@@ -1,0 +1,23 @@
+@use "pdz-theming" as pdz;
+
+:host {
+  display: block;
+}
+
+.invite {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(lg);
+
+  &__form {
+    width: 100%;
+    max-width: 22rem;
+    text-align: start;
+  }
+
+  &__expiry {
+    @include pdz.text(body-sm);
+    color: pdz.color(on-surface-muted);
+    margin: 0;
+  }
+}

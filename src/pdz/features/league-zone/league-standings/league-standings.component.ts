@@ -126,7 +126,8 @@ export class LeagueStandingsComponent {
   readonly teamStandings = computed(() => {
     const state = this.state();
     if (state.status !== 'ready') return null;
-    return state.views[this.teamFilter()]?.teamStandings ?? null;
+    const table = state.views[this.teamFilter()]?.teamStandings;
+    return table?.teams.length ? table : null;
   });
 
   private readonly info = toSignal(

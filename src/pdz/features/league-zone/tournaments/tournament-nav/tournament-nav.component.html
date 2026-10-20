@@ -5,13 +5,15 @@
     [routerLink]="tournamentBase()"
     [routerLinkActiveOptions]="{ exact: true }"
   >
-    <pdz-team-logo
-      class="hero__logo"
-      size="xl"
-      decorative
-      [src]="logoSrc()"
-      [name]="info.name"
-    />
+    @if (logoSrc(); as src) {
+      <pdz-team-logo
+        class="hero__logo"
+        size="xl"
+        decorative
+        [src]="src"
+        [name]="info.name"
+      />
+    }
     <span class="hero__text">
       @if (leagueName(); as league) {
         <span class="hero__league">{{ league }}</span>

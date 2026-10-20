@@ -17,6 +17,8 @@ import {
 import { apiErrorMessage } from '@pdz/core/services/api.service';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 import { CardComponent } from '@pdz/shared/data/card/card.component';
+import { SelectOptionComponent } from '@pdz/shared/dropdowns/select/select-option.component';
+import { SelectComponent } from '@pdz/shared/dropdowns/select/select.component';
 import { EmptyStateComponent } from '@pdz/shared/feedback/empty-state/empty-state.component';
 import { ToastService } from '@pdz/shared/feedback/toast/toast.service';
 import { SkeletonLayoutComponent } from '@pdz/shared/data/skeleton/skeleton-layout.component';
@@ -53,6 +55,8 @@ type DiffMode = 'pokemon' | 'game';
     PageHeaderComponent,
     SegmentedComponent,
     SegmentedOptionComponent,
+    SelectComponent,
+    SelectOptionComponent,
     SlideToggleComponent,
   ],
 })
@@ -82,8 +86,39 @@ export class TournamentCreateComponent implements OnInit {
   protected readonly nameMax = TOURNAMENT_NAME_MAX;
   protected readonly ownerNameMax = ORGANIZER_NAME_MAX;
 
+  protected readonly tierListFrom = signal('');
+
   protected readonly copySource = computed(
     () => this.league()?.newTournamentDefaults?.copyFrom ?? null,
+  );
+
+  protected readonly tierListSources = computed(
+    () => this.league()?.newTournamentDefaults?.tierLists ?? [],
+  );
+
+  protected readonly tierListSource = computed(
+    () =>
+      this.tierListSources().find(
+        (source) => source.tournamentSlug === this.tierListFrom(),
+      ) ?? null,
+  );
+
+  protected readonly tierListHint = computed(() => {
+    const source = this.tierListSource();
+    return source
+      ? `A branch of ${source.name}'s list. Edits to it won't change ${source.name}.`
+      : "Build or attach one later from the tournament's settings.";
+  });
+
+  protected sourceDetail(source: League.TierListSource): string {
+    return [source.format, source.ruleset].filter(Boolean).join(' · ');
+  }
+
+  protected readonly requirementsDropped = computed(
+    () =>
+      this.copySettings() &&
+      this.tierListFrom() !== '' &&
+      this.tierListFrom() !== this.copySource()?.tournamentSlug,
   );
 
   protected readonly ownerNameValid = computed(() =>
@@ -114,6 +149,9 @@ export class TournamentCreateComponent implements OnInit {
       .subscribe({
         next: (league) => {
           this.ownerName.set(league.newTournamentDefaults?.ownerName ?? '');
+          this.tierListFrom.set(
+            league.newTournamentDefaults?.tierLists[0]?.tournamentSlug ?? '',
+          );
           this.league.set(league);
         },
         error: () => this.loadFailed.set(true),
@@ -133,6 +171,7 @@ export class TournamentCreateComponent implements OnInit {
         name: this.name().trim(),
         ownerName: this.ownerName().trim(),
         signUpDeadline: new Date(this.signUpDeadline()).toISOString(),
+        tierListFrom: this.tierListFrom() || null,
         ...(copyFrom
           ? { copyFrom }
           : {

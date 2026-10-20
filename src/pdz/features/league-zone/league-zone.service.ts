@@ -316,7 +316,7 @@ export class LeagueZoneService {
     return this.apiService.get(`${ROOTPATH}/capabilities`);
   }
 
-  getOwnedLeagues(): Observable<{ leagues: League.OwnedLeague[] }> {
+  getOwnedLeagues(): Observable<League.OwnedLeagues> {
     return this.apiService.get(`${ROOTPATH}/owned`);
   }
 
@@ -421,6 +421,76 @@ export class LeagueZoneService {
   ): Observable<{ tournamentSlug: string }> {
     return this.apiService.post(
       `${ROOTPATH}/${leagueSlug}/tournaments/${tournamentSlug}/organizer-invites/accept`,
+      { token, name },
+    );
+  }
+
+  getLeagueAdmins(leagueSlug: string): Observable<League.LeagueAdmins> {
+    return this.apiService.get([ROOTPATH, leagueSlug, 'admins']);
+  }
+
+  createLeagueAdminInvite(
+    leagueSlug: string,
+    name: string,
+  ): Observable<League.CreatedLeagueAdminInvite> {
+    return this.apiService.post([ROOTPATH, leagueSlug, 'admins', 'invites'], {
+      name,
+    });
+  }
+
+  revokeLeagueAdminInvite(
+    leagueSlug: string,
+    inviteId: string,
+  ): Observable<League.LeagueAdmins> {
+    return this.apiService.delete([
+      ROOTPATH,
+      leagueSlug,
+      'admins',
+      'invites',
+      inviteId,
+    ]);
+  }
+
+  removeLeagueAdmin(
+    leagueSlug: string,
+    adminSub: string,
+  ): Observable<League.LeagueAdmins | { left: true }> {
+    return this.apiService.delete([
+      ROOTPATH,
+      leagueSlug,
+      'admins',
+      encodeURIComponent(adminSub),
+    ]);
+  }
+
+  renameLeagueAdmin(
+    leagueSlug: string,
+    adminSub: string,
+    name: string,
+  ): Observable<League.LeagueAdmins> {
+    return this.apiService.patch(
+      [ROOTPATH, leagueSlug, 'admins', encodeURIComponent(adminSub), 'name'],
+      { name },
+    );
+  }
+
+  previewLeagueAdminInvite(
+    leagueSlug: string,
+    token: string,
+  ): Observable<League.LeagueAdminInvitePreview> {
+    return this.apiService.post(
+      [ROOTPATH, leagueSlug, 'admin-invites', 'preview'],
+      { token },
+    );
+  }
+
+  acceptLeagueAdminInvite(
+    leagueSlug: string,
+    token: string,
+    name: string,
+  ): Observable<{ leagueSlug: string }> {
+    return this.apiService.post(
+      [ROOTPATH, leagueSlug, 'admin-invites', 'accept'],
       { token, name },
     );
   }

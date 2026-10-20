@@ -329,6 +329,18 @@
   }
 }
 
+.owned {
+  display: flex;
+  align-items: center;
+  gap: pdz.space(md);
+  padding: pdz.space(sm);
+}
+
+.owned__team {
+  flex: 1;
+  min-width: 0;
+}
+
 .done {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto auto;

@@ -1,0 +1,87 @@
+<pdz-page type="form">
+  <div class="invite">
+    <pdz-page-header
+      title="League Admin Invite"
+      [eyebrow]="preview()?.leagueName ?? ''"
+    />
+
+    @if (loading()) {
+      <pdz-skeleton-layout layout="text" count="1" />
+    } @else if (preview(); as invite) {
+      @if (invite.alreadyAdmin) {
+        <pdz-empty-state
+          bordered
+          icon="shield_person"
+          heading="You already run this league"
+          [message]="'You can already start tournaments in ' + invite.leagueName + '.'"
+        >
+          <a pdz-empty-state-actions pdz-button [routerLink]="leagueLink">
+            Go to the League
+          </a>
+        </pdz-empty-state>
+      } @else {
+        <pdz-empty-state
+          bordered
+          icon="shield_person"
+          [heading]="'You\'re invited to help run ' + invite.leagueName"
+          message="League admins can start new tournaments and edit the league's name, description and logo. Each tournament you start makes you its organizer."
+        >
+          <form id="accept-invite" class="invite__form" (ngSubmit)="accept()">
+            <label
+              pdz-field
+              label="Your admin name"
+              hint="What the league owner and other admins see, and your organizer name on tournaments you start. Your account name stays private."
+              required
+            >
+              <input
+                pdz-input
+                type="text"
+                name="adminName"
+                [maxlength]="nameMax"
+                [ngModel]="name()"
+                (ngModelChange)="name.set($event)"
+              />
+            </label>
+          </form>
+          <p class="invite__expiry">
+            This invite expires {{ invite.expiresAt | date: "MMM d, h:mm a" }}.
+          </p>
+          <button
+            pdz-empty-state-actions
+            pdz-button
+            type="submit"
+            form="accept-invite"
+            [loading]="accepting()"
+            [disabled]="!isValidName(name())"
+          >
+            Accept
+          </button>
+          <a
+            pdz-empty-state-actions
+            pdz-button
+            variant="outlined"
+            [routerLink]="leagueLink"
+          >
+            Not Now
+          </a>
+        </pdz-empty-state>
+      }
+    } @else {
+      <pdz-empty-state
+        bordered
+        kind="no-access"
+        heading="This invite can't be used"
+        message="It may have expired, been revoked, or already been accepted. Ask the league owner for a new link."
+      >
+        <a
+          pdz-empty-state-actions
+          pdz-button
+          variant="outlined"
+          [routerLink]="leagueLink"
+        >
+          Go to the League
+        </a>
+      </pdz-empty-state>
+    }
+  </div>
+</pdz-page>

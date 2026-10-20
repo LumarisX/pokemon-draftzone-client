@@ -36,7 +36,7 @@
             </p>
           }
         </div>
-        @if (store.collapsed()) {
+        @if (store.collapsed() && store.poolCount()) {
           <button
             pdz-button
             type="button"
@@ -129,6 +129,24 @@
             }
           </div>
         </pdz-card>
+      } @else {
+        <pdz-empty-state
+          bordered
+          kind="empty"
+          heading="No draft pool yet"
+          message="Turn order, the pick timer, who sees picks and the draft order are set on a pool. Create one to set them."
+        >
+          <button
+            pdz-empty-state-actions
+            pdz-button
+            type="button"
+            icon="add"
+            [loading]="store.saving()"
+            (click)="addPool()"
+          >
+            Create Draft Pool
+          </button>
+        </pdz-empty-state>
       }
     </section>
 

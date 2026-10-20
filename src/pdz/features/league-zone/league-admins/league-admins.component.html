@@ -1,0 +1,254 @@
+<pdz-page type="form">
+  <div class="admins">
+    <pdz-page-header
+      title="League Admins"
+      [backLink]="leagueLink"
+      [backLabel]="leagueName() ?? 'League'"
+      subtitle="Admins can start new tournaments and edit the league's details. Only the owner can change this list."
+    />
+
+    @switch (state()) {
+      @case ("loading") {
+        <pdz-skeleton-layout layout="list" count="3" />
+      }
+      @case ("forbidden") {
+        <pdz-empty-state
+          bordered
+          kind="no-access"
+          heading="Only the people who run this league can see its admins"
+        >
+          <a pdz-empty-state-actions pdz-button [routerLink]="leagueLink">
+            Back to the League
+          </a>
+        </pdz-empty-state>
+      }
+      @case ("error") {
+        <pdz-empty-state
+          bordered
+          kind="error"
+          heading="Couldn't load the admins"
+          message="The league's admin list did not come back from the server."
+          retry="event"
+          (retried)="load()"
+        />
+      }
+      @default {
+        <pdz-card padding="lg">
+          <section class="panel" aria-labelledby="admins-current">
+            <h2 class="panel__title" id="admins-current">Current</h2>
+            <ul class="people">
+              <li class="person">
+                <pdz-icon
+                  class="person__icon"
+                  name="shield_person"
+                  [size]="20"
+                  aria-hidden="true"
+                />
+                <span class="person__body">
+                  <span class="person__name">
+                    {{ ownerIsYou() ? "You" : "League Owner" }}
+                  </span>
+                  <span class="person__note">Owner</span>
+                </span>
+              </li>
+              @for (admin of admins(); track admin.sub) {
+                <li class="person">
+                  <pdz-icon
+                    class="person__icon"
+                    name="person"
+                    [size]="20"
+                    aria-hidden="true"
+                  />
+                  @if (editingSub() === admin.sub) {
+                    <form class="rename" (ngSubmit)="saveRename(admin)">
+                      <label pdz-field class="rename__field">
+                        <input
+                          pdz-input
+                          type="text"
+                          name="draftName"
+                          aria-label="Admin Name"
+                          [maxlength]="nameMax"
+                          [ngModel]="draftName()"
+                          (ngModelChange)="draftName.set($event)"
+                        />
+                      </label>
+                      <button
+                        pdz-button
+                        type="submit"
+                        size="sm"
+                        [loading]="busyId() === admin.sub"
+                        [disabled]="!isValidName(draftName())"
+                      >
+                        Save
+                      </button>
+                      <button
+                        pdz-button
+                        type="button"
+                        size="sm"
+                        variant="ghost"
+                        color="neutral"
+                        (click)="cancelRename()"
+                      >
+                        Cancel
+                      </button>
+                    </form>
+                  } @else {
+                    <span class="person__body">
+                      <span class="person__name">{{ admin.name }}</span>
+                      <span class="person__note">Admin</span>
+                    </span>
+                    @if (canRename(admin)) {
+                      <button
+                        pdz-button
+                        iconOnly
+                        icon="edit"
+                        size="sm"
+                        variant="ghost"
+                        color="neutral"
+                        pdzTooltip="Rename"
+                        [attr.aria-label]="'Rename ' + admin.name"
+                        (click)="startRename(admin)"
+                      ></button>
+                    }
+                    @if (admin.isYou) {
+                      <button
+                        pdz-button
+                        size="sm"
+                        variant="outlined"
+                        color="danger"
+                        [disabled]="busyId() === admin.sub"
+                        (click)="remove(admin)"
+                      >
+                        Leave
+                      </button>
+                    } @else if (canEdit()) {
+                      <button
+                        pdz-button
+                        iconOnly
+                        icon="person_remove"
+                        size="sm"
+                        variant="ghost"
+                        color="danger"
+                        pdzTooltip="Remove"
+                        [attr.aria-label]="'Remove ' + admin.name"
+                        [disabled]="busyId() === admin.sub"
+                        (click)="remove(admin)"
+                      ></button>
+                    }
+                  }
+                </li>
+              }
+            </ul>
+            @if (!admins().length) {
+              <p class="panel__lead">No admins yet.</p>
+            }
+          </section>
+        </pdz-card>
+
+        @if (canEdit()) {
+          <pdz-card padding="lg">
+            <section class="panel" aria-labelledby="admins-invite">
+              <h2 class="panel__title" id="admins-invite">Invite by Link</h2>
+              <p class="panel__lead">
+                Each link works for one person and expires after 7 days.
+                They'll be asked to sign in or create an account, then accept.
+                Admins don't need hosting access of their own to start
+                tournaments here.
+              </p>
+
+              <form class="invite-form" (ngSubmit)="createInvite()">
+                <label
+                  pdz-field
+                  class="invite-form__field"
+                  label="Admin Name"
+                  hint="What you and other admins will see. They can change it when they accept."
+                  required
+                >
+                  <input
+                    pdz-input
+                    type="text"
+                    name="inviteName"
+                    placeholder="e.g. Misty"
+                    [maxlength]="nameMax"
+                    [ngModel]="inviteName()"
+                    (ngModelChange)="inviteName.set($event)"
+                  />
+                </label>
+                <button
+                  pdz-button
+                  type="submit"
+                  icon="add_link"
+                  [loading]="creatingInvite()"
+                  [disabled]="!isValidName(inviteName())"
+                >
+                  Create Link
+                </button>
+              </form>
+
+              @if (createdLink(); as link) {
+                <div
+                  pdz-field
+                  label="New invite link"
+                  hint="Copy it now. The link is not stored, so it can't be shown again."
+                >
+                  <div class="invite-created">
+                    <input
+                      pdz-input
+                      type="text"
+                      readonly
+                      aria-label="New invite link"
+                      [value]="link.url"
+                    />
+                    <button
+                      pdz-button
+                      type="button"
+                      icon="content_copy"
+                      variant="outlined"
+                      color="neutral"
+                      (click)="copyLink(link.url)"
+                    >
+                      Copy
+                    </button>
+                  </div>
+                </div>
+              }
+
+              @if (invites().length) {
+                <h3 class="panel__subtitle">Pending</h3>
+                <ul class="people">
+                  @for (invite of invites(); track invite.id) {
+                    <li class="person">
+                      <pdz-icon
+                        class="person__icon"
+                        name="link"
+                        [size]="20"
+                        aria-hidden="true"
+                      />
+                      <span class="person__body">
+                        <span class="person__name">{{ invite.name }}</span>
+                        <span class="person__note">
+                          Expires
+                          {{ invite.expiresAt | date: "MMM d, h:mm a" }}
+                        </span>
+                      </span>
+                      <button
+                        pdz-button
+                        size="sm"
+                        color="danger"
+                        variant="outlined"
+                        [disabled]="busyId() === invite.id"
+                        (click)="revokeInvite(invite)"
+                      >
+                        Revoke
+                      </button>
+                    </li>
+                  }
+                </ul>
+              }
+            </section>
+          </pdz-card>
+        }
+      }
+    }
+  </div>
+</pdz-page>

@@ -7,16 +7,25 @@
         [subtitle]="league.description"
         [logo]="league.logo ? getLogoUrl(league.logo) : undefined"
       >
-        @if (league.isOwner) {
-          <a
-            pdz-page-header-actions
-            pdz-button
-            icon="edit"
-            color="neutral"
-            variant="tonal"
-            routerLink="edit"
-            >Edit League</a
-          >
+        @if (league.role) {
+          <ng-container pdz-page-header-actions>
+            <a
+              pdz-button
+              icon="shield_person"
+              color="neutral"
+              variant="tonal"
+              [routerLink]="adminsPath"
+              >Admins</a
+            >
+            <a
+              pdz-button
+              icon="edit"
+              color="neutral"
+              variant="tonal"
+              routerLink="edit"
+              >Edit League</a
+            >
+          </ng-container>
         }
         @if (league.hosting?.canHost) {
           <a
