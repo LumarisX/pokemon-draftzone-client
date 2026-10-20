@@ -1,0 +1,142 @@
+<header class="week__head">
+  <div class="week__title-block">
+    <span class="week__eyebrow">
+      <pdz-icon name="event" [size]="16" aria-hidden="true" />
+      Week {{ index() + 1 }} of {{ draft().rounds.length }}
+      @if (live()) {
+        <span class="week__live">Live</span>
+      }
+    </span>
+    <h2 class="week__title">{{ round()?.name }}</h2>
+    <p class="week__meta">
+      @for (part of meta(); track $index) {
+        <span>{{ part }}</span>
+      }
+    </p>
+  </div>
+
+  @if (editable()) {
+    <div class="week__actions">
+      <button
+        pdz-button
+        size="sm"
+        [variant]="live() ? 'tonal' : 'outlined'"
+        [color]="live() ? 'primary' : 'neutral'"
+        [icon]="live() ? 'radio_button_checked' : 'radio_button_unchecked'"
+        [attr.aria-pressed]="live()"
+        [disabled]="!canSetCurrentRound()"
+        [title]="
+          canSetCurrentRound()
+            ? 'The week coaches see as current'
+            : 'Save the schedule before changing the live week'
+        "
+        (click)="toggleLive()"
+      >
+        {{ live() ? "Live Week" : "Make Live" }}
+      </button>
+      <button
+        pdz-button
+        size="sm"
+        variant="outlined"
+        color="neutral"
+        icon="tune"
+        (click)="editSettings()"
+      >
+        Name and Deadlines
+      </button>
+      <pdz-menu aria-label="Week actions">
+        <button
+          pdz-button
+          pdz-menu-trigger
+          iconOnly
+          size="sm"
+          variant="ghost"
+          color="neutral"
+          icon="more_vert"
+          [attr.aria-label]="'Options for ' + round()?.name"
+        ></button>
+        <button pdz-menu-item icon="add" (click)="insert(0)">
+          Insert Week Before
+        </button>
+        <button pdz-menu-item icon="add" (click)="insert(1)">
+          Insert Week After
+        </button>
+        <button
+          pdz-menu-item
+          icon="delete"
+          tone="danger"
+          [disabled]="!canDelete()"
+          (click)="remove()"
+        >
+          {{ canDelete() ? "Delete Week" : "Delete Week (Has Matches)" }}
+        </button>
+      </pdz-menu>
+    </div>
+  }
+</header>
+
+@for (group of groups(); track group.stage.key) {
+  <section class="week__group" [attr.aria-label]="group.stage.name">
+    <div class="week__group-head">
+      <h3 class="week__group-name">{{ group.stage.name }}</h3>
+      <span class="week__group-format">{{ group.format }}</span>
+      @if (!group.stage.public) {
+        <span class="week__group-format">
+          <pdz-icon name="visibility_off" [size]="14" aria-hidden="true" />
+          Hidden
+        </span>
+      }
+      <span class="week__group-actions">
+        @if (editable()) {
+          <button
+            pdz-button
+            size="xs"
+            variant="ghost"
+            color="neutral"
+            icon="add"
+            (click)="addMatch(group.stage.key)"
+          >
+            Add Match
+          </button>
+        }
+        <button
+          pdz-button
+          size="xs"
+          variant="ghost"
+          color="neutral"
+          (click)="selectStage.emit(group.stage.key)"
+        >
+          Open Stage
+        </button>
+      </span>
+    </div>
+    <pdz-schedule-match-grid
+      [matches]="group.matches"
+      [draft]="draft()"
+      [context]="context()"
+      [labels]="labels()"
+      [editable]="editable()"
+      [matchupLinkBase]="matchupLinkBase()"
+      (draftChange)="draftChange.emit($event)"
+      (focusMatch)="focusMatch.emit($event)"
+    />
+  </section>
+} @empty {
+  <pdz-empty-state
+    kind="empty"
+    heading="Nothing scheduled this week"
+    [message]="
+      editable()
+        ? 'Start a stage here, or move one into this week from its settings.'
+        : 'No matches are scheduled for this week.'
+    "
+  >
+    @if (editable()) {
+      <div pdz-empty-state-actions>
+        <button pdz-button icon="add" (click)="addStage.emit(index())">
+          Add Stage Starting {{ round()?.name }}
+        </button>
+      </div>
+    }
+  </pdz-empty-state>
+}

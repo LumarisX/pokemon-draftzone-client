@@ -4,7 +4,7 @@ import {
   TournamentBracket,
   UpdateTournamentBracketPayload,
   UpdateTournamentBracketResult,
-} from '@pdz/features/league-zone/league-bracket/tournament-bracket.model';
+} from '@pdz/features/league-zone/schedule/tournament-bracket.model';
 import { League, TradeLog } from '@pdz/features/league-zone/league.interface';
 import { ApiService } from '@pdz/core/services/api.service';
 import { LeagueZoneService } from '../league-zone.service';
@@ -349,6 +349,16 @@ export class LeagueManageService {
     return this.apiService.patch<UpdateTournamentBracketResult>(
       this.tournamentBracketUrl,
       payload,
+    );
+  }
+
+  confirmStageSeeds(
+    stageId: string,
+    seeds: { seed: number; teamId: string }[],
+  ) {
+    return this.apiService.patch<{ message: string }>(
+      `${this.tournamentBracketUrl}/stages/${stageId}/seeds`,
+      { seeds },
     );
   }
 

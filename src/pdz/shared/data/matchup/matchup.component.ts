@@ -100,6 +100,11 @@ const TEAM_SIZES: Record<MatchupSize, TeamSize> = {
                       side.team.name
                     }}</span>
                   }
+                  @if (side.team.coach) {
+                    <span class="pdz-matchup__pending-detail">{{
+                      side.team.coach
+                    }}</span>
+                  }
                 </span>
               } @else {
                 <pdz-team

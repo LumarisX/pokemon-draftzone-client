@@ -1,0 +1,105 @@
+@use "pdz-theming" as pdz;
+
+:host {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.layout(section-gap);
+  min-width: 0;
+}
+
+.week {
+  &__head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: pdz.space(md);
+  }
+
+  &__title-block {
+    display: flex;
+    flex-direction: column;
+    gap: pdz.space(2xs);
+    min-width: 0;
+  }
+
+  &__eyebrow {
+    @include pdz.text(label-caps);
+    display: inline-flex;
+    align-items: center;
+    gap: pdz.space(xs);
+    color: pdz.color(on-surface-muted);
+  }
+
+  &__live {
+    @include pdz.text(label-strong);
+    padding: 0 pdz.space(xs);
+    border-radius: pdz.shape(corner-full);
+    background: pdz.color(primary-container);
+    color: pdz.color(on-primary-container);
+  }
+
+  &__title {
+    @include pdz.text(title);
+    margin: 0;
+  }
+
+  &__meta {
+    @include pdz.text(meta);
+    @include pdz.numeric;
+    display: flex;
+    flex-wrap: wrap;
+    gap: pdz.space(2xs) pdz.space(md);
+    margin: 0;
+    color: pdz.color(on-surface-muted);
+  }
+
+  &__actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: pdz.space(xs);
+  }
+
+  &__group {
+    display: flex;
+    flex-direction: column;
+    gap: pdz.space(sm);
+  }
+
+  &__group-head {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: pdz.space(xs) pdz.space(sm);
+    padding-block: pdz.space(xs);
+    background: pdz.color(ground);
+    border-bottom: 1px solid pdz.color(border-subtle);
+
+    @include pdz.respond-below(medium) {
+      top: var(--pdz-navbar-height, 0);
+    }
+  }
+
+  &__group-name {
+    @include pdz.text(section-title);
+    margin: 0;
+  }
+
+  &__group-format {
+    @include pdz.text(meta);
+    display: inline-flex;
+    align-items: center;
+    gap: pdz.space(3xs);
+    color: pdz.color(on-surface-muted);
+  }
+
+  &__group-actions {
+    display: flex;
+    gap: pdz.space(2xs);
+    margin-inline-start: auto;
+  }
+}

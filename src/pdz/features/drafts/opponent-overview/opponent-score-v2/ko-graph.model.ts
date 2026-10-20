@@ -54,6 +54,19 @@ export function emptyKoGraph(): KoGraph {
   return { states: {}, edges: [] };
 }
 
+export function carriedKoGraph(graph: KoGraph): KoGraph {
+  return {
+    states: Object.entries(graph.states).reduce<Record<string, KoNodeState>>(
+      (states, [key, state]) => {
+        if (state !== 'benched') states[key] = 'preview';
+        return states;
+      },
+      {},
+    ),
+    edges: [],
+  };
+}
+
 export function koState(graph: KoGraph, key: string): KoNodeState {
   return graph.states[key] ?? 'benched';
 }

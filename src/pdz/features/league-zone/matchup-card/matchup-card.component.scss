@@ -8,13 +8,6 @@
   display: flex;
   align-items: center;
   gap: pdz.space(3xs);
-  opacity: 0;
-  transition: opacity pdz.duration(fast) pdz.easing(standard);
-}
-
-:host(:hover) .card__actions,
-:host(:focus-within) .card__actions {
-  opacity: 1;
 }
 
 .card__status {

@@ -328,6 +328,7 @@
 
 .chip {
   position: absolute;
+  left: clamp(6rem, var(--chip-x), calc(100% - 6rem));
   display: flex;
   align-items: center;
   gap: pdz.space(3xs);
@@ -377,8 +378,17 @@
   color: inherit;
 }
 
-.chip__input {
+.chip .chip__input {
   width: 9rem;
+
+  &,
+  &:hover,
+  &:focus,
+  &:focus-visible {
+    border-color: transparent;
+    background: none;
+    box-shadow: none;
+  }
 }
 
 .legend {

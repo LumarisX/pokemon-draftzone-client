@@ -169,7 +169,7 @@
           [class.chip--active]="hovered() === wire.to || editing() === wire.to"
           [class.chip--empty]="!wire.note"
           [attr.data-tone]="wire.tone"
-          [style.left.px]="wire.label.x"
+          [style.--chip-x]="wire.label.x + 'px'"
           [style.top.px]="wire.label.y"
           (pointerenter)="hovered.set(wire.to)"
           (pointerleave)="hovered.set(null)"

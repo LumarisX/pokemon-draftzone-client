@@ -5,7 +5,7 @@ import { LeagueManageResultsComponent } from '@pdz/features/league-zone/league-m
 import { LeagueOrganizersComponent } from '@pdz/features/league-zone/league-manage/league-organizers/league-organizers.component';
 import { TradeManagerComponent } from '@pdz/features/league-zone/league-manage/trade-manager/trade-manager.component';
 import { LeagueRulesFormComponent } from '@pdz/features/league-zone/league-rules-overview/league-rules-form/league-rules-form.component';
-import { LeagueScheduleComponent } from '@pdz/features/league-zone/league-stage-builder/stage-builder-page.component';
+import { ScheduleManagePageComponent } from '@pdz/features/league-zone/schedule/schedule-manage-page.component';
 
 export const routes: Routes = [
   {
@@ -39,7 +39,8 @@ export const routes: Routes = [
   },
   {
     path: 'schedule',
-    component: LeagueScheduleComponent,
+    component: ScheduleManagePageComponent,
+    canDeactivate: [unsavedChangesGuard],
   },
   {
     path: 'results',

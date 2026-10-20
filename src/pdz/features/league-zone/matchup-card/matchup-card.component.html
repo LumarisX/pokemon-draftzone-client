@@ -7,26 +7,7 @@
 >
   @if (editable()) {
     <span pdz-matchup-status class="card__actions">
-      <button
-        pdz-button
-        iconOnly
-        icon="edit"
-        size="xs"
-        variant="ghost"
-        color="neutral"
-        aria-label="Edit match"
-        (click)="edit.emit(card().id)"
-      ></button>
-      <button
-        pdz-button
-        iconOnly
-        icon="close"
-        size="xs"
-        variant="ghost"
-        color="danger"
-        aria-label="Delete match"
-        (click)="remove.emit(card().id)"
-      ></button>
+      <ng-content select="[pdz-matchup-card-actions]" />
     </span>
   } @else if (status(); as status) {
     <span

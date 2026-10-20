@@ -60,8 +60,6 @@ export class MatchupCardComponent {
   readonly card = input.required<MatchupCard>();
   readonly editable = input(false);
 
-  readonly edit = output<string>();
-  readonly remove = output<string>();
   readonly focusSource = output<string>();
 
   protected readonly team1 = computed(() => toTeam(this.card().slots[0]));

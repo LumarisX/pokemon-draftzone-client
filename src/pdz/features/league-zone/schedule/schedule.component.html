@@ -1,0 +1,59 @@
+<pdz-schedule-timeline
+  [draft]="draft()"
+  [selection]="selection()"
+  [currentRoundIndex]="currentRoundIndex()"
+  [editable]="editable()"
+  (selectStage)="selectStage($event)"
+  (selectRound)="selectRound($event)"
+  (addStage)="addStage.emit(null)"
+  (addRound)="addRound()"
+/>
+
+<div class="schedule__detail">
+  @if (selectedStage(); as stage) {
+    <pdz-schedule-stage
+      [draft]="draft()"
+      [stage]="stage"
+      [context]="context()"
+      [labels]="labels()"
+      [teamOptions]="teamOptions()"
+      [editable]="editable()"
+      [currentRoundIndex]="currentRoundIndex()"
+      [matchupLinkBase]="matchupLinkBase()"
+      [confirming]="confirmingStage() === stage.key"
+      (draftChange)="commit($event)"
+      (confirmSeeds)="confirmSeeds.emit($event)"
+      (focusMatch)="focusMatch($event)"
+    />
+  } @else if (selectedRound() !== null) {
+    <pdz-schedule-round
+      [draft]="draft()"
+      [index]="selectedRound()!"
+      [context]="context()"
+      [labels]="labels()"
+      [editable]="editable()"
+      [currentRoundIndex]="currentRoundIndex()"
+      [canSetCurrentRound]="canSetCurrentRound()"
+      [matchupLinkBase]="matchupLinkBase()"
+      (draftChange)="commit($event)"
+      (setCurrentRound)="setCurrentRound.emit($event)"
+      (selectStage)="selectStage($event)"
+      (addStage)="addStage.emit($event)"
+      (focusMatch)="focusMatch($event)"
+    />
+  } @else {
+    <pdz-empty-state
+      kind="empty"
+      heading="No stages yet"
+      message="A stage is one block of the season: a group, a league table, a playoff bracket."
+    >
+      @if (editable()) {
+        <div pdz-empty-state-actions>
+          <button pdz-button icon="add" (click)="addStage.emit(null)">
+            Add Stage
+          </button>
+        </div>
+      }
+    </pdz-empty-state>
+  }
+</div>

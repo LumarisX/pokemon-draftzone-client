@@ -37,6 +37,7 @@ import {
   KO_SIDES,
   KoGraph,
   KoSide,
+  carriedKoGraph,
   emptyKoGraph,
   koGraphFromStatuses,
   koGraphWinner,
@@ -184,10 +185,17 @@ export class OpponentScoreV2Component implements OnInit, OnDestroy {
   }
 
   protected addGame(): void {
-    this.games.update((games) => [
-      ...games,
-      { link: '', graph: emptyKoGraph(), winner: null },
-    ]);
+    this.games.update((games) => {
+      const previous = games[games.length - 1];
+      return [
+        ...games,
+        {
+          link: '',
+          graph: previous ? carriedKoGraph(previous.graph) : emptyKoGraph(),
+          winner: null,
+        },
+      ];
+    });
   }
 
   protected removeGame(index: number): void {

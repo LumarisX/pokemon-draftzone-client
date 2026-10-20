@@ -1,0 +1,265 @@
+<header class="stage__head">
+  <div class="stage__title-block">
+    <span class="stage__eyebrow">
+      <pdz-icon [name]="format().icon" [size]="16" aria-hidden="true" />
+      {{ format().label }}
+      @if (!stage().public) {
+        <span class="stage__hidden">
+          <pdz-icon name="visibility_off" [size]="14" aria-hidden="true" />
+          Hidden
+        </span>
+      }
+    </span>
+    <h2 class="stage__title">{{ stage().name }}</h2>
+    <p class="stage__meta">
+      @for (part of meta(); track $index) {
+        <span>{{ part }}</span>
+      }
+    </p>
+  </div>
+
+  <div class="stage__actions">
+    @if (elimination()) {
+      <pdz-segmented
+        size="sm"
+        aria-label="Layout"
+        [value]="layout()"
+        (valueChange)="setLayout($any($event))"
+      >
+        <pdz-segmented-option value="bracket" label="Bracket" icon="account_tree" />
+        <pdz-segmented-option value="rounds" label="By Week" icon="view_agenda" />
+      </pdz-segmented>
+    }
+    @if (editable()) {
+      <button
+        pdz-button
+        size="sm"
+        variant="outlined"
+        color="neutral"
+        [icon]="stage().public ? 'visibility' : 'visibility_off'"
+        [attr.aria-pressed]="stage().public"
+        (click)="toggleVisible()"
+      >
+        {{ stage().public ? "Visible to Everyone" : "Hidden" }}
+      </button>
+      <button
+        pdz-button
+        size="sm"
+        variant="outlined"
+        color="neutral"
+        icon="group"
+        (click)="editEntrants()"
+      >
+        Entrants
+      </button>
+      <pdz-menu aria-label="Stage actions">
+        <button
+          pdz-button
+          pdz-menu-trigger
+          iconOnly
+          size="sm"
+          variant="ghost"
+          color="neutral"
+          icon="more_vert"
+          [attr.aria-label]="'Options for ' + stage().name"
+        ></button>
+        <button pdz-menu-item icon="tune" (click)="editSettings()">
+          Stage Settings
+        </button>
+        <button
+          pdz-menu-item
+          icon="delete"
+          tone="danger"
+          [disabled]="hasResults()"
+          (click)="deleteStage()"
+        >
+          {{ hasResults() ? "Delete Stage (Has Results)" : "Delete Stage" }}
+        </button>
+      </pdz-menu>
+    }
+  </div>
+</header>
+
+@if (entrants().length) {
+  <section class="stage__entrants" aria-label="Entrants">
+    <div class="stage__entrants-head">
+      <span class="stage__label">
+        Entrants · {{ entrants().length }}
+        @if (stage().random && !stage().drawn) {
+          · random draw on save
+        }
+      </span>
+      @if (hiddenEntrantCount()) {
+        <button
+          pdz-button
+          size="xs"
+          variant="ghost"
+          color="neutral"
+          (click)="showAllEntrants.set(!showAllEntrants())"
+        >
+          {{ showAllEntrants() ? "Show Less" : "Show All " + entrants().length }}
+        </button>
+      }
+    </div>
+    <ol class="stage__entrant-list">
+      @for (entrant of shownEntrants(); track entrant.seed) {
+        <li class="stage__entrant" [class.stage__entrant--pending]="!entrant.team">
+          <span class="stage__seed">{{ entrant.seed }}</span>
+          <span class="stage__entrant-name">{{ entrant.label }}</span>
+          @if (!entrant.team && entrant.detail) {
+            <span class="stage__entrant-detail">{{ entrant.detail }}</span>
+          }
+        </li>
+      }
+    </ol>
+    @if (pending() && sources().length) {
+      <div class="stage__note" role="note">
+        <pdz-icon name="leaderboard" [size]="18" aria-hidden="true" />
+        @if (sourcesDone()) {
+          <span>
+            {{ sources().join(" and ") }}
+            {{ sources().length > 1 ? "have" : "has" }} finished.
+            @if (editable()) {
+              Confirm the seeds to put teams into these matches.
+            } @else {
+              The organizers confirm the seeds next.
+            }
+          </span>
+        } @else {
+          <span>
+            Seeds come from the final standings of {{ sources().join(" and ") }}.
+            Until then, each match shows who holds the place now.
+            @if (editable()) {
+              You confirm the seeds once it ends, so tiebreaks get a human look.
+            }
+          </span>
+        }
+        @if (editable() && canConfirm()) {
+          <button
+            pdz-button
+            size="sm"
+            class="stage__note-action"
+            [variant]="sourcesDone() ? 'filled' : 'outlined'"
+            [color]="sourcesDone() ? 'primary' : 'neutral'"
+            [loading]="confirming()"
+            (click)="confirmSeeds.emit(stage().key)"
+          >
+            Confirm Seeds
+          </button>
+        }
+      </div>
+    } @else if (editable() && pending() && canConfirm()) {
+      <div class="stage__note" role="note">
+        <pdz-icon name="help" [size]="18" aria-hidden="true" />
+        <span>Some seeds are open slots. Pick their teams when you know them.</span>
+        <button
+          pdz-button
+          size="sm"
+          variant="outlined"
+          color="neutral"
+          class="stage__note-action"
+          [loading]="confirming()"
+          (click)="confirmSeeds.emit(stage().key)"
+        >
+          Pick Teams
+        </button>
+      </div>
+    }
+  </section>
+}
+
+@if (!matches().length) {
+  <pdz-empty-state
+    kind="empty"
+    heading="No matches yet"
+    [message]="
+      editable()
+        ? 'Add matches and set each side to an entrant or an earlier result.'
+        : 'The organizers have not added matches to this stage yet.'
+    "
+  >
+    @if (editable()) {
+      <div pdz-empty-state-actions>
+        <button pdz-button icon="add" (click)="addFirstMatch()">Add Match</button>
+      </div>
+    }
+  </pdz-empty-state>
+} @else if (layout() === "bracket") {
+  <div class="bracket">
+    @for (section of bracket(); track $index) {
+      <section class="bracket__section">
+        @if (section.title) {
+          <h3 class="stage__label">{{ section.title }}</h3>
+        }
+        <div class="bracket__columns">
+          @for (column of section.columns; track column.index) {
+            <div class="bracket__column">
+              <div class="bracket__column-head">
+                {{ column.name }}
+                @if (column.live) {
+                  <span class="stage__live">Live</span>
+                }
+              </div>
+              <div class="bracket__matches">
+                @for (match of column.matches; track match.id) {
+                  <pdz-schedule-match
+                    [attr.data-match-id]="match.id"
+                    [match]="match"
+                    [draft]="draft()"
+                    [context]="context()"
+                    [labels]="labels()"
+                    [editable]="editable()"
+                    [matchupLinkBase]="matchupLinkBase()"
+                    (draftChange)="emit($event)"
+                    (focusMatch)="focusMatch.emit($event)"
+                  />
+                }
+              </div>
+            </div>
+          }
+        </div>
+      </section>
+    }
+  </div>
+  @if (editable()) {
+    <p class="stage__hint">Switch to By Week to add matches.</p>
+  }
+} @else {
+  @for (round of rounds(); track round.index) {
+    <section class="round" [attr.aria-label]="round.name">
+      <header class="round__head">
+        <h3 class="round__name">{{ round.name }}</h3>
+        @if (round.live) {
+          <span class="stage__live">Live</span>
+        }
+        <span class="round__due">{{ round.due }}</span>
+        <span class="round__count">
+          {{ round.matches.length }}
+          {{ round.matches.length === 1 ? "match" : "matches" }}
+        </span>
+        @if (editable()) {
+          <button
+            pdz-button
+            size="xs"
+            variant="ghost"
+            color="neutral"
+            icon="add"
+            (click)="addMatchTo(round.index)"
+          >
+            Add Match
+          </button>
+        }
+      </header>
+      <pdz-schedule-match-grid
+        [matches]="round.matches"
+        [draft]="draft()"
+        [context]="context()"
+        [labels]="labels()"
+        [editable]="editable()"
+        [matchupLinkBase]="matchupLinkBase()"
+        (draftChange)="emit($event)"
+        (focusMatch)="focusMatch.emit($event)"
+      />
+    </section>
+  }
+}

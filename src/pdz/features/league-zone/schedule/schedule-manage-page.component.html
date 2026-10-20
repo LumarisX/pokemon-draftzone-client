@@ -1,0 +1,69 @@
+<pdz-page type="workspace">
+  <pdz-page-header title="Schedule" eyebrow="Manage">
+    <div pdz-page-header-actions class="manage__actions">
+      <button
+        pdz-button
+        icon="add"
+        [disabled]="loading() || !!loadError()"
+        (click)="addStage(null)"
+      >
+        Add Stage
+      </button>
+      <pdz-menu aria-label="Schedule actions">
+        <button
+          pdz-button
+          pdz-menu-trigger
+          iconOnly
+          variant="ghost"
+          color="neutral"
+          icon="more_vert"
+          aria-label="More schedule actions"
+        ></button>
+        <button
+          pdz-menu-item
+          icon="delete_sweep"
+          tone="danger"
+          [disabled]="!hasMatches()"
+          (click)="clearAll()"
+        >
+          Delete Every Match
+        </button>
+      </pdz-menu>
+    </div>
+  </pdz-page-header>
+
+  @if (loading()) {
+    <pdz-skeleton-layout layout="board" />
+  } @else if (loadError(); as message) {
+    <pdz-empty-state
+      kind="error"
+      heading="The schedule didn't load"
+      [message]="message"
+      retry="event"
+      (retried)="load()"
+    />
+  } @else {
+    <pdz-schedule
+      [draft]="draft()"
+      [teams]="teams()"
+      [teamOptions]="teamOptions()"
+      [projections]="projections()"
+      [editable]="true"
+      [currentRoundIndex]="currentRoundIndex()"
+      [canSetCurrentRound]="canSetCurrentRound()"
+      [confirmingStage]="confirmingStage()"
+      (draftChange)="onDraftChange($event)"
+      (addStage)="addStage($event)"
+      (setCurrentRound)="setCurrentRound($event)"
+      (confirmSeeds)="confirmSeeds($event)"
+    />
+    <pdz-save-bar
+      label="Save Schedule"
+      [count]="changes()"
+      [pending]="saving()"
+      [error]="saveError()"
+      (save)="save()"
+      (revert)="revert()"
+    />
+  }
+</pdz-page>

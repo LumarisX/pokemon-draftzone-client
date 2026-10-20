@@ -1,0 +1,138 @@
+@use "pdz-theming" as pdz;
+
+:host {
+  display: block;
+}
+
+.entrants {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(md);
+
+  &__hint {
+    @include pdz.text(body-sm);
+    margin: 0;
+    color: pdz.color(on-surface-muted);
+  }
+
+  &__suggest,
+  &__adders,
+  &__sources {
+    display: flex;
+    flex-wrap: wrap;
+    gap: pdz.space(xs);
+  }
+
+  &__list {
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    max-height: 22rem;
+    overflow-y: auto;
+  }
+
+  &__row {
+    @include pdz.row-divider;
+    display: flex;
+    align-items: center;
+    gap: pdz.space(sm);
+    padding-block: pdz.space(xs);
+  }
+
+  &__seed {
+    @include pdz.text(body-sm-strong);
+    @include pdz.numeric;
+    flex: none;
+    width: pdz.space(xl);
+    text-align: center;
+    color: pdz.color(on-surface-muted);
+  }
+
+  &__icon {
+    flex: none;
+    color: pdz.color(on-surface-muted);
+  }
+
+  &__who {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    min-width: 0;
+  }
+
+  &__name {
+    @include pdz.text(body-sm-strong);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__detail {
+    @include pdz.text(meta);
+    color: pdz.color(on-surface-muted);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__actions {
+    display: flex;
+    flex: none;
+    gap: pdz.space(3xs);
+  }
+
+  &__empty {
+    @include pdz.text(body-sm);
+    padding: pdz.space(md);
+    border: 1px dashed pdz.color(border-control);
+    border-radius: pdz.shape(corner-md);
+    color: pdz.color(on-surface-muted);
+    text-align: center;
+  }
+
+  &__panel {
+    display: flex;
+    flex-direction: column;
+    gap: pdz.space(md);
+    padding: pdz.space(md);
+    border-radius: pdz.shape(corner-md);
+    background: pdz.color(state-hover);
+  }
+
+  &__panel-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: pdz.space(xs);
+  }
+
+  &__panel-title {
+    @include pdz.text(label-caps);
+    margin-inline-end: auto;
+    color: pdz.color(on-surface-muted);
+  }
+
+  &__picker {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr));
+    gap: pdz.space(sm);
+    max-height: 16rem;
+    overflow-y: auto;
+  }
+
+  &__pick--used {
+    color: pdz.color(on-surface-muted);
+  }
+
+  &__top {
+    max-width: 6rem;
+  }
+
+  &__panel-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: pdz.space(xs);
+  }
+}

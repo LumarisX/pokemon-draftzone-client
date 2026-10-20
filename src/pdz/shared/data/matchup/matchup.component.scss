@@ -166,14 +166,25 @@ $card-row-height: 3rem;
 }
 
 .pdz-matchup__pending {
-  display: flex;
+  display: grid;
   flex: 1 1 auto;
+  grid-template-columns: auto minmax(0, 1fr);
   align-items: center;
-  gap: pdz.space(sm);
+  column-gap: pdz.space(sm);
   min-width: 0;
 }
 
+.pdz-matchup__pending-detail {
+  @include pdz.text(meta);
+  grid-column: 2;
+  overflow: hidden;
+  color: pdz.color(on-surface-muted);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .pdz-matchup__pending-logo {
+  grid-row: span 2;
   flex: none;
   width: 2rem;
   height: 2rem;

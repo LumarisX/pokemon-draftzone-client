@@ -1,0 +1,201 @@
+<div class="add-stage">
+  <div class="add-stage__form">
+    <section class="add-stage__step" aria-labelledby="add-stage-format">
+      <h3 class="add-stage__step-title" id="add-stage-format">
+        <span class="add-stage__step-num">1</span>Name and Format
+      </h3>
+      <label pdz-field label="Stage Name">
+        <input
+          pdz-input
+          type="text"
+          placeholder="Playoffs"
+          [value]="name()"
+          (input)="name.set($any($event.target).value)"
+        />
+      </label>
+      <div pdz-field label="Format">
+        <pdz-segmented
+          size="sm"
+          aria-label="Format"
+          [value]="format()"
+          (valueChange)="setFormat($any($event))"
+        >
+          <pdz-segmented-option
+            value="round-robin"
+            label="Round Robin"
+            icon="grid_view"
+          />
+          <pdz-segmented-option
+            value="elimination"
+            label="Elimination"
+            icon="account_tree"
+          />
+          <pdz-segmented-option
+            value="custom"
+            label="Custom"
+            icon="dashboard_customize"
+          />
+        </pdz-segmented>
+      </div>
+
+      @switch (format()) {
+        @case ("round-robin") {
+          <p class="add-stage__hint">Everyone plays everyone. Builds standings.</p>
+          <label
+            pdz-check
+            label="Play each opponent twice"
+            description="Doubles the weeks. Second meetings swap sides."
+          >
+            <input
+              pdz-checkbox
+              type="checkbox"
+              [checked]="playTwice()"
+              (change)="playTwice.set($any($event.target).checked)"
+            />
+          </label>
+        }
+        @case ("elimination") {
+          <div class="add-stage__options">
+            <div pdz-field label="Losses to Be Out">
+              <pdz-segmented
+                size="sm"
+                aria-label="Losses to be out"
+                [value]="lives()"
+                (valueChange)="lives.set($any($event))"
+              >
+                <pdz-segmented-option [value]="1" label="1 · Single" />
+                <pdz-segmented-option [value]="2" label="2 · Double" />
+                <pdz-segmented-option [value]="3" label="3 · Triple" />
+              </pdz-segmented>
+            </div>
+            <p class="add-stage__hint">{{ livesBlurb[lives() - 1] }}</p>
+            @if (lives() === 1) {
+              <label
+                pdz-check
+                label="Third-place match"
+                description="The two semifinal losers play once more."
+              >
+                <input
+                  pdz-checkbox
+                  type="checkbox"
+                  [checked]="thirdPlace()"
+                  (change)="thirdPlace.set($any($event.target).checked)"
+                />
+              </label>
+            } @else {
+              <label
+                pdz-check
+                label="Grand final reset"
+                description="If the upper-bracket team loses the grand final, it still has a loss to spare, so the two play once more."
+              >
+                <input
+                  pdz-checkbox
+                  type="checkbox"
+                  [checked]="reset()"
+                  (change)="reset.set($any($event.target).checked)"
+                />
+              </label>
+            }
+          </div>
+        }
+        @case ("custom") {
+          <p class="add-stage__hint">
+            Starts empty. Add matches week by week and set both sides of each.
+          </p>
+        }
+      }
+    </section>
+
+    <section class="add-stage__step" aria-labelledby="add-stage-entrants">
+      <h3 class="add-stage__step-title" id="add-stage-entrants">
+        <span class="add-stage__step-num">2</span>Entrants
+        <span class="add-stage__count">{{ entrants().length }}</span>
+      </h3>
+      <pdz-entrant-list
+        [(entrants)]="entrants"
+        [(random)]="random"
+        [teams]="data.teams"
+        [context]="data.context"
+        [stageKey]="data.key"
+      />
+    </section>
+
+    <section class="add-stage__step" aria-labelledby="add-stage-when">
+      <h3 class="add-stage__step-title" id="add-stage-when">
+        <span class="add-stage__step-num">3</span>When
+      </h3>
+      <div pdz-field label="Starts In" [hint]="runsHint()">
+        <pdz-select
+          aria-label="Starts in"
+          [value]="start()"
+          (valueChange)="start.set($any($event))"
+        >
+          @for (week of weekOptions(); track week.index) {
+            <pdz-option [value]="week.index" [label]="week.label" />
+          }
+        </pdz-select>
+      </div>
+      <label
+        pdz-check
+        label="Visible to everyone"
+        description="Leave this off to build the stage first. Hidden stages are organizer-only."
+      >
+        <input
+          pdz-checkbox
+          type="checkbox"
+          [checked]="visible()"
+          (change)="visible.set($any($event.target).checked)"
+        />
+      </label>
+    </section>
+  </div>
+
+  <aside class="add-stage__preview" aria-label="Preview">
+    <h3 class="add-stage__preview-title">{{ name() || "New Stage" }}</h3>
+    <p class="add-stage__preview-meta">
+      {{ formatLabel() }} · {{ entrants().length }} entrants ·
+      {{ templates().length }} matches
+    </p>
+    @if (format() === "custom") {
+      <p class="add-stage__hint">
+        Custom stages start empty. After adding it, use Add Match in each week
+        and set both sides.
+      </p>
+    } @else if (entrants().length < minimum()) {
+      <p class="add-stage__hint">
+        Add at least {{ minimum() }} entrants to see the matches.
+      </p>
+    } @else {
+      @for (week of preview(); track $index) {
+        <div class="add-stage__week">
+          <div class="add-stage__week-head">
+            <span>{{ week.label }}</span>
+            <span>{{ week.matches.length }}</span>
+          </div>
+          @for (match of week.matches; track $index) {
+            <div class="add-stage__match">
+              <span class="add-stage__match-label">{{ match.label }}</span>
+              <span class="add-stage__match-sides">
+                @if (match.tag) {
+                  <span class="add-stage__match-tag">{{ match.tag }}</span>
+                }
+                {{ match.a }} <span class="add-stage__vs">vs</span>
+                {{ match.b }}
+              </span>
+            </div>
+          }
+        </div>
+      }
+    }
+  </aside>
+</div>
+
+<div class="pdz-dialog-actions">
+  <span class="add-stage__summary" [class.add-stage__summary--error]="error()">
+    {{ error() ?? summary() }}
+  </span>
+  <button pdz-button variant="ghost" color="neutral" (click)="close()">
+    Cancel
+  </button>
+  <button pdz-button (click)="create()">Add Stage</button>
+</div>

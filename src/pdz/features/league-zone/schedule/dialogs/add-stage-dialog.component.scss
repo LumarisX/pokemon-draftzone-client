@@ -1,0 +1,140 @@
+@use "pdz-theming" as pdz;
+
+:host {
+  display: contents;
+}
+
+.add-stage {
+  display: grid;
+  gap: pdz.space(xl);
+
+  @include pdz.respond-above(medium) {
+    grid-template-columns: minmax(0, 1fr) minmax(14rem, 18rem);
+  }
+
+  &__form {
+    display: flex;
+    flex-direction: column;
+    gap: pdz.space(xl);
+    min-width: 0;
+  }
+
+  &__step {
+    display: flex;
+    flex-direction: column;
+    gap: pdz.space(md);
+  }
+
+  &__step-title {
+    @include pdz.text(section-title);
+    display: flex;
+    align-items: center;
+    gap: pdz.space(sm);
+    margin: 0;
+  }
+
+  &__step-num {
+    @include pdz.text(label-strong);
+    @include pdz.numeric;
+    display: inline-grid;
+    place-items: center;
+    width: pdz.control-height(xs);
+    height: pdz.control-height(xs);
+    border-radius: pdz.shape(corner-full);
+    background: pdz.color(state-pressed);
+    color: pdz.color(on-surface-variant);
+  }
+
+  &__count {
+    @include pdz.text(meta);
+    @include pdz.numeric;
+    color: pdz.color(on-surface-muted);
+  }
+
+  &__hint {
+    @include pdz.text(body-sm);
+    margin: 0;
+    color: pdz.color(on-surface-muted);
+  }
+
+  &__options {
+    display: flex;
+    flex-direction: column;
+    gap: pdz.space(md);
+  }
+
+  &__preview {
+    align-self: start;
+    padding: pdz.space(md);
+    border-radius: pdz.shape(corner-md);
+    background: pdz.color(inset);
+    min-width: 0;
+
+    @include pdz.respond-above(medium) {
+      position: sticky;
+      top: 0;
+      max-height: 70dvh;
+      overflow-y: auto;
+    }
+  }
+
+  &__preview-title {
+    @include pdz.text(card-title);
+    margin: 0;
+  }
+
+  &__preview-meta {
+    @include pdz.text(meta);
+    margin: 0 0 pdz.space(md);
+    color: pdz.color(on-surface-muted);
+  }
+
+  &__week {
+    margin-bottom: pdz.space(md);
+  }
+
+  &__week-head {
+    @include pdz.text(label-strong);
+    @include pdz.row-divider;
+    display: flex;
+    justify-content: space-between;
+    padding-bottom: pdz.space(2xs);
+    margin-bottom: pdz.space(2xs);
+    color: pdz.color(on-surface-muted);
+  }
+
+  &__match {
+    @include pdz.text(body-sm);
+    display: grid;
+    grid-template-columns: minmax(2.25rem, max-content) minmax(0, 1fr);
+    gap: pdz.space(xs);
+    padding-block: pdz.space(3xs);
+  }
+
+  &__match-label,
+  &__vs,
+  &__match-tag {
+    color: pdz.color(on-surface-muted);
+  }
+
+  &__match-tag {
+    @include pdz.text(label-caps);
+    margin-inline-end: pdz.space(2xs);
+  }
+
+  &__match-sides {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  &__summary {
+    @include pdz.text(body-sm);
+    margin-inline-end: auto;
+    color: pdz.color(on-surface-muted);
+
+    &--error {
+      color: pdz.color(danger);
+    }
+  }
+}

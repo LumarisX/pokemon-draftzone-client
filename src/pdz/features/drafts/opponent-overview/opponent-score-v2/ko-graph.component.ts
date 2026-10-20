@@ -313,7 +313,9 @@ export class KoGraphComponent {
 
     effect(() => {
       const input = this.noteInput();
-      if (input) input.nativeElement.select();
+      if (!input) return;
+      input.nativeElement.focus();
+      input.nativeElement.select();
     });
 
     destroyRef.onDestroy(() => observer.disconnect());
@@ -370,7 +372,12 @@ export class KoGraphComponent {
     }
 
     const target = drag.target;
-    if (target) this.graph.update((graph) => linkKo(graph, drag.from, target));
+    if (!target) return;
+    const graph = this.commitOpenNote();
+    const linked = linkKo(graph, drag.from, target);
+    if (linked === graph) return;
+    this.graph.set(linked);
+    this.editing.set(target);
   }
 
   protected onPointerCancel(): void {
@@ -404,7 +411,7 @@ export class KoGraphComponent {
   }
 
   protected onNoteCommit(to: string, value: string): void {
-    this.editing.set(null);
+    if (this.editing() === to) this.editing.set(null);
     this.graph.update((graph) => setKoNote(graph, to, value));
   }
 
@@ -436,6 +443,17 @@ export class KoGraphComponent {
         graph,
       ),
     );
+  }
+
+  private commitOpenNote(): KoGraph {
+    const editing = this.editing();
+    const input = this.noteInput();
+    if (editing && input) {
+      this.graph.update((graph) =>
+        setKoNote(graph, editing, input.nativeElement.value),
+      );
+    }
+    return this.graph();
   }
 
   private cycle(key: string): void {

@@ -1,0 +1,107 @@
+<section class="timeline" aria-label="Season timeline">
+  <div class="timeline__scroll">
+    <div
+      class="timeline__grid"
+      [style.--weeks]="weeks().length + (editable() ? 1 : 0)"
+    >
+      <div
+        class="timeline__rail"
+        aria-hidden="true"
+        [style.grid-row]="'1 / ' + (lanes().count + 3)"
+      ></div>
+      <span class="timeline__corner">Weeks</span>
+
+      @for (week of weeks(); track week.key) {
+        <div
+          class="timeline__col"
+          aria-hidden="true"
+          [class.timeline__col--live]="week.index === currentRoundIndex()"
+          [class.timeline__col--selected]="isRound(week.index)"
+          [style.grid-column]="week.index + 2"
+          [style.grid-row]="'1 / ' + (lanes().count + 3)"
+        ></div>
+        <button
+          type="button"
+          class="timeline__week"
+          [attr.aria-pressed]="isRound(week.index)"
+          [style.grid-column]="week.index + 2"
+          (click)="selectRound.emit(week.index)"
+        >
+          <span class="timeline__week-name">
+            {{ week.name }}
+            @if (week.index === currentRoundIndex()) {
+              <span class="timeline__live">Live</span>
+            }
+          </span>
+          <span class="timeline__week-due">{{ week.due }}</span>
+        </button>
+      }
+
+      @if (editable()) {
+        <button
+          type="button"
+          class="timeline__add-week"
+          aria-label="Add a week"
+          title="Add a week"
+          [style.grid-column]="weeks().length + 2"
+          (click)="addRound.emit()"
+        >
+          <pdz-icon name="add" [size]="18" aria-hidden="true" />
+        </button>
+      }
+
+      <span class="timeline__lane-label">Stages</span>
+
+      @for (bar of bars(); track bar.key) {
+        <button
+          type="button"
+          class="timeline__bar"
+          [class.timeline__bar--hidden]="bar.hidden"
+          [attr.aria-pressed]="isStage(bar.key)"
+          [attr.aria-label]="
+            bar.name +
+            (bar.hidden ? ', hidden' : '') +
+            ', ' +
+            bar.played +
+            ' of ' +
+            bar.total +
+            ' played'
+          "
+          [style.grid-row]="bar.lane + 2"
+          [style.grid-column]="bar.first + 2 + ' / ' + (bar.last + 3)"
+          (click)="selectStage.emit(bar.key)"
+        >
+          @if (bar.hidden) {
+            <pdz-icon name="visibility_off" [size]="14" aria-hidden="true" />
+          }
+          <span class="timeline__bar-name">{{ bar.name }}</span>
+          <span class="timeline__bar-meta">
+            {{ bar.total ? bar.played + "/" + bar.total : "Empty" }}
+          </span>
+          @if (bar.total) {
+            <span
+              class="timeline__bar-progress"
+              aria-hidden="true"
+              [style.width.%]="(bar.played / bar.total) * 100"
+            ></span>
+          }
+        </button>
+      }
+
+      @if (editable()) {
+        <button
+          type="button"
+          class="timeline__add-stage"
+          [style.grid-row]="lanes().count + 2"
+          [style.grid-column]="'2 / ' + (weeks().length + 2)"
+          (click)="addStage.emit()"
+        >
+          <span class="timeline__add-stage-label">
+            <pdz-icon name="add" [size]="16" aria-hidden="true" />
+            Add Stage
+          </span>
+        </button>
+      }
+    </div>
+  </div>
+</section>

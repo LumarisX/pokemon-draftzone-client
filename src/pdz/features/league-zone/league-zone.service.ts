@@ -13,7 +13,7 @@ import {
   TradeLog,
   TradeStatus,
 } from '@pdz/features/league-zone/league.interface';
-import { TournamentBracket } from '@pdz/features/league-zone/league-bracket/tournament-bracket.model';
+import { TournamentBracket } from '@pdz/features/league-zone/schedule/tournament-bracket.model';
 import {
   ChatChannel,
   ChatMessage,

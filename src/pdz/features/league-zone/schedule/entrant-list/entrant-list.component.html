@@ -1,0 +1,270 @@
+<div class="entrants">
+  <p class="entrants__hint">
+    Seeds run top to bottom. An entrant can be a team, a finishing place in
+    another stage, or an open slot you fill in later.
+  </p>
+
+  @if (!entrants().length && suggestions().length) {
+    <div class="entrants__suggest">
+      @for (suggestion of suggestions(); track suggestion.label) {
+        <button
+          pdz-button
+          size="sm"
+          variant="tonal"
+          color="neutral"
+          [icon]="suggestion.icon"
+          (click)="apply(suggestion)"
+        >
+          {{ suggestion.label }}
+        </button>
+      }
+    </div>
+  }
+
+  <ol class="entrants__list" aria-label="Entrants in seed order">
+    @for (row of rows(); track $index) {
+      <li class="entrants__row">
+        <span class="entrants__seed">{{ $index + 1 }}</span>
+        <pdz-icon
+          class="entrants__icon"
+          [name]="row.icon"
+          [size]="16"
+          aria-hidden="true"
+        />
+        <span class="entrants__who">
+          <span class="entrants__name">{{ row.name }}</span>
+          @if (row.detail) {
+            <span class="entrants__detail">{{ row.detail }}</span>
+          }
+        </span>
+        <span class="entrants__actions">
+          <button
+            pdz-button
+            iconOnly
+            size="xs"
+            variant="ghost"
+            color="neutral"
+            icon="arrow_upward"
+            aria-label="Move up"
+            [disabled]="$first"
+            (click)="move($index, -1)"
+          ></button>
+          <button
+            pdz-button
+            iconOnly
+            size="xs"
+            variant="ghost"
+            color="neutral"
+            icon="arrow_downward"
+            aria-label="Move down"
+            [disabled]="$last"
+            (click)="move($index, 1)"
+          ></button>
+          <button
+            pdz-button
+            iconOnly
+            size="xs"
+            variant="ghost"
+            color="neutral"
+            icon="close"
+            aria-label="Remove"
+            (click)="remove($index)"
+          ></button>
+        </span>
+      </li>
+    } @empty {
+      <li class="entrants__empty">
+        No entrants yet. Add teams, places from another stage, or open slots.
+      </li>
+    }
+  </ol>
+
+  <div class="entrants__adders">
+    <button
+      pdz-button
+      size="sm"
+      variant="outlined"
+      color="neutral"
+      icon="add"
+      [attr.aria-pressed]="panel() === 'teams'"
+      (click)="toggle('teams')"
+    >
+      Teams
+    </button>
+    @if (sources().length) {
+      <button
+        pdz-button
+        size="sm"
+        variant="outlined"
+        color="neutral"
+        icon="add"
+        [attr.aria-pressed]="panel() === 'standings'"
+        (click)="toggle('standings')"
+      >
+        From Standings
+      </button>
+    }
+    <button
+      pdz-button
+      size="sm"
+      variant="outlined"
+      color="neutral"
+      icon="add"
+      (click)="addOpen()"
+    >
+      Open Slot
+    </button>
+    @if (entrants().length) {
+      <button
+        pdz-button
+        size="sm"
+        variant="ghost"
+        color="neutral"
+        (click)="clear()"
+      >
+        Clear
+      </button>
+    }
+  </div>
+
+  @if (panel() === "teams") {
+    <section class="entrants__panel" aria-label="Pick teams">
+      <div class="entrants__panel-head">
+        <span class="entrants__panel-title">Pick Teams</span>
+        @for (pool of pools(); track pool) {
+          <button
+            pdz-button
+            size="xs"
+            variant="ghost"
+            color="neutral"
+            (click)="pickPool(pool)"
+          >
+            All of {{ pool }}
+          </button>
+        }
+      </div>
+      <div class="entrants__picker">
+        @for (team of available(); track team.teamId) {
+          <label
+            pdz-check
+            class="entrants__pick"
+            [class.entrants__pick--used]="used().has(team.teamId)"
+            [label]="team.teamName"
+            [description]="teamDetail(team)"
+          >
+            <input
+              pdz-checkbox
+              type="checkbox"
+              [checked]="picked().has(team.teamId)"
+              (change)="togglePick(team.teamId)"
+            />
+          </label>
+        } @empty {
+          <p class="entrants__hint">Every team is already in the list.</p>
+        }
+      </div>
+      <div class="entrants__panel-actions">
+        <button
+          pdz-button
+          size="sm"
+          variant="ghost"
+          color="neutral"
+          (click)="toggle(null)"
+        >
+          Cancel
+        </button>
+        <button pdz-button size="sm" (click)="addPicked()">
+          Add {{ picked().size || "" }}
+          {{ picked().size === 1 ? "Team" : "Teams" }}
+        </button>
+      </div>
+    </section>
+  }
+
+  @if (panel() === "standings") {
+    <section class="entrants__panel" aria-label="Places from other stages">
+      <div pdz-field label="From">
+        <div class="entrants__sources">
+          @for (stage of sources(); track stage.key) {
+            <label pdz-check [label]="stage.name">
+              <input
+                pdz-checkbox
+                type="checkbox"
+                [checked]="chosenSources().has(stage.key)"
+                (change)="toggleSource(stage.key)"
+              />
+            </label>
+          }
+        </div>
+      </div>
+      <label
+        pdz-field
+        [label]="chosen().length > 1 ? 'Top Places From Each' : 'Top Places'"
+      >
+        <input
+          pdz-input
+          class="entrants__top"
+          type="number"
+          min="1"
+          max="64"
+          [value]="top()"
+          (input)="setTop($any($event.target).value)"
+        />
+      </label>
+      @if (chosen().length > 1) {
+        <div
+          pdz-field
+          label="Seed Order"
+          [hint]="
+            order() === 'by-place'
+              ? 'All 1st places, then all 2nd places. With two groups, every first-round bracket match crosses groups.'
+              : 'Every place from the first stage, then the next stage.'
+          "
+        >
+          <pdz-segmented
+            aria-label="Seed order"
+            [value]="order()"
+            (valueChange)="order.set($any($event))"
+          >
+            <pdz-segmented-option value="by-place" label="By Place" />
+            <pdz-segmented-option value="by-stage" label="Stage by Stage" />
+          </pdz-segmented>
+        </div>
+      }
+      <p class="entrants__hint">
+        Adds: {{ placesPreview() || "nothing yet" }}
+      </p>
+      <div class="entrants__panel-actions">
+        <button
+          pdz-button
+          size="sm"
+          variant="ghost"
+          color="neutral"
+          (click)="toggle(null)"
+        >
+          Cancel
+        </button>
+        <button pdz-button size="sm" (click)="addPlaces()">
+          Add {{ placesToAdd().length }}
+          {{ placesToAdd().length === 1 ? "Place" : "Places" }}
+        </button>
+      </div>
+    </section>
+  }
+
+  @if (canRandom()) {
+    <label
+      pdz-check
+      label="Draw seeds at random"
+      [description]="randomHint()"
+    >
+      <input
+        pdz-checkbox
+        type="checkbox"
+        [checked]="random()"
+        [disabled]="!allTeams() || !entrants().length"
+        (change)="random.set($any($event.target).checked)"
+      />
+    </label>
+  }
+</div>

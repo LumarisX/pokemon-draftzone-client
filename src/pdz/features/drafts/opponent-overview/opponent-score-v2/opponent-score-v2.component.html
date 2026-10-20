@@ -6,16 +6,7 @@
       backLabel="Back to Draft"
       [title]="sideNames().side1 + ' vs ' + sideNames().side2"
       [backLink]="draftPage"
-    >
-      <button
-        pdz-page-header-actions
-        pdz-button
-        [loading]="saving()"
-        (click)="submit()"
-      >
-        Save Result
-      </button>
-    </pdz-page-header>
+    />
 
     <div class="score__series">
       <span class="score__series-value"
@@ -131,11 +122,11 @@
         (click)="addGame()"
       >
         <pdz-icon name="add" [size]="16" />
-        <span>Add game</span>
+        <span>Add Game</span>
       </button>
 
       <button pdz-button [loading]="saving()" (click)="submit()">
-        {{ saving() ? "Saving…" : "Submit" }}
+        {{ saving() ? "Saving…" : "Save Result" }}
       </button>
     </div>
   </div>

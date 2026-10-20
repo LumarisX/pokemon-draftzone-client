@@ -1,0 +1,28 @@
+@use "pdz-theming" as pdz;
+
+:host {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.layout(section-gap);
+  min-height: 0;
+  min-width: 0;
+
+  @include pdz.respond-above(medium) {
+    flex: 1 1 auto;
+  }
+}
+
+pdz-schedule-timeline {
+  flex: none;
+}
+
+.schedule__detail {
+  min-width: 0;
+
+  @include pdz.respond-above(medium) {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-y: auto;
+    padding-inline-end: pdz.space(xs);
+  }
+}

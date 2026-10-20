@@ -1,4 +1,5 @@
 import {
+  carriedKoGraph,
   cycleKoState,
   emptyKoGraph,
   koGraphWinner,
@@ -117,5 +118,19 @@ describe('ko-graph model', () => {
   it('has no winner when survivors are level', () => {
     const keys = { side1: [a1], side2: [b1] };
     expect(koGraphWinner(emptyKoGraph(), keys)).toBeNull();
+  });
+
+  it('carries every card that saw the game into the next as preview, with no KOs', () => {
+    let graph = toggleKoPreview(emptyKoGraph(), b2);
+    graph = linkKo(graph, a1, b1);
+    graph = cycleKoState(cycleKoState(cycleKoState(graph, a2), a2), a2);
+
+    const next = carriedKoGraph(graph);
+
+    expect(koState(next, a1)).toBe('preview');
+    expect(koState(next, b1)).toBe('preview');
+    expect(koState(next, b2)).toBe('preview');
+    expect(koState(next, a2)).toBe('benched');
+    expect(next.edges).toEqual([]);
   });
 });

@@ -407,6 +407,10 @@ export class DebugComponentsComponent {
     team1: { name: 'Viridian Vipers', coach: 'misty', logo: this.teamLogoSample },
     team2: { name: 'Winner of QF 2', pending: true, selectable: true },
   };
+  protected readonly matchupPlaces: { team1: MatchupTeam; team2: MatchupTeam } = {
+    team1: { name: 'Kanto Group · 1st', coach: 'Now: Viridian Vipers', pending: true },
+    team2: { name: 'Johto Group · 4th', coach: 'Now: Neon Nightshades', pending: true },
+  };
   protected readonly podiumPlacesNoActors = this.podiumPlaces.map(
     (place) => ({ ...place, pokemon: null, you: false }),
   );

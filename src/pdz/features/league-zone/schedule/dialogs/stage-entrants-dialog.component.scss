@@ -1,0 +1,39 @@
+@use "pdz-theming" as pdz;
+
+.stage-entrants {
+  display: grid;
+  gap: pdz.space(xl);
+
+  @include pdz.respond-above(medium) {
+    grid-template-columns: minmax(0, 1fr) minmax(14rem, 18rem);
+  }
+
+  &__effect {
+    display: flex;
+    flex-direction: column;
+    gap: pdz.space(sm);
+    align-self: start;
+    padding: pdz.space(md);
+    border-radius: pdz.shape(corner-md);
+    background: pdz.color(inset);
+  }
+
+  &__title {
+    @include pdz.text(card-title);
+    margin: 0;
+  }
+
+  &__hint {
+    @include pdz.text(body-sm);
+    margin: 0;
+    color: pdz.color(on-surface-muted);
+  }
+
+  &__warning {
+    @include pdz.text(body-sm);
+    display: flex;
+    gap: pdz.space(xs);
+    margin: 0;
+    color: pdz.color(on-warning-container);
+  }
+}

@@ -17,7 +17,7 @@ import { unsavedChangesGuard } from '@pdz/core/guards/unsaved-changes/unsaved-ch
 import { TierListComponent } from '../tier-lists/tier-list/tier-list.component';
 import { PoolDashboardComponent } from './pools/pool-dashboard/pool-dashboard.component';
 import { PowerRankingsComponent } from './pools/power-rankings/power-rankings.component';
-import { LeagueBracketComponent } from './league-bracket/league-bracket.component';
+import { SchedulePageComponent } from './schedule/schedule-page.component';
 import { LeagueDraftComponent } from './league-drafting/league-drafting.component';
 import { LeagueCreateComponent } from './league-create/league-create.component';
 import { LeagueEditComponent } from './league-edit/league-edit.component';
@@ -118,7 +118,7 @@ export const routes: Routes = [
       },
       {
         path: 'schedule',
-        component: LeagueBracketComponent,
+        component: SchedulePageComponent,
       },
       {
         path: 'trades',

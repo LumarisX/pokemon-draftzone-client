@@ -1,0 +1,16 @@
+@use "pdz-theming" as pdz;
+
+:host {
+  display: block;
+  height: 100%;
+}
+
+.manage__actions {
+  display: flex;
+  align-items: center;
+  gap: pdz.space(xs);
+}
+
+pdz-save-bar {
+  flex: none;
+}
