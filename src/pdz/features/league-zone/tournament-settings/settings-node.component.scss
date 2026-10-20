@@ -13,6 +13,10 @@
   scroll-margin-top: 5rem;
 }
 
+:host(:first-of-type) .node {
+  padding-top: 0;
+}
+
 :host(:last-of-type) .node {
   border-bottom: none;
   padding-bottom: 0;

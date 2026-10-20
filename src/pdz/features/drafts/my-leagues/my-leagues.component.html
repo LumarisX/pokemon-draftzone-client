@@ -421,19 +421,13 @@
                             </span>
                           } @else if (entry.outcome; as outcome) {
                             <span class="done__result">
-                              @if (outcome.label) {
+                              @if (outcome.champion) {
                                 <pdz-chip
                                   size="sm"
-                                  [tone]="
-                                    outcome.champion ? 'secondary' : 'neutral'
-                                  "
-                                  [variant]="
-                                    outcome.champion ? 'solid' : 'soft'
-                                  "
-                                  [icon]="
-                                    outcome.champion ? 'trophy' : undefined
-                                  "
-                                  >{{ outcome.label }}</pdz-chip
+                                  tone="secondary"
+                                  variant="solid"
+                                  icon="trophy"
+                                  >Champion</pdz-chip
                                 >
                               }
                               <span class="done__place"

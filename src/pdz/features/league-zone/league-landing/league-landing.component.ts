@@ -7,7 +7,10 @@ import {
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
-import { LEAGUE_ADMINS_PATH } from '@pdz/core/route-paths';
+import {
+  LEAGUE_ADMINS_PATH,
+  LEAGUE_HALL_OF_FAME_PATH,
+} from '@pdz/core/route-paths';
 import { LeagueZoneService } from '@pdz/features/league-zone/league-zone.service';
 import { League } from '@pdz/features/league-zone/league.interface';
 import { getLeagueLogoUrl } from '@pdz/features/league-zone/league.util';
@@ -52,6 +55,7 @@ const STATUS: Record<TournamentStatus, { label: string; tone: ChipTone }> = {
 export class LeagueLandingComponent {
   readonly getLogoUrl = getLeagueLogoUrl;
   readonly adminsPath = LEAGUE_ADMINS_PATH;
+  readonly hallOfFamePath = LEAGUE_HALL_OF_FAME_PATH;
 
   readonly league = toSignal(
     inject(LeagueZoneService)
@@ -76,10 +80,17 @@ export class LeagueLandingComponent {
     });
   });
 
+  readonly hasChampions = computed(() =>
+    (this.league()?.tournaments ?? []).some(
+      (tournament) => !!tournament.completedAt,
+    ),
+  );
+
   private statusOf(
     tournament: League.TournamentSummary,
     now: number,
   ): TournamentStatus {
+    if (tournament.completedAt) return 'completed';
     if (tournament.seasonEnd && now > new Date(tournament.seasonEnd).getTime())
       return 'completed';
     if (

@@ -1,0 +1,47 @@
+@use "pdz-theming" as pdz;
+
+:host {
+  display: block;
+}
+
+.hall {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.layout(section-gap);
+}
+
+.hall__season {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(sm);
+}
+
+.hall__head {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(2xs);
+}
+
+.hall__title {
+  margin: 0;
+  @include pdz.text(section-title);
+}
+
+.hall__link {
+  color: pdz.color(on-surface);
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+
+  &:focus-visible {
+    @include pdz.focus-ring;
+  }
+}
+
+.hall__meta {
+  margin: 0;
+  color: pdz.color(on-surface-muted);
+  @include pdz.text(meta);
+}

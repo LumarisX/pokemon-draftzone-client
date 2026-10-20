@@ -234,6 +234,12 @@ export class LeagueManageService {
     return `leagues/${this.leagueZoneService.leagueSlug()}/tournaments/${this.leagueZoneService.tournamentSlug()}/discord`;
   }
 
+  getFinalResults(): Observable<League.FinalResults> {
+    return this.apiService.get(
+      `leagues/${this.leagueZoneService.leagueSlug()}/tournaments/${this.leagueZoneService.tournamentSlug()}/final-results`,
+    );
+  }
+
   getTournamentSettings() {
     return this.apiService.get<{
       name: string;

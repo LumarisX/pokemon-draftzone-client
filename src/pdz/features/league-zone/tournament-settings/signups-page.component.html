@@ -1,0 +1,71 @@
+<pdz-page type="detail">
+  @if (store.loading()) {
+    <pdz-skeleton-layout layout="list" />
+  } @else if (store.loadError(); as message) {
+    <pdz-empty-state
+      bordered
+      kind="error"
+      heading="Could not load sign-ups"
+      [message]="message"
+      retry="event"
+      (retried)="store.load()"
+    />
+  } @else {
+    <div class="signups">
+      <pdz-page-header title="Sign-Ups">
+        <span pdz-page-header-detail class="signups__detail">
+          <span>{{ status() }}</span>
+          @for (count of counts(); track count.label) {
+            <span class="signups__sep" aria-hidden="true">·</span>
+            <span>{{ count.value }} {{ count.label }}</span>
+          }
+        </span>
+        <div pdz-page-header-actions>
+          <a
+            pdz-button
+            variant="outlined"
+            color="neutral"
+            icon="settings"
+            routerLink="../settings"
+            fragment="signup"
+          >
+            Sign-Up Settings
+          </a>
+        </div>
+      </pdz-page-header>
+
+      @if (store.signUps().length) {
+        <pdz-card padding="lg">
+          <pdz-applicants-panel />
+        </pdz-card>
+      } @else if (store.saved().signUpAccess === "closed") {
+        <pdz-empty-state
+          bordered
+          kind="waiting"
+          heading="Sign-ups are closed"
+          message="No one can apply yet. Open sign-ups from the overview when the tier list and pools are ready."
+        >
+          <a pdz-empty-state-actions pdz-button routerLink="..">
+            Go to Overview
+          </a>
+        </pdz-empty-state>
+      } @else {
+        <pdz-empty-state
+          bordered
+          kind="waiting"
+          heading="No applications yet"
+          message="Coaches who apply show up here for you to place in a pool, add as a sub, or turn down."
+        />
+      }
+
+      <pdz-save-bar
+        [count]="store.applicantsDirtyCount()"
+        [pending]="store.saving()"
+        [error]="store.saveError()"
+        label="Save Decisions"
+        (save)="save()"
+        (revert)="revert()"
+      />
+    </div>
+  }
+</pdz-page>

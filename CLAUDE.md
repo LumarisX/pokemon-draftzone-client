@@ -109,7 +109,22 @@ A `waiting` state says who and when; tournament pages use `waitingMessage()` fro
 Pages inside the tournament shell get **no back button** — the nav does that. The
 exceptions, each rendering the eyebrow as a link through `backLink`/`backLabel`: the
 tournament landing page (up to the league), a pool's draft board (back to Draft Pools,
-`/pools`, when the tournament has more than one pool), and a team page (back to Teams).
+`/pools`, when the tournament has more than one pool), a team page (back to Teams), and
+the organizer pages off the rail: Organizers (back to Settings), Edit Rules (back to
+Rules) and Final Results (back to Overview).
+
+**Organizer pages.** The rail's Manage group is the only map: Overview, Sign-Ups, Draft
+Control, Schedule, Results, Trades, Settings. Every setting lives on the one Settings page
+(`manage/settings`, jump-linked sections, one save bar); other pages link to their
+section with a `fragment` (`signup`, `pools`, `season`, …) instead of carrying settings
+of their own. Overview's Next Up list comes from `nextSteps()` in `settings-schema.ts`:
+add a step only when it blocks the next phase, never for a setting with a default.
+Applicant decisions save separately (`saveApplicants`) and refresh the roster without
+touching unsaved settings. Completing a tournament goes only through the Final Results
+review page (`manage/final-results`, `store.setCompleted`), never a settings toggle; the
+server snapshots each team's placement, record and MVP, and the league's Hall of Fame
+(`/leagues/:league/hall-of-fame`) reads that snapshot. Public Rules and Tier List pages show organizers an Edit
+button (`injectIsOrganizer()` from `@pdz/features/league-zone/organizer-access`).
 
 **Two draft areas, for now.** The live site still links to the old **My Drafts** list
 (`/drafts`) and the old draft page (`/drafts/:team`), restored from before the refresh in

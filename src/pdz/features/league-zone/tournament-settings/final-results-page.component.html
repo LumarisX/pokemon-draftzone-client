@@ -1,0 +1,181 @@
+<pdz-page type="detail">
+  <div class="final">
+    <pdz-page-header title="Final Results" backLink=".." backLabel="Overview">
+      <span pdz-page-header-detail>
+        @if (completedOn(); as on) {
+          Completed {{ on }}
+        } @else {
+          Check the placements below before you lock them in.
+        }
+      </span>
+      @if (completedOn()) {
+        <pdz-chip pdz-page-header-meta tone="success" icon="flag">
+          Completed
+        </pdz-chip>
+      }
+      @if (completed()) {
+        <div pdz-page-header-actions>
+          <a
+            pdz-button
+            variant="outlined"
+            color="neutral"
+            icon="emoji_events"
+            [routerLink]="hallOfFameLink()"
+          >
+            View Hall of Fame
+          </a>
+        </div>
+      }
+    </pdz-page-header>
+
+    @switch (state().status) {
+      @case ("loading") {
+        <pdz-skeleton-layout layout="table" />
+      }
+      @case ("error") {
+        <pdz-empty-state
+          bordered
+          kind="error"
+          heading="Could not work out the final results"
+          [message]="errorMessage()"
+          retry="event"
+          (retried)="load()"
+        />
+      }
+      @default {
+        @if (rows().length) {
+          @if (!completed() && warnings().length) {
+            <pdz-card color="warning" padding="md">
+              <div class="final__warning">
+                <pdz-icon name="warning" [size]="20" aria-hidden="true" />
+                <div class="final__warning-text">
+                  @for (warning of warnings(); track warning) {
+                    <p class="final__warning-line">{{ warning }}</p>
+                  }
+                  <a class="final__warning-link" routerLink="../results">
+                    Go to Results
+                  </a>
+                </div>
+              </div>
+            </pdz-card>
+          }
+
+          @if (!results()?.hasBracket) {
+            <p class="final__note">
+              There's no playoff bracket, so the champion is the team on top of
+              the standings.
+            </p>
+          }
+
+          <section class="final__section" aria-labelledby="final-podium">
+            <h2 class="final__title" id="final-podium">
+              {{ completed() ? "Hall of Fame Entry" : "Hall of Fame Preview" }}
+            </h2>
+            <pdz-podium [places]="places()" />
+          </section>
+
+          <section class="final__section" aria-labelledby="final-table">
+            <h2 class="final__title" id="final-table">Final Placements</h2>
+            <div class="pdz-table-wrapper">
+              <table class="pdz-table">
+                <thead>
+                  <tr>
+                    <th class="pdz-table__num" scope="col">Place</th>
+                    <th scope="col">Team</th>
+                    <th scope="col">Record</th>
+                    <th scope="col">Season MVP</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @for (row of rows(); track row.teamSlug) {
+                    <tr>
+                      <td class="pdz-table__num">{{ row.placement }}</td>
+                      <td>
+                        <pdz-team
+                          size="inline"
+                          [name]="row.name"
+                          [logo]="row.logoSrc"
+                          [coach]="row.coach"
+                          [link]="row.link"
+                        />
+                      </td>
+                      <td>
+                        @if (row.wins !== null && row.losses !== null) {
+                          <pdz-record
+                            size="sm"
+                            [wins]="row.wins"
+                            [losses]="row.losses"
+                            [draws]="row.draws"
+                          />
+                        }
+                      </td>
+                      <td>
+                        @if (row.mvp; as mvp) {
+                          <span class="final__mvp">
+                            <pdz-pokemon
+                              size="inline"
+                              [pokemon]="{ id: mvp.id, name: mvp.name }"
+                            />
+                            <span class="final__kos">{{ mvp.kills }} KOs</span>
+                          </span>
+                        }
+                      </td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          <pdz-card padding="lg">
+            <div class="final__confirm">
+              @if (completed()) {
+                <p class="final__confirm-text">
+                  These placements are locked in. Reopen the tournament to fix a
+                  result; completing it again records the placements fresh.
+                </p>
+                <button
+                  pdz-button
+                  type="button"
+                  variant="outlined"
+                  color="neutral"
+                  [loading]="store.saving()"
+                  (click)="reopen()"
+                >
+                  Reopen Tournament
+                </button>
+              } @else {
+                <p class="final__confirm-text">
+                  Completing the tournament saves these placements, adds the top
+                  three to the league's Hall of Fame, moves the season to
+                  Completed on every coach's My Leagues, and locks results and
+                  settings. You can reopen it later.
+                </p>
+                <button
+                  pdz-button
+                  type="button"
+                  icon="emoji_events"
+                  [loading]="store.saving()"
+                  (click)="complete()"
+                >
+                  Complete Tournament
+                </button>
+              }
+            </div>
+          </pdz-card>
+        } @else {
+          <pdz-empty-state
+            bordered
+            kind="empty"
+            heading="No results to rank yet"
+            message="Final placements come from the standings and the playoff bracket. Record some results first."
+          >
+            <a pdz-empty-state-actions pdz-button routerLink="../results">
+              Go to Results
+            </a>
+          </pdz-empty-state>
+        }
+      }
+    }
+  </div>
+</pdz-page>

@@ -56,11 +56,6 @@ export const routes: Routes = [
     redirectTo: 'schedule',
   },
   {
-    path: 'settings',
-    pathMatch: 'full',
-    redirectTo: '',
-  },
-  {
     path: '',
     loadChildren: () =>
       import('../tournament-settings/tournament-settings.routes').then(

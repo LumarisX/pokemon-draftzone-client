@@ -7,6 +7,17 @@
         [subtitle]="league.description"
         [logo]="league.logo ? getLogoUrl(league.logo) : undefined"
       >
+        @if (hasChampions()) {
+          <a
+            pdz-page-header-actions
+            pdz-button
+            icon="emoji_events"
+            color="neutral"
+            variant="tonal"
+            [routerLink]="hallOfFamePath"
+            >Hall of Fame</a
+          >
+        }
         @if (league.role) {
           <ng-container pdz-page-header-actions>
             <a

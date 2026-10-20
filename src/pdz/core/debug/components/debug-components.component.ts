@@ -414,6 +414,9 @@ export class DebugComponentsComponent {
   protected readonly podiumPlacesNoActors = this.podiumPlaces.map(
     (place) => ({ ...place, pokemon: null, you: false }),
   );
+  protected readonly podiumPlacesNoRecords = this.podiumPlaces.map(
+    (place) => ({ ...place, wins: null, losses: null, draws: null }),
+  );
   protected readonly photoDrafting = [
     { id: 'dragonite', name: 'Dragonite' },
     { id: 'swampert', name: 'Swampert' },

@@ -1,63 +1,89 @@
 @use "pdz-theming" as pdz;
 
-.draft-page {
+:host {
+  display: block;
+}
+
+.settings {
   display: flex;
   flex-direction: column;
-  gap: pdz.space(lg);
+  gap: pdz.space(2xl);
   padding-bottom: pdz.space(lg);
 }
 
-.pools {
+.settings__section {
   display: flex;
   flex-direction: column;
   gap: pdz.space(sm);
   scroll-margin-top: 5rem;
 }
 
-.pools__head {
+.settings__head {
   display: flex;
   flex-wrap: wrap;
-  align-items: flex-start;
+  align-items: flex-end;
   justify-content: space-between;
   gap: pdz.space(sm);
 }
 
-.pools__heading {
+.settings__heading {
   display: flex;
   flex-direction: column;
   gap: pdz.space(2xs);
+  min-width: 0;
 }
 
-.pools__title {
+.settings__title {
   margin: 0;
   color: pdz.color(on-surface);
-  @include pdz.text(subtitle);
+  @include pdz.text(section-title);
 }
 
-.pools__blurb {
+.settings__blurb {
   margin: 0;
-  max-width: 48ch;
-  color: pdz.color(on-surface-variant);
-  @include pdz.text(body-sm);
+  max-width: 60ch;
+  color: pdz.color(on-surface-muted);
+  @include pdz.text(meta);
 }
 
-.pools__waiting {
+.settings__waiting {
   display: flex;
   align-items: center;
   gap: pdz.space(xs);
   margin: 0;
-  color: pdz.color(warning-border);
+  color: pdz.color(warning);
   @include pdz.text(body-sm);
 }
 
-.pools__dot {
+.settings__dot {
   width: 0.4rem;
   height: 0.4rem;
   border-radius: 50%;
   background: pdz.color(primary);
 }
 
-.pools__pool-bar {
+.settings__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: pdz.space(md);
+}
+
+.settings__row-text {
+  flex: 1 1 20rem;
+  margin: 0;
+  color: pdz.color(on-surface-muted);
+  @include pdz.text(body-sm);
+}
+
+.pool {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(lg);
+}
+
+.pool__bar {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
@@ -67,23 +93,23 @@
   border-bottom: 1px solid pdz.color(border-subtle);
 }
 
-.pools__pool-name {
+.pool__name {
   color: pdz.color(on-surface);
   @include pdz.text(card-title);
 }
 
-.pools__pool-actions {
+.pool__actions {
   display: flex;
   flex-wrap: wrap;
   gap: pdz.space(xs);
 }
 
-.pools__nodes {
+.pool__nodes {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
-  gap: 0 pdz.space(xl);
+  grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
+  gap: pdz.space(xl);
 }
 
-.pools__node--full {
+.pool__node--full {
   grid-column: 1 / -1;
 }

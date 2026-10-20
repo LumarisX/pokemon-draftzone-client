@@ -1,6 +1,20 @@
 @if (showHeader()) {
   <pdz-page type="workspace">
-    <pdz-page-header [title]="header() ?? tierListName()" />
+    <pdz-page-header [title]="header() ?? tierListName()">
+      @if (isOrganizer()) {
+        <div pdz-page-header-actions>
+          <a
+            pdz-button
+            variant="outlined"
+            color="neutral"
+            icon="edit"
+            routerLink="edit"
+          >
+            Edit Tier List
+          </a>
+        </div>
+      }
+    </pdz-page-header>
     <ng-container [ngTemplateOutlet]="body" />
   </pdz-page>
 } @else {

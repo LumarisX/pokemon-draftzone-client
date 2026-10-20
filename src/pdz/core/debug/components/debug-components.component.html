@@ -2063,7 +2063,8 @@
 
   <h3 class="section__sub">
     Podium — the top three once a season ends, each team's top scorer standing
-    on its step; the champion's step is the loud one
+    on its step; the champion's step is the loud one. A season completed before
+    records were stored drops the record
   </h3>
   <div class="photos">
     <pdz-podium [places]="podiumPlaces" />
@@ -2071,6 +2072,7 @@
       <pdz-podium [places]="podiumPlaces.slice(0, 2)" />
       <pdz-podium [places]="podiumPlacesNoActors" />
     </div>
+    <pdz-podium label="Hall of Fame" [places]="podiumPlacesNoRecords" />
   </div>
 
   <h3 class="section__sub">

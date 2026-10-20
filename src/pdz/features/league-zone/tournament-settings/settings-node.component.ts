@@ -6,12 +6,10 @@ import {
   input,
 } from '@angular/core';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
-import { ArtifactCardComponent } from './artifact-card.component';
 import { NodeControlComponent } from './node-control.component';
 import {
   AnyControlSpec,
   AnyNode,
-  ArtifactSlot,
   ValueBag,
   controlVisible,
 } from './settings-schema';
@@ -20,7 +18,7 @@ import { TournamentSettingsStore } from './tournament-settings.store';
 @Component({
   selector: 'pdz-settings-node',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [ArtifactCardComponent, IconComponent, NodeControlComponent],
+  imports: [IconComponent, NodeControlComponent],
   templateUrl: './settings-node.component.html',
   styleUrl: './settings-node.component.scss',
 })
@@ -29,7 +27,6 @@ export class SettingsNodeComponent {
   readonly disabled = input(false);
   readonly lockedReason = input<string | null>(null);
   readonly poolId = input<string | null>(null);
-  readonly artifact = input<ArtifactSlot | null>(null);
 
   protected readonly store = inject(TournamentSettingsStore);
 

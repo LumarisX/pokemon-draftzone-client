@@ -20,19 +20,22 @@ import { LeagueZoneService } from '../league-zone.service';
 import { League } from '../league.interface';
 import {
   ArtifactState,
+  DRAFT_RISK,
   DraftPoolValue,
   Lifecycle,
   NodeIssue,
   PrizeShare,
-  SettingsSectionId,
+  RiskSpec,
   SettingsValue,
   SignUpStatus,
   SignUpValue,
+  parseSignUpChoice,
+  signUpChoiceKey,
   TierRequirement,
   defaultTiebreakers,
   draftNotStarted,
-  launchChecklist,
-  nodesForSection,
+  lifecycleReached,
+  nextSteps,
   poolErrors,
   sectionKeys,
   settingsErrors,
@@ -100,7 +103,7 @@ const EMPTY_ARTIFACTS: ArtifactState = {
     tiers: [],
     source: null,
   },
-  schedule: { stageCount: 0, roundCount: 0, matchupCount: 0 },
+  schedule: { stageCount: 0, roundCount: 0, matchupCount: 0, playedCount: 0 },
   rules: { sectionCount: 0, wordCount: 0 },
 };
 
@@ -211,7 +214,7 @@ export class TournamentSettingsStore {
   readonly collapsed = computed(() => this.poolCount() <= 1);
 
   readonly phase = computed<Lifecycle>(() => {
-    const value = this.draftValue();
+    const value = this.savedValue();
     const now = Date.now();
     const at = (input: string) => {
       const date = fromLocalInput(input);
@@ -234,10 +237,17 @@ export class TournamentSettingsStore {
     const draftStart = at(value.draftStart);
     if (draftStart && now >= draftStart) return 'draft';
 
-    const deadline = at(value.signUpDeadline);
-    if (deadline || this.savedSignUps().length) return 'signups';
+    if (value.signUpAccess !== 'closed' || this.savedSignUps().length)
+      return 'signups';
 
     return 'setup';
+  });
+
+  readonly signUpsOpen = computed(() => {
+    const saved = this.savedValue();
+    if (saved.signUpAccess === 'closed') return false;
+    const deadline = fromLocalInput(saved.signUpDeadline);
+    return !deadline || Date.now() <= deadline.getTime();
   });
 
   readonly approved = computed(() =>
@@ -285,13 +295,14 @@ export class TournamentSettingsStore {
     ...this.pools().flatMap((pool) => poolErrors(pool)),
   ]);
 
-  readonly checklist = computed(() =>
-    launchChecklist({
-      value: this.draftValue(),
-      pools: this.pools(),
-      signUps: this.signUps(),
+  readonly nextSteps = computed(() =>
+    nextSteps({
+      value: this.savedValue(),
+      pools: this.savedPools(),
+      signUps: this.savedSignUps(),
       unassigned: this.unassigned(),
       artifacts: this.artifactState(),
+      phase: this.phase(),
     }),
   );
 
@@ -414,66 +425,7 @@ export class TournamentSettingsStore {
     this.signUpTokenValue.set(settings.signUpToken ?? null);
     this.discordLinkValue.set(discordLinkFrom(settings.discordSettings));
 
-    const signUps: SignUpValue[] = (coaches?.signups ?? []).map((entry) => ({
-      id: entry.id ?? null,
-      applicationId: entry.applicationId,
-      intent: entry.intent ?? 'team',
-      answers: (entry.answers ?? []).map((answer) => ({
-        questionId: answer.questionId,
-        label: answer.label,
-        values: [...answer.values],
-      })),
-      teamId: entry.teamId ?? null,
-      teamSlug: entry.teamSlug ?? null,
-      logo: entry.logo ?? null,
-      status: entry.status,
-      departed: entry.departed ?? false,
-      teamName: entry.teamName,
-      coach: entry.name,
-      showdownName: entry.gameName,
-      discordName: entry.discordName,
-      timezone: entry.timezone,
-      experience: entry.experience,
-      signedUpAt: toLocalInput(entry.signedUpAt),
-      inDiscordServer: entry.inDiscordServer ?? false,
-      hasDiscordRole: entry.hasDiscordRole ?? false,
-    }));
-
-    const detailBySlug = new Map(
-      (coaches?.pools ?? []).map((entry, index) => [
-        entry.poolSlug,
-        details[index] ?? null,
-      ]),
-    );
-
-    const pools: DraftPoolValue[] = (coaches?.pools ?? []).map((entry) => {
-      const detail = detailBySlug.get(entry.poolSlug) ?? null;
-      const members = signUps.filter(
-        (signUp) =>
-          !signUp.departed &&
-          (coaches?.signups ?? []).find(
-            (raw) => raw.applicationId === signUp.applicationId,
-          )?.poolSlug === entry.poolSlug,
-      );
-      return {
-        id: entry.poolSlug,
-        slug: entry.poolSlug,
-        name: detail?.poolName ?? entry.name,
-        channelId: detail?.channelId ?? '',
-        status: detail?.status ?? 'PRE_DRAFT',
-        draftStart: toLocalInput(detail?.draftStart),
-        draftEnd: toLocalInput(detail?.draftEnd),
-        orderProgression: detail?.orderProgression ?? 'snake',
-        sequentialTurns: detail?.sequentialTurns ?? true,
-        pickTimerEnabled: detail ? !detail.noTimer : true,
-        pickTimerMinutes: secondsToMinutes(detail?.timerLength),
-        useRandomSeeding: detail?.useRandomSeeding ?? true,
-        picksVisibleTo: detail?.picksVisibleTo ?? 'everyone',
-        allowDuplicates: detail?.allowDuplicates ?? false,
-        allowRemovals: detail?.allowRemovals ?? false,
-        teams: orderMembers(members, detail?.teamOrder ?? []),
-      };
-    });
+    const { signUps, pools } = buildRoster(coaches, details);
 
     const tiers = (tierList?.tierList ?? []).flatMap((tier) =>
       tier.id && !NON_DRAFTABLE_TIER_NAMES.has(tier.name.trim().toLowerCase())
@@ -517,6 +469,40 @@ export class TournamentSettingsStore {
     this.selectedPoolId.set(pools[0]?.id ?? null);
   }
 
+  refreshRoster(): void {
+    this.league
+      .getSignUps()
+      .pipe(
+        switchMap((coaches) => {
+          const slugs = coaches.pools.map((entry) => entry.poolSlug);
+          if (!slugs.length) return of({ coaches, details: [] });
+          return forkJoin(
+            slugs.map((slug) =>
+              this.league.getPoolDetails(slug).pipe(catchError(() => of(null))),
+            ),
+          ).pipe(map((details) => ({ coaches, details })));
+        }),
+      )
+      .subscribe({
+        next: ({ coaches, details }) => {
+          const { signUps, pools } = buildRoster(coaches, details);
+          const withTeams = (current: DraftPoolValue[]) =>
+            pools.map((fresh) => {
+              const local = current.find((pool) => pool.id === fresh.id);
+              return local ? { ...local, teams: fresh.teams } : fresh;
+            });
+          this.savedPools.set(withTeams(this.savedPools()));
+          this.draftPools.set(clone(withTeams(this.draftPools())));
+          this.savedSignUps.set(signUps);
+          this.draftSignUps.set(clone(signUps));
+        },
+        error: (err) =>
+          this.saveError.set(
+            apiErrorMessage(err, 'Saved, but the applicant list did not refresh.'),
+          ),
+      });
+  }
+
   signUpById(id: string): SignUpValue | undefined {
     return this.signUps().find((entry) => entry.id === id);
   }
@@ -557,26 +543,24 @@ export class TournamentSettingsStore {
     return this.errors().some((entry) => entry.poolId === poolId);
   }
 
-  sectionDirtyCount(section: SettingsSectionId): number {
-    const keys = new Set(sectionKeys(section));
-    const scalar = this.dirtyKeys().filter((key) => keys.has(key)).length;
-    if (section === 'draft') return scalar + this.poolDirtyCount();
-    if (section === 'signup') return scalar + this.statusDirtyCount();
-    return scalar;
-  }
+  readonly settingsDirtyCount = computed(
+    () => this.dirtyKeys().length + this.poolDirtyCount(),
+  );
 
-  private statusDirtyCount(): number {
-    return this.changedStatuses().length;
-  }
+  readonly settingsHaveErrors = computed(() => this.errors().length > 0);
 
-  sectionHasErrors(section: SettingsSectionId): boolean {
-    const ids = new Set(nodesForSection(section).map((node) => node.id));
-    const scalar = this.errors().some(
-      (entry) => entry.poolId === null && ids.has(entry.nodeId),
-    );
-    if (section !== 'draft') return scalar;
-    return scalar || this.errors().some((entry) => entry.poolId !== null);
-  }
+  readonly applicantsDirtyCount = computed(
+    () => this.changedStatuses().length,
+  );
+
+  readonly saveRisk = computed<RiskSpec | null>(() => {
+    if (!lifecycleReached(this.phase(), DRAFT_RISK.from)) return null;
+    const draftKeys = new Set(sectionKeys('draft'));
+    const touched =
+      this.poolDirtyCount() > 0 ||
+      this.dirtyKeys().some((key) => draftKeys.has(key));
+    return touched ? DRAFT_RISK : null;
+  });
 
   private poolDirtyCount(): number {
     const saved = new Map(this.savedPools().map((pool) => [pool.id, pool]));
@@ -590,42 +574,23 @@ export class TournamentSettingsStore {
     return !equal(saved, draft);
   }
 
-  saveSection(section: SettingsSectionId): Observable<unknown> {
+  saveSettings(): Observable<unknown> {
     this.saving.set(true);
     this.saveError.set(null);
 
     const requests: Observable<unknown>[] = [];
     const settings = {
-      ...(this.settingsPatch(section) ?? {}),
-      ...(section === 'draft' ? this.derivedWindowPatch() : {}),
+      ...(this.settingsPatch() ?? {}),
+      ...this.derivedWindowPatch(),
     };
     if (Object.keys(settings).length) {
       requests.push(this.manage.updateTournamentSettings(settings));
     }
-    if (section === 'signup') {
-      const decisions = this.statusDecisions();
-      if (decisions.length) {
-        requests.push(
-          concat(
-            ...decisions.map((decision) =>
-              this.league.decideApplication(decision.applicationId, {
-                status: decision.status,
-              }),
-            ),
-          ),
-        );
-      }
-      const teamStatuses = this.teamStatusPatch();
-      if (teamStatuses.length) {
-        requests.push(this.league.updateSignUps(teamStatuses));
-      }
-    }
-
-    const assignments = section === 'draft' ? this.membershipPatch() : [];
+    const assignments = this.membershipPatch();
     if (assignments.length) {
       requests.push(this.league.updateSignUps(assignments));
     }
-    if (section === 'draft') requests.push(...this.poolRequests());
+    requests.push(...this.poolRequests());
 
     const work = requests.length ? forkJoin(requests) : of([]);
     return work.pipe(
@@ -633,9 +598,9 @@ export class TournamentSettingsStore {
         next: () => {
           if ('standingsRules' in settings && settings.standingsRules?.tiebreakers)
             this.tiebreakersCustomizedValue.set(true);
-          this.commitSection(section);
+          this.savedValue.set(clone(this.draftValue()));
+          this.savedPools.set(clone(this.draftPools()));
           this.saving.set(false);
-          if (section === 'signup') this.load();
         },
         error: (err) => {
           this.saveError.set(
@@ -645,6 +610,115 @@ export class TournamentSettingsStore {
         },
       }),
     );
+  }
+
+  revertSettings(): void {
+    this.draftValue.set(clone(this.savedValue()));
+    this.draftPools.set(clone(this.savedPools()));
+  }
+
+  saveApplicants(): Observable<unknown> {
+    this.saving.set(true);
+    this.saveError.set(null);
+
+    const requests: Observable<unknown>[] = [];
+    const decisions = this.statusDecisions();
+    if (decisions.length) {
+      requests.push(
+        concat(
+          ...decisions.map(({ applicationId, ...decision }) =>
+            this.league.decideApplication(applicationId, decision),
+          ),
+        ),
+      );
+    }
+    const teamStatuses = this.teamStatusPatch();
+    if (teamStatuses.length) {
+      requests.push(this.league.updateSignUps(teamStatuses));
+    }
+
+    const work = requests.length ? forkJoin(requests) : of([]);
+    return work.pipe(
+      tap({
+        next: () => {
+          this.savedSignUps.set(clone(this.draftSignUps()));
+          this.saving.set(false);
+          this.refreshRoster();
+        },
+        error: (err) => {
+          this.saveError.set(
+            apiErrorMessage(err, 'Failed to save. Please try again.'),
+          );
+          this.saving.set(false);
+        },
+      }),
+    );
+  }
+
+  revertApplicants(): void {
+    this.draftSignUps.set(clone(this.savedSignUps()));
+  }
+
+  setCompleted(completed: boolean): Observable<unknown> {
+    this.saving.set(true);
+    this.saveError.set(null);
+    return this.manage.updateTournamentSettings({ completed }).pipe(
+      tap({
+        next: () => {
+          const apply = (value: SettingsValue): SettingsValue => ({
+            ...value,
+            completed,
+          });
+          this.savedValue.update(apply);
+          this.draftValue.update(apply);
+          this.saving.set(false);
+        },
+        error: (err) => {
+          this.saveError.set(
+            apiErrorMessage(
+              err,
+              completed
+                ? 'Could not complete the tournament.'
+                : 'Could not reopen the tournament.',
+            ),
+          );
+          this.saving.set(false);
+        },
+      }),
+    );
+  }
+
+  openSignUps(
+    deadline: string,
+    access: 'open' | 'invite',
+  ): Observable<unknown> {
+    this.saving.set(true);
+    this.saveError.set(null);
+    return this.manage
+      .updateTournamentSettings({
+        signUpDeadline: fromLocalInput(deadline),
+        signUpAccess: access,
+      })
+      .pipe(
+        tap({
+          next: () => {
+            const apply = (value: SettingsValue): SettingsValue => ({
+              ...value,
+              signUpDeadline: deadline,
+              signUpAccess: access,
+            });
+            this.savedValue.update(apply);
+            this.draftValue.update(apply);
+            this.saving.set(false);
+          },
+          error: (err) => {
+            this.saveError.set(
+              apiErrorMessage(err, 'Could not open sign-ups.'),
+            );
+            this.saving.set(false);
+          },
+        }),
+      );
   }
 
   private derivedWindowPatch(): {
@@ -679,11 +753,10 @@ export class TournamentSettingsStore {
     };
   }
 
-  private settingsPatch(
-    section: SettingsSectionId,
-  ): Parameters<LeagueManageService['updateTournamentSettings']>[0] | null {
-    const keys = new Set(sectionKeys(section));
-    const dirty = this.dirtyKeys().filter((key) => keys.has(key));
+  private settingsPatch():
+    | Parameters<LeagueManageService['updateTournamentSettings']>[0]
+    | null {
+    const dirty = this.dirtyKeys();
     if (!dirty.length) return null;
 
     const v = this.draftValue();
@@ -819,22 +892,31 @@ export class TournamentSettingsStore {
 
   private changedStatuses(): SignUpValue[] {
     const saved = new Map(
-      this.savedSignUps().map((entry) => [entry.applicationId, entry.status]),
+      this.savedSignUps().map((entry) => [
+        entry.applicationId,
+        signUpChoiceKey(entry),
+      ]),
     );
     return this.signUps().filter(
-      (entry) => saved.get(entry.applicationId) !== entry.status,
+      (entry) => saved.get(entry.applicationId) !== signUpChoiceKey(entry),
     );
   }
 
   private statusDecisions(): {
     applicationId: string;
     status: SignUpStatus;
+    seat?: 'team' | 'sub';
+    poolSlug?: string;
   }[] {
     return this.changedStatuses()
       .filter((entry) => !entry.teamId)
       .map((entry) => ({
         applicationId: entry.applicationId,
         status: entry.status,
+        ...(entry.seat ? { seat: entry.seat.kind } : {}),
+        ...(entry.seat?.kind === 'team' && entry.seat.pool
+          ? { poolSlug: entry.seat.pool }
+          : {}),
       }));
   }
 
@@ -941,36 +1023,6 @@ export class TournamentSettingsStore {
     }
 
     return requests;
-  }
-
-  private commitSection(section: SettingsSectionId): void {
-    const draft = this.draftValue();
-    this.savedValue.update((current) => {
-      const next = { ...current } as Record<string, unknown>;
-      for (const key of sectionKeys(section)) {
-        next[key] = (draft as unknown as Record<string, unknown>)[key];
-      }
-      return next as unknown as SettingsValue;
-    });
-    if (section === 'draft') this.savedPools.set(clone(this.draftPools()));
-    if (section === 'signup') {
-      this.savedSignUps.set(clone(this.draftSignUps()));
-    }
-  }
-
-  revertSection(section: SettingsSectionId): void {
-    const saved = this.savedValue();
-    this.draftValue.update((current) => {
-      const next = { ...current } as Record<string, unknown>;
-      for (const key of sectionKeys(section)) {
-        next[key] = (saved as unknown as Record<string, unknown>)[key];
-      }
-      return next as unknown as SettingsValue;
-    });
-    if (section === 'draft') this.draftPools.set(clone(this.savedPools()));
-    if (section === 'signup') {
-      this.draftSignUps.set(clone(this.savedSignUps()));
-    }
   }
 
   nextPoolName(): string {
@@ -1100,6 +1152,47 @@ export class TournamentSettingsStore {
     if (status !== 'approved' && coachId) this.assignTeam(coachId, null);
   }
 
+  setSignUpChoice(applicationId: string, key: string): void {
+    const saved = this.savedSignUps().find(
+      (entry) => entry.applicationId === applicationId,
+    );
+    const { status, seat } = parseSignUpChoice(key);
+    const unchanged = saved && signUpChoiceKey(saved) === key;
+    this.draftSignUps.update((entries) =>
+      entries.map((entry) =>
+        entry.applicationId === applicationId
+          ? { ...entry, status, seat: unchanged ? saved.seat : seat }
+          : entry,
+      ),
+    );
+  }
+
+  setChoiceForAll(applicationIds: readonly string[], key: string): void {
+    for (const id of applicationIds) this.setSignUpChoice(id, key);
+  }
+
+  seatAtRandom(
+    applicationIds: readonly string[],
+    poolSlugs: readonly string[],
+  ): Observable<unknown> {
+    this.saving.set(true);
+    this.saveError.set(null);
+    return this.league.seatAtRandom(applicationIds, poolSlugs).pipe(
+      tap({
+        next: () => {
+          this.saving.set(false);
+          this.refreshRoster();
+        },
+        error: (err) => {
+          this.saveError.set(
+            apiErrorMessage(err, 'Could not place those teams.'),
+          );
+          this.saving.set(false);
+        },
+      }),
+    );
+  }
+
   patchSignUp(
     applicationId: string,
     changes: {
@@ -1154,12 +1247,6 @@ export class TournamentSettingsStore {
     );
   }
 
-  setStatusForAll(
-    applicationIds: readonly string[],
-    status: SignUpStatus,
-  ): void {
-    for (const id of applicationIds) this.setSignUpStatus(id, status);
-  }
 }
 
 type SignUpAssignment = {
@@ -1207,6 +1294,74 @@ type DraftDetailsResponse = {
 };
 
 const DEFAULT_TIMER_MINUTES = 60;
+
+function buildRoster(
+  coaches: CoachesResponse | null,
+  details: (DraftDetailsResponse | null)[],
+): { signUps: SignUpValue[]; pools: DraftPoolValue[] } {
+  const signUps: SignUpValue[] = (coaches?.signups ?? []).map((entry) => ({
+    id: entry.id ?? null,
+    applicationId: entry.applicationId,
+    intent: entry.intent ?? 'team',
+    answers: (entry.answers ?? []).map((answer) => ({
+      questionId: answer.questionId,
+      label: answer.label,
+      values: [...answer.values],
+    })),
+    teamId: entry.teamId ?? null,
+    teamSlug: entry.teamSlug ?? null,
+    logo: entry.logo ?? null,
+    status: entry.status,
+    departed: entry.departed ?? false,
+    teamName: entry.teamName,
+    coach: entry.name,
+    showdownName: entry.gameName,
+    discordName: entry.discordName,
+    timezone: entry.timezone,
+    experience: entry.experience,
+    signedUpAt: toLocalInput(entry.signedUpAt),
+    inDiscordServer: entry.inDiscordServer ?? false,
+    hasDiscordRole: entry.hasDiscordRole ?? false,
+  }));
+
+  const detailBySlug = new Map(
+    (coaches?.pools ?? []).map((entry, index) => [
+      entry.poolSlug,
+      details[index] ?? null,
+    ]),
+  );
+
+  const pools: DraftPoolValue[] = (coaches?.pools ?? []).map((entry) => {
+    const detail = detailBySlug.get(entry.poolSlug) ?? null;
+    const members = signUps.filter(
+      (signUp) =>
+        !signUp.departed &&
+        (coaches?.signups ?? []).find(
+          (raw) => raw.applicationId === signUp.applicationId,
+        )?.poolSlug === entry.poolSlug,
+    );
+    return {
+      id: entry.poolSlug,
+      slug: entry.poolSlug,
+      name: detail?.poolName ?? entry.name,
+      channelId: detail?.channelId ?? '',
+      status: detail?.status ?? 'PRE_DRAFT',
+      draftStart: toLocalInput(detail?.draftStart),
+      draftEnd: toLocalInput(detail?.draftEnd),
+      orderProgression: detail?.orderProgression ?? 'snake',
+      sequentialTurns: detail?.sequentialTurns ?? true,
+      pickTimerEnabled: detail ? !detail.noTimer : true,
+      pickTimerMinutes: secondsToMinutes(detail?.timerLength),
+      useRandomSeeding: detail?.useRandomSeeding ?? true,
+      picksVisibleTo: detail?.picksVisibleTo ?? 'everyone',
+      allowDuplicates: detail?.allowDuplicates ?? false,
+      allowRemovals: detail?.allowRemovals ?? false,
+      teams: orderMembers(members, detail?.teamOrder ?? []),
+    };
+  });
+
+  return { signUps, pools };
+}
 
 function secondsToMinutes(seconds: number | undefined): number {
   if (!seconds) return DEFAULT_TIMER_MINUTES;
@@ -1273,20 +1428,25 @@ function summariseSchedule(
   schedule: ScheduleResponse | null,
 ): ArtifactState['schedule'] {
   if (!schedule?.rounds?.length) {
-    return { stageCount: 0, roundCount: 0, matchupCount: 0 };
+    return { stageCount: 0, roundCount: 0, matchupCount: 0, playedCount: 0 };
   }
   const stages = new Set<string>();
   let matchupCount = 0;
+  let playedCount = 0;
   for (const round of schedule.rounds) {
     for (const stage of round.stages ?? []) {
       stages.add(stage.slug);
       matchupCount += stage.matchups?.length ?? 0;
+      playedCount += (stage.matchups ?? []).filter(
+        (matchup) => !!matchup.winner,
+      ).length;
     }
   }
   return {
     stageCount: stages.size,
     roundCount: schedule.rounds.length,
     matchupCount,
+    playedCount,
   };
 }
 

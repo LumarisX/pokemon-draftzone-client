@@ -43,12 +43,14 @@ import {
   ReplaceCoachDialogResult,
 } from '../dialogs/replace-coach-dialog/replace-coach-dialog.component';
 import {
-  DECIDABLE_STATUSES,
   SIGNUP_STATUS_LABELS,
   SignUpAnswerValue,
   SignUpStatus,
   SignUpValue,
   TEAM_STATUSES,
+  poolClosedToNewTeams,
+  signUpChoiceKey,
+  signUpChoices,
 } from './settings-schema';
 import { TournamentSettingsStore } from './tournament-settings.store';
 
@@ -91,8 +93,24 @@ export class ApplicantsPanelComponent {
 
   protected readonly busyId = signal<string | null>(null);
 
-  protected readonly decidableStatuses = DECIDABLE_STATUSES;
   protected readonly statusLabels = SIGNUP_STATUS_LABELS;
+  protected readonly choiceKey = signUpChoiceKey;
+
+  protected readonly choices = computed(() =>
+    signUpChoices(this.store.pools()),
+  );
+
+  protected readonly openPools = computed(() =>
+    this.store.pools().filter((pool) => !poolClosedToNewTeams(pool)),
+  );
+
+  protected readonly canRandomize = computed(
+    () =>
+      this.openPools().length > 1 &&
+      this.selectedIds().length > 1 &&
+      this.store.applicantsDirtyCount() === 0 &&
+      !this.store.saving(),
+  );
 
   protected readonly selected = signal<ReadonlySet<string>>(new Set());
 
@@ -119,7 +137,7 @@ export class ApplicantsPanelComponent {
       {
         id: 'roster',
         label: 'On a roster',
-        hint: 'Approved, with a team.',
+        hint: 'Added with a team. Move teams between pools in Settings.',
         selectable: false,
         entries: entries.filter(
           (entry) =>
@@ -129,7 +147,7 @@ export class ApplicantsPanelComponent {
       {
         id: 'subs',
         label: 'Available to sub',
-        hint: 'Approved or waitlisted without a team. Replacements draw from here.',
+        hint: 'Subs and the waitlist. Replacements draw from here, or add one to a pool.',
         selectable: true,
         entries: this.subPool(),
       },
@@ -188,17 +206,45 @@ export class ApplicantsPanelComponent {
     });
   }
 
-  protected statusesFor(entry: SignUpValue): readonly SignUpStatus[] {
-    return entry.teamId ? TEAM_STATUSES : DECIDABLE_STATUSES;
-  }
+  protected readonly teamStatuses = TEAM_STATUSES;
 
   protected setStatus(id: string, status: SignUpStatus): void {
     this.store.setSignUpStatus(id, status);
   }
 
-  protected bulk(status: SignUpStatus): void {
-    this.store.setStatusForAll(this.selectedIds(), status);
+  protected setChoice(id: string, key: string): void {
+    this.store.setSignUpChoice(id, key);
+  }
+
+  protected bulk(key: string): void {
+    this.store.setChoiceForAll(this.selectedIds(), key);
     this.selected.set(new Set());
+  }
+
+  protected async randomize(): Promise<void> {
+    const ids = this.selectedIds();
+    const pools = this.openPools();
+    const confirmed = await this.dialogs.confirm(
+      `Add ${ids.length} teams at random?`,
+      {
+        message: `They're split evenly across ${pools.map((pool) => pool.name).join(', ')}, counting teams already in each. The draw is final and saves right away.`,
+        confirmLabel: 'Add at Random',
+      },
+    );
+    if (!confirmed) return;
+    this.store
+      .seatAtRandom(
+        ids,
+        pools.map((pool) => pool.slug),
+      )
+      .subscribe({
+        next: () => {
+          this.selected.set(new Set());
+          this.toast.success(`${ids.length} teams added to pools.`);
+        },
+        error: (err) =>
+          this.toast.error(apiErrorMessage(err, 'Could not place those teams.')),
+      });
   }
 
   protected teamLink(entry: SignUpValue): string[] | null {
@@ -355,7 +401,7 @@ export class ApplicantsPanelComponent {
       .subscribe({
         next: () => {
           this.toast.success(`${entry.teamName} handed over.`);
-          this.store.load();
+          this.store.refreshRoster();
         },
         error: (err) => {
           this.toast.error(

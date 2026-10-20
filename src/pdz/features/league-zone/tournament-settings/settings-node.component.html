@@ -14,10 +14,6 @@
     </p>
   }
 
-  @if (artifact(); as slot) {
-    <pdz-artifact-card [slot]="slot" [locked]="disabled()" />
-  }
-
   <div class="node__controls">
     @for (control of controls(); track $index) {
       <pdz-node-control

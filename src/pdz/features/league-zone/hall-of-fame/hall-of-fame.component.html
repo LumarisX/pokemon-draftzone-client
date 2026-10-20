@@ -1,0 +1,62 @@
+<pdz-page type="hub">
+  <div class="hall">
+    <pdz-page-header
+      title="Hall of Fame"
+      [backLink]="leagueLink"
+      [backLabel]="hall()?.name ?? 'League'"
+      [logo]="logo()"
+    >
+      @if (seasons().length) {
+        <span pdz-page-header-detail>
+          {{ seasons().length }}
+          {{ seasons().length === 1 ? "season" : "seasons" }} completed
+        </span>
+      }
+    </pdz-page-header>
+
+    @switch (state().status) {
+      @case ("loading") {
+        <pdz-skeleton-layout layout="cards" [count]="2" />
+      }
+      @case ("error") {
+        <pdz-empty-state
+          bordered
+          kind="error"
+          heading="Could not load the Hall of Fame"
+          [message]="errorMessage()"
+          retry="event"
+          (retried)="load()"
+        />
+      }
+      @default {
+        @if (seasons().length) {
+          @for (entry of seasons(); track entry.season.tournamentSlug) {
+            <section
+              class="hall__season"
+              [attr.aria-labelledby]="entry.season.tournamentSlug + '-title'"
+            >
+              <div class="hall__head">
+                <h2 class="hall__title" [id]="entry.season.tournamentSlug + '-title'">
+                  <a class="hall__link" [routerLink]="entry.link">
+                    {{ entry.season.name }}
+                  </a>
+                </h2>
+                @if (entry.meta) {
+                  <p class="hall__meta">{{ entry.meta }}</p>
+                }
+              </div>
+              <pdz-podium [places]="entry.places" />
+            </section>
+          }
+        } @else {
+          <pdz-empty-state
+            bordered
+            kind="waiting"
+            heading="No champions yet"
+            message="Champions join the Hall of Fame when an organizer completes their season."
+          />
+        }
+      }
+    }
+  </div>
+</pdz-page>

@@ -10,9 +10,9 @@ export type PodiumPlace = {
   name: string;
   logo?: string;
   coach?: string;
-  wins: number;
-  losses: number;
-  draws?: number;
+  wins?: number | null;
+  losses?: number | null;
+  draws?: number | null;
   pokemon?: Pokemon<DraftOptions> | null;
   link?: readonly string[] | null;
   you?: boolean;
@@ -64,12 +64,14 @@ export const PODIUM_SIZE = 3;
                 @if (place.coach) {
                   <span class="pdz-podium__coach">{{ place.coach }}</span>
                 }
-                <pdz-record
-                  size="sm"
-                  [wins]="place.wins"
-                  [losses]="place.losses"
-                  [draws]="place.draws"
-                />
+                @if (recordOf(place); as record) {
+                  <pdz-record
+                    size="sm"
+                    [wins]="record.wins"
+                    [losses]="record.losses"
+                    [draws]="record.draws"
+                  />
+                }
               </div>
             </li>
           }
@@ -85,4 +87,11 @@ export class PodiumComponent {
 
   readonly places = input.required<readonly PodiumPlace[]>();
   readonly label = input('Final Standings');
+
+  protected recordOf(
+    place: PodiumPlace,
+  ): { wins: number; losses: number; draws: number | null } | null {
+    if (place.wins == null || place.losses == null) return null;
+    return { wins: place.wins, losses: place.losses, draws: place.draws ?? null };
+  }
 }

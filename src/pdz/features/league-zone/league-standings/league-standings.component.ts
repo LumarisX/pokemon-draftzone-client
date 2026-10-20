@@ -5,8 +5,9 @@ import {
   inject,
   signal,
 } from '@angular/core';
-import { toSignal } from '@angular/core/rxjs-interop';
+import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { LEAGUE_ZONE_PATH } from '@pdz/core/route-paths';
+import { podiumPlaces } from '@pdz/features/league-zone/hall-of-fame/final-placements';
 import { AuthService } from '@pdz/core/services/auth0.service';
 import { LeagueZoneService } from '@pdz/features/league-zone/league-zone.service';
 import { League } from '@pdz/features/league-zone/league.interface';
@@ -135,7 +136,33 @@ export class LeagueStandingsComponent {
     { initialValue: null },
   );
 
+  private readonly finalPlacements = toSignal(
+    toObservable(this.info).pipe(
+      switchMap((info) =>
+        info?.completedAt
+          ? this.leagueService.getHallOfFame().pipe(
+              map(
+                (hall) =>
+                  hall.seasons.find(
+                    (season) => season.tournamentSlug === info.tournamentSlug,
+                  )?.places ?? null,
+              ),
+              catchError(() => of(null)),
+            )
+          : of(null),
+      ),
+    ),
+    { initialValue: null },
+  );
+
   readonly podium = computed((): PodiumPlace[] => {
+    const final = this.finalPlacements();
+    if (final?.length) {
+      const linkBase = this.teamLinkBase();
+      return podiumPlaces(final, (teamSlug) =>
+        linkBase ? [...linkBase, teamSlug] : [],
+      );
+    }
     const state = this.state();
     const seasonEnd = this.info()?.seasonEnd;
     if (state.status !== 'ready' || !seasonEnd) return [];

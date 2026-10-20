@@ -1,0 +1,284 @@
+<pdz-page type="detail">
+  @if (store.loading()) {
+    <pdz-skeleton-layout layout="form" />
+  } @else if (store.loadError(); as message) {
+    <pdz-empty-state
+      bordered
+      kind="error"
+      heading="Could not load this tournament's settings"
+      [message]="message"
+      retry="event"
+      (retried)="store.load()"
+    />
+  } @else {
+    <pdz-page-sections heading="Settings" [sections]="sections()">
+      <pdz-page-header
+        title="Settings"
+        subtitle="How this tournament works. Every change here saves together."
+      />
+
+      <div class="settings">
+        @for (block of blocks; track anchor(block)) {
+          <section
+            class="settings__section"
+            [id]="anchor(block)"
+            [attr.aria-labelledby]="anchor(block) + '-title'"
+          >
+            <div class="settings__head">
+              <div class="settings__heading">
+                <h2 class="settings__title" [id]="anchor(block) + '-title'">
+                  {{ label(block) }}
+                </h2>
+                @switch (block.kind) {
+                  @case ("nodes") {
+                    <p class="settings__blurb">{{ blurb(block.section) }}</p>
+                  }
+                  @case ("pools") {
+                    <p class="settings__blurb">
+                      Turn order, timing and who drafts where. Pools normally
+                      open together; set one window and apply it to the rest.
+                    </p>
+                  }
+                  @case ("organizers") {
+                    <p class="settings__blurb">
+                      Who can manage every part of this tournament.
+                    </p>
+                  }
+                  @case ("completion") {
+                    <p class="settings__blurb">
+                      Close out the season once the last match is played.
+                    </p>
+                  }
+                }
+              </div>
+
+              @if (block.kind === "nodes" && block.section === "signup") {
+                <a
+                  pdz-button
+                  size="sm"
+                  variant="outlined"
+                  color="neutral"
+                  routerLink="../sign-ups"
+                >
+                  Review Applicants
+                </a>
+              }
+              @if (block.kind === "nodes" && block.section === "season") {
+                <a
+                  pdz-button
+                  size="sm"
+                  variant="outlined"
+                  color="neutral"
+                  routerLink="../schedule"
+                >
+                  Open Schedule
+                </a>
+              }
+              @if (block.kind === "pools" && store.collapsed() && store.poolCount()) {
+                <button
+                  pdz-button
+                  type="button"
+                  size="sm"
+                  variant="outlined"
+                  color="neutral"
+                  icon="call_split"
+                  [disabled]="store.saving()"
+                  (click)="addPool()"
+                >
+                  Split Into Pools
+                </button>
+              }
+            </div>
+
+            @switch (block.kind) {
+              @case ("nodes") {
+                <pdz-risk-banner [risk]="risk(block.section)" />
+                <pdz-card padding="lg">
+                  @for (entry of nodes(block.section); track entry.node.id) {
+                    <pdz-settings-node
+                      [node]="entry.node"
+                      [disabled]="entry.locked"
+                      [lockedReason]="entry.locked ? gateReason : null"
+                    />
+                  }
+                </pdz-card>
+              }
+
+              @case ("pools") {
+                <pdz-risk-banner [risk]="poolRisk()" />
+
+                @if (store.unassigned().length; as waiting) {
+                  <p class="settings__waiting">
+                    <pdz-icon name="group_add" [size]="16" aria-hidden="true" />
+                    {{ waiting }} approved
+                    {{ waiting === 1 ? "team is" : "teams are" }} not in a pool
+                    yet.
+                  </p>
+                }
+
+                @if (!store.collapsed()) {
+                  <pdz-tab-nav label="Draft Pools">
+                    @for (pool of store.pools(); track pool.id) {
+                      <button
+                        pdz-tab-link
+                        type="button"
+                        [active]="pool.id === store.selectedPool()?.id"
+                        (click)="selectPool(pool.id)"
+                      >
+                        {{ pool.name }}
+                        @if (store.poolHasErrors(pool.id)) {
+                          <pdz-icon
+                            name="error"
+                            [size]="16"
+                            aria-label="Has problems"
+                          />
+                        } @else if (store.poolDirty(pool.id)) {
+                          <span class="settings__dot" aria-label="Unsaved"></span>
+                        }
+                      </button>
+                    }
+                    <button
+                      pdz-tab-link
+                      type="button"
+                      [disabled]="store.saving()"
+                      (click)="addPool()"
+                    >
+                      <pdz-icon name="add" [size]="16" aria-hidden="true" />
+                      Add Pool
+                    </button>
+                  </pdz-tab-nav>
+                }
+
+                @if (store.selectedPool(); as pool) {
+                  <pdz-card padding="lg">
+                    <div class="pool">
+                      <div class="pool__bar">
+                        <span class="pool__name">
+                          {{ store.collapsed() ? "Pool Settings" : pool.name }}
+                        </span>
+                        <div class="pool__actions">
+                          <a
+                            pdz-button
+                            size="sm"
+                            variant="outlined"
+                            color="neutral"
+                            [routerLink]="['../pools', pool.slug, 'draft']"
+                          >
+                            Open Draft Control
+                          </a>
+                          @if (!store.collapsed()) {
+                            <button
+                              pdz-button
+                              type="button"
+                              size="sm"
+                              variant="ghost"
+                              color="danger"
+                              [disabled]="store.saving()"
+                              (click)="removePool(pool.id)"
+                            >
+                              Delete Pool
+                            </button>
+                          }
+                        </div>
+                      </div>
+
+                      <div class="pool__nodes">
+                        @for (node of poolNodes(); track node.id) {
+                          <div
+                            class="pool__node"
+                            [class.pool__node--full]="node.span === 'full'"
+                          >
+                            <pdz-settings-node [node]="node" [poolId]="pool.id" />
+                          </div>
+                        }
+                      </div>
+                    </div>
+                  </pdz-card>
+                } @else {
+                  <pdz-empty-state
+                    bordered
+                    kind="empty"
+                    heading="No draft pool yet"
+                    message="Turn order, the pick timer, who sees picks and the draft window are set on a pool. Create one to set them."
+                  >
+                    <button
+                      pdz-empty-state-actions
+                      pdz-button
+                      type="button"
+                      icon="add"
+                      [loading]="store.saving()"
+                      (click)="addPool()"
+                    >
+                      Create Draft Pool
+                    </button>
+                  </pdz-empty-state>
+                }
+              }
+
+              @case ("organizers") {
+                <pdz-card padding="lg">
+                  <div class="settings__row">
+                    <p class="settings__row-text">
+                      Organizers can change every setting, run the draft and
+                      record results. Only the owner can add or remove them.
+                    </p>
+                    <a
+                      pdz-button
+                      size="sm"
+                      variant="outlined"
+                      color="neutral"
+                      routerLink="../organizers"
+                    >
+                      Manage Organizers
+                    </a>
+                  </div>
+                </pdz-card>
+              }
+
+              @case ("completion") {
+                <pdz-card padding="lg">
+                  <div class="settings__row">
+                    <p class="settings__row-text">
+                      @if (store.saved().completed) {
+                        This tournament is completed. Its placements are in the
+                        league's Hall of Fame, and results and settings are
+                        locked until you reopen it.
+                      } @else {
+                        Review the final placements before you lock them in.
+                        Completing the tournament adds its top three to the
+                        league's Hall of Fame and locks results and settings.
+                      }
+                    </p>
+                    <a
+                      pdz-button
+                      size="sm"
+                      variant="outlined"
+                      color="neutral"
+                      routerLink="../final-results"
+                    >
+                      {{
+                        store.saved().completed
+                          ? "View Final Results"
+                          : "Review Final Results"
+                      }}
+                    </a>
+                  </div>
+                </pdz-card>
+              }
+            }
+          </section>
+        }
+
+        <pdz-save-bar
+          [count]="store.settingsDirtyCount()"
+          [blocked]="store.settingsHaveErrors()"
+          [pending]="store.saving()"
+          [error]="store.saveError()"
+          label="Save Settings"
+          (save)="save()"
+          (revert)="revert()"
+        />
+      </div>
+    </pdz-page-sections>
+  }
+</pdz-page>

@@ -4,9 +4,11 @@ import {
   EXTERNAL_DRAFTS_PATH,
   LEAGUE_ADMIN_INVITE_PATH,
   LEAGUE_ADMINS_PATH,
+  LEAGUE_HALL_OF_FAME_PATH,
   LEAGUE_ZONE_MANAGE_PATH,
   ORGANIZER_INVITE_PATH,
 } from '@pdz/core/route-paths';
+import { HallOfFameComponent } from './hall-of-fame/hall-of-fame.component';
 import {
   DRAFT_AREA,
   EXTERNAL_DRAFTS_AREA,
@@ -63,6 +65,10 @@ export const routes: Routes = [
   {
     path: `:leagueSlug`,
     component: LeagueLandingComponent,
+  },
+  {
+    path: `:leagueSlug/${LEAGUE_HALL_OF_FAME_PATH}`,
+    component: HallOfFameComponent,
   },
   {
     path: ':leagueSlug/edit',

@@ -175,7 +175,7 @@ describe('TournamentSettingsStore standings rules', () => {
       'pokemonDiff',
       'strengthOfSchedule',
     ]);
-    await firstValueFrom(store.saveSection('season'));
+    await firstValueFrom(store.saveSettings());
 
     expect(manage.updateTournamentSettings).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -197,7 +197,7 @@ describe('TournamentSettingsStore standings rules', () => {
     const { store, manage } = setup({});
 
     store.write('pointsWin', 2);
-    await firstValueFrom(store.saveSection('season'));
+    await firstValueFrom(store.saveSettings());
 
     expect(manage.updateTournamentSettings).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -270,10 +270,135 @@ describe('TournamentSettingsStore pool assignments', () => {
   it('assigns by team slug, not by coach id', async () => {
     store.assignTeam('coach-1', 'pool-a');
 
-    await firstValueFrom(store.saveSection('draft'));
+    await firstValueFrom(store.saveSettings());
 
     expect(league.updateSignUps).toHaveBeenCalledWith([
       { teamSlug: 'team-rocket', pool: 'pool-a', status: 'approved' },
     ]);
+  });
+});
+
+describe('TournamentSettingsStore sign-up decisions', () => {
+  let store: TournamentSettingsStore;
+  let decideApplication: jest.Mock;
+
+  function applicant(applicationId: string, status: string) {
+    return {
+      id: null,
+      applicationId,
+      teamId: null,
+      teamSlug: null,
+      name: applicationId,
+      gameName: applicationId,
+      discordName: applicationId,
+      timezone: 'UTC',
+      experience: '',
+      status,
+      teamName: 'Team',
+      signedUpAt: new Date('2026-09-01'),
+    };
+  }
+
+  beforeEach(() => {
+    const anything = () => of({});
+    decideApplication = jest.fn(() => of({}));
+
+    TestBed.configureTestingModule({
+      providers: [
+        TournamentSettingsStore,
+        {
+          provide: LeagueManageService,
+          useValue: new Proxy(
+            {
+              getTournamentSettings: () => of(settingsWith()),
+              getSchedule: () => throwError(() => new Error('none')),
+              getTrades: () => throwError(() => new Error('none')),
+            } as Record<string, unknown>,
+            { get: (target, key: string) => target[key] ?? anything },
+          ),
+        },
+        {
+          provide: LeagueZoneService,
+          useValue: {
+            decideApplication,
+            updateSignUps: jest.fn(() => of({})),
+            getSignUps: () =>
+              of({
+                signups: [
+                  applicant('app-pending', 'pending'),
+                  applicant('app-sub', 'approved'),
+                ],
+                pools: [{ poolSlug: 'pool-a', name: 'Pool A' }],
+              }),
+            getRules: () => throwError(() => new Error('none')),
+            getPoolDetails: () => throwError(() => new Error('none')),
+          },
+        },
+        {
+          provide: TierListService,
+          useValue: { getTierList: () => throwError(() => new Error('none')) },
+        },
+      ],
+    });
+    store = TestBed.inject(TournamentSettingsStore);
+    store.load();
+  });
+
+  it('reads an approved applicant without a team as a sub, with nothing to save', () => {
+    expect(store.applicantsDirtyCount()).toBe(0);
+  });
+
+  it('adds an applicant straight to the chosen pool', async () => {
+    store.setSignUpChoice('app-pending', 'team:pool-a');
+
+    await firstValueFrom(store.saveApplicants());
+
+    expect(decideApplication).toHaveBeenCalledWith('app-pending', {
+      status: 'approved',
+      seat: 'team',
+      poolSlug: 'pool-a',
+    });
+  });
+
+  it('adds an applicant as a sub', async () => {
+    store.setSignUpChoice('app-pending', 'sub');
+
+    await firstValueFrom(store.saveApplicants());
+
+    expect(decideApplication).toHaveBeenCalledWith('app-pending', {
+      status: 'approved',
+      seat: 'sub',
+    });
+  });
+
+  it('moves a sub onto a roster in a pool', async () => {
+    store.setSignUpChoice('app-sub', 'team:pool-a');
+
+    expect(store.applicantsDirtyCount()).toBe(1);
+    await firstValueFrom(store.saveApplicants());
+
+    expect(decideApplication).toHaveBeenCalledWith('app-sub', {
+      status: 'approved',
+      seat: 'team',
+      poolSlug: 'pool-a',
+    });
+  });
+
+  it('keeps unsaved settings when applicant decisions are saved', async () => {
+    store.write('name', 'Renamed');
+    store.setSignUpChoice('app-pending', 'sub');
+
+    await firstValueFrom(store.saveApplicants());
+
+    expect(store.draft().name).toBe('Renamed');
+    expect(store.settingsDirtyCount()).toBe(1);
+    expect(store.applicantsDirtyCount()).toBe(0);
+  });
+
+  it('forgets a choice that is changed back', () => {
+    store.setSignUpChoice('app-pending', 'sub');
+    store.setSignUpChoice('app-pending', 'pending');
+
+    expect(store.applicantsDirtyCount()).toBe(0);
   });
 });

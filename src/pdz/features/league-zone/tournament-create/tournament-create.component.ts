@@ -24,8 +24,6 @@ import { ToastService } from '@pdz/shared/feedback/toast/toast.service';
 import { SkeletonLayoutComponent } from '@pdz/shared/data/skeleton/skeleton-layout.component';
 import { FieldComponent } from '@pdz/shared/inputs/field/field.component';
 import { InputDirective } from '@pdz/shared/inputs/field/input.directive';
-import { SegmentedOptionComponent } from '@pdz/shared/inputs/segmented/segmented-option.component';
-import { SegmentedComponent } from '@pdz/shared/inputs/segmented/segmented.component';
 import { SlideToggleComponent } from '@pdz/shared/inputs/slide-toggle/slide-toggle.component';
 import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
 import { PageComponent } from '@pdz/shared/layout/page/page.component';
@@ -34,8 +32,6 @@ import { League } from '../league.interface';
 import { isValidOrganizerName, ORGANIZER_NAME_MAX } from '../league.util';
 
 export const TOURNAMENT_NAME_MAX = 80;
-
-type DiffMode = 'pokemon' | 'game';
 
 @Component({
   selector: 'pdz-tournament-create',
@@ -53,8 +49,6 @@ type DiffMode = 'pokemon' | 'game';
     SkeletonLayoutComponent,
     PageComponent,
     PageHeaderComponent,
-    SegmentedComponent,
-    SegmentedOptionComponent,
     SelectComponent,
     SelectOptionComponent,
     SlideToggleComponent,
@@ -77,11 +71,9 @@ export class TournamentCreateComponent implements OnInit {
 
   protected readonly name = signal('');
   protected readonly ownerName = signal('');
-  protected readonly signUpDeadline = signal('');
+  protected readonly knownOwnerName = signal('');
+  protected readonly editingOwnerName = signal(false);
   protected readonly copySettings = signal(false);
-  protected readonly diffMode = signal<DiffMode>('pokemon');
-  protected readonly draftMin = signal(10);
-  protected readonly draftMax = signal(12);
 
   protected readonly nameMax = TOURNAMENT_NAME_MAX;
   protected readonly ownerNameMax = ORGANIZER_NAME_MAX;
@@ -125,21 +117,17 @@ export class TournamentCreateComponent implements OnInit {
     isValidOrganizerName(this.ownerName()),
   );
 
-  protected readonly draftCountValid = computed(
+  protected readonly showOwnerNameField = computed(
     () =>
-      Number.isInteger(this.draftMin()) &&
-      Number.isInteger(this.draftMax()) &&
-      this.draftMin() >= 0 &&
-      this.draftMin() <= this.draftMax(),
+      this.editingOwnerName() ||
+      !isValidOrganizerName(this.knownOwnerName()),
   );
 
   protected readonly canSubmit = computed(
     () =>
       !this.saving() &&
       this.name().trim().length > 0 &&
-      this.ownerNameValid() &&
-      this.signUpDeadline().length > 0 &&
-      (this.copySettings() || this.draftCountValid()),
+      this.ownerNameValid(),
   );
 
   ngOnInit(): void {
@@ -148,7 +136,10 @@ export class TournamentCreateComponent implements OnInit {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (league) => {
-          this.ownerName.set(league.newTournamentDefaults?.ownerName ?? '');
+          const defaults = league.newTournamentDefaults;
+          this.ownerName.set(defaults?.ownerName ?? '');
+          this.knownOwnerName.set(defaults?.ownerName ?? '');
+          this.copySettings.set(!!defaults?.copyFrom);
           this.tierListFrom.set(
             league.newTournamentDefaults?.tierLists[0]?.tournamentSlug ?? '',
           );
@@ -170,21 +161,13 @@ export class TournamentCreateComponent implements OnInit {
       .createTournament(this.leagueSlug, {
         name: this.name().trim(),
         ownerName: this.ownerName().trim(),
-        signUpDeadline: new Date(this.signUpDeadline()).toISOString(),
         tierListFrom: this.tierListFrom() || null,
-        ...(copyFrom
-          ? { copyFrom }
-          : {
-              diffMode: this.diffMode(),
-              draftCount: { min: this.draftMin(), max: this.draftMax() },
-            }),
+        ...(copyFrom ? { copyFrom } : {}),
       })
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: ({ tournamentSlug }) => {
-          this.toast.success(
-            'Tournament created. Sign-ups stay closed until you open them.',
-          );
+          this.toast.success('Tournament created.');
           this.router.navigate([
             '/',
             LEAGUE_ZONE_PATH,

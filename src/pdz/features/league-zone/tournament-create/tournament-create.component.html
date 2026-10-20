@@ -4,7 +4,7 @@
       title="New Tournament"
       [backLink]="leagueLink"
       [backLabel]="league()?.name ?? 'League'"
-      subtitle="Start with the basics. Everything else lives in the tournament's settings."
+      subtitle="Name it and you're in. Sign-ups, the draft and scoring are set up from the tournament's overview."
     />
 
     @if (loadFailed()) {
@@ -31,36 +31,44 @@
               />
             </label>
 
-            <label
-              pdz-field
-              label="Your organizer name"
-              hint="What coaches and other organizers see. Your account name stays private."
-              required
-              [error]="
-                ownerName() && !ownerNameValid()
-                  ? '3–24 characters, starting and ending with a letter or number.'
-                  : null
-              "
-            >
-              <input
-                pdz-input
-                type="text"
-                name="ownerName"
-                [maxlength]="ownerNameMax"
-                [ngModel]="ownerName()"
-                (ngModelChange)="ownerName.set($event)"
-              />
-            </label>
-
-            <label pdz-field label="Sign-Ups Close" required>
-              <input
-                pdz-input
-                type="datetime-local"
-                name="signUpDeadline"
-                [ngModel]="signUpDeadline()"
-                (ngModelChange)="signUpDeadline.set($event)"
-              />
-            </label>
+            @if (showOwnerNameField()) {
+              <label
+                pdz-field
+                label="Your Organizer Name"
+                hint="What coaches and other organizers see. Your account name stays private."
+                required
+                [error]="
+                  ownerName() && !ownerNameValid()
+                    ? '3–24 characters, starting and ending with a letter or number.'
+                    : null
+                "
+              >
+                <input
+                  pdz-input
+                  type="text"
+                  name="ownerName"
+                  [maxlength]="ownerNameMax"
+                  [ngModel]="ownerName()"
+                  (ngModelChange)="ownerName.set($event)"
+                />
+              </label>
+            } @else {
+              <p class="create__owner">
+                <span>
+                  Organizing as <strong>{{ ownerName() }}</strong>
+                </span>
+                <button
+                  pdz-button
+                  type="button"
+                  size="sm"
+                  variant="ghost"
+                  color="neutral"
+                  (click)="editingOwnerName.set(true)"
+                >
+                  Change
+                </button>
+              </p>
+            }
 
             @if (copySource(); as source) {
               <pdz-slide-toggle
@@ -107,55 +115,6 @@
                 </p>
               }
             }
-
-            @if (!copySettings()) {
-              <div pdz-field label="Differential">
-                <pdz-segmented
-                  aria-label="Differential"
-                  [value]="diffMode()"
-                  (valueChange)="diffMode.set($event!)"
-                >
-                  <pdz-segmented-option value="pokemon" label="Pokémon" />
-                  <pdz-segmented-option value="game" label="Games" />
-                </pdz-segmented>
-              </div>
-
-              <div class="create__pair">
-                <label pdz-field label="Minimum Roster">
-                  <input
-                    pdz-input
-                    type="number"
-                    name="draftMin"
-                    min="0"
-                    [ngModel]="draftMin()"
-                    (ngModelChange)="draftMin.set($event)"
-                  />
-                </label>
-                <label
-                  pdz-field
-                  label="Maximum Roster"
-                  [error]="
-                    draftCountValid()
-                      ? null
-                      : 'The maximum must be at least the minimum.'
-                  "
-                >
-                  <input
-                    pdz-input
-                    type="number"
-                    name="draftMax"
-                    min="0"
-                    [ngModel]="draftMax()"
-                    (ngModelChange)="draftMax.set($event)"
-                  />
-                </label>
-              </div>
-            }
-
-            <p class="create__note">
-              Sign-ups start closed. Open them from the tournament's settings
-              once the tier list and pools are ready.
-            </p>
 
             <div class="create__actions">
               <a pdz-button variant="outlined" [routerLink]="leagueLink"

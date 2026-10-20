@@ -1,6 +1,20 @@
 <pdz-page type="detail">
   <pdz-page-sections [sections]="sections()">
-    <pdz-page-header title="Rules" />
+    <pdz-page-header title="Rules">
+      @if (isOrganizer()) {
+        <div pdz-page-header-actions>
+          <a
+            pdz-button
+            variant="outlined"
+            color="neutral"
+            icon="edit"
+            routerLink="../manage/rules"
+          >
+            Edit Rules
+          </a>
+        </div>
+      }
+    </pdz-page-header>
 
     @if (rules(); as rules) {
       @if (rules.length) {
@@ -23,7 +37,18 @@
           kind="waiting"
           heading="No rules yet"
           [message]="noRulesMessage()"
-        />
+        >
+          @if (isOrganizer()) {
+            <a
+              pdz-empty-state-actions
+              pdz-button
+              icon="edit"
+              routerLink="../manage/rules"
+            >
+              Write the Rules
+            </a>
+          }
+        </pdz-empty-state>
       }
     } @else {
       <pdz-skeleton-layout layout="text" />

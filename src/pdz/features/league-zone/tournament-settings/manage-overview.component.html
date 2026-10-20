@@ -1,0 +1,110 @@
+<pdz-page type="hub">
+  @if (store.loading()) {
+    <pdz-skeleton-layout layout="list" />
+  } @else if (store.loadError(); as message) {
+    <pdz-empty-state
+      bordered
+      kind="error"
+      heading="Could not load this tournament"
+      [message]="message"
+      retry="event"
+      (retried)="store.load()"
+    />
+  } @else {
+    <div class="overview">
+      <pdz-page-header
+        [title]="store.saved().name || 'New Tournament'"
+        eyebrow="Manage"
+        [logo]="logoUrl()"
+      >
+        @if (detail().length) {
+          <span pdz-page-header-detail class="overview__detail">
+            @for (part of detail(); track part; let first = $first) {
+              @if (!first) {
+                <span class="overview__sep" aria-hidden="true">·</span>
+              }
+              <span>{{ part }}</span>
+            }
+          </span>
+        }
+      </pdz-page-header>
+
+      <ol class="phases" aria-label="Tournament progress">
+        @for (step of phases(); track step.id) {
+          <li
+            class="phases__step"
+            [class.phases__step--done]="step.state === 'done'"
+            [class.phases__step--current]="step.state === 'current'"
+            [attr.aria-current]="step.state === 'current' ? 'step' : null"
+          >
+            <span class="phases__marker" aria-hidden="true">
+              @if (step.state === "done") {
+                <pdz-icon name="check" size="xs" />
+              }
+            </span>
+            <span class="phases__text">
+              <span class="phases__label">{{ step.label }}</span>
+              <span class="phases__when">{{ step.when }}</span>
+            </span>
+          </li>
+        }
+      </ol>
+
+      <section class="todo" aria-labelledby="todo-title">
+        <h2 class="todo__title" id="todo-title">Next Up</h2>
+
+        @if (todo().length) {
+          <pdz-card padding="none">
+            <ul class="todo__list">
+              @for (item of todo(); track item.id; let first = $first) {
+                <li class="todo__item" [class.todo__item--urgent]="item.urgent">
+                  <span class="todo__icon">
+                    <pdz-icon [name]="item.icon" [size]="20" aria-hidden="true" />
+                  </span>
+                  <span class="todo__text">
+                    <span class="todo__label">{{ item.label }}</span>
+                    <span class="todo__detail">{{ item.detail }}</span>
+                  </span>
+                  @if (item.link; as link) {
+                    <a
+                      class="todo__action"
+                      pdz-button
+                      size="sm"
+                      [variant]="first ? 'filled' : 'outlined'"
+                      [color]="first ? 'primary' : 'neutral'"
+                      [routerLink]="link.route"
+                      [fragment]="link.fragment"
+                    >
+                      {{ item.action }}
+                    </a>
+                  } @else {
+                    <button
+                      class="todo__action"
+                      pdz-button
+                      type="button"
+                      size="sm"
+                      [variant]="first ? 'filled' : 'outlined'"
+                      [color]="first ? 'primary' : 'neutral'"
+                      [loading]="store.saving()"
+                      (click)="openSignUps()"
+                    >
+                      {{ item.action }}
+                    </button>
+                  }
+                </li>
+              }
+            </ul>
+          </pdz-card>
+        } @else {
+          <pdz-empty-state
+            bordered
+            size="sm"
+            icon="check_circle"
+            heading="Nothing needs you right now"
+            [message]="allClear()"
+          />
+        }
+      </section>
+    </div>
+  }
+</pdz-page>

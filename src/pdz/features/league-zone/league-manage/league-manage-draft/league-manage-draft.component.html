@@ -1,5 +1,4 @@
 @let saved = settings();
-@let draft = pending();
 @let turnNow = currentTurn();
 
 <pdz-page type="workspace">
@@ -74,6 +73,16 @@
       "
       (click)="toggleNoTimer()"
     ></button>
+    <a
+      pdz-button
+      variant="outlined"
+      color="neutral"
+      icon="settings"
+      [routerLink]="settingsLink()"
+      fragment="pools"
+    >
+      Pool Settings
+    </a>
   </div>
 
   <pdz-pool-switcher
@@ -83,133 +92,6 @@
 </pdz-page-header>
 
 <div class="manage-draft__panels">
-  <pdz-card padding="lg" class="panel">
-    <div class="panel__body">
-      <h2 class="panel__title">Draft Settings</h2>
-
-      <label pdz-field label="Draft Name">
-        <input
-          pdz-input
-          type="text"
-          [value]="draft.name"
-          (input)="patch('name', $any($event.target).value)"
-        />
-      </label>
-
-      <div
-        pdz-field
-        label="Discord channel ID"
-        hint="Test sends to the last saved channel ID — save settings first if you just changed it."
-      >
-        <div class="panel__inline">
-          <input
-            pdz-input
-            type="text"
-            aria-label="Discord channel ID"
-            placeholder="e.g. 123456789012345678"
-            [value]="draft.channelId"
-            (input)="patch('channelId', $any($event.target).value)"
-          />
-          <button
-            pdz-button
-            variant="outlined"
-            color="neutral"
-            [loading]="testingMessage()"
-            [disabled]="!saved.channelId"
-            [pdzTooltip]="saved.channelId ? '' : 'Save a channel ID first'"
-            (click)="sendTestMessage()"
-          >
-            Send Test
-          </button>
-        </div>
-      </div>
-
-      <div
-        pdz-field
-        label="Turn Order"
-        [hint]="
-          canEditOrder()
-            ? undefined
-            : 'Turn order can only change before the draft starts.'
-        "
-      >
-        <pdz-segmented
-          size="sm"
-          aria-label="Turn Order"
-          [disabled]="!canEditOrder()"
-          [value]="draft.orderProgression"
-          (valueChange)="patch('orderProgression', $any($event))"
-        >
-          <pdz-segmented-option value="snake" label="Snake" />
-          <pdz-segmented-option value="linear" label="Linear" />
-        </pdz-segmented>
-      </div>
-
-      <div
-        pdz-field
-        label="Who sees picks"
-        hint="Own team only hides other teams' picks from coaches until the draft completes. Switch back to everyone to reveal early."
-      >
-        <pdz-segmented
-          size="sm"
-          aria-label="Who sees picks"
-          [value]="draft.picksVisibleTo"
-          (valueChange)="patch('picksVisibleTo', $any($event))"
-        >
-          <pdz-segmented-option value="everyone" label="Everyone" />
-          <pdz-segmented-option value="ownTeam" label="Own team only" />
-        </pdz-segmented>
-      </div>
-
-      <div class="panel__checks">
-        <label pdz-check label="Sequential Turns">
-          <input
-            pdz-checkbox
-            type="checkbox"
-            [checked]="draft.sequentialTurns"
-            [disabled]="!canEditOrder()"
-            (change)="patch('sequentialTurns', !draft.sequentialTurns)"
-          />
-        </label>
-        <label
-          pdz-check
-          label="Allow duplicate picks"
-          description="More than one team can draft the same Pokémon."
-        >
-          <input
-            pdz-checkbox
-            type="checkbox"
-            [checked]="draft.allowDuplicates"
-            [disabled]="!canEditOrder()"
-            (change)="patch('allowDuplicates', !draft.allowDuplicates)"
-          />
-        </label>
-        <label pdz-check label="Allow pick removals">
-          <input
-            pdz-checkbox
-            type="checkbox"
-            [checked]="draft.allowRemovals"
-            (change)="patch('allowRemovals', !draft.allowRemovals)"
-          />
-        </label>
-      </div>
-
-      <div class="panel__actions">
-        @if (isSettingsDirty()) {
-          <span class="panel__dirty">Unsaved changes</span>
-        }
-        <button
-          pdz-button
-          [loading]="settingsSaving()"
-          [disabled]="!isSettingsDirty()"
-          (click)="saveSettings()"
-        >
-          Save Settings
-        </button>
-      </div>
-    </div>
-  </pdz-card>
-
   <pdz-card padding="lg" class="panel">
     <div class="panel__body">
       <div class="panel__header">

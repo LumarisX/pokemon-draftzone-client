@@ -11,13 +11,7 @@
 }
 
 .manage-draft__panels {
-  display: grid;
-  gap: pdz.layout(section-gap);
-  align-items: start;
-
-  @include pdz.respond-above(large) {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
+  max-width: pdz.content-width(narrow);
 }
 
 .manage-draft__rounds {
@@ -48,22 +42,6 @@
   @include pdz.text(section-title);
   margin: 0;
   color: pdz.color(on-surface);
-}
-
-.panel__inline {
-  display: flex;
-  gap: pdz.space(sm);
-
-  [pdz-input] {
-    flex: 1 1 auto;
-    min-width: 0;
-  }
-}
-
-.panel__checks {
-  display: flex;
-  flex-direction: column;
-  gap: pdz.space(sm);
 }
 
 .panel__actions {

@@ -65,11 +65,10 @@ describe('TournamentCreateComponent', () => {
     return fixture.componentInstance as unknown as {
       name: { set(value: string): void };
       ownerName: () => string;
-      signUpDeadline: { set(value: string): void };
-      copySettings: { set(value: boolean): void };
+      copySettings: { (): boolean; set(value: boolean): void };
       tierListFrom: { (): string; set(value: string): void };
       requirementsDropped: () => boolean;
-      draftMin: { set(value: number): void };
+      showOwnerNameField: () => boolean;
       canSubmit: () => boolean;
       submit(): void;
     };
@@ -78,22 +77,25 @@ describe('TournamentCreateComponent', () => {
   it('prefills the owner name from the latest tournament', () => {
     const component = setup();
     expect(component.ownerName()).toBe('Host');
+    expect(component.showOwnerNameField()).toBe(false);
   });
 
-  it('sends the diff mode and draft count for a blank tournament', () => {
+  it('copies the latest tournament by default', () => {
+    const component = setup();
+    expect(component.copySettings()).toBe(true);
+  });
+
+  it('sends only the name, organizer and tier list for a blank tournament', () => {
     const component = setup();
     component.name.set(' Season 2 ');
-    component.signUpDeadline.set('2026-10-01T12:00');
+    component.copySettings.set(false);
 
     component.submit();
 
     expect(createTournament).toHaveBeenCalledWith('league01', {
       name: 'Season 2',
       ownerName: 'Host',
-      signUpDeadline: new Date('2026-10-01T12:00').toISOString(),
       tierListFrom: 'season01',
-      diffMode: 'pokemon',
-      draftCount: { min: 10, max: 12 },
     });
     expect(navigate).toHaveBeenCalledWith([
       '/',
@@ -108,7 +110,6 @@ describe('TournamentCreateComponent', () => {
   it('sends only the copy source when copying settings', () => {
     const component = setup();
     component.name.set('Season 2');
-    component.signUpDeadline.set('2026-10-01T12:00');
     component.copySettings.set(true);
 
     component.submit();
@@ -127,7 +128,6 @@ describe('TournamentCreateComponent', () => {
   it('sends a null tier list source when starting without one', () => {
     const component = setup();
     component.name.set('Season 2');
-    component.signUpDeadline.set('2026-10-01T12:00');
     component.tierListFrom.set('');
 
     component.submit();
@@ -159,26 +159,15 @@ describe('TournamentCreateComponent', () => {
     expect(component.requirementsDropped()).toBe(false);
   });
 
-  it('blocks submission with an inverted roster size unless copying', () => {
-    const component = setup();
-    component.name.set('Season 2');
-    component.signUpDeadline.set('2026-10-01T12:00');
-    component.draftMin.set(20);
-
-    expect(component.canSubmit()).toBe(false);
-    component.copySettings.set(true);
-    expect(component.canSubmit()).toBe(true);
-  });
-
-  it('blocks submission without a valid organizer name', () => {
+  it('asks for an organizer name when none is known, and blocks submission without one', () => {
     const component = setup(
       summary({
         newTournamentDefaults: { ownerName: null, copyFrom: null, tierLists: [] },
       }),
     );
     component.name.set('Season 2');
-    component.signUpDeadline.set('2026-10-01T12:00');
 
+    expect(component.showOwnerNameField()).toBe(true);
     expect(component.canSubmit()).toBe(false);
   });
 });

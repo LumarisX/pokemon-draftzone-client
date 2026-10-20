@@ -5,7 +5,9 @@ import {
   inject,
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { RouterLink } from '@angular/router';
 import { LeagueZoneService } from '@pdz/features/league-zone/league-zone.service';
+import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 import { CardComponent } from '@pdz/shared/data/card/card.component';
 import { EmptyStateComponent } from '@pdz/shared/feedback/empty-state/empty-state.component';
 import { SkeletonLayoutComponent } from '@pdz/shared/data/skeleton/skeleton-layout.component';
@@ -17,11 +19,14 @@ import {
 } from '@pdz/shared/layout/page-sections/page-sections.component';
 import { MarkdownModule } from 'ngx-markdown';
 import { catchError, map, of } from 'rxjs';
+import { injectIsOrganizer } from '../organizer-access';
 import { waitingMessage } from '../tournament-milestones';
 
 @Component({
   selector: 'pdz-league-rules-overview',
   imports: [
+    RouterLink,
+    ButtonComponent,
     CardComponent,
     EmptyStateComponent,
     SkeletonLayoutComponent,
@@ -36,6 +41,8 @@ import { waitingMessage } from '../tournament-milestones';
 })
 export class LeagueRulesOverviewComponent {
   private readonly leagueZoneService = inject(LeagueZoneService);
+
+  readonly isOrganizer = injectIsOrganizer();
 
   readonly rules = toSignal(
     this.leagueZoneService.getRules().pipe(

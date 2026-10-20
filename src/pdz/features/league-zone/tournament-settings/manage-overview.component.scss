@@ -1,0 +1,182 @@
+@use "pdz-theming" as pdz;
+
+:host {
+  display: block;
+}
+
+.overview {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.layout(section-gap);
+}
+
+.overview__detail {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: pdz.space(xs);
+}
+
+.overview__sep {
+  color: pdz.color(on-surface-muted);
+}
+
+.phases {
+  --marker: 1.5rem;
+
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.phases__step {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: pdz.space(xs);
+  min-width: 0;
+
+  &:not(:last-child)::after {
+    content: "";
+    position: absolute;
+    top: calc(var(--marker) / 2);
+    left: calc(var(--marker) + #{pdz.space(xs)});
+    right: pdz.space(xs);
+    height: 1px;
+    background: pdz.color(border-subtle);
+  }
+}
+
+.phases__marker {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: var(--marker);
+  height: var(--marker);
+  border: 2px solid pdz.color(border-control);
+  border-radius: 50%;
+  color: pdz.color(on-surface);
+}
+
+.phases__step--done .phases__marker {
+  border-color: transparent;
+  background: pdz.color(state-pressed);
+}
+
+.phases__step--current .phases__marker {
+  border-color: pdz.color(secondary);
+
+  &::before {
+    content: "";
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    background: pdz.color(secondary);
+  }
+}
+
+.phases__text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.phases__label {
+  color: pdz.color(on-surface-muted);
+  @include pdz.text(body-sm-strong);
+}
+
+.phases__step--done .phases__label,
+.phases__step--current .phases__label {
+  color: pdz.color(on-surface);
+}
+
+.phases__when {
+  display: none;
+  color: pdz.color(on-surface-muted);
+  @include pdz.text(meta);
+
+  @include pdz.respond-above(medium) {
+    display: block;
+  }
+}
+
+.phases__step--current .phases__when {
+  display: block;
+}
+
+.todo {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(sm);
+}
+
+.todo__title {
+  margin: 0;
+  color: pdz.color(on-surface);
+  @include pdz.text(section-title);
+}
+
+.todo__list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.todo__item {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: center;
+  gap: pdz.space(sm) pdz.space(md);
+  padding: pdz.layout(card-pad);
+  @include pdz.row-divider;
+
+  @include pdz.respond-above(small) {
+    grid-template-columns: auto 1fr auto;
+  }
+}
+
+.todo__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: pdz.control-height(md);
+  height: pdz.control-height(md);
+  border-radius: pdz.shape(corner-md);
+  background: pdz.color(state-hover);
+  color: pdz.color(on-surface-muted);
+}
+
+.todo__item--urgent .todo__icon {
+  background: pdz.color(warning-container);
+  color: pdz.color(on-warning-container);
+}
+
+.todo__text {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(2xs);
+  min-width: 0;
+}
+
+.todo__label {
+  color: pdz.color(on-surface);
+  @include pdz.text(body-sm-strong);
+}
+
+.todo__detail {
+  color: pdz.color(on-surface-muted);
+  @include pdz.text(meta);
+}
+
+.todo__action {
+  grid-column: 2;
+  justify-self: start;
+
+  @include pdz.respond-above(small) {
+    grid-column: auto;
+  }
+}

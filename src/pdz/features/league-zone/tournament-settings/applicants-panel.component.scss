@@ -78,6 +78,13 @@
   gap: pdz.space(xs);
 }
 
+.apps__bulk-note {
+  flex-basis: 100%;
+  margin: 0;
+  color: pdz.color(on-surface-muted);
+  @include pdz.text(meta);
+}
+
 
 .apps__list {
   display: flex;

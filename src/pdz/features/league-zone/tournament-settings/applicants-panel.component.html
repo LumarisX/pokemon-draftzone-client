@@ -3,19 +3,38 @@
     <div class="apps__bulk">
       <span class="apps__bulk-count">{{ selectedIds().length }} selected</span>
       <div class="apps__bulk-actions">
-        @for (status of decidableStatuses; track status) {
+        @if (openPools().length > 1) {
           <button
             pdz-button
             type="button"
             size="sm"
-            variant="outlined"
-            [color]="status === 'denied' ? 'danger' : 'neutral'"
-            (click)="bulk(status)"
+            icon="shuffle"
+            [disabled]="!canRandomize()"
+            (click)="randomize()"
           >
-            {{ statusLabels[status] }}
+            Add at Random
           </button>
         }
+        @for (choice of choices(); track choice.key) {
+          @if (choice.key !== 'pending' && !choice.disabled) {
+            <button
+              pdz-button
+              type="button"
+              size="sm"
+              variant="outlined"
+              [color]="choice.key === 'denied' ? 'danger' : 'neutral'"
+              (click)="bulk(choice.key)"
+            >
+              {{ choice.label }}
+            </button>
+          }
+        }
       </div>
+      @if (openPools().length > 1 && store.applicantsDirtyCount()) {
+        <p class="apps__bulk-note">
+          Save or discard your other changes to add at random.
+        </p>
+      }
     </div>
   }
 
@@ -94,17 +113,32 @@
                 <div class="app__controls">
                   @if (entry.departed) {
                     <pdz-badge tone="neutral" variant="soft">Replaced</pdz-badge>
-                  } @else {
+                  } @else if (entry.teamId) {
                     <pdz-select
                       [attr.aria-label]="entry.coach + ' status'"
                       [ngModel]="entry.status"
                       (ngModelChange)="setStatus(entry.applicationId, $event)"
                       [ngModelOptions]="{ standalone: true }"
                     >
-                      @for (status of statusesFor(entry); track status) {
+                      @for (status of teamStatuses; track status) {
                         <pdz-option
                           [value]="status"
                           [label]="statusLabels[status]"
+                        />
+                      }
+                    </pdz-select>
+                  } @else {
+                    <pdz-select
+                      [attr.aria-label]="entry.coach + ' decision'"
+                      [ngModel]="choiceKey(entry)"
+                      (ngModelChange)="setChoice(entry.applicationId, $event)"
+                      [ngModelOptions]="{ standalone: true }"
+                    >
+                      @for (choice of choices(); track choice.key) {
+                        <pdz-option
+                          [value]="choice.key"
+                          [label]="choice.label"
+                          [disabled]="choice.disabled"
                         />
                       }
                     </pdz-select>

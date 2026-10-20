@@ -1,9 +1,11 @@
 import { Routes } from '@angular/router';
-import { DraftSettingsPageComponent } from './draft-settings-page.component';
-import { SettingsDashboardComponent } from './settings-dashboard.component';
-import { SettingsSectionPageComponent } from './settings-section-page.component';
+import { unsavedChangesGuard } from '@pdz/core/guards/unsaved-changes/unsaved-changes.guard';
+import { TOURNAMENT_FINAL_RESULTS_PATH } from '@pdz/core/route-paths';
+import { FinalResultsPageComponent } from './final-results-page.component';
+import { ManageOverviewComponent } from './manage-overview.component';
+import { SettingsPageComponent } from './settings-page.component';
 import { SettingsShellComponent } from './settings-shell.component';
-import { SignupSettingsPageComponent } from './signup-settings-page.component';
+import { SignupsPageComponent } from './signups-page.component';
 
 export const routes: Routes = [
   {
@@ -12,30 +14,37 @@ export const routes: Routes = [
     children: [
       {
         path: '',
-        component: SettingsDashboardComponent,
+        component: ManageOverviewComponent,
       },
       {
-        path: 'identity',
-        component: SettingsSectionPageComponent,
-        data: { section: 'identity' },
+        path: 'settings',
+        component: SettingsPageComponent,
+        canDeactivate: [unsavedChangesGuard],
       },
       {
         path: 'sign-ups',
-        component: SignupSettingsPageComponent,
+        component: SignupsPageComponent,
+        canDeactivate: [unsavedChangesGuard],
+      },
+      {
+        path: TOURNAMENT_FINAL_RESULTS_PATH,
+        component: FinalResultsPageComponent,
+      },
+      {
+        path: 'identity',
+        redirectTo: 'settings',
       },
       {
         path: 'draft',
-        component: DraftSettingsPageComponent,
+        redirectTo: 'settings',
       },
       {
         path: 'season',
-        component: SettingsSectionPageComponent,
-        data: { section: 'season' },
+        redirectTo: 'settings',
       },
       {
         path: 'integrations',
-        component: SettingsSectionPageComponent,
-        data: { section: 'integrations' },
+        redirectTo: 'settings',
       },
     ],
   },

@@ -19,6 +19,7 @@ import { NgTemplateOutlet } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TooltipDirective } from '@pdz/shared/tooltip/tooltip.directive';
 import { RouterModule } from '@angular/router';
+import { injectIsOrganizer } from '@pdz/features/league-zone/organizer-access';
 import { EventStreamService } from '@pdz/core/services/event-stream.service';
 import { Pokemon } from '@pdz/core/utils/pokemon';
 import { Type, TYPES } from '@pdz/shared/data';
@@ -104,6 +105,7 @@ export class TierListComponent implements OnInit, OnDestroy {
 
   readonly header = input<string>();
   readonly showHeader = input(true, { transform: booleanAttribute });
+  protected readonly isOrganizer = injectIsOrganizer();
 
   localDrafted = input<DraftedPick[]>([]);
   drafted = signal<DraftedPools['pools']>({});

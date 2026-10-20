@@ -56,10 +56,8 @@ export class LeagueCreateComponent implements OnInit {
   protected readonly loadFailed = signal(false);
   protected readonly saving = signal(false);
   protected readonly name = signal('');
-  protected readonly description = signal('');
 
   protected readonly nameMax = LEAGUE_NAME_MAX;
-  protected readonly descriptionMax = LEAGUE_DESCRIPTION_MAX;
   protected readonly leagueListLink = ['/', LEAGUE_ADS_PATH];
 
   ngOnInit(): void {
@@ -79,12 +77,8 @@ export class LeagueCreateComponent implements OnInit {
   protected submit(): void {
     if (!this.canSubmit()) return;
     this.saving.set(true);
-    const description = this.description().trim();
     this.leagueService
-      .createLeague({
-        name: this.name().trim(),
-        ...(description ? { description } : {}),
-      })
+      .createLeague({ name: this.name().trim() })
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: ({ leagueSlug }) => {

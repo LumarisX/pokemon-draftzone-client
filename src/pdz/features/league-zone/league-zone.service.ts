@@ -312,6 +312,12 @@ export class LeagueZoneService {
     return this.apiService.get(`${ROOTPATH}/${leagueSlug}`);
   }
 
+  getHallOfFame(
+    leagueSlug = this.leagueSlug(),
+  ): Observable<League.HallOfFame> {
+    return this.apiService.get(`${ROOTPATH}/${leagueSlug}/hall-of-fame`);
+  }
+
   getLeagueCapabilities(): Observable<League.LeagueCapabilities> {
     return this.apiService.get(`${ROOTPATH}/capabilities`);
   }
@@ -511,11 +517,23 @@ export class LeagueZoneService {
     decision: {
       status: League.SignUpStatus;
       teamName?: string;
+      seat?: 'team' | 'sub';
+      poolSlug?: string;
     },
   ): Observable<unknown> {
     return this.apiService.patch(
       `${ROOTPATH}/${this.leagueSlug()}/tournaments/${this.tournamentSlug()}/applications/${applicationId}`,
       decision,
+    );
+  }
+
+  seatAtRandom(
+    applicationIds: readonly string[],
+    poolSlugs: readonly string[],
+  ): Observable<{ seated: { applicationId: string; poolSlug: string }[] }> {
+    return this.apiService.post(
+      `${ROOTPATH}/${this.leagueSlug()}/tournaments/${this.tournamentSlug()}/applications/seat-at-random`,
+      { applicationIds, poolSlugs },
     );
   }
 

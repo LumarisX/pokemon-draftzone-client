@@ -410,6 +410,51 @@ export namespace League {
     seasonEnd?: Date;
     logo?: string;
     discord?: string;
+    completedAt?: string | null;
+  };
+
+  export type SeasonMvp = { id: string; name: string; kills: number };
+
+  export type FinalPlacement = {
+    teamSlug: string;
+    name: string;
+    logo: string | null;
+    coach: string | null;
+    placement: number;
+    label: string | null;
+    champion: boolean;
+    wins: number | null;
+    losses: number | null;
+    draws: number | null;
+    mvp: SeasonMvp | null;
+  };
+
+  export type FinalResults = {
+    name: string;
+    logo: string | null;
+    completedAt: string | null;
+    hasBracket: boolean;
+    unplayed: number;
+    pendingReports: number;
+    results: (FinalPlacement & { of: number })[];
+  };
+
+  export type HallOfFameSeason = {
+    tournamentSlug: string;
+    name: string;
+    logo: string | null;
+    format: string | null;
+    ruleset: string | null;
+    completedAt: string;
+    teamCount: number;
+    places: FinalPlacement[];
+  };
+
+  export type HallOfFame = {
+    name: string;
+    leagueSlug: string;
+    logo: string | null;
+    seasons: HallOfFameSeason[];
   };
 
   export type LeagueSummary = {
@@ -500,9 +545,6 @@ export namespace League {
   export type CreateTournamentPayload = {
     name: string;
     ownerName: string;
-    signUpDeadline: string;
-    diffMode?: 'pokemon' | 'game';
-    draftCount?: { min: number; max: number };
     copyFrom?: string;
     tierListFrom?: string | null;
   };

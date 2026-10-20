@@ -48,8 +48,6 @@ export function withEveryTiebreaker(order: Tiebreaker[]): Tiebreaker[] {
 
 export type Lifecycle = 'setup' | 'signups' | 'draft' | 'season' | 'complete';
 
-export type Milestone = Exclude<Lifecycle, 'setup' | 'complete'>;
-
 export const LIFECYCLE_ORDER: readonly Lifecycle[] = [
   'setup',
   'signups',
@@ -58,18 +56,20 @@ export const LIFECYCLE_ORDER: readonly Lifecycle[] = [
   'complete',
 ];
 
-export const MILESTONE_LABELS: Record<Milestone, string> = {
-  signups: 'Before you open sign-ups',
-  draft: 'Before the draft',
-  season: 'Before the season starts',
+export const LIFECYCLE_LABELS: Record<Lifecycle, string> = {
+  setup: 'Setup',
+  signups: 'Sign-Ups',
+  draft: 'Draft',
+  season: 'Season',
+  complete: 'Complete',
 };
 
 export type SettingsSectionId =
-  | 'identity'
+  | 'general'
   | 'signup'
   | 'draft'
   | 'season'
-  | 'integrations';
+  | 'discord';
 
 export interface RiskSpec {
   from: Lifecycle;
@@ -79,27 +79,28 @@ export interface RiskSpec {
 
 export interface SettingsSection {
   id: SettingsSectionId;
-  path: string;
   label: string;
   blurb: string;
-  icon: string;
   risk?: RiskSpec;
 }
 
+export const DRAFT_RISK: RiskSpec = {
+  from: 'draft',
+  effect: 'block',
+  because:
+    'Changes apply immediately to teams that have already drafted. Costs, tiers and legality are recalculated from the current list, so rosters that were legal may no longer be. Review every team after saving.',
+};
+
 export const SETTINGS_SECTIONS: readonly SettingsSection[] = [
   {
-    id: 'identity',
-    path: 'identity',
-    label: 'Identity',
-    blurb: 'What this tournament is called, how it looks, and its rules.',
-    icon: 'badge',
+    id: 'general',
+    label: 'General',
+    blurb: 'What this tournament is called and how it looks.',
   },
   {
     id: 'signup',
-    path: 'sign-ups',
     label: 'Sign-Ups',
-    blurb: 'Who can join, and by when.',
-    icon: 'how_to_reg',
+    blurb: 'Who can join, by when, and what they are asked.',
     risk: {
       from: 'draft',
       effect: 'warn',
@@ -108,23 +109,14 @@ export const SETTINGS_SECTIONS: readonly SettingsSection[] = [
   },
   {
     id: 'draft',
-    path: 'draft',
-    label: 'The Draft',
-    blurb: 'Roster rules, the tier list, and every draft pool.',
-    icon: 'format_list_numbered',
-    risk: {
-      from: 'draft',
-      effect: 'block',
-      because:
-        'Changes apply immediately to teams that have already drafted. Costs, tiers and legality are recalculated from the current list, so rosters that were legal may no longer be. Review every team after saving.',
-    },
+    label: 'Draft',
+    blurb: 'Roster rules and the tier list. They apply to every pool.',
+    risk: DRAFT_RISK,
   },
   {
     id: 'season',
-    path: 'season',
-    label: 'The Season',
-    blurb: 'How matches are played, scored and recorded.',
-    icon: 'calendar_month',
+    label: 'Season',
+    blurb: 'When matches are played, and how they are scored.',
     risk: {
       from: 'season',
       effect: 'warn',
@@ -133,11 +125,9 @@ export const SETTINGS_SECTIONS: readonly SettingsSection[] = [
     },
   },
   {
-    id: 'integrations',
-    path: 'integrations',
-    label: 'Integrations',
-    blurb: 'Your Discord server and the bot that posts to it.',
-    icon: 'hub',
+    id: 'discord',
+    label: 'Discord',
+    blurb: 'Your server, and the bot that posts to it.',
   },
 ];
 
@@ -267,13 +257,6 @@ export const SIGNUP_STATUS_LABELS: Record<SignUpStatus, string> = {
   dropped: 'Dropped',
 };
 
-export const DECIDABLE_STATUSES: readonly SignUpStatus[] = [
-  'pending',
-  'waitlisted',
-  'approved',
-  'denied',
-];
-
 export const TEAM_STATUSES: readonly SignUpStatus[] = ['approved', 'dropped'];
 
 export interface SignUpAnswerValue {
@@ -282,10 +265,57 @@ export interface SignUpAnswerValue {
   values: string[];
 }
 
+export type SignUpSeat = { kind: 'team'; pool: string | null } | { kind: 'sub' };
+
+export type SignUpChoice = {
+  key: string;
+  label: string;
+  disabled: boolean;
+};
+
+export function signUpChoices(pools: readonly DraftPoolValue[]): SignUpChoice[] {
+  const seats: SignUpChoice[] = pools.length
+    ? pools.map((pool) => ({
+        key: `team:${pool.slug}`,
+        label: `Add to ${pool.name}`,
+        disabled: poolClosedToNewTeams(pool),
+      }))
+    : [{ key: 'team:', label: 'Add Team', disabled: false }];
+  return [
+    { key: 'pending', label: SIGNUP_STATUS_LABELS.pending, disabled: false },
+    { key: 'waitlisted', label: SIGNUP_STATUS_LABELS.waitlisted, disabled: false },
+    ...seats,
+    { key: 'sub', label: 'Add as Sub', disabled: false },
+    { key: 'denied', label: SIGNUP_STATUS_LABELS.denied, disabled: false },
+  ];
+}
+
+export function poolClosedToNewTeams(pool: DraftPoolValue): boolean {
+  return pool.sequentialTurns && !draftNotStarted(pool.status);
+}
+
+export function signUpChoiceKey(entry: SignUpValue): string {
+  if (entry.seat?.kind === 'team') return `team:${entry.seat.pool ?? ''}`;
+  if (entry.seat?.kind === 'sub') return 'sub';
+  if (entry.status === 'approved' && !entry.teamId) return 'sub';
+  return entry.status;
+}
+
+export function parseSignUpChoice(key: string): {
+  status: SignUpStatus;
+  seat: SignUpSeat | null;
+} {
+  if (key.startsWith('team:'))
+    return { status: 'approved', seat: { kind: 'team', pool: key.slice(5) || null } };
+  if (key === 'sub') return { status: 'approved', seat: { kind: 'sub' } };
+  return { status: key as SignUpStatus, seat: null };
+}
+
 export interface SignUpValue {
   id: string | null;
   applicationId: string;
   intent: 'team' | 'sub';
+  seat?: SignUpSeat | null;
   answers: SignUpAnswerValue[];
   teamId: string | null;
   teamSlug: string | null;
@@ -421,11 +451,8 @@ export interface NodeFor<V> {
   validate?: (value: V) => string | null;
 }
 
-export type ArtifactSlot = 'tier-list' | 'schedule' | 'rules';
-
 export interface SettingsNode extends NodeFor<SettingsValue> {
   section: SettingsSectionId;
-  artifact?: ArtifactSlot;
   requiresTierList?: boolean;
 }
 
@@ -475,6 +502,7 @@ export interface ScheduleState {
   stageCount: number;
   roundCount: number;
   matchupCount: number;
+  playedCount: number;
 }
 
 export interface RulesState {
@@ -494,6 +522,7 @@ export interface SettingsContext {
   signUps: SignUpValue[];
   unassigned: SignUpValue[];
   artifacts: ArtifactState;
+  phase: Lifecycle;
 }
 
 const DRAFT_ORDERS: readonly ChoiceOption[] = [
@@ -533,8 +562,8 @@ const AD_PLATFORMS: readonly ChoiceOption[] = [
 
 export const SETTINGS_NODES: readonly SettingsNode[] = [
   {
-    id: 'identity.name',
-    section: 'identity',
+    id: 'general.name',
+    section: 'general',
     title: 'Name & Description',
     controls: [
       {
@@ -548,32 +577,11 @@ export const SETTINGS_NODES: readonly SettingsNode[] = [
     ],
   },
   {
-    id: 'identity.logo',
-    section: 'identity',
+    id: 'general.logo',
+    section: 'general',
     title: 'Logo',
     controls: [
       { kind: 'custom', slot: 'logo', label: 'Tournament Logo', keys: ['logo'] },
-    ],
-  },
-  {
-    id: 'identity.rules',
-    section: 'identity',
-    title: 'Rules',
-    help: 'The regulations coaches read before they sign up.',
-    artifact: 'rules',
-    controls: [],
-  },
-  {
-    id: 'identity.completed',
-    section: 'identity',
-    title: 'Completed',
-    help: 'Marking the tournament completed records every team\'s final placement, locks results and settings, and moves the season to Completed on each coach\'s My Leagues. Turn it off to make changes; turning it back on records the placements again.',
-    controls: [
-      {
-        kind: 'toggle',
-        key: 'completed',
-        label: 'Mark this tournament completed',
-      },
     ],
   },
   {
@@ -740,15 +748,6 @@ export const SETTINGS_NODES: readonly SettingsNode[] = [
   },
 
   {
-    id: 'season.schedule',
-    section: 'season',
-    title: 'Stages & Schedule',
-    help: 'The stages, rounds and matchups teams actually play.',
-    artifact: 'schedule',
-    requiresTierList: true,
-    controls: [],
-  },
-  {
     id: 'season.window',
     section: 'season',
     title: 'Season Window',
@@ -835,8 +834,8 @@ export const SETTINGS_NODES: readonly SettingsNode[] = [
   },
 
   {
-    id: 'integrations.invite',
-    section: 'integrations',
+    id: 'discord.invite',
+    section: 'discord',
     title: 'Discord Server',
     help: 'Coaches see this as a join link on the tournament page. It works whether or not the bot is connected.',
     controls: [
@@ -849,8 +848,8 @@ export const SETTINGS_NODES: readonly SettingsNode[] = [
     ],
   },
   {
-    id: 'integrations.discord',
-    section: 'integrations',
+    id: 'discord.bot',
+    section: 'discord',
     title: 'Discord Bot',
     help: 'Lets DraftZone post picks, assign the coach role and mirror sign-ups.',
     controls: [
@@ -1001,147 +1000,150 @@ export function sectionRisk(
   return lifecycleReached(phase, section.risk.from) ? section.risk : null;
 }
 
-export interface LaunchStep {
+export type SettingsAnchor =
+  | SettingsSectionId
+  | 'pools'
+  | 'organizers'
+  | 'completion';
+
+export type NextStepTarget =
+  | { kind: 'settings'; anchor: SettingsAnchor }
+  | { kind: 'page'; path: string[] }
+  | { kind: 'open-signups' };
+
+export interface NextStep {
   id: string;
-  milestone: Milestone;
+  icon: string;
   label: string;
-  section: SettingsSectionId;
-  fragment: string;
-  done: (context: SettingsContext) => boolean;
+  detail: string;
+  action: string;
+  target: NextStepTarget;
 }
 
-export const LAUNCH_STEPS: readonly LaunchStep[] = [
-  {
-    id: 'name',
-    milestone: 'signups',
-    label: 'Name your tournament',
-    section: 'identity',
-    fragment: 'identity.name',
-    done: (c) => c.value.name.trim().length > 0,
-  },
-  {
-    id: 'discord',
-    milestone: 'signups',
-    label: 'Add a Discord invite',
-    section: 'integrations',
-    fragment: 'integrations.invite',
-    done: (c) => c.value.discord.trim().length > 0,
-  },
-  {
-    id: 'deadline',
-    milestone: 'signups',
-    label: 'Set a sign-up deadline',
-    section: 'signup',
-    fragment: 'signup.deadline',
-    done: (c) => c.value.signUpDeadline.trim().length > 0,
-  },
-  {
-    id: 'roster',
-    milestone: 'signups',
-    label: 'Set roster size and budget',
-    section: 'draft',
-    fragment: 'draft.roster',
-    done: (c) => c.value.draftCountMax > 0,
-  },
-  {
-    id: 'tier-list',
-    milestone: 'signups',
-    label: 'Attach a tier list',
-    section: 'draft',
-    fragment: 'draft.tiers',
-    done: (c) => c.artifacts.tierList.name !== null,
-  },
-  {
-    id: 'review-signups',
-    milestone: 'draft',
-    label: 'Review every sign-up',
-    section: 'signup',
-    fragment: 'applicants',
-    done: (c) => c.signUps.every((entry) => entry.status !== 'pending'),
-  },
-  {
-    id: 'pool-teams',
-    milestone: 'draft',
-    label: 'Put every team in a pool',
-    section: 'draft',
-    fragment: 'pools',
-    done: (c) =>
-      c.unassigned.length === 0 && c.pools.every((pool) => pool.teams.length > 1),
-  },
-  {
-    id: 'draft-window',
-    milestone: 'draft',
-    label: 'Schedule every pool',
-    section: 'draft',
-    fragment: 'pools',
-    done: (c) =>
-      c.pools.length > 0 &&
-      c.pools.every((pool) => pool.draftStart.trim().length > 0),
-  },
-  {
-    id: 'schedule',
-    milestone: 'season',
-    label: 'Build the schedule',
-    section: 'season',
-    fragment: 'season.schedule',
-    done: (c) => c.artifacts.schedule.matchupCount > 0,
-  },
-  {
-    id: 'season-window',
-    milestone: 'season',
-    label: 'Set the season window',
-    section: 'season',
-    fragment: 'season.window',
-    done: (c) => c.value.seasonStart.trim().length > 0,
-  },
-  {
-    id: 'scoring',
-    milestone: 'season',
-    label: 'Choose how ties are broken',
-    section: 'season',
-    fragment: 'season.scoring',
-    done: (c) => c.value.diffMode.length > 0,
-  },
-];
-
-export interface ChecklistItem {
-  id: string;
-  label: string;
-  done: boolean;
-  section: SettingsSectionId;
-  path: string;
-  fragment: string;
+function plural(count: number, one: string, many: string): string {
+  return `${count} ${count === 1 ? one : many}`;
 }
 
-export interface ChecklistGroup {
-  milestone: Milestone;
-  label: string;
-  items: ChecklistItem[];
-  complete: boolean;
-}
+const TIER_LIST_STEP: NextStep = {
+  id: 'tier-list',
+  icon: 'format_list_numbered',
+  label: 'Attach a tier list',
+  detail: 'It sets the format and what every Pokémon costs. Coaches check it before they sign up.',
+  action: 'Choose Tier List',
+  target: { kind: 'settings', anchor: 'draft' },
+};
 
-export function launchChecklist(context: SettingsContext): ChecklistGroup[] {
-  const milestones: Milestone[] = ['signups', 'draft', 'season'];
+export function nextSteps(context: SettingsContext): NextStep[] {
+  const { value, pools, signUps, unassigned, artifacts, phase } = context;
+  const steps: NextStep[] = [];
+  const hasTierList = artifacts.tierList.name !== null;
 
-  return milestones.map((milestone) => {
-    const items: ChecklistItem[] = LAUNCH_STEPS.filter(
-      (step) => step.milestone === milestone,
-    ).map((step) => ({
-      id: step.id,
-      label: step.label,
-      done: step.done(context),
-      section: step.section,
-      path: sectionById(step.section).path,
-      fragment: step.fragment,
-    }));
+  if (phase === 'setup') {
+    if (!hasTierList) steps.push(TIER_LIST_STEP);
+    steps.push({
+      id: 'open-signups',
+      icon: 'how_to_reg',
+      label: 'Open sign-ups',
+      detail: 'Sign-ups are closed. Pick when they close and let coaches apply.',
+      action: 'Open Sign-Ups',
+      target: { kind: 'open-signups' },
+    });
+    return steps;
+  }
 
-    return {
-      milestone,
-      label: MILESTONE_LABELS[milestone],
-      items,
-      complete: items.every((item) => item.done),
-    };
-  });
+  if (phase === 'signups') {
+    if (!hasTierList) steps.push(TIER_LIST_STEP);
+    const pending = signUps.filter((entry) => entry.status === 'pending').length;
+    if (pending) {
+      steps.push({
+        id: 'review',
+        icon: 'person_search',
+        label: `Review ${plural(pending, 'sign-up', 'sign-ups')}`,
+        detail: 'Add each coach to a pool, add them as a sub, or turn them down.',
+        action: 'Review',
+        target: { kind: 'page', path: ['sign-ups'] },
+      });
+    }
+    if (!pools.length) {
+      steps.push({
+        id: 'pool',
+        icon: 'add',
+        label: 'Create a draft pool',
+        detail: 'Teams draft inside a pool. It holds the turn order, timer and draft window.',
+        action: 'Create Pool',
+        target: { kind: 'settings', anchor: 'pools' },
+      });
+    } else {
+      if (unassigned.length) {
+        steps.push({
+          id: 'unassigned',
+          icon: 'group_add',
+          label: `Place ${plural(unassigned.length, 'team', 'teams')} in a pool`,
+          detail: 'Approved teams draft only once they are in a pool.',
+          action: 'Assign Teams',
+          target: { kind: 'settings', anchor: 'pools' },
+        });
+      }
+      const unscheduled = pools.filter((pool) => !pool.draftStart.trim());
+      if (unscheduled.length) {
+        steps.push({
+          id: 'draft-window',
+          icon: 'event',
+          label:
+            pools.length === 1
+              ? 'Schedule the draft'
+              : `Schedule ${plural(unscheduled.length, 'pool', 'pools')}`,
+          detail: 'Coaches see when their draft opens on the tournament page.',
+          action: 'Set Draft Window',
+          target: { kind: 'settings', anchor: 'pools' },
+        });
+      }
+    }
+    return steps;
+  }
+
+  if (phase === 'draft') {
+    if (!artifacts.schedule.matchupCount) {
+      steps.push({
+        id: 'schedule',
+        icon: 'calendar_month',
+        label: 'Build the schedule',
+        detail: 'Add stages and rounds so teams know who they play.',
+        action: 'Open Schedule',
+        target: { kind: 'page', path: ['schedule'] },
+      });
+    }
+    if (!value.seasonStart.trim()) {
+      steps.push({
+        id: 'season-start',
+        icon: 'event',
+        label: 'Set when the season starts',
+        detail: 'The tournament moves into its season on this date.',
+        action: 'Set Season Dates',
+        target: { kind: 'settings', anchor: 'season' },
+      });
+    }
+    return steps;
+  }
+
+  const allPlayed =
+    artifacts.schedule.matchupCount > 0 &&
+    artifacts.schedule.playedCount >= artifacts.schedule.matchupCount;
+  const finished = phase === 'complete' || (phase === 'season' && allPlayed);
+  if (finished && !value.completed) {
+    steps.push({
+      id: 'complete',
+      icon: 'emoji_events',
+      label: 'Close out the season',
+      detail: allPlayed
+        ? 'Every match has a result. Review the final placements and add the champions to the Hall of Fame.'
+        : 'The season has ended. Review the final placements and add the champions to the Hall of Fame.',
+      action: 'Review Final Results',
+      target: { kind: 'page', path: ['final-results'] },
+    });
+  }
+
+  return steps;
 }
 
 export interface NodeIssue {

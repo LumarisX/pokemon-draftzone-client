@@ -29,21 +29,6 @@
             />
           </label>
 
-          <label
-            pdz-field
-            label="Description"
-            hint="Shown on the league page. You can change it later."
-          >
-            <textarea
-              pdz-input
-              name="leagueDescription"
-              rows="4"
-              [maxlength]="descriptionMax"
-              [ngModel]="description()"
-              (ngModelChange)="description.set($event)"
-            ></textarea>
-          </label>
-
           <div class="create__actions">
             <a pdz-button variant="outlined" [routerLink]="leagueListLink"
               >Cancel</a

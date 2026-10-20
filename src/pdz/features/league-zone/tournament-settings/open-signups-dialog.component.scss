@@ -1,8 +1,7 @@
 @use "pdz-theming" as pdz;
 
-.section-page {
+.open {
   display: flex;
   flex-direction: column;
-  gap: pdz.space(lg);
-  padding-bottom: pdz.space(lg);
+  gap: pdz.space(md);
 }

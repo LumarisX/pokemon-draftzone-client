@@ -1,0 +1,22 @@
+@use "pdz-theming" as pdz;
+
+:host {
+  display: block;
+}
+
+.signups {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.layout(section-gap);
+  padding-bottom: pdz.space(lg);
+}
+
+.signups__detail {
+  display: inline-flex;
+  flex-wrap: wrap;
+  gap: pdz.space(xs);
+}
+
+.signups__sep {
+  color: pdz.color(on-surface-muted);
+}

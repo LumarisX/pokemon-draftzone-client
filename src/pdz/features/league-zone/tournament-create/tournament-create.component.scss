@@ -11,10 +11,20 @@
     gap: pdz.space(md);
   }
 
-  &__pair {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr));
-    gap: pdz.space(md);
+  &__owner {
+    @include pdz.text(body-sm);
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: pdz.space(sm);
+    margin: 0;
+    color: pdz.color(on-surface-muted);
+
+    strong {
+      color: pdz.color(on-surface);
+      font-weight: pdz.font-weight(semibold);
+    }
   }
 
   &__note {

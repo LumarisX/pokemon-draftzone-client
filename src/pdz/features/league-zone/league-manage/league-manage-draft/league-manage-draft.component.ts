@@ -15,7 +15,7 @@ import {
   signal,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import {
   LEAGUE_ZONE_MANAGE_PATH,
   LEAGUE_ZONE_PATH,
@@ -38,10 +38,6 @@ import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { PokemonComponent } from '@pdz/shared/data/pokemon/pokemon.component';
 import { CheckComponent } from '@pdz/shared/inputs/choice/check.component';
 import { ChoiceDirective } from '@pdz/shared/inputs/choice/choice.directive';
-import { FieldComponent } from '@pdz/shared/inputs/field/field.component';
-import { InputDirective } from '@pdz/shared/inputs/field/input.directive';
-import { SegmentedOptionComponent } from '@pdz/shared/inputs/segmented/segmented-option.component';
-import { SegmentedComponent } from '@pdz/shared/inputs/segmented/segmented.component';
 import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
 import { PageComponent } from '@pdz/shared/layout/page/page.component';
 import { TooltipDirective } from '@pdz/shared/tooltip/tooltip.directive';
@@ -152,11 +148,8 @@ const EMPTY_SETTINGS: DraftSettings = {
     CheckComponent,
     ChoiceDirective,
     EmptyStateComponent,
-    FieldComponent,
-    InputDirective,
-    SegmentedComponent,
-    SegmentedOptionComponent,
     PoolSwitcherComponent,
+    RouterLink,
     PageComponent,
     PageHeaderComponent,
   ],
@@ -193,14 +186,21 @@ export class LeagueManageDraftComponent implements OnInit {
   readonly orderSaving = signal(false);
 
   readonly settings = signal<DraftSettings>(EMPTY_SETTINGS);
-  readonly pending = linkedSignal(() => ({ ...this.settings() }));
-  readonly settingsSaving = signal(false);
-  readonly testingMessage = signal(false);
 
   readonly editingKey = signal<string | null>(null);
   readonly pendingKey = signal<string | null>(null);
 
   readonly poolSlug = computed(() => this.leagueZoneService.poolSlug());
+
+  readonly settingsLink = computed(() => [
+    '/',
+    LEAGUE_ZONE_PATH,
+    this.leagueZoneService.leagueSlug(),
+    'tournaments',
+    this.leagueZoneService.tournamentSlug(),
+    LEAGUE_ZONE_MANAGE_PATH,
+    'settings',
+  ]);
 
   readonly statusLabel = computed(() => STATUS_LABELS[this.status()]);
   readonly statusTone = computed(() => STATUS_TONES[this.status()]);
@@ -235,14 +235,6 @@ export class LeagueManageDraftComponent implements OnInit {
     return (
       pending.length !== saved.length ||
       pending.some((id, index) => id !== saved[index])
-    );
-  });
-
-  readonly isSettingsDirty = computed(() => {
-    const pending = this.pending();
-    const saved = this.settings();
-    return (Object.keys(saved) as (keyof DraftSettings)[]).some(
-      (key) => pending[key] !== saved[key],
     );
   });
 
@@ -342,10 +334,6 @@ export class LeagueManageDraftComponent implements OnInit {
     });
 
     this.destroyRef.onDestroy(() => this.countdownReset$.next());
-  }
-
-  patch<K extends keyof DraftSettings>(key: K, value: DraftSettings[K]): void {
-    this.pending.update((settings) => ({ ...settings, [key]: value }));
   }
 
   takenIdsFor(turn: DraftTurn): string[] {
@@ -491,63 +479,6 @@ export class LeagueManageDraftComponent implements OnInit {
       });
   }
 
-  saveSettings(): void {
-    if (!this.isSettingsDirty() || this.settingsSaving()) return;
-    this.settingsSaving.set(true);
-
-    const pending = this.pending();
-    const channelId = pending.channelId.trim();
-    this.leagueManageService
-      .updateDraftSettings({
-        name: pending.name,
-        channelId: channelId || null,
-        picksVisibleTo: pending.picksVisibleTo,
-        allowRemovals: pending.allowRemovals,
-        ...(this.canEditOrder()
-          ? {
-              orderProgression: pending.orderProgression,
-              sequentialTurns: pending.sequentialTurns,
-              allowDuplicates: pending.allowDuplicates,
-            }
-          : {}),
-      })
-      .pipe(
-        takeUntilDestroyed(this.destroyRef),
-        finalize(() => this.settingsSaving.set(false)),
-      )
-      .subscribe({
-        next: (data) => {
-          this.applyPoolDetails(data);
-          this.notificationService.show('Draft settings saved.', 'success');
-        },
-        error: (error) =>
-          this.showError('Could not save draft settings.', error),
-      });
-  }
-
-  sendTestMessage(): void {
-    if (!this.settings().channelId || this.testingMessage()) return;
-    this.testingMessage.set(true);
-
-    this.leagueManageService
-      .sendTestMessage()
-      .pipe(
-        takeUntilDestroyed(this.destroyRef),
-        finalize(() => this.testingMessage.set(false)),
-      )
-      .subscribe({
-        next: (data) =>
-          this.notificationService.show(
-            data.delivered
-              ? 'Test message sent — check the channel.'
-              : "Couldn't deliver a test message. Check the channel ID and bot permissions.",
-            data.delivered ? 'success' : 'error',
-          ),
-        error: (error) =>
-          this.showError('Could not send a test message.', error),
-      });
-  }
-
   private on<T extends { poolSlug: string }>(event: string): Observable<T> {
     return this.eventStream.on<T>(event).pipe(
       filter((data) => this.leagueZoneService.poolSlug() === data.poolSlug),
@@ -637,8 +568,6 @@ export class LeagueManageDraftComponent implements OnInit {
     this.editingKey.set(null);
     this.pendingKey.set(null);
     this.orderSaving.set(false);
-    this.settingsSaving.set(false);
-    this.testingMessage.set(false);
   }
 
   private applyPoolDetails(data: PoolDetails): void {

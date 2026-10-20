@@ -112,131 +112,75 @@ export function tournamentLinkGroups(
     },
   );
 
-  if (context.canManage) groups.push(...manageLinkGroups(base));
+  if (context.canManage) groups.push(manageLinkGroup(base, context.pools));
 
   return groups;
 }
 
-export function manageLinkGroups(base: string[]): TournamentLinkGroup[] {
-  if (!base.length) return [];
+export function manageLinkGroup(
+  base: string[],
+  pools: { poolSlug: string }[],
+): TournamentLinkGroup {
   const manage = [...base, 'manage'];
-
-  return [
+  const links: TournamentLink[] = [
     {
-      id: 'manage',
-      label: 'Manage',
-      links: [
-        {
-          id: 'manage-hub',
-          label: 'Dashboard',
-          route: manage,
-          icon: 'dashboard',
-          description: 'Settings, setup checklist and everything else',
-          exact: true,
-        },
-        {
-          id: 'manage-matches',
-          label: 'Schedule',
-          route: [...manage, 'schedule'],
-          icon: 'emoji_events',
-          description: 'Stages, rounds, matchups & which round is live',
-        },
-        {
-          id: 'manage-results',
-          label: 'Results',
-          route: [...manage, 'results'],
-          icon: 'scoreboard',
-          description: 'Record scores & review reports',
-        },
-        {
-          id: 'manage-signups',
-          label: 'Sign-Ups',
-          route: [...manage, 'sign-ups'],
-          icon: 'people',
-          description: 'Registrations, review & pool assignment',
-        },
-        {
-          id: 'manage-trades',
-          label: 'Trades',
-          route: [...manage, 'trades'],
-          icon: 'swap_horiz',
-          description: 'Approve and reverse trades',
-        },
-      ],
+      id: 'manage-overview',
+      label: 'Overview',
+      route: manage,
+      icon: 'dashboard',
+      description: 'Where the tournament stands and what needs you',
+      exact: true,
     },
     {
-      id: 'setup',
-      label: 'Setup',
-      links: [
-        {
-          id: 'manage-organizers',
-          label: 'Organizers',
-          route: [...manage, 'organizers'],
-          icon: 'shield_person',
-          description: 'Who can manage this tournament',
-        },
-        {
-          id: 'manage-rules',
-          label: 'Rules',
-          route: [...manage, 'rules'],
-          icon: 'menu_book',
-          description: 'Edit rules & regulations',
-        },
-        {
-          id: 'manage-tier-list',
-          label: 'Tier List',
-          route: [...base, 'tier-list', 'edit'],
-          icon: 'format_list_numbered',
-          description: 'Edit Pokémon tiers & costs',
-        },
-      ],
+      id: 'manage-signups',
+      label: 'Sign-Ups',
+      route: [...manage, 'sign-ups'],
+      icon: 'how_to_reg',
+      description: 'Review applicants and place them in pools',
     },
   ];
-}
 
-export function manageDashboardGroups(base: string[]): TournamentLinkGroup[] {
-  if (!base.length) return [];
-  const manage = [...base, 'manage'];
+  if (pools.length) {
+    links.push({
+      id: 'manage-draft',
+      label: 'Draft Control',
+      route: [...manage, 'pools', pools[0].poolSlug, 'draft'],
+      icon: 'sports_esports',
+      description: 'Start, pause and fix picks in a live draft',
+    });
+  }
 
-  return [
+  links.push(
     {
-      id: 'run',
-      label: 'Run',
-      links: [
-        {
-          id: 'manage-matches',
-          label: 'Schedule',
-          route: [...manage, 'schedule'],
-          icon: 'emoji_events',
-          description: 'Stages, rounds, matchups & which round is live',
-        },
-        {
-          id: 'manage-results',
-          label: 'Results',
-          route: [...manage, 'results'],
-          icon: 'scoreboard',
-          description: 'Record scores & review reports',
-        },
-        {
-          id: 'manage-trades',
-          label: 'Trades',
-          route: [...manage, 'trades'],
-          icon: 'swap_horiz',
-          description: 'Approve and reverse trades',
-        },
-      ],
+      id: 'manage-schedule',
+      label: 'Schedule',
+      route: [...manage, 'schedule'],
+      icon: 'calendar_month',
+      description: 'Stages, rounds, matchups and which round is live',
     },
-  ];
-}
+    {
+      id: 'manage-results',
+      label: 'Results',
+      route: [...manage, 'results'],
+      icon: 'scoreboard',
+      description: 'Record scores and review reports',
+    },
+    {
+      id: 'manage-trades',
+      label: 'Trades',
+      route: [...manage, 'trades'],
+      icon: 'swap_horiz',
+      description: 'Approve and reverse trades',
+    },
+    {
+      id: 'manage-settings',
+      label: 'Settings',
+      route: [...manage, 'settings'],
+      icon: 'settings',
+      description: 'How the tournament works, from sign-ups to scoring',
+    },
+  );
 
-export function manageAccessLink(base: string[]): TournamentLink | null {
-  if (!base.length) return null;
-  return {
-    id: 'manage-organizers',
-    label: 'Organizers',
-    route: [...base, 'manage', 'organizers'],
-    icon: 'shield_person',
-    description: 'Who can manage this tournament',
-  };
+  return { id: 'manage', label: 'Manage', links };
 }
 
