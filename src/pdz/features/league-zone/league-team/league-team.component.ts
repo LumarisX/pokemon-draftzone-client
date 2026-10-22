@@ -40,6 +40,7 @@ import { DialogService } from '@pdz/shared/dialogs/dialog/dialog.service';
 import { EmptyStateComponent } from '@pdz/shared/feedback/empty-state/empty-state.component';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { SkeletonLayoutComponent } from '@pdz/shared/data/skeleton/skeleton-layout.component';
+import { TeamAchievementsComponent } from './team-achievements/team-achievements.component';
 import { TeamSeasonComponent } from './team-season/team-season.component';
 import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
 import { PageComponent } from '@pdz/shared/layout/page/page.component';
@@ -80,6 +81,7 @@ const CLOCK_TICK_MS = 30_000;
     PageHeaderComponent,
     RecordComponent,
     RouterLink,
+    TeamAchievementsComponent,
     TeamRosterComponent,
     TeamSeasonComponent,
     TooltipDirective,

@@ -80,7 +80,6 @@ export interface RiskSpec {
 export interface SettingsSection {
   id: SettingsSectionId;
   label: string;
-  blurb: string;
   risk?: RiskSpec;
 }
 
@@ -92,15 +91,10 @@ export const DRAFT_RISK: RiskSpec = {
 };
 
 export const SETTINGS_SECTIONS: readonly SettingsSection[] = [
-  {
-    id: 'general',
-    label: 'General',
-    blurb: 'What this tournament is called and how it looks.',
-  },
+  { id: 'general', label: 'General' },
   {
     id: 'signup',
     label: 'Sign-Ups',
-    blurb: 'Who can join, by when, and what they are asked.',
     risk: {
       from: 'draft',
       effect: 'warn',
@@ -110,13 +104,11 @@ export const SETTINGS_SECTIONS: readonly SettingsSection[] = [
   {
     id: 'draft',
     label: 'Draft',
-    blurb: 'Roster rules and the tier list. They apply to every pool.',
     risk: DRAFT_RISK,
   },
   {
     id: 'season',
     label: 'Season',
-    blurb: 'When matches are played, and how they are scored.',
     risk: {
       from: 'season',
       effect: 'warn',
@@ -124,11 +116,7 @@ export const SETTINGS_SECTIONS: readonly SettingsSection[] = [
         'The season is live and standings are published. Changes apply to results already recorded, so review the standings after saving.',
     },
   },
-  {
-    id: 'discord',
-    label: 'Discord',
-    blurb: 'Your server, and the bot that posts to it.',
-  },
+  { id: 'discord', label: 'Discord' },
 ];
 
 export function sectionById(id: SettingsSectionId): SettingsSection {
@@ -352,6 +340,13 @@ export interface DraftPoolValue {
   teams: string[];
 }
 
+export const POOL_DEFAULTS: Partial<DraftPoolValue> = {
+  channelId: '',
+  orderProgression: 'snake',
+  picksVisibleTo: 'everyone',
+  allowRemovals: false,
+};
+
 export type ValueBag = SettingsValue | DraftPoolValue;
 
 type KeysOfType<V, T> = {
@@ -445,7 +440,9 @@ export function controlKeys(control: AnyControlSpec): readonly string[] {
 export interface NodeFor<V> {
   id: string;
   title: string;
-  help?: string;
+  hint?: string;
+  details?: string;
+  advanced?: boolean;
   controls: readonly ControlSpecFor<V>[];
   showWhen?: (value: V) => boolean;
   validate?: (value: V) => string | null;
@@ -601,7 +598,8 @@ export const SETTINGS_NODES: readonly SettingsNode[] = [
     id: 'signup.access',
     section: 'signup',
     title: 'Who Can Sign Up',
-    help: 'Invite-only hides nothing — it means only people with your link can apply. Everyone still lands as pending for you to approve.',
+    details:
+      'Invite link only means people need your link to apply; the tournament stays visible. Every applicant still waits for your approval.',
     controls: [
       {
         kind: 'choice',
@@ -625,14 +623,19 @@ export const SETTINGS_NODES: readonly SettingsNode[] = [
     id: 'signup.questions',
     section: 'signup',
     title: 'Questions',
-    help: 'Asked on the sign-up form on top of the built-in name, Showdown name, Discord, timezone and team name.',
+    advanced: true,
+    hint: 'Extra questions on the sign-up form.',
+    details:
+      'Every form already asks for a name, Showdown name, Discord, timezone and team name.',
     controls: [{ kind: 'custom', slot: 'signup-questions', keys: ['signUpQuestions'] }],
   },
   {
     id: 'signup.capacity',
     section: 'signup',
     title: 'Team Limit',
-    help: 'Caps how many teams you can approve. Sign-ups stay open past it so you can keep a waitlist.',
+    advanced: true,
+    details:
+      'Sign-ups stay open past the limit, so extra applicants form a waitlist.',
     controls: [
       { kind: 'toggle', key: 'maxTeamsEnabled', label: 'Limit the roster' },
       {
@@ -648,7 +651,8 @@ export const SETTINGS_NODES: readonly SettingsNode[] = [
     id: 'signup.listing',
     section: 'signup',
     title: 'Find a League Listing',
-    help: 'Advertises this tournament publicly until the sign-up deadline passes.',
+    advanced: true,
+    hint: 'Shown on Find a League until sign-ups close.',
     controls: [
       {
         kind: 'toggle',
@@ -693,7 +697,6 @@ export const SETTINGS_NODES: readonly SettingsNode[] = [
     id: 'draft.roster',
     section: 'draft',
     title: 'Roster Size & Budget',
-    help: 'Applies to every pool.',
     controls: [
       { kind: 'number', key: 'draftCountMin', label: 'Minimum Roster', min: 1 },
       { kind: 'number', key: 'draftCountMax', label: 'Maximum Roster', min: 1 },
@@ -720,7 +723,9 @@ export const SETTINGS_NODES: readonly SettingsNode[] = [
     id: 'draft.tiers',
     section: 'draft',
     title: 'Tier List',
-    help: 'Sets the format, what each Pokémon costs, and which are legal. Attaching one copies it, so later edits by its author never reprice a draft in progress.',
+    hint: 'Sets the format, the costs and which Pokémon are legal.',
+    details:
+      'Attaching a tier list copies it, so later edits by its author never reprice a draft in progress.',
     controls: [
       { kind: 'custom', slot: 'tier-requirements', keys: ['tierRequirements'] },
     ],
@@ -729,6 +734,7 @@ export const SETTINGS_NODES: readonly SettingsNode[] = [
     id: 'draft.trades',
     section: 'draft',
     title: 'Trades',
+    advanced: true,
     requiresTierList: true,
     controls: [
       {
@@ -764,7 +770,8 @@ export const SETTINGS_NODES: readonly SettingsNode[] = [
     id: 'season.scoring',
     section: 'season',
     title: 'Scoring',
-    help: 'Teams are ranked by points, then by each tiebreaker in order.',
+    advanced: true,
+    hint: 'Ranked by points, then each tiebreaker in order.',
     controls: [
       { kind: 'number', key: 'pointsWin', label: 'Points for a Win', min: 0, max: 10 },
       { kind: 'number', key: 'pointsDraw', label: 'Points for a Draw', min: 0, max: 10 },
@@ -792,7 +799,8 @@ export const SETTINGS_NODES: readonly SettingsNode[] = [
     id: 'season.forfeits',
     section: 'season',
     title: 'Forfeits',
-    help: 'The score recorded when a match is not played.',
+    advanced: true,
+    hint: "The score recorded when a match isn't played.",
     controls: [
       {
         kind: 'number',
@@ -812,6 +820,7 @@ export const SETTINGS_NODES: readonly SettingsNode[] = [
     id: 'season.reporting',
     section: 'season',
     title: 'Match Pages',
+    advanced: true,
     controls: [
       {
         kind: 'toggle',
@@ -825,6 +834,7 @@ export const SETTINGS_NODES: readonly SettingsNode[] = [
     id: 'season.prizes',
     section: 'season',
     title: 'Prize Split',
+    advanced: true,
     controls: [{ kind: 'custom', slot: 'prize-split', keys: ['prizeSplit'] }],
     validate: (v) => {
       if (!v.prizeSplit.length) return null;
@@ -837,7 +847,8 @@ export const SETTINGS_NODES: readonly SettingsNode[] = [
     id: 'discord.invite',
     section: 'discord',
     title: 'Discord Server',
-    help: 'Coaches see this as a join link on the tournament page. It works whether or not the bot is connected.',
+    hint: 'A join link on the tournament page.',
+    details: 'It works whether or not the bot is connected.',
     controls: [
       {
         kind: 'text',
@@ -851,7 +862,7 @@ export const SETTINGS_NODES: readonly SettingsNode[] = [
     id: 'discord.bot',
     section: 'discord',
     title: 'Discord Bot',
-    help: 'Lets DraftZone post picks, assign the coach role and mirror sign-ups.',
+    hint: 'Posts picks, assigns the coach role and mirrors sign-ups.',
     controls: [
       { kind: 'custom', slot: 'discord-link', keys: ['discordGuildId'] },
       {
@@ -885,13 +896,15 @@ export const POOL_NODES: readonly PoolNode[] = [
   {
     id: 'pool.channel',
     title: 'Discord Channel',
-    help: 'Picks and turn notifications post here.',
+    advanced: true,
+    hint: 'Where picks and turn alerts post.',
     controls: [{ kind: 'custom', slot: 'pool-channel', keys: ['channelId'] }],
   },
   {
     id: 'pool.window',
     title: 'Draft Window',
-    help: 'When this pool drafts. The tournament window follows the earliest open and latest close.',
+    details:
+      "The tournament's draft window runs from the earliest pool opening to the latest close.",
     controls: [
       {
         kind: 'custom',
@@ -907,7 +920,10 @@ export const POOL_NODES: readonly PoolNode[] = [
   {
     id: 'pool.order',
     title: 'How Teams Pick',
-    help: 'These lock once the draft starts. Without turns, every coach picks whenever they like until their roster is full.',
+    advanced: true,
+    hint: 'Locks once the draft starts.',
+    details:
+      'Without turns, every coach picks whenever they like until their roster is full.',
     controls: [
       {
         kind: 'toggle',
@@ -932,7 +948,8 @@ export const POOL_NODES: readonly PoolNode[] = [
   {
     id: 'pool.timer',
     title: 'Pick Timer',
-    help: 'A missed pick moves to the end of the round rather than stacking.',
+    advanced: true,
+    details: 'A missed pick moves to the end of the round instead of stacking.',
     showWhen: (pool) => pool.sequentialTurns,
     controls: [
       { kind: 'toggle', key: 'pickTimerEnabled', label: 'Time each pick' },
@@ -949,7 +966,9 @@ export const POOL_NODES: readonly PoolNode[] = [
   {
     id: 'pool.access',
     title: 'Coach Access',
-    help: 'With own team only, coaches see just their own picks until the draft completes. Organizers always see every pick; switch back to everyone to reveal early.',
+    advanced: true,
+    details:
+      'With own team only, coaches see just their own picks until the draft ends. Organizers always see every pick; switch to everyone to reveal them early.',
     controls: [
       {
         kind: 'choice',
@@ -1001,6 +1020,7 @@ export function sectionRisk(
 }
 
 export type SettingsAnchor =
+  | 'setup'
   | SettingsSectionId
   | 'pools'
   | 'organizers'

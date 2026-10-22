@@ -113,17 +113,6 @@
   }
 }
 
-.pdz-you-tag {
-  @include pdz.text(label-caps);
-  display: inline-flex;
-  align-items: center;
-  padding: pdz.space(3xs) pdz.space(xs);
-  border-radius: pdz.shape(corner-xs);
-  background: pdz.color(primary-container);
-  color: pdz.color(on-primary-container);
-  vertical-align: middle;
-}
-
 @media (prefers-reduced-motion: reduce) {
   .pdz-table tbody tr {
     transition: none;

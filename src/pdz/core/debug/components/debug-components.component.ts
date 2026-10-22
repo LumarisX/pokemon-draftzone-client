@@ -64,6 +64,11 @@ import {
   PodiumComponent,
   PodiumPlace,
 } from '@pdz/shared/data/podium/podium.component';
+import {
+  AchievementBadgeComponent,
+  AchievementRarity,
+  RARITY_ORDER,
+} from '@pdz/shared/data/achievement/achievement-badge.component';
 import { EmptyStateComponent } from '@pdz/shared/feedback/empty-state/empty-state.component';
 import {
   MatchupComponent,
@@ -175,6 +180,7 @@ const MODE_ATTR = 'pdz-theme-mode';
     SeasonMvpComponent,
     TeamRosterComponent,
     PodiumComponent,
+    AchievementBadgeComponent,
     EmptyStateComponent,
     TeamComponent,
     PokemonComponent,
@@ -343,22 +349,22 @@ export class DebugComponentsComponent {
       coach: 'aaronmarshall',
       wins: 9,
       losses: 2,
-      pokemon: this.photoTeam[0],
-      you: true,
+      pokemon: this.photoTeam.slice(0, 3),
+      logo: 'https://play.pokemonshowdown.com/sprites/trainers/cynthia.png',
     },
     {
       name: 'Viridian Vipers',
       coach: 'misty',
       wins: 8,
       losses: 3,
-      pokemon: this.photoTeam[11],
+      pokemon: this.photoTeam.slice(9, 12),
     },
     {
       name: 'Neon Nightshades With A Long Name',
       coach: 'brock',
       wins: 7,
       losses: 4,
-      pokemon: this.photoTeam[4],
+      pokemon: [this.photoTeam[4]],
     },
   ];
   protected readonly teamLogoSample =
@@ -412,8 +418,12 @@ export class DebugComponentsComponent {
     team2: { name: 'Johto Group · 4th', coach: 'Now: Neon Nightshades', pending: true },
   };
   protected readonly podiumPlacesNoActors = this.podiumPlaces.map(
-    (place) => ({ ...place, pokemon: null, you: false }),
+    (place) => ({ ...place, pokemon: null }),
   );
+  protected readonly achievementRarities: (AchievementRarity | null)[] = [
+    ...RARITY_ORDER,
+    null,
+  ];
   protected readonly podiumPlacesNoRecords = this.podiumPlaces.map(
     (place) => ({ ...place, wins: null, losses: null, draws: null }),
   );

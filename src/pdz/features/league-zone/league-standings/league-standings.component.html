@@ -28,14 +28,23 @@
           @if (podium().length) {
             <pdz-podium [places]="podium()" />
           }
-          @if (showSwitchers()) {
+          @if (showTeamSwitcher()) {
             <pdz-stage-switcher
-              allStagesLabel="All stages"
+              [allStagesLabel]="showSwitchers() ? 'All stages' : 'Season'"
+              [leadingOptions]="finalOptions()"
+              [showStages]="showSwitchers()"
               [currentStageSlug]="teamFilter()"
               (stageSelected)="teamFilter.set($event)"
             />
           }
-          @if (teamStandings(); as table) {
+          @if (showFinal() && finalPlacements(); as placements) {
+            <pdz-final-standings
+              [placements]="placements"
+              [ownTeamSlug]="ownTeamSlug()"
+              [teamLinkBase]="teamLinkBase()"
+              [completedAt]="info()?.completedAt ?? null"
+            />
+          } @else if (teamStandings(); as table) {
             <pdz-team-standings
               [standingData]="table"
               [ownTeamId]="ownTeamId()"

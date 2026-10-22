@@ -1,5 +1,5 @@
 <pdz-page type="hub">
-  <div class="hall">
+  <pdz-page-sections heading="Hall of Fame" [sections]="sections()">
     <pdz-page-header
       title="Hall of Fame"
       [backLink]="leagueLink"
@@ -14,29 +14,33 @@
       }
     </pdz-page-header>
 
-    @switch (state().status) {
-      @case ("loading") {
-        <pdz-skeleton-layout layout="cards" [count]="2" />
-      }
-      @case ("error") {
-        <pdz-empty-state
-          bordered
-          kind="error"
-          heading="Could not load the Hall of Fame"
-          [message]="errorMessage()"
-          retry="event"
-          (retried)="load()"
-        />
-      }
-      @default {
-        @if (seasons().length) {
+    <div class="hall">
+      @switch (state().status) {
+        @case ("loading") {
+          <pdz-skeleton-layout layout="cards" [count]="2" />
+        }
+        @case ("error") {
+          <pdz-empty-state
+            bordered
+            kind="error"
+            heading="Could not load the Hall of Fame"
+            [message]="errorMessage()"
+            retry="event"
+            (retried)="load()"
+          />
+        }
+        @default {
           @for (entry of seasons(); track entry.season.tournamentSlug) {
             <section
               class="hall__season"
+              [id]="entry.season.tournamentSlug"
               [attr.aria-labelledby]="entry.season.tournamentSlug + '-title'"
             >
               <div class="hall__head">
-                <h2 class="hall__title" [id]="entry.season.tournamentSlug + '-title'">
+                <h2
+                  class="hall__title"
+                  [id]="entry.season.tournamentSlug + '-title'"
+                >
                   <a class="hall__link" [routerLink]="entry.link">
                     {{ entry.season.name }}
                   </a>
@@ -47,16 +51,38 @@
               </div>
               <pdz-podium [places]="entry.places" />
             </section>
+          } @empty {
+            <pdz-empty-state
+              bordered
+              kind="waiting"
+              heading="No champions yet"
+              message="Champions join the Hall of Fame when an organizer completes their season."
+            />
           }
-        } @else {
-          <pdz-empty-state
-            bordered
-            kind="waiting"
-            heading="No champions yet"
-            message="Champions join the Hall of Fame when an organizer completes their season."
-          />
+
+          @if (hall(); as hall) {
+            <section
+              class="hall__season"
+              id="achievements"
+              aria-labelledby="achievements-title"
+            >
+              <div class="hall__head">
+                <h2 class="hall__title" id="achievements-title">
+                  Achievements
+                </h2>
+                <p class="hall__meta">
+                  Earned during any season. Each one's hint says what it takes.
+                </p>
+              </div>
+              <pdz-achievement-wall
+                [catalog]="hall.achievements.catalog"
+                [earned]="hall.achievements.earned"
+                [leagueLink]="leagueLink"
+              />
+            </section>
+          }
         }
       }
-    }
-  </div>
+    </div>
+  </pdz-page-sections>
 </pdz-page>

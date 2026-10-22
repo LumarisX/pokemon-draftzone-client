@@ -45,16 +45,23 @@
   grid-template-areas:
     "schedule"
     "roster"
+    "achievements"
     "trades";
   gap: pdz.layout(section-gap);
   align-items: start;
 
   @include pdz.respond-above(large) {
     grid-template-columns: minmax(0, 2fr) minmax(0, 3fr);
+    grid-template-rows: auto 1fr auto;
     grid-template-areas:
       "schedule roster"
+      "schedule achievements"
       "trades trades";
   }
+}
+
+.team-body__achievements {
+  grid-area: achievements;
 }
 
 .team-body__schedule {

@@ -12,10 +12,7 @@
     />
   } @else {
     <pdz-page-sections heading="Settings" [sections]="sections()">
-      <pdz-page-header
-        title="Settings"
-        subtitle="How this tournament works. Every change here saves together."
-      />
+      <pdz-page-header title="Settings" />
 
       <div class="settings">
         @for (block of blocks; track anchor(block)) {
@@ -25,32 +22,9 @@
             [attr.aria-labelledby]="anchor(block) + '-title'"
           >
             <div class="settings__head">
-              <div class="settings__heading">
-                <h2 class="settings__title" [id]="anchor(block) + '-title'">
-                  {{ label(block) }}
-                </h2>
-                @switch (block.kind) {
-                  @case ("nodes") {
-                    <p class="settings__blurb">{{ blurb(block.section) }}</p>
-                  }
-                  @case ("pools") {
-                    <p class="settings__blurb">
-                      Turn order, timing and who drafts where. Pools normally
-                      open together; set one window and apply it to the rest.
-                    </p>
-                  }
-                  @case ("organizers") {
-                    <p class="settings__blurb">
-                      Who can manage every part of this tournament.
-                    </p>
-                  }
-                  @case ("completion") {
-                    <p class="settings__blurb">
-                      Close out the season once the last match is played.
-                    </p>
-                  }
-                }
-              </div>
+              <h2 class="settings__title" [id]="anchor(block) + '-title'">
+                {{ label(block) }}
+              </h2>
 
               @if (block.kind === "nodes" && block.section === "signup") {
                 <a
@@ -91,6 +65,10 @@
             </div>
 
             @switch (block.kind) {
+              @case ("quick") {
+                <pdz-quick-setup (adjust)="adjust($event)" />
+              }
+
               @case ("nodes") {
                 <pdz-risk-banner [risk]="risk(block.section)" />
                 <pdz-card padding="lg">
@@ -100,6 +78,34 @@
                       [disabled]="entry.locked"
                       [lockedReason]="entry.locked ? gateReason : null"
                     />
+                  }
+                  @if (advancedNodes(block.section); as advanced) {
+                    @if (advanced.length) {
+                      <pdz-disclosure
+                        class="settings__advanced"
+                        [class.settings__advanced--alone]="!nodes(block.section).length"
+                        [open]="advancedOpen(block.section)"
+                        (openChange)="setAdvanced(block.section, $event)"
+                      >
+                        <span pdz-disclosure-heading class="settings__advanced-heading">
+                          Advanced
+                          <span class="settings__advanced-meta">
+                            {{ advanced.length }}
+                            {{ advanced.length === 1 ? "setting" : "settings" }}
+                            @if (advancedChanged(block.section)) {
+                              · Customized
+                            }
+                          </span>
+                        </span>
+                        @for (entry of advanced; track entry.node.id) {
+                          <pdz-settings-node
+                            [node]="entry.node"
+                            [disabled]="entry.locked"
+                            [lockedReason]="entry.locked ? gateReason : null"
+                          />
+                        }
+                      </pdz-disclosure>
+                    }
                   }
                 </pdz-card>
               }
@@ -192,6 +198,34 @@
                           </div>
                         }
                       </div>
+
+                      @if (poolAdvancedNodes().length) {
+                        <pdz-disclosure
+                          class="settings__advanced"
+                          [open]="advancedOpen('pools')"
+                          (openChange)="setAdvanced('pools', $event)"
+                        >
+                          <span pdz-disclosure-heading class="settings__advanced-heading">
+                            Advanced
+                            <span class="settings__advanced-meta">
+                              {{ poolAdvancedNodes().length }} settings
+                              @if (advancedChanged("pools")) {
+                                · Customized
+                              }
+                            </span>
+                          </span>
+                          <div class="pool__nodes">
+                            @for (node of poolAdvancedNodes(); track node.id) {
+                              <div
+                                class="pool__node"
+                                [class.pool__node--full]="node.span === 'full'"
+                              >
+                                <pdz-settings-node [node]="node" [poolId]="pool.id" />
+                              </div>
+                            }
+                          </div>
+                        </pdz-disclosure>
+                      }
                     </div>
                   </pdz-card>
                 } @else {

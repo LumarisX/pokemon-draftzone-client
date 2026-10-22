@@ -2062,9 +2062,10 @@
   </div>
 
   <h3 class="section__sub">
-    Podium — the top three once a season ends, each team's top scorer standing
-    on its step; the champion's step is the loud one. A season completed before
-    records were stored drops the record
+    Podium — the top three once a season is completed, each team's logo on its
+    step and its top three scorers small under the record; the champion's step
+    is the loud one. A season completed before records were stored drops the
+    record, and one before top scorers were stored shows only its MVP
   </h3>
   <div class="photos">
     <pdz-podium [places]="podiumPlaces" />
@@ -2073,6 +2074,33 @@
       <pdz-podium [places]="podiumPlacesNoActors" />
     </div>
     <pdz-podium label="Hall of Fame" [places]="podiumPlacesNoRecords" />
+  </div>
+
+  <h3 class="section__sub">
+    Achievement badge — a medallion in its rarity's colors (bronze, silver,
+    gold, platinum), dashed and locked until earned; labelled shows the name and
+    rarity beside it, otherwise the name is a tooltip
+  </h3>
+  <div class="row">
+    @for (rarity of achievementRarities; track $index) {
+      <pdz-achievement-badge name="Victor" icon="military_tech" [rarity]="rarity" />
+    }
+  </div>
+  <div class="row">
+    @for (rarity of achievementRarities; track $index) {
+      <pdz-achievement-badge
+        labelled
+        size="sm"
+        name="Flawless"
+        icon="shield"
+        [rarity]="rarity"
+      />
+    }
+  </div>
+  <div class="row">
+    <pdz-achievement-badge size="lg" name="Champion" icon="trophy" rarity="platinum" />
+    <pdz-achievement-badge size="lg" name="One-Mon Army" icon="bolt" rarity="gold" />
+    <pdz-achievement-badge size="lg" name="Iron Wall" icon="security" />
   </div>
 
   <h3 class="section__sub">

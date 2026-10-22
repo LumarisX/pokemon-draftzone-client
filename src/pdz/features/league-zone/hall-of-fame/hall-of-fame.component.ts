@@ -14,7 +14,12 @@ import { PodiumComponent } from '@pdz/shared/data/podium/podium.component';
 import { SkeletonLayoutComponent } from '@pdz/shared/data/skeleton/skeleton-layout.component';
 import { EmptyStateComponent } from '@pdz/shared/feedback/empty-state/empty-state.component';
 import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
+import {
+  PageSection,
+  PageSectionsComponent,
+} from '@pdz/shared/layout/page-sections/page-sections.component';
 import { PageComponent } from '@pdz/shared/layout/page/page.component';
+import { AchievementWallComponent } from './achievement-wall.component';
 import { LeagueZoneService } from '../league-zone.service';
 import { League } from '../league.interface';
 import { getLeagueLogoUrl } from '../league.util';
@@ -30,9 +35,11 @@ type State =
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     RouterLink,
+    AchievementWallComponent,
     EmptyStateComponent,
     PageComponent,
     PageHeaderComponent,
+    PageSectionsComponent,
     PodiumComponent,
     SkeletonLayoutComponent,
   ],
@@ -83,6 +90,17 @@ export class HallOfFameComponent {
       };
     }),
   );
+
+  protected readonly sections = computed<PageSection[]>(() => {
+    if (!this.hall()) return [];
+    return [
+      ...this.seasons().map((entry) => ({
+        id: entry.season.tournamentSlug,
+        label: entry.season.name,
+      })),
+      { id: 'achievements', label: 'Achievements' },
+    ];
+  });
 
   constructor() {
     this.load();

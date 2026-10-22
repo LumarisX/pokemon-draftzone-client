@@ -1,9 +1,11 @@
+import { NgTemplateOutlet } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
   computed,
   inject,
   input,
+  signal,
 } from '@angular/core';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { NodeControlComponent } from './node-control.component';
@@ -18,7 +20,7 @@ import { TournamentSettingsStore } from './tournament-settings.store';
 @Component({
   selector: 'pdz-settings-node',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [IconComponent, NodeControlComponent],
+  imports: [IconComponent, NgTemplateOutlet, NodeControlComponent],
   templateUrl: './settings-node.component.html',
   styleUrl: './settings-node.component.scss',
 })
@@ -29,6 +31,7 @@ export class SettingsNodeComponent {
   readonly poolId = input<string | null>(null);
 
   protected readonly store = inject(TournamentSettingsStore);
+  protected readonly showDetails = signal(false);
 
   private readonly bag = computed<ValueBag>(() => {
     const id = this.poolId();

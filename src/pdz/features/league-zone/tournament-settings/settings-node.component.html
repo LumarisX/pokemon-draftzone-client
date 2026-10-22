@@ -1,11 +1,37 @@
 <div class="node" [class.node--disabled]="disabled()" [id]="node().id">
   <div class="node__head">
-    <h3 class="node__title">{{ node().title }}</h3>
+    <div class="node__title-row">
+      <h3 class="node__title">{{ node().title }}</h3>
+      @if (node().details && !node().hint) {
+        <ng-container [ngTemplateOutlet]="more" />
+      }
+    </div>
+    @if (node().hint; as hint) {
+      <p class="node__hint">
+        <span>{{ hint }}</span>
+        @if (node().details) {
+          <ng-container [ngTemplateOutlet]="more" />
+        }
+      </p>
+    }
+    @if (node().details && showDetails()) {
+      <p class="node__details" [id]="node().id + '-details'">
+        {{ node().details }}
+      </p>
+    }
   </div>
 
-  @if (node().help; as help) {
-    <p class="node__help">{{ help }}</p>
-  }
+  <ng-template #more>
+    <button
+      type="button"
+      class="node__more"
+      [attr.aria-expanded]="showDetails()"
+      [attr.aria-controls]="node().id + '-details'"
+      (click)="showDetails.set(!showDetails())"
+    >
+      {{ showDetails() ? "Less" : "More" }}
+    </button>
+  </ng-template>
 
   @if (lockedReason(); as reason) {
     <p class="node__locked">

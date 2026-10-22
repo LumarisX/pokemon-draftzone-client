@@ -12,6 +12,8 @@ import { SegmentedOptionComponent } from '@pdz/shared/inputs/segmented/segmented
 import { SegmentedComponent } from '@pdz/shared/inputs/segmented/segmented.component';
 import { catchError, of } from 'rxjs';
 
+export type StageSwitcherOption = { value: string; label: string };
+
 @Component({
   selector: 'pdz-stage-switcher',
   imports: [SegmentedComponent, SegmentedOptionComponent],
@@ -24,6 +26,8 @@ export class StageSwitcherComponent {
 
   readonly currentStageSlug = input<string | null>(null);
   readonly allStagesLabel = input<string | null>(null);
+  readonly leadingOptions = input<StageSwitcherOption[]>([]);
+  readonly showStages = input(true);
   readonly stageSelected = output<string>();
 
   readonly stages = toSignal(

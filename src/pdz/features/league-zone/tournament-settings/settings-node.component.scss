@@ -24,8 +24,15 @@
 
 .node__head {
   display: flex;
-  align-items: center;
-  gap: pdz.space(sm);
+  flex-direction: column;
+  gap: pdz.space(3xs);
+}
+
+.node__title-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: pdz.space(xs);
 }
 
 .node__title {
@@ -34,9 +41,38 @@
   color: pdz.color(on-surface);
 }
 
-.node__help {
-  @include pdz.text(body-sm);
+.node__hint {
+  @include pdz.text(meta);
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: pdz.space(2xs);
   margin: 0;
+  color: pdz.color(on-surface-muted);
+}
+
+.node__more {
+  @include pdz.text(meta);
+  padding: 0;
+  border: none;
+  background: none;
+  color: pdz.color(primary-accent);
+  font-weight: pdz.font-weight(semibold);
+  cursor: pointer;
+
+  &:hover {
+    text-decoration: underline;
+  }
+
+  &:focus-visible {
+    @include pdz.focus-ring;
+  }
+}
+
+.node__details {
+  @include pdz.text(body-sm);
+  max-width: 40rem;
+  margin: pdz.space(2xs) 0 0;
   color: pdz.color(on-surface-variant);
 }
 

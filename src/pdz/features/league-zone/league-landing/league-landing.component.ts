@@ -80,10 +80,8 @@ export class LeagueLandingComponent {
     });
   });
 
-  readonly hasChampions = computed(() =>
-    (this.league()?.tournaments ?? []).some(
-      (tournament) => !!tournament.completedAt,
-    ),
+  readonly showHallOfFame = computed(
+    () => (this.league()?.tournaments ?? []).length > 0,
   );
 
   private statusOf(

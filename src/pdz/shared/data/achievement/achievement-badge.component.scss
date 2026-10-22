@@ -1,0 +1,80 @@
+@use "pdz-theming" as pdz;
+
+:host {
+  --medal: 2.25rem;
+
+  display: inline-flex;
+  align-items: center;
+  gap: pdz.space(sm);
+  min-width: 0;
+}
+
+:host([data-size="sm"]) {
+  --medal: 1.5rem;
+
+  gap: pdz.space(xs);
+}
+
+:host([data-size="lg"]) {
+  --medal: 3.25rem;
+}
+
+.pdz-achievement-badge__medal {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: var(--medal);
+  height: var(--medal);
+  border: 2px solid pdz.color(border-control);
+  border-radius: 50%;
+  background: pdz.color(inset);
+  color: pdz.color(on-surface-muted);
+}
+
+:host([data-rarity="bronze"]) .pdz-achievement-badge__medal {
+  border-color: pdz.color(bronze);
+  background: pdz.color(bronze-container);
+  color: pdz.color(on-bronze-container);
+}
+
+:host([data-rarity="silver"]) .pdz-achievement-badge__medal {
+  border-color: pdz.color("silver");
+  background: pdz.color(silver-container);
+  color: pdz.color(on-silver-container);
+}
+
+:host([data-rarity="gold"]) .pdz-achievement-badge__medal {
+  border-color: pdz.color("gold");
+  background: pdz.color(gold-container);
+  color: pdz.color(on-gold-container);
+}
+
+:host([data-rarity="platinum"]) .pdz-achievement-badge__medal {
+  border-color: pdz.color(platinum);
+  background: pdz.color(platinum-container);
+  color: pdz.color(on-platinum-container);
+}
+
+:host([data-rarity="locked"]) .pdz-achievement-badge__medal {
+  border-style: dashed;
+}
+
+.pdz-achievement-badge__text {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.pdz-achievement-badge__name {
+  overflow: hidden;
+  color: pdz.color(on-surface);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  @include pdz.text(body-sm-strong);
+}
+
+.pdz-achievement-badge__rarity {
+  color: pdz.color(on-surface-muted);
+  @include pdz.text(meta);
+}

@@ -16,7 +16,9 @@ export function podiumPlaces(
       wins: place.wins,
       losses: place.losses,
       draws: place.draws,
-      pokemon: place.mvp ? { id: place.mvp.id, name: place.mvp.name } : null,
+      pokemon: (place.top?.length ? place.top : place.mvp ? [place.mvp] : []).map(
+        (entry) => ({ id: entry.id, name: entry.name }),
+      ),
       link: teamLink ? teamLink(place.teamSlug) : null,
     }));
 }

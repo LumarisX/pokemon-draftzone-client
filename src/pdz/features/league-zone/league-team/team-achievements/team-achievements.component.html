@@ -1,0 +1,70 @@
+<pdz-card padding="lg">
+  <section class="achievements" aria-labelledby="team-achievements">
+    <div class="achievements__head">
+      <div class="achievements__heading">
+        <h2 class="achievements__title" id="team-achievements">Achievements</h2>
+        @if (data()) {
+          <span class="achievements__summary">
+            {{ earnedCount() }} of {{ total() }} earned this season
+          </span>
+        }
+      </div>
+      <a class="achievements__link" [routerLink]="hallOfFameLink()" fragment="achievements">
+        Hall of Fame
+      </a>
+    </div>
+
+    @switch (state().status) {
+      @case ("loading") {
+        <pdz-skeleton-layout layout="cards" [count]="6" />
+      }
+      @case ("error") {
+        <pdz-empty-state
+          size="sm"
+          kind="error"
+          heading="Achievements did not load"
+          retry="event"
+          (retried)="retry()"
+        />
+      }
+      @default {
+        @if (rows().length) {
+          <ul class="achievements__grid">
+            @for (row of rows(); track row.entry.id) {
+              <li
+                class="achievement"
+                tabindex="0"
+                [class.achievement--locked]="!row.entry.rarity"
+                [pdzTooltip]="row.tooltip"
+              >
+                <pdz-achievement-badge
+                  [name]="row.entry.name"
+                  [icon]="row.entry.icon"
+                  [rarity]="row.entry.rarity"
+                  [tooltip]="false"
+                />
+                <div class="achievement__progress">
+                  @if (row.progress; as progress) {
+                    <pdz-meter
+                      size="sm"
+                      [value]="progress.value"
+                      [max]="progress.max"
+                      [label]="row.entry.name + ' progress'"
+                    />
+                  }
+                </div>
+                <span class="achievement__name">{{ row.entry.name }}</span>
+              </li>
+            }
+          </ul>
+        } @else {
+          <pdz-empty-state
+            size="sm"
+            icon="military_tech"
+            message="No achievements were earned this season."
+          />
+        }
+      }
+    }
+  </section>
+</pdz-card>

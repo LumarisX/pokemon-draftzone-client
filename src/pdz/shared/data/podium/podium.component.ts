@@ -13,12 +13,12 @@ export type PodiumPlace = {
   wins?: number | null;
   losses?: number | null;
   draws?: number | null;
-  pokemon?: Pokemon<DraftOptions> | null;
+  pokemon?: readonly Pokemon<DraftOptions>[] | null;
   link?: readonly string[] | null;
-  you?: boolean;
 };
 
 export const PODIUM_SIZE = 3;
+export const PODIUM_LEADERS = 3;
 
 @Component({
   selector: 'pdz-podium',
@@ -31,35 +31,24 @@ export const PODIUM_SIZE = 3;
           @for (place of places().slice(0, size); track $index) {
             <li class="pdz-podium__place" [attr.data-place]="$index + 1">
               <div class="pdz-podium__actor">
-                @if (place.pokemon; as pokemon) {
-                  <pdz-sprite
-                    class="pdz-podium__sprite"
-                    size="fill"
-                    [pokemon]="pokemon"
-                    [flipped]="$index === 1"
-                    [showFormes]="false"
-                  />
-                }
+                <pdz-team-logo
+                  class="pdz-podium__logo"
+                  size="2xl"
+                  decorative
+                  [src]="place.logo"
+                  [name]="place.name"
+                />
               </div>
               <div class="pdz-podium__step">
                 <span class="pdz-podium__rank" aria-hidden="true">{{
                   $index + 1
                 }}</span>
-                <pdz-team-logo
-                  [size]="$index === 0 ? 'lg' : 'md'"
-                  decorative
-                  [src]="place.logo"
-                  [name]="place.name"
-                />
                 @if (place.link; as link) {
                   <a class="pdz-podium__name" [routerLink]="link">{{
                     place.name
                   }}</a>
                 } @else {
                   <span class="pdz-podium__name">{{ place.name }}</span>
-                }
-                @if (place.you) {
-                  <span class="pdz-you-tag">You</span>
                 }
                 @if (place.coach) {
                   <span class="pdz-podium__coach">{{ place.coach }}</span>
@@ -71,6 +60,19 @@ export const PODIUM_SIZE = 3;
                     [losses]="record.losses"
                     [draws]="record.draws"
                   />
+                }
+                @if (leadersOf(place); as leaders) {
+                  <ul class="pdz-podium__leaders" aria-label="Top scorers">
+                    @for (pokemon of leaders; track $index) {
+                      <li class="pdz-podium__leader">
+                        <pdz-sprite
+                          size="sm"
+                          [pokemon]="pokemon"
+                          [showFormes]="false"
+                        />
+                      </li>
+                    }
+                  </ul>
                 }
               </div>
             </li>
@@ -93,5 +95,13 @@ export class PodiumComponent {
   ): { wins: number; losses: number; draws: number | null } | null {
     if (place.wins == null || place.losses == null) return null;
     return { wins: place.wins, losses: place.losses, draws: place.draws ?? null };
+  }
+
+  protected leadersOf(
+    place: PodiumPlace,
+  ): readonly Pokemon<DraftOptions>[] | null {
+    return place.pokemon?.length
+      ? place.pokemon.slice(0, PODIUM_LEADERS)
+      : null;
   }
 }

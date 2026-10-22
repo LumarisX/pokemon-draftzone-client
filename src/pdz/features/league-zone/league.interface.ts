@@ -427,6 +427,7 @@ export namespace League {
     losses: number | null;
     draws: number | null;
     mvp: SeasonMvp | null;
+    top?: SeasonMvp[];
   };
 
   export type FinalResults = {
@@ -450,11 +451,55 @@ export namespace League {
     places: FinalPlacement[];
   };
 
+  export type AchievementRarity = 'bronze' | 'silver' | 'gold' | 'platinum';
+
+  export type AchievementDefinition = {
+    id: string;
+    name: string;
+    icon: string;
+    hidden: boolean;
+    tiers: { rarity: AchievementRarity; count: number; hint: string }[];
+  };
+
+  export type AchievementProgress = AchievementDefinition & {
+    rarity: AchievementRarity | null;
+    tier: number;
+    count: number;
+    next: number | null;
+    earnedAt: string | null;
+  };
+
+  export type TeamAchievements = {
+    final: boolean;
+    achievements: AchievementProgress[];
+  };
+
+  export type EarnedAchievement = {
+    achievementId: string;
+    rarity: AchievementRarity;
+    tier: number;
+    count: number;
+    earnedAt: string | null;
+    tournamentSlug: string;
+    tournamentName: string;
+    completed: boolean;
+    team: {
+      teamSlug: string;
+      name: string;
+      logo: string | null;
+      coach: string | null;
+    };
+  };
+
   export type HallOfFame = {
     name: string;
     leagueSlug: string;
     logo: string | null;
     seasons: HallOfFameSeason[];
+    achievements: {
+      catalog: AchievementDefinition[];
+      earned: EarnedAchievement[];
+    };
   };
 
   export type LeagueSummary = {

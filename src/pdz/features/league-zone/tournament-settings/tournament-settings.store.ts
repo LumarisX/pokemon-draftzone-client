@@ -50,7 +50,7 @@ const AD_PLATFORMS = [
   'Scarlet/Violet',
 ];
 
-const EMPTY_SETTINGS: SettingsValue = {
+export const EMPTY_SETTINGS: SettingsValue = {
   name: '',
   description: '',
   logo: null,
@@ -1097,6 +1097,18 @@ export class TournamentSettingsStore {
         },
       }),
     );
+  }
+
+  applyPatch(patch: {
+    settings?: Partial<SettingsValue>;
+    pools?: Partial<DraftPoolValue>;
+  }): void {
+    if (patch.settings)
+      this.draftValue.update((current) => ({ ...current, ...patch.settings }));
+    if (patch.pools)
+      this.draftPools.update((pools) =>
+        pools.map((pool) => ({ ...pool, ...patch.pools })),
+      );
   }
 
   private patchPool(poolId: string, patch: Partial<DraftPoolValue>): void {

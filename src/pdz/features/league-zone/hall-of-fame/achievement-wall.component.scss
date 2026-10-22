@@ -1,0 +1,138 @@
+@use "pdz-theming" as pdz;
+
+:host {
+  display: block;
+}
+
+.wall {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(md);
+}
+
+.wall__bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: pdz.space(sm);
+}
+
+.wall__summary {
+  margin: 0;
+  color: pdz.color(on-surface-muted);
+  @include pdz.text(meta);
+}
+
+.wall__filter {
+  min-width: 14rem;
+}
+
+.wall__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(19rem, 1fr));
+  gap: pdz.space(md);
+}
+
+.tile {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(md);
+}
+
+.tile__head {
+  display: flex;
+  align-items: center;
+  gap: pdz.space(md);
+}
+
+.tile__title {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.tile__name {
+  margin: 0;
+  color: pdz.color(on-surface);
+  @include pdz.text(card-title);
+}
+
+.tile__count {
+  color: pdz.color(on-surface-muted);
+  @include pdz.text(meta);
+}
+
+.tile__tiers,
+.tile__holders {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(xs);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tile__tier {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: pdz.space(sm);
+}
+
+.tile__hint {
+  color: pdz.color(on-surface);
+  @include pdz.text(body-sm);
+}
+
+.tile__rarity,
+.tile__earned-rarity {
+  color: pdz.color(on-surface-muted);
+  @include pdz.text(meta);
+}
+
+.tile__holders {
+  padding-top: pdz.space(sm);
+  border-top: 1px solid pdz.color(border-subtle);
+}
+
+.tile__holder {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: pdz.space(sm);
+}
+
+.tile__who {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.tile__team {
+  overflow: hidden;
+  color: pdz.color(on-surface);
+  text-decoration: none;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  @include pdz.text(body-sm-strong);
+
+  &:hover {
+    text-decoration: underline;
+  }
+
+  &:focus-visible {
+    @include pdz.focus-ring;
+  }
+}
+
+.tile__season {
+  color: pdz.color(on-surface-muted);
+  @include pdz.text(meta);
+}
+
+.tile__more {
+  margin: 0;
+  color: pdz.color(on-surface-muted);
+  @include pdz.text(meta);
+}

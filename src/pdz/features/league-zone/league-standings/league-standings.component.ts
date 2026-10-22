@@ -3,6 +3,7 @@ import {
   Component,
   computed,
   inject,
+  linkedSignal,
   signal,
 } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
@@ -11,36 +12,24 @@ import { podiumPlaces } from '@pdz/features/league-zone/hall-of-fame/final-place
 import { AuthService } from '@pdz/core/services/auth0.service';
 import { LeagueZoneService } from '@pdz/features/league-zone/league-zone.service';
 import { League } from '@pdz/features/league-zone/league.interface';
-import { getTeamLogoSrc } from '@pdz/features/league-zone/league.util';
-import { Pokemon } from '@pdz/core/utils/pokemon';
 import {
-  PODIUM_SIZE,
+  StageSwitcherComponent,
+  StageSwitcherOption,
+} from '@pdz/features/league-zone/league-widgets/stage-switcher/stage-switcher.component';
+import {
   PodiumComponent,
   PodiumPlace,
 } from '@pdz/shared/data/podium/podium.component';
-import { StageSwitcherComponent } from '@pdz/features/league-zone/league-widgets/stage-switcher/stage-switcher.component';
 import { SkeletonComponent } from '@pdz/shared/data/skeleton/skeleton.component';
 import { EmptyStateComponent } from '@pdz/shared/feedback/empty-state/empty-state.component';
 import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
 import { PageComponent } from '@pdz/shared/layout/page/page.component';
 import { catchError, map, of, switchMap } from 'rxjs';
+import { FinalStandingsComponent } from './final-standings/final-standings.component';
 import { PokemonStandingsComponent } from './pokemon-standings/pokemon-standings.component';
 import { TeamStandingsComponent } from './team-standings/team-standings.component';
 
-function topScorer(
-  standings: League.PokemonStanding[],
-  teamName: string,
-): Pokemon | null {
-  const best = standings
-    .filter((p) => p.teamName === teamName && p.record.kills > 0)
-    .sort(
-      (a, b) =>
-        b.record.kills - a.record.kills ||
-        a.record.deaths - b.record.deaths ||
-        a.record.brought - b.record.brought,
-    )[0];
-  return best ? { id: best.id, name: best.name } : null;
-}
+const FINAL_VIEW = 'final';
 
 type StandingsState =
   | { status: 'loading' }
@@ -55,6 +44,7 @@ type StandingsState =
   selector: 'pdz-league-standings',
   imports: [
     EmptyStateComponent,
+    FinalStandingsComponent,
     PageComponent,
     PageHeaderComponent,
     PodiumComponent,
@@ -73,7 +63,6 @@ export class LeagueStandingsComponent {
 
   readonly skeletonRows = [0, 1, 2, 3, 4, 5];
 
-  readonly teamFilter = signal('all');
   readonly pokemonFilter = signal('all');
 
   readonly state = toSignal(
@@ -105,6 +94,19 @@ export class LeagueStandingsComponent {
 
   readonly ownTeamId = computed(() => this.profile()?.teamId ?? null);
 
+  readonly ownTeamSlug = computed(() => {
+    const ownTeamId = this.ownTeamId();
+    const state = this.state();
+    if (!ownTeamId || state.status !== 'ready') return null;
+    for (const view of Object.values(state.views)) {
+      const team = view.teamStandings.teams.find(
+        (entry) => entry.id === ownTeamId,
+      );
+      if (team?.teamSlug) return team.teamSlug;
+    }
+    return null;
+  });
+
   readonly teamLinkBase = computed(() => {
     const leagueSlug = this.leagueService.leagueSlug();
     const tournamentSlug = this.leagueService.tournamentSlug();
@@ -124,19 +126,12 @@ export class LeagueStandingsComponent {
     return state.status === 'ready' && state.filters.length > 1;
   });
 
-  readonly teamStandings = computed(() => {
-    const state = this.state();
-    if (state.status !== 'ready') return null;
-    const table = state.views[this.teamFilter()]?.teamStandings;
-    return table?.teams.length ? table : null;
-  });
-
-  private readonly info = toSignal(
+  readonly info = toSignal(
     this.leagueService.getLeagueInfo().pipe(catchError(() => of(null))),
     { initialValue: null },
   );
 
-  private readonly finalPlacements = toSignal(
+  readonly finalPlacements = toSignal(
     toObservable(this.info).pipe(
       switchMap((info) =>
         info?.completedAt
@@ -155,37 +150,40 @@ export class LeagueStandingsComponent {
     { initialValue: null },
   );
 
+  private readonly hasFinal = computed(
+    () => !!this.finalPlacements()?.length,
+  );
+
+  readonly teamFilter = linkedSignal<string>(() =>
+    this.hasFinal() ? FINAL_VIEW : 'all',
+  );
+
+  readonly showFinal = computed(
+    () => this.hasFinal() && this.teamFilter() === FINAL_VIEW,
+  );
+
+  readonly finalOptions = computed((): StageSwitcherOption[] =>
+    this.hasFinal() ? [{ value: FINAL_VIEW, label: 'Final' }] : [],
+  );
+
+  readonly showTeamSwitcher = computed(
+    () => this.showSwitchers() || this.hasFinal(),
+  );
+
+  readonly teamStandings = computed(() => {
+    const state = this.state();
+    if (state.status !== 'ready') return null;
+    const table = state.views[this.teamFilter()]?.teamStandings;
+    return table?.teams.length ? table : null;
+  });
+
   readonly podium = computed((): PodiumPlace[] => {
     const final = this.finalPlacements();
-    if (final?.length) {
-      const linkBase = this.teamLinkBase();
-      return podiumPlaces(final, (teamSlug) =>
-        linkBase ? [...linkBase, teamSlug] : [],
-      );
-    }
-    const state = this.state();
-    const seasonEnd = this.info()?.seasonEnd;
-    if (state.status !== 'ready' || !seasonEnd) return [];
-    if (Date.now() <= new Date(seasonEnd).getTime()) return [];
-    const view = state.views['all'] ?? Object.values(state.views)[0];
-    if (!view) return [];
-    const played = view.teamStandings.teams.filter(
-      (team) => team.wins + team.losses + (team.draws ?? 0) > 0,
-    );
-    if (played.length < 2) return [];
+    if (!final?.length) return [];
     const linkBase = this.teamLinkBase();
-    const ownTeamId = this.ownTeamId();
-    return played.slice(0, PODIUM_SIZE).map((team) => ({
-      name: team.name,
-      logo: getTeamLogoSrc(team.logo),
-      coach: team.coach,
-      wins: team.wins,
-      losses: team.losses,
-      draws: team.draws,
-      pokemon: topScorer(view.pokemonStandings, team.name),
-      link: linkBase && team.teamSlug ? [...linkBase, team.teamSlug] : null,
-      you: team.id === ownTeamId,
-    }));
+    return podiumPlaces(final, (teamSlug) =>
+      linkBase ? [...linkBase, teamSlug] : [],
+    );
   });
 
   readonly pokemonStandings = computed(() => {

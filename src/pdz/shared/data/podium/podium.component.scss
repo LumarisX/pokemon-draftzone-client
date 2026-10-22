@@ -40,14 +40,14 @@
 }
 
 .pdz-podium__place {
-  --pdz-podium-actor: 4.5rem;
+  --pdz-podium-actor: 4rem;
   --pdz-podium-rise: 0rem;
   display: flex;
   flex-direction: column;
   min-width: 0;
 
   &[data-place="1"] {
-    --pdz-podium-actor: 6rem;
+    --pdz-podium-actor: 5.5rem;
     --pdz-podium-rise: 2.5rem;
     order: 2;
   }
@@ -62,26 +62,37 @@
   }
 
   @container pdz-podium (max-width: 26rem) {
-    --pdz-podium-actor: 3.5rem;
+    --pdz-podium-actor: 3rem;
 
     &[data-place="1"] {
-      --pdz-podium-actor: 4.5rem;
+      --pdz-podium-actor: 4rem;
     }
   }
 }
 
 .pdz-podium__actor {
-  position: relative;
-  z-index: 1;
   display: flex;
   justify-content: center;
-  height: var(--pdz-podium-actor);
-  margin-bottom: calc(var(--pdz-podium-actor) * -0.06);
+  margin-bottom: pdz.space(sm);
 }
 
-.pdz-podium__sprite {
+.pdz-podium__actor > .pdz-podium__logo {
   width: var(--pdz-podium-actor);
   height: var(--pdz-podium-actor);
+}
+
+.pdz-podium__leaders {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: pdz.space(3xs);
+  margin: pdz.space(2xs) 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.pdz-podium__leader {
+  display: flex;
 }
 
 .pdz-podium__step {

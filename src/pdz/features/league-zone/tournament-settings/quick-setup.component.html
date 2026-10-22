@@ -1,0 +1,77 @@
+<pdz-card padding="lg">
+  <ul class="quick">
+    @for (row of rows(); track row.question.id) {
+      <li class="quick__row">
+        <div class="quick__text">
+          <h3 class="quick__title" [id]="'quick-' + row.question.id">
+            {{ row.question.title }}
+          </h3>
+          <p class="quick__summary" [class.quick__summary--custom]="row.custom">
+            {{ row.summary }}
+          </p>
+          @if (row.suggestion; as suggestion) {
+            <p class="quick__suggestion">
+              {{ suggestion.text }}
+              <button
+                type="button"
+                class="quick__suggestion-action"
+                (click)="choose(row.question, suggestion.value)"
+              >
+                {{ suggestion.action }}
+              </button>
+            </p>
+          }
+        </div>
+        <div class="quick__controls">
+          <pdz-segmented
+            size="sm"
+            [attr.aria-labelledby]="'quick-' + row.question.id"
+            [value]="row.current"
+            [disabled]="!!row.unavailable"
+            (valueChange)="choose(row.question, $any($event))"
+          >
+            @for (option of row.question.options; track option.value) {
+              <pdz-segmented-option [value]="option.value" [label]="option.label" />
+            }
+          </pdz-segmented>
+          <button
+            pdz-button
+            type="button"
+            size="sm"
+            variant="ghost"
+            color="neutral"
+            (click)="adjust.emit(row.question.anchor)"
+          >
+            Adjust
+          </button>
+        </div>
+      </li>
+    }
+    <li class="quick__row">
+      <div class="quick__text">
+        <h3 class="quick__title">Season Shape</h3>
+        <p class="quick__summary">
+          @if (schedule().stageCount) {
+            {{ schedule().stageCount }}
+            {{ schedule().stageCount === 1 ? "stage" : "stages" }} on the
+            Schedule, such as a round robin then playoffs.
+          } @else {
+            Round robin, Swiss or elimination, with or without playoffs. Set
+            up on the Schedule once teams are in.
+          }
+        </p>
+      </div>
+      <div class="quick__controls">
+        <a
+          pdz-button
+          size="sm"
+          variant="outlined"
+          color="neutral"
+          routerLink="../schedule"
+        >
+          Open Schedule
+        </a>
+      </div>
+    </li>
+  </ul>
+</pdz-card>

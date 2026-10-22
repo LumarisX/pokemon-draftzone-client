@@ -1,0 +1,66 @@
+<div class="pdz-table-wrapper">
+  <table class="pdz-table" data-sticky>
+    <caption class="final-standings__caption">
+      <span class="final-standings__title">Final Placements</span>
+      @if (completedOn(); as on) {
+        <span class="final-standings__meta">Completed {{ on }}</span>
+      }
+    </caption>
+    <thead>
+      <tr>
+        <th class="pdz-table__num pdz-table__center" scope="col">Place</th>
+        <th scope="col">Team</th>
+        <th class="pdz-table__center" scope="col">
+          {{ showDraws() ? "W-D-L" : "W-L" }}
+        </th>
+        <th scope="col">Season MVP</th>
+      </tr>
+    </thead>
+    <tbody>
+      @for (row of rows(); track row.teamSlug) {
+        <tr [class.pdz-table__row--you]="row.you">
+          <td class="pdz-table__num pdz-table__center">
+            <span class="final-standings__place">{{ row.placement }}</span>
+          </td>
+          <td>
+            <pdz-team
+              class="final-standings__team"
+              [name]="row.name"
+              [logo]="row.logoSrc"
+              [coach]="row.coach ?? undefined"
+              [link]="row.link"
+            >
+              @if (row.label) {
+                <span pdz-team-meta class="final-standings__label">{{
+                  row.label
+                }}</span>
+              }
+            </pdz-team>
+          </td>
+          <td class="pdz-table__center">
+            @if (row.wins !== null && row.losses !== null) {
+              <pdz-record
+                size="sm"
+                [wins]="row.wins"
+                [losses]="row.losses"
+                [draws]="row.draws ?? 0"
+                [alwaysShowDraws]="showDraws()"
+              />
+            }
+          </td>
+          <td>
+            @if (row.mvp; as mvp) {
+              <span class="final-standings__mvp">
+                <pdz-pokemon
+                  size="inline"
+                  [pokemon]="{ id: mvp.id, name: mvp.name }"
+                />
+                <span class="final-standings__kos">{{ mvp.kills }} KOs</span>
+              </span>
+            }
+          </td>
+        </tr>
+      }
+    </tbody>
+  </table>
+</div>

@@ -1,0 +1,103 @@
+<div class="wall">
+  <div class="wall__bar">
+    <p class="wall__summary">
+      {{ earnedCount() }} of {{ tiles().length }} achievements earned
+    </p>
+    @if (seasons().length > 1) {
+      <pdz-select
+        class="wall__filter"
+        aria-label="Season"
+        [showGroupInTrigger]="false"
+        [value]="season()"
+        (valueChange)="season.set($any($event) ?? '')"
+      >
+        <pdz-option value="" label="All Seasons" />
+        @for (option of seasons(); track option.slug) {
+          <pdz-option [value]="option.slug" [label]="option.name" />
+        }
+      </pdz-select>
+    }
+  </div>
+
+  <div class="wall__grid">
+    @for (tile of tiles(); track tile.definition.id) {
+      <pdz-card padding="md">
+        <div class="tile" [class.tile--locked]="!tile.top">
+          <div class="tile__head">
+            <pdz-achievement-badge
+              size="lg"
+              [name]="tile.definition.name"
+              [icon]="tile.definition.icon"
+              [rarity]="tile.top"
+            />
+            <div class="tile__title">
+              <h3 class="tile__name">{{ tile.definition.name }}</h3>
+              <span class="tile__count">
+                @if (tile.total) {
+                  Earned {{ tile.total }}
+                  {{ tile.total === 1 ? "time" : "times" }}
+                } @else {
+                  Not earned yet
+                }
+              </span>
+            </div>
+          </div>
+
+          <ul class="tile__tiers">
+            @for (tier of tile.tiers; track tier.rarity) {
+              <li class="tile__tier">
+                <pdz-achievement-badge
+                  size="sm"
+                  [name]="tile.definition.name"
+                  [icon]="tile.definition.icon"
+                  [rarity]="tier.holders ? tier.rarity : null"
+                />
+                <span class="tile__hint">{{ tier.hint }}</span>
+                <span class="tile__rarity">{{ rarityLabels[tier.rarity] }}</span>
+              </li>
+            }
+          </ul>
+
+          @if (tile.holders.length) {
+            <ul class="tile__holders">
+              @for (holder of tile.holders; track $index) {
+                <li class="tile__holder">
+                  <pdz-team-logo
+                    size="xs"
+                    decorative
+                    [src]="holder.logoSrc"
+                    [name]="holder.team.name"
+                  />
+                  <span class="tile__who">
+                    <a class="tile__team" [routerLink]="holder.link">{{
+                      holder.team.coach ?? holder.team.name
+                    }}</a>
+                    <span class="tile__season">
+                      {{ holder.tournamentName }}
+                      @if (!holder.completed) {
+                        · In Progress
+                      }
+                    </span>
+                  </span>
+                  <span class="tile__earned-rarity">{{
+                    rarityLabels[holder.rarity]
+                  }}</span>
+                </li>
+              }
+            </ul>
+            @if (tile.more) {
+              <p class="tile__more">and {{ tile.more }} more</p>
+            }
+          }
+        </div>
+      </pdz-card>
+    } @empty {
+      <pdz-empty-state
+        bordered
+        kind="empty"
+        heading="No achievements yet"
+        message="Achievements appear here as soon as a coach earns one."
+      />
+    }
+  </div>
+</div>

@@ -211,8 +211,10 @@ for (const [name, vars] of [...themes].sort(([a], [b]) => a.localeCompare(b))) {
     check("on-versus-gradient on versus-gradient (weakest point)", "on-versus-gradient", null, 3, weakestStop(versus, color("on-versus-gradient"), 0, 100));
     check("on-versus-gradient on versus-gradient (middle)", "on-versus-gradient", null, 4.5, weakestStop(versus, color("on-versus-gradient"), 40, 60));
   }
-  for (const role of ["primary", "secondary", "danger", "warning", "success", "info"])
+  for (const role of ["primary", "secondary", "danger", "warning", "success", "info", "bronze", "silver", "gold", "platinum"])
     check(`on-${role}-container on ${role}-container`, `on-${role}-container`, `${role}-container`, 4.5);
+  for (const role of ["bronze", "silver", "gold", "platinum"])
+    check(`${role} on ${role}-container`, role, `${role}-container`, 3);
   for (const team of ["team1", "team2"]) {
     const wash = color(`${team}-wash`);
     const raised = surface("raised");

@@ -1,0 +1,98 @@
+@use "pdz-theming" as pdz;
+
+:host {
+  display: block;
+}
+
+.achievements {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.layout(stack);
+}
+
+.achievements__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: pdz.space(sm);
+}
+
+.achievements__heading {
+  display: flex;
+  flex-direction: column;
+}
+
+.achievements__title {
+  margin: 0;
+  color: pdz.color(on-surface);
+  @include pdz.text(section-title);
+}
+
+.achievements__summary {
+  color: pdz.color(on-surface-muted);
+  @include pdz.text(meta);
+}
+
+.achievements__link {
+  color: pdz.color(on-surface-muted);
+  @include pdz.text(body-sm-strong);
+
+  &:hover {
+    color: pdz.color(on-surface);
+  }
+
+  &:focus-visible {
+    @include pdz.focus-ring;
+  }
+}
+
+.achievements__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(5rem, 1fr));
+  gap: pdz.space(xs);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.achievement {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: pdz.space(2xs);
+  min-width: 0;
+  padding: pdz.space(xs);
+  border-radius: pdz.shape(corner-sm);
+  text-align: center;
+  transition: background-color pdz.duration(fast) pdz.easing(standard);
+
+  &:hover {
+    background: pdz.color(state-hover);
+  }
+
+  &:focus-visible {
+    @include pdz.focus-ring;
+  }
+}
+
+.achievement__progress {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  max-width: 3.5rem;
+  min-height: pdz.space(sm);
+
+  pdz-meter {
+    flex: 1;
+  }
+}
+
+.achievement__name {
+  color: pdz.color(on-surface);
+  @include pdz.text(meta);
+}
+
+.achievement--locked .achievement__name {
+  color: pdz.color(on-surface-muted);
+}

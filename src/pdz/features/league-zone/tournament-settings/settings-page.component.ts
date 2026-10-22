@@ -4,6 +4,7 @@ import {
   computed,
   effect,
   inject,
+  signal,
 } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink } from '@angular/router';
@@ -22,33 +23,56 @@ import {
 import { PageComponent } from '@pdz/shared/layout/page/page.component';
 import { TabNavLinkComponent } from '@pdz/shared/layout/tab-nav/tab-nav-link.component';
 import { TabNavComponent } from '@pdz/shared/layout/tab-nav/tab-nav.component';
+import { DisclosureComponent } from '@pdz/shared/layout/disclosure/disclosure.component';
+import { QuickSetupComponent } from './quick-setup.component';
 import { RiskBannerComponent } from './risk-banner.component';
 import { SaveBarComponent } from './save-bar.component';
 import { SettingsNodeComponent } from './settings-node.component';
 import {
   AnyNode,
+  POOL_DEFAULTS,
   POOL_NODES,
+  PoolNode,
   SETTINGS_SECTIONS,
   SettingsAnchor,
   SettingsNode,
   SettingsSectionId,
   TIER_LIST_GATE_REASON,
+  nodeKeys,
   nodeVisible,
   nodesForSection,
   sectionById,
   sectionRisk,
 } from './settings-schema';
-import { TournamentSettingsStore } from './tournament-settings.store';
+import {
+  EMPTY_SETTINGS,
+  TournamentSettingsStore,
+} from './tournament-settings.store';
 
 const HIDDEN_WHEN_COLLAPSED = new Set(['pool.name']);
+const QUICK_SETUP_SETTINGS = new Set(['diffMode', 'tiebreakers']);
+const QUICK_SETUP_POOL = new Set([
+  'sequentialTurns',
+  'allowDuplicates',
+  'pickTimerEnabled',
+  'pickTimerMinutes',
+]);
 
 type Block =
+  | { kind: 'quick' }
   | { kind: 'nodes'; section: SettingsSectionId }
   | { kind: 'pools' }
   | { kind: 'organizers' }
   | { kind: 'completion' };
 
+type NodeEntry = { node: SettingsNode; locked: boolean };
+
+function differs(a: unknown, b: unknown): boolean {
+  return JSON.stringify(a) !== JSON.stringify(b);
+}
+
 const BLOCKS: readonly Block[] = [
+  { kind: 'quick' },
   { kind: 'nodes', section: 'general' },
   { kind: 'nodes', section: 'signup' },
   { kind: 'nodes', section: 'draft' },
@@ -66,11 +90,13 @@ const BLOCKS: readonly Block[] = [
     RouterLink,
     ButtonComponent,
     CardComponent,
+    DisclosureComponent,
     EmptyStateComponent,
     IconComponent,
     PageComponent,
     PageHeaderComponent,
     PageSectionsComponent,
+    QuickSetupComponent,
     RiskBannerComponent,
     SaveBarComponent,
     SettingsNodeComponent,
@@ -103,10 +129,7 @@ export class SettingsPageComponent implements GuardsUnsavedChanges {
   private readonly visibleNodes = computed(() => {
     const value = this.store.draft();
     const attached = this.tierListAttached();
-    const bySection = new Map<
-      SettingsSectionId,
-      { node: SettingsNode; locked: boolean }[]
-    >();
+    const bySection = new Map<SettingsSectionId, NodeEntry[]>();
     for (const section of SETTINGS_SECTIONS) {
       bySection.set(
         section.id,
@@ -121,7 +144,7 @@ export class SettingsPageComponent implements GuardsUnsavedChanges {
     return bySection;
   });
 
-  protected readonly poolNodes = computed(() => {
+  private readonly allPoolNodes = computed(() => {
     const pool = this.store.selectedPool();
     if (!pool) return [];
     const collapsed = this.store.collapsed();
@@ -130,6 +153,80 @@ export class SettingsPageComponent implements GuardsUnsavedChanges {
       return nodeVisible(node as AnyNode, pool);
     });
   });
+
+  protected readonly poolNodes = computed(() =>
+    this.allPoolNodes().filter((node) => !node.advanced),
+  );
+
+  protected readonly poolAdvancedNodes = computed(() =>
+    this.allPoolNodes().filter((node) => node.advanced),
+  );
+
+  private readonly advancedChoice = signal<
+    Partial<Record<SettingsAnchor, boolean>>
+  >({});
+
+  private readonly customized = computed(() => {
+    const value = this.store.draft() as unknown as Record<string, unknown>;
+    const defaults = EMPTY_SETTINGS as unknown as Record<string, unknown>;
+    const issues = new Set(this.store.errors().map((issue) => issue.nodeId));
+    const anchors = new Set<SettingsAnchor>();
+    for (const section of SETTINGS_SECTIONS) {
+      const changed = this.advancedNodes(section.id).some(
+        ({ node }) =>
+          issues.has(node.id) ||
+          nodeKeys(node as AnyNode).some((key) =>
+            key === 'tiebreakers'
+              ? this.store.tiebreakersCustomized()
+              : !QUICK_SETUP_SETTINGS.has(key) &&
+                differs(value[key], defaults[key]),
+          ),
+      );
+      if (changed) anchors.add(section.id);
+    }
+
+    const pool = this.store.selectedPool() as unknown as Record<
+      string,
+      unknown
+    > | null;
+    const poolDefaults = POOL_DEFAULTS as Record<string, unknown>;
+    if (
+      pool &&
+      this.poolAdvancedNodes().some(
+        (node: PoolNode) =>
+          issues.has(node.id) ||
+          nodeKeys(node as AnyNode).some(
+            (key) =>
+              !QUICK_SETUP_POOL.has(key) &&
+              key in poolDefaults &&
+              differs(pool[key], poolDefaults[key]),
+          ),
+      )
+    )
+      anchors.add('pools');
+    return anchors;
+  });
+
+  protected advancedOpen(anchor: SettingsAnchor): boolean {
+    return this.advancedChoice()[anchor] ?? this.customized().has(anchor);
+  }
+
+  protected advancedChanged(anchor: SettingsAnchor): boolean {
+    return this.customized().has(anchor);
+  }
+
+  protected setAdvanced(anchor: SettingsAnchor, open: boolean): void {
+    this.advancedChoice.update((choice) => ({ ...choice, [anchor]: open }));
+  }
+
+  protected adjust(anchor: string): void {
+    this.setAdvanced(anchor as SettingsAnchor, true);
+    setTimeout(() =>
+      document
+        .getElementById(anchor)
+        ?.scrollIntoView({ block: 'start', behavior: 'smooth' }),
+    );
+  }
 
   constructor() {
     effect(() => {
@@ -144,10 +241,12 @@ export class SettingsPageComponent implements GuardsUnsavedChanges {
   }
 
   protected anchor(block: Block): SettingsAnchor {
+    if (block.kind === 'quick') return 'setup';
     return block.kind === 'nodes' ? block.section : block.kind;
   }
 
   protected label(block: Block): string {
+    if (block.kind === 'quick') return 'Quick Setup';
     if (block.kind === 'pools')
       return this.store.collapsed() ? 'Draft Pool' : 'Draft Pools';
     if (block.kind === 'organizers') return 'Organizers';
@@ -155,12 +254,16 @@ export class SettingsPageComponent implements GuardsUnsavedChanges {
     return sectionById(block.section).label;
   }
 
-  protected blurb(section: SettingsSectionId): string {
-    return sectionById(section).blurb;
+  protected nodes(section: SettingsSectionId): NodeEntry[] {
+    return (this.visibleNodes().get(section) ?? []).filter(
+      ({ node }) => !node.advanced,
+    );
   }
 
-  protected nodes(section: SettingsSectionId) {
-    return this.visibleNodes().get(section) ?? [];
+  protected advancedNodes(section: SettingsSectionId): NodeEntry[] {
+    return (this.visibleNodes().get(section) ?? []).filter(
+      ({ node }) => node.advanced,
+    );
   }
 
   protected risk(section: SettingsSectionId) {

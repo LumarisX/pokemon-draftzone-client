@@ -7,7 +7,7 @@
         [subtitle]="league.description"
         [logo]="league.logo ? getLogoUrl(league.logo) : undefined"
       >
-        @if (hasChampions()) {
+        @if (showHallOfFame()) {
           <a
             pdz-page-header-actions
             pdz-button

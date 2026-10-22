@@ -614,6 +614,12 @@ export class LeagueZoneService {
     );
   }
 
+  getTeamAchievements(teamSlug?: string): Observable<League.TeamAchievements> {
+    return this.apiService.get(
+      `${ROOTPATH}/${this.leagueSlug()}/tournaments/${this.tournamentSlug()}/teams/${teamSlug ?? this.teamSlug()}/achievements`,
+    );
+  }
+
   updateTeam(teamSlug: string, changes: { teamName?: string; logo?: string }) {
     return this.apiService.patch<{ teamName: string; logo: string | null }>(
       this.teamPath(teamSlug),
