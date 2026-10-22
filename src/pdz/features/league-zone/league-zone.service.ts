@@ -318,6 +318,18 @@ export class LeagueZoneService {
     return this.apiService.get(`${ROOTPATH}/${leagueSlug}/hall-of-fame`);
   }
 
+  getFinalPlacements(
+    tournamentSlug = this.tournamentSlug(),
+  ): Observable<League.FinalPlacement[] | null> {
+    return this.getHallOfFame().pipe(
+      map(
+        (hall) =>
+          hall.seasons.find((season) => season.tournamentSlug === tournamentSlug)
+            ?.places ?? null,
+      ),
+    );
+  }
+
   getLeagueCapabilities(): Observable<League.LeagueCapabilities> {
     return this.apiService.get(`${ROOTPATH}/capabilities`);
   }

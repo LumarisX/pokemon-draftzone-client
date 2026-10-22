@@ -78,6 +78,12 @@
   }
 }
 
+.landing-body--single {
+  @include pdz.respond-above(large) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
 .section {
   display: flex;
   flex-direction: column;
@@ -186,4 +192,9 @@
   margin: pdz.space(sm) 0 0;
   padding: 0 pdz.space(xs);
   color: pdz.color(on-surface-variant);
+}
+
+.standings-preview__label {
+  @include pdz.text(label-caps);
+  color: pdz.color(secondary);
 }

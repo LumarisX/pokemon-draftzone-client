@@ -22,15 +22,10 @@ type RosterSlot = {
 
 type RosterTier = { slots: RosterSlot[]; scale: number };
 
-export const TIER_STEP = 1.4;
+export const TIER_STEP = 1.2;
 
 export function tierSplit(count: number): number {
-  const imbalance = (top: number) => Math.abs(top * TIER_STEP - (count - top));
-  let top = 1;
-  for (let candidate = 2; candidate * 2 < count; candidate++) {
-    if (imbalance(candidate) < imbalance(top)) top = candidate;
-  }
-  return top;
+  return Math.floor(count / 2);
 }
 
 @Component({

@@ -24,8 +24,8 @@
           <span class="landing-header__dot" aria-hidden="true">·</span>
           <span>
             {{ tournament.seasonStart | date: "MMM d, y" }}
-            @if (tournament.seasonEnd) {
-              &ndash; {{ tournament.seasonEnd | date: "MMM d, y" }}
+            @if (tournament.seasonEnd ?? tournament.completedAt; as end) {
+              &ndash; {{ end | date: "MMM d, y" }}
             }
           </span>
         }
@@ -77,51 +77,68 @@
     </div>
   }
 
-  <div class="landing-body">
-    <section class="section section--round">
-      <div class="section-header">
-        <h2 class="section-header__title">
-          {{ roundName() ?? "This Round" }}
-          @if (roundDeadline(); as deadline) {
-            <span class="section-header__note">
-              due {{ deadline | date: "MMM d, h:mm a" }}
-            </span>
-          }
-        </h2>
-        <a
-          pdz-button
-          variant="link"
-          size="sm"
-          [routerLink]="[...tournamentBase(), 'schedule']"
-        >
-          Full Schedule
-        </a>
-      </div>
-      <div class="section-body">
-        @if (!roundLoaded()) {
-          <div class="section-skeletons">
-            @for (row of skeletonRows; track row) {
-              <pdz-skeleton
-                variant="block"
-                height="4.5rem"
-                radius="var(--pdz-shape-corner-sm)"
-              />
-            }
-          </div>
-        }
-
-        <pdz-league-schedule-widget
-          roundFilter="current"
-          [showRoundTitle]="false"
-          [highlightTeamSlug]="profile()?.teamSlug ?? null"
-          (roundsLoaded)="onRoundsLoaded($event)"
+  <div
+    class="landing-body"
+    [class.landing-body--single]="completed() && !podiumLoading() && !podium().length"
+  >
+    @if (completed()) {
+      @if (podiumLoading()) {
+        <pdz-skeleton
+          variant="block"
+          height="20rem"
+          radius="var(--pdz-shape-corner-lg)"
         />
-      </div>
-    </section>
+      } @else if (podium().length) {
+        <pdz-podium [places]="podium()" />
+      }
+    } @else {
+      <section class="section section--round">
+        <div class="section-header">
+          <h2 class="section-header__title">
+            {{ roundName() ?? "This Round" }}
+            @if (roundDeadline(); as deadline) {
+              <span class="section-header__note">
+                due {{ deadline | date: "MMM d, h:mm a" }}
+              </span>
+            }
+          </h2>
+          <a
+            pdz-button
+            variant="link"
+            size="sm"
+            [routerLink]="[...tournamentBase(), 'schedule']"
+          >
+            Full Schedule
+          </a>
+        </div>
+        <div class="section-body">
+          @if (!roundLoaded()) {
+            <div class="section-skeletons">
+              @for (row of skeletonRows; track row) {
+                <pdz-skeleton
+                  variant="block"
+                  height="4.5rem"
+                  radius="var(--pdz-shape-corner-sm)"
+                />
+              }
+            </div>
+          }
+
+          <pdz-league-schedule-widget
+            roundFilter="current"
+            [showRoundTitle]="false"
+            [highlightTeamSlug]="profile()?.teamSlug ?? null"
+            (roundsLoaded)="onRoundsLoaded($event)"
+          />
+        </div>
+      </section>
+    }
 
     <section class="section section--standings">
       <div class="section-header">
-        <h2 class="section-header__title">Standings</h2>
+        <h2 class="section-header__title">
+          {{ showFinal() ? "Final Placements" : "Standings" }}
+        </h2>
         <a
           pdz-button
           variant="link"
@@ -138,7 +155,7 @@
               @for (row of rows; track row.teamId) {
                 <li
                   class="standings-preview__row"
-                  [class.standings-preview__row--you]="row.teamId === ownTeamId()"
+                  [class.standings-preview__row--you]="isOwnRow(row)"
                 >
                   <span class="standings-preview__rank">{{ row.rank }}</span>
                   <pdz-team
@@ -150,16 +167,26 @@
                         ? [...tournamentBase(), 'teams', row.teamSlug]
                         : null
                     "
-                  />
-                  <pdz-record
-                    size="sm"
-                    [wins]="row.wins"
-                    [draws]="row.draws"
-                    [losses]="row.losses"
-                  />
-                  <pdz-score [tone]="diffTone(row.diff)">{{
-                    row.diff | plusSign
-                  }}</pdz-score>
+                  >
+                    @if (row.label) {
+                      <span pdz-team-meta class="standings-preview__label">{{
+                        row.label
+                      }}</span>
+                    }
+                  </pdz-team>
+                  @if (row.wins !== null && row.losses !== null) {
+                    <pdz-record
+                      size="sm"
+                      [wins]="row.wins"
+                      [draws]="row.draws"
+                      [losses]="row.losses"
+                    />
+                  }
+                  @if (row.diff !== null) {
+                    <pdz-score [tone]="diffTone(row.diff)">{{
+                      row.diff | plusSign
+                    }}</pdz-score>
+                  }
                 </li>
               }
             </ol>

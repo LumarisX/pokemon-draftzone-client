@@ -16,6 +16,7 @@ import {
   LeagueScheduleWidgetComponent,
   ScheduleRoundView,
 } from '@pdz/features/league-zone/league-widgets/league-schedule-widget/league-schedule-widget.component';
+import { podiumPlaces } from '@pdz/features/league-zone/hall-of-fame/final-placements';
 import { LeagueZoneService } from '@pdz/features/league-zone/league-zone.service';
 import { League } from '@pdz/features/league-zone/league.interface';
 import {
@@ -26,6 +27,10 @@ import {
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 import { BadgeTone } from '@pdz/shared/data/badge/badge.component';
 import { ChipComponent, ChipTone } from '@pdz/shared/data/chip/chip.component';
+import {
+  PodiumComponent,
+  PodiumPlace,
+} from '@pdz/shared/data/podium/podium.component';
 import { RecordComponent } from '@pdz/shared/data/record/record.component';
 import { ScoreComponent } from '@pdz/shared/data/score/score.component';
 import { SkeletonComponent } from '@pdz/shared/data/skeleton/skeleton.component';
@@ -59,10 +64,11 @@ interface StandingsRow {
   logo?: string;
   teamId: string;
   teamSlug?: string;
-  wins: number;
+  wins: number | null;
   draws: number;
-  losses: number;
-  diff: number;
+  losses: number | null;
+  diff: number | null;
+  label: string | null;
 }
 
 const STANDINGS_PREVIEW_ROWS = 8;
@@ -82,6 +88,7 @@ const STANDINGS_PREVIEW_ROWS = 8;
     PageHeaderComponent,
     LeagueScheduleWidgetComponent,
     PlusSignPipe,
+    PodiumComponent,
     RecordComponent,
     ScoreComponent,
     SkeletonComponent,
@@ -103,8 +110,11 @@ export class TournamentLandingComponent implements OnInit {
   protected readonly roundLoaded = signal(false);
   private readonly rounds = signal<ScheduleRoundView[]>([]);
 
-  protected readonly standings = signal<StandingsRow[] | null>(null);
+  private readonly liveStandings = signal<StandingsRow[] | null>(null);
   protected readonly standingsTotal = signal(0);
+  private readonly finalPlacements = signal<
+    League.FinalPlacement[] | null | undefined
+  >(undefined);
 
   private readonly now = signal(Date.now());
 
@@ -124,7 +134,54 @@ export class TournamentLandingComponent implements OnInit {
     return leagueSlug ? ['/', LEAGUE_ZONE_PATH, leagueSlug] : [];
   });
 
-  protected readonly ownTeamId = computed(() => this.profile()?.teamId ?? null);
+  protected readonly completed = computed(() => !!this.info()?.completedAt);
+
+  protected readonly podiumLoading = computed(
+    () => this.completed() && this.finalPlacements() === undefined,
+  );
+
+  protected readonly podium = computed((): PodiumPlace[] => {
+    const placements = this.finalPlacements();
+    if (!placements?.length) return [];
+    const base = this.tournamentBase();
+    return podiumPlaces(placements, (teamSlug) =>
+      base.length ? [...base, 'teams', teamSlug] : [],
+    );
+  });
+
+  protected readonly showFinal = computed(
+    () => !!this.finalPlacements()?.length,
+  );
+
+  protected readonly standings = computed((): StandingsRow[] | null => {
+    const placements = this.finalPlacements();
+    if (!placements?.length) return this.liveStandings();
+    return [...placements]
+      .sort((a, b) => a.placement - b.placement)
+      .slice(0, STANDINGS_PREVIEW_ROWS)
+      .map((place) => ({
+        rank: place.placement,
+        name: place.name,
+        coach: place.coach ?? '',
+        logo: place.logo ?? undefined,
+        teamId: place.teamSlug,
+        teamSlug: place.teamSlug,
+        wins: place.wins,
+        draws: place.draws ?? 0,
+        losses: place.losses,
+        diff: null,
+        label: place.label,
+      }));
+  });
+
+  protected isOwnRow(row: StandingsRow): boolean {
+    const profile = this.profile();
+    if (!profile) return false;
+    return (
+      (!!profile.teamId && row.teamId === profile.teamId) ||
+      (!!profile.teamSlug && row.teamSlug === profile.teamSlug)
+    );
+  }
 
   protected diffTone(diff: number): BadgeTone {
     if (diff > 0) return 'success';
@@ -254,7 +311,10 @@ export class TournamentLandingComponent implements OnInit {
       .getLeagueInfo()
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
-        next: (info) => this.info.set(info),
+        next: (info) => {
+          this.info.set(info);
+          if (info.completedAt) this.loadFinalPlacements(info.tournamentSlug);
+        },
         error: () => this.infoFailed.set(true),
       });
 
@@ -290,6 +350,16 @@ export class TournamentLandingComponent implements OnInit {
     this.roundLoaded.set(true);
   }
 
+  private loadFinalPlacements(tournamentSlug: string): void {
+    this.leagueService
+      .getFinalPlacements(tournamentSlug)
+      .pipe(
+        takeUntilDestroyed(this.destroyRef),
+        catchError(() => of(null)),
+      )
+      .subscribe((placements) => this.finalPlacements.set(placements));
+  }
+
   private loadStandings(): void {
     this.leagueService
       .getStandings()
@@ -299,17 +369,17 @@ export class TournamentLandingComponent implements OnInit {
       )
       .subscribe((data) => {
         if (!data) {
-          this.standings.set([]);
+          this.liveStandings.set([]);
           return;
         }
         const view = data.views['all'] ?? Object.values(data.views)[0];
         const table = view?.teamStandings;
         if (!table) {
-          this.standings.set([]);
+          this.liveStandings.set([]);
           return;
         }
         this.standingsTotal.set(table.teams.length);
-        this.standings.set(
+        this.liveStandings.set(
           table.teams.slice(0, STANDINGS_PREVIEW_ROWS).map((team, index) => ({
             rank: index + 1,
             name: team.name,
@@ -322,6 +392,7 @@ export class TournamentLandingComponent implements OnInit {
             losses: team.losses,
             diff:
               table.diffMode === 'game' ? team.gameDiff : team.pokemonDiff,
+            label: null,
           })),
         );
       });

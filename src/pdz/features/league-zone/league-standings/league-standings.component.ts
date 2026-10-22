@@ -135,15 +135,9 @@ export class LeagueStandingsComponent {
     toObservable(this.info).pipe(
       switchMap((info) =>
         info?.completedAt
-          ? this.leagueService.getHallOfFame().pipe(
-              map(
-                (hall) =>
-                  hall.seasons.find(
-                    (season) => season.tournamentSlug === info.tournamentSlug,
-                  )?.places ?? null,
-              ),
-              catchError(() => of(null)),
-            )
+          ? this.leagueService
+              .getFinalPlacements(info.tournamentSlug)
+              .pipe(catchError(() => of(null)))
           : of(null),
       ),
     ),
