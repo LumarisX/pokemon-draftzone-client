@@ -70,13 +70,19 @@
               }
 
               @case ("nodes") {
-                <pdz-risk-banner [risk]="risk(block.section)" />
                 <pdz-card padding="lg">
+                  @if (lock(block.section); as spec) {
+                    <pdz-settings-lock
+                      [spec]="spec"
+                      [locked]="store.isLocked(block.section)"
+                      (unlock)="unlock(block.section)"
+                    />
+                  }
                   @for (entry of nodes(block.section); track entry.node.id) {
                     <pdz-settings-node
                       [node]="entry.node"
-                      [disabled]="entry.locked"
-                      [lockedReason]="entry.locked ? gateReason : null"
+                      [disabled]="entry.gated || store.isLocked(block.section)"
+                      [gateReason]="entry.gated ? gateReason : null"
                     />
                   }
                   @if (advancedNodes(block.section); as advanced) {
@@ -100,8 +106,8 @@
                         @for (entry of advanced; track entry.node.id) {
                           <pdz-settings-node
                             [node]="entry.node"
-                            [disabled]="entry.locked"
-                            [lockedReason]="entry.locked ? gateReason : null"
+                            [disabled]="entry.gated || store.isLocked(block.section)"
+                            [gateReason]="entry.gated ? gateReason : null"
                           />
                         }
                       </pdz-disclosure>
@@ -111,8 +117,6 @@
               }
 
               @case ("pools") {
-                <pdz-risk-banner [risk]="poolRisk()" />
-
                 @if (store.unassigned().length; as waiting) {
                   <p class="settings__waiting">
                     <pdz-icon name="group_add" [size]="16" aria-hidden="true" />

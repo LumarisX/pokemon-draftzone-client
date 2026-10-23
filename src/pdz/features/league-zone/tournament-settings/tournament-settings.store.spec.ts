@@ -205,6 +205,45 @@ describe('TournamentSettingsStore standings rules', () => {
       }),
     );
   });
+
+  describe('locks', () => {
+    const started = { seasonStart: '2020-01-01T00:00:00.000Z' };
+
+    it('leaves standings open before the season starts', () => {
+      const { store } = setup({});
+
+      expect(store.isLocked('standings')).toBe(false);
+    });
+
+    it('locks standings and draft rules once the season starts', () => {
+      const { store } = setup(started);
+
+      expect(store.isLocked('standings')).toBe(true);
+      expect(store.isLocked('draft')).toBe(true);
+      expect(store.isLocked('general')).toBe(false);
+    });
+
+    it('relocks an unlocked section after a save', async () => {
+      const { store } = setup(started);
+
+      store.unlock('standings');
+      expect(store.isLocked('standings')).toBe(false);
+
+      store.write('pointsWin', 2);
+      await firstValueFrom(store.saveSettings());
+
+      expect(store.isLocked('standings')).toBe(true);
+    });
+
+    it('relocks when changes are reverted', () => {
+      const { store } = setup(started);
+
+      store.unlock('draft');
+      store.revertSettings();
+
+      expect(store.isLocked('draft')).toBe(true);
+    });
+  });
 });
 
 describe('TournamentSettingsStore pool assignments', () => {

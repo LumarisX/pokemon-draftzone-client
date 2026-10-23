@@ -2,41 +2,22 @@
   <div class="node__head">
     <div class="node__title-row">
       <h3 class="node__title">{{ node().title }}</h3>
-      @if (node().details && !node().hint) {
-        <ng-container [ngTemplateOutlet]="more" />
-      }
+      <pdz-help [label]="node().title" [text]="node().help" />
     </div>
     @if (node().hint; as hint) {
-      <p class="node__hint">
-        <span>{{ hint }}</span>
-        @if (node().details) {
-          <ng-container [ngTemplateOutlet]="more" />
-        }
-      </p>
-    }
-    @if (node().details && showDetails()) {
-      <p class="node__details" [id]="node().id + '-details'">
-        {{ node().details }}
-      </p>
+      <p class="node__hint">{{ hint }}</p>
     }
   </div>
 
-  <ng-template #more>
-    <button
-      type="button"
-      class="node__more"
-      [attr.aria-expanded]="showDetails()"
-      [attr.aria-controls]="node().id + '-details'"
-      (click)="showDetails.set(!showDetails())"
-    >
-      {{ showDetails() ? "Less" : "More" }}
-    </button>
-  </ng-template>
-
-  @if (lockedReason(); as reason) {
-    <p class="node__locked">
-      <pdz-icon name="lock" [size]="16" aria-hidden="true" />
+  @if (gateReason(); as reason) {
+    <p class="node__note">
+      <pdz-icon name="info" [size]="16" aria-hidden="true" />
       {{ reason }}
+    </p>
+  } @else if (fixedNote(); as note) {
+    <p class="node__note">
+      <pdz-icon name="lock" [size]="16" aria-hidden="true" />
+      {{ note }}
     </p>
   }
 
@@ -44,7 +25,7 @@
     @for (control of controls(); track $index) {
       <pdz-node-control
         [spec]="control"
-        [disabled]="disabled()"
+        [disabled]="controlDisabled(control)"
         [poolId]="poolId()"
       />
     }

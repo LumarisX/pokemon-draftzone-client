@@ -1,0 +1,70 @@
+@use "pdz-theming" as pdz;
+
+:host {
+  display: block;
+}
+
+.pdz-choice-cards__list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 13rem), 1fr));
+  gap: pdz.space(sm);
+}
+
+.pdz-choice-card {
+  height: 100%;
+}
+
+.pdz-choice-card:disabled,
+.pdz-choice-card:disabled:hover {
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
+}
+
+.pdz-choice-card__inner {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(2xs);
+}
+
+.pdz-choice-card__head {
+  display: flex;
+  align-items: center;
+  gap: pdz.space(xs);
+}
+
+.pdz-choice-card__icon {
+  color: pdz.color(on-surface-variant);
+}
+
+.pdz-choice-card__label {
+  @include pdz.text(card-title);
+  flex: 1 1 auto;
+  color: pdz.color(on-surface);
+}
+
+.pdz-choice-card__mark {
+  color: pdz.color(primary-accent);
+}
+
+.pdz-choice-card__description {
+  @include pdz.text(body-sm);
+  color: pdz.color(on-surface-variant);
+}
+
+.pdz-choice-card__note {
+  @include pdz.text(meta);
+  color: pdz.color(secondary-accent);
+}
+
+.pdz-choice-card[aria-checked="true"] .pdz-choice-card__icon {
+  color: pdz.color(primary-accent);
+}
+
+.pdz-choice-card:disabled {
+  .pdz-choice-card__label,
+  .pdz-choice-card__description,
+  .pdz-choice-card__icon {
+    color: pdz.color(on-surface-muted);
+  }
+}

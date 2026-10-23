@@ -1,0 +1,25 @@
+@use "pdz-theming" as pdz;
+
+:host {
+  display: inline-flex;
+  vertical-align: middle;
+}
+
+.pdz-help__panel {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(xs);
+  padding: pdz.space(sm);
+}
+
+.pdz-help__title {
+  @include pdz.text(body-sm-strong);
+  margin: 0;
+  color: pdz.color(on-surface);
+}
+
+.pdz-help__text {
+  @include pdz.text(body-sm);
+  margin: 0;
+  color: pdz.color(on-surface-variant);
+}

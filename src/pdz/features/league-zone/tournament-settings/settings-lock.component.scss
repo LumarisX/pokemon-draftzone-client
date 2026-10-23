@@ -1,0 +1,30 @@
+@use "pdz-theming" as pdz;
+
+:host {
+  display: block;
+  margin-bottom: pdz.space(lg);
+  padding-bottom: pdz.space(md);
+  border-bottom: 1px solid pdz.color(border-subtle);
+}
+
+.lock {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: pdz.space(sm);
+}
+
+.lock__icon {
+  color: pdz.color(on-surface-variant);
+}
+
+.lock--open .lock__icon {
+  color: pdz.color(warning);
+}
+
+.lock__text {
+  @include pdz.text(body-sm);
+  flex: 1 1 16rem;
+  margin: 0;
+  color: pdz.color(on-surface-variant);
+}

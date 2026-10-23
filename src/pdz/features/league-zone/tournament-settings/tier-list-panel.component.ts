@@ -3,6 +3,7 @@ import {
   Component,
   computed,
   inject,
+  input,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
@@ -37,6 +38,8 @@ interface RequirementRow {
 export class TierListPanelComponent {
   private readonly store = inject(TournamentSettingsStore);
   private readonly league = inject(LeagueZoneService);
+
+  readonly disabled = input(false);
 
   protected readonly editRoute = computed(() => {
     const leagueSlug = this.league.leagueSlug();

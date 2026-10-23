@@ -9,7 +9,14 @@
         </span>
       </div>
       <div class="tlp__actions">
-        <button pdz-button type="button" size="sm" variant="ghost" color="neutral">
+        <button
+          pdz-button
+          type="button"
+          size="sm"
+          variant="ghost"
+          color="neutral"
+          [disabled]="disabled()"
+        >
           Replace
         </button>
         <a
@@ -46,6 +53,7 @@
                 class="tlp__number"
                 type="number"
                 min="0"
+                [disabled]="disabled()"
                 [attr.aria-label]="row.name + ' required picks'"
                 [ngModel]="row.required"
                 (ngModelChange)="setRequired(row.tierId, $event)"
@@ -60,6 +68,7 @@
                 type="number"
                 min="0"
                 placeholder="∞"
+                [disabled]="disabled()"
                 [attr.aria-label]="row.name + ' pick limit'"
                 [ngModel]="row.max"
                 (ngModelChange)="setMax(row.tierId, $event)"

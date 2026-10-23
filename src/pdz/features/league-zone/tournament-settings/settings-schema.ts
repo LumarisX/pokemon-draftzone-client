@@ -67,55 +67,63 @@ export const LIFECYCLE_LABELS: Record<Lifecycle, string> = {
 export type SettingsSectionId =
   | 'general'
   | 'signup'
+  | 'listing'
   | 'draft'
+  | 'trades'
   | 'season'
+  | 'standings'
+  | 'prizes'
   | 'discord';
 
-export interface RiskSpec {
+export interface SectionLock {
   from: Lifecycle;
-  effect: 'warn' | 'block';
-  because: string;
+  reason: string;
+  unlockTitle: string;
+  unlockMessage: string;
+  unlockedNote: string;
 }
 
 export interface SettingsSection {
   id: SettingsSectionId;
   label: string;
-  risk?: RiskSpec;
+  lock?: SectionLock;
 }
-
-export const DRAFT_RISK: RiskSpec = {
-  from: 'draft',
-  effect: 'block',
-  because:
-    'Changes apply immediately to teams that have already drafted. Costs, tiers and legality are recalculated from the current list, so rosters that were legal may no longer be. Review every team after saving.',
-};
 
 export const SETTINGS_SECTIONS: readonly SettingsSection[] = [
   { id: 'general', label: 'General' },
-  {
-    id: 'signup',
-    label: 'Sign-Ups',
-    risk: {
-      from: 'draft',
-      effect: 'warn',
-      because: 'Sign-ups have closed and teams are already drafting.',
-    },
-  },
+  { id: 'signup', label: 'Sign-Ups' },
+  { id: 'listing', label: 'Listing' },
   {
     id: 'draft',
-    label: 'Draft',
-    risk: DRAFT_RISK,
-  },
-  {
-    id: 'season',
-    label: 'Season',
-    risk: {
-      from: 'season',
-      effect: 'warn',
-      because:
-        'The season is live and standings are published. Changes apply to results already recorded, so review the standings after saving.',
+    label: 'Draft Rules',
+    lock: {
+      from: 'draft',
+      reason:
+        'Locked because the draft has started. Coaches drafted under these rules.',
+      unlockTitle: 'Unlock Draft Rules?',
+      unlockMessage:
+        'Changes apply to every team as soon as you save. Costs, tiers and legality are recalculated from the current tier list, so a roster that was legal can stop being legal. Review every team after saving.',
+      unlockedNote:
+        'Unlocked. Changes apply to every team when you save, and the section locks again after.',
     },
   },
+  { id: 'trades', label: 'Trades' },
+  { id: 'season', label: 'Season' },
+  {
+    id: 'standings',
+    label: 'Standings',
+    lock: {
+      from: 'season',
+      reason:
+        'Locked because the season has started. Coaches can already see the standings.',
+      unlockTitle: 'Unlock Standings?',
+      unlockMessage:
+        'Changing points, tiebreakers or forfeit scores re-ranks every team from the results already recorded. Coaches see the new order as soon as you save.',
+      unlockedNote:
+        'Unlocked. The standings are re-ranked when you save, and the section locks again after.',
+    },
+  },
+  { id: 'prizes', label: 'Prizes' },
   { id: 'discord', label: 'Discord' },
 ];
 
@@ -368,7 +376,10 @@ export type CustomSlot =
   | 'pool-window'
   | 'pool-order';
 
-export type ControlSpecFor<V> = { showWhen?: (value: V) => boolean } & (
+export type ControlSpecFor<V> = {
+  showWhen?: (value: V) => boolean;
+  fixed?: boolean;
+} & (
   | {
       kind: 'text';
       key: KeysOfType<V, string>;
@@ -441,7 +452,7 @@ export interface NodeFor<V> {
   id: string;
   title: string;
   hint?: string;
-  details?: string;
+  help: string;
   advanced?: boolean;
   controls: readonly ControlSpecFor<V>[];
   showWhen?: (value: V) => boolean;
@@ -562,6 +573,7 @@ export const SETTINGS_NODES: readonly SettingsNode[] = [
     id: 'general.name',
     section: 'general',
     title: 'Name & Description',
+    help: "The name appears on the tournament page, in your league, on every coach's My Leagues and in Discord posts. The description sits under it on the tournament page, and on Find a League if you list the tournament there.",
     controls: [
       {
         kind: 'text',
@@ -577,6 +589,7 @@ export const SETTINGS_NODES: readonly SettingsNode[] = [
     id: 'general.logo',
     section: 'general',
     title: 'Logo',
+    help: 'Shown beside the tournament name across the site. Square images look best. Without one, the DraftZone logo stands in.',
     controls: [
       { kind: 'custom', slot: 'logo', label: 'Tournament Logo', keys: ['logo'] },
     ],
@@ -585,6 +598,7 @@ export const SETTINGS_NODES: readonly SettingsNode[] = [
     id: 'signup.deadline',
     section: 'signup',
     title: 'Sign-Up Deadline',
+    help: 'The sign-up form closes on its own at this time, even if access below is still open. You can keep reviewing anyone who applied before then.',
     controls: [
       {
         kind: 'datetime',
@@ -598,8 +612,7 @@ export const SETTINGS_NODES: readonly SettingsNode[] = [
     id: 'signup.access',
     section: 'signup',
     title: 'Who Can Sign Up',
-    details:
-      'Invite link only means people need your link to apply; the tournament stays visible. Every applicant still waits for your approval.',
+    help: 'Anyone can apply puts a Sign Up button on the tournament page. Invite link only hides that button, so people need the link you share to apply; the tournament itself stays visible. Closed stops new applications. Every applicant still waits for you to approve them on Sign-Ups.',
     controls: [
       {
         kind: 'choice',
@@ -625,8 +638,7 @@ export const SETTINGS_NODES: readonly SettingsNode[] = [
     title: 'Questions',
     advanced: true,
     hint: 'Extra questions on the sign-up form.',
-    details:
-      'Every form already asks for a name, Showdown name, Discord, timezone and team name.',
+    help: 'Every form already asks for a name, Showdown name, Discord, timezone and team name. Add your own here, such as experience or availability. The answers show on each applicant in Sign-Ups.',
     controls: [{ kind: 'custom', slot: 'signup-questions', keys: ['signUpQuestions'] }],
   },
   {
@@ -634,8 +646,7 @@ export const SETTINGS_NODES: readonly SettingsNode[] = [
     section: 'signup',
     title: 'Team Limit',
     advanced: true,
-    details:
-      'Sign-ups stay open past the limit, so extra applicants form a waitlist.',
+    help: 'The most teams the tournament takes. Sign-ups stay open past the limit, so extra applicants form a waitlist you can pull from if a coach drops.',
     controls: [
       { kind: 'toggle', key: 'maxTeamsEnabled', label: 'Limit the roster' },
       {
@@ -648,11 +659,11 @@ export const SETTINGS_NODES: readonly SettingsNode[] = [
     ],
   },
   {
-    id: 'signup.listing',
-    section: 'signup',
+    id: 'listing.ad',
+    section: 'listing',
     title: 'Find a League Listing',
-    advanced: true,
     hint: 'Shown on Find a League until sign-ups close.',
+    help: 'Find a League is the public list of tournaments looking for coaches. List yours to appear there until sign-ups close. Skill level, prize value and platforms help coaches find a tournament that suits them.',
     controls: [
       {
         kind: 'toggle',
@@ -697,6 +708,7 @@ export const SETTINGS_NODES: readonly SettingsNode[] = [
     id: 'draft.roster',
     section: 'draft',
     title: 'Roster Size & Budget',
+    help: "Every coach must draft at least the minimum number of Pokémon and can't go past the maximum. With a point budget, each Pokémon costs the points its tier is worth on the tier list, and a team can't spend more than its budget.",
     controls: [
       { kind: 'number', key: 'draftCountMin', label: 'Minimum Roster', min: 1 },
       { kind: 'number', key: 'draftCountMax', label: 'Maximum Roster', min: 1 },
@@ -724,18 +736,17 @@ export const SETTINGS_NODES: readonly SettingsNode[] = [
     section: 'draft',
     title: 'Tier List',
     hint: 'Sets the format, the costs and which Pokémon are legal.',
-    details:
-      'Attaching a tier list copies it, so later edits by its author never reprice a draft in progress.',
+    help: 'The tier list decides the format, which Pokémon can be drafted and what each one costs. Attaching one copies it into this tournament, so later edits by its author never reprice your draft. Required and Limit set how many picks each team must, or may, take from a tier.',
     controls: [
       { kind: 'custom', slot: 'tier-requirements', keys: ['tierRequirements'] },
     ],
   },
   {
-    id: 'draft.trades',
-    section: 'draft',
-    title: 'Trades',
-    advanced: true,
+    id: 'trades.points',
+    section: 'trades',
+    title: 'Trade Points',
     requiresTierList: true,
+    help: "Every trade spends trade points for the teams in it. With a limit, a team can't spend more than this across the whole season, so nobody rebuilds their roster through trades.",
     controls: [
       {
         kind: 'toggle',
@@ -757,6 +768,7 @@ export const SETTINGS_NODES: readonly SettingsNode[] = [
     id: 'season.window',
     section: 'season',
     title: 'Season Window',
+    help: 'On the start date the tournament moves from its draft into its season, and the standings go live. After the end date it counts as finished, ready for you to review the final results.',
     controls: [
       { kind: 'datetime', key: 'seasonStart', label: 'Season Starts' },
       { kind: 'datetime', key: 'seasonEnd', label: 'Season Ends' },
@@ -767,11 +779,11 @@ export const SETTINGS_NODES: readonly SettingsNode[] = [
         : null,
   },
   {
-    id: 'season.scoring',
-    section: 'season',
+    id: 'standings.scoring',
+    section: 'standings',
     title: 'Scoring',
-    advanced: true,
     hint: 'Ranked by points, then each tiebreaker in order.',
+    help: 'Teams are ranked by points: what a win, draw or loss is worth. Teams on the same points are split by the tiebreakers, top to bottom. The differential is the number shown beside each team every round: Pokémon differential counts the Pokémon a winner had left, game differential counts games won minus games lost.',
     controls: [
       { kind: 'number', key: 'pointsWin', label: 'Points for a Win', min: 0, max: 10 },
       { kind: 'number', key: 'pointsDraw', label: 'Points for a Draw', min: 0, max: 10 },
@@ -796,11 +808,12 @@ export const SETTINGS_NODES: readonly SettingsNode[] = [
         : 'A loss cannot be worth more than a draw, or a draw more than a win.',
   },
   {
-    id: 'season.forfeits',
-    section: 'season',
+    id: 'standings.forfeits',
+    section: 'standings',
     title: 'Forfeits',
     advanced: true,
     hint: "The score recorded when a match isn't played.",
+    help: 'When a match is forfeited, the team that showed up is credited with a win by this margin: this many games for game differential, and this many Pokémon left for Pokémon differential.',
     controls: [
       {
         kind: 'number',
@@ -820,7 +833,7 @@ export const SETTINGS_NODES: readonly SettingsNode[] = [
     id: 'season.reporting',
     section: 'season',
     title: 'Match Pages',
-    advanced: true,
+    help: "With coach reporting on, coaches enter their own match results, and each report waits for an organizer to approve it before it counts. Matchup chat gives the two coaches in a match a place on its page to talk and set a time.",
     controls: [
       {
         kind: 'toggle',
@@ -831,10 +844,10 @@ export const SETTINGS_NODES: readonly SettingsNode[] = [
     ],
   },
   {
-    id: 'season.prizes',
-    section: 'season',
+    id: 'prizes.split',
+    section: 'prizes',
     title: 'Prize Split',
-    advanced: true,
+    help: 'How the prize pool is shared between the top finishers, as a percentage for each place. The shares must add up to 100%. Leave it empty if there are no prizes.',
     controls: [{ kind: 'custom', slot: 'prize-split', keys: ['prizeSplit'] }],
     validate: (v) => {
       if (!v.prizeSplit.length) return null;
@@ -848,7 +861,7 @@ export const SETTINGS_NODES: readonly SettingsNode[] = [
     section: 'discord',
     title: 'Discord Server',
     hint: 'A join link on the tournament page.',
-    details: 'It works whether or not the bot is connected.',
+    help: 'Puts a Join Discord button on the tournament page so coaches can find your server. It works whether or not the bot is connected.',
     controls: [
       {
         kind: 'text',
@@ -863,6 +876,7 @@ export const SETTINGS_NODES: readonly SettingsNode[] = [
     section: 'discord',
     title: 'Discord Bot',
     hint: 'Posts picks, assigns the coach role and mirrors sign-ups.',
+    help: 'Add the DraftZone bot to your server and it posts each pick, pings the coach whose turn it is, can give approved coaches a role, and posts new sign-ups to a channel you choose. The role ID comes from Discord: right-click the role with Developer Mode on and copy its ID.',
     controls: [
       { kind: 'custom', slot: 'discord-link', keys: ['discordGuildId'] },
       {
@@ -891,6 +905,7 @@ export const POOL_NODES: readonly PoolNode[] = [
   {
     id: 'pool.name',
     title: 'Pool Name',
+    help: "Shown on this pool's draft board and in the tournament nav. Coaches only see it when the tournament has more than one pool.",
     controls: [{ kind: 'text', key: 'name', label: 'Name', maxLength: 60 }],
   },
   {
@@ -898,13 +913,13 @@ export const POOL_NODES: readonly PoolNode[] = [
     title: 'Discord Channel',
     advanced: true,
     hint: 'Where picks and turn alerts post.',
+    help: "The Discord channel where this pool's picks post and the coach on the clock is pinged. The bot has to be connected under Discord first.",
     controls: [{ kind: 'custom', slot: 'pool-channel', keys: ['channelId'] }],
   },
   {
     id: 'pool.window',
     title: 'Draft Window',
-    details:
-      "The tournament's draft window runs from the earliest pool opening to the latest close.",
+    help: "When this pool's draft opens and when it should be finished. Coaches see the opening time on the tournament page. The tournament's draft window runs from the earliest pool opening to the latest close.",
     controls: [
       {
         kind: 'custom',
@@ -922,13 +937,13 @@ export const POOL_NODES: readonly PoolNode[] = [
     title: 'How Teams Pick',
     advanced: true,
     hint: 'Locks once the draft starts.',
-    details:
-      'Without turns, every coach picks whenever they like until their roster is full.',
+    help: 'With turns, coaches pick one at a time. Snake order reverses every round (1 to 10, then 10 to 1), so the team picking last in one round picks first in the next; linear runs 1 to 10 every round. Without turns, every coach picks whenever they like until their roster is full. Letting more than one team draft the same Pokémon suits large or casual events.',
     controls: [
       {
         kind: 'toggle',
         key: 'sequentialTurns',
         label: 'Teams take turns',
+        fixed: true,
       },
       {
         kind: 'choice',
@@ -936,12 +951,14 @@ export const POOL_NODES: readonly PoolNode[] = [
         label: 'Progression',
         options: DRAFT_ORDERS,
         as: 'radio',
+        fixed: true,
         showWhen: (pool) => pool.sequentialTurns,
       },
       {
         kind: 'toggle',
         key: 'allowDuplicates',
         label: 'Let more than one team draft the same Pokémon',
+        fixed: true,
       },
     ],
   },
@@ -949,7 +966,7 @@ export const POOL_NODES: readonly PoolNode[] = [
     id: 'pool.timer',
     title: 'Pick Timer',
     advanced: true,
-    details: 'A missed pick moves to the end of the round instead of stacking.',
+    help: 'Each coach gets this long to make a pick. A missed pick moves to the end of the round instead of holding everyone up. You can switch the timer off and on during the draft, but its length is set before the draft starts.',
     showWhen: (pool) => pool.sequentialTurns,
     controls: [
       { kind: 'toggle', key: 'pickTimerEnabled', label: 'Time each pick' },
@@ -959,6 +976,7 @@ export const POOL_NODES: readonly PoolNode[] = [
         label: 'Minutes per Pick',
         min: 1,
         unit: 'min',
+        fixed: true,
         showWhen: (pool) => pool.pickTimerEnabled,
       },
     ],
@@ -967,8 +985,7 @@ export const POOL_NODES: readonly PoolNode[] = [
     id: 'pool.access',
     title: 'Coach Access',
     advanced: true,
-    details:
-      'With own team only, coaches see just their own picks until the draft ends. Organizers always see every pick; switch to everyone to reveal them early.',
+    help: 'With own team only, coaches see just their own picks until the draft ends; organizers always see every pick, and switching to everyone reveals them early. Pick removals let a coach take back a pick during a turn-based draft.',
     controls: [
       {
         kind: 'choice',
@@ -989,6 +1006,7 @@ export const POOL_NODES: readonly PoolNode[] = [
     id: 'pool.teams',
     title: 'Teams',
     span: 'full',
+    help: "The teams drafting in this pool, in the order they pick. Drag to reorder, or randomize the order so it's shuffled when the draft opens. The order can't change once the draft has started.",
     controls: [
       {
         kind: 'custom',
@@ -1011,14 +1029,13 @@ export function lifecycleReached(current: Lifecycle, from: Lifecycle): boolean {
   return LIFECYCLE_ORDER.indexOf(current) >= LIFECYCLE_ORDER.indexOf(from);
 }
 
-export function sectionRisk(
+export function sectionLock(
   section: SettingsSection,
   phase: Lifecycle,
-): RiskSpec | null {
-  if (!section.risk) return null;
-  return lifecycleReached(phase, section.risk.from) ? section.risk : null;
+): SectionLock | null {
+  if (!section.lock) return null;
+  return lifecycleReached(phase, section.lock.from) ? section.lock : null;
 }
-
 export type SettingsAnchor =
   | 'setup'
   | SettingsSectionId

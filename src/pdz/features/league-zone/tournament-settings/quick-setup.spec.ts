@@ -35,6 +35,7 @@ function context(overrides: Partial<QuickSetupContext> = {}): QuickSetupContext 
     settings: EMPTY_SETTINGS,
     pools: [pool()],
     format: 'Singles',
+    standingsLocked: false,
     ...overrides,
   };
 }
@@ -122,6 +123,13 @@ describe('quick setup', () => {
 
     it('sets the differential', () => {
       expect(scoring.apply('game')).toEqual({ settings: { diffMode: 'game' } });
+    });
+
+    it('follows the standings lock', () => {
+      expect(scoring.unavailable?.(context())).toBeNull();
+      expect(
+        scoring.unavailable?.(context({ standingsLocked: true })),
+      ).toMatch(/Standings/);
     });
   });
 });

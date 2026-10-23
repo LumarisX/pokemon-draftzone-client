@@ -1,77 +1,84 @@
-<pdz-card padding="lg">
-  <ul class="quick">
-    @for (row of rows(); track row.question.id) {
-      <li class="quick__row">
-        <div class="quick__text">
-          <h3 class="quick__title" [id]="'quick-' + row.question.id">
-            {{ row.question.title }}
-          </h3>
-          <p class="quick__summary" [class.quick__summary--custom]="row.custom">
-            {{ row.summary }}
-          </p>
-          @if (row.suggestion; as suggestion) {
-            <p class="quick__suggestion">
-              {{ suggestion.text }}
-              <button
-                type="button"
-                class="quick__suggestion-action"
-                (click)="choose(row.question, suggestion.value)"
-              >
-                {{ suggestion.action }}
-              </button>
-            </p>
-          }
+<div class="quick">
+  @for (row of rows(); track row.question.id) {
+    <div class="quick__question">
+      <div class="quick__head">
+        <h3 class="quick__title" [id]="'quick-' + row.question.id">
+          {{ row.question.title }}
+        </h3>
+        <pdz-help [label]="row.question.title" [text]="row.question.help" />
+        <button
+          pdz-button
+          type="button"
+          size="sm"
+          variant="ghost"
+          color="neutral"
+          class="quick__adjust"
+          (click)="adjust.emit(row.question.anchor)"
+        >
+          Adjust
+        </button>
+      </div>
+      <p class="quick__prompt">{{ row.question.prompt }}</p>
+
+      @if (row.unavailable; as reason) {
+        <p class="quick__note">
+          <pdz-icon name="lock" [size]="16" aria-hidden="true" />
+          {{ reason }}
+        </p>
+      } @else if (row.custom) {
+        <p class="quick__note">
+          <pdz-icon name="tune" [size]="16" aria-hidden="true" />
+          These are set to a custom mix. Pick one to start over, or adjust them
+          below.
+        </p>
+      }
+
+      <pdz-choice-cards
+        [aria-labelledby]="'quick-' + row.question.id"
+        [value]="row.current"
+        [disabled]="!!row.unavailable"
+        (valueChange)="choose(row.question, $event)"
+      >
+        @for (option of row.question.options; track option.value) {
+          <pdz-choice-card
+            [value]="option.value"
+            [label]="option.label"
+            [icon]="option.icon"
+            [description]="option.summary"
+            [note]="option.value === row.recommended ? row.recommendedNote : null"
+          />
+        }
+      </pdz-choice-cards>
+    </div>
+  }
+
+  <pdz-card padding="lg">
+    <div class="quick__shape">
+      <div class="quick__shape-text">
+        <div class="quick__head">
+          <h3 class="quick__title">Season Shape</h3>
+          <pdz-help label="Season Shape" [text]="shapeHelp" />
         </div>
-        <div class="quick__controls">
-          <pdz-segmented
-            size="sm"
-            [attr.aria-labelledby]="'quick-' + row.question.id"
-            [value]="row.current"
-            [disabled]="!!row.unavailable"
-            (valueChange)="choose(row.question, $any($event))"
-          >
-            @for (option of row.question.options; track option.value) {
-              <pdz-segmented-option [value]="option.value" [label]="option.label" />
-            }
-          </pdz-segmented>
-          <button
-            pdz-button
-            type="button"
-            size="sm"
-            variant="ghost"
-            color="neutral"
-            (click)="adjust.emit(row.question.anchor)"
-          >
-            Adjust
-          </button>
-        </div>
-      </li>
-    }
-    <li class="quick__row">
-      <div class="quick__text">
-        <h3 class="quick__title">Season Shape</h3>
-        <p class="quick__summary">
+        <p class="quick__prompt">
           @if (schedule().stageCount) {
             {{ schedule().stageCount }}
             {{ schedule().stageCount === 1 ? "stage" : "stages" }} on the
             Schedule, such as a round robin then playoffs.
           } @else {
-            Round robin, Swiss or elimination, with or without playoffs. Set
-            up on the Schedule once teams are in.
+            Round robin, Swiss or elimination, with or without playoffs. You
+            build it on the Schedule once teams are in.
           }
         </p>
       </div>
-      <div class="quick__controls">
-        <a
-          pdz-button
-          size="sm"
-          variant="outlined"
-          color="neutral"
-          routerLink="../schedule"
-        >
-          Open Schedule
-        </a>
-      </div>
-    </li>
-  </ul>
-</pdz-card>
+      <a
+        pdz-button
+        size="sm"
+        variant="outlined"
+        color="neutral"
+        routerLink="../schedule"
+      >
+        Open Schedule
+      </a>
+    </div>
+  </pdz-card>
+</div>

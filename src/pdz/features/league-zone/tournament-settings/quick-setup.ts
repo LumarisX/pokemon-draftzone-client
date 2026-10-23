@@ -5,6 +5,7 @@ export type QuickSetupId = 'draftStyle' | 'draftPace' | 'scoring';
 export type QuickSetupOption = {
   value: string;
   label: string;
+  icon: string;
   summary: string;
 };
 
@@ -12,6 +13,7 @@ export type QuickSetupContext = {
   settings: SettingsValue;
   pools: readonly DraftPoolValue[];
   format: string;
+  standingsLocked: boolean;
 };
 
 export type QuickSetupPatch = {
@@ -22,6 +24,8 @@ export type QuickSetupPatch = {
 export type QuickSetupQuestion = {
   id: QuickSetupId;
   title: string;
+  prompt: string;
+  help: string;
   anchor: string;
   options: readonly QuickSetupOption[];
   current: (context: QuickSetupContext) => string | null;
@@ -52,7 +56,7 @@ function shared<T>(
 function poolsUnavailable(context: QuickSetupContext): string | null {
   if (!context.pools.length) return 'Create a draft pool first.';
   if (context.pools.some((pool) => !draftNotStarted(pool.status)))
-    return 'Locked: a draft has already started.';
+    return "Locked because a draft has started. This can't change mid-draft.";
   return null;
 }
 
@@ -60,17 +64,23 @@ export const QUICK_SETUP: readonly QuickSetupQuestion[] = [
   {
     id: 'draftStyle',
     title: 'Draft Style',
+    prompt: 'How do coaches pick their Pokémon?',
+    help: "Traditional is the classic league draft: coaches take turns, and grabbing a Pokémon first keeps it away from everyone else. Open suits casual or large events where coaches shouldn't have to wait on each other. Turn order and duplicates can be fine-tuned under Draft Pools.",
     anchor: 'pools',
     options: [
       {
         value: 'traditional',
         label: 'Traditional',
-        summary: 'Teams take turns in snake order; each Pokémon is drafted once.',
+        icon: 'swap_vert',
+        summary:
+          'Coaches take turns in snake order (1 to 10, then 10 to 1). Once a Pokémon is picked, nobody else can have it.',
       },
       {
         value: 'open',
         label: 'Open',
-        summary: 'No turns, and any team can draft any Pokémon.',
+        icon: 'groups',
+        summary:
+          'No turns. Every coach builds their roster whenever they like, and two teams can own the same Pokémon.',
       },
     ],
     current: ({ pools }) =>
@@ -94,22 +104,28 @@ export const QUICK_SETUP: readonly QuickSetupQuestion[] = [
   {
     id: 'draftPace',
     title: 'Draft Pace',
+    prompt: 'How long does each coach get to make a pick?',
+    help: 'When a coach runs out of time, their pick moves to the end of the round instead of holding everyone up. Only drafts where coaches take turns have a timer. The exact minutes per pick can be set under Draft Pools.',
     anchor: 'pools',
     options: [
       {
         value: 'live',
         label: 'Live',
-        summary: `Everyone online together, ${LIVE_PICK_MINUTES} minutes per pick.`,
+        icon: 'bolt',
+        summary: `Everyone drafts together in one sitting, with ${LIVE_PICK_MINUTES} minutes per pick.`,
       },
       {
         value: 'slow',
         label: 'Slow',
-        summary: `Picks spread over days, ${SLOW_PICK_MINUTES / 60} hours per pick.`,
+        icon: 'hourglass_top',
+        summary: `The draft runs over several days, with ${SLOW_PICK_MINUTES / 60} hours per pick, so nobody has to be online at the same time.`,
       },
       {
         value: 'untimed',
         label: 'Untimed',
-        summary: 'No pick timer; the draft moves when coaches pick.',
+        icon: 'all_inclusive',
+        summary:
+          'No clock. The draft moves on whenever the coach whose turn it is makes their pick.',
       },
     ],
     current: ({ pools }) =>
@@ -135,24 +151,34 @@ export const QUICK_SETUP: readonly QuickSetupQuestion[] = [
   },
   {
     id: 'scoring',
-    title: 'Scoring',
-    anchor: 'season',
+    title: 'Battle Style',
+    prompt: 'Are matches played as singles or doubles?',
+    help: 'This decides how close standings are settled. Singles games usually end with several Pokémon left, so the number remaining is a fair measure of how close a game was. Doubles games swing faster, so most doubles leagues count games won instead. The full scoring and tiebreakers are under Standings.',
+    anchor: 'standings',
     options: [
       {
         value: 'pokemon',
         label: 'Singles',
-        summary: 'Pokémon differential decides close standings.',
+        icon: 'person',
+        summary:
+          'Teams on the same points are split by Pokémon differential: how many Pokémon the winner had left.',
       },
       {
         value: 'game',
         label: 'Doubles',
-        summary: 'Game differential decides close standings.',
+        icon: 'group',
+        summary:
+          'Teams on the same points are split by game differential: games won minus games lost.',
       },
     ],
     current: ({ settings }) => settings.diffMode,
     apply: (value) => ({
       settings: { diffMode: value === 'game' ? 'game' : 'pokemon' },
     }),
+    unavailable: ({ standingsLocked }) =>
+      standingsLocked
+        ? 'Locked because the season has started. Unlock it under Standings.'
+        : null,
     recommended: ({ format }) =>
       format ? (isDoublesFormat(format) ? 'game' : 'pokemon') : null,
   },

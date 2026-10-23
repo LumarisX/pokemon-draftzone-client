@@ -1673,6 +1673,71 @@
 </section>
 
 <section class="section">
+  <h2 class="section__title">Choice Cards</h2>
+  <p class="section__note">
+    A 2–4 way choice that needs explaining: each option is a large button with a
+    plain-language description. Use pdz-segmented when the labels speak for
+    themselves.
+  </p>
+  <pdz-choice-cards [(value)]="draftPace" aria-label="Draft pace">
+    <pdz-choice-card
+      value="live"
+      label="Live"
+      icon="bolt"
+      description="Everyone drafts together in one sitting, with 3 minutes per pick."
+    />
+    <pdz-choice-card
+      value="slow"
+      label="Slow"
+      icon="hourglass_top"
+      description="The draft runs over several days, with 12 hours per pick."
+      note="Suggested for your Singles tier list"
+    />
+    <pdz-choice-card
+      value="untimed"
+      label="Untimed"
+      icon="all_inclusive"
+      description="No clock. The draft moves on whenever the coach makes their pick."
+    />
+  </pdz-choice-cards>
+  <p class="section__note">Selected: {{ draftPace() }}</p>
+
+  <pdz-choice-cards value="live" [disabled]="true" aria-label="Disabled">
+    <pdz-choice-card value="live" label="Live" description="Disabled group." />
+    <pdz-choice-card value="slow" label="Slow" description="Disabled group." />
+  </pdz-choice-cards>
+</section>
+
+<section class="section">
+  <h2 class="section__title">Help</h2>
+  <p class="section__note">
+    A help button beside a title or label. Click it for a short explanation in
+    plain language. Give every setting one.
+  </p>
+  <div class="row">
+    <span>Pick Timer</span>
+    <pdz-help
+      label="Pick Timer"
+      text="Each coach gets this long to make a pick. A missed pick moves to the end of the round instead of holding everyone up."
+    />
+    <span>Two paragraphs</span>
+    <pdz-help
+      label="Tiebreakers"
+      [text]="[
+        'Teams on the same points are split by the tiebreakers, top to bottom.',
+        'Head-to-head only counts matches between the tied teams.'
+      ]"
+    />
+    <span>Projected content</span>
+    <pdz-help label="Projected" align="end">
+      <a pdz-button size="sm" variant="link" routerLink="../sprites">
+        Open Sprite Browser
+      </a>
+    </pdz-help>
+  </div>
+</section>
+
+<section class="section">
   <h2 class="section__title">Disclosure</h2>
   <pdz-disclosure heading="Round 1" tone="panel">
     <div>Panel body — collapses to content height.</div>

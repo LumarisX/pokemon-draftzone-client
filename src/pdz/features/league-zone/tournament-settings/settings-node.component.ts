@@ -1,12 +1,11 @@
-import { NgTemplateOutlet } from '@angular/common';
 import {
   ChangeDetectionStrategy,
   Component,
   computed,
   inject,
   input,
-  signal,
 } from '@angular/core';
+import { HelpComponent } from '@pdz/shared/help/help.component';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { NodeControlComponent } from './node-control.component';
 import {
@@ -14,24 +13,24 @@ import {
   AnyNode,
   ValueBag,
   controlVisible,
+  draftNotStarted,
 } from './settings-schema';
 import { TournamentSettingsStore } from './tournament-settings.store';
 
 @Component({
   selector: 'pdz-settings-node',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [IconComponent, NgTemplateOutlet, NodeControlComponent],
+  imports: [HelpComponent, IconComponent, NodeControlComponent],
   templateUrl: './settings-node.component.html',
   styleUrl: './settings-node.component.scss',
 })
 export class SettingsNodeComponent {
   readonly node = input.required<AnyNode>();
   readonly disabled = input(false);
-  readonly lockedReason = input<string | null>(null);
+  readonly gateReason = input<string | null>(null);
   readonly poolId = input<string | null>(null);
 
   protected readonly store = inject(TournamentSettingsStore);
-  protected readonly showDetails = signal(false);
 
   private readonly bag = computed<ValueBag>(() => {
     const id = this.poolId();
@@ -45,6 +44,22 @@ export class SettingsNodeComponent {
       controlVisible(control as AnyControlSpec, bag),
     );
   });
+
+  private readonly poolStarted = computed(() => {
+    const id = this.poolId();
+    const pool = id ? this.store.pools().find((entry) => entry.id === id) : null;
+    return pool ? !draftNotStarted(pool.status) : false;
+  });
+
+  protected readonly fixedNote = computed(() =>
+    this.poolStarted() && this.controls().some((control) => control.fixed)
+      ? "Locked because this pool's draft has started. It can't change mid-draft."
+      : null,
+  );
+
+  protected controlDisabled(control: AnyControlSpec): boolean {
+    return this.disabled() || (!!control.fixed && this.poolStarted());
+  }
 
   protected readonly error = computed(() =>
     this.store.errorFor(this.node().id, this.poolId()),

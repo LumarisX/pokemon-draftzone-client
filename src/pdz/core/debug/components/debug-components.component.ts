@@ -39,6 +39,9 @@ import {
 } from '@pdz/shared/data/skeleton/skeleton-layout.component';
 import { SegmentedComponent } from '@pdz/shared/inputs/segmented/segmented.component';
 import { SegmentedOptionComponent } from '@pdz/shared/inputs/segmented/segmented-option.component';
+import { ChoiceCardComponent } from '@pdz/shared/inputs/choice-cards/choice-card.component';
+import { ChoiceCardsComponent } from '@pdz/shared/inputs/choice-cards/choice-cards.component';
+import { HelpComponent } from '@pdz/shared/help/help.component';
 import { DisclosureComponent } from '@pdz/shared/layout/disclosure/disclosure.component';
 import { TabNavComponent } from '@pdz/shared/layout/tab-nav/tab-nav.component';
 import { TabNavLinkComponent } from '@pdz/shared/layout/tab-nav/tab-nav-link.component';
@@ -155,6 +158,9 @@ const MODE_ATTR = 'pdz-theme-mode';
     SkeletonLayoutComponent,
     SegmentedComponent,
     SegmentedOptionComponent,
+    ChoiceCardsComponent,
+    ChoiceCardComponent,
+    HelpComponent,
     DisclosureComponent,
     TabNavComponent,
     TabNavLinkComponent,
@@ -532,6 +538,7 @@ export class DebugComponentsComponent {
   ];
 
   reportMode = signal<unknown>('standard');
+  draftPace = signal<string | null>('slow');
   winner = signal<unknown>('side1');
   secondOpen = signal(true);
   abilities = signal(true);

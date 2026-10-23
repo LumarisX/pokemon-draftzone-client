@@ -1,6 +1,6 @@
 import { InjectionToken, Signal } from '@angular/core';
 
-export type PdzMenuRole = 'menu' | 'group';
+export type PdzMenuRole = 'menu' | 'group' | 'dialog';
 
 export interface PdzMenuPanel {
   readonly panelId: string;

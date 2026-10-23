@@ -1,6 +1,7 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  DestroyRef,
   computed,
   effect,
   inject,
@@ -25,8 +26,8 @@ import { TabNavLinkComponent } from '@pdz/shared/layout/tab-nav/tab-nav-link.com
 import { TabNavComponent } from '@pdz/shared/layout/tab-nav/tab-nav.component';
 import { DisclosureComponent } from '@pdz/shared/layout/disclosure/disclosure.component';
 import { QuickSetupComponent } from './quick-setup.component';
-import { RiskBannerComponent } from './risk-banner.component';
 import { SaveBarComponent } from './save-bar.component';
+import { SettingsLockComponent } from './settings-lock.component';
 import { SettingsNodeComponent } from './settings-node.component';
 import {
   AnyNode,
@@ -34,15 +35,17 @@ import {
   POOL_NODES,
   PoolNode,
   SETTINGS_SECTIONS,
+  SectionLock,
   SettingsAnchor,
   SettingsNode,
   SettingsSectionId,
   TIER_LIST_GATE_REASON,
+  draftNotStarted,
   nodeKeys,
   nodeVisible,
   nodesForSection,
   sectionById,
-  sectionRisk,
+  sectionLock,
 } from './settings-schema';
 import {
   EMPTY_SETTINGS,
@@ -65,7 +68,7 @@ type Block =
   | { kind: 'organizers' }
   | { kind: 'completion' };
 
-type NodeEntry = { node: SettingsNode; locked: boolean };
+type NodeEntry = { node: SettingsNode; gated: boolean };
 
 function differs(a: unknown, b: unknown): boolean {
   return JSON.stringify(a) !== JSON.stringify(b);
@@ -75,9 +78,13 @@ const BLOCKS: readonly Block[] = [
   { kind: 'quick' },
   { kind: 'nodes', section: 'general' },
   { kind: 'nodes', section: 'signup' },
+  { kind: 'nodes', section: 'listing' },
   { kind: 'nodes', section: 'draft' },
   { kind: 'pools' },
+  { kind: 'nodes', section: 'trades' },
   { kind: 'nodes', section: 'season' },
+  { kind: 'nodes', section: 'standings' },
+  { kind: 'nodes', section: 'prizes' },
   { kind: 'nodes', section: 'discord' },
   { kind: 'organizers' },
   { kind: 'completion' },
@@ -97,8 +104,8 @@ const BLOCKS: readonly Block[] = [
     PageHeaderComponent,
     PageSectionsComponent,
     QuickSetupComponent,
-    RiskBannerComponent,
     SaveBarComponent,
+    SettingsLockComponent,
     SettingsNodeComponent,
     SkeletonLayoutComponent,
     TabNavComponent,
@@ -137,7 +144,7 @@ export class SettingsPageComponent implements GuardsUnsavedChanges {
           .filter((node) => nodeVisible(node as AnyNode, value))
           .map((node) => ({
             node,
-            locked: node.requiresTierList === true && !attached,
+            gated: node.requiresTierList === true && !attached,
           })),
       );
     }
@@ -229,6 +236,7 @@ export class SettingsPageComponent implements GuardsUnsavedChanges {
   }
 
   constructor() {
+    inject(DestroyRef).onDestroy(() => this.store.relock());
     effect(() => {
       const target = this.fragment();
       if (this.store.loading() || !target) return;
@@ -266,13 +274,42 @@ export class SettingsPageComponent implements GuardsUnsavedChanges {
     );
   }
 
-  protected risk(section: SettingsSectionId) {
-    return sectionRisk(sectionById(section), this.store.phase());
+  protected lock(section: SettingsSectionId): SectionLock | null {
+    return sectionLock(sectionById(section), this.store.phase());
   }
 
-  protected readonly poolRisk = computed(() =>
-    sectionRisk(sectionById('draft'), this.store.phase()),
-  );
+  protected async unlock(section: SettingsSectionId): Promise<void> {
+    const spec = this.lock(section);
+    if (!spec) return;
+    const lead = this.unlockLead(section);
+    const confirmed = await this.dialog.confirm(spec.unlockTitle, {
+      message: lead ? `${lead} ${spec.unlockMessage}` : spec.unlockMessage,
+      confirmLabel: 'Unlock',
+      confirmColor: 'danger',
+    });
+    if (confirmed) this.store.unlock(section);
+  }
+
+  private unlockLead(section: SettingsSectionId): string | null {
+    if (section === 'draft') {
+      const drafted = this.store
+        .pools()
+        .filter((pool) => !draftNotStarted(pool.status))
+        .reduce((sum, pool) => sum + pool.teams.length, 0);
+      if (!drafted) return null;
+      return drafted === 1
+        ? '1 team has already drafted under these rules.'
+        : `${drafted} teams have already drafted under these rules.`;
+    }
+    if (section === 'standings') {
+      const played = this.store.artifacts().schedule.playedCount;
+      if (!played) return null;
+      return played === 1
+        ? '1 result is already in the standings.'
+        : `${played} results are already in the standings.`;
+    }
+    return null;
+  }
 
   protected selectPool(poolId: string): void {
     this.store.selectedPoolId.set(poolId);
@@ -295,16 +332,7 @@ export class SettingsPageComponent implements GuardsUnsavedChanges {
     if (confirmed) this.store.removePool(poolId).subscribe();
   }
 
-  protected async save(): Promise<void> {
-    const risk = this.store.saveRisk();
-    if (risk) {
-      const confirmed = await this.dialog.confirm('Save draft settings?', {
-        message: risk.because,
-        confirmLabel: 'Save Anyway',
-        confirmColor: 'danger',
-      });
-      if (!confirmed) return;
-    }
+  protected save(): void {
     this.store.saveSettings().subscribe();
   }
 

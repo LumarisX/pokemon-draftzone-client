@@ -71,8 +71,8 @@ enforceable form of the settled rules.
 hand-rolled markup.** Current inventory: buttons, data (badge, card, chip, meter, record,
 podium, score, season-mvp, team-roster, skeleton, sort, pokemon-type, pokemon, team, matchup), dialogs, dropdowns (select, pokemon-search,
 format, ruleset), feedback (empty-state, toast), images (icon, sprite, team-logo,
-roster-sprites, roster-pattern, loading), inputs (field, choice, segmented, slide-toggle, slider), layout (page,
-page-header, page-sections, tabs, tab-nav, widget, disclosure, masonry), menu, pipes, time,
+roster-sprites, roster-pattern, loading), inputs (field, choice, choice-cards, segmented, slide-toggle, slider), layout (page,
+page-header, page-sections, tabs, tab-nav, widget, disclosure, masonry), help, menu, pipes, time,
 tooltip, widgets.
 
 Every routed page is wrapped in `<pdz-page type="hub|index|detail|workspace|tool|form|dashboard">`,
@@ -120,7 +120,12 @@ section with a `fragment` (`signup`, `pools`, `season`, …) instead of carrying
 of their own. Overview's Next Up list comes from `nextSteps()` in `settings-schema.ts`:
 add a step only when it blocks the next phase, never for a setting with a default.
 Applicant decisions save separately (`saveApplicants`) and refresh the roster without
-touching unsaved settings. Completing a tournament goes only through the Final Results
+touching unsaved settings. Settings that would rewrite what already happened lock by phase
+(`lock` on a section in `SETTINGS_SECTIONS`: Draft Rules once a draft starts, Standings once
+the season starts): still visible but disabled under a lock bar, and Unlock opens a confirm
+that says what changes; the section relocks on save, revert or leaving the page. Pool turn
+order, duplicates and timer length are `fixed` once that pool starts (the server refuses
+them), so they lock with no Unlock. No warning banners on the page. Completing a tournament goes only through the Final Results
 review page (`manage/final-results`, `store.setCompleted`), never a settings toggle; the
 server snapshots each team's placement, record and MVP, and the league's Hall of Fame
 (`/leagues/:league/hall-of-fame`) reads that snapshot. Public Rules and Tier List pages show organizers an Edit
@@ -184,6 +189,8 @@ and no page header.
 | `<select>` | `<pdz-select>` + `<pdz-option>` — **the only dropdown primitive** |
 | checkbox / radio | `<input pdz-checkbox>` / `<input pdz-radio>`, or `label[pdz-check]` |
 | a 2–5 way choice | `<pdz-segmented>` + `<pdz-segmented-option>` |
+| a 2–4 way choice a newcomer needs explained | `<pdz-choice-cards>` + `<pdz-choice-card [label] [description] [icon] [note]>` — large radio buttons with a plain-language description each; `note` marks a suggestion (secondary). Quick Setup uses it |
+| an explanation of a setting or term | `<pdz-help [label] [text]>` beside the title — a `help` icon button that opens a popover (on `pdz-menu role="dialog"`); `text` takes a string or paragraphs, or project content. Every settings node carries one (`help` is required on `NodeFor`); never a "More" toggle or a hover-only tooltip |
 | icons | `<pdz-icon name="...">` — always, never a raw glyph or `<img>`; buttons take `icon="..."` |
 | a roster shown as a group | `<pdz-roster-sprites [pokemon] [spots] [name] layout="wrap\|tiers">` — every Pokémon as a bare sprite, in draft order, no floor, shadow or fill. `wrap` (default) is the roster card's strip: `md` sprites wrapping and centered. `tiers` is the team card banner: two rows at a fixed height on a faint `team1-subtle` fade (`tone="team2"` for a team that isn't the viewer's), split in half (an odd count puts the extra one below), the first picks 1.2× bigger (`TIER_STEP`), sized to fit. `spots` adds empty places while a draft runs (only pass it when the pick count is known, or a finished team shows empty places). As a card banner, put it in `pdz-card`'s `[pdz-card-media]` slot. `[states]` lines up a `SpriteState` per Pokémon (the team page schedule shows an opponent's benched and fainted Pokémon with it); `[fade]="false"` drops the tier fade where the surrounding card already carries the color. Sprites never take a ground shadow; `grounded` was removed 2026-10-15 |
 | a team's standout Pokémon | `<pdz-season-mvp [pokemon] [knockouts] [detail] [types] [stats]>` — most KOs, ties to fewer faints then fewer games; the page picks the Pokémon and builds `stats` (`SeasonMvpStat[]`: games, fainted, KOs/game, share of team KOs), the card owns the look (sprite faces right; stats sit inline when the card is 40rem+, under the name when narrower). Hide it until something has a KO |

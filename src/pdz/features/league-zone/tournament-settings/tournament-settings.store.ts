@@ -20,12 +20,11 @@ import { LeagueZoneService } from '../league-zone.service';
 import { League } from '../league.interface';
 import {
   ArtifactState,
-  DRAFT_RISK,
   DraftPoolValue,
   Lifecycle,
   NodeIssue,
   PrizeShare,
-  RiskSpec,
+  SettingsSectionId,
   SettingsValue,
   SignUpStatus,
   SignUpValue,
@@ -34,10 +33,10 @@ import {
   TierRequirement,
   defaultTiebreakers,
   draftNotStarted,
-  lifecycleReached,
   nextSteps,
   poolErrors,
-  sectionKeys,
+  sectionById,
+  sectionLock,
   settingsErrors,
   withEveryTiebreaker,
 } from './settings-schema';
@@ -460,6 +459,7 @@ export class TournamentSettingsStore {
       settings.standingsRulesCustomized ?? false,
     );
 
+    this.relock();
     this.savedValue.set(value);
     this.draftValue.set(clone(value));
     this.savedPools.set(pools);
@@ -553,14 +553,28 @@ export class TournamentSettingsStore {
     () => this.changedStatuses().length,
   );
 
-  readonly saveRisk = computed<RiskSpec | null>(() => {
-    if (!lifecycleReached(this.phase(), DRAFT_RISK.from)) return null;
-    const draftKeys = new Set(sectionKeys('draft'));
-    const touched =
-      this.poolDirtyCount() > 0 ||
-      this.dirtyKeys().some((key) => draftKeys.has(key));
-    return touched ? DRAFT_RISK : null;
-  });
+  private readonly unlockedSections = signal<ReadonlySet<SettingsSectionId>>(
+    new Set(),
+  );
+
+  isLocked(section: SettingsSectionId): boolean {
+    return (
+      sectionLock(sectionById(section), this.phase()) !== null &&
+      !this.unlockedSections().has(section)
+    );
+  }
+
+  isUnlocked(section: SettingsSectionId): boolean {
+    return this.unlockedSections().has(section);
+  }
+
+  unlock(section: SettingsSectionId): void {
+    this.unlockedSections.update((sections) => new Set(sections).add(section));
+  }
+
+  relock(): void {
+    this.unlockedSections.set(new Set());
+  }
 
   private poolDirtyCount(): number {
     const saved = new Map(this.savedPools().map((pool) => [pool.id, pool]));
@@ -600,6 +614,7 @@ export class TournamentSettingsStore {
             this.tiebreakersCustomizedValue.set(true);
           this.savedValue.set(clone(this.draftValue()));
           this.savedPools.set(clone(this.draftPools()));
+          this.relock();
           this.saving.set(false);
         },
         error: (err) => {
@@ -615,6 +630,7 @@ export class TournamentSettingsStore {
   revertSettings(): void {
     this.draftValue.set(clone(this.savedValue()));
     this.draftPools.set(clone(this.savedPools()));
+    this.relock();
   }
 
   saveApplicants(): Observable<unknown> {

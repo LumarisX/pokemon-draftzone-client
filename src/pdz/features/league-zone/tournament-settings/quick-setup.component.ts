@@ -8,8 +8,10 @@ import {
 import { RouterLink } from '@angular/router';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 import { CardComponent } from '@pdz/shared/data/card/card.component';
-import { SegmentedOptionComponent } from '@pdz/shared/inputs/segmented/segmented-option.component';
-import { SegmentedComponent } from '@pdz/shared/inputs/segmented/segmented.component';
+import { HelpComponent } from '@pdz/shared/help/help.component';
+import { IconComponent } from '@pdz/shared/images/icon/icon.component';
+import { ChoiceCardComponent } from '@pdz/shared/inputs/choice-cards/choice-card.component';
+import { ChoiceCardsComponent } from '@pdz/shared/inputs/choice-cards/choice-cards.component';
 import {
   QUICK_SETUP,
   QuickSetupContext,
@@ -24,8 +26,10 @@ import { TournamentSettingsStore } from './tournament-settings.store';
     RouterLink,
     ButtonComponent,
     CardComponent,
-    SegmentedComponent,
-    SegmentedOptionComponent,
+    ChoiceCardComponent,
+    ChoiceCardsComponent,
+    HelpComponent,
+    IconComponent,
   ],
   templateUrl: './quick-setup.component.html',
   styleUrl: './quick-setup.component.scss',
@@ -35,10 +39,14 @@ export class QuickSetupComponent {
 
   readonly adjust = output<string>();
 
+  protected readonly shapeHelp =
+    'A season is built from stages on the Schedule. A round robin has every team play every other team; Swiss pairs teams with similar records each round; elimination knocks teams out, often as playoffs after a round robin.';
+
   private readonly context = computed<QuickSetupContext>(() => ({
     settings: this.store.draft(),
     pools: this.store.pools(),
     format: this.store.artifacts().tierList.format,
+    standingsLocked: this.store.isLocked('standings'),
   }));
 
   protected readonly rows = computed(() => {
@@ -46,33 +54,21 @@ export class QuickSetupComponent {
     return QUICK_SETUP.map((question) => {
       const current = question.current(context);
       const unavailable = question.unavailable?.(context) ?? null;
-      const recommended = question.recommended?.(context) ?? null;
-      const chosen = question.options.find((option) => option.value === current);
-      const suggestion =
-        recommended && recommended !== current
-          ? question.options.find((option) => option.value === recommended)
-          : null;
       return {
         question,
         current,
         unavailable,
-        summary: unavailable ?? chosen?.summary ?? 'Custom. Adjust it below.',
-        custom: !unavailable && !chosen,
-        suggestion:
-          suggestion && !unavailable
-            ? {
-                text: `Your ${context.format} tier list usually plays as ${suggestion.label}.`,
-                action: `Use ${suggestion.label}`,
-                value: suggestion.value,
-              }
-            : null,
+        custom: !unavailable && current === null && context.pools.length > 0,
+        recommended: question.recommended?.(context) ?? null,
+        recommendedNote: `Suggested for your ${context.format} tier list`,
       };
     });
   });
 
   protected readonly schedule = computed(() => this.store.artifacts().schedule);
 
-  protected choose(question: QuickSetupQuestion, value: string): void {
+  protected choose(question: QuickSetupQuestion, value: unknown): void {
+    if (typeof value !== 'string') return;
     if (value === question.current(this.context())) return;
     this.store.applyPatch(question.apply(value));
   }
