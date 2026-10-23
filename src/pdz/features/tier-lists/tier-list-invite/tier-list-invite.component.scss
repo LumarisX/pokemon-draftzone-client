@@ -1,0 +1,17 @@
+@use "pdz-theming" as pdz;
+
+:host {
+  display: block;
+}
+
+.invite__form {
+  width: 100%;
+  max-width: 24rem;
+  text-align: start;
+}
+
+.invite__expiry {
+  @include pdz.text(meta);
+  margin: 0;
+  color: pdz.color(on-surface-muted);
+}

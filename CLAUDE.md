@@ -154,6 +154,15 @@ back link to the draft. Seasons end by being marked **Completed** (archive is le
 an owner completes a hosted tournament in settings, a coach can complete their own entry,
 and an external draft is completed from its page menu.
 
+**Tier lists** (`/tier-lists`, plan in `docs/tier-lists-plan.md`): Find, My Tier Lists, New
+(scratch, copy, import), Import, the list, its editor, History and Compare. The same view,
+editor, import, history and compare components serve a tournament's copy under
+`.../tier-list/...`; build links with `tierListBase()` from `@pdz/features/tier-lists/tier-list-links`,
+never a relative `'..'`. Organizers swap, start or pull a tournament's list from the settings
+Tier List panel, never by editing `tierListId`. Changes that affect how a tournament is played
+land in its **Log** (`/log`, rail Reference group); give organizers a note field on those
+actions, not a separate dialog.
+
 `homepage`, `not-found` and `external-link` are deliberate exceptions with their own
 hero or interstitial layout. The planner is a `flush` workspace with a tab strip
 and no page header.

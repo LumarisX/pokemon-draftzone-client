@@ -1,32 +1,58 @@
 <form [formGroup]="form" (ngSubmit)="onSave()">
   <div class="settings-dialog__content">
-    <label pdz-field label="Title" required class="field--full">
-      <input
-        pdz-input
-        formControlName="name"
-        placeholder="Enter tier list title"
-      />
-      @if (
-        form.controls.name.touched && form.controls.name.hasError("required")
-      ) {
+    <label pdz-field label="Title" required>
+      <input pdz-input formControlName="name" placeholder="Enter tier list title" />
+      @if (form.controls.name.touched && form.controls.name.hasError('required')) {
         <span pdz-error>Title is required</span>
       }
-      @if (form.controls.name.hasError("maxlength")) {
+      @if (form.controls.name.hasError('maxlength')) {
         <span pdz-error>Title must be 100 characters or fewer</span>
       }
     </label>
 
-    <label pdz-field label="Description" class="field--full">
+    <label pdz-field label="Description">
       <textarea
         pdz-input
         formControlName="description"
         placeholder="Optional description for this tier list"
         rows="3"
       ></textarea>
-      @if (form.controls.description.hasError("maxlength")) {
+      @if (form.controls.description.hasError('maxlength')) {
         <span pdz-error>Description must be 500 characters or fewer</span>
       }
     </label>
+
+    @if (canTag()) {
+      <label pdz-field label="Tags">
+        <input pdz-input formControlName="tags" placeholder="singles, gen 9, draft league" />
+        <span pdz-hint>Separate with commas. Up to 8. People can search by them.</span>
+      </label>
+    }
+
+    @if (canChangeRules()) {
+      <div class="settings-dialog__row">
+        <div pdz-field label="Format">
+          <pdz-select aria-label="Format" searchable formControlName="format">
+            @for (option of formats(); track option) {
+              <pdz-option [value]="option" [label]="option" />
+            }
+          </pdz-select>
+        </div>
+        <div pdz-field label="Ruleset">
+          <pdz-select aria-label="Ruleset" searchable formControlName="ruleset">
+            @for (option of rulesets(); track option) {
+              <pdz-option [value]="option" [label]="option" />
+            }
+          </pdz-select>
+        </div>
+      </div>
+      <p class="settings-dialog__note">
+        The ruleset decides which Pokémon are legal. Run the legality check after changing it.
+        @if (data.isTournamentCopy) {
+          Changing it once sign-ups are open is recorded in the tournament log.
+        }
+      </p>
+    }
 
     @if (saveError()) {
       <p class="settings-dialog__error" role="alert">{{ saveError() }}</p>
@@ -44,12 +70,7 @@
     >
       Cancel
     </button>
-    <button
-      pdz-button
-      type="submit"
-      [loading]="isSaving()"
-      [disabled]="form.invalid"
-    >
+    <button pdz-button type="submit" [loading]="isSaving()" [disabled]="form.invalid">
       Save
     </button>
   </div>

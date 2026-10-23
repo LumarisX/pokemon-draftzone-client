@@ -1,0 +1,28 @@
+@use "pdz-theming" as pdz;
+
+:host {
+  display: block;
+}
+
+.mine {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.layout(section-gap);
+}
+
+.mine__section {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.layout(stack);
+}
+
+.mine__heading {
+  @include pdz.text(section-title);
+  margin: 0;
+}
+
+.mine__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr));
+  gap: pdz.layout(stack);
+}

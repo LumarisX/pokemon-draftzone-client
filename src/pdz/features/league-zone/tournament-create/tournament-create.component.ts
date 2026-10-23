@@ -27,6 +27,13 @@ import { InputDirective } from '@pdz/shared/inputs/field/input.directive';
 import { SlideToggleComponent } from '@pdz/shared/inputs/slide-toggle/slide-toggle.component';
 import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
 import { PageComponent } from '@pdz/shared/layout/page/page.component';
+import {
+  PickedTierList,
+  TierListPickerComponent,
+  TierListPickerData,
+} from '@pdz/features/tier-lists/tier-list-picker/tier-list-picker.component';
+import { TierListService } from '@pdz/features/tier-lists/tier-list.service';
+import { DialogService } from '@pdz/shared/dialogs/dialog/dialog.service';
 import { LeagueZoneService } from '../league-zone.service';
 import { League } from '../league.interface';
 import { isValidOrganizerName, ORGANIZER_NAME_MAX } from '../league.util';
@@ -60,6 +67,8 @@ export class TournamentCreateComponent implements OnInit {
   private readonly leagueService = inject(LeagueZoneService);
   private readonly toast = inject(ToastService);
   private readonly destroyRef = inject(DestroyRef);
+  private readonly dialogs = inject(DialogService);
+  private readonly tierLists = inject(TierListService);
 
   protected readonly leagueSlug =
     this.route.snapshot.paramMap.get('leagueSlug') ?? '';
@@ -79,6 +88,45 @@ export class TournamentCreateComponent implements OnInit {
   protected readonly ownerNameMax = ORGANIZER_NAME_MAX;
 
   protected readonly tierListFrom = signal('');
+  protected readonly pickedList = signal<PickedTierList | null>(null);
+
+  protected readonly pickedHint = computed(() => {
+    const picked = this.pickedList();
+    return picked
+      ? `The tournament gets its own copy of ${picked.name}. Later edits to it won't change the tournament's.`
+      : '';
+  });
+
+  protected async pickList(): Promise<void> {
+    const picked = await this.dialogs.open<
+      TierListPickerComponent,
+      PickedTierList,
+      TierListPickerData
+    >(TierListPickerComponent, {
+      heading: 'Choose a Tier List',
+      size: 'md',
+      data: { intro: 'The tournament gets its own copy, so you can change it freely.' },
+    }).closed;
+    if (picked) this.pickedList.set(picked);
+  }
+
+  protected clearPicked(): void {
+    this.pickedList.set(null);
+  }
+
+  private loadPreselected(slug: string): void {
+    this.tierLists.getTierListBySlug(slug).subscribe({
+      next: (view) =>
+        this.pickedList.set({
+          slug: view.meta?.slug ?? slug,
+          name: view.name ?? 'Tier List',
+          format: view.format ?? '',
+          ruleset: view.ruleset ?? '',
+          authorName: view.meta?.authorName ?? undefined,
+        }),
+      error: () => this.toast.error("That tier list couldn't be loaded. Pick one below."),
+    });
+  }
 
   protected readonly copySource = computed(
     () => this.league()?.newTournamentDefaults?.copyFrom ?? null,
@@ -131,6 +179,8 @@ export class TournamentCreateComponent implements OnInit {
   );
 
   ngOnInit(): void {
+    const preselected = this.route.snapshot.queryParamMap.get('tierList');
+    if (preselected) this.loadPreselected(preselected);
     this.leagueService
       .getLeague(this.leagueSlug)
       .pipe(takeUntilDestroyed(this.destroyRef))
@@ -161,7 +211,9 @@ export class TournamentCreateComponent implements OnInit {
       .createTournament(this.leagueSlug, {
         name: this.name().trim(),
         ownerName: this.ownerName().trim(),
-        tierListFrom: this.tierListFrom() || null,
+        ...(this.pickedList()
+          ? { tierListSlug: this.pickedList()!.slug, tierListFrom: null }
+          : { tierListFrom: this.tierListFrom() || null }),
         ...(copyFrom ? { copyFrom } : {}),
       })
       .pipe(takeUntilDestroyed(this.destroyRef))

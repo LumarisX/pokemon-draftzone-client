@@ -1,3 +1,4 @@
+import { TOURNAMENT_LOG_PATH } from '@pdz/core/route-paths';
 import { League } from '../league.interface';
 
 export type TournamentLink = {
@@ -107,6 +108,13 @@ export function tournamentLinkGroups(
           route: [...base, 'tier-list'],
           icon: 'format_list_numbered',
           description: 'Pokémon tiers and costs',
+        },
+        {
+          id: 'log',
+          label: 'Log',
+          route: [...base, TOURNAMENT_LOG_PATH],
+          icon: 'history',
+          description: 'Every change organizers made, for anyone to check',
         },
       ],
     },

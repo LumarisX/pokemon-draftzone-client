@@ -2,82 +2,165 @@
   <div class="create">
     <pdz-page-header
       title="New Tier List"
-      eyebrow="Tier Lists"
-      subtitle="Name it and pick a format. You'll price the Pokémon next."
-      [backLink]="['/', tierListPath]"
-      backLabel="Back to Tier Lists"
+      subtitle="Start from nothing, copy a list you like, or bring in the sheet you already have."
+      [backLink]="['/', tierListPath, 'mine']"
+      backLabel="My Tier Lists"
     />
 
-    <form [formGroup]="form" (ngSubmit)="submit()">
+    <pdz-choice-cards
+      aria-label="How to start"
+      [ngModel]="start()"
+      (ngModelChange)="choose($event)"
+    >
+      <pdz-choice-card
+        value="scratch"
+        icon="add_box"
+        label="Start from Scratch"
+        description="Pick a format and ruleset, then place each Pokémon yourself."
+      />
+      <pdz-choice-card
+        value="copy"
+        icon="call_split"
+        label="Copy a List"
+        description="Start from one of your lists, one shared with you, or a public one."
+      />
+      <pdz-choice-card
+        value="import"
+        icon="upload_file"
+        label="Import a Sheet"
+        description="Paste cells from Google Sheets or Excel, upload a CSV, or link a shared sheet."
+        note="Fastest if your league already has one"
+      />
+    </pdz-choice-cards>
+
+    @if (start() === 'scratch') {
+      <form [formGroup]="form" (ngSubmit)="submit()">
+        <pdz-card padding="lg">
+          <div class="create__stack">
+            <label pdz-field label="Name" required>
+              <input
+                pdz-input
+                type="text"
+                maxlength="100"
+                placeholder="TBPL S12 Tiers"
+                formControlName="name"
+              />
+            </label>
+
+            <label pdz-field label="Description">
+              <textarea
+                pdz-input
+                rows="3"
+                maxlength="500"
+                formControlName="description"
+              ></textarea>
+              <span pdz-hint>Shown to anyone you share the list with.</span>
+            </label>
+
+            <div class="create__row">
+              <div pdz-field label="Format" required>
+                <pdz-select
+                  aria-label="Format"
+                  placeholder="Choose a format…"
+                  searchable
+                  formControlName="format"
+                >
+                  @for (option of formats(); track option) {
+                    <pdz-option [value]="option" [label]="option" />
+                  }
+                </pdz-select>
+              </div>
+
+              <div pdz-field label="Ruleset" required>
+                <pdz-select
+                  aria-label="Ruleset"
+                  placeholder="Choose a ruleset…"
+                  searchable
+                  formControlName="ruleset"
+                >
+                  @for (option of rulesets(); track option) {
+                    <pdz-option [value]="option" [label]="option" />
+                  }
+                </pdz-select>
+              </div>
+            </div>
+
+            <p class="create__note">
+              The ruleset decides which Pokémon are legal. New lists start private.
+            </p>
+          </div>
+        </pdz-card>
+
+        <div class="create__actions">
+          <button
+            pdz-button
+            type="submit"
+            [loading]="saving()"
+            [disabled]="form.invalid || saving()"
+          >
+            Create Tier List
+          </button>
+        </div>
+      </form>
+    }
+
+    @if (start() === 'copy') {
       <pdz-card padding="lg">
         <div class="create__stack">
-          <label pdz-field label="Name" required>
-            <input
-              pdz-input
-              type="text"
-              maxlength="100"
-              placeholder="TBPL S12 Tiers"
-              formControlName="name"
-            />
-          </label>
-
-          <label pdz-field label="Description">
-            <textarea
-              pdz-input
-              rows="3"
-              maxlength="500"
-              formControlName="description"
-            ></textarea>
-            <span pdz-hint>
-              Shown to anyone browsing public tier lists.
-            </span>
-          </label>
-
-          <div class="create__row">
-            <div pdz-field label="Format" required>
-              <pdz-select
-                aria-label="Format"
-                placeholder="Choose a format…"
-                searchable
-                formControlName="format"
+          @if (source(); as picked) {
+            <div class="create__source">
+              <div>
+                <p class="create__source-name">{{ picked.name }}</p>
+                <p class="create__note">
+                  @if (picked.authorName) {
+                    by {{ picked.authorName }} ·
+                  }
+                  {{ picked.format }} · {{ picked.ruleset }}
+                </p>
+              </div>
+              <button
+                pdz-button
+                size="sm"
+                variant="outlined"
+                color="neutral"
+                (click)="pickSource()"
               >
-                @for (option of formats(); track option) {
-                  <pdz-option [value]="option" [label]="option" />
-                }
-              </pdz-select>
+                Choose Another
+              </button>
             </div>
 
-            <div pdz-field label="Ruleset" required>
-              <pdz-select
-                aria-label="Ruleset"
-                placeholder="Choose a ruleset…"
-                searchable
-                formControlName="ruleset"
-              >
-                @for (option of rulesets(); track option) {
-                  <pdz-option [value]="option" [label]="option" />
-                }
-              </pdz-select>
+            <label pdz-field label="Name for Your Copy" required>
+              <input
+                pdz-input
+                maxlength="100"
+                [ngModel]="copyName()"
+                (ngModelChange)="copyName.set($event)"
+              />
+            </label>
+          } @else {
+            <p class="create__note">Choose the list to copy.</p>
+            <div>
+              <button pdz-button variant="outlined" color="neutral" (click)="pickSource()">
+                Choose a List
+              </button>
             </div>
-          </div>
-
-          <p class="create__note">
-            Format and ruleset decide which Pokémon are legal, and can't be
-            changed once tournaments are drafting from this list.
-          </p>
+          }
         </div>
       </pdz-card>
 
-      <div class="create__actions">
-        <button
-          pdz-button
-          type="submit"
-          [loading]="saving()"
-          [disabled]="form.invalid || saving()"
-        >
-          {{ saving() ? "Creating…" : "Create tier list" }}
-        </button>
-      </div>
-    </form>
+      @if (source()) {
+        <div class="create__actions">
+          <button
+            pdz-button
+            icon="call_split"
+            [loading]="saving()"
+            [disabled]="!copyName().trim() || saving()"
+            (click)="copy()"
+          >
+            Make a Copy
+          </button>
+        </div>
+      }
+    }
   </div>
 </pdz-page>

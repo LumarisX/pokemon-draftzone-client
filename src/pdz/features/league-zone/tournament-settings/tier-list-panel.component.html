@@ -2,11 +2,21 @@
   <div class="tlp">
     <div class="tlp__head">
       <div class="tlp__identity">
-        <span class="tlp__name">{{ tierList().name }}</span>
+        <a class="tlp__name" [routerLink]="links().view">{{ tierList().name }}</a>
         <span class="tlp__meta">
           {{ tierList().format }} · {{ tierList().ruleset }} ·
           {{ tierList().pokemonCount }} Pokémon
         </span>
+        @if (source(); as from) {
+          <span class="tlp__meta">
+            <pdz-icon name="call_split" [size]="14" aria-hidden="true" />
+            @if (from.name) {
+              Copied from {{ from.name }}{{ from.authorName ? ' by ' + from.authorName : '' }}
+            } @else {
+              Copied from a list you can't see
+            }
+          </span>
+        }
       </div>
       <div class="tlp__actions">
         <button
@@ -15,7 +25,9 @@
           size="sm"
           variant="ghost"
           color="neutral"
+          icon="swap_horiz"
           [disabled]="disabled()"
+          (click)="choose()"
         >
           Replace
         </button>
@@ -24,13 +36,52 @@
           size="sm"
           variant="outlined"
           color="neutral"
-          [routerLink]="editRoute()"
+          [routerLink]="links().edit"
         >
           Edit Costs
           <pdz-icon name="arrow_forward" [size]="16" aria-hidden="true" />
         </a>
+        <pdz-menu aria-label="More for the tier list">
+          <button
+            pdz-button
+            pdz-menu-trigger
+            type="button"
+            size="sm"
+            variant="ghost"
+            color="neutral"
+            iconOnly
+            icon="more_vert"
+            aria-label="More for the tier list"
+            [loading]="saving()"
+          ></button>
+          <a pdz-menu-item icon="upload_file" [routerLink]="links().import">Import a Sheet</a>
+          <a pdz-menu-item icon="history" [routerLink]="links().history">History</a>
+          <a pdz-menu-item icon="receipt_long" [routerLink]="links().log">Tournament Log</a>
+          <button pdz-menu-item icon="bookmark_add" (click)="saveAsPreset()">
+            Save as Preset
+          </button>
+        </pdz-menu>
       </div>
     </div>
+
+    @if (behind()) {
+      <div class="tlp__source" role="note">
+        <pdz-icon name="update" [size]="20" aria-hidden="true" />
+        <p class="tlp__source-text">
+          {{ source()!.name }} changed since this tournament copied it.
+        </p>
+        <button
+          pdz-button
+          type="button"
+          size="sm"
+          variant="tonal"
+          [disabled]="disabled()"
+          (click)="pull()"
+        >
+          Review Changes
+        </button>
+      </div>
+    }
 
     <table class="pdz-table" data-density="compact">
       <thead>
@@ -96,13 +147,21 @@
       </p>
     </div>
     <div class="tlp__actions">
-      <button pdz-button type="button" size="sm" variant="outlined" color="neutral">
-        Start from a Template
+      <button
+        pdz-button
+        type="button"
+        size="sm"
+        variant="outlined"
+        color="neutral"
+        [disabled]="disabled()"
+        (click)="choose()"
+      >
+        Start From a List
       </button>
-      <a pdz-button size="sm" [routerLink]="editRoute()">
+      <button pdz-button type="button" size="sm" [disabled]="disabled()" (click)="buildOne()">
         Build One
         <pdz-icon name="arrow_forward" [size]="16" aria-hidden="true" />
-      </a>
+      </button>
     </div>
   </div>
 }

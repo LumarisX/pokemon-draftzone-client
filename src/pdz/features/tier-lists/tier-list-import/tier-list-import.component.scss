@@ -1,0 +1,149 @@
+@use "pdz-theming" as pdz;
+
+:host {
+  display: block;
+}
+
+.import__stack {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.layout(stack);
+}
+
+.import__review {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.layout(section-gap);
+}
+
+.import__heading {
+  @include pdz.text(section-title);
+  display: flex;
+  align-items: center;
+  gap: pdz.space(xs);
+  margin: 0;
+}
+
+.import__paste {
+  font-family: pdz.font(mono);
+  min-height: 12rem;
+}
+
+.import__file {
+  display: flex;
+  align-items: center;
+  gap: pdz.space(md);
+  flex-wrap: wrap;
+}
+
+.import__file-input {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.import__row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: pdz.space(md);
+
+  > * {
+    flex: 1 1 14rem;
+  }
+}
+
+.import__start-over {
+  display: flex;
+  justify-content: flex-end;
+  flex: 0 0 auto;
+}
+
+.import__meta {
+  @include pdz.text(meta);
+  color: pdz.color(on-surface-muted);
+}
+
+.import__error {
+  @include pdz.text(body-sm);
+  margin: 0;
+  color: pdz.color(danger);
+}
+
+.import__summary {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: pdz.space(sm);
+}
+
+.import__problems,
+.import__choices,
+.import__matched {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.import__problem {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(xs);
+  padding: pdz.space(sm) 0;
+  @include pdz.row-divider;
+}
+
+.import__problem-head,
+.import__problem-actions,
+.import__choice {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: pdz.space(sm);
+}
+
+.import__choice {
+  padding: pdz.space(xs) 0;
+  @include pdz.row-divider;
+}
+
+.import__cell {
+  @include pdz.text(body-sm-strong);
+  font-family: pdz.font(mono);
+}
+
+.import__search {
+  flex: 0 1 14rem;
+}
+
+.import__cost {
+  max-width: 6rem;
+}
+
+.import__count {
+  @include pdz.numeric;
+}
+
+.import__tier--skipped td {
+  color: pdz.color(on-surface-muted);
+}
+
+.import__matched {
+  @include pdz.text(body-sm);
+  columns: 2 16rem;
+  column-gap: pdz.space(lg);
+
+  li {
+    padding: pdz.space(2xs) 0;
+    break-inside: avoid;
+  }
+}
+
+.import__actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: pdz.space(md);
+}

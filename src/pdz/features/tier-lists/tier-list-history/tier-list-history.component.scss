@@ -1,0 +1,70 @@
+@use "pdz-theming" as pdz;
+
+:host {
+  display: block;
+}
+
+.history {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border: 1px solid pdz.color(border-subtle);
+  border-radius: pdz.shape(corner-lg);
+  background: pdz.color(raised);
+}
+
+.history__entry {
+  padding: pdz.layout(card-pad);
+  @include pdz.row-divider;
+}
+
+.history__row {
+  display: flex;
+  align-items: flex-start;
+  gap: pdz.space(md);
+  flex-wrap: wrap;
+}
+
+.history__version {
+  @include pdz.text(label-strong);
+  @include pdz.numeric;
+  min-width: 3rem;
+  color: pdz.color(on-surface-muted);
+}
+
+.history__body {
+  flex: 1 1 16rem;
+  min-width: 0;
+}
+
+.history__summary {
+  @include pdz.text(body-sm-strong);
+  margin: 0;
+}
+
+.history__meta {
+  @include pdz.text(meta);
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: pdz.space(xs);
+  margin: pdz.space(2xs) 0 0;
+  color: pdz.color(on-surface-muted);
+}
+
+.history__actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: pdz.space(xs);
+}
+
+.history__changes {
+  margin-top: pdz.layout(stack);
+}
+
+.history__more {
+  display: flex;
+  justify-content: center;
+  margin-top: pdz.layout(stack);
+}

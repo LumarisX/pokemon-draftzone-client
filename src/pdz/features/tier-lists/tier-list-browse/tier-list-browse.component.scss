@@ -7,7 +7,24 @@
 .browse {
   display: flex;
   flex-direction: column;
-  gap: pdz.space(lg);
+  gap: pdz.layout(section-gap);
+}
+
+.browse__header-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: pdz.space(sm);
+}
+
+.browse__section {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.layout(stack);
+}
+
+.browse__heading {
+  @include pdz.text(section-title);
+  margin: 0;
 }
 
 .browse__controls {
@@ -27,97 +44,18 @@
 }
 
 .browse__count {
-  @include pdz.text(body-sm);
+  @include pdz.text(meta);
   margin: 0;
-  color: pdz.color(on-surface-variant);
+  color: pdz.color(on-surface-muted);
 }
 
 .browse__grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(20rem, 1fr));
-  gap: pdz.space(lg);
+  grid-template-columns: repeat(auto-fill, minmax(18rem, 1fr));
+  gap: pdz.layout(stack);
 }
 
-.list-card__inner {
+.browse__more {
   display: flex;
-  flex-direction: column;
-  min-height: 100%;
-}
-
-.list-card__top {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: pdz.space(sm);
-}
-
-.list-card__name {
-  @include pdz.text(card-title);
-  color: pdz.color(on-surface);
-  text-decoration: none;
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-
-  &:hover {
-    text-decoration: underline;
-  }
-}
-
-.list-card__meta {
-  @include pdz.text(body-sm);
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: pdz.space(xs);
-  margin: pdz.space(xs) 0 0;
-  color: pdz.color(on-surface-variant);
-}
-
-.list-card__private {
-  display: inline-flex;
-  align-items: center;
-  gap: pdz.space(3xs);
-}
-
-.list-card__desc {
-  @include pdz.text(body-sm);
-  margin: pdz.space(sm) 0 0;
-  color: pdz.color(on-surface-variant);
-  display: -webkit-box;
-  -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-}
-
-.list-card__stats {
-  @include pdz.text(body-sm);
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: pdz.space(xs);
-  margin: pdz.space(md) 0 0;
-  color: pdz.color(on-surface-variant);
-
-  strong {
-    color: pdz.color(on-surface);
-    font-weight: pdz.font-weight(semibold);
-  }
-}
-
-.list-card__actions {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: pdz.space(sm);
-  flex-wrap: wrap;
-  margin-top: auto;
-  padding-top: pdz.space(md);
-}
-
-.list-card__owner-actions {
-  display: inline-flex;
-  align-items: center;
-  gap: pdz.space(xs);
+  justify-content: center;
 }

@@ -17,7 +17,11 @@
   padding: pdz.space(md);
   border: 1px dashed pdz.color(border-control);
   border-radius: pdz.shape(corner-lg);
-  color: pdz.color(on-surface-variant);
+  color: pdz.color(on-surface-muted);
+
+  @include pdz.respond-below(small) {
+    flex-direction: column;
+  }
 }
 
 .tlp__empty-body {
@@ -54,18 +58,47 @@
 
 .tlp__name {
   color: pdz.color(on-surface);
+  text-decoration: none;
   @include pdz.text(card-title);
+
+  &:hover {
+    text-decoration: underline;
+  }
+
+  &:focus-visible {
+    @include pdz.focus-ring;
+  }
 }
 
 .tlp__meta {
-  color: pdz.color(on-surface-variant);
-  @include pdz.text(body-sm);
+  display: inline-flex;
+  align-items: center;
+  gap: pdz.space(2xs);
+  color: pdz.color(on-surface-muted);
+  @include pdz.text(meta);
 }
 
 .tlp__actions {
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
   gap: pdz.space(xs);
+}
+
+.tlp__source {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: pdz.space(sm);
+  padding: pdz.space(sm) pdz.space(md);
+  border-radius: pdz.shape(corner-md);
+  background: pdz.color(state-hover);
+}
+
+.tlp__source-text {
+  @include pdz.text(body-sm);
+  flex: 1 1 12rem;
+  margin: 0;
 }
 
 .tlp__tier {
@@ -74,8 +107,9 @@
 }
 
 .tlp__cost {
-  color: pdz.color(on-surface-variant);
+  color: pdz.color(on-surface-muted);
   @include pdz.text(body-sm);
+  @include pdz.numeric;
 }
 
 .tlp__number {
@@ -88,7 +122,7 @@
 
 .tlp__total {
   margin: 0;
-  color: pdz.color(on-surface-variant);
+  color: pdz.color(on-surface-muted);
   @include pdz.text(body-sm);
 }
 

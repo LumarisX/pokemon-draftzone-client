@@ -7,13 +7,13 @@
 .create {
   display: flex;
   flex-direction: column;
-  gap: pdz.space(lg);
+  gap: pdz.layout(section-gap);
 }
 
 .create__stack {
   display: flex;
   flex-direction: column;
-  gap: pdz.space(md);
+  gap: pdz.layout(stack);
 }
 
 .create__row {
@@ -27,12 +27,26 @@
 }
 
 .create__note {
-  @include pdz.text(body-sm);
+  @include pdz.text(meta);
   margin: 0;
-  color: pdz.color(on-surface-variant);
+  color: pdz.color(on-surface-muted);
+}
+
+.create__source {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: pdz.space(md);
+  flex-wrap: wrap;
+}
+
+.create__source-name {
+  @include pdz.text(card-title);
+  margin: 0;
 }
 
 .create__actions {
   display: flex;
   justify-content: flex-end;
+  margin-top: pdz.layout(stack);
 }

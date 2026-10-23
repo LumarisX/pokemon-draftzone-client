@@ -1,0 +1,92 @@
+@if (failed()) {
+  <pdz-empty-state
+    size="sm"
+    kind="error"
+    heading="The preview didn't load"
+    message="What would change didn't come back."
+    retry="event"
+    (retried)="load()"
+  />
+} @else if (preview(); as result) {
+  <div class="swap">
+    <p class="swap__intro">
+      The tournament gets its own copy of {{ result.incoming.name }}
+      ({{ result.incoming.format }} · {{ result.incoming.ruleset }}). Later edits to the original
+      won't change it, but you can pull them in when you choose.
+    </p>
+
+    @if (result.legality.notInRuleset.length) {
+      <p class="swap__warning" role="note">
+        {{ result.legality.notInRuleset.length }} Pokémon on it aren't legal in
+        {{ result.legality.ruleset }}. Fix them in the editor after.
+      </p>
+    }
+
+    @if (result.requirements.length) {
+      <section class="swap__group">
+        <h3 class="swap__label">Tier Requirements</h3>
+        @if (keptRequirements(result)) {
+          <p class="swap__text">Kept, by matching tier name: {{ keptRequirements(result) }}.</p>
+        }
+        @if (clearedRequirements(result)) {
+          <p class="swap__text swap__text--warning">
+            Dropped, no tier with that name: {{ clearedRequirements(result) }}.
+          </p>
+        }
+      </section>
+    }
+
+    @if (result.draftStarted) {
+      <section class="swap__group">
+        <h3 class="swap__label">Drafted Pokémon Whose Cost Changes</h3>
+        @if (result.affectedPicks.length) {
+          <ul class="swap__lines">
+            @for (pick of result.affectedPicks; track pick.team + pick.pokemonId) {
+              <li>
+                {{ pick.name }} ({{ pick.team }}): {{ pick.from ?? 'not on the list' }} →
+                {{ pick.to === null ? 'not on the new list' : pick.to + ' pts' }}
+              </li>
+            }
+          </ul>
+          <p class="swap__text">
+            Picks aren't repriced or removed. Rosters show these against the new list.
+          </p>
+        } @else {
+          <p class="swap__text">None. Every drafted Pokémon keeps its cost.</p>
+        }
+      </section>
+    }
+
+    <pdz-disclosure heading="Everything That Changes" icon="compare_arrows">
+      <pdz-tier-list-changes
+        [changes]="result.changes"
+        emptyText="The lists are the same."
+      />
+    </pdz-disclosure>
+
+    @if (data.replacing) {
+      <label pdz-field label="Note for the Log">
+        <textarea
+          pdz-input
+          rows="2"
+          [maxlength]="reasonMax"
+          placeholder="Why the change (optional)"
+          [ngModel]="reason()"
+          (ngModelChange)="reason.set($event)"
+        ></textarea>
+        <span pdz-hint>Coaches see the swap, and this note, in the tournament log.</span>
+      </label>
+    }
+  </div>
+
+  <div class="pdz-dialog-actions">
+    <button pdz-button variant="outlined" color="neutral" [disabled]="saving()" (click)="ref.close()">
+      Cancel
+    </button>
+    <button pdz-button [loading]="saving()" (click)="confirm()">
+      {{ data.replacing ? 'Replace Tier List' : 'Use This List' }}
+    </button>
+  </div>
+} @else {
+  <pdz-skeleton-layout layout="list" [count]="4" />
+}

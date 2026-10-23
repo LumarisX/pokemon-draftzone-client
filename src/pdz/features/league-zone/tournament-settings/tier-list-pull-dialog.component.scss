@@ -1,0 +1,49 @@
+@use "pdz-theming" as pdz;
+
+:host {
+  display: block;
+}
+
+.pull {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.layout(stack);
+}
+
+.pull__intro,
+.pull__text {
+  @include pdz.text(body-sm);
+  margin: 0;
+}
+
+.pull__group {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(xs);
+}
+
+.pull__label {
+  @include pdz.text(label-caps);
+  margin: 0;
+  color: pdz.color(warning);
+}
+
+.pull__conflicts {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.pull__conflict {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: pdz.space(sm);
+  padding: pdz.space(xs) 0;
+  @include pdz.row-divider;
+}
+
+.pull__name {
+  @include pdz.text(body-sm-strong);
+}

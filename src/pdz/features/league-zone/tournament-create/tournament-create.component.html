@@ -85,35 +85,74 @@
               }
             }
 
-            @if (tierListSources().length) {
-              <div
-                pdz-field
-                label="Tier List"
-                [hint]="tierListHint()"
-              >
-                <pdz-select
-                  aria-label="Tier List"
-                  [showGroupInTrigger]="false"
-                  [value]="tierListFrom()"
-                  (valueChange)="tierListFrom.set($any($event) ?? '')"
-                >
-                  @for (source of tierListSources(); track source.tournamentSlug) {
-                    <pdz-option
-                      [value]="source.tournamentSlug"
-                      [label]="'Branch from ' + source.name"
-                      [description]="sourceDetail(source)"
-                    />
-                  }
-                  <pdz-option value="" label="Start Without One" />
-                </pdz-select>
+            @if (pickedList(); as picked) {
+              <div pdz-field label="Tier List" [hint]="pickedHint()">
+                <div class="create__picked">
+                  <div>
+                    <p class="create__picked-name">{{ picked.name }}</p>
+                    <p class="create__note">
+                      @if (picked.authorName) {
+                        by {{ picked.authorName }} ·
+                      }
+                      {{ picked.format }} · {{ picked.ruleset }}
+                    </p>
+                  </div>
+                  <button
+                    pdz-button
+                    type="button"
+                    size="sm"
+                    variant="ghost"
+                    color="neutral"
+                    (click)="clearPicked()"
+                  >
+                    Remove
+                  </button>
+                </div>
               </div>
-              @if (requirementsDropped()) {
-                <p class="create__note">
-                  Tier requirements only carry over with
-                  {{ copySource()?.name }}'s own list. Set them again in the
-                  tournament's settings.
-                </p>
+            } @else {
+              @if (tierListSources().length) {
+                <div
+                  pdz-field
+                  label="Tier List"
+                  [hint]="tierListHint()"
+                >
+                  <pdz-select
+                    aria-label="Tier List"
+                    [showGroupInTrigger]="false"
+                    [value]="tierListFrom()"
+                    (valueChange)="tierListFrom.set($any($event) ?? '')"
+                  >
+                    @for (source of tierListSources(); track source.tournamentSlug) {
+                      <pdz-option
+                        [value]="source.tournamentSlug"
+                        [label]="'Branch from ' + source.name"
+                        [description]="sourceDetail(source)"
+                      />
+                    }
+                    <pdz-option value="" label="Start Without One" />
+                  </pdz-select>
+                </div>
+                @if (requirementsDropped()) {
+                  <p class="create__note">
+                    Tier requirements only carry over with
+                    {{ copySource()?.name }}'s own list. Set them again in the
+                    tournament's settings.
+                  </p>
+                }
               }
+              <div>
+                <button
+                  pdz-button
+                  type="button"
+                  size="sm"
+                  variant="outlined"
+                  color="neutral"
+                  icon="format_list_numbered"
+                  (click)="pickList()"
+                >
+                  Use One of My Lists or a Public One
+                </button>
+              </div>
             }
 
             <div class="create__actions">

@@ -1,0 +1,86 @@
+@if (failed()) {
+  <pdz-empty-state
+    size="sm"
+    kind="error"
+    heading="The check didn't run"
+    message="The legality check didn't come back."
+    retry="event"
+    (retried)="load()"
+  />
+} @else if (current(); as report) {
+  <div class="legality">
+    @if (clean()) {
+      <p class="legality__clean">
+        <pdz-icon name="check_circle" [size]="20" aria-hidden="true" />
+        Everything on this list is legal in {{ report.ruleset }}.
+      </p>
+    }
+
+    @if (report.notInRuleset.length) {
+      <section class="legality__group">
+        <h3 class="legality__label legality__label--danger">
+          Not Legal in {{ report.ruleset }} ({{ report.notInRuleset.length }})
+        </h3>
+        <p class="legality__meta">Remove these, or switch to a ruleset that has them.</p>
+        <ul class="legality__rows">
+          @for (pokemon of report.notInRuleset; track pokemon.id) {
+            <li class="legality__row">
+              <pdz-pokemon size="inline" [pokemon]="{ id: pokemon.id, name: pokemon.name }" />
+              @if (pokemon.tier) {
+                <span class="legality__meta">{{ pokemon.tier }}</span>
+              }
+            </li>
+          }
+        </ul>
+      </section>
+    }
+
+    @if (report.emptyTiers.length) {
+      <section class="legality__group">
+        <h3 class="legality__label">Empty Tiers</h3>
+        <p class="legality__meta">{{ report.emptyTiers.join(', ') }}</p>
+      </section>
+    }
+
+    @if (report.unpricedTiers.length) {
+      <section class="legality__group">
+        <h3 class="legality__label">Tiers Without a Cost</h3>
+        <p class="legality__meta">{{ report.unpricedTiers.join(', ') }} cost 0 points.</p>
+      </section>
+    }
+
+    @if (report.unusedBans.moves.length || report.unusedBans.abilities.length) {
+      <section class="legality__group">
+        <h3 class="legality__label">Bans Nothing Here Uses</h3>
+        <p class="legality__meta">
+          No Pokémon on the list can use {{ unusedBans() }}. Check for a typo.
+        </p>
+      </section>
+    }
+
+    <section class="legality__group">
+      <h3 class="legality__label">Left Off ({{ report.leftOff.length }})</h3>
+      <p class="legality__meta">
+        Legal in {{ report.ruleset }} but on no tier and not banned. Many lists leave these out on
+        purpose; nobody can draft them.
+      </p>
+      @if (report.leftOff.length) {
+        <button
+          pdz-button
+          size="sm"
+          variant="ghost"
+          color="neutral"
+          [icon]="showLeftOff() ? 'expand_less' : 'expand_more'"
+          (click)="showLeftOff.set(!showLeftOff())"
+        >
+          {{ showLeftOff() ? 'Hide' : 'Show' }} Them
+        </button>
+        @if (showLeftOff()) {
+          <p class="legality__names">{{ leftOffNames() }}</p>
+        }
+      }
+    </section>
+  </div>
+} @else {
+  <pdz-skeleton-layout layout="list" [count]="4" />
+}

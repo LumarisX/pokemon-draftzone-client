@@ -1,0 +1,112 @@
+@use "pdz-theming" as pdz;
+
+:host {
+  display: block;
+}
+
+.log {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.layout(stack);
+}
+
+.log__visibility {
+  @include pdz.text(meta);
+  margin: 0;
+  color: pdz.color(on-surface-muted);
+}
+
+.log__list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border: 1px solid pdz.color(border-subtle);
+  border-radius: pdz.shape(corner-lg);
+  background: pdz.color(raised);
+}
+
+.log__entry {
+  padding: pdz.layout(card-pad);
+  @include pdz.row-divider;
+}
+
+.log__row {
+  display: flex;
+  align-items: flex-start;
+  gap: pdz.space(md);
+}
+
+.log__when {
+  display: flex;
+  flex-direction: column;
+  min-width: 4.5rem;
+}
+
+.log__date {
+  @include pdz.text(body-sm-strong);
+}
+
+.log__time {
+  @include pdz.text(meta);
+  @include pdz.numeric;
+  color: pdz.color(on-surface-muted);
+}
+
+.log__body {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.log__summary {
+  @include pdz.text(body-sm-strong);
+  margin: 0;
+}
+
+.log__meta {
+  @include pdz.text(meta);
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: pdz.space(xs);
+  margin: pdz.space(2xs) 0 0;
+  color: pdz.color(on-surface-muted);
+
+  a {
+    color: pdz.color(on-surface);
+  }
+}
+
+.log__reason {
+  @include pdz.text(body-sm);
+  margin: pdz.space(xs) 0 0;
+}
+
+.log__details {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.layout(stack);
+  margin-top: pdz.layout(stack);
+}
+
+.log__group {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(xs);
+}
+
+.log__label {
+  @include pdz.text(label-caps);
+  margin: 0;
+  color: pdz.color(on-surface-muted);
+}
+
+.log__lines {
+  @include pdz.text(body-sm);
+  margin: 0;
+  padding-left: pdz.space(lg);
+}
+
+.log__more {
+  display: flex;
+  justify-content: center;
+}

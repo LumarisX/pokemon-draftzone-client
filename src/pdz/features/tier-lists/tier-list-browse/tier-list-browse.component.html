@@ -1,205 +1,221 @@
 <pdz-page type="index">
-  <div class="browse">
-    <pdz-page-header
-      title="Tier Lists"
-      subtitle="Build your own, or start from one the community has already priced."
-    >
-      @if (isAuthenticated()) {
+  <pdz-page-header
+    title="Find Tier Lists"
+    subtitle="Start from a list the community already priced, or share your own."
+  >
+    @if (isAuthenticated()) {
+      <div pdz-page-header-actions class="browse__header-actions">
         <a
-          pdz-page-header-actions
           pdz-button
-          icon="add"
-          [routerLink]="['/', tierListPath, 'new']"
+          variant="outlined"
+          color="neutral"
+          icon="folder"
+          [routerLink]="['/', tierListPath, 'mine']"
         >
+          My Tier Lists
+        </a>
+        <a pdz-button icon="add" [routerLink]="['/', tierListPath, 'new']">
           New Tier List
         </a>
-      }
-    </pdz-page-header>
-
-    <div class="browse__controls">
-      <pdz-segmented
-        size="sm"
-        aria-label="Which tier lists to show"
-        [ngModel]="scope()"
-        (ngModelChange)="setScope($event)"
-        [ngModelOptions]="{ standalone: true }"
-      >
-        <pdz-segmented-option value="public" label="Browse" />
-        @if (isAuthenticated()) {
-          <pdz-segmented-option value="mine" label="Mine" />
-        }
-      </pdz-segmented>
-
-      <label pdz-field class="browse__search" label="Search">
-        <input
-          pdz-input
-          size="sm"
-          type="search"
-          placeholder="Search by name…"
-          [ngModel]="query()"
-          (ngModelChange)="query.set($event)"
-          [ngModelOptions]="{ standalone: true }"
-        />
-      </label>
-
-      <div pdz-field class="browse__filter" label="Format">
-        <pdz-select
-          size="sm"
-          aria-label="Filter by format"
-          placeholder="Any format"
-          searchable
-          [ngModel]="format()"
-          (ngModelChange)="format.set($event)"
-          [ngModelOptions]="{ standalone: true }"
-        >
-          <pdz-option value="" label="Any Format" />
-          @for (option of formats(); track option) {
-            <pdz-option [value]="option" [label]="option" />
-          }
-        </pdz-select>
       </div>
+    }
+  </pdz-page-header>
 
-      <div pdz-field class="browse__filter" label="Ruleset">
-        <pdz-select
-          size="sm"
-          aria-label="Filter by ruleset"
-          placeholder="Any ruleset"
-          searchable
-          [ngModel]="ruleset()"
-          (ngModelChange)="ruleset.set($event)"
-          [ngModelOptions]="{ standalone: true }"
-        >
-          <pdz-option value="" label="Any Ruleset" />
-          @for (option of rulesets(); track option) {
-            <pdz-option [value]="option" [label]="option" />
-          }
-        </pdz-select>
-      </div>
-
-      @if (hasFilters()) {
-        <button
-          pdz-button
-          size="sm"
-          variant="ghost"
-          color="neutral"
-          (click)="clearFilters()"
-        >
-          Clear
-        </button>
-      }
-    </div>
-
-    @if (result(); as page) {
-      @if (page.tierLists.length) {
-        <p class="browse__count">
-          {{ page.total }} tier {{ page.total === 1 ? "list" : "lists" }}
-        </p>
+  <div class="browse">
+    @if (!hasFilters() && featured().length) {
+      <section class="browse__section" aria-labelledby="featured-heading">
+        <h2 id="featured-heading" class="browse__heading">Featured</h2>
         <div class="browse__grid">
-          @for (list of page.tierLists; track list.id) {
-            <pdz-card padding="lg" class="list-card">
-              <div class="list-card__inner">
-                <div class="list-card__top">
-                  <a
-                    class="list-card__name"
-                    [routerLink]="['/', tierListPath, list.slug]"
-                  >
-                    {{ list.name }}
-                  </a>
-                  @if (list.isOwner) {
-                    <pdz-chip size="xs" tone="primary" variant="soft"
-                      >Yours</pdz-chip
-                    >
-                  } @else if (list.canEdit) {
-                    <pdz-chip size="xs" tone="info" variant="soft"
-                      >Shared</pdz-chip
-                    >
-                  }
-                </div>
-
-                <p class="list-card__meta">
-                  {{ list.ruleset }}
-                  <span aria-hidden="true">·</span>
-                  {{ list.format }}
-                  @if (!list.isPublic) {
-                    <span aria-hidden="true">·</span>
-                    <span class="list-card__private">
-                      <pdz-icon name="lock" [size]="14" aria-hidden="true" />
-                      Private
-                    </span>
-                  }
-                </p>
-
-                @if (list.description) {
-                  <p class="list-card__desc">{{ list.description }}</p>
-                }
-
-                <p class="list-card__stats">
-                  <strong>{{ list.pokemonCount }}</strong> Pokémon
-                  <span aria-hidden="true">·</span>
-                  <strong>{{ list.tierCount }}</strong> tiers
-                </p>
-
-                <div class="list-card__actions">
-                  @if (isAuthenticated()) {
-                    <button
-                      pdz-button
-                      size="sm"
-                      variant="tonal"
-                      [loading]="forking() === list.slug"
-                      [disabled]="!!forking()"
-                      (click)="forkList(list)"
-                    >
-                      Use as Template
-                    </button>
-                  }
-                  <span class="list-card__owner-actions">
-                    @if (list.canEdit) {
-                      <a
-                        pdz-button
-                        size="sm"
-                        variant="ghost"
-                        color="neutral"
-                        [routerLink]="['/', tierListPath, list.slug, 'edit']"
-                      >
-                        Edit
-                      </a>
-                    }
-                    @if (list.isOwner) {
-                      <button
-                        pdz-button
-                        size="sm"
-                        variant="ghost"
-                        color="danger"
-                        iconOnly
-                        icon="delete"
-                        [attr.aria-label]="'Delete ' + list.name"
-                        [loading]="deleting() === list.slug"
-                        [disabled]="!!deleting()"
-                        (click)="deleteList(list)"
-                      ></button>
-                    }
-                  </span>
-                </div>
-              </div>
-            </pdz-card>
+          @for (list of featured(); track list.id) {
+            <pdz-tier-list-card [list]="list">
+              <ng-container
+                [ngTemplateOutlet]="cardActions"
+                [ngTemplateOutletContext]="{ $implicit: list }"
+              />
+            </pdz-tier-list-card>
           }
         </div>
+      </section>
+    }
+
+    <section class="browse__section" aria-labelledby="all-heading">
+      <h2 id="all-heading" class="browse__heading">
+        {{ hasFilters() ? 'Results' : 'All Public Lists' }}
+      </h2>
+
+      <div class="browse__controls">
+        <label pdz-field class="browse__search" label="Search">
+          <input
+            pdz-input
+            size="sm"
+            type="search"
+            placeholder="Name, description or tag"
+            [ngModel]="query()"
+            (ngModelChange)="setFilter(() => query.set($event))"
+          />
+        </label>
+
+        <div pdz-field class="browse__filter" label="Format">
+          <pdz-select
+            size="sm"
+            aria-label="Filter by format"
+            placeholder="Any format"
+            searchable
+            [ngModel]="format()"
+            (ngModelChange)="setFilter(() => format.set($event))"
+          >
+            <pdz-option value="" label="Any Format" />
+            @for (option of formats(); track option) {
+              <pdz-option [value]="option" [label]="option" />
+            }
+          </pdz-select>
+        </div>
+
+        <div pdz-field class="browse__filter" label="Ruleset">
+          <pdz-select
+            size="sm"
+            aria-label="Filter by ruleset"
+            placeholder="Any ruleset"
+            searchable
+            [ngModel]="ruleset()"
+            (ngModelChange)="setFilter(() => ruleset.set($event))"
+          >
+            <pdz-option value="" label="Any Ruleset" />
+            @for (option of rulesets(); track option) {
+              <pdz-option [value]="option" [label]="option" />
+            }
+          </pdz-select>
+        </div>
+
+        <div pdz-field class="browse__filter" label="Contains Pokémon">
+          @if (pokemon(); as chosen) {
+            <pdz-chip
+              removable
+              [removeLabel]="'Stop filtering by ' + chosen.name"
+              (removed)="setFilter(() => pokemon.set(null))"
+            >
+              {{ chosen.name }}
+            </pdz-chip>
+          } @else {
+            <pdz-pokemon-search
+              density="compact"
+              placeholder="Any Pokémon"
+              (pokemonSelected)="setPokemon($event)"
+            />
+          }
+        </div>
+
+        <label pdz-field class="browse__filter" label="Tag">
+          <input
+            pdz-input
+            size="sm"
+            placeholder="singles, vgc…"
+            [ngModel]="tag()"
+            (ngModelChange)="setFilter(() => tag.set($event))"
+          />
+        </label>
+
+        <div pdz-field class="browse__filter" label="Sort">
+          <pdz-select
+            size="sm"
+            aria-label="Sort tier lists by"
+            [ngModel]="sort()"
+            (ngModelChange)="setFilter(() => sort.set($event))"
+          >
+            @for (option of sortOptions; track option.value) {
+              <pdz-option [value]="option.value" [label]="option.label" />
+            }
+          </pdz-select>
+        </div>
+
+        @if (hasFilters()) {
+          <button
+            pdz-button
+            size="sm"
+            variant="ghost"
+            color="neutral"
+            (click)="clearFilters()"
+          >
+            Clear Filters
+          </button>
+        }
+      </div>
+
+      @let page = results();
+      @if (page.failed && !page.lists.length) {
+        <pdz-empty-state
+          kind="error"
+          heading="Tier lists didn't load"
+          message="The list of public tier lists didn't come back."
+          retry="event"
+          (retried)="reload()"
+        />
+      } @else if (page.loading && !page.lists.length) {
+        <pdz-skeleton-layout layout="cards" />
+      } @else if (page.lists.length) {
+        <p class="browse__count">
+          {{ page.total }} {{ page.total === 1 ? 'list' : 'lists' }}
+        </p>
+        <div class="browse__grid">
+          @for (list of page.lists; track list.id) {
+            <pdz-tier-list-card [list]="list">
+              <ng-container
+                [ngTemplateOutlet]="cardActions"
+                [ngTemplateOutletContext]="{ $implicit: list }"
+              />
+            </pdz-tier-list-card>
+          }
+        </div>
+        @if (canLoadMore() || page.loading) {
+          <div class="browse__more">
+            <button
+              pdz-button
+              variant="outlined"
+              color="neutral"
+              [loading]="page.loading"
+              (click)="loadMore()"
+            >
+              Show More
+            </button>
+          </div>
+        }
       } @else {
         <pdz-empty-state
-          bordered
           kind="empty"
-          [heading]="
-            scope() === 'mine' ? 'No tier lists yet' : 'No tier lists match'
-          "
+          heading="No tier lists match"
           [message]="
-            scope() === 'mine'
-              ? 'Create one, or use a public list as a template.'
-              : 'No public tier lists match that search.'
+            hasFilters()
+              ? 'No public tier list matches those filters.'
+              : 'Nobody has shared a tier list yet.'
           "
         />
       }
-    } @else {
-      <pdz-skeleton-layout layout="cards" />
-    }
+    </section>
   </div>
 </pdz-page>
+
+<ng-template #cardActions let-list>
+  @if (isAuthenticated()) {
+    <button
+      pdz-button
+      size="sm"
+      variant="tonal"
+      icon="call_split"
+      [loading]="forking() === list.slug"
+      [disabled]="!!forking()"
+      (click)="forkList(list)"
+    >
+      Make a Copy
+    </button>
+    <button
+      pdz-button
+      size="sm"
+      variant="ghost"
+      color="neutral"
+      icon="emoji_events"
+      (click)="startTournament(list)"
+    >
+      Start a Tournament
+    </button>
+  }
+</ng-template>

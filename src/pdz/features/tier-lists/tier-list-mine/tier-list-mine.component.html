@@ -1,0 +1,114 @@
+<pdz-page type="index">
+  <pdz-page-header
+    title="My Tier Lists"
+    subtitle="Lists you made, and lists people shared with you."
+    [backLink]="['/', path]"
+    backLabel="Find Tier Lists"
+  >
+    <a pdz-page-header-actions pdz-button icon="add" [routerLink]="['/', path, 'new']">
+      New Tier List
+    </a>
+  </pdz-page-header>
+
+  @if (failed()) {
+    <pdz-empty-state
+      kind="error"
+      heading="Your tier lists didn't load"
+      message="Your tier lists didn't come back."
+      retry="event"
+      (retried)="load()"
+    />
+  } @else {
+    <div class="mine">
+      <section class="mine__section" aria-labelledby="mine-heading">
+        <h2 id="mine-heading" class="mine__heading">Your Lists</h2>
+        @if (mine(); as lists) {
+          @if (lists.length) {
+            <div class="mine__grid">
+              @for (list of lists; track list.id) {
+                <pdz-tier-list-card [list]="list" showVisibility>
+                  <a
+                    pdz-button
+                    size="sm"
+                    variant="tonal"
+                    icon="edit"
+                    [routerLink]="['/', path, list.slug, 'edit']"
+                  >
+                    Edit
+                  </a>
+                  <pdz-menu [aria-label]="'More for ' + list.name">
+                    <button
+                      pdz-button
+                      pdz-menu-trigger
+                      size="sm"
+                      variant="ghost"
+                      color="neutral"
+                      iconOnly
+                      icon="more_vert"
+                      [attr.aria-label]="'More for ' + list.name"
+                      [loading]="busy() === list.slug"
+                    ></button>
+                    <button pdz-menu-item icon="content_copy" (click)="duplicate(list)">
+                      Duplicate
+                    </button>
+                    <button pdz-menu-item icon="emoji_events" (click)="startTournament(list)">
+                      Start a Tournament
+                    </button>
+                    <a pdz-menu-item icon="history" [routerLink]="['/', path, list.slug, 'history']">
+                      History
+                    </a>
+                    <button pdz-menu-item icon="delete" tone="danger" (click)="remove(list)">
+                      Delete
+                    </button>
+                  </pdz-menu>
+                </pdz-tier-list-card>
+              }
+            </div>
+          } @else {
+            <pdz-empty-state
+              kind="empty"
+              heading="No tier lists yet"
+              message="Start one from scratch, copy a public list, or import a sheet."
+            />
+          }
+        } @else {
+          <pdz-skeleton-layout layout="cards" [count]="3" />
+        }
+      </section>
+
+      @if (shared()?.length) {
+        <section class="mine__section" aria-labelledby="shared-heading">
+          <h2 id="shared-heading" class="mine__heading">Shared With You</h2>
+          <div class="mine__grid">
+            @for (list of shared(); track list.id) {
+              <pdz-tier-list-card [list]="list" showVisibility>
+                @if (list.access === 'edit') {
+                  <a
+                    pdz-button
+                    size="sm"
+                    variant="tonal"
+                    icon="edit"
+                    [routerLink]="['/', path, list.slug, 'edit']"
+                  >
+                    Edit
+                  </a>
+                }
+                <button
+                  pdz-button
+                  size="sm"
+                  variant="ghost"
+                  color="neutral"
+                  icon="content_copy"
+                  [loading]="busy() === list.slug"
+                  (click)="duplicate(list)"
+                >
+                  Duplicate
+                </button>
+              </pdz-tier-list-card>
+            }
+          </div>
+        </section>
+      }
+    </div>
+  }
+</pdz-page>

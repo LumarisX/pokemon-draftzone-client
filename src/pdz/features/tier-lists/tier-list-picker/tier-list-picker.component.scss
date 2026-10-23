@@ -1,0 +1,79 @@
+@use "pdz-theming" as pdz;
+
+:host {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.layout(stack);
+}
+
+.picker__intro {
+  @include pdz.text(body-sm);
+  margin: 0;
+  color: pdz.color(on-surface-muted);
+}
+
+.picker__controls {
+  display: flex;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  gap: pdz.space(md);
+}
+
+.picker__search {
+  flex: 1 1 12rem;
+}
+
+.picker__list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  max-height: 24rem;
+  overflow-y: auto;
+}
+
+.picker__list li {
+  @include pdz.row-divider;
+}
+
+.picker__row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-areas:
+    "name go"
+    "meta go";
+  align-items: center;
+  column-gap: pdz.space(sm);
+  width: 100%;
+  padding: pdz.space(sm);
+  border: 0;
+  border-radius: pdz.shape(corner-sm);
+  background: transparent;
+  color: pdz.color(on-surface);
+  text-align: start;
+  cursor: pointer;
+  transition: background-color pdz.duration(fast) pdz.easing(standard);
+
+  &:hover {
+    background: pdz.color(state-hover);
+  }
+
+  &:focus-visible {
+    @include pdz.focus-ring;
+  }
+}
+
+.picker__name {
+  @include pdz.text(body-sm-strong);
+  grid-area: name;
+}
+
+.picker__meta {
+  @include pdz.text(meta);
+  grid-area: meta;
+  color: pdz.color(on-surface-muted);
+}
+
+.picker__go {
+  grid-area: go;
+  color: pdz.color(on-surface-muted);
+}

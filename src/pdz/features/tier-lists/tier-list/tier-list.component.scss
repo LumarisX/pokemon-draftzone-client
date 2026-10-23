@@ -11,6 +11,36 @@
   gap: pdz.space(md);
 }
 
+.header-detail {
+  @include pdz.text(meta);
+  margin: 0;
+  color: pdz.color(on-surface-muted);
+}
+
+.header-meta,
+.header-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: pdz.space(sm);
+}
+
+.header-lineage {
+  @include pdz.text(meta);
+  display: inline-flex;
+  align-items: center;
+  gap: pdz.space(2xs);
+  color: pdz.color(on-surface-muted);
+}
+
+a.header-lineage:hover {
+  color: pdz.color(on-surface);
+}
+
+a.header-lineage:focus-visible {
+  @include pdz.focus-ring;
+}
+
 
 .toolbar {
   &__search input {

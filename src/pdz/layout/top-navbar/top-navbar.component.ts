@@ -13,6 +13,7 @@ import {
   DRAFT_OVERVIEW_PATH,
   LEAGUE_ADS_PATH,
   PLANNER_PATH,
+  TIER_LIST_PATH,
   TOOLS_PATH,
 } from '@pdz/core/route-paths';
 import { NavContextService } from '@pdz/core/services/nav-context.service';
@@ -92,6 +93,11 @@ export class TopNavbarComponent {
       icon: 'calendar_clock',
     },
     { title: 'Pokémon Search', route: tool('pokemon-search'), icon: 'search' },
+    {
+      title: 'Tier Lists',
+      route: `/${TIER_LIST_PATH}`,
+      icon: 'format_list_numbered',
+    },
     { title: 'Wheel Randomizer', route: tool('wheel'), icon: 'casino' },
   ];
 

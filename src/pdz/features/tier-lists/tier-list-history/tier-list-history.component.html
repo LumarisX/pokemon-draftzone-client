@@ -1,0 +1,105 @@
+<pdz-page type="index">
+  <pdz-page-header
+    title="History"
+    [subtitle]="name() ? name() + ' · version ' + current() : undefined"
+    [backLink]="backLink()"
+    backLabel="Back to the List"
+  />
+
+  @if (failed()) {
+    <pdz-empty-state
+      kind="error"
+      heading="History didn't load"
+      message="This list's history didn't come back."
+      retry="event"
+      (retried)="load()"
+    />
+  } @else if (revisions(); as list) {
+    @if (list.length) {
+      <ol class="history">
+        @for (revision of list; track revision.version) {
+          <li class="history__entry">
+            <div class="history__row">
+              <span class="history__version">v{{ revision.version }}</span>
+              <div class="history__body">
+                <p class="history__summary">{{ revision.summary }}</p>
+                <p class="history__meta">
+                  <pdz-chip size="xs">{{ kindLabel[revision.kind] }}</pdz-chip>
+                  {{ revision.actorName ?? 'Someone' }} ·
+                  {{ revision.at | date: 'medium' }}
+                </p>
+              </div>
+              <div class="history__actions">
+                @if (revision.changeCount) {
+                  <button
+                    pdz-button
+                    size="sm"
+                    variant="ghost"
+                    color="neutral"
+                    [icon]="expanded() === revision.version ? 'expand_less' : 'expand_more'"
+                    [attr.aria-expanded]="expanded() === revision.version"
+                    (click)="toggle(revision)"
+                  >
+                    Changes
+                  </button>
+                }
+                @if (revision.version !== current()) {
+                  @let compare = compareLink(revision.version);
+                  <a
+                    pdz-button
+                    size="sm"
+                    variant="ghost"
+                    color="neutral"
+                    icon="compare_arrows"
+                    [routerLink]="compare.link"
+                    [queryParams]="compare.query"
+                  >
+                    Compare With Now
+                  </a>
+                  @if (canRestore()) {
+                    <button
+                      pdz-button
+                      size="sm"
+                      variant="outlined"
+                      color="neutral"
+                      icon="restore"
+                      [loading]="restoring() === revision.version"
+                      [disabled]="restoring() !== null"
+                      (click)="restore(revision)"
+                    >
+                      Restore
+                    </button>
+                  }
+                }
+              </div>
+            </div>
+            @if (expanded() === revision.version) {
+              <div class="history__changes">
+                @if (changes().get(revision.version); as detail) {
+                  <pdz-tier-list-changes [changes]="detail" />
+                } @else {
+                  <pdz-skeleton-layout layout="list" [count]="3" />
+                }
+              </div>
+            }
+          </li>
+        }
+      </ol>
+      @if (next() !== null) {
+        <div class="history__more">
+          <button pdz-button variant="outlined" color="neutral" [loading]="loadingMore()" (click)="loadMore()">
+            Show Older
+          </button>
+        </div>
+      }
+    } @else {
+      <pdz-empty-state
+        kind="empty"
+        heading="No history yet"
+        message="Saved changes show up here, newest first."
+      />
+    }
+  } @else {
+    <pdz-skeleton-layout layout="list" [count]="6" />
+  }
+</pdz-page>

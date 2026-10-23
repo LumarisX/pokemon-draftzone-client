@@ -1,0 +1,45 @@
+@use "pdz-theming" as pdz;
+
+:host {
+  display: block;
+}
+
+.swap {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.layout(stack);
+}
+
+.swap__intro,
+.swap__text {
+  @include pdz.text(body-sm);
+  margin: 0;
+}
+
+.swap__text--warning,
+.swap__warning {
+  color: pdz.color(warning);
+}
+
+.swap__warning {
+  @include pdz.text(body-sm-strong);
+  margin: 0;
+}
+
+.swap__group {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(xs);
+}
+
+.swap__label {
+  @include pdz.text(label-caps);
+  margin: 0;
+  color: pdz.color(on-surface-muted);
+}
+
+.swap__lines {
+  @include pdz.text(body-sm);
+  margin: 0;
+  padding-left: pdz.space(lg);
+}

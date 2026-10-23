@@ -1,0 +1,17 @@
+@use "pdz-theming" as pdz;
+
+.blank {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.layout(stack);
+}
+
+.blank__row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: pdz.space(md);
+
+  > * {
+    flex: 1 1 12rem;
+  }
+}

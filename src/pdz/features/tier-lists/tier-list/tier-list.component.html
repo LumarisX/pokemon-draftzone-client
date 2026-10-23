@@ -1,21 +1,118 @@
 @if (showHeader()) {
   <pdz-page type="workspace">
-    <pdz-page-header [title]="header() ?? tierListName()">
-      @if (isOrganizer()) {
-        <div pdz-page-header-actions>
-          <a
-            pdz-button
-            variant="outlined"
-            color="neutral"
-            icon="edit"
-            routerLink="edit"
-          >
-            Edit Tier List
-          </a>
+    <pdz-page-header
+      [title]="header() ?? tierListName()"
+      [backLink]="inTournament ? undefined : ['/', tierListPath]"
+      backLabel="Find Tier Lists"
+    >
+      @if (headerDetail()) {
+        <p pdz-page-header-detail class="header-detail">{{ headerDetail() }}</p>
+      }
+      @if (meta(); as info) {
+        <div pdz-page-header-meta class="header-meta">
+          @if (info.featured) {
+            <pdz-chip size="sm" tone="secondary" icon="star">Featured</pdz-chip>
+          }
+          @if (!info.tournament && info.access !== 'view') {
+            <pdz-chip size="sm" [icon]="info.visibility === 'private' ? 'lock' : info.visibility === 'unlisted' ? 'link' : 'public'">
+              {{ info.visibility === 'private' ? 'Private' : info.visibility === 'unlisted' ? 'Unlisted' : 'Public' }}
+            </pdz-chip>
+          }
+          @if (info.copiedFrom; as source) {
+            @if (source.slug) {
+              <a class="header-lineage" [routerLink]="['/', tierListPath, source.slug]">
+                <pdz-icon name="call_split" [size]="14" aria-hidden="true" />
+                Forked from {{ source.name }}
+              </a>
+            } @else if (!info.tournament) {
+              <span class="header-lineage">
+                <pdz-icon name="call_split" [size]="14" aria-hidden="true" />
+                Forked from a private list
+              </span>
+            }
+          }
         </div>
       }
+      <div pdz-page-header-actions class="header-actions">
+        @if (canEdit() && (!inTournament || isOrganizer())) {
+          <a pdz-button variant="outlined" color="neutral" icon="edit" [routerLink]="links().edit">
+            Edit Tier List
+          </a>
+        }
+        @if (canShare()) {
+          <button pdz-button variant="outlined" color="neutral" icon="share" (click)="share()">
+            Share
+          </button>
+        }
+        @if (!inTournament && isAuthenticated() && meta()) {
+          <button pdz-button variant="tonal" icon="call_split" [loading]="forking()" (click)="fork()">
+            Make a Copy
+          </button>
+        }
+        <pdz-menu aria-label="More for this tier list">
+          <button
+            pdz-button
+            pdz-menu-trigger
+            variant="ghost"
+            color="neutral"
+            iconOnly
+            icon="more_vert"
+            aria-label="More for this tier list"
+            [loading]="exporting()"
+            [disabled]="!tiers()"
+          ></button>
+          <button pdz-menu-item icon="table_view" (click)="exportCsv()">Export CSV</button>
+          <button pdz-menu-item icon="data_object" [disabled]="!meta()" (click)="exportJson()">Export JSON</button>
+          <button pdz-menu-item icon="image" (click)="exportImage()">Export Image</button>
+          @if (meta()) {
+            <a pdz-menu-item icon="history" [routerLink]="links().history">History</a>
+            @if (meta()!.copiedFrom?.slug) {
+              <a pdz-menu-item icon="compare_arrows" [routerLink]="links().compare">
+                Compare With Source
+              </a>
+            }
+          }
+          @if (!inTournament && isAuthenticated() && meta()) {
+            <button pdz-menu-item icon="emoji_events" (click)="startTournament()">
+              Start a Tournament
+            </button>
+          }
+          @if (isAdmin() && meta() && !meta()!.tournament && meta()!.visibility === 'public') {
+            <button pdz-menu-item icon="star" (click)="toggleFeatured()">
+              {{ meta()!.featured ? 'Stop Featuring' : 'Feature This List' }}
+            </button>
+          }
+        </pdz-menu>
+      </div>
     </pdz-page-header>
-    <ng-container [ngTemplateOutlet]="body" />
+    @switch (loadError()) {
+      @case ('missing') {
+        <pdz-empty-state
+          kind="no-access"
+          heading="This tier list isn't available"
+          message="It may be private, or it was deleted. Ask its owner to share it with you."
+        />
+      }
+      @case ('error') {
+        <pdz-empty-state
+          kind="error"
+          heading="The tier list didn't load"
+          message="The Pokémon and their costs didn't come back."
+          retry="event"
+          (retried)="loadTierList()"
+        />
+      }
+      @case ('none') {
+        <pdz-empty-state
+          kind="waiting"
+          heading="No tier list yet"
+          message="The organizers haven't attached a tier list to this tournament."
+        />
+      }
+      @default {
+        <ng-container [ngTemplateOutlet]="body" />
+      }
+    }
   </pdz-page>
 } @else {
   <ng-container [ngTemplateOutlet]="body" />

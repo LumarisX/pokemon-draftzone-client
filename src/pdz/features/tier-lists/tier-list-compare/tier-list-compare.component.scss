@@ -1,0 +1,11 @@
+@use "pdz-theming" as pdz;
+
+:host {
+  display: block;
+}
+
+.compare__intro {
+  @include pdz.text(meta);
+  margin: 0 0 pdz.layout(stack);
+  color: pdz.color(on-surface-muted);
+}

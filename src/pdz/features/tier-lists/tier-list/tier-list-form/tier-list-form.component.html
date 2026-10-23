@@ -1,5 +1,10 @@
 <pdz-page type="workspace">
-  <pdz-page-header [title]="tierListName()" eyebrow="Editing">
+  <pdz-page-header
+    [title]="tierListName()"
+    eyebrow="Editing"
+    [backLink]="viewLink()"
+    backLabel="Back to the List"
+  >
     @if (hasUnsavedChanges()) {
       <div pdz-page-header-meta class="unsaved-indicator">
         <pdz-icon size="xs" name="edit"></pdz-icon>
@@ -7,18 +12,38 @@
       </div>
     }
 
-    <button
-      pdz-page-header-actions
-      pdz-button
-      iconOnly
-      pill
-      variant="outlined"
-      icon="settings"
-      color="neutral"
-      size="sm"
-      aria-label="Settings"
-      (click)="openSettings()"
-    ></button>
+    <div pdz-page-header-actions class="header-actions">
+      @if (canShare()) {
+        <button pdz-button size="sm" variant="outlined" color="neutral" icon="share" (click)="share()">
+          Share
+        </button>
+      }
+      <button
+        pdz-button
+        size="sm"
+        variant="outlined"
+        color="neutral"
+        icon="rule"
+        [disabled]="!meta()"
+        (click)="openLegality()"
+      >
+        Legality
+      </button>
+      <a pdz-button size="sm" variant="ghost" color="neutral" icon="history" [routerLink]="historyLink()">
+        History
+      </a>
+      <button
+        pdz-button
+        iconOnly
+        pill
+        variant="outlined"
+        icon="settings"
+        color="neutral"
+        size="sm"
+        aria-label="Settings"
+        (click)="openSettings()"
+      ></button>
+    </div>
   </pdz-page-header>
 
   <div class="toolbar">
@@ -74,6 +99,19 @@
         </pdz-select>
       </div>
 
+      @if (isTournamentCopy() && hasUnsavedChanges()) {
+        <input
+          pdz-input
+          size="sm"
+          class="toolbar__note"
+          maxlength="300"
+          aria-label="Note for the tournament log"
+          placeholder="Note for the log (optional)"
+          [ngModel]="logNote()"
+          (ngModelChange)="logNote.set($event)"
+        />
+      }
+
       <button
         pdz-button
         [disabled]="!hasUnsavedChanges()"
@@ -99,29 +137,36 @@
         <button pdz-menu-item icon="table_view" (click)="exportCsv()">
           CSV
         </button>
-      </pdz-menu>
-
-      <pdz-menu aria-label="Import">
-        <button
-          pdz-button
-          pdz-menu-trigger
-          variant="outlined"
-          iconOnly
-          pill
-          size="sm"
-          color="neutral"
-          icon="upload"
-          aria-label="Import"
-        ></button>
-        <button pdz-menu-item icon="table_view" (click)="importCsv()">
-          CSV
+        <button pdz-menu-item icon="image" (click)="exportImage()">
+          Image
         </button>
       </pdz-menu>
+
+      <button
+        pdz-button
+        variant="outlined"
+        iconOnly
+        pill
+        size="sm"
+        color="neutral"
+        icon="upload"
+        aria-label="Import a sheet"
+        pdzTooltip="Import a sheet"
+        (click)="openImport()"
+      ></button>
     </div>
   </div>
 
   <div class="tier-main">
-    @if (isLoading()) {
+    @if (loadFailed()) {
+      <pdz-empty-state
+        kind="error"
+        heading="The tier list didn't load"
+        message="The list didn't come back, or you can't edit it."
+        retry="event"
+        (retried)="loadTierList()"
+      />
+    } @else if (isLoading()) {
       <pdz-skeleton-layout layout="board" count="6" />
     } @else if (tiers()) {
       <div

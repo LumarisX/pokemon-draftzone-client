@@ -11,7 +11,20 @@ import {
   switchMap,
   throwError,
 } from 'rxjs';
-import { LeagueTier } from './tier-list.model';
+import {
+  ImportPreview,
+  LayoutId,
+  LeagueTier,
+  TierListAccess,
+  TierListChange,
+  TierListLegality,
+  TierListMembers,
+  TierListMeta,
+  TierListRevision,
+  TierListRole,
+  TierListSettings,
+  TierListVisibility,
+} from './tier-list.model';
 import { ApiService } from '@pdz/core/services/api.service';
 import { LeagueZoneService } from '../league-zone/league-zone.service';
 
@@ -22,15 +35,20 @@ export type TierListSummary = {
   slug: string;
   name: string;
   description?: string;
+  authorName?: string;
   format: string;
   ruleset: string;
+  tags: string[];
   tierCount: number;
   pokemonCount: number;
-  isPublic: boolean;
+  visibility: TierListVisibility;
+  featured: boolean;
   forkCount: number;
-  copiedFrom?: string;
-  isOwner: boolean;
-  canEdit: boolean;
+  useCount: number;
+  copiedFrom?: { slug: string; name: string } | null;
+  access: TierListAccess;
+  role: 'owner' | TierListRole | null;
+  topPokemon: { id: string; name: string }[];
   updatedAt?: string;
 };
 
@@ -41,11 +59,17 @@ export type TierListBrowseResult = {
   skip: number;
 };
 
+export type TierListScope = 'mine' | 'shared' | 'public' | 'featured';
+export type TierListSort = 'updated' | 'forks' | 'uses' | 'name';
+
 export type TierListBrowseQuery = {
-  scope?: 'mine' | 'public';
+  scope?: TierListScope;
   q?: string;
   format?: string;
   ruleset?: string;
+  tag?: string;
+  pokemon?: string;
+  sort?: TierListSort;
   limit?: number;
   skip?: number;
 };
@@ -62,6 +86,56 @@ export type DraftedPools = {
   selected?: string;
   sharedPools?: string[];
   coachedTeamIds?: string[];
+};
+
+export type ClientTier = {
+  id?: string;
+  name: string;
+  cost: number;
+  pokemon: Array<{
+    id: string;
+    name: string;
+    banned?: boolean;
+    notes?: string;
+    bannedAbilities?: string[];
+    formes?: string[];
+  }>;
+};
+
+export type TierListView = {
+  tierList: LeagueTier[];
+  format?: string;
+  ruleset?: string;
+  name?: string;
+  description?: string;
+  draftCount?: { min: number; max: number };
+  meta?: TierListMeta;
+};
+
+export type SaveResult = {
+  message: string;
+  version: number;
+  summary?: string;
+  orphanedRequirements?: { tournament: string; requirements: number }[];
+};
+
+export type TierListExport = {
+  kind: 'pokemon-draftzone/tier-list';
+  version: number;
+  name: string;
+  description?: string;
+  format: string;
+  ruleset: string;
+  tiers: {
+    name: string;
+    cost: number;
+    pokemon: { id: string; name: string; notes?: string }[];
+  }[];
+  banned: {
+    pokemon: { id: string; name: string }[];
+    moves: string[];
+    abilities: string[];
+  };
 };
 
 @Injectable({
@@ -109,8 +183,12 @@ export class TierListService {
   create(payload: {
     name: string;
     description?: string;
+    authorName?: string;
     format: string;
     ruleset: string;
+    tags?: string[];
+    tiers?: ClientTier[];
+    bannedMoves?: string[];
   }) {
     return this.apiService.post<{ id: string; slug: string; name: string }>(
       ROOTPATH,
@@ -133,7 +211,7 @@ export class TierListService {
     );
   }
 
-  private resolveTierListId(): Observable<string> {
+  resolveTierListId(): Observable<string> {
     const routed = this.tierListId();
     if (routed) return of(routed);
 
@@ -155,16 +233,19 @@ export class TierListService {
   getTierList() {
     return this.resolveTierListId().pipe(
       switchMap((tierListId) =>
-        this.apiService.get<{
-      tierList: LeagueTier[];
-      format?: string;
-      ruleset?: string;
-      name?: string;
-      description?: string;
-      draftCount?: { min: number; max: number };
-    }>(`${ROOTPATH}/${tierListId}`),
+        this.apiService.get<TierListView>(`${ROOTPATH}/${tierListId}`),
       ),
     );
+  }
+
+  getTierListBySlug(slug: string) {
+    return this.apiService.get<TierListView>(`${ROOTPATH}/${slug}`);
+  }
+
+  getTierListEditBySlug(slug: string) {
+    return this.apiService.get<TierListView>(`${ROOTPATH}/${slug}`, {
+      params: { edit: true },
+    });
   }
 
   getDraftedByPool(): Observable<DraftedPools> {
@@ -219,18 +300,18 @@ export class TierListService {
   getSettings() {
     return this.resolveTierListId().pipe(
       switchMap((tierListId) =>
-        this.apiService.get<{
-          name: string;
-          description?: string;
-        }>(`${ROOTPATH}/${tierListId}/settings`),
+        this.apiService.get<TierListSettings>(
+          `${ROOTPATH}/${tierListId}/settings`,
+        ),
       ),
     );
   }
 
-  updateSettings(settings: { name?: string; description?: string }) {
-    return this.resolveTierListId().pipe(
+  updateSettings(settings: Partial<TierListSettings>, slug?: string) {
+    const id$ = slug ? of(slug) : this.resolveTierListId();
+    return id$.pipe(
       switchMap((tierListId) =>
-        this.apiService.patch<{ message: string }>(
+        this.apiService.patch<{ message: string; settings: TierListSettings }>(
           `${ROOTPATH}/${tierListId}/settings`,
           settings,
         ),
@@ -241,37 +322,165 @@ export class TierListService {
   getTierListEdit() {
     return this.resolveTierListId().pipe(
       switchMap((tierListId) =>
-        this.apiService.get<{
-          tierList: LeagueTier[];
-          name?: string;
-          ruleset?: string;
-        }>(`${ROOTPATH}/${tierListId}`, { params: { edit: true } }),
+        this.apiService.get<TierListView>(`${ROOTPATH}/${tierListId}`, {
+          params: { edit: true },
+        }),
       ),
     );
   }
 
   saveTierListEdit(
-    tiers: Array<{
-      id?: string;
-      name: string;
-      cost: number;
-      pokemon: Array<{
-        id: string;
-        name: string;
-        banned?: boolean;
-        notes?: string;
-        bannedAbilities?: string[];
-        formes?: string[];
-      }>;
-    }>,
+    tiers: ClientTier[],
+    options: { version?: number; kind?: 'edit' | 'import'; reason?: string } = {},
+    slug?: string,
   ) {
-    return this.resolveTierListId().pipe(
+    const id$ = slug ? of(slug) : this.resolveTierListId();
+    return id$.pipe(
       switchMap((tierListId) =>
-        this.apiService.patch<{ message: string }>(
-          `${ROOTPATH}/${tierListId}`,
-          { tiers },
-        ),
+        this.apiService.patch<SaveResult>(`${ROOTPATH}/${tierListId}`, {
+          tiers,
+          ...options,
+        }),
       ),
+    );
+  }
+
+  revisions(slug: string, before?: number) {
+    return this.apiService.get<{
+      current: number;
+      revisions: TierListRevision[];
+      next: number | null;
+    }>(`${ROOTPATH}/${slug}/revisions`, {
+      params: before !== undefined ? { before } : {},
+    });
+  }
+
+  revision(slug: string, version: number) {
+    return this.apiService.get<TierListRevision & { changes: TierListChange[] }>(
+      `${ROOTPATH}/${slug}/revisions/${version}`,
+    );
+  }
+
+  revert(slug: string, version: number, currentVersion: number) {
+    return this.apiService.post<SaveResult>(
+      `${ROOTPATH}/${slug}/revisions/${version}/revert`,
+      { version: currentVersion },
+    );
+  }
+
+  compare(slug: string, against: { with?: string; rev?: number } = {}) {
+    const params: Record<string, string | number> = {};
+    if (against.with) params['with'] = against.with;
+    if (against.rev !== undefined) params['rev'] = against.rev;
+    return this.apiService.get<{
+      base: { label: string; slug: string; version: number };
+      target: { label: string; slug: string; version: number };
+      changes: TierListChange[];
+    }>(`${ROOTPATH}/${slug}/compare`, { params });
+  }
+
+  legality(slug: string) {
+    return this.apiService.get<TierListLegality>(`${ROOTPATH}/${slug}/legality`);
+  }
+
+  exportJson(slug: string) {
+    return this.apiService.get<TierListExport>(`${ROOTPATH}/${slug}/export`);
+  }
+
+  members(slug: string) {
+    return this.apiService.get<TierListMembers>(`${ROOTPATH}/${slug}/members`);
+  }
+
+  createInvite(slug: string, role: TierListRole, maxUses?: number) {
+    return this.apiService.post<{
+      id: string;
+      token: string;
+      role: TierListRole;
+      expiresAt: string;
+      maxUses: number;
+    }>(`${ROOTPATH}/${slug}/invites`, { role, ...(maxUses && { maxUses }) });
+  }
+
+  revokeInvite(slug: string, inviteId: string) {
+    return this.apiService.delete<{ message: string }>(
+      `${ROOTPATH}/${slug}/invites/${inviteId}`,
+    );
+  }
+
+  previewInvite(token: string) {
+    return this.apiService.get<{
+      tierList: {
+        slug: string;
+        name: string;
+        authorName: string | null;
+        format: string;
+        ruleset: string;
+      };
+      role: TierListRole;
+      expiresAt: string;
+      alreadyMember: boolean;
+    }>(`${ROOTPATH}/invites/${token}`, {
+      errorHandlingOptions: { suppressStatuses: [404] },
+    });
+  }
+
+  acceptInvite(token: string, name: string) {
+    return this.apiService.post<{ slug: string }>(
+      `${ROOTPATH}/invites/${token}/accept`,
+      { name },
+    );
+  }
+
+  setRole(slug: string, memberId: string, role: TierListRole) {
+    return this.apiService.patch<{ message: string }>(
+      `${ROOTPATH}/${slug}/members/${memberId}`,
+      { role },
+    );
+  }
+
+  removeMember(slug: string, memberId: string) {
+    return this.apiService.delete<{ message: string }>(
+      `${ROOTPATH}/${slug}/members/${memberId}`,
+    );
+  }
+
+  transfer(slug: string, memberId: string) {
+    return this.apiService.post<{ message: string }>(
+      `${ROOTPATH}/${slug}/members/${memberId}/transfer`,
+      {},
+    );
+  }
+
+  setFeatured(slug: string, featured: boolean) {
+    return this.apiService.patch<{ featured: boolean }>(
+      `${ROOTPATH}/${slug}/featured`,
+      { featured },
+    );
+  }
+
+  previewImport(payload: {
+    text?: string;
+    url?: string;
+    format: string;
+    ruleset: string;
+    layout?: LayoutId;
+  }) {
+    return this.apiService.post<ImportPreview>(
+      `${ROOTPATH}/import/preview`,
+      payload,
+    );
+  }
+
+  rememberNames(entries: { text: string; pokemonIds: string[] }[]) {
+    return this.apiService.post<{ saved: number }>(
+      `${ROOTPATH}/import/aliases`,
+      { entries },
+    );
+  }
+
+  forgetNames() {
+    return this.apiService.delete<{ cleared: number }>(
+      `${ROOTPATH}/import/aliases`,
     );
   }
 }

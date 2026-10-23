@@ -1,0 +1,169 @@
+<pdz-page type="index">
+  <pdz-page-header
+    title="Log"
+    subtitle="Every change organizers made to how this tournament is played, newest first."
+  >
+    @if (state() === 'ok') {
+      <p pdz-page-header-detail class="log__visibility">
+        {{
+          visibility() === 'public'
+            ? 'Anyone can read this log.'
+            : 'Only coaches and organizers can read this log.'
+        }}
+      </p>
+    }
+  </pdz-page-header>
+
+  @switch (state()) {
+    @case ('hidden') {
+      <pdz-empty-state
+        kind="no-access"
+        heading="This log is for the tournament's players"
+        message="Coaches and organizers can read it. Sign in with the account you coach with."
+      />
+    }
+    @case ('error') {
+      <pdz-empty-state
+        kind="error"
+        heading="The log didn't load"
+        message="The tournament's log didn't come back."
+        retry="event"
+        (retried)="load()"
+      />
+    }
+    @default {
+      <div class="log">
+        <pdz-segmented
+          size="sm"
+          aria-label="Which changes to show"
+          [ngModel]="filter()"
+          (ngModelChange)="setFilter($event)"
+        >
+          <pdz-segmented-option value="all" label="Everything" />
+          <pdz-segmented-option value="tier-list" label="Tier List" />
+          <pdz-segmented-option value="settings" label="Settings" />
+        </pdz-segmented>
+
+        @if (entries(); as list) {
+          @if (list.length) {
+            <ol class="log__list">
+              @for (entry of list; track entry.seq) {
+                <li class="log__entry">
+                  <div class="log__row">
+                    <div class="log__when">
+                      <span class="log__date">{{ entry.at | date: 'MMM d' }}</span>
+                      <span class="log__time">{{ entry.at | date: 'h:mm a' }}</span>
+                    </div>
+                    <div class="log__body">
+                      <p class="log__summary">{{ entry.summary }}</p>
+                      <p class="log__meta">
+                        <pdz-chip size="xs" [tone]="typeTone[entry.type]">
+                          {{ typeLabel[entry.type] }}
+                        </pdz-chip>
+                        by {{ entry.actorName ?? 'an organizer' }}
+                        @if (tierListLink(entry); as link) {
+                          ·
+                          <a [routerLink]="link">{{ entry.target?.name ?? 'the tier list' }}</a>
+                        }
+                      </p>
+                      @if (entry.reason) {
+                        <p class="log__reason">“{{ entry.reason }}”</p>
+                      }
+                    </div>
+                    @if (hasDetails(entry)) {
+                      <button
+                        pdz-button
+                        size="sm"
+                        variant="ghost"
+                        color="neutral"
+                        [icon]="expanded() === entry.seq ? 'expand_less' : 'expand_more'"
+                        [attr.aria-expanded]="expanded() === entry.seq"
+                        (click)="toggle(entry)"
+                      >
+                        Details
+                      </button>
+                    }
+                  </div>
+
+                  @if (expanded() === entry.seq) {
+                    <div class="log__details">
+                      @if (entry.details?.affectedPicks?.length) {
+                        <section class="log__group">
+                          <h3 class="log__label">Drafted Pokémon Whose Cost Changed</h3>
+                          <ul class="log__lines">
+                            @for (pick of entry.details!.affectedPicks; track pick.team + pick.pokemonId) {
+                              <li>
+                                {{ pick.name }} ({{ pick.team }}):
+                                {{ pick.from ?? 'not on the list' }} →
+                                {{ pick.to === null ? 'not on the new list' : pick.to + ' pts' }}
+                              </li>
+                            }
+                          </ul>
+                        </section>
+                      }
+                      @if (entry.details?.requirementsCleared?.length) {
+                        <section class="log__group">
+                          <h3 class="log__label">Tier Requirements Dropped</h3>
+                          <p class="log__meta">
+                            {{ entry.details!.requirementsCleared!.join(', ') }} had no matching tier
+                            on the new list.
+                          </p>
+                        </section>
+                      }
+                      @if (tierChanges(entry).length) {
+                        <pdz-tier-list-changes [changes]="tierChanges(entry)" />
+                      }
+                      @if (settingChanges(entry).length) {
+                        <div class="pdz-table-wrapper" data-surface="clear">
+                          <table class="pdz-table" data-surface="clear">
+                            <thead>
+                              <tr>
+                                <th scope="col">Setting</th>
+                                <th scope="col">Before</th>
+                                <th scope="col">After</th>
+                              </tr>
+                            </thead>
+                            <tbody>
+                              @for (change of settingChanges(entry); track change.field) {
+                                <tr>
+                                  <th scope="row">{{ change.label }}</th>
+                                  <td>{{ describe(change.before) }}</td>
+                                  <td>{{ describe(change.after) }}</td>
+                                </tr>
+                              }
+                            </tbody>
+                          </table>
+                        </div>
+                      }
+                    </div>
+                  }
+                </li>
+              }
+            </ol>
+            @if (next() !== null) {
+              <div class="log__more">
+                <button
+                  pdz-button
+                  variant="outlined"
+                  color="neutral"
+                  [loading]="loadingMore()"
+                  (click)="loadMore()"
+                >
+                  Show Older
+                </button>
+              </div>
+            }
+          } @else {
+            <pdz-empty-state
+              kind="empty"
+              heading="Nothing logged yet"
+              message="Tier list swaps, edits once sign-ups open, and changes to draft and standings rules show up here."
+            />
+          }
+        } @else {
+          <pdz-skeleton-layout layout="list" [count]="6" />
+        }
+      </div>
+    }
+  }
+</pdz-page>

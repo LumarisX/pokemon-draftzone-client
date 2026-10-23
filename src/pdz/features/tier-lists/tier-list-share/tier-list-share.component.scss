@@ -1,0 +1,87 @@
+@use "pdz-theming" as pdz;
+
+:host {
+  display: block;
+}
+
+.share {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.layout(section-gap);
+}
+
+.share__section,
+.share__invite {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.layout(stack);
+}
+
+.share__heading {
+  @include pdz.text(section-title);
+  margin: 0;
+}
+
+.share__subheading {
+  @include pdz.text(label-caps);
+  margin: 0;
+  color: pdz.color(on-surface-muted);
+}
+
+.share__meta {
+  @include pdz.text(meta);
+  margin: 0;
+  color: pdz.color(on-surface-muted);
+}
+
+.share__actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: pdz.space(sm);
+}
+
+.share__people {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.share__person {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: pdz.space(sm);
+  padding: pdz.space(xs) 0;
+  @include pdz.row-divider;
+}
+
+.share__name {
+  @include pdz.text(body-sm-strong);
+  flex: 1 1 10rem;
+}
+
+.share__role {
+  @include pdz.text(meta);
+  color: pdz.color(on-surface-muted);
+}
+
+.share__role-select {
+  flex: 0 0 8rem;
+}
+
+.share__invite-row,
+.share__fresh {
+  display: flex;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  gap: pdz.space(sm);
+}
+
+.share__uses {
+  flex: 0 0 9rem;
+}
+
+.share__fresh input {
+  flex: 1 1 16rem;
+  font-family: pdz.font(mono);
+}

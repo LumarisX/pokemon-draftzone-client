@@ -7,6 +7,7 @@ import {
   LEAGUE_HALL_OF_FAME_PATH,
   LEAGUE_ZONE_MANAGE_PATH,
   ORGANIZER_INVITE_PATH,
+  TOURNAMENT_LOG_PATH,
 } from '@pdz/core/route-paths';
 import { HallOfFameComponent } from './hall-of-fame/hall-of-fame.component';
 import {
@@ -19,6 +20,10 @@ import { MyLeaguesComponent } from '../drafts/my-leagues/my-leagues.component';
 import { TierListFormComponent } from '../tier-lists/tier-list/tier-list-form/tier-list-form.component';
 import { unsavedChangesGuard } from '@pdz/core/guards/unsaved-changes/unsaved-changes.guard';
 import { TierListComponent } from '../tier-lists/tier-list/tier-list.component';
+import { TierListCompareComponent } from '../tier-lists/tier-list-compare/tier-list-compare.component';
+import { TierListHistoryComponent } from '../tier-lists/tier-list-history/tier-list-history.component';
+import { TierListImportComponent } from '../tier-lists/tier-list-import/tier-list-import.component';
+import { TournamentLogComponent } from './tournament-log/tournament-log.component';
 import { PoolDashboardComponent } from './pools/pool-dashboard/pool-dashboard.component';
 import { PowerRankingsComponent } from './pools/power-rankings/power-rankings.component';
 import { SchedulePageComponent } from './schedule/schedule-page.component';
@@ -122,6 +127,22 @@ export const routes: Routes = [
         path: 'tier-list/edit',
         component: TierListFormComponent,
         canDeactivate: [unsavedChangesGuard],
+      },
+      {
+        path: 'tier-list/import',
+        component: TierListImportComponent,
+      },
+      {
+        path: 'tier-list/history',
+        component: TierListHistoryComponent,
+      },
+      {
+        path: 'tier-list/compare',
+        component: TierListCompareComponent,
+      },
+      {
+        path: TOURNAMENT_LOG_PATH,
+        component: TournamentLogComponent,
       },
       {
         path: 'teams',

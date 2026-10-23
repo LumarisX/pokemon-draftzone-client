@@ -592,6 +592,7 @@ export namespace League {
     ownerName: string;
     copyFrom?: string;
     tierListFrom?: string | null;
+    tierListSlug?: string;
   };
 
   export type CoachProfile = {

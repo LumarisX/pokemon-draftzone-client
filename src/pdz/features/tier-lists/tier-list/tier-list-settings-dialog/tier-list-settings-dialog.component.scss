@@ -1,26 +1,33 @@
 @use "pdz-theming" as pdz;
-@use "mixins" as *;
 
 :host {
   display: block;
 }
 
-.settings-dialog {
-  &__content {
-    display: flex;
-    flex-direction: column;
-    gap: pdz.space(sm);
-  }
+.settings-dialog__content {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.layout(stack);
+}
 
-  &__error {
-    @include text(label);
-    color: pdz.color(danger);
-    margin: 0;
+.settings-dialog__row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: pdz.space(md);
+
+  > * {
+    flex: 1 1 12rem;
   }
 }
 
-.field {
-  &--full {
-    width: 100%;
-  }
+.settings-dialog__note {
+  @include pdz.text(meta);
+  margin: 0;
+  color: pdz.color(on-surface-muted);
+}
+
+.settings-dialog__error {
+  @include pdz.text(body-sm);
+  margin: 0;
+  color: pdz.color(danger);
 }

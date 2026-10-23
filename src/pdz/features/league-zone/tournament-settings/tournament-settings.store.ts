@@ -10,7 +10,7 @@ import {
   tap,
 } from 'rxjs';
 import { apiErrorMessage } from '@pdz/core/services/api.service';
-import { LeagueTier } from '@pdz/features/tier-lists/tier-list.model';
+import { LeagueTier, TierListMeta } from '@pdz/features/tier-lists/tier-list.model';
 import { TierListService } from '@pdz/features/tier-lists/tier-list.service';
 import {
   DiscordSettingsResponse,
@@ -30,6 +30,7 @@ import {
   SignUpValue,
   parseSignUpChoice,
   signUpChoiceKey,
+  TierListState,
   TierRequirement,
   defaultTiebreakers,
   draftNotStarted,
@@ -79,6 +80,7 @@ export const EMPTY_SETTINGS: SettingsValue = {
   forfeitPokemonDiff: 0,
   matchupChat: true,
   coachReporting: true,
+  logVisibility: 'participants',
   discordGuildId: '',
   discordCoachRoleId: '',
   discordAutoGrantCoachRole: true,
@@ -305,6 +307,27 @@ export class TournamentSettingsStore {
     }),
   );
 
+  refreshTierList(): Observable<void> {
+    return forkJoin({
+      settings: this.manage.getTournamentSettings(),
+      tierList: optional(this.tierLists.getTierList()),
+    }).pipe(
+      map(({ settings, tierList }) => {
+        const tierRequirements = (settings.tierRequirements ?? []).map((req) => ({
+          tierId: req.tierId,
+          required: req.required,
+          max: req.max ?? null,
+        }));
+        this.savedValue.update((value) => ({ ...value, tierRequirements }));
+        this.draftValue.update((value) => ({ ...value, tierRequirements }));
+        this.artifactState.update((state) => ({
+          ...state,
+          tierList: tierListArtifact(settings, tierList),
+        }));
+      }),
+    );
+  }
+
   load(): void {
     this.loading.set(true);
     this.loadError.set(null);
@@ -403,6 +426,7 @@ export class TournamentSettingsStore {
       forfeitPokemonDiff: settings.forfeit?.pokemonDiff ?? 0,
       matchupChat: settings.matchSettings?.chat !== false,
       coachReporting: settings.matchSettings?.coachReporting !== false,
+      logVisibility: settings.logVisibility ?? 'participants',
       discordGuildId: settings.discordSettings?.guildId ?? '',
       discordCoachRoleId: settings.discordSettings?.coachRoleId ?? '',
       discordAutoGrantCoachRole:
@@ -426,29 +450,8 @@ export class TournamentSettingsStore {
 
     const { signUps, pools } = buildRoster(coaches, details);
 
-    const tiers = (tierList?.tierList ?? []).flatMap((tier) =>
-      tier.id && !NON_DRAFTABLE_TIER_NAMES.has(tier.name.trim().toLowerCase())
-        ? [
-            {
-              id: tier.id,
-              name: tier.name,
-              cost: tier.cost ?? 0,
-              color: 'neutral',
-            },
-          ]
-        : [],
-    );
-
     this.artifactState.set({
-      tierList: {
-        name: tierList?.name ?? null,
-        slug: settings.tierListId || null,
-        format: tierList?.format ?? settings.format ?? '',
-        ruleset: tierList?.ruleset ?? settings.ruleset ?? '',
-        pokemonCount: countPokemon(tierList?.tierList ?? []),
-        tiers,
-        source: tierList ? 'custom' : null,
-      },
+      tierList: tierListArtifact(settings, tierList),
       schedule: summariseSchedule(schedule),
       rules: summariseRules(rules),
     });
@@ -598,7 +601,16 @@ export class TournamentSettingsStore {
       ...this.derivedWindowPatch(),
     };
     if (Object.keys(settings).length) {
-      requests.push(this.manage.updateTournamentSettings(settings));
+      const unlocked = [...this.unlockedSections()].filter(
+        (section): section is 'draft' | 'standings' =>
+          section === 'draft' || section === 'standings',
+      );
+      requests.push(
+        this.manage.updateTournamentSettings({
+          ...settings,
+          ...(unlocked.length && { unlocked }),
+        }),
+      );
     }
     const assignments = this.membershipPatch();
     if (assignments.length) {
@@ -879,6 +891,7 @@ export class TournamentSettingsStore {
             },
           }
         : {}),
+      ...(touched('logVisibility') ? { logVisibility: v.logVisibility } : {}),
       ...(touched('discord') ? { discord: v.discord || undefined } : {}),
       ...(touched(
         'discordCoachRoleId',
@@ -1288,6 +1301,7 @@ type TierListResponse = {
   format?: string;
   ruleset?: string;
   name?: string;
+  meta?: TierListMeta;
 };
 
 type CoachesResponse = {
@@ -1450,6 +1464,27 @@ function countPendingTrades(trades: TradesResponse | null): number {
 
 function countPokemon(tiers: LeagueTier[]): number {
   return tiers.reduce((sum, tier) => sum + (tier.pokemon?.length ?? 0), 0);
+}
+
+function tierListArtifact(
+  settings: SettingsResponse,
+  tierList: TierListResponse | null,
+): TierListState {
+  const tiers = (tierList?.tierList ?? []).flatMap((tier) =>
+    tier.id && !NON_DRAFTABLE_TIER_NAMES.has(tier.name.trim().toLowerCase())
+      ? [{ id: tier.id, name: tier.name, cost: tier.cost ?? 0, color: 'neutral' }]
+      : [],
+  );
+  return {
+    name: tierList?.name ?? null,
+    slug: tierList?.meta?.slug ?? (settings.tierListId || null),
+    format: tierList?.format ?? settings.format ?? '',
+    ruleset: tierList?.ruleset ?? settings.ruleset ?? '',
+    pokemonCount: countPokemon(tierList?.tierList ?? []),
+    tiers,
+    source: tierList ? 'custom' : null,
+    meta: tierList?.meta ?? null,
+  };
 }
 
 function summariseSchedule(

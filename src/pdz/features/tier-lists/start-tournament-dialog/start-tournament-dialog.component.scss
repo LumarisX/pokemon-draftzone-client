@@ -1,0 +1,50 @@
+@use "pdz-theming" as pdz;
+
+:host {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.layout(stack);
+}
+
+.start__intro {
+  @include pdz.text(body-sm);
+  margin: 0;
+  color: pdz.color(on-surface-muted);
+}
+
+.start__list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.start__list li {
+  @include pdz.row-divider;
+}
+
+.start__league {
+  display: flex;
+  align-items: center;
+  gap: pdz.space(sm);
+  width: 100%;
+  padding: pdz.space(sm);
+  border: 0;
+  border-radius: pdz.shape(corner-sm);
+  background: transparent;
+  color: pdz.color(on-surface);
+  text-align: start;
+  cursor: pointer;
+  transition: background-color pdz.duration(fast) pdz.easing(standard);
+
+  &:hover {
+    background: pdz.color(state-hover);
+  }
+
+  &:focus-visible {
+    @include pdz.focus-ring;
+  }
+}
+
+.start__name {
+  @include pdz.text(body-sm-strong);
+}

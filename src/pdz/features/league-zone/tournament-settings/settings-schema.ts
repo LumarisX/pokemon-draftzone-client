@@ -1,3 +1,5 @@
+import { TierListMeta } from '@pdz/features/tier-lists/tier-list.model';
+
 export type Tiebreaker =
   | 'headToHead'
   | 'gameDiff'
@@ -204,6 +206,7 @@ export interface SettingsValue {
   forfeitPokemonDiff: number;
   matchupChat: boolean;
   coachReporting: boolean;
+  logVisibility: 'participants' | 'public';
 
   discordGuildId: string;
   discordCoachRoleId: string;
@@ -504,6 +507,7 @@ export interface TierListState {
   pokemonCount: number;
   tiers: TierSummary[];
   source: 'template' | 'custom' | null;
+  meta?: TierListMeta | null;
 }
 
 export interface ScheduleState {
@@ -841,6 +845,24 @@ export const SETTINGS_NODES: readonly SettingsNode[] = [
         label: 'Coaches submit their own results',
       },
       { kind: 'toggle', key: 'matchupChat', label: 'Enable matchup chat' },
+    ],
+  },
+  {
+    id: 'season.log',
+    section: 'season',
+    title: 'Tournament Log',
+    help: "The log records every tier list swap and edit once sign-ups open, every unlock of a locked section, and every change to draft and standings rules, with who made it and any note they left. Coaches and organizers can always read it; make it public to let anyone check the tournament was run fairly. Entries can't be edited or deleted.",
+    controls: [
+      {
+        kind: 'choice',
+        key: 'logVisibility',
+        label: 'Who Can Read the Log',
+        as: 'radio',
+        options: [
+          { value: 'participants', label: 'Coaches and organizers' },
+          { value: 'public', label: 'Anyone' },
+        ],
+      },
     ],
   },
   {

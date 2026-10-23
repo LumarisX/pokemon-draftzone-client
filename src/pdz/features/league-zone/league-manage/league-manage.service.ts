@@ -285,6 +285,7 @@ export class LeagueManageService {
         platforms?: string[];
       };
       matchSettings?: { chat: boolean; coachReporting: boolean };
+      logVisibility?: 'participants' | 'public';
       completed?: boolean;
     }>(
       `leagues/${this.leagueZoneService.leagueSlug()}/tournaments/${this.leagueZoneService.tournamentSlug()}/settings`,
@@ -335,6 +336,9 @@ export class LeagueManageService {
       platforms?: string[];
     };
     matchSettings?: { chat: boolean; coachReporting: boolean };
+    logVisibility?: 'participants' | 'public';
+    unlocked?: ('draft' | 'standings')[];
+    reason?: string;
     completed?: boolean;
   }) {
     return this.apiService.patch<{ message: string }>(

@@ -8,7 +8,11 @@ import {
   signal,
 } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { Router, RouterLink } from '@angular/router';
+import { toApiError } from '@pdz/core/services/api-error';
 import { apiErrorMessage } from '@pdz/core/services/api.service';
+import { LeagueZoneService } from '@pdz/features/league-zone/league-zone.service';
+import { EmptyStateComponent } from '@pdz/shared/feedback/empty-state/empty-state.component';
 import { DialogService } from '@pdz/shared/dialogs/dialog/dialog.service';
 import { ToastService } from '@pdz/shared/feedback/toast/toast.service';
 import { TooltipDirective } from '@pdz/shared/tooltip/tooltip.directive';
@@ -26,18 +30,27 @@ import { MenuItemComponent } from '@pdz/shared/menu/menu-item.component';
 import { MenuTriggerDirective } from '@pdz/shared/menu/menu-trigger.directive';
 import { Subject } from 'rxjs';
 import { first, takeUntil } from 'rxjs/operators';
-import { TierPokemon } from '@pdz/features/tier-lists/tier-list.model';
+import { TierListMeta, TierPokemon } from '@pdz/features/tier-lists/tier-list.model';
 import { TierListService } from '@pdz/features/tier-lists/tier-list.service';
+import {
+  ExportList,
+  TierListExportService,
+} from '@pdz/features/tier-lists/tier-list-export.service';
+import {
+  LegalityDialogData,
+  TierListLegalityComponent,
+} from '@pdz/features/tier-lists/tier-list-legality/tier-list-legality.component';
+import { tierListBase } from '@pdz/features/tier-lists/tier-list-links';
+import {
+  ShareDialogData,
+  ShareDialogResult,
+  TierListShareComponent,
+} from '@pdz/features/tier-lists/tier-list-share/tier-list-share.component';
 import {
   TierListSettingsDialogComponent,
   TierListSettingsDialogData,
 } from '../tier-list-settings-dialog/tier-list-settings-dialog.component';
 import { matchesSearchText, SORT_MAP, SortOption } from '../tier-list.utils';
-import {
-  ImportDialogComponent,
-  ImportDialogData,
-  ImportDialogResult,
-} from './import-dialog/import-dialog.component';
 import {
   PokemonEditDialogComponent,
   PokemonEditDialogData,
@@ -74,6 +87,8 @@ interface EditableTier {
   selector: 'pdz-tier-list-form',
   imports: [
     FormsModule,
+    RouterLink,
+    EmptyStateComponent,
     TooltipDirective,
     ReactiveFormsModule,
     SpriteComponent,
@@ -107,6 +122,23 @@ export class TierListFormComponent implements OnInit, OnDestroy {
   hasUnsavedChanges = signal<boolean>(false);
   tierListName = signal<string>('Tier List');
   ruleset = signal<string | undefined>(undefined);
+  meta = signal<TierListMeta | null>(null);
+  loadFailed = signal(false);
+  logNote = signal('');
+
+  private readonly router = inject(Router);
+  private readonly exporter = inject(TierListExportService);
+  private readonly league = inject(LeagueZoneService);
+  readonly isTournamentCopy = computed(() => !!this.meta()?.tournament);
+  readonly canShare = computed(() => {
+    const meta = this.meta();
+    return !!meta && !meta.tournament && (meta.access === 'manage' || !!meta.role);
+  });
+  readonly base = computed(() =>
+    tierListBase(this.league, this.meta()?.slug ?? this.tierListService.tierListId()),
+  );
+  readonly viewLink = computed(() => this.base());
+  readonly historyLink = computed(() => [...this.base(), 'history']);
 
   UNTIERED_TIER_NAME = 'Untiered';
   BANNED_TIER_NAME = 'Banned';
@@ -158,7 +190,7 @@ export class TierListFormComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  private loadTierList(): void {
+  loadTierList(): void {
     this.isLoading.set(true);
     this.tierListService
       .getTierListEdit()
@@ -167,6 +199,8 @@ export class TierListFormComponent implements OnInit, OnDestroy {
         next: (data) => {
           if (data.name) this.tierListName.set(data.name);
           this.ruleset.set(data.ruleset);
+          this.meta.set(data.meta ?? null);
+          this.loadFailed.set(false);
           const flatTiers = [...data.tierList];
 
           const nullTierIndex = flatTiers.findIndex(
@@ -205,10 +239,9 @@ export class TierListFormComponent implements OnInit, OnDestroy {
           this.isLoading.set(false);
           this.hasUnsavedChanges.set(false);
         },
-        error: (err) => {
+        error: () => {
           this.isLoading.set(false);
-          this.toasts.error('Failed to load tier list');
-          console.error('Failed to load tier list:', err);
+          this.loadFailed.set(true);
         },
       });
   }
@@ -836,246 +869,81 @@ export class TierListFormComponent implements OnInit, OnDestroy {
     this.tiers.set([...tiers]);
   }
 
-  exportCsv(): void {
-    const tiers = this.tiers();
-    const banned = this.banned();
-    if (!tiers) return;
-
-    const columns: { name: string; pokemon: EditTierPokemon[] }[] = [];
-    if (banned && banned.pokemon.length > 0) {
-      columns.push(banned);
-    }
-    columns.push(...tiers);
-
-    const maxRows = Math.max(...columns.map((c) => c.pokemon.length), 0);
-
-    const rows: string[] = [columns.map((c) => this.csvCell(c.name)).join(',')];
-
-    for (let i = 0; i < maxRows; i++) {
-      const row = columns.map((c) => {
-        const p = c.pokemon[i];
-        return p ? this.csvCell(p.name) : '';
-      });
-      rows.push(row.join(','));
-    }
-
-    const csv = rows.join('\n');
-    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `${this.tierListName()}-tier-list.csv`;
-    a.click();
-    URL.revokeObjectURL(url);
-  }
-
-  private csvCell(value: string): string {
-    if (/[,"\n]/.test(value)) {
-      return `"${value.replace(/"/g, '""')}"`;
-    }
-    return value;
-  }
-
-  importCsv(): void {
-    const input = document.createElement('input');
-    input.type = 'file';
-    input.accept = '.csv,text/csv';
-    input.onchange = (event: Event) => {
-      const file = (event.target as HTMLInputElement).files?.[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const text = e.target?.result as string;
-        this.openCsvImportDialog(text);
-      };
-      reader.readAsText(file);
+  private exportList(): ExportList {
+    return {
+      name: this.tierListName(),
+      ruleset: this.ruleset(),
+      tiers: (this.tiers() ?? []).map((tier) => ({
+        name: tier.name,
+        cost: tier.cost,
+        pokemon: tier.pokemon.map(({ id, name }) => ({ id, name })),
+      })),
+      banned: (this.banned()?.pokemon ?? []).map(({ id, name }) => ({ id, name })),
     };
-    input.click();
   }
 
-  private async openCsvImportDialog(csvText: string): Promise<void> {
-    const tiers = this.tiers();
-    const untiered = this.untiered();
-    if (!tiers || !untiered) return;
+  exportCsv(): void {
+    this.exporter.downloadCsv(this.exportList());
+  }
 
-    const lines = csvText
-      .replace(/\r/g, '')
-      .split('\n')
-      .filter((l) => l.trim());
-    if (lines.length < 1) {
-      this.toasts.error('CSV file is empty.');
-      return;
+  async exportImage(): Promise<void> {
+    try {
+      await this.exporter.downloadImage(this.exportList());
+    } catch {
+      this.toasts.error('Could not draw the tier list image.');
     }
+  }
 
-    const headers = this.parseCsvRow(lines[0]).map((h) => h.trim());
-    const PREVIEW_COUNT = 999;
-    const columns = headers.map((header, col) => {
-      const preview: string[] = [];
-      for (
-        let row = 1;
-        row < lines.length && preview.length < PREVIEW_COUNT;
-        row++
-      ) {
-        const cells = this.parseCsvRow(lines[row]);
-        const val = (cells[col] ?? '').trim();
-        if (val) preview.push(val);
-      }
-      return { csvHeader: header, preview };
-    });
+  async openImport(): Promise<void> {
+    if (this.hasUnsavedChanges()) {
+      const leave = await this.dialogs.confirm('Save before importing?', {
+        message: 'Importing starts from the saved list. Unsaved changes here will be lost.',
+        confirmLabel: 'Continue Without Saving',
+        confirmColor: 'danger',
+      });
+      if (!leave) return;
+      this.hasUnsavedChanges.set(false);
+    }
+    this.router.navigate([...this.base(), 'import']);
+  }
 
+  openLegality(): void {
+    const slug = this.meta()?.slug;
+    if (!slug) return;
+    this.dialogs.open<TierListLegalityComponent, void, LegalityDialogData>(
+      TierListLegalityComponent,
+      {
+        heading: 'Legality Check',
+        subheading: this.hasUnsavedChanges()
+          ? 'Checks the saved list. Save first to include your changes.'
+          : `Against ${this.ruleset() ?? 'its ruleset'}`,
+        size: 'md',
+        data: { slug },
+      },
+    );
+  }
+
+  async share(): Promise<void> {
+    const meta = this.meta();
+    if (!meta) return;
     const result = await this.dialogs.open<
-      ImportDialogComponent,
-      ImportDialogResult,
-      ImportDialogData
-    >(ImportDialogComponent, {
-      heading: 'Import from CSV',
-      size: 'lg',
+      TierListShareComponent,
+      ShareDialogResult,
+      ShareDialogData
+    >(TierListShareComponent, {
+      heading: 'Share',
+      subheading: this.tierListName(),
+      size: 'md',
       data: {
-        columns,
-        availableTiers: tiers.map((t) => t.name),
-        untieredName: this.UNTIERED_TIER_NAME,
-        bannedName: this.BANNED_TIER_NAME,
+        slug: meta.slug,
+        name: this.tierListName(),
+        visibility: meta.visibility,
+        authorName: meta.authorName,
+        canManage: meta.access === 'manage',
       },
     }).closed;
-
-    if (!result) return;
-    this.applyCsvImport(csvText, headers, result);
-  }
-
-  private parseCsvRow(row: string): string[] {
-    const result: string[] = [];
-    let current = '';
-    let inQuotes = false;
-    for (let i = 0; i < row.length; i++) {
-      const ch = row[i];
-      if (inQuotes) {
-        if (ch === '"' && row[i + 1] === '"') {
-          current += '"';
-          i++;
-        } else if (ch === '"') {
-          inQuotes = false;
-        } else {
-          current += ch;
-        }
-      } else if (ch === '"') {
-        inQuotes = true;
-      } else if (ch === ',') {
-        result.push(current);
-        current = '';
-      } else {
-        current += ch;
-      }
-    }
-    result.push(current);
-    return result;
-  }
-
-  private applyCsvImport(
-    csvText: string,
-    headers: string[],
-    columnMapping: ImportDialogResult,
-  ): void {
-    const tiers = this.tiers();
-    const untiered = this.untiered();
-    const banned = this.banned();
-    if (!tiers || !untiered) return;
-
-    const NEW_TIER_PREFIX = '__NEW_TIER__';
-
-    const lines = csvText
-      .replace(/\r/g, '')
-      .split('\n')
-      .filter((l) => l.trim());
-
-    const allPokemon = new Map<string, EditTierPokemon>();
-    const allTiers = [...tiers, untiered, ...(banned ? [banned] : [])];
-    for (const tier of allTiers) {
-      for (const p of tier.pokemon) {
-        allPokemon.set(p.name.toLowerCase(), p);
-      }
-    }
-
-    const resolvedMapping: (string | null)[] = columnMapping.map((m) => {
-      if (m === null) return null;
-      if (m.startsWith(NEW_TIER_PREFIX)) return m.slice(NEW_TIER_PREFIX.length);
-      return m;
-    });
-
-    const newTierNames: string[] = [];
-    columnMapping.forEach((m) => {
-      if (m !== null && m.startsWith(NEW_TIER_PREFIX)) {
-        const name = m.slice(NEW_TIER_PREFIX.length);
-        if (!newTierNames.includes(name)) newTierNames.push(name);
-      }
-    });
-
-    const importedByTier = new Map<string, EditTierPokemon[]>();
-    const assignedIds = new Set<string>();
-    const unknownNames = new Set<string>();
-
-    for (let col = 0; col < headers.length; col++) {
-      const targetTier = resolvedMapping[col];
-      if (targetTier === null) continue;
-
-      const bucket = importedByTier.get(targetTier) ?? [];
-      for (let row = 1; row < lines.length; row++) {
-        const cells = this.parseCsvRow(lines[row]);
-        const cellValue = (cells[col] ?? '').trim();
-        if (!cellValue) continue;
-        const p = allPokemon.get(cellValue.toLowerCase());
-        if (p && !assignedIds.has(p.id)) {
-          bucket.push(p);
-          assignedIds.add(p.id);
-        } else if (!p) {
-          unknownNames.add(cellValue);
-        }
-      }
-      importedByTier.set(targetTier, bucket);
-    }
-
-    const updatedTiers: EditableTier[] = tiers.map((tier) => ({
-      ...tier,
-      pokemon: importedByTier.get(tier.name) ?? [],
-    }));
-
-    for (const name of newTierNames) {
-      updatedTiers.push({ name, pokemon: importedByTier.get(name) ?? [] });
-    }
-
-    const importedBanned = importedByTier.get(this.BANNED_TIER_NAME) ?? [];
-    const importedUntiered = importedByTier.get(this.UNTIERED_TIER_NAME) ?? [];
-
-    const remainingPokemon = [
-      ...importedUntiered,
-      ...[...allPokemon.values()].filter((p) => !assignedIds.has(p.id)),
-    ];
-
-    const placedCount = assignedIds.size - importedUntiered.length;
-    const tieredCount = resolvedMapping.filter(
-      (t) => t !== null && t !== this.UNTIERED_TIER_NAME,
-    ).length;
-
-    this.tiers.set(updatedTiers);
-    this.untiered.set({ ...untiered, pokemon: remainingPokemon });
-    this.banned.set({ name: this.BANNED_TIER_NAME, pokemon: importedBanned });
-    this.hasUnsavedChanges.set(true);
-
-    const parts: string[] = [
-      `${placedCount} Pokémon placed across ${tieredCount} tier(s).`,
-    ];
-    if (newTierNames.length > 0) {
-      parts.push(
-        `${newTierNames.length} new tier(s) created: ${newTierNames.join(', ')}.`,
-      );
-    }
-    if (unknownNames.size > 0) {
-      parts.push(`${unknownNames.size} unrecognized name(s) skipped.`);
-    }
-    this.toasts.show({
-      title: 'Import Complete',
-      message: parts.join(' '),
-      tone: unknownNames.size > 0 ? 'warning' : 'success',
-    });
+    if (result && !result.left)
+      this.meta.set({ ...meta, visibility: result.visibility, authorName: result.authorName });
   }
 
   openSettings(): void {
@@ -1093,7 +961,17 @@ export class TierListFormComponent implements OnInit, OnDestroy {
           data: settings,
         }).closed;
 
-        if (result?.name) this.tierListName.set(result.name);
+        if (!result) return;
+        this.tierListName.set(result.name);
+        const rulesChanged =
+          result.ruleset !== settings.ruleset || result.format !== settings.format;
+        if (rulesChanged && !this.hasUnsavedChanges()) this.loadTierList();
+        else if (rulesChanged)
+          this.toasts.show({
+            title: 'Ruleset Changed',
+            message: 'Save your changes, then reload to see Pokémon from the new ruleset.',
+            tone: 'info',
+          });
       });
   }
 
@@ -1149,25 +1027,58 @@ export class TierListFormComponent implements OnInit, OnDestroy {
       }
     }
 
+    const meta = this.meta();
     this.tierListService
-      .saveTierListEdit(tierData)
+      .saveTierListEdit(
+        tierData,
+        {
+          ...(meta && { version: meta.version }),
+          ...(this.logNote().trim() && { reason: this.logNote().trim() }),
+        },
+        meta?.slug,
+      )
       .pipe(takeUntil(this.destroy$))
       .subscribe({
         next: (response) => {
           this.isLoading.set(false);
           this.savedHistoryDepth = this.undoStack.length;
           this.hasUnsavedChanges.set(false);
-          this.toasts.success(
-            response.message || 'Tier list saved successfully',
+          this.logNote.set('');
+          if (meta) this.meta.set({ ...meta, version: response.version });
+          const orphaned = response.orphanedRequirements?.reduce(
+            (sum, entry) => sum + entry.requirements,
+            0,
           );
+          if (orphaned)
+            this.toasts.show({
+              title: 'Saved',
+              message: `${orphaned} tier requirement${orphaned === 1 ? '' : 's'} pointed at a tier you deleted. Review them in the tournament's settings.`,
+              tone: 'warning',
+            });
+          else this.toasts.success(response.summary ? `Saved: ${response.summary}` : 'Saved.');
         },
         error: (err) => {
           this.isLoading.set(false);
+          if (toApiError(err)?.code === 'LR-TIER-005') {
+            this.handleStale();
+            return;
+          }
           this.toasts.error(
             apiErrorMessage(err, 'Could not save the tier list.'),
           );
         },
       });
+  }
+
+  private async handleStale(): Promise<void> {
+    const reload = await this.dialogs.confirm('Someone else saved this list', {
+      message:
+        'They saved after you opened it. Reload to see their version, or keep editing and copy your changes over by hand. Your unsaved changes are lost if you reload.',
+      confirmLabel: 'Reload',
+      cancelLabel: 'Keep Editing',
+      confirmColor: 'danger',
+    });
+    if (reload) this.loadTierList();
   }
 
   @HostListener('window:beforeunload', ['$event'])

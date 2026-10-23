@@ -1,0 +1,417 @@
+<pdz-page type="tool">
+  <pdz-page-header
+    title="Import a Sheet"
+    [subtitle]="
+      target()
+        ? 'Into ' + target()!.name + ' · ' + target()!.format + ' · ' + target()!.ruleset
+        : 'Paste your league’s tier list, upload it, or link the sheet.'
+    "
+    [backLink]="backLink()"
+    [backLabel]="intoExisting ? 'Back to Editor' : 'New Tier List'"
+  />
+
+  @if (intoExisting && targetFailed()) {
+    <pdz-empty-state
+      kind="error"
+      heading="The tier list didn't load"
+      message="The list you're importing into didn't come back."
+      retry="reload"
+    />
+  } @else if (intoExisting && !target()) {
+    <pdz-skeleton-layout layout="form" />
+  } @else if (!preview()) {
+    <pdz-card padding="lg">
+      <div class="import__stack">
+        <pdz-segmented
+          aria-label="Where the sheet comes from"
+          [ngModel]="source()"
+          (ngModelChange)="source.set($event)"
+        >
+          <pdz-segmented-option value="paste" icon="content_paste" label="Paste" />
+          <pdz-segmented-option value="file" icon="upload_file" label="Upload" />
+          <pdz-segmented-option value="link" icon="link" label="Google Sheet" />
+        </pdz-segmented>
+
+        @switch (source()) {
+          @case ('paste') {
+            <label pdz-field label="Cells From Your Sheet">
+              <textarea
+                pdz-input
+                rows="12"
+                class="import__paste"
+                placeholder="Select the tier list in Google Sheets or Excel, copy it, and paste it here."
+                [ngModel]="text()"
+                (ngModelChange)="text.set($event)"
+              ></textarea>
+              <span pdz-hint>
+                Tiers as columns, a Pokémon and its tier on each row, a Pokémon and its cost, or
+                tier headings with Pokémon under each all work.
+              </span>
+            </label>
+          }
+          @case ('file') {
+            <div class="import__file">
+              <label pdz-button variant="outlined" color="neutral" icon="upload_file">
+                Choose a File
+                <input
+                  class="import__file-input"
+                  type="file"
+                  accept=".csv,.tsv,.txt,text/csv,text/tab-separated-values,text/plain"
+                  (change)="onFile($event)"
+                />
+              </label>
+              <span class="import__meta">
+                {{ fileName() || 'CSV or TSV. Save an Excel sheet as CSV first.' }}
+              </span>
+            </div>
+          }
+          @case ('link') {
+            <label pdz-field label="Google Sheets Link">
+              <input
+                pdz-input
+                type="url"
+                placeholder="https://docs.google.com/spreadsheets/d/…"
+                [ngModel]="url()"
+                (ngModelChange)="url.set($event)"
+              />
+              <span pdz-hint>
+                Share the sheet as anyone with the link. The tab in the link is the one read.
+              </span>
+            </label>
+          }
+        }
+
+        @if (!intoExisting) {
+          <div class="import__row">
+            <div pdz-field label="Format" required>
+              <pdz-select
+                aria-label="Format"
+                placeholder="Choose a format…"
+                searchable
+                [ngModel]="format()"
+                (ngModelChange)="format.set($event)"
+              >
+                @for (option of formats(); track option) {
+                  <pdz-option [value]="option" [label]="option" />
+                }
+              </pdz-select>
+            </div>
+            <div pdz-field label="Ruleset" required>
+              <pdz-select
+                aria-label="Ruleset"
+                placeholder="Choose a ruleset…"
+                searchable
+                [ngModel]="ruleset()"
+                (ngModelChange)="ruleset.set($event)"
+              >
+                @for (option of rulesets(); track option) {
+                  <pdz-option [value]="option" [label]="option" />
+                }
+              </pdz-select>
+            </div>
+          </div>
+          <p class="import__meta">The ruleset decides which names count as legal Pokémon.</p>
+        }
+
+        @if (readError(); as error) {
+          <p class="import__error" role="alert">{{ error }}</p>
+        }
+
+        <div class="import__actions">
+          <button pdz-button icon="table_view" [loading]="reading()" [disabled]="!canRead()" (click)="read()">
+            Read Sheet
+          </button>
+        </div>
+      </div>
+    </pdz-card>
+  } @else {
+    @let result = preview()!;
+    <div class="import__review">
+      <pdz-card padding="lg">
+        <div class="import__stack">
+          <div class="import__summary">
+            <pdz-chip tone="success" icon="check">{{ result.counts.matched }} matched</pdz-chip>
+            @if (needsAttention().length) {
+              <pdz-chip tone="warning" icon="help">{{ needsAttention().length }} need you</pdz-chip>
+            }
+            @if (result.counts.duplicates) {
+              <pdz-chip tone="warning" icon="content_copy">{{ result.counts.duplicates }} in two tiers</pdz-chip>
+            }
+            @if (result.rememberedCount) {
+              <span class="import__meta">Using {{ result.rememberedCount }} names you confirmed before.</span>
+            }
+          </div>
+
+          <div class="import__row">
+            <div pdz-field label="Layout">
+              <pdz-select
+                aria-label="How the sheet is laid out"
+                [ngModel]="result.layout"
+                (ngModelChange)="read($event)"
+              >
+                @for (layout of result.layouts; track layout.id) {
+                  <pdz-option [value]="layout.id" [label]="layout.label + ' (' + layout.tierCount + ' tiers)'" />
+                }
+              </pdz-select>
+            </div>
+            <div class="import__start-over">
+              <button pdz-button variant="ghost" color="neutral" icon="arrow_back" (click)="startOver()">
+                Start Over
+              </button>
+            </div>
+          </div>
+        </div>
+      </pdz-card>
+
+      @if (needsAttention().length) {
+        <pdz-card padding="lg">
+          <div class="import__stack">
+            <h2 class="import__heading">Needs You</h2>
+            <p class="import__meta">
+              Anything left here is skipped and listed when you import.
+            </p>
+            <ul class="import__problems">
+              @for (row of needsAttention(); track row.key) {
+                <li class="import__problem">
+                  <div class="import__problem-head">
+                    <span class="import__cell">{{ row.entry.text }}</span>
+                    <span class="import__meta">in {{ tiers()[row.tierIndex].name }}</span>
+                    <pdz-chip size="xs" [tone]="statusTone[row.entry.match.status]">
+                      {{ statusLabel[row.entry.match.status] }}
+                    </pdz-chip>
+                  </div>
+                  <div class="import__problem-actions">
+                    @switch (row.entry.match.status) {
+                      @case ('suggested') {
+                        <button pdz-button size="sm" variant="tonal" (click)="resolve(row, row.entry.match.pokemon)">
+                          Use {{ row.entry.match.pokemon[0].name }}
+                        </button>
+                      }
+                      @case ('ambiguous') {
+                        @for (option of optionsFor(row); track option.id) {
+                          <button pdz-button size="sm" variant="tonal" (click)="resolve(row, [option])">
+                            {{ option.name }}
+                          </button>
+                        }
+                        @if (optionsFor(row).length > 1) {
+                          <button pdz-button size="sm" variant="outlined" color="neutral" (click)="resolve(row, optionsFor(row))">
+                            All of Them
+                          </button>
+                        }
+                      }
+                      @case ('not-in-ruleset') {
+                        <span class="import__meta">
+                          {{ row.entry.match.pokemon[0]?.name }} isn't legal in {{ target()?.ruleset ?? ruleset() }}.
+                        </span>
+                      }
+                    }
+                    <pdz-pokemon-search
+                      class="import__search"
+                      density="compact"
+                      placeholder="Pick another…"
+                      [ruleset]="target()?.ruleset ?? ruleset()"
+                      (pokemonSelected)="pick(row, $event)"
+                    />
+                    <button pdz-button size="sm" variant="ghost" color="neutral" (click)="resolve(row, 'skip')">
+                      Skip
+                    </button>
+                  </div>
+                </li>
+              }
+            </ul>
+          </div>
+        </pdz-card>
+      }
+
+      @if (handled().length) {
+        <pdz-card padding="lg">
+          <div class="import__stack">
+            <h2 class="import__heading">Your Choices</h2>
+            <ul class="import__choices">
+              @for (row of handled(); track row.key) {
+                <li class="import__choice">
+                  <span class="import__cell">{{ row.entry.text }}</span>
+                  <span class="import__meta">→ {{ chosenNames(row) }}</span>
+                  <button
+                    pdz-button
+                    size="xs"
+                    variant="ghost"
+                    color="neutral"
+                    (click)="resolve(row, null)"
+                  >
+                    Undo
+                  </button>
+                </li>
+              }
+            </ul>
+          </div>
+        </pdz-card>
+      }
+
+      @if (result.duplicates.length) {
+        <pdz-card padding="lg">
+          <div class="import__stack">
+            <h2 class="import__heading">In Two Tiers</h2>
+            <p class="import__meta">A Pokémon can only be in one tier. Choose where each one goes.</p>
+            <ul class="import__choices">
+              @for (duplicate of result.duplicates; track duplicate.pokemonId) {
+                <li class="import__choice">
+                  <pdz-pokemon size="inline" [pokemon]="{ id: duplicate.pokemonId, name: duplicate.name }" />
+                  <pdz-segmented
+                    size="sm"
+                    [aria-label]="'Tier for ' + duplicate.name"
+                    [ngModel]="duplicateWinners().get(duplicate.pokemonId)"
+                    (ngModelChange)="setWinner(duplicate.pokemonId, $event)"
+                  >
+                    @for (tierIndex of duplicate.tiers; track tierIndex) {
+                      <pdz-segmented-option [value]="tierIndex" [label]="tiers()[tierIndex].name" />
+                    }
+                  </pdz-segmented>
+                </li>
+              }
+            </ul>
+          </div>
+        </pdz-card>
+      }
+
+      <pdz-card padding="lg">
+        <div class="import__stack">
+          <h2 class="import__heading">
+            Tiers
+            <pdz-help
+              label="About tiers"
+              text="Rename a tier or set its cost here. Mark the tier that lists banned Pokémon as Banned, and skip anything that isn't a tier, like a notes column."
+            />
+          </h2>
+          <div class="pdz-table-wrapper" data-surface="clear">
+            <table class="pdz-table" data-surface="clear">
+              <thead>
+                <tr>
+                  <th scope="col">Tier</th>
+                  <th scope="col">Cost</th>
+                  <th scope="col">Pokémon</th>
+                  <th scope="col">Banned</th>
+                  <th scope="col">Skip</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (tier of tiers(); track $index; let i = $index) {
+                  <tr [class.import__tier--skipped]="tier.skip">
+                    <td>
+                      <input
+                        pdz-input
+                        size="sm"
+                        [attr.aria-label]="'Name of tier ' + (i + 1)"
+                        [ngModel]="tier.name"
+                        (ngModelChange)="updateTier(i, { name: $event })"
+                      />
+                    </td>
+                    <td>
+                      <input
+                        pdz-input
+                        size="sm"
+                        type="number"
+                        min="0"
+                        class="import__cost"
+                        [attr.aria-label]="'Cost of ' + tier.name"
+                        [disabled]="tier.banned"
+                        [ngModel]="tier.cost"
+                        (ngModelChange)="updateTier(i, { cost: $event === '' || $event === null ? null : +$event })"
+                      />
+                    </td>
+                    <td class="import__count">{{ tierCounts().get(i) ?? 0 }}</td>
+                    <td>
+                      <input
+                        pdz-checkbox
+                        type="checkbox"
+                        [attr.aria-label]="tier.name + ' lists banned Pokémon'"
+                        [ngModel]="tier.banned"
+                        (ngModelChange)="updateTier(i, { banned: $event })"
+                      />
+                    </td>
+                    <td>
+                      <input
+                        pdz-checkbox
+                        type="checkbox"
+                        [attr.aria-label]="'Skip ' + tier.name"
+                        [ngModel]="tier.skip"
+                        (ngModelChange)="updateTier(i, { skip: $event })"
+                      />
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+
+          <button
+            pdz-button
+            size="sm"
+            variant="ghost"
+            color="neutral"
+            [icon]="showMatched() ? 'expand_less' : 'expand_more'"
+            (click)="showMatched.set(!showMatched())"
+          >
+            {{ showMatched() ? 'Hide' : 'Show' }} Matched Names ({{ matchedRows().length }})
+          </button>
+          @if (showMatched()) {
+            <ul class="import__matched">
+              @for (row of matchedRows(); track row.key) {
+                <li>
+                  <span class="import__meta">{{ row.entry.text }} →</span>
+                  {{ chosenNames(row) }}
+                </li>
+              }
+            </ul>
+          }
+        </div>
+      </pdz-card>
+
+      <pdz-card padding="lg">
+        <div class="import__stack">
+          <h2 class="import__heading">Import</h2>
+          @if (target()) {
+            <pdz-choice-cards
+              aria-label="How to bring it in"
+              [ngModel]="mode()"
+              (ngModelChange)="mode.set($event)"
+            >
+              <pdz-choice-card
+                value="replace"
+                icon="swap_horiz"
+                label="Replace the List"
+                description="The sheet becomes the list. Tiers with the same name keep their requirements."
+              />
+              <pdz-choice-card
+                value="merge"
+                icon="merge"
+                label="Merge Into the List"
+                description="Imported Pokémon move to their imported tiers. Everything else stays."
+              />
+            </pdz-choice-cards>
+          } @else {
+            <label pdz-field label="Name" required>
+              <input
+                pdz-input
+                maxlength="100"
+                [ngModel]="listName()"
+                (ngModelChange)="listName.set($event)"
+              />
+            </label>
+          }
+
+          <label pdz-check label="Remember my choices for next time" description="Names you picked here are matched on their own in future imports.">
+            <input pdz-checkbox type="checkbox" [ngModel]="remember()" (ngModelChange)="remember.set($event)" />
+          </label>
+
+          <div class="import__actions">
+            <span class="import__meta">{{ planSummary() }}</span>
+            <button pdz-button icon="download_done" [loading]="applying()" [disabled]="!canApply()" (click)="apply()">
+              {{ target() ? 'Import' : 'Create Tier List' }}
+            </button>
+          </div>
+        </div>
+      </pdz-card>
+    </div>
+  }
+</pdz-page>

@@ -307,6 +307,18 @@
 }
 
 
+.header-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: pdz.space(xs);
+}
+
+.toolbar__note {
+  width: 16rem;
+  max-width: 100%;
+}
+
 .unsaved-indicator {
   display: inline-flex;
   align-items: center;

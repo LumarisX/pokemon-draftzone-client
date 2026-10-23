@@ -1,5 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { ActivatedRoute, convertToParamMap, Router } from '@angular/router';
+import { TierListService } from '@pdz/features/tier-lists/tier-list.service';
 import { ToastService } from '@pdz/shared/feedback/toast/toast.service';
 import { of } from 'rxjs';
 import { LeagueZoneService } from '../league-zone.service';
@@ -35,12 +36,22 @@ function summary(
 describe('TournamentCreateComponent', () => {
   let createTournament: jest.Mock;
   let navigate: jest.Mock;
+  let getTierListBySlug: jest.Mock;
 
-  function setup(league = summary()) {
+  function setup(league = summary(), query: Record<string, string> = {}) {
     createTournament = jest
       .fn()
       .mockReturnValue(of({ tournamentSlug: 'season02' }));
     navigate = jest.fn();
+    getTierListBySlug = jest.fn().mockReturnValue(
+      of({
+        tierList: [],
+        name: 'Community OU',
+        format: 'Singles',
+        ruleset: 'Gen9 NatDex',
+        meta: { slug: 'community-ou', authorName: 'Brock' },
+      }),
+    );
 
     TestBed.configureTestingModule({
       imports: [TournamentCreateComponent],
@@ -48,13 +59,17 @@ describe('TournamentCreateComponent', () => {
         {
           provide: ActivatedRoute,
           useValue: {
-            snapshot: { paramMap: convertToParamMap({ leagueSlug: 'league01' }) },
+            snapshot: {
+              paramMap: convertToParamMap({ leagueSlug: 'league01' }),
+              queryParamMap: convertToParamMap(query),
+            },
           },
         },
         {
           provide: LeagueZoneService,
           useValue: { getLeague: () => of(league), createTournament },
         },
+        { provide: TierListService, useValue: { getTierListBySlug } },
         { provide: ToastService, useValue: { success: jest.fn(), error: jest.fn() } },
         { provide: Router, useValue: { navigate } },
       ],
@@ -67,12 +82,47 @@ describe('TournamentCreateComponent', () => {
       ownerName: () => string;
       copySettings: { (): boolean; set(value: boolean): void };
       tierListFrom: { (): string; set(value: string): void };
+      pickedList: () => { slug: string; name: string } | null;
+      clearPicked(): void;
       requirementsDropped: () => boolean;
       showOwnerNameField: () => boolean;
       canSubmit: () => boolean;
       submit(): void;
     };
   }
+
+  it('preselects the tier list it was started from and sends it as the source', () => {
+    const component = setup(summary(), { tierList: 'community-ou' });
+    component.name.set('Season 2');
+    component.copySettings.set(false);
+
+    expect(getTierListBySlug).toHaveBeenCalledWith('community-ou');
+    expect(component.pickedList()?.name).toBe('Community OU');
+
+    component.submit();
+
+    expect(createTournament).toHaveBeenCalledWith('league01', {
+      name: 'Season 2',
+      ownerName: 'Host',
+      tierListSlug: 'community-ou',
+      tierListFrom: null,
+    });
+  });
+
+  it('falls back to the past seasons once a picked list is removed', () => {
+    const component = setup(summary(), { tierList: 'community-ou' });
+    component.name.set('Season 2');
+    component.copySettings.set(false);
+    component.clearPicked();
+
+    component.submit();
+
+    expect(createTournament.mock.calls[0][1]).toEqual({
+      name: 'Season 2',
+      ownerName: 'Host',
+      tierListFrom: 'season01',
+    });
+  });
 
   it('prefills the owner name from the latest tournament', () => {
     const component = setup();

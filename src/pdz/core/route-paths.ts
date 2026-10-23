@@ -11,6 +11,7 @@ export const LEAGUE_ADMINS_PATH = 'admins';
 export const LEAGUE_ADMIN_INVITE_PATH = 'admin-invite';
 export const LEAGUE_HALL_OF_FAME_PATH = 'hall-of-fame';
 export const TOURNAMENT_FINAL_RESULTS_PATH = 'final-results';
+export const TOURNAMENT_LOG_PATH = 'log';
 export const EXTERNAL_LINK_PATH = 'external';
 export const STATISTICS_PATH = 'statistics';
 export const TIER_LIST_PATH = 'tier-lists';

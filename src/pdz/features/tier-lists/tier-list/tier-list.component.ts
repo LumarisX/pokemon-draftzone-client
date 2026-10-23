@@ -16,9 +16,31 @@ import {
   viewChild,
 } from '@angular/core';
 import { NgTemplateOutlet } from '@angular/common';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TooltipDirective } from '@pdz/shared/tooltip/tooltip.directive';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
+import { TIER_LIST_PATH } from '@pdz/core/route-paths';
+import { ApiError, toApiError } from '@pdz/core/services/api-error';
+import { apiErrorMessage } from '@pdz/core/services/api.service';
+import { AuthService } from '@pdz/core/services/auth0.service';
+import { RoleService } from '@pdz/core/services/role.service';
+import { LeagueZoneService } from '@pdz/features/league-zone/league-zone.service';
+import { ChipComponent } from '@pdz/shared/data/chip/chip.component';
+import { EmptyStateComponent } from '@pdz/shared/feedback/empty-state/empty-state.component';
+import { ToastService } from '@pdz/shared/feedback/toast/toast.service';
+import { MenuItemComponent } from '@pdz/shared/menu/menu-item.component';
+import {
+  StartTournamentData,
+  StartTournamentDialogComponent,
+} from '../start-tournament-dialog/start-tournament-dialog.component';
+import { ExportList, TierListExportService } from '../tier-list-export.service';
+import { tierListBase } from '../tier-list-links';
+import {
+  ShareDialogData,
+  ShareDialogResult,
+  TierListShareComponent,
+} from '../tier-list-share/tier-list-share.component';
 import { injectIsOrganizer } from '@pdz/features/league-zone/organizer-access';
 import { EventStreamService } from '@pdz/core/services/event-stream.service';
 import { Pokemon } from '@pdz/core/utils/pokemon';
@@ -48,7 +70,7 @@ import { Subject } from 'rxjs';
 import { first, takeUntil } from 'rxjs/operators';
 import { League } from '@pdz/features/league-zone/league.interface';
 import { getTeamLogoSrc } from '@pdz/features/league-zone/league.util';
-import { LeagueTier, TierPokemon } from '../tier-list.model';
+import { LeagueTier, TierListMeta, TierPokemon } from '../tier-list.model';
 import {
   DraftedPick,
   DraftedPools,
@@ -90,10 +112,13 @@ interface DraftPokemonAction {
     SelectComponent,
     SelectOptionComponent,
     MenuComponent,
+    MenuItemComponent,
     MenuTriggerDirective,
     NgTemplateOutlet,
     PageComponent,
     PageHeaderComponent,
+    ChipComponent,
+    EmptyStateComponent,
   ],
   styleUrls: ['./tier-list.component.scss'],
 })
@@ -113,7 +138,168 @@ export class TierListComponent implements OnInit, OnDestroy {
   private coachedTeamIds = new Set<string>();
   tiers = signal<LeagueTier[] | undefined>(undefined);
   ruleset = signal<string | undefined>(undefined);
+  format = signal<string | undefined>(undefined);
+  meta = signal<TierListMeta | null>(null);
+  loadError = signal<'missing' | 'error' | 'none' | null>(null);
   tierListName = signal<string>('Tier List');
+  forking = signal(false);
+  exporting = signal(false);
+
+  private readonly router = inject(Router);
+  private readonly toasts = inject(ToastService);
+  private readonly exporter = inject(TierListExportService);
+  private readonly league = inject(LeagueZoneService);
+  protected readonly isAdmin = toSignal(inject(RoleService).isAdmin$, {
+    initialValue: false,
+  });
+  protected readonly isAuthenticated = toSignal(
+    inject(AuthService).isAuthenticated$,
+    { initialValue: false },
+  );
+  protected readonly inTournament = !!this.league.tournamentSlug();
+  protected readonly tierListPath = TIER_LIST_PATH;
+  protected readonly links = computed(() => {
+    const base = tierListBase(
+      this.league,
+      this.meta()?.slug ?? this.tierListService.tierListId(),
+    );
+    return {
+      edit: [...base, 'edit'],
+      history: [...base, 'history'],
+      compare: [...base, 'compare'],
+    };
+  });
+  protected readonly canEdit = computed(() => {
+    const access = this.meta()?.access;
+    return access === 'edit' || access === 'manage';
+  });
+  protected readonly canShare = computed(() => {
+    const meta = this.meta();
+    return !!meta && !meta.tournament && (meta.access === 'manage' || !!meta.role);
+  });
+  protected readonly headerDetail = computed(() => {
+    const meta = this.meta();
+    const parts: string[] = [];
+    if (meta?.authorName && !meta.tournament) parts.push(`by ${meta.authorName}`);
+    if (this.format()) parts.push(this.format()!);
+    if (this.ruleset()) parts.push(this.ruleset()!);
+    if (meta?.version) parts.push(`version ${meta.version}`);
+    return parts.join(' · ');
+  });
+
+  private exportList(): ExportList {
+    const tiers = this.tiers() ?? [];
+    return {
+      name: this.tierListName(),
+      format: this.format(),
+      ruleset: this.ruleset(),
+      tiers: tiers
+        .filter((tier) => tier.name !== 'Banned')
+        .map((tier) => ({
+          name: tier.name,
+          cost: tier.cost,
+          pokemon: tier.pokemon.map(({ id, name }) => ({ id, name })),
+        })),
+      banned: (tiers.find((tier) => tier.name === 'Banned')?.pokemon ?? []).map(
+        ({ id, name }) => ({ id, name }),
+      ),
+    };
+  }
+
+  protected exportCsv(): void {
+    this.exporter.downloadCsv(this.exportList());
+  }
+
+  protected exportJson(): void {
+    const slug = this.meta()?.slug;
+    if (!slug) return;
+    this.tierListService.exportJson(slug).subscribe({
+      next: (data) => this.exporter.downloadJson(data, this.tierListName()),
+      error: (err) =>
+        this.toasts.error(apiErrorMessage(err, 'Could not export the tier list.')),
+    });
+  }
+
+  protected async exportImage(): Promise<void> {
+    this.exporting.set(true);
+    try {
+      await this.exporter.downloadImage(this.exportList());
+    } catch {
+      this.toasts.error('Could not draw the tier list image.');
+    } finally {
+      this.exporting.set(false);
+    }
+  }
+
+  protected fork(): void {
+    const slug = this.meta()?.slug;
+    if (!slug || this.forking()) return;
+    this.forking.set(true);
+    this.tierListService.fork(slug).subscribe({
+      next: (created) => {
+        this.forking.set(false);
+        this.toasts.success(`Created ${created.name}.`);
+        this.router.navigate(['/', TIER_LIST_PATH, created.slug, 'edit']);
+      },
+      error: (err) => {
+        this.forking.set(false);
+        this.toasts.error(apiErrorMessage(err, 'Could not copy the tier list.'));
+      },
+    });
+  }
+
+  protected startTournament(): void {
+    const slug = this.meta()?.slug;
+    if (!slug) return;
+    this.dialogs.open<StartTournamentDialogComponent, void, StartTournamentData>(
+      StartTournamentDialogComponent,
+      {
+        heading: 'Start a Tournament',
+        subheading: 'Pick the league to host it in.',
+        size: 'sm',
+        data: { slug, name: this.tierListName() },
+      },
+    );
+  }
+
+  protected async share(): Promise<void> {
+    const meta = this.meta();
+    if (!meta) return;
+    const result = await this.dialogs.open<
+      TierListShareComponent,
+      ShareDialogResult,
+      ShareDialogData
+    >(TierListShareComponent, {
+      heading: 'Share',
+      subheading: this.tierListName(),
+      size: 'md',
+      data: {
+        slug: meta.slug,
+        name: this.tierListName(),
+        visibility: meta.visibility,
+        authorName: meta.authorName,
+        canManage: meta.access === 'manage',
+      },
+    }).closed;
+    if (!result) return;
+    if (result.left) {
+      this.router.navigate(['/', TIER_LIST_PATH, 'mine']);
+      return;
+    }
+    this.meta.set({ ...meta, visibility: result.visibility, authorName: result.authorName });
+  }
+
+  protected toggleFeatured(): void {
+    const meta = this.meta();
+    if (!meta) return;
+    this.tierListService.setFeatured(meta.slug, !meta.featured).subscribe({
+      next: ({ featured }) => {
+        this.meta.set({ ...meta, featured });
+        this.toasts.success(featured ? 'Featured.' : 'No longer featured.');
+      },
+      error: (err) => this.toasts.error(apiErrorMessage(err, 'Could not change that.')),
+    });
+  }
   sortBy = signal<SortOption>('BST');
   selectedPool = signal<string | undefined>(undefined);
   searchText = signal<string>('');
@@ -244,14 +430,25 @@ export class TierListComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  private loadTierList(): void {
+  protected loadTierList(): void {
+    this.loadError.set(null);
     this.tierListService
       .getTierList()
       .pipe(first())
-      .subscribe((data) => {
-        this.tiers.set(data.tierList);
-        this.ruleset.set(data.ruleset);
-        if (data.name) this.tierListName.set(data.name);
+      .subscribe({
+        next: (data) => {
+          this.tiers.set(data.tierList);
+          this.ruleset.set(data.ruleset);
+          this.format.set(data.format);
+          this.meta.set(data.meta ?? null);
+          if (data.name) this.tierListName.set(data.name);
+        },
+        error: (err) => {
+          const status = toApiError(err)?.status;
+          this.loadError.set(
+            status === 404 ? 'missing' : err instanceof ApiError ? 'error' : 'none',
+          );
+        },
       });
 
     this.tierListService

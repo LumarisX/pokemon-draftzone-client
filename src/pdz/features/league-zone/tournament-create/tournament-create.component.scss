@@ -39,4 +39,16 @@
     justify-content: flex-end;
     gap: pdz.space(sm);
   }
+
+  &__picked {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: pdz.space(sm);
+  }
+
+  &__picked-name {
+    @include pdz.text(body-sm-strong);
+    margin: 0;
+  }
 }

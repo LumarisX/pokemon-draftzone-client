@@ -1,0 +1,205 @@
+<div class="share">
+  @if (data.canManage) {
+    <section class="share__section" aria-labelledby="share-visibility">
+      <h3 id="share-visibility" class="share__heading">Who Can See It</h3>
+      <pdz-choice-cards
+        aria-labelledby="share-visibility"
+        [ngModel]="visibility()"
+        (ngModelChange)="visibility.set($event)"
+      >
+        <pdz-choice-card
+          value="private"
+          icon="lock"
+          label="Private"
+          description="Only you and the people you invite."
+        />
+        <pdz-choice-card
+          value="unlisted"
+          icon="link"
+          label="Unlisted"
+          description="Anyone with the link can view and copy it. It isn't in search."
+        />
+        <pdz-choice-card
+          value="public"
+          icon="public"
+          label="Public"
+          description="In Find Tier Lists. Anyone can view it and make their own copy."
+        />
+      </pdz-choice-cards>
+
+      @if (visibility() !== 'private') {
+        <label pdz-field label="Show as the Author" [required]="true">
+          <input
+            pdz-input
+            maxlength="40"
+            placeholder="Your name or your league's"
+            [ngModel]="authorName()"
+            (ngModelChange)="authorName.set($event)"
+          />
+          <span pdz-hint>Shown next to the list. It doesn't have to be your account name.</span>
+        </label>
+      }
+
+      <div class="share__actions">
+        @if (savedVisibility() !== 'private') {
+          <button pdz-button variant="ghost" color="neutral" icon="content_copy" (click)="copy(listLink)">
+            Copy Link
+          </button>
+        }
+        <button
+          pdz-button
+          [disabled]="!dirty() || needsAuthor()"
+          [loading]="saving()"
+          (click)="saveVisibility()"
+        >
+          Save
+        </button>
+      </div>
+    </section>
+  }
+
+  <section class="share__section" aria-labelledby="share-people">
+    <h3 id="share-people" class="share__heading">People</h3>
+
+    @if (membersFailed()) {
+      <pdz-empty-state
+        size="sm"
+        kind="error"
+        heading="People didn't load"
+        message="Who this list is shared with didn't come back."
+        retry="event"
+        (retried)="loadMembers()"
+      />
+    } @else if (members(); as people) {
+      <ul class="share__people">
+        <li class="share__person">
+          <span class="share__name">{{ people.owner.name ?? 'Owner' }}</span>
+          <span class="share__role">Owner</span>
+        </li>
+        @for (member of people.members; track member.id) {
+          <li class="share__person">
+            <span class="share__name">{{ member.name ?? 'Unnamed' }}</span>
+            @if (people.canManage) {
+              <div pdz-field class="share__role-select">
+                <pdz-select
+                  size="sm"
+                  [aria-label]="'Role for ' + (member.name ?? 'this person')"
+                  [ngModel]="member.role"
+                  [disabled]="busy() === member.id"
+                  (ngModelChange)="setRole(member.id, $event)"
+                >
+                  <pdz-option value="editor" label="Editor" />
+                  <pdz-option value="viewer" label="Viewer" />
+                </pdz-select>
+              </div>
+              @if (member.role === 'editor') {
+                <button
+                  pdz-button
+                  size="sm"
+                  variant="ghost"
+                  color="neutral"
+                  (click)="transfer(member)"
+                >
+                  Make Owner
+                </button>
+              }
+              <button
+                pdz-button
+                size="sm"
+                variant="ghost"
+                color="danger"
+                iconOnly
+                icon="person_remove"
+                [attr.aria-label]="'Remove ' + (member.name ?? 'this person')"
+                [loading]="busy() === member.id"
+                (click)="remove(member)"
+              ></button>
+            } @else {
+              <span class="share__role">{{ member.role === 'editor' ? 'Editor' : 'Viewer' }}</span>
+              @if (member.you) {
+                <button pdz-button size="sm" variant="ghost" color="danger" (click)="remove(member)">
+                  Leave
+                </button>
+              }
+            }
+          </li>
+        }
+      </ul>
+
+      @if (people.canManage) {
+        <div class="share__invite">
+          <h4 class="share__subheading">Invite Someone</h4>
+          <p class="share__meta">
+            Send them a link. It works for 7 days. They choose the name others see.
+          </p>
+          <div class="share__invite-row">
+            <pdz-segmented
+              size="sm"
+              aria-label="Role for the invite"
+              [ngModel]="inviteRole()"
+              (ngModelChange)="inviteRole.set($event)"
+            >
+              <pdz-segmented-option value="editor" label="Can Edit" />
+              <pdz-segmented-option value="viewer" label="Can View" />
+            </pdz-segmented>
+            <div pdz-field class="share__uses" label="Uses">
+              <pdz-select
+                size="sm"
+                aria-label="How many people can use the link"
+                [ngModel]="inviteUses()"
+                (ngModelChange)="inviteUses.set($event)"
+              >
+                <pdz-option [value]="1" label="1 person" />
+                <pdz-option [value]="5" label="5 people" />
+                <pdz-option [value]="25" label="25 people" />
+              </pdz-select>
+            </div>
+            <button pdz-button icon="add_link" [loading]="creating()" (click)="createInvite()">
+              Make Link
+            </button>
+          </div>
+
+          @if (freshLink(); as link) {
+            <div class="share__fresh">
+              <input pdz-input size="sm" readonly aria-label="Invite link" [value]="link" />
+              <button pdz-button size="sm" variant="outlined" color="neutral" icon="content_copy" (click)="copy(link)">
+                Copy
+              </button>
+            </div>
+            <p class="share__meta">This is the only time the link is shown. Copy it now.</p>
+          }
+
+          @if (people.invites.length) {
+            <ul class="share__people">
+              @for (invite of people.invites; track invite.id) {
+                <li class="share__person">
+                  <span class="share__name">
+                    {{ invite.role === 'editor' ? 'Can edit' : 'Can view' }} ·
+                    {{ invite.uses }} of {{ invite.maxUses }} used
+                  </span>
+                  <span class="share__meta">until {{ invite.expiresAt | date: 'mediumDate' }}</span>
+                  <button
+                    pdz-button
+                    size="sm"
+                    variant="ghost"
+                    color="danger"
+                    [loading]="busy() === invite.id"
+                    (click)="revoke(invite.id)"
+                  >
+                    Revoke
+                  </button>
+                </li>
+              }
+            </ul>
+          }
+        </div>
+      }
+    } @else {
+      <pdz-skeleton-layout layout="list" [count]="2" />
+    }
+  </section>
+
+  <div class="pdz-dialog-actions">
+    <button pdz-button variant="outlined" color="neutral" (click)="close()">Done</button>
+  </div>
+</div>
