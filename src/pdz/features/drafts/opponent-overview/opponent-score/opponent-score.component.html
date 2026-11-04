@@ -24,6 +24,12 @@
     />
 
     @if (!isForfeit()) {
+      @if (hasKoMap) {
+        <p class="score__note">
+          Some games were entered on the KO map. Their arrows are kept if you
+          save without changing who was brought, who fainted or the KO counts.
+        </p>
+      }
       <div class="score__games">
         @for (game of gameControls; track $index) {
           <pdz-score-entry-game

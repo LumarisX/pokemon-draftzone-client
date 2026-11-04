@@ -224,6 +224,10 @@ export class OpponentScoreComponent implements OnInit, OnDestroy {
     }, {});
   }
 
+  get hasKoMap(): boolean {
+    return !!this.matchup?.matches.some((match) => match.kos);
+  }
+
   get match(): ScoreEntryMatchForm {
     return this.form!.controls.match;
   }

@@ -1,9 +1,9 @@
 <div class="graph">
   <div class="graph__bar">
     <p class="graph__hint">
-      Click a Pokémon to cycle benched → survived → fainted. Drag from the
-      attacker onto the Pokémon it knocked out. Click an arrow to mark the KO
-      indirect.
+      Tap who played to bring them in, then tap again to cycle survived →
+      fainted → back. Drag from the attacker onto the Pokémon it knocked out.
+      Tap an arrow to mark the KO indirect.
     </p>
     <button
       pdz-button
@@ -34,20 +34,26 @@
             >{{ tally()[side].played }} up ·
             {{ tally()[side].fainted }} down</span
           >
-          <button
-            pdz-button
-            size="xs"
-            variant="ghost"
-            color="neutral"
-            type="button"
-            (click)="fill(side)"
-          >
-            Mark All Played
-          </button>
+          @if (tray()[side].length) {
+            <button
+              pdz-button
+              size="xs"
+              variant="ghost"
+              color="neutral"
+              type="button"
+              (click)="fill(side)"
+            >
+              All Played
+            </button>
+          }
         </header>
 
+        @if (!nodes()[side].length) {
+          <p class="column__empty">No team sheet.</p>
+        }
+
         <div class="column__list">
-          @for (node of nodes()[side]; track node.key) {
+          @for (node of lineup()[side]; track node.key) {
             <div
               class="mon"
               #monCard
@@ -67,9 +73,6 @@
                 size="md"
                 [pokemon]="node.pokemon"
                 [flipped]="side === 'side1'"
-                [disabled]="
-                  node.state === 'benched' || node.state === 'preview'
-                "
                 [state]="node.state === 'fainted' ? 'fainted' : null"
                 [showFormes]="false"
               />
@@ -84,31 +87,41 @@
                   node.kos
                 }}</span>
               }
-
-              @if (node.state === "benched" || node.state === "preview") {
-                <button
-                  pdz-button
-                  class="mon__preview"
-                  iconOnly
-                  size="xs"
-                  variant="ghost"
-                  color="neutral"
-                  type="button"
-                  [pdzTooltip]="
-                    node.state === 'preview'
-                      ? 'Clear team preview'
-                      : 'Team preview only'
-                  "
-                  [attr.aria-label]="'Team preview only: ' + node.label"
-                  (pointerdown)="$event.stopPropagation()"
-                  (click)="onPreview($event, node.key)"
-                >
-                  <pdz-icon name="visibility" [size]="14" />
-                </button>
-              }
             </div>
           }
         </div>
+
+        @if (tray()[side].length) {
+          <div class="tray">
+            <span class="tray__label">In the Back</span>
+            <div class="tray__list">
+              @for (node of tray()[side]; track node.key) {
+                <div
+                  class="tray__mon"
+                  #monCard
+                  role="button"
+                  tabindex="0"
+                  [attr.data-ko-key]="node.key"
+                  [attr.data-ko-side]="side"
+                  [attr.aria-label]="node.label + ': ' + stateLabels[node.state]"
+                  [pdzTooltip]="node.label"
+                  [class.tray__mon--source]="dragSource() === node.key"
+                  [class.tray__mon--target]="dragTarget() === node.key"
+                  (pointerdown)="onPointerDown($event, node.key)"
+                  (keydown)="onCardKey($event, node.key)"
+                >
+                  <pdz-sprite
+                    size="sm"
+                    [pokemon]="node.pokemon"
+                    [flipped]="side === 'side1'"
+                    [disabled]="true"
+                    [showFormes]="false"
+                  />
+                </div>
+              }
+            </div>
+          </div>
+        }
       </div>
     }
 
@@ -181,6 +194,7 @@
               size="xs"
               class="chip__input"
               placeholder="Move or cause"
+              [maxLength]="noteMaxLength"
               [value]="wire.note"
               (keydown)="onNoteKey($event, wire.to, wire.note)"
               (blur)="onNoteCommit(wire.to, $any($event.target).value)"

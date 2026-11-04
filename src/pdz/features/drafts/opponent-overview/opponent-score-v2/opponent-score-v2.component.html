@@ -26,6 +26,30 @@
       </a>
     </div>
 
+    <pdz-widget fill label="Team Sheets">
+      <div widget-options>
+        <button
+          pdz-button
+          size="xs"
+          variant="ghost"
+          color="neutral"
+          type="button"
+          (click)="editingSheets.set(!editingSheets())"
+        >
+          <pdz-icon [name]="editingSheets() ? 'check' : 'edit'" [size]="14" />
+          <span>{{ editingSheets() ? "Done" : "Edit" }}</span>
+        </button>
+      </div>
+
+      <pdz-team-sheets
+        [rosters]="rosters()"
+        [sideNames]="sideNames()"
+        [editing]="editingSheets()"
+        [sheets]="sheets()"
+        (sheetsChange)="setSheets($event)"
+      />
+    </pdz-widget>
+
     @for (game of games(); track $index) {
       <pdz-widget fill [label]="'Game ' + ($index + 1)">
         <div widget-options class="game__options">
@@ -54,10 +78,10 @@
               pdz-button
               iconOnly
               size="xs"
-              color="secondary"
+              color="neutral"
               variant="ghost"
               type="button"
-              aria-label="Fill the KO map from this replay"
+              aria-label="Fill this game from the replay"
               [disabled]="analyzingIndex() !== null"
               (click)="analyze($index)"
             >
@@ -88,11 +112,19 @@
         </div>
 
         <pdz-ko-graph
-          [rosters]="rosters()"
+          [sheets]="sheetRosters()"
           [sideNames]="sideNames()"
           [graph]="game.graph"
           (graphChange)="setGraph($index, $event)"
         />
+
+        @if (classicKoCount(game); as count) {
+          <p class="score__note">
+            Classic Entry recorded {{ count }} {{ count === 1 ? "KO" : "KOs" }}
+            in this game without arrows. They are kept until you draw an arrow
+            here; after that, only the arrows count.
+          </p>
+        }
       </pdz-widget>
     }
 
@@ -105,12 +137,6 @@
     @if (saveError()) {
       <p class="score__error">{{ saveError() }}</p>
     }
-
-    <p class="score__note">
-      Saving records the same numbers as the classic page — statuses and
-      direct/indirect/teammate KO counts. Who KO'd whom and the arrow notes stay
-      in this page for now; the API has nowhere to keep them.
-    </p>
 
     <div class="score__footer">
       <button

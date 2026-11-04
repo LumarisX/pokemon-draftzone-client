@@ -146,18 +146,6 @@
     @include pdz.focus-ring;
   }
 
-  &[data-state="benched"] {
-    border-style: dashed;
-    background-color: transparent;
-    opacity: 0.6;
-  }
-
-  &[data-state="preview"] {
-    border-style: dashed;
-    border-color: pdz.color(outline);
-    opacity: 0.85;
-  }
-
   &[data-state="played"] {
     border-color: pdz.color(team1-border);
   }
@@ -231,17 +219,69 @@
   color: pdz.color(on-team2);
 }
 
-.mon__preview {
-  position: absolute;
-  top: pdz.space(3xs);
-  inset-inline-end: pdz.space(3xs);
-  opacity: 0;
-  transition: opacity pdz.duration(fast) pdz.easing(standard);
+.column__empty {
+  margin: 0;
+  color: pdz.color(on-surface-muted);
+  @include pdz.text(body-sm);
+}
 
-  .mon:hover &,
-  .mon:focus-within &,
-  .mon[data-state="preview"] & {
-    opacity: 1;
+.tray {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(2xs);
+  width: 100%;
+  max-width: 15rem;
+  margin-top: pdz.space(sm);
+
+  .column[data-side="side1"] & {
+    align-items: flex-end;
+  }
+}
+
+.tray__label {
+  color: pdz.color(on-surface-muted);
+  @include pdz.text(label-caps);
+}
+
+.tray__list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: pdz.space(3xs);
+
+  .column[data-side="side1"] & {
+    justify-content: flex-end;
+  }
+}
+
+.tray__mon {
+  display: grid;
+  place-items: center;
+  padding: pdz.space(3xs);
+  border-radius: pdz.shape(corner-sm);
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+  transition: background-color pdz.duration(fast) pdz.easing(standard);
+
+  &:hover {
+    background-color: pdz.color(state-hover);
+  }
+
+  &:focus-visible {
+    @include pdz.focus-ring;
+  }
+
+  pdz-sprite {
+    pointer-events: none;
+  }
+
+  &--source {
+    background-color: pdz.color(state-pressed);
+  }
+
+  &--target {
+    background-color: pdz.color(team1-container-low);
+    box-shadow: 0 0 0 1px pdz.color(team1-accent);
   }
 }
 

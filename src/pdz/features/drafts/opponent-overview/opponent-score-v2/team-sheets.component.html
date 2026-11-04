@@ -1,0 +1,47 @@
+<div class="sheets">
+  @for (side of sides; track side) {
+    <section class="sheet" [attr.data-side]="side">
+      <header class="sheet__head">
+        <h3 class="sheet__name">{{ sideNames()[side] }}</h3>
+        <span class="sheet__count"
+          >{{ sheets()[side].length }} of {{ max }}</span
+        >
+      </header>
+
+      @if (editing()) {
+        <ul class="sheet__picker">
+          @for (pick of picks()[side]; track pick.key) {
+            <li>
+              <button
+                type="button"
+                class="pick"
+                [class.pick--picked]="pick.picked"
+                [attr.aria-pressed]="pick.picked"
+                [attr.aria-label]="pick.label"
+                [disabled]="!pick.picked && isFull(side)"
+                [pdzTooltip]="pick.label"
+                (click)="toggle(side, pick.key)"
+              >
+                <pdz-sprite
+                  size="md"
+                  [pokemon]="pick.pokemon"
+                  [state]="pick.picked ? null : 'benched'"
+                  [showFormes]="false"
+                />
+              </button>
+            </li>
+          }
+        </ul>
+      } @else if (picked()[side].length) {
+        <pdz-roster-sprites
+          [pokemon]="picked()[side]"
+          [name]="sideNames()[side]"
+        />
+      } @else {
+        <p class="sheet__empty">
+          Not set. Leave it empty if you don't know what they brought.
+        </p>
+      }
+    </section>
+  }
+</div>

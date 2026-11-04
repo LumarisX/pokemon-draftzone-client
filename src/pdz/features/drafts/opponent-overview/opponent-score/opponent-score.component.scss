@@ -16,6 +16,12 @@
   gap: pdz.space(md);
 }
 
+.score__note {
+  @include pdz.text(body-sm);
+  margin: 0;
+  color: pdz.color(on-surface-muted);
+}
+
 .score__error {
   @include pdz.text(label, $family: false);
   margin: 0;

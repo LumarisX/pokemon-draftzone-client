@@ -36,9 +36,12 @@ import { KoGraphComponent, KoGraphRosters } from './ko-graph.component';
 import {
   KO_SIDES,
   KoGraph,
+  KoKills,
+  KoSheets,
   KoSide,
-  carriedKoGraph,
   emptyKoGraph,
+  emptyKoSheets,
+  keepSheet,
   koGraphFromStatuses,
   koGraphWinner,
   koIdOf,
@@ -46,16 +49,33 @@ import {
   koKills,
   koStatus,
   koSurvivors,
+  kosFromKoGraph,
+  mergeSheet,
+  orderedSheet,
 } from './ko-graph.model';
 import { koGraphFromReplay } from './ko-graph.replay';
+import { TeamSheetsComponent } from './team-sheets.component';
 
 type KoGame = {
   link: string;
   graph: KoGraph;
   winner: KoSide | null;
+  classicKills: Record<string, KoKills> | null;
 };
 
 const SIDE_OF: Record<KoSide, MatchSide> = { side1: 'a', side2: 'b' };
+
+const NO_KILLS: KoKills = { direct: 0, indirect: 0, teammate: 0 };
+
+function newGame(): KoGame {
+  return { link: '', graph: emptyKoGraph(), winner: null, classicKills: null };
+}
+
+function usesClassicKills(
+  game: KoGame,
+): game is KoGame & { classicKills: Record<string, KoKills> } {
+  return game.classicKills !== null && game.graph.edges.length === 0;
+}
 
 @Component({
   selector: 'pdz-opponent-score-v2',
@@ -71,6 +91,7 @@ const SIDE_OF: Record<KoSide, MatchSide> = { side1: 'a', side2: 'b' };
     PageComponent,
     PageHeaderComponent,
     RouterModule,
+    TeamSheetsComponent,
     WidgetComponent,
   ],
 })
@@ -82,13 +103,14 @@ export class OpponentScoreV2Component implements OnInit, OnDestroy {
   private readonly destroy$ = new Subject<void>();
 
   private readonly area = inject(DRAFT_AREA);
-  protected readonly sides = KO_SIDES;
 
   protected teamId = '';
   protected draftPage: string[] = [];
   protected matchupId = '';
 
   protected readonly matchup = signal<Matchup | null>(null);
+  protected readonly sheets = signal<KoSheets>(emptyKoSheets());
+  protected readonly editingSheets = signal(false);
   protected readonly games = signal<KoGame[]>([]);
   protected readonly saving = signal(false);
   protected readonly saveError = signal<string | null>(null);
@@ -106,12 +128,22 @@ export class OpponentScoreV2Component implements OnInit, OnDestroy {
     };
   });
 
-  protected readonly keys = computed<Record<KoSide, string[]>>(() => {
+  private readonly rosterKeys = computed<Record<KoSide, string[]>>(() => {
     const rosters = this.rosters();
     return {
       side1: rosters.side1.map((pokemon) => koKey('side1', pokemon.id)),
       side2: rosters.side2.map((pokemon) => koKey('side2', pokemon.id)),
     };
+  });
+
+  protected readonly sheetRosters = computed<KoGraphRosters>(() => {
+    const rosters = this.rosters();
+    const sheets = this.sheets();
+    const only = (side: KoSide) =>
+      rosters[side].filter((pokemon) =>
+        sheets[side].includes(koKey(side, pokemon.id)),
+      );
+    return { side1: only('side1'), side2: only('side2') };
   });
 
   protected readonly sideNames = computed<Record<KoSide, string>>(() => {
@@ -161,16 +193,25 @@ export class OpponentScoreV2Component implements OnInit, OnDestroy {
   }
 
   protected gameWinner(game: KoGame): KoSide | null {
-    return game.winner ?? koGraphWinner(game.graph, this.keys());
+    return game.winner ?? koGraphWinner(game.graph, this.sheets());
   }
 
   protected gameScore(game: KoGame, side: KoSide): number {
-    return koSurvivors(game.graph, this.keys()[side]);
+    return koSurvivors(game.graph, this.sheets()[side]);
+  }
+
+  protected setSheets(sheets: KoSheets): void {
+    this.sheets.set(sheets);
+    this.games.update((games) =>
+      games.map((game) => ({ ...game, graph: keepSheet(game.graph, sheets) })),
+    );
   }
 
   protected setGraph(index: number, graph: KoGraph): void {
     this.games.update((games) =>
-      games.map((game, i) => (i === index ? { ...game, graph } : game)),
+      games.map((game, i) =>
+        i === index ? { ...game, graph, winner: null } : game,
+      ),
     );
   }
 
@@ -184,26 +225,22 @@ export class OpponentScoreV2Component implements OnInit, OnDestroy {
     return isReplayUrl(game.link);
   }
 
+  protected classicKoCount(game: KoGame): number {
+    if (!usesClassicKills(game)) return 0;
+    return Object.values(game.classicKills).reduce(
+      (total, kills) => total + kills.direct + kills.indirect + kills.teammate,
+      0,
+    );
+  }
+
   protected addGame(): void {
-    this.games.update((games) => {
-      const previous = games[games.length - 1];
-      return [
-        ...games,
-        {
-          link: '',
-          graph: previous ? carriedKoGraph(previous.graph) : emptyKoGraph(),
-          winner: null,
-        },
-      ];
-    });
+    this.games.update((games) => [...games, newGame()]);
   }
 
   protected removeGame(index: number): void {
     this.games.update((games) => {
       const next = games.filter((_, i) => i !== index);
-      return next.length
-        ? next
-        : [{ link: '', graph: emptyKoGraph(), winner: null }];
+      return next.length ? next : [newGame()];
     });
   }
 
@@ -226,10 +263,22 @@ export class OpponentScoreV2Component implements OnInit, OnDestroy {
             this.analysisError.set('That replay does not have two players.');
             return;
           }
+          const current = this.sheets();
+          const keys = this.rosterKeys();
+          this.setSheets({
+            side1: mergeSheet(current.side1, keys.side1, result.sheets.side1),
+            side2: mergeSheet(current.side2, keys.side2, result.sheets.side2),
+          });
+          const sheets = this.sheets();
           this.games.update((games) =>
             games.map((entry, i) =>
               i === index
-                ? { ...entry, graph: result.graph, winner: result.winner }
+                ? {
+                    ...entry,
+                    graph: keepSheet(result.graph, sheets),
+                    winner: result.winner,
+                    classicKills: null,
+                  }
                 : entry,
             ),
           );
@@ -274,23 +323,42 @@ export class OpponentScoreV2Component implements OnInit, OnDestroy {
       side1: toRosterEntries(matchup.aTeam.team),
       side2: toRosterEntries(matchup.bTeam.team),
     };
+
+    const keys = this.rosterKeys();
+    const brought = (side: KoSide, team: (match: Match) => MatchTeam) =>
+      orderedSheet(
+        keys[side],
+        matchup.matches.flatMap((match) =>
+          (team(match)?.stats ?? []).map(([id]) => koKey(side, id)),
+        ),
+      );
+    const sheets: KoSheets = {
+      side1: brought('side1', (match) => match.aTeam),
+      side2: brought('side2', (match) => match.bTeam),
+    };
+    this.sheets.set(sheets);
+    this.editingSheets.set(!sheets.side1.length && !sheets.side2.length);
+
     this.games.set(
       matchup.matches.length
-        ? matchup.matches.map((match) => this.seed(match))
-        : [{ link: '', graph: emptyKoGraph(), winner: null }],
+        ? matchup.matches.map((match) => this.seed(match, sheets))
+        : [newGame()],
     );
   }
 
-  private seed(match: Match): KoGame {
+  private seed(match: Match, sheets: KoSheets): KoGame {
     const entries = [
       ...this.statusEntries('side1', match.aTeam),
       ...this.statusEntries('side2', match.bTeam),
     ];
+    const graph = keepSheet(koGraphFromStatuses(entries, match.kos), sheets);
+    const stored =
+      match.winner === 'a' ? 'side1' : match.winner === 'b' ? 'side2' : null;
     return {
       link: match.replay ?? '',
-      graph: koGraphFromStatuses(entries),
-      winner:
-        match.winner === 'a' ? 'side1' : match.winner === 'b' ? 'side2' : null,
+      graph,
+      winner: stored === koGraphWinner(graph, sheets) ? null : stored,
+      classicKills: match.kos ? null : this.classicKills(match),
     };
   }
 
@@ -301,6 +369,26 @@ export class OpponentScoreV2Component implements OnInit, OnDestroy {
         stat.status ??
         (stat.deaths ? 'fainted' : stat.brought ? 'survived' : 'brought'),
     }));
+  }
+
+  private classicKills(match: Match): Record<string, KoKills> | null {
+    const kills: Record<string, KoKills> = {};
+    let any = false;
+    for (const [side, team] of [
+      ['side1', match.aTeam],
+      ['side2', match.bTeam],
+    ] as const) {
+      for (const [id, stat] of team?.stats ?? []) {
+        const entry = {
+          direct: stat.kills ?? 0,
+          indirect: stat.indirect ?? 0,
+          teammate: stat.teammate ?? 0,
+        };
+        if (entry.direct || entry.indirect || entry.teammate) any = true;
+        kills[koKey(side, id)] = entry;
+      }
+    }
+    return any ? kills : null;
   }
 
   private buildPayload(matchup: Matchup): ScorePatch {
@@ -315,6 +403,9 @@ export class OpponentScoreV2Component implements OnInit, OnDestroy {
           bTeam: this.teamPayload(game, 'side2'),
           ...(link ? { replay: link } : {}),
           ...(winner ? { winner: SIDE_OF[winner] } : {}),
+          ...(usesClassicKills(game)
+            ? {}
+            : { kos: kosFromKoGraph(game.graph) }),
         };
       }),
       scoreOverride: matchup.scoreOverride ?? null,
@@ -324,21 +415,20 @@ export class OpponentScoreV2Component implements OnInit, OnDestroy {
   }
 
   private teamPayload(game: KoGame, side: KoSide): MatchTeam {
-    const stats = this.keys()[side].reduce<MatchStatTuple[]>((acc, key) => {
-      const status = koStatus(game.graph, key);
-      if (!status) return acc;
-      const kills = koKills(game.graph, key);
-      acc.push([
+    const stats = this.sheets()[side].map<MatchStatTuple>((key) => {
+      const kills = usesClassicKills(game)
+        ? (game.classicKills[key] ?? NO_KILLS)
+        : koKills(game.graph, key);
+      return [
         koIdOf(key),
         {
           kills: kills.direct,
           indirect: kills.indirect,
           teammate: kills.teammate,
-          status,
+          status: koStatus(game.graph, key),
         },
-      ]);
-      return acc;
-    }, []);
+      ];
+    });
 
     return { stats, score: this.gameScore(game, side) };
   }

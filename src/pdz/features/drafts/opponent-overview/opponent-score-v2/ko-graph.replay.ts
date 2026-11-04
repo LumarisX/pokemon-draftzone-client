@@ -21,6 +21,7 @@ import {
 
 export type KoReplayResult = {
   graph: KoGraph;
+  sheets: Record<KoSide, string[]>;
   winner: KoSide | null;
   attributed: number;
   total: number;
@@ -52,6 +53,7 @@ export function koGraphFromReplay(
 
   const states: Record<string, KoNodeState> = {};
   const lookup = new Map<string, string>();
+  const sheets: Record<KoSide, string[]> = { side1: [], side2: [] };
 
   for (const side of KO_SIDES) {
     const player = players[order[side] - 1];
@@ -59,6 +61,7 @@ export function koGraphFromReplay(
     for (const [rosterKey, mon] of matched) {
       const key = koKey(side, rosterKey);
       states[key] = koStateFromStatus(mon.status);
+      sheets[side].push(key);
       for (const id of replayFormeIds(mon)) lookup.set(`${side}:${id}`, key);
     }
   }
@@ -79,7 +82,7 @@ export function koGraphFromReplay(
         : undefined;
 
     const from = ko.self || !attacker ? victim : attacker;
-    if (from !== victim && !koIsPlaying(states[from] ?? 'benched')) {
+    if (from !== victim && !koIsPlaying(states[from] ?? 'back')) {
       states[from] = 'played';
     }
 
@@ -95,6 +98,7 @@ export function koGraphFromReplay(
 
   return {
     graph: { states, edges: wires },
+    sheets,
     winner: players[order.side1 - 1].win
       ? 'side1'
       : players[order.side2 - 1].win

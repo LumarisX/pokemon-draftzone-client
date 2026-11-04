@@ -13,6 +13,7 @@ import {
   viewChildren,
 } from '@angular/core';
 import { DraftOptions, Pokemon } from '@pdz/core/utils/pokemon';
+import { KO_NOTE_MAX_LENGTH } from '@pdz/features/drafts/matchup-overview/matchup.model';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
@@ -26,16 +27,16 @@ import {
   KoSide,
   cycleKoState,
   emptyKoGraph,
+  koCountBy,
+  koIsPlaying,
   koKey,
   koSideOf,
   koState,
-  koCountBy,
   linkKo,
   outgoingKos,
   setKoNote,
   setKoState,
   toggleKoIndirect,
-  toggleKoPreview,
   unlinkKo,
 } from './ko-graph.model';
 
@@ -137,7 +138,7 @@ function labelPoint(
   ],
 })
 export class KoGraphComponent {
-  readonly rosters = input.required<KoGraphRosters>();
+  readonly sheets = input.required<KoGraphRosters>();
   readonly sideNames = input<Record<KoSide, string>>({
     side1: 'Team A',
     side2: 'Team B',
@@ -166,13 +167,14 @@ export class KoGraphComponent {
   protected readonly sides = KO_SIDES;
   protected readonly tones = ['side1', 'side2', 'team', 'self'] as const;
   protected readonly stateLabels = KO_STATE_LABELS;
+  protected readonly noteMaxLength = KO_NOTE_MAX_LENGTH;
   protected readonly markerSuffix = `ko-${++instances}`;
 
   protected readonly hovered = signal<string | null>(null);
   protected readonly editing = signal<string | null>(null);
 
   protected readonly keys = computed<Record<KoSide, string[]>>(() => {
-    const rosters = this.rosters();
+    const rosters = this.sheets();
     return {
       side1: rosters.side1.map((pokemon) => koKey('side1', pokemon.id)),
       side2: rosters.side2.map((pokemon) => koKey('side2', pokemon.id)),
@@ -181,7 +183,7 @@ export class KoGraphComponent {
 
   protected readonly nodes = computed<Record<KoSide, NodeView[]>>(() => {
     const graph = this.graph();
-    const rosters = this.rosters();
+    const rosters = this.sheets();
     const build = (side: KoSide): NodeView[] =>
       rosters[side].map((pokemon) => {
         const key = koKey(side, pokemon.id);
@@ -272,6 +274,22 @@ export class KoGraphComponent {
       .filter((wire): wire is Wire => wire !== null);
   });
 
+  protected readonly lineup = computed<Record<KoSide, NodeView[]>>(() => {
+    const nodes = this.nodes();
+    return {
+      side1: nodes.side1.filter((node) => koIsPlaying(node.state)),
+      side2: nodes.side2.filter((node) => koIsPlaying(node.state)),
+    };
+  });
+
+  protected readonly tray = computed<Record<KoSide, NodeView[]>>(() => {
+    const nodes = this.nodes();
+    return {
+      side1: nodes.side1.filter((node) => !koIsPlaying(node.state)),
+      side2: nodes.side2.filter((node) => !koIsPlaying(node.state)),
+    };
+  });
+
   protected readonly dragLine = computed<string | null>(() => {
     const drag = this.drag();
     if (!drag) return null;
@@ -294,7 +312,6 @@ export class KoGraphComponent {
     const of = (side: KoSide) => ({
       played: koCountBy(graph, keys[side], 'played'),
       fainted: koCountBy(graph, keys[side], 'fainted'),
-      preview: koCountBy(graph, keys[side], 'preview'),
     });
     return { side1: of('side1'), side2: of('side2') };
   });
@@ -305,7 +322,7 @@ export class KoGraphComponent {
 
     effect(() => {
       this.cards();
-      this.rosters();
+      this.sheets();
       observer.disconnect();
       observer.observe(this.board().nativeElement);
       this.measure();
@@ -395,11 +412,6 @@ export class KoGraphComponent {
     return `url(#${this.markerSuffix}-${wire.tone})`;
   }
 
-  protected onPreview(event: Event, key: string): void {
-    event.stopPropagation();
-    this.graph.update((graph) => toggleKoPreview(graph, key));
-  }
-
   protected onWireClick(to: string): void {
     this.editing.set(null);
     this.graph.update((graph) => toggleKoIndirect(graph, to));
@@ -437,9 +449,9 @@ export class KoGraphComponent {
     this.graph.update((graph) =>
       keys.reduce(
         (next, key) =>
-          koState(next, key) === 'benched'
-            ? setKoState(next, key, 'played')
-            : next,
+          koIsPlaying(koState(next, key))
+            ? next
+            : setKoState(next, key, 'played'),
         graph,
       ),
     );

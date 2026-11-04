@@ -42,11 +42,26 @@ export type MatchTeam = {
   score: number;
 };
 
+export type MatchPokemonRef = {
+  team: MatchSide;
+  pokemon: string;
+};
+
+export type MatchKo = {
+  victim: MatchPokemonRef;
+  attacker?: MatchPokemonRef;
+  indirect: boolean;
+  note?: string;
+};
+
+export const KO_NOTE_MAX_LENGTH = 200;
+
 export type Match = {
   aTeam: MatchTeam;
   bTeam: MatchTeam;
   replay?: string;
   winner?: MatchSide | null;
+  kos?: MatchKo[];
 };
 
 export type ScorePatch = {
@@ -57,6 +72,7 @@ export type ScorePatch = {
     bTeam: MatchTeam;
     replay?: string;
     winner?: MatchSide;
+    kos?: MatchKo[];
   }[];
   scoreOverride: [number, number] | null;
   winnerOverride: MatchSide | null;

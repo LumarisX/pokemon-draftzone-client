@@ -1,0 +1,97 @@
+@use "pdz-theming" as pdz;
+
+:host {
+  display: block;
+}
+
+.sheets {
+  display: grid;
+  gap: pdz.layout(section-gap);
+
+  @include pdz.respond-above(medium) {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.sheet {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.layout(stack);
+  min-width: 0;
+}
+
+.sheet__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: pdz.space(sm);
+}
+
+.sheet__name {
+  margin: 0;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: pdz.color(on-surface);
+  @include pdz.text(card-title);
+}
+
+.sheet__count {
+  flex: 0 0 auto;
+  color: pdz.color(on-surface-muted);
+  @include pdz.text(meta);
+  @include pdz.numeric;
+}
+
+.sheet__picker {
+  display: flex;
+  flex-wrap: wrap;
+  gap: pdz.space(2xs);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.pick {
+  display: grid;
+  place-items: center;
+  padding: pdz.space(2xs);
+  border: 0;
+  border-radius: pdz.shape(corner-md);
+  background-color: transparent;
+  cursor: pointer;
+  transition: background-color pdz.duration(fast) pdz.easing(standard);
+
+  &:hover:not(:disabled) {
+    background-color: pdz.color(state-hover);
+  }
+
+  &:focus-visible {
+    @include pdz.focus-ring;
+  }
+
+  &:disabled {
+    cursor: not-allowed;
+  }
+}
+
+.sheet[data-side="side1"] .pick--picked {
+  &,
+  &:hover:not(:disabled) {
+    background-color: pdz.color(team1-subtle);
+  }
+}
+
+.sheet[data-side="side2"] .pick--picked {
+  &,
+  &:hover:not(:disabled) {
+    background-color: pdz.color(team2-subtle);
+  }
+}
+
+.sheet__empty {
+  margin: 0;
+  color: pdz.color(on-surface-muted);
+  @include pdz.text(body-sm);
+}
