@@ -15,28 +15,20 @@ import { ChoiceDirective } from '@pdz/shared/inputs/choice/choice.directive';
 import { DisclosureComponent } from '@pdz/shared/layout/disclosure/disclosure.component';
 import { FormsModule } from '@angular/forms';
 import { RouterLink } from '@angular/router';
-import { HttpEventType, HttpResponse } from '@angular/common/http';
-import { catchError, finalize, of, switchMap, tap } from 'rxjs';
+import { finalize } from 'rxjs';
 import { DialogService } from '@pdz/shared/dialogs/dialog/dialog.service';
 import { ToastService } from '@pdz/shared/feedback/toast/toast.service';
 import { apiErrorMessage } from '@pdz/core/services/api.service';
-import { UploadService } from '@pdz/core/services/upload.service';
 import { MenuItemComponent } from '@pdz/shared/menu/menu-item.component';
 import { MenuTriggerDirective } from '@pdz/shared/menu/menu-trigger.directive';
 import { MenuComponent } from '@pdz/shared/menu/menu.component';
 import { LeagueZoneService } from '../league-zone.service';
 import { LeagueManageService } from '../league-manage/league-manage.service';
-import { getLeagueLogoUrl } from '../league.util';
 import {
   CoachEditDialogComponent,
   CoachEditDialogData,
   CoachEditDialogResult,
 } from '../dialogs/coach-edit-dialog/coach-edit-dialog.component';
-import {
-  TeamEditDialogComponent,
-  TeamEditDialogData,
-  TeamEditDialogResult,
-} from '../dialogs/team-edit-dialog/team-edit-dialog.component';
 import {
   ReplaceCoachDialogComponent,
   ReplaceCoachDialogData,
@@ -87,7 +79,6 @@ export class ApplicantsPanelComponent {
   protected readonly store = inject(TournamentSettingsStore);
   private readonly league = inject(LeagueZoneService);
   private readonly manage = inject(LeagueManageService);
-  private readonly uploads = inject(UploadService);
   private readonly dialogs = inject(DialogService);
   private readonly toast = inject(ToastService);
 
@@ -313,42 +304,6 @@ export class ApplicantsPanelComponent {
     });
   }
 
-  protected async editTeam(entry: SignUpValue): Promise<void> {
-    const result = await this.dialogs.open<
-      TeamEditDialogComponent,
-      TeamEditDialogResult,
-      TeamEditDialogData
-    >(TeamEditDialogComponent, {
-      heading: 'Edit Team Info',
-      data: {
-        teamName: entry.teamName,
-        logoUrl: entry.logo ? getLeagueLogoUrl(entry.logo) : undefined,
-      },
-    }).closed;
-    if (!result) return;
-
-    if (result.teamName !== entry.teamName) this.rename(entry, result.teamName);
-    if (result.logoFile) this.sendLogo(entry, result.logoFile);
-  }
-
-  private rename(entry: SignUpValue, teamName: string): void {
-    const teamSlug = entry.teamSlug;
-    if (!teamSlug) return;
-    this.busyId.set(entry.applicationId);
-    this.league
-      .updateTeam(teamSlug, { teamName })
-      .pipe(finalize(() => this.busyId.set(null)))
-      .subscribe({
-        next: () => {
-          this.store.patchSignUp(entry.applicationId, { teamName });
-          this.toast.success('Team renamed.');
-        },
-        error: (err) => {
-          this.toast.error(apiErrorMessage(err, 'Could not rename that team.'));
-        },
-      });
-  }
-
   private persist(
     entry: SignUpValue,
     changes: {
@@ -407,39 +362,6 @@ export class ApplicantsPanelComponent {
           this.toast.error(
             apiErrorMessage(err, 'Could not replace that coach.'),
           );
-        },
-      });
-  }
-
-  private sendLogo(entry: SignUpValue, file: File): void {
-    const teamSlug = entry.teamSlug;
-    if (!teamSlug) return;
-    this.busyId.set(entry.applicationId);
-    let key: string | null = null;
-
-    this.league
-      .getLeagueUploadPresignedUrl(file.name, file.type || 'image/png')
-      .pipe(
-        tap((response) => (key = response.key)),
-        switchMap((response) => this.uploads.uploadToS3(response, file)),
-        switchMap((progress) => {
-          if (progress.type === HttpEventType.UploadProgress) return of(null);
-          if (progress instanceof HttpResponse && progress.ok && key) {
-            return this.league.updateTeam(teamSlug, { logo: key });
-          }
-          return of(null);
-        }),
-        catchError((err) => {
-          this.toast.error(apiErrorMessage(err, 'Logo upload failed.'));
-          return of(null);
-        }),
-        finalize(() => this.busyId.set(null)),
-      )
-      .subscribe({
-        next: (response) => {
-          if (!response) return;
-          if (key) this.store.patchSignUp(entry.applicationId, { logo: key });
-          this.toast.success(`${entry.teamName} logo updated.`);
         },
       });
   }

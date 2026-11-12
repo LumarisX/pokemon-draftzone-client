@@ -1,4 +1,3 @@
-import { HttpEventType, HttpResponse } from '@angular/common/http';
 import {
   Component,
   DestroyRef,
@@ -11,7 +10,7 @@ import {
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { LEAGUE_ZONE_PATH } from '@pdz/core/route-paths';
-import { UploadService } from '@pdz/core/services/upload.service';
+import { apiErrorMessage } from '@pdz/core/services/api.service';
 import {
   CoachEditDialogComponent,
   CoachEditDialogData,
@@ -25,10 +24,11 @@ import {
 import { LeagueTradeWidgetComponent } from '@pdz/features/league-zone/league-widgets/league-trade-widget/league-trade-widget.component';
 import { LeagueZoneService } from '@pdz/features/league-zone/league-zone.service';
 import { League } from '@pdz/features/league-zone/league.interface';
+import { getLogoUrl } from '@pdz/features/league-zone/league.util';
 import {
-  getLogoUrl,
-  getTeamLogoSrc,
-} from '@pdz/features/league-zone/league.util';
+  identityPayload,
+  sameIdentity,
+} from '@pdz/features/league-zone/team-identity/team-identity.model';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 import { CardComponent } from '@pdz/shared/data/card/card.component';
 import { RecordComponent } from '@pdz/shared/data/record/record.component';
@@ -48,21 +48,14 @@ import { MenuItemComponent } from '@pdz/shared/menu/menu-item.component';
 import { MenuTriggerDirective } from '@pdz/shared/menu/menu-trigger.directive';
 import { MenuComponent } from '@pdz/shared/menu/menu.component';
 import { TooltipDirective } from '@pdz/shared/tooltip/tooltip.directive';
-import { Observable, catchError, interval, map, of, startWith, switchMap } from 'rxjs';
-import { distinctUntilChanged, filter, finalize } from 'rxjs/operators';
+import { catchError, interval, map, of, startWith } from 'rxjs';
+import { distinctUntilChanged, finalize } from 'rxjs/operators';
 import {
   TradeProposeDialogComponent,
   TradeProposeDialogData,
   TradeProposeDialogResult,
 } from './trade-propose-dialog/trade-propose-dialog.component';
 
-const MAX_LOGO_SIZE = 5 * 1024 * 1024;
-const ALLOWED_LOGO_TYPES = [
-  'image/jpeg',
-  'image/png',
-  'image/gif',
-  'image/webp',
-];
 const CLOCK_TICK_MS = 30_000;
 
 @Component({
@@ -93,7 +86,6 @@ export class LeagueTeamComponent implements OnInit {
   private readonly leagueService = inject(LeagueZoneService);
   private readonly route = inject(ActivatedRoute);
   private readonly dialogs = inject(DialogService);
-  private readonly uploadService = inject(UploadService);
   private readonly destroyRef = inject(DestroyRef);
 
   private readonly tradeWidget = viewChild(LeagueTradeWidgetComponent);
@@ -228,7 +220,7 @@ export class LeagueTeamComponent implements OnInit {
 
   async openTeamEdit(): Promise<void> {
     const team = this.teamData();
-    if (!team?.isCoach) return;
+    if (!team?.canEditTeam && !team?.canManageTeam) return;
 
     const result = await this.dialogs.open<
       TeamEditDialogComponent,
@@ -236,10 +228,40 @@ export class LeagueTeamComponent implements OnInit {
       TeamEditDialogData
     >(TeamEditDialogComponent, {
       heading: 'Edit Team Info',
-      data: { teamName: team.name, logoUrl: getTeamLogoSrc(team.logo) },
+      size: 'lg',
+      data: {
+        baseName: team.baseName ?? team.name,
+        logo: team.logo ?? null,
+        showSaved: !!team.canEditTeam,
+      },
     }).closed;
 
     if (result) this.saveTeamEdit(team, result);
+  }
+
+  unlockTeamName(): void {
+    const team = this.teamData();
+    if (!team?.canManageTeam || !team.nameLocked || !team.slug) return;
+
+    this.saving.set(true);
+    this.saveError.set('');
+    this.leagueService
+      .unlockTeamName(team.slug)
+      .pipe(
+        finalize(() => this.saving.set(false)),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe({
+        next: () =>
+          this.patchTeam({
+            nameLocked: false,
+            canEditTeam: team.isCoach && !team.tournamentCompleted,
+          }),
+        error: (error) =>
+          this.saveError.set(
+            apiErrorMessage(error, 'Could not unlock the team name.'),
+          ),
+      });
   }
 
   async openCoachEdit(): Promise<void> {
@@ -347,43 +369,29 @@ export class LeagueTeamComponent implements OnInit {
     result: TeamEditDialogResult,
   ): void {
     if (!team.slug) return;
-    const teamSlug = team.slug;
-
-    const renamed = result.teamName !== team.name;
-    if (!renamed && !result.logoFile) return;
-
-    if (result.logoFile) {
-      const invalid = this.validateLogo(result.logoFile);
-      if (invalid) {
-        this.saveError.set(invalid);
-        return;
-      }
-    }
+    const current = { name: team.baseName ?? team.name, logo: team.logo ?? null };
+    if (sameIdentity(result, current)) return;
 
     this.saving.set(true);
     this.saveError.set('');
 
-    const rename$: Observable<unknown> = renamed
-      ? this.leagueService.updateTeam(teamSlug, { teamName: result.teamName })
-      : of(null);
-
-    rename$
+    this.leagueService
+      .updateTeam(team.slug, identityPayload(result))
       .pipe(
-        switchMap(() => {
-          if (renamed) this.patchTeam({ name: result.teamName });
-          return result.logoFile
-            ? this.uploadLogo(teamSlug, result.logoFile)
-            : of<string | null>(null);
-        }),
         finalize(() => this.saving.set(false)),
         takeUntilDestroyed(this.destroyRef),
       )
       .subscribe({
-        next: (logoKey) => {
-          if (logoKey) this.patchTeam({ logo: logoKey });
-        },
+        next: (saved) =>
+          this.patchTeam({
+            name: saved.teamName,
+            baseName: saved.baseName,
+            logo: saved.logo ?? undefined,
+            nameLocked: saved.nameLocked,
+            canEditTeam: saved.nameLocked ? false : team.canEditTeam,
+          }),
         error: (error) =>
-          this.saveError.set(error?.message || 'Could not save team info.'),
+          this.saveError.set(apiErrorMessage(error, 'Could not save team info.')),
       });
   }
 
@@ -415,32 +423,4 @@ export class LeagueTeamComponent implements OnInit {
       });
   }
 
-  private validateLogo(file: File): string | null {
-    if (!ALLOWED_LOGO_TYPES.includes(file.type))
-      return 'Use a JPEG, PNG, GIF or WebP image.';
-    if (file.size > MAX_LOGO_SIZE)
-      return `Logos must be under ${MAX_LOGO_SIZE / 1024 / 1024}MB.`;
-    return null;
-  }
-
-  private uploadLogo(teamSlug: string, file: File): Observable<string | null> {
-    return this.leagueService
-      .getLeagueUploadPresignedUrl(file.name, file.type || 'image/png')
-      .pipe(
-        switchMap((presigned) => {
-          if (!presigned?.url) throw new Error('Could not start the upload.');
-          return this.uploadService.uploadToS3(presigned, file).pipe(
-            filter((event) => event.type !== HttpEventType.UploadProgress),
-            switchMap((event) => {
-              if (!(event instanceof HttpResponse))
-                return of<string | null>(null);
-              if (!event.ok) throw new Error('The logo upload failed.');
-              return this.leagueService
-                .updateTeam(teamSlug, { logo: presigned.key })
-                .pipe(map(() => presigned.key));
-            }),
-          );
-        }),
-      );
-  }
 }

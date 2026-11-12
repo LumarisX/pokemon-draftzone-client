@@ -115,20 +115,6 @@
   gap: pdz.space(lg);
 }
 
-.logo {
-  display: flex;
-  align-items: center;
-  gap: pdz.space(md);
-}
-
-.logo__input {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  opacity: 0;
-  pointer-events: none;
-}
-
 .link {
   color: pdz.color(primary-accent);
   text-decoration: underline;

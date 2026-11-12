@@ -258,43 +258,12 @@
 
     <pdz-card padding="lg">
       <section class="section" aria-labelledby="sign-up-team">
-        <h2 class="section__title" id="sign-up-team">Team Details</h2>
-        <div class="section__grid">
-          <label pdz-field label="Team Name" required>
-            <input
-              pdz-input
-              type="text"
-              placeholder="The Double Helixes"
-              formControlName="teamName"
-              [attr.maxlength]="limits.teamName"
-            />
-            @if (showError("teamName")) {
-              <span pdz-error>Required</span>
-            }
-          </label>
-
-          <div pdz-field label="Team Logo">
-            <div class="logo">
-              <pdz-team-logo
-                size="lg"
-                decorative
-                [src]="logoPreview()"
-                [name]="signupForm.controls.teamName.value || '?'"
-              />
-              <label pdz-button color="neutral" variant="outlined" icon="upload">
-                {{ logoFile()?.name || "Choose file" }}
-                <input
-                  class="logo__input"
-                  type="file"
-                  accept="image/*"
-                  [disabled]="isSubmitting()"
-                  (change)="onLogoUpload($event)"
-                />
-              </label>
-            </div>
-            <span pdz-hint>You can add one later if you need to.</span>
-          </div>
-        </div>
+        <h2 class="section__title" id="sign-up-team">Your Team</h2>
+        <pdz-team-identity-picker
+          [(value)]="identity"
+          [nameLimit]="limits.teamName"
+          [disabled]="isSubmitting()"
+        />
       </section>
     </pdz-card>
 
@@ -318,7 +287,7 @@
         pdz-button
         type="submit"
         [loading]="isSubmitting()"
-        [disabled]="signupForm.invalid"
+        [disabled]="signupForm.invalid || !identityReady()"
       >
         {{ wantsToSignUpAsSub() ? "Sign Up as a Sub" : "Sign Up" }}
       </button>

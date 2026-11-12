@@ -1,5 +1,4 @@
 import { DatePipe } from '@angular/common';
-import { HttpResponse } from '@angular/common/http';
 import {
   Component,
   DestroyRef,
@@ -17,31 +16,33 @@ import {
 } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
 import { LEAGUE_ZONE_PATH } from '@pdz/core/route-paths';
+import { apiErrorMessage } from '@pdz/core/services/api.service';
 import { AuthService } from '@pdz/core/services/auth0.service';
-import { UploadService } from '@pdz/core/services/upload.service';
 import { LeagueZoneService } from '@pdz/features/league-zone/league-zone.service';
 import { League } from '@pdz/features/league-zone/league.interface';
 import {
   SIGN_UP_LIMITS,
   getLeagueLogoUrl,
 } from '@pdz/features/league-zone/league.util';
+import { TeamIdentityPickerComponent } from '@pdz/features/league-zone/team-identity/team-identity-picker.component';
+import {
+  TeamIdentityChoice,
+  identityPayload,
+  isChoiceComplete,
+} from '@pdz/features/league-zone/team-identity/team-identity.model';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 import { CardComponent } from '@pdz/shared/data/card/card.component';
 import { SelectOptionComponent } from '@pdz/shared/dropdowns/select/select-option.component';
 import { SelectComponent } from '@pdz/shared/dropdowns/select/select.component';
 import { SkeletonLayoutComponent } from '@pdz/shared/data/skeleton/skeleton-layout.component';
-import { TeamLogoComponent } from '@pdz/shared/images/team-logo/team-logo.component';
 import { CheckComponent } from '@pdz/shared/inputs/choice/check.component';
 import { ChoiceDirective } from '@pdz/shared/inputs/choice/choice.directive';
-import {
-  FieldErrorDirective,
-  FieldHintDirective,
-} from '@pdz/shared/inputs/field/field-message.directive';
+import { FieldErrorDirective } from '@pdz/shared/inputs/field/field-message.directive';
 import { FieldComponent } from '@pdz/shared/inputs/field/field.component';
 import { InputDirective } from '@pdz/shared/inputs/field/input.directive';
 import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
 import { PageComponent } from '@pdz/shared/layout/page/page.component';
-import { catchError, filter, firstValueFrom, map, of, take } from 'rxjs';
+import { catchError, firstValueFrom, of, take } from 'rxjs';
 
 type AnswerValue = string | string[];
 
@@ -59,21 +60,19 @@ type AnswerValue = string | string[];
     ChoiceDirective,
     FieldComponent,
     FieldErrorDirective,
-    FieldHintDirective,
     InputDirective,
     SkeletonLayoutComponent,
     PageComponent,
     PageHeaderComponent,
     SelectComponent,
     SelectOptionComponent,
-    TeamLogoComponent,
+    TeamIdentityPickerComponent,
   ],
 })
 export class LeagueSignUpComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
   private readonly leagueService = inject(LeagueZoneService);
   private readonly router = inject(Router);
-  private readonly uploadService = inject(UploadService);
   private readonly authService = inject(AuthService);
   private readonly destroyRef = inject(DestroyRef);
 
@@ -90,7 +89,6 @@ export class LeagueSignUpComponent implements OnInit {
       Intl.DateTimeFormat().resolvedOptions().timeZone,
       Validators.required,
     ],
-    teamName: ['', Validators.required],
     confirm: [false, Validators.requiredTrue],
     answers: this.fb.group({}),
   });
@@ -100,8 +98,8 @@ export class LeagueSignUpComponent implements OnInit {
   readonly wantsToSignUpAsSub = signal(false);
   readonly isSubmitting = signal(false);
   readonly submitError = signal<string | null>(null);
-  readonly logoFile = signal<File | null>(null);
-  readonly logoPreview = signal<string | null>(null);
+  readonly identity = signal<TeamIdentityChoice | null>(null);
+  readonly identityReady = computed(() => isChoiceComplete(this.identity()));
 
   readonly closed = computed(() => {
     const deadline = this.leagueInfo()?.signUpDeadline;
@@ -125,10 +123,6 @@ export class LeagueSignUpComponent implements OnInit {
 
   private get questions(): League.SignUpQuestion[] {
     return this.leagueInfo()?.signUpQuestions ?? [];
-  }
-
-  constructor() {
-    this.destroyRef.onDestroy(() => this.revokePreview());
   }
 
   ngOnInit(): void {
@@ -164,7 +158,7 @@ export class LeagueSignUpComponent implements OnInit {
       .subscribe(() => this.syncAnswerValidators());
   }
 
-  protected showError(control: 'name' | 'gameName' | 'discordName' | 'teamName') {
+  protected showError(control: 'name' | 'gameName' | 'discordName') {
     const field = this.signupForm.controls[control];
     return field.touched && field.hasError('required');
   }
@@ -201,18 +195,12 @@ export class LeagueSignUpComponent implements OnInit {
     control.markAsTouched();
   }
 
-  protected onLogoUpload(event: Event): void {
-    const file = (event.target as HTMLInputElement).files?.[0] ?? null;
-    this.revokePreview();
-    this.logoFile.set(file);
-    this.logoPreview.set(file ? URL.createObjectURL(file) : null);
-  }
-
   async onSubmit(): Promise<void> {
     if (this.isSubmitting()) return;
 
     const tournamentSlug = this.leagueService.tournamentSlug();
-    if (this.signupForm.invalid || !tournamentSlug) {
+    const identity = this.identity();
+    if (this.signupForm.invalid || !tournamentSlug || !isChoiceComplete(identity)) {
       this.signupForm.markAllAsTouched();
       return;
     }
@@ -221,11 +209,6 @@ export class LeagueSignUpComponent implements OnInit {
     this.submitError.set(null);
 
     try {
-      const logoFile = this.logoFile();
-      const logoFileKey = logoFile
-        ? await this.uploadLogoAndGetFileKey(logoFile)
-        : undefined;
-
       const { answers: rawAnswers, ...fields } = this.signupForm.getRawValue();
       const visible = new Set(this.visibleQuestions().map((q) => q.id));
       const answers: League.SignUpAnswer[] = Object.entries(
@@ -246,7 +229,7 @@ export class LeagueSignUpComponent implements OnInit {
             ...fields,
             intent: this.wantsToSignUpAsSub() ? 'sub' : 'team',
             answers,
-            ...(logoFileKey ? { logo: logoFileKey } : {}),
+            ...identityPayload(identity),
           },
           this.invite,
         ),
@@ -255,8 +238,7 @@ export class LeagueSignUpComponent implements OnInit {
       this.navigateToTeam();
     } catch (error) {
       this.submitError.set(
-        (error as { message?: string })?.message ||
-          'Sign up failed. Please try again.',
+        apiErrorMessage(error, 'Sign up failed. Please try again.'),
       );
     } finally {
       this.isSubmitting.set(false);
@@ -299,45 +281,5 @@ export class LeagueSignUpComponent implements OnInit {
       this.leagueService.tournamentSlug(),
     ];
     this.router.navigate(teamSlug ? [...base, 'teams', teamSlug] : base);
-  }
-
-  private revokePreview(): void {
-    const preview = this.logoPreview();
-    if (preview) URL.revokeObjectURL(preview);
-  }
-
-  private async uploadLogoAndGetFileKey(originalFile: File): Promise<string> {
-    const buffer = await originalFile.arrayBuffer();
-    const hashBuffer = await crypto.subtle.digest('SHA-256', buffer);
-    const hashHex = Array.from(new Uint8Array(hashBuffer))
-      .map((b) => b.toString(16).padStart(2, '0'))
-      .join('');
-    const ext = originalFile.name.includes('.')
-      ? originalFile.name.substring(originalFile.name.lastIndexOf('.'))
-      : '';
-    const file = new File([originalFile], `${hashHex}${ext}`, {
-      type: originalFile.type,
-    });
-
-    const presigned = await firstValueFrom(
-      this.leagueService.getLeagueUploadPresignedUrl(
-        file.name,
-        file.type || 'image/png',
-      ),
-    );
-
-    await firstValueFrom(
-      this.uploadService.uploadToS3(presigned, file).pipe(
-        filter((response) => response instanceof HttpResponse),
-        map((response) => {
-          if (!(response as HttpResponse<object>).ok) {
-            throw new Error('The logo upload failed. Please try again.');
-          }
-          return response;
-        }),
-      ),
-    );
-
-    return presigned.key;
   }
 }

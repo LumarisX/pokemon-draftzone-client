@@ -31,12 +31,20 @@ import { Observable } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 import { ApiService } from '@pdz/core/services/api.service';
 import { EventStreamService } from '@pdz/core/services/event-stream.service';
+import { TeamIdentityPayload } from '@pdz/features/league-zone/team-identity/team-identity.model';
 import {
   PresignedUpload,
   UploadService,
 } from '@pdz/core/services/upload.service';
 
 const ROOTPATH = 'leagues';
+
+export interface TeamNaming {
+  teamName: string;
+  baseName: string;
+  logo: string | null;
+  nameLocked: boolean;
+}
 
 @Injectable({
   providedIn: 'root',
@@ -632,8 +640,11 @@ export class LeagueZoneService {
     );
   }
 
-  updateTeam(teamSlug: string, changes: { teamName?: string; logo?: string }) {
-    return this.apiService.patch<{ teamName: string; logo: string | null }>(
+  updateTeam(
+    teamSlug: string,
+    changes: TeamIdentityPayload | { teamName?: string; logo?: string },
+  ) {
+    return this.apiService.patch<TeamNaming>(
       this.teamPath(teamSlug),
       changes,
       {
@@ -642,6 +653,13 @@ export class LeagueZoneService {
           `${ROOTPATH}/${this.leagueSlug()}/tournaments/${this.tournamentSlug()}/signup`,
         ],
       },
+    );
+  }
+
+  unlockTeamName(teamSlug: string) {
+    return this.apiService.delete<TeamNaming>(
+      `${this.teamPath(teamSlug)}/name-lock`,
+      { invalidateCache: [this.teamPath(teamSlug)] },
     );
   }
 

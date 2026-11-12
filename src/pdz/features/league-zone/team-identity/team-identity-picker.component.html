@@ -1,0 +1,287 @@
+<div class="identity">
+  <div class="identity__summary" aria-live="polite">
+    @if (summary(); as chosen) {
+      <pdz-team size="card" [name]="chosen.name" [logo]="chosen.logo">
+        <span pdz-team-meta class="identity__detail">{{ chosen.detail }}</span>
+      </pdz-team>
+    } @else {
+      <p class="identity__empty">Pick a team below, or make your own.</p>
+    }
+  </div>
+
+  @if (loading()) {
+    <pdz-skeleton-layout layout="cards" [count]="8" />
+  } @else {
+    <div class="identity__sections">
+      <pdz-disclosure
+        heading="Custom Teams"
+        [open]="isOpen(customSection)"
+        (openChange)="setOpen(customSection, $event)"
+      >
+        @if (pickedSection() === customSection) {
+          <pdz-icon
+            pdz-disclosure-trailing
+            class="identity__picked"
+            name="check_circle"
+            fill
+            [size]="18"
+            aria-label="Holds your pick"
+          />
+        }
+        <div class="identity__section">
+          <div class="identity__grid" role="group" aria-label="Custom Teams">
+            @for (identity of savedCustom(); track identity.id) {
+              <div class="tile-slot">
+                <button
+                  type="button"
+                  class="tile"
+                  [attr.aria-pressed]="isPicked(identity)"
+                  [disabled]="disabled()"
+                  (click)="pickSaved(identity)"
+                >
+                  <pdz-team-logo
+                    size="xl"
+                    decorative
+                    [src]="logoSrc(identity.logo)"
+                    [name]="identity.name"
+                  />
+                  <span class="tile__name">{{ identity.name }}</span>
+                  @if (isPicked(identity)) {
+                    <pdz-icon
+                      class="tile__mark"
+                      name="check_circle"
+                      fill
+                      [size]="20"
+                      aria-hidden="true"
+                    />
+                  }
+                </button>
+                <pdz-menu
+                  class="tile__menu"
+                  [aria-label]="'Options for ' + identity.name"
+                >
+                  <button
+                    pdz-button
+                    pdz-menu-trigger
+                    iconOnly
+                    size="xs"
+                    variant="ghost"
+                    color="neutral"
+                    icon="more_vert"
+                    [disabled]="disabled()"
+                    [attr.aria-label]="'Options for ' + identity.name"
+                  ></button>
+                  <button
+                    pdz-menu-item
+                    icon="edit"
+                    (click)="startRename(identity)"
+                  >
+                    Rename
+                  </button>
+                  <button
+                    pdz-menu-item
+                    icon="delete"
+                    (click)="deleteSaved(identity)"
+                  >
+                    Delete
+                  </button>
+                </pdz-menu>
+              </div>
+            }
+            @for (draft of visibleDrafts(); track draft.key) {
+              <button
+                type="button"
+                class="tile"
+                [attr.aria-pressed]="isDraftPicked(draft)"
+                [disabled]="disabled()"
+                (click)="editDraft(draft.key)"
+              >
+                <pdz-team-logo
+                  size="xl"
+                  decorative
+                  [src]="logoSrc(draft.logo)"
+                  [name]="draft.name"
+                />
+                <span class="tile__name">{{
+                  draft.name.trim() || "Untitled Team"
+                }}</span>
+                @if (isDraftPicked(draft)) {
+                  <pdz-icon
+                    class="tile__mark"
+                    name="check_circle"
+                    fill
+                    [size]="20"
+                    aria-hidden="true"
+                  />
+                }
+              </button>
+            }
+            <button
+              type="button"
+              class="tile tile--add"
+              [disabled]="disabled()"
+              (click)="addDraft()"
+            >
+              <span class="tile__add-icon">
+                <pdz-icon name="add" [size]="32" aria-hidden="true" />
+              </span>
+              <span class="tile__name">New Team</span>
+            </button>
+          </div>
+
+          @if (renaming(); as rename) {
+            <div class="identity__rename" role="group" aria-label="Rename Team">
+              <label pdz-field label="Team Name" required>
+                <input
+                  #renameInput
+                  pdz-input
+                  type="text"
+                  [value]="rename.name"
+                  [attr.maxlength]="nameLimit()"
+                  [disabled]="rename.saving"
+                  (input)="setRenameName($event)"
+                  (keydown.enter)="saveRename($event)"
+                  (keydown.escape)="cancelRename()"
+                />
+                @if (rename.error; as message) {
+                  <span pdz-error>{{ message }}</span>
+                } @else {
+                  <span pdz-hint
+                    >Teams still playing under this name change too. Finished
+                    seasons keep the old one.</span
+                  >
+                }
+              </label>
+              <div class="identity__rename-actions">
+                <button
+                  pdz-button
+                  type="button"
+                  variant="outlined"
+                  color="neutral"
+                  [disabled]="rename.saving"
+                  (click)="cancelRename()"
+                >
+                  Cancel
+                </button>
+                <button
+                  pdz-button
+                  type="button"
+                  [loading]="rename.saving"
+                  (click)="saveRename()"
+                >
+                  Save Name
+                </button>
+              </div>
+            </div>
+          }
+
+          @if (editing(); as draft) {
+            <div class="identity__custom">
+              <label pdz-field label="Team Name" required>
+                <input
+                  #nameInput
+                  pdz-input
+                  type="text"
+                  placeholder="The Double Helixes"
+                  [value]="draft.name"
+                  [attr.maxlength]="nameLimit()"
+                  [disabled]="disabled()"
+                  (input)="setCustomName($event)"
+                />
+              </label>
+
+              <div pdz-field label="Team Logo">
+                <div class="identity__upload">
+                  <label
+                    pdz-button
+                    color="neutral"
+                    variant="outlined"
+                    icon="upload"
+                    [class.identity__busy]="uploading()"
+                  >
+                    @if (uploading()) {
+                      Uploading {{ progress() }}%
+                    } @else {
+                      {{ draft.logo ? "Replace Logo" : "Upload Logo" }}
+                    }
+                    <input
+                      class="identity__file"
+                      type="file"
+                      [accept]="logoTypes"
+                      [disabled]="disabled() || uploading()"
+                      (change)="selectLogo($event)"
+                    />
+                  </label>
+                </div>
+                @if (uploadError(); as message) {
+                  <span pdz-error>{{ message }}</span>
+                } @else {
+                  <span pdz-hint
+                    >PNG, JPEG, WebP or GIF up to 5 MB. Square works best.</span
+                  >
+                }
+              </div>
+            </div>
+          }
+        </div>
+      </pdz-disclosure>
+
+      @if (packsFailed()) {
+        <pdz-empty-state
+          size="sm"
+          kind="error"
+          message="The logo packs did not load."
+          retry="event"
+          (retried)="loadPacks()"
+        />
+      } @else {
+        @for (pack of packs(); track pack.id) {
+          <pdz-disclosure
+            [heading]="pack.name"
+            [open]="isOpen(pack.id)"
+            (openChange)="setOpen(pack.id, $event)"
+          >
+            @if (pickedSection() === pack.id) {
+              <pdz-icon
+                pdz-disclosure-trailing
+                class="identity__picked"
+                name="check_circle"
+                fill
+                [size]="18"
+                aria-label="Holds your pick"
+              />
+            }
+            <div class="identity__grid" role="group" [attr.aria-label]="pack.name">
+              @for (identity of pack.identities; track identity.id) {
+                <button
+                  type="button"
+                  class="tile"
+                  [attr.aria-pressed]="isPicked(identity)"
+                  [disabled]="disabled()"
+                  (click)="pickStock(pack, identity)"
+                >
+                  <pdz-team-logo
+                    size="xl"
+                    decorative
+                    [src]="logoSrc(identity.logo)"
+                    [name]="identity.name"
+                  />
+                  <span class="tile__name">{{ identity.name }}</span>
+                  @if (isPicked(identity)) {
+                    <pdz-icon
+                      class="tile__mark"
+                      name="check_circle"
+                      fill
+                      [size]="20"
+                      aria-hidden="true"
+                    />
+                  }
+                </button>
+              }
+            </div>
+          </pdz-disclosure>
+        }
+      }
+    </div>
+  }
+</div>

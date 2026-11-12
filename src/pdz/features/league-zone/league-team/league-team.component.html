@@ -39,7 +39,7 @@
       />
     </span>
 
-    @if (team.isCoach) {
+    @if ((team.isCoach || team.canManageTeam) && !team.tournamentCompleted) {
       <div pdz-page-header-actions class="team-header__actions">
         <pdz-menu aria-label="Team actions">
           <button
@@ -51,15 +51,27 @@
             pdz-menu-trigger
             aria-label="More team actions"
           ></button>
-          <button
-            pdz-menu-item
-            icon="edit"
-            [disabled]="saving()"
-            (click)="openTeamEdit()"
-          >
-            Edit Team
-          </button>
-          @if (!team.tournamentCompleted) {
+          @if (team.canEditTeam || team.canManageTeam) {
+            <button
+              pdz-menu-item
+              icon="edit"
+              [disabled]="saving()"
+              (click)="openTeamEdit()"
+            >
+              Edit Team
+            </button>
+          }
+          @if (team.canManageTeam && team.nameLocked) {
+            <button
+              pdz-menu-item
+              icon="lock_open"
+              [disabled]="saving()"
+              (click)="unlockTeamName()"
+            >
+              Unlock Team Name
+            </button>
+          }
+          @if (team.isCoach) {
             <button
               pdz-menu-item
               [icon]="team.completedForMe ? 'replay' : 'flag'"

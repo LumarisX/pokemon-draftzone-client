@@ -1,46 +1,7 @@
 @use "pdz-theming" as pdz;
 
-.dialog-body {
-  display: flex;
-  flex-direction: column;
-  gap: pdz.space(md);
-}
-
-.logo-edit {
-  display: flex;
-  align-items: center;
-  gap: pdz.space(md);
-
-  &__preview {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 4.5rem;
-    height: 4.5rem;
-    flex-shrink: 0;
-    overflow: hidden;
-    border: 1px solid pdz.color(border-subtle);
-    border-radius: pdz.shape(corner-md);
-    color: pdz.color(on-surface-variant);
-  }
-
-  &__image {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-  }
-
-  &__input {
-    display: none;
-  }
-
-  &__picker {
-    min-width: 0;
-  }
-
-  &__filename {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
+.team-edit__error {
+  margin: pdz.space(sm) 0 0;
+  @include pdz.text(body-sm);
+  color: pdz.color(danger);
 }

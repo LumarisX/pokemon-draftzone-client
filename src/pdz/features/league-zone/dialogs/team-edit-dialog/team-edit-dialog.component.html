@@ -1,61 +1,23 @@
-<form [formGroup]="form" (ngSubmit)="onSave()">
-  <div class="dialog-body">
-    <label pdz-field label="Team Name" required>
-      <input
-        pdz-input
-        placeholder="The Double Helixes"
-        formControlName="teamName"
-      />
-      @if (form.controls.teamName.touched && form.controls.teamName.invalid) {
-        <span pdz-error>Required</span>
-      }
-    </label>
+<pdz-team-identity-picker
+  [(value)]="identity"
+  [showSaved]="data.showSaved ?? true"
+/>
 
-    <div pdz-field label="Team Logo" hint="PNG or SVG, square works best.">
-      <div class="logo-edit">
-        <span class="logo-edit__preview">
-          @if (previewUrl(); as url) {
-            <img class="logo-edit__image" [src]="url" alt="Team logo preview" />
-          } @else {
-            <pdz-icon name="image" [size]="32" aria-hidden="true" />
-          }
-        </span>
-        <input
-          #logoInput
-          type="file"
-          class="logo-edit__input"
-          accept="image/png,image/svg+xml"
-          (change)="onLogoChange($event)"
-        />
-        <button
-          pdz-button
-          variant="outlined"
-          color="neutral"
-          icon="upload_file"
-          class="logo-edit__picker"
-          (click)="logoInput.click()"
-        >
-          <span class="logo-edit__filename">{{
-            logoFileName() || "Choose file"
-          }}</span>
-        </button>
-      </div>
-      @if (logoError(); as message) {
-        <span pdz-error>{{ message }}</span>
-      }
-    </div>
-  </div>
+@if (missing()) {
+  <p class="team-edit__error" role="alert">
+    Pick a team, or give your custom team a name.
+  </p>
+}
 
-  <div class="pdz-dialog-actions">
-    <button
-      pdz-button
-      type="button"
-      variant="outlined"
-      color="neutral"
-      (click)="ref.close()"
-    >
-      Cancel
-    </button>
-    <button pdz-button type="submit">Save Changes</button>
-  </div>
-</form>
+<div class="pdz-dialog-actions">
+  <button
+    pdz-button
+    type="button"
+    variant="outlined"
+    color="neutral"
+    (click)="ref.close()"
+  >
+    Cancel
+  </button>
+  <button pdz-button type="button" (click)="save()">Save Changes</button>
+</div>

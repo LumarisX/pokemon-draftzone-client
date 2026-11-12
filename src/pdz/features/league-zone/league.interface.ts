@@ -21,12 +21,16 @@ export namespace League {
 
   export type LeagueTeam = {
     name: string;
+    baseName?: string;
     id: string;
     slug: string;
     logo?: string;
     draft: LeaguePokemon[];
     picks: LeaguePokemon[][];
     isCoach: boolean;
+    canEditTeam?: boolean;
+    canManageTeam?: boolean;
+    nameLocked?: boolean;
     coach: string;
     coachId?: string;
     gameName?: string;
