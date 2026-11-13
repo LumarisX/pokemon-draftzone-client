@@ -1,0 +1,101 @@
+@use "pdz-theming" as pdz;
+
+:host {
+  display: block;
+  min-width: 0;
+}
+
+.list {
+  margin: 0;
+  padding: pdz.space(xs);
+  list-style: none;
+
+  li + li {
+    @include pdz.row-divider;
+  }
+}
+
+.item {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  grid-template-areas:
+    "icon text when"
+    "icon action action";
+  align-items: center;
+  gap: pdz.space(xs) pdz.space(md);
+  padding: pdz.space(sm);
+  border-radius: pdz.shape(corner-sm);
+
+  @include pdz.respond-above(medium) {
+    grid-template-columns: auto minmax(0, 1fr) auto auto;
+    grid-template-areas: "icon text when action";
+  }
+}
+
+.item--pick {
+  background: pdz.color(state-selected);
+}
+
+.item__icon {
+  display: inline-grid;
+  grid-area: icon;
+  place-items: center;
+  width: pdz.control-height(sm);
+  height: pdz.control-height(sm);
+  border-radius: pdz.shape(corner-full);
+  background: pdz.color(state-hover);
+  color: pdz.color(on-surface-muted);
+
+  .item--pick & {
+    background: pdz.color(primary);
+    color: pdz.color(on-primary);
+  }
+}
+
+.item__text {
+  display: flex;
+  flex-direction: column;
+  grid-area: text;
+  align-items: flex-start;
+  gap: pdz.space(3xs);
+  min-width: 0;
+}
+
+.item__title {
+  @include pdz.text(body-sm-strong);
+  overflow: hidden;
+  max-width: 100%;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: pdz.color(on-surface);
+}
+
+.item__detail {
+  @include pdz.text(meta);
+  overflow: hidden;
+  max-width: 100%;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: pdz.color(on-surface-muted);
+}
+
+.item__when {
+  @include pdz.text(body-sm-strong);
+  @include pdz.numeric;
+  display: flex;
+  grid-area: when;
+  gap: pdz.space(xs);
+  justify-self: end;
+  white-space: nowrap;
+  color: pdz.color(secondary-accent);
+}
+
+.item__unit {
+  @include pdz.text(meta);
+  color: pdz.color(on-surface-muted);
+}
+
+.item__action {
+  grid-area: action;
+  justify-self: end;
+}

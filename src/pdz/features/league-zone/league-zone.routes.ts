@@ -1,7 +1,6 @@
 import { Routes } from '@angular/router';
 import { AuthGuard } from '@auth0/auth0-angular';
 import {
-  EXTERNAL_DRAFTS_PATH,
   LEAGUE_ADMIN_INVITE_PATH,
   LEAGUE_ADMINS_PATH,
   LEAGUE_HALL_OF_FAME_PATH,
@@ -11,19 +10,16 @@ import {
   TOURNAMENT_LOG_PATH,
 } from '@pdz/core/route-paths';
 import { HallOfFameComponent } from './hall-of-fame/hall-of-fame.component';
-import {
-  DRAFT_AREA,
-  EXTERNAL_DRAFTS_AREA,
-} from '@pdz/features/drafts/draft-area';
 import { MatchupOverviewComponent } from '../drafts/matchup-overview/matchup-overview.component';
 import { LEAGUE_MATCHUP_PAGE } from '../drafts/matchup-overview/matchup-page.config';
-import { MyLeaguesComponent } from '../drafts/my-leagues/my-leagues.component';
+import { LeagueDirectoryComponent } from './league-directory/league-directory.component';
 import { TierListFormComponent } from '../tier-lists/tier-list/tier-list-form/tier-list-form.component';
 import { unsavedChangesGuard } from '@pdz/core/guards/unsaved-changes/unsaved-changes.guard';
 import { TierListComponent } from '../tier-lists/tier-list/tier-list.component';
 import { TierListCompareComponent } from '../tier-lists/tier-list-compare/tier-list-compare.component';
 import { TierListHistoryComponent } from '../tier-lists/tier-list-history/tier-list-history.component';
 import { TierListImportComponent } from '../tier-lists/tier-list-import/tier-list-import.component';
+import { plannerSyncResolver } from '../planner/planner-sync.service';
 import { TournamentLogComponent } from './tournament-log/tournament-log.component';
 import { PoolDashboardComponent } from './pools/pool-dashboard/pool-dashboard.component';
 import { PowerRankingsComponent } from './pools/power-rankings/power-rankings.component';
@@ -52,21 +48,12 @@ import { TournamentLayoutComponent } from './tournaments/tournament-layout/tourn
 export const routes: Routes = [
   {
     path: '',
-    component: MyLeaguesComponent,
-    canActivate: [AuthGuard],
+    component: LeagueDirectoryComponent,
   },
   {
     path: 'new',
     component: LeagueCreateComponent,
     canActivate: [AuthGuard],
-  },
-  {
-    path: EXTERNAL_DRAFTS_PATH,
-    providers: [{ provide: DRAFT_AREA, useValue: EXTERNAL_DRAFTS_AREA }],
-    loadChildren: () =>
-      import('../drafts/draft-overview/draft.routes').then(
-        (m) => m.externalRoutes,
-      ),
   },
   {
     path: `:leagueSlug`,
@@ -173,6 +160,7 @@ export const routes: Routes = [
             (m) => m.PlannerComponent,
           ),
         data: { planner: 'tournament' },
+        resolve: { plannerSync: plannerSyncResolver },
       },
       {
         path: 'draft',

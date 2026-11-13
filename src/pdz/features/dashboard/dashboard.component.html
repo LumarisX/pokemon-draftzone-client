@@ -1,0 +1,240 @@
+<pdz-page type="dashboard">
+  <pdz-page-header title="Dashboard">
+    <div pdz-page-header-actions class="actions">
+      <a
+        pdz-button
+        variant="outlined"
+        color="neutral"
+        icon="travel_explore"
+        [routerLink]="findLink"
+        >Find a League</a
+      >
+      <a pdz-button icon="add" [routerLink]="addLink">Add League</a>
+    </div>
+  </pdz-page-header>
+
+  @if (failed()) {
+    <pdz-empty-state
+      bordered
+      kind="error"
+      heading="Could not load your dashboard"
+      message="Your teams and tournaments did not come back from the server."
+      retry="event"
+      (retried)="load()"
+    />
+  } @else if (dashboard(); as data) {
+    <div class="layout" [class.layout--split]="hasSide()">
+      <div class="layout__main">
+        @if (data.upNext.length) {
+          <pdz-dashboard-section heading="Up Next" [count]="data.upNext.length">
+            <pdz-dashboard-up-next [items]="data.upNext" [teams]="data.teams" />
+          </pdz-dashboard-section>
+        }
+
+        @if (data.teams.length) {
+          <pdz-dashboard-section
+            heading="Your Teams"
+            [count]="data.teams.length"
+          >
+            @if (data.completedCount) {
+              <a
+                pdz-dashboard-section-action
+                pdz-button
+                size="sm"
+                variant="ghost"
+                color="neutral"
+                [routerLink]="profileLink"
+                >{{ data.completedCount }} Completed</a
+              >
+            }
+            <div class="teams">
+              @for (team of data.teams; track team.id) {
+                <pdz-dashboard-team-card [team]="team" />
+              }
+            </div>
+          </pdz-dashboard-section>
+        } @else if (isEmpty()) {
+          <pdz-empty-state
+            bordered
+            kind="empty"
+            heading="No leagues yet"
+            message="Join a league on DraftZone, or add one you play somewhere else to prep and track your season."
+          >
+            <div pdz-empty-state-actions class="actions">
+              <a
+                pdz-button
+                variant="outlined"
+                color="neutral"
+                icon="travel_explore"
+                [routerLink]="findLink"
+                >Find a League</a
+              >
+              <a pdz-button icon="add" [routerLink]="addLink">Add League</a>
+            </div>
+          </pdz-empty-state>
+        } @else {
+          <pdz-dashboard-section heading="Your Teams">
+            @if (data.completedCount) {
+              <a
+                pdz-dashboard-section-action
+                pdz-button
+                size="sm"
+                variant="ghost"
+                color="neutral"
+                [routerLink]="profileLink"
+                >{{ data.completedCount }} Completed</a
+              >
+            }
+            <pdz-empty-state
+              bordered
+              size="sm"
+              icon="groups"
+              message="You aren't playing in a league right now."
+            />
+          </pdz-dashboard-section>
+        }
+      </div>
+
+      @if (hasSide()) {
+        <div class="layout__side">
+          @if (organizing().length) {
+            <pdz-dashboard-section
+              heading="Organizing"
+              [count]="organizing().length"
+            >
+              <pdz-card padding="none">
+                <ul class="rows">
+                  @for (row of organizing(); track row.id) {
+                    <li
+                      pdz-dashboard-row
+                      showLogo
+                      [name]="row.name"
+                      [meta]="row.meta"
+                      [status]="row.status"
+                      [logo]="row.logo"
+                      [link]="row.link"
+                    ></li>
+                  }
+                </ul>
+              </pdz-card>
+            </pdz-dashboard-section>
+          }
+
+          @if (leagues().length) {
+            <pdz-dashboard-section
+              heading="Leagues You Run"
+              [count]="leagues().length"
+            >
+              <pdz-card padding="none">
+                <ul class="rows">
+                  @for (row of leagues(); track row.id) {
+                    <li
+                      pdz-dashboard-row
+                      showLogo
+                      [name]="row.name"
+                      [meta]="row.meta"
+                      [logo]="row.logo"
+                      [link]="row.link"
+                      [chevron]="!row.newTournament"
+                    >
+                      @if (row.newTournament; as link) {
+                        <a
+                          pdz-button
+                          class="rows__action"
+                          size="sm"
+                          variant="ghost"
+                          color="neutral"
+                          iconOnly
+                          icon="add"
+                          [attr.aria-label]="'New tournament in ' + row.name"
+                          [routerLink]="link"
+                        ></a>
+                      }
+                    </li>
+                  }
+                </ul>
+              </pdz-card>
+            </pdz-dashboard-section>
+          }
+
+          @if (tierListsFailed()) {
+            <pdz-dashboard-section heading="My Tier Lists">
+              <pdz-empty-state
+                bordered
+                size="sm"
+                kind="error"
+                message="Your tier lists did not come back."
+                retry="event"
+                (retried)="loadTierLists()"
+              />
+            </pdz-dashboard-section>
+          } @else if (lists().length) {
+            <pdz-dashboard-section heading="My Tier Lists">
+              <a
+                pdz-dashboard-section-action
+                pdz-button
+                size="sm"
+                variant="ghost"
+                color="neutral"
+                [routerLink]="tierListsLink"
+                >View All</a
+              >
+              <pdz-card padding="none">
+                <ul class="rows">
+                  @for (row of lists(); track row.id) {
+                    <li
+                      pdz-dashboard-row
+                      [name]="row.name"
+                      [meta]="row.meta"
+                      [link]="row.link"
+                    ></li>
+                  }
+                </ul>
+              </pdz-card>
+            </pdz-dashboard-section>
+          }
+
+          @if (plannersFailed()) {
+            <pdz-dashboard-section heading="Planner Plans">
+              <pdz-empty-state
+                bordered
+                size="sm"
+                kind="error"
+                message="Your saved plans did not come back."
+                retry="event"
+                (retried)="loadPlanners()"
+              />
+            </pdz-dashboard-section>
+          } @else if (plans().length) {
+            <pdz-dashboard-section heading="Planner Plans">
+              <a
+                pdz-dashboard-section-action
+                pdz-button
+                size="sm"
+                variant="ghost"
+                color="neutral"
+                [routerLink]="plannerLink"
+                >Open Planner</a
+              >
+              <pdz-card padding="none">
+                <ul class="rows">
+                  @for (row of plans(); track row.id) {
+                    <li
+                      pdz-dashboard-row
+                      [name]="row.name"
+                      [meta]="row.meta"
+                      [status]="row.status"
+                      [link]="row.link"
+                    ></li>
+                  }
+                </ul>
+              </pdz-card>
+            </pdz-dashboard-section>
+          }
+        </div>
+      }
+    </div>
+  } @else {
+    <pdz-skeleton-layout layout="cards" count="3" />
+  }
+</pdz-page>

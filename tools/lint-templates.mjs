@@ -30,7 +30,6 @@ const IMAGE_EDITORS = [
 ];
 
 const OWNER_TEST_PAGES = [
-  "src/pdz/features/drafts/drafts-v2/",
   "src/pdz/features/drafts/opponent-overview/opponent-score-v2/",
 ];
 

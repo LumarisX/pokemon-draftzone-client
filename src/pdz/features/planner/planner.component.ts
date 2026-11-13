@@ -28,6 +28,7 @@ import { SegmentedOptionComponent } from '@pdz/shared/inputs/segmented/segmented
 import { SegmentedComponent } from '@pdz/shared/inputs/segmented/segmented.component';
 import { SkeletonLayoutComponent } from '@pdz/shared/data/skeleton/skeleton-layout.component';
 import { PageComponent } from '@pdz/shared/layout/page/page.component';
+import { ToastService } from '@pdz/shared/feedback/toast/toast.service';
 import {
   EMPTY,
   Subject,
@@ -35,6 +36,7 @@ import {
   catchError,
   debounceTime,
   distinctUntilChanged,
+  filter,
   map,
   merge,
   of,
@@ -67,6 +69,7 @@ import { PlannerTeamComponent } from './team/team.component';
 import { PlannerTypechartComponent } from './typechart/typechart.component';
 import { DEFAULT_RULESET } from '@pdz/core/rulesets';
 import { safeStorage } from '@pdz/core/utils/storage';
+import { PlannerSyncService } from './planner-sync.service';
 
 interface LSTeamData {
   id: string;
@@ -134,6 +137,8 @@ export class PlannerComponent implements OnInit, OnDestroy {
   private readonly router = inject(Router);
   private readonly tournamentPlanner = inject(TournamentPlannerService);
   private readonly dialogs = inject(DialogService);
+  private readonly plannerSync = inject(PlannerSyncService);
+  private readonly toast = inject(ToastService);
 
   readonly maxDrafts = MAX_DRAFTS;
   readonly isTournament = this.route.snapshot.data['planner'] === 'tournament';
@@ -223,6 +228,12 @@ export class PlannerComponent implements OnInit, OnDestroy {
         }),
     );
 
+    this.subscriptions.add(
+      this.plannerSync.merged
+        .pipe(filter((key) => key === this.storageKey && !!this.plannerForm))
+        .subscribe(() => this.reloadMergedPlans()),
+    );
+
     if (this.isTournament) {
       this.loadContext();
       this.subscriptions.add(
@@ -271,6 +282,18 @@ export class PlannerComponent implements OnInit, OnDestroy {
           this.draftArray.updateValueAndValidity();
           this.updateDetails();
         }),
+    );
+  }
+
+  private reloadMergedPlans(): void {
+    this.lastSavedJson = safeStorage.get(this.storageKey) ?? undefined;
+    this.buildForm(this.getStoredPlannerData());
+    this.selectedDraft.update((index) =>
+      Math.min(index, this.draftArray.length - 1),
+    );
+    this.hasUnsavedEdits.set(false);
+    this.toast.info(
+      'These plans were also changed on another device. Both sets are here now.',
     );
   }
 
@@ -854,6 +877,7 @@ export class PlannerComponent implements OnInit, OnDestroy {
     const json = JSON.stringify(lsData);
     if (json !== this.lastSavedJson) {
       safeStorage.set(this.storageKey, json);
+      this.plannerSync.push(this.storageKey, json);
       this.lastSavedJson = json;
     }
     this.hasUnsavedEdits.set(false);

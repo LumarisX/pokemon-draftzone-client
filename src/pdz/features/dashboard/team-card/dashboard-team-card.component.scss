@@ -1,0 +1,100 @@
+@use "pdz-theming" as pdz;
+
+:host {
+  display: block;
+  min-width: 0;
+}
+
+.card {
+  height: 100%;
+}
+
+.card__banner {
+  display: block;
+  position: relative;
+}
+
+.card__clock {
+  position: absolute;
+  top: pdz.space(xs);
+  left: pdz.space(xs);
+}
+
+.card__body {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(sm);
+}
+
+.card__head,
+.card__next {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: pdz.space(sm);
+
+  pdz-team {
+    min-width: 0;
+  }
+}
+
+.card__league {
+  @include pdz.text(meta);
+  color: pdz.color(on-surface-muted);
+}
+
+.card__score {
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: pdz.space(3xs);
+}
+
+.card__standing {
+  @include pdz.text(body-sm-strong);
+  @include pdz.numeric;
+  color: pdz.color(secondary-accent);
+}
+
+.card__unit {
+  @include pdz.text(meta);
+  color: pdz.color(on-surface-muted);
+}
+
+.card__next {
+  @include pdz.row-divider;
+  min-height: calc(#{pdz.control-height(sm)} + #{pdz.space(sm)});
+  padding-top: pdz.space(sm);
+}
+
+.card__what {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: pdz.space(3xs);
+  min-width: 0;
+}
+
+.card__line {
+  @include pdz.text(body-sm);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: pdz.color(on-surface-muted);
+
+  strong {
+    @include pdz.text(body-sm-strong);
+    color: pdz.color(on-surface);
+  }
+}
+
+.card__line--quiet {
+  @include pdz.text(meta);
+}
+
+.card__when {
+  @include pdz.text(body-sm-strong);
+  @include pdz.numeric;
+  color: pdz.color(on-surface);
+}

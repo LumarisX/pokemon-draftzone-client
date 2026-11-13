@@ -1,14 +1,16 @@
 import { Routes } from '@angular/router';
+import { AuthGuard } from '@auth0/auth0-angular';
 import {
   ABOUT_PATH,
   ADMIN_PATH,
+  DASHBOARD_PATH,
   DEBUG_PATH,
   DRAFT_OVERVIEW_PATH,
-  DRAFTS_V2_PATH,
   EXTERNAL_LINK_PATH,
   LEAGUE_ADS_PATH,
   LEAGUE_ZONE_PATH,
   PLANNER_PATH,
+  PROFILE_PATH,
   STATISTICS_PATH,
   TIER_LIST_PATH,
   TOOLS_PATH,
@@ -29,10 +31,16 @@ export const routes: Routes = [
       ),
   },
   {
-    path: DRAFTS_V2_PATH,
+    path: DASHBOARD_PATH,
     loadChildren: () =>
-      import('@pdz/features/drafts/drafts-v2/drafts-v2.routes').then(
-        (m) => m.routes,
+      import('@pdz/features/dashboard/dashboard.routes').then((m) => m.routes),
+  },
+  {
+    path: PROFILE_PATH,
+    canActivate: [AuthGuard],
+    loadComponent: () =>
+      import('@pdz/features/profile/profile.component').then(
+        (c) => c.ProfileComponent,
       ),
   },
   {

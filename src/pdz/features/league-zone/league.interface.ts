@@ -402,6 +402,8 @@ export namespace League {
   };
 
   export type TournamentSummary = {
+    phase: 'upcoming' | 'drafting' | 'season' | 'completed';
+    signUpOpen: boolean;
     name: string;
     tournamentSlug: string;
     description?: string;
@@ -511,6 +513,7 @@ export namespace League {
     leagueSlug: string;
     description?: string;
     logo?: string;
+    listed?: boolean;
     tournaments: TournamentSummary[];
     isOwner: boolean;
     role: LeagueRole | null;
@@ -589,6 +592,33 @@ export namespace League {
     name?: string;
     description?: string;
     logo?: string | null;
+    listed?: boolean;
+  };
+
+  export type DirectoryStatus =
+    | 'signups'
+    | 'drafting'
+    | 'season'
+    | 'upcoming'
+    | 'between';
+
+  export type DirectoryTournament = {
+    name: string;
+    tournamentSlug: string;
+    format: string | null;
+    ruleset: string | null;
+    status: DirectoryStatus;
+    signUpDeadline: string | null;
+    draftStart: string | null;
+  };
+
+  export type DirectoryLeague = {
+    name: string;
+    leagueSlug: string;
+    description: string | null;
+    logo: string | null;
+    status: DirectoryStatus;
+    tournaments: DirectoryTournament[];
   };
 
   export type CreateTournamentPayload = {

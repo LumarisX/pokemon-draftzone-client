@@ -1,0 +1,134 @@
+@let entry = team();
+@let to = links();
+<pdz-card padding="sm" class="card">
+  <a
+    pdz-card-media
+    class="card__banner"
+    tabindex="-1"
+    aria-hidden="true"
+    [routerLink]="to.page"
+  >
+    <pdz-roster-sprites
+      layout="tiers"
+      [pokemon]="entry.pokemon"
+      [spots]="spots()"
+      [name]="entry.teamName"
+    />
+    @if (onClock()) {
+      <pdz-chip
+        class="card__clock"
+        size="xs"
+        tone="primary"
+        variant="solid"
+        icon="timer"
+        >Your Pick</pdz-chip
+      >
+    }
+  </a>
+
+  <div class="card__body">
+    <div class="card__head">
+      <pdz-team
+        size="row"
+        [name]="entry.teamName"
+        [logo]="logo()"
+        [link]="to.page"
+        [headingLevel]="3"
+      >
+        <span pdz-team-meta class="card__league">{{ league() }}</span>
+      </pdz-team>
+      @if (entry.record || entry.standing) {
+        <div class="card__score">
+          @if (entry.record; as record) {
+            <pdz-record
+              size="sm"
+              [wins]="record.wins"
+              [losses]="record.losses"
+              [draws]="record.draws"
+            />
+          }
+          @if (entry.standing; as standing) {
+            <span class="card__standing"
+              >{{ ordinal(standing.rank) }}
+              <span class="card__unit">of {{ standing.of }}</span></span
+            >
+          }
+        </div>
+      }
+    </div>
+
+    <div class="card__next">
+      @if (entry.phase === "drafting" && entry.draft; as draft) {
+        <div class="card__what">
+          <span class="card__line"
+            >{{ draft.picksMade }}
+            @if (draft.rosterSize) {
+              of {{ draft.rosterSize }}
+            }
+            picks</span
+          >
+          @if (draft.rosterSize) {
+            <pdz-meter
+              size="sm"
+              tone="primary"
+              label="Draft progress"
+              [value]="draft.picksMade"
+              [max]="draft.rosterSize"
+            />
+          }
+        </div>
+        @if (to.draft) {
+          <a
+            pdz-button
+            size="sm"
+            [variant]="draft.onClock ? 'filled' : 'tonal'"
+            [color]="draft.onClock ? 'primary' : 'neutral'"
+            [routerLink]="to.draft"
+            >{{ draft.onClock ? "Make Your Pick" : "Open Draft" }}</a
+          >
+        }
+      } @else if (entry.next; as next) {
+        <div class="card__what">
+          <span class="card__line"
+            >{{ next.round }}
+            @if (next.opponent) {
+              · vs <strong>{{ next.opponent.name }}</strong>
+            }
+          </span>
+          <span class="card__when">
+            @if (isFuture(next.when)) {
+              <pdz-countdown [target]="next.when" [showTitle]="false" />
+            } @else if (next.when) {
+              Due {{ next.when | date: "MMM d" }}
+            } @else {
+              Not scheduled
+            }
+          </span>
+        </div>
+        @if (to.matchup) {
+          <a
+            pdz-button
+            size="sm"
+            variant="tonal"
+            color="neutral"
+            [routerLink]="to.matchup"
+            >Prep Matchup</a
+          >
+        }
+      } @else if (entry.phase === "upcoming") {
+        <div class="card__what">
+          <span class="card__line">Draft starts</span>
+          <span class="card__when">
+            @if (isFuture(entry.startsAt)) {
+              <pdz-countdown [target]="entry.startsAt" [showTitle]="false" />
+            } @else {
+              Soon
+            }
+          </span>
+        </div>
+      } @else {
+        <span class="card__line card__line--quiet">No match coming up</span>
+      }
+    </div>
+  </div>
+</pdz-card>

@@ -1,0 +1,108 @@
+@use "pdz-theming" as pdz;
+
+:host {
+  display: block;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: pdz.space(xs);
+}
+
+.directory {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.layout(section-gap);
+}
+
+.directory__controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: pdz.space(md);
+}
+
+.directory__search {
+  flex: 1 1 16rem;
+  max-width: 24rem;
+}
+
+.directory__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(20rem, 1fr));
+  gap: pdz.layout(stack);
+}
+
+.league {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(sm);
+}
+
+.league__description {
+  @include pdz.text(body-sm);
+  display: -webkit-box;
+  overflow: hidden;
+  margin: 0;
+  color: pdz.color(on-surface-muted);
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+}
+
+.league__quiet {
+  @include pdz.text(meta);
+  @include pdz.row-divider;
+  margin: 0;
+  padding-top: pdz.space(sm);
+  color: pdz.color(on-surface-muted);
+}
+
+.league__tournaments {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tournament {
+  @include pdz.row-divider;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: pdz.space(sm);
+  padding-block: pdz.space(sm);
+
+  &:last-child {
+    padding-bottom: 0;
+  }
+}
+
+.tournament__text {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(3xs);
+  min-width: 0;
+}
+
+.tournament__name {
+  @include pdz.text(body-sm-strong);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: pdz.color(on-surface);
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+
+  &:focus-visible {
+    @include pdz.focus-ring;
+  }
+}
+
+.tournament__meta {
+  @include pdz.text(meta);
+  color: pdz.color(on-surface-muted);
+}

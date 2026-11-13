@@ -25,11 +25,13 @@ import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.
 import { PageComponent } from '@pdz/shared/layout/page/page.component';
 import { catchError, of } from 'rxjs';
 
-type TournamentStatus = 'upcoming' | 'active' | 'completed';
-
-const STATUS: Record<TournamentStatus, { label: string; tone: ChipTone }> = {
+const STATUS: Record<
+  League.TournamentSummary['phase'],
+  { label: string; tone: ChipTone }
+> = {
   upcoming: { label: 'Upcoming', tone: 'info' },
-  active: { label: 'In Season', tone: 'success' },
+  drafting: { label: 'Drafting', tone: 'info' },
+  season: { label: 'In Season', tone: 'success' },
   completed: { label: 'Completed', tone: 'neutral' },
 };
 
@@ -63,39 +65,16 @@ export class LeagueLandingComponent {
       .pipe(catchError(() => of(null))),
   );
 
-  readonly tournaments = computed(() => {
-    const now = Date.now();
-    return (this.league()?.tournaments ?? []).map((tournament) => {
-      const status = this.statusOf(tournament, now);
-      const over = status === 'completed';
-      return {
-        tournament,
-        status: STATUS[status],
-        over,
-        signUpOpen:
-          !over &&
-          !!tournament.signUpDeadline &&
-          now <= new Date(tournament.signUpDeadline).getTime(),
-      };
-    });
-  });
+  readonly tournaments = computed(() =>
+    (this.league()?.tournaments ?? []).map((tournament) => ({
+      tournament,
+      status: STATUS[tournament.phase] ?? STATUS.upcoming,
+      over: tournament.phase === 'completed',
+      signUpOpen: tournament.signUpOpen,
+    })),
+  );
 
   readonly showHallOfFame = computed(
     () => (this.league()?.tournaments ?? []).length > 0,
   );
-
-  private statusOf(
-    tournament: League.TournamentSummary,
-    now: number,
-  ): TournamentStatus {
-    if (tournament.completedAt) return 'completed';
-    if (tournament.seasonEnd && now > new Date(tournament.seasonEnd).getTime())
-      return 'completed';
-    if (
-      tournament.seasonStart &&
-      now >= new Date(tournament.seasonStart).getTime()
-    )
-      return 'active';
-    return 'upcoming';
-  }
 }

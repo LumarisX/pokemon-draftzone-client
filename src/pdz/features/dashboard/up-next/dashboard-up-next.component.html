@@ -1,0 +1,38 @@
+<pdz-card padding="none">
+  <ol class="list">
+    @for (row of rows(); track row.id) {
+      <li class="item" [class.item--pick]="row.pick">
+        <span class="item__icon" aria-hidden="true">
+          <pdz-icon [name]="row.icon" size="sm" />
+        </span>
+        <span class="item__text">
+          @if (row.pick) {
+            <pdz-chip size="sm" tone="primary" variant="solid">{{
+              row.title
+            }}</pdz-chip>
+          } @else {
+            <span class="item__title">{{ row.title }}</span>
+          }
+          <span class="item__detail">{{ row.detail }}</span>
+        </span>
+        @if (isFuture(row.when)) {
+          <span class="item__when">
+            <pdz-countdown [target]="row.when" [showTitle]="false" />
+            @if (row.pick) {
+              <span class="item__unit">left</span>
+            }
+          </span>
+        }
+        <a
+          pdz-button
+          size="sm"
+          class="item__action"
+          [variant]="row.pick ? 'filled' : 'tonal'"
+          [color]="row.pick ? 'primary' : 'neutral'"
+          [routerLink]="row.action.link"
+          >{{ row.action.label }}</a
+        >
+      </li>
+    }
+  </ol>
+</pdz-card>

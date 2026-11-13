@@ -1,8 +1,8 @@
 import { InjectionToken } from '@angular/core';
 import {
+  DASHBOARD_PATH,
   DRAFT_OVERVIEW_PATH,
-  EXTERNAL_DRAFTS_PATH,
-  LEAGUE_ZONE_PATH,
+  EXTERNAL_TOURNAMENTS_PATH,
 } from '@pdz/core/route-paths';
 
 export type DraftArea = {
@@ -16,8 +16,8 @@ export const DRAFTS_AREA: DraftArea = {
 };
 
 export const EXTERNAL_DRAFTS_AREA: DraftArea = {
-  home: ['/', LEAGUE_ZONE_PATH],
-  root: ['/', LEAGUE_ZONE_PATH, EXTERNAL_DRAFTS_PATH],
+  home: ['/', DASHBOARD_PATH],
+  root: ['/', DASHBOARD_PATH, EXTERNAL_TOURNAMENTS_PATH],
 };
 
 export const DRAFT_AREA = new InjectionToken<DraftArea>('DRAFT_AREA', {

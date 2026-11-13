@@ -1,6 +1,6 @@
 import { Routes } from '@angular/router';
 import { AuthGuard } from '@auth0/auth0-angular';
-import { LEAGUE_ZONE_PATH } from '@pdz/core/route-paths';
+import { DASHBOARD_PATH } from '@pdz/core/route-paths';
 import { LegacyDraftListComponent } from '../legacy/draft-list/legacy-draft-list.component';
 import { LegacyDraftShellComponent } from '../legacy/draft-shell/legacy-draft-shell.component';
 import { LegacyDraftTeamComponent } from '../legacy/draft-team/legacy-draft-team.component';
@@ -65,7 +65,7 @@ export const routes: Routes = [
 export const externalRoutes: Routes = [
   {
     path: '',
-    redirectTo: `/${LEAGUE_ZONE_PATH}`,
+    redirectTo: `/${DASHBOARD_PATH}`,
     pathMatch: 'full',
   },
   ...draftPages,

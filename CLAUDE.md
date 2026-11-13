@@ -134,16 +134,29 @@ button (`injectIsOrganizer()` from `@pdz/features/league-zone/organizer-access`)
 **Two draft areas, for now.** The live site still links to the old **My Drafts** list
 (`/drafts`) and the old draft page (`/drafts/:team`), restored from before the refresh in
 `features/drafts/legacy/` and exempted by name in the linters (`LEGACY_DRAFT_PAGES`). The new
-pages are reachable only by URL for testing: My Leagues at `/leagues`, the new draft page at
-`/leagues/external/:team`. Both areas share the draft sub-pages (forms, score entry,
+pages are reachable only by URL for testing: the Dashboard at `/dashboard`, the Profile at
+`/profile` and the new draft page at `/dashboard/external-tournaments/:team`. Both areas share the draft sub-pages (forms, score entry,
 matchup, stats); the `DRAFT_AREA` token (`@pdz/features/drafts/draft-area`), provided on the
-`/leagues/external` route, tells them which area to link back into, so build draft links
-with `draftLinks(teamId, area)`, never a literal `/drafts`.
+`/dashboard/external-tournaments` route, tells them which area to link back into, so build draft
+links with `draftLinks(teamId, area)`, never a literal `/drafts`.
 
-`/leagues` is **My Leagues**: hosted and external leagues
-on one page (career strip, roster-sprite cards for active seasons, an Organizing list of
-tournaments you own or staff without a team, Completed grouped by year). The Feed is off
-(`showFeed`) until it works. An external draft's new page (`/leagues/external/:team`) is laid out like the league team page:
+**The Dashboard** (`/dashboard`, `features/dashboard/`, signed in only) is the launchpad for
+everything that is yours: Up Next, Your Teams (hosted and external in one card), Organizing,
+Leagues You Run and My Tier Lists. It only composes. The server's `GET /dashboard` returns the
+teams already ordered, with phase, record, rank, next match and the Up Next items decided, so
+the client never works those out; tier lists and planner plans load in their own calls and fail
+on their own. **The Profile** (`/profile`, `features/profile/`) holds what is finished: the career
+strip, achievements and Completed seasons by year, from `GET /profile`. `/leagues` is the public
+**League Directory** (`league-zone/league-directory/`): hosted leagues whose owner listed them
+(the toggle is on Edit League), each card showing its running tournaments. The plan is in
+`docs/dashboard-plan.md`.
+
+**Planner plans save to the account when signed in.** `PlannerSyncService` reconciles browser
+storage with the server in a route resolver before the planner opens and pushes after each
+autosave, so the planner itself still only reads and writes `safeStorage`. Signed out, nothing
+is sent. Never make the planner wait on the network or require an account.
+
+An external draft's new page (`/dashboard/external-tournaments/:team`) is laid out like the league team page:
 plain header with no logo, a Schedule card on `pdz-team-season` in the left column (`entries`
 plus a `rowActions` ⋮ menu; one section per match about the opponent, played ones
 collapsed), and `pdz-team-roster` on the right (season MVP over the Draft Roster table),

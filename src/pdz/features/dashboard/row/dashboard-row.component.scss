@@ -1,0 +1,66 @@
+@use "pdz-theming" as pdz;
+
+:host {
+  display: flex;
+  align-items: center;
+  gap: pdz.space(xs);
+}
+
+:host(:not(:first-child)) {
+  @include pdz.row-divider;
+}
+
+.row__link {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: pdz.space(sm);
+  min-width: 0;
+  padding: pdz.space(sm);
+  border-radius: pdz.shape(corner-sm);
+  color: inherit;
+  text-decoration: none;
+  transition: background-color pdz.duration(fast) pdz.easing(standard);
+
+  &:hover {
+    background: pdz.color(state-hover);
+  }
+
+  &:focus-visible {
+    @include pdz.focus-ring(-2px);
+  }
+}
+
+.row__text {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: pdz.space(3xs);
+  min-width: 0;
+}
+
+.row__name {
+  @include pdz.text(body-sm-strong);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: pdz.color(on-surface);
+}
+
+.row__meta,
+.row__status {
+  @include pdz.text(meta);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: pdz.color(on-surface-muted);
+}
+
+.row__status {
+  flex: none;
+}
+
+.row__chevron {
+  flex: none;
+  color: pdz.color(on-surface-muted);
+}

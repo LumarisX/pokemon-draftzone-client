@@ -41,8 +41,6 @@ const LOUD_MOMENTS = {
     "exception: the landing hero, a marketing page like the homepage",
   "src/pdz/features/tools/wheel/wheel.component.scss":
     "exception: the wheel's pick is the tool's whole payoff",
-  "src/pdz/features/drafts/drafts-v2/season-detail/season-detail.component.scss":
-    "exception: the owner's drafts-v2 test page",
   "src/pdz/core/debug/components/debug-components.component.scss":
     "exception: the gallery shows every role",
 };
@@ -57,8 +55,6 @@ const DRAG_OBJECTS_AND_SLOTS = [
 ];
 
 const OWNER_TEST_PAGES = [
-  "src/pdz/features/drafts/drafts-v2/match-row/match-row.component.scss",
-  "src/pdz/features/drafts/drafts-v2/season-card/season-card.component.scss",
   "src/pdz/features/drafts/opponent-overview/opponent-score-v2/ko-graph.component.scss",
 ];
 

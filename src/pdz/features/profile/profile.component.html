@@ -1,0 +1,166 @@
+<pdz-page type="hub">
+  <pdz-page-header
+    title="Profile"
+    [backLink]="dashboardLink"
+    backLabel="Dashboard"
+  />
+
+  @if (failed()) {
+    <pdz-empty-state
+      bordered
+      kind="error"
+      heading="Could not load your profile"
+      message="Your seasons and achievements did not come back from the server."
+      retry="event"
+      (retried)="load()"
+    />
+  } @else if (profile(); as data) {
+    @if (data.career.seasons) {
+      <div class="profile">
+        <pdz-card padding="none">
+          <dl class="career">
+            <div class="career__stat">
+              <dt>Seasons</dt>
+              <dd>{{ data.career.seasons }}</dd>
+            </div>
+            <div class="career__stat">
+              <dt>All-Time Record</dt>
+              <dd>
+                {{ data.career.wins }}–{{ data.career.losses }}
+                @if (data.career.winRate !== null) {
+                  <span class="career__unit">{{ data.career.winRate }}%</span>
+                }
+              </dd>
+            </div>
+            <div class="career__stat">
+              <dt>Titles</dt>
+              <dd [class.career__titles]="data.career.titles">
+                @if (data.career.titles) {
+                  <pdz-icon name="trophy" size="sm" aria-hidden="true" />
+                }
+                {{ data.career.titles }}
+              </dd>
+            </div>
+            <div class="career__stat">
+              <dt>Best Finish</dt>
+              <dd>
+                @if (data.career.best; as best) {
+                  {{ ordinal(best.placement) }}
+                  <span class="career__unit">of {{ best.of }}</span>
+                } @else {
+                  <span class="career__unit">—</span>
+                }
+              </dd>
+            </div>
+          </dl>
+        </pdz-card>
+
+        @if (data.achievements.length) {
+          <pdz-dashboard-section
+            heading="Achievements"
+            [count]="data.achievements.length"
+          >
+            <pdz-card>
+              <ul class="achievements">
+                @for (achievement of data.achievements; track achievement.id) {
+                  <li class="achievement">
+                    <pdz-achievement-badge
+                      size="lg"
+                      [name]="achievement.name"
+                      [icon]="achievement.icon"
+                      [rarity]="achievement.rarity"
+                    />
+                    <span class="achievement__name">{{ achievement.name }}</span>
+                    <span class="achievement__count"
+                      >{{ achievement.seasons }}
+                      {{ achievement.seasons === 1 ? "season" : "seasons" }}</span
+                    >
+                  </li>
+                }
+              </ul>
+            </pdz-card>
+          </pdz-dashboard-section>
+        }
+
+        @if (years().length) {
+          <pdz-dashboard-section
+            heading="Completed Seasons"
+            [count]="data.completed.length"
+          >
+            <div class="years">
+              @for (group of years(); track group.year) {
+                <pdz-disclosure [heading]="group.heading" [open]="$first">
+                  <pdz-card padding="none">
+                    <ol class="seasons">
+                      @for (season of group.seasons; track season.id) {
+                        <li>
+                          <a
+                            class="season"
+                            [class.season--champion]="season.outcome?.champion"
+                            [routerLink]="season.link"
+                          >
+                            <pdz-team
+                              size="row"
+                              class="season__team"
+                              [name]="season.teamName"
+                              [logo]="season.logoSrc"
+                            >
+                              <span pdz-team-meta class="season__league">{{
+                                season.league
+                              }}</span>
+                            </pdz-team>
+                            @if (season.outcome; as outcome) {
+                              <span class="season__result">
+                                @if (outcome.champion) {
+                                  <pdz-chip
+                                    size="sm"
+                                    tone="secondary"
+                                    variant="solid"
+                                    icon="trophy"
+                                    >Champion</pdz-chip
+                                  >
+                                }
+                                <span class="season__place"
+                                  >{{ ordinal(outcome.placement) }} of
+                                  {{ outcome.of }}</span
+                                >
+                              </span>
+                            }
+                            @if (season.record; as record) {
+                              <pdz-record
+                                class="season__record"
+                                size="sm"
+                                [wins]="record.wins"
+                                [losses]="record.losses"
+                                [draws]="record.draws"
+                              />
+                            }
+                            <pdz-icon
+                              class="season__chevron"
+                              name="chevron_right"
+                              size="sm"
+                              aria-hidden="true"
+                            />
+                          </a>
+                        </li>
+                      }
+                    </ol>
+                  </pdz-card>
+                </pdz-disclosure>
+              }
+            </div>
+          </pdz-dashboard-section>
+        }
+      </div>
+    } @else {
+      <pdz-empty-state
+        bordered
+        kind="empty"
+        heading="No seasons yet"
+        message="Your record, titles and finished seasons will collect here once you've played in a league."
+      />
+    }
+  } @else {
+    <pdz-skeleton-layout layout="list" count="6" />
+  }
+</pdz-page>

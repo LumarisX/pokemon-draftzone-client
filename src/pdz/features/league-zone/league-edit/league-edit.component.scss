@@ -11,6 +11,18 @@
     gap: pdz.space(md);
   }
 
+  &__listing {
+    display: flex;
+    flex-direction: column;
+    gap: pdz.space(xs);
+  }
+
+  &__hint {
+    @include pdz.text(meta);
+    margin: 0;
+    color: pdz.color(on-surface-muted);
+  }
+
   &__actions {
     display: flex;
     flex-wrap: wrap;

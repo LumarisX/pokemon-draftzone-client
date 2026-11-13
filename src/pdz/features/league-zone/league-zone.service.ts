@@ -342,6 +342,10 @@ export class LeagueZoneService {
     return this.apiService.get(`${ROOTPATH}/capabilities`);
   }
 
+  getDirectory(): Observable<{ leagues: League.DirectoryLeague[] }> {
+    return this.apiService.get(`${ROOTPATH}/directory`);
+  }
+
   getOwnedLeagues(): Observable<League.OwnedLeagues> {
     return this.apiService.get(`${ROOTPATH}/owned`);
   }

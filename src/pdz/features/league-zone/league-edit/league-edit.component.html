@@ -52,6 +52,19 @@
               (valueChange)="logo.set($event)"
             />
 
+            <div class="edit__listing">
+              <pdz-slide-toggle
+                label="List in the League Directory"
+                [checked]="listed()"
+                [disabled]="saving()"
+                (checkedChange)="listed.set($event)"
+              />
+              <p class="edit__hint">
+                Anyone can find the league and its current tournament on the
+                Leagues page. Off, it is reachable only by its link.
+              </p>
+            </div>
+
             <div class="edit__actions">
               <a pdz-button variant="outlined" [routerLink]="leagueLink"
                 >Cancel</a

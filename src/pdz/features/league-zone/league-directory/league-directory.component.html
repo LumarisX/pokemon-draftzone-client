@@ -1,0 +1,144 @@
+<pdz-page type="index">
+  <pdz-page-header
+    title="Leagues"
+    subtitle="Draft leagues hosted on Pokémon DraftZone."
+  >
+    <div pdz-page-header-actions class="actions">
+      <a
+        pdz-button
+        variant="ghost"
+        color="neutral"
+        [routerLink]="offSiteLink"
+        >Off-Site Leagues</a
+      >
+      <a
+        pdz-button
+        variant="outlined"
+        color="neutral"
+        icon="add"
+        [routerLink]="newLeagueLink"
+        >Start a League</a
+      >
+    </div>
+  </pdz-page-header>
+
+  @if (failed()) {
+    <pdz-empty-state
+      bordered
+      kind="error"
+      heading="Could not load the leagues"
+      message="The league directory did not come back from the server."
+      retry="event"
+      (retried)="load()"
+    />
+  } @else if (all(); as everything) {
+    @if (everything.length) {
+      <div class="directory">
+        <div class="directory__controls">
+          <label pdz-field class="directory__search" label="Search">
+            <input
+              pdz-input
+              size="sm"
+              type="search"
+              placeholder="League, format or ruleset"
+              [ngModel]="query()"
+              (ngModelChange)="query.set($event)"
+            />
+          </label>
+          <pdz-segmented
+            size="sm"
+            aria-label="Filter by status"
+            [value]="filter()"
+            (valueChange)="setFilter($event)"
+          >
+            <pdz-segmented-option value="all" label="All" />
+            <pdz-segmented-option value="signups" label="Signing Up" />
+            <pdz-segmented-option value="drafting" label="Drafting" />
+            <pdz-segmented-option value="season" label="In Season" />
+          </pdz-segmented>
+        </div>
+
+        @if (leagues().length) {
+          <div class="directory__grid">
+            @for (league of leagues(); track league.leagueSlug) {
+              <pdz-card>
+                <div class="league">
+                  <pdz-team
+                    size="row"
+                    [name]="league.name"
+                    [logo]="league.logoSrc"
+                    [link]="league.link"
+                    [headingLevel]="2"
+                  />
+                  @if (league.description) {
+                    <p class="league__description">{{ league.description }}</p>
+                  }
+                  @if (league.tournaments.length) {
+                    <ul class="league__tournaments">
+                      @for (
+                        tournament of league.tournaments;
+                        track tournament.tournamentSlug
+                      ) {
+                        <li class="tournament">
+                          <div class="tournament__text">
+                            <a
+                              class="tournament__name"
+                              [routerLink]="tournament.link"
+                              >{{ tournament.name }}</a
+                            >
+                            <span class="tournament__meta">
+                              {{ tournament.meta }}
+                              @if (
+                                tournament.status === "signups" &&
+                                tournament.signUpDeadline
+                              ) {
+                                · Sign-ups close
+                                {{ tournament.signUpDeadline | date: "MMM d" }}
+                              }
+                            </span>
+                          </div>
+                          @if (tournament.status === "signups") {
+                            <a
+                              pdz-button
+                              size="sm"
+                              [routerLink]="tournament.signUpLink"
+                              >Sign Up</a
+                            >
+                          } @else {
+                            <pdz-chip
+                              size="sm"
+                              [tone]="status[tournament.status].tone"
+                              >{{ status[tournament.status].label }}</pdz-chip
+                            >
+                          }
+                        </li>
+                      }
+                    </ul>
+                  } @else {
+                    <p class="league__quiet">Between seasons</p>
+                  }
+                </div>
+              </pdz-card>
+            }
+          </div>
+        } @else {
+          <pdz-empty-state
+            bordered
+            kind="empty"
+            heading="No leagues match"
+            message="Try a different search or status."
+          />
+        }
+      </div>
+    } @else {
+      <pdz-empty-state
+        bordered
+        kind="empty"
+        heading="No leagues listed yet"
+        message="Leagues appear here once their owner lists them in the directory."
+      />
+    }
+  } @else {
+    <pdz-skeleton-layout layout="cards" count="6" />
+  }
+</pdz-page>

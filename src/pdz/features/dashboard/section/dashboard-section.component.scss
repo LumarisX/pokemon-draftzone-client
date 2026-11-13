@@ -1,0 +1,36 @@
+@use "pdz-theming" as pdz;
+
+:host {
+  display: block;
+  min-width: 0;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.layout(stack);
+  min-width: 0;
+}
+
+.section__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: pdz.space(sm);
+  min-height: pdz.control-height(sm);
+}
+
+.section__title {
+  @include pdz.text(section-title);
+  display: flex;
+  align-items: baseline;
+  gap: pdz.space(xs);
+  margin: 0;
+  color: pdz.color(on-surface);
+}
+
+.section__count {
+  @include pdz.text(meta);
+  @include pdz.numeric;
+  color: pdz.color(on-surface-muted);
+}

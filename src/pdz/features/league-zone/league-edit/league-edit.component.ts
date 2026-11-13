@@ -19,6 +19,7 @@ import { ToastService } from '@pdz/shared/feedback/toast/toast.service';
 import { SkeletonLayoutComponent } from '@pdz/shared/data/skeleton/skeleton-layout.component';
 import { FieldComponent } from '@pdz/shared/inputs/field/field.component';
 import { InputDirective } from '@pdz/shared/inputs/field/input.directive';
+import { SlideToggleComponent } from '@pdz/shared/inputs/slide-toggle/slide-toggle.component';
 import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
 import { PageComponent } from '@pdz/shared/layout/page/page.component';
 import {
@@ -42,6 +43,7 @@ import { LogoFieldComponent } from '../logo-field/logo-field.component';
     EmptyStateComponent,
     FieldComponent,
     InputDirective,
+    SlideToggleComponent,
     SkeletonLayoutComponent,
     LogoFieldComponent,
     PageComponent,
@@ -66,6 +68,7 @@ export class LeagueEditComponent implements OnInit {
   protected readonly name = signal('');
   protected readonly description = signal('');
   protected readonly logo = signal<string | null>(null);
+  protected readonly listed = signal(false);
 
   protected readonly nameMax = LEAGUE_NAME_MAX;
   protected readonly descriptionMax = LEAGUE_DESCRIPTION_MAX;
@@ -76,7 +79,9 @@ export class LeagueEditComponent implements OnInit {
     const name = this.name().trim();
     const description = this.description().trim();
     const logo = this.logo();
+    const listed = this.listed();
     return {
+      ...(listed !== !!league.listed ? { listed } : {}),
       ...(name !== league.name ? { name } : {}),
       ...(description !== (league.description ?? '') ? { description } : {}),
       ...(logo !== (league.logo ?? null) ? { logo } : {}),
@@ -99,6 +104,7 @@ export class LeagueEditComponent implements OnInit {
           this.name.set(league.name);
           this.description.set(league.description ?? '');
           this.logo.set(league.logo ?? null);
+          this.listed.set(!!league.listed);
           this.league.set(league);
         },
         error: () => this.loadFailed.set(true),
