@@ -167,6 +167,18 @@ actions, not a separate dialog.
 hero or interstitial layout. The planner is a `flush` workspace with a tab strip
 and no page header.
 
+**One planner, two modes.** `/planner` is the free planner. `.../tournaments/:t/planner`
+(rail, Tournament group; route `data: { planner: 'tournament' }`) is the same
+`PlannerComponent` with a `PlannerContext` from `TournamentPlannerService`: format, ruleset,
+size and budget are fixed by the tournament, the row search and Find only offer the tier
+list, tier and cost fill in on their own, and each plan starts from the viewer's roster.
+Another team's Pokémon stays addable as a trade (its sprite `taken` with that team's logo).
+A plan remembers the roster it last saw (`baseline`), so a new pick is added to every plan
+while a Pokémon the coach dropped stays dropped. Plans are stored per tournament
+(`plannerData:<league>/<tournament>`) through `safeStorage`. Tabs switch plans; the
+**Compare** view (both modes) shows every plan side by side. Anything added to one mode
+should work in the other unless it needs the tournament.
+
 ### Hard rules
 
 - **No Angular Material.** Removed 2026-08-22, package uninstalled. Do not reintroduce it.
@@ -185,6 +197,10 @@ and no page header.
   `DialogService.confirm(...)` or a toast. A route that guards unsaved work uses
   `unsavedChangesGuard` from `@pdz/core/guards/unsaved-changes`; the component's
   `canDeactivate()` may return a promise from `DialogService.confirm`.
+- **Don't narrate what the screen already shows.** No toast, status line or note that
+  confirms in a sentence something the user just watched happen ("Added Arbok to slot 3",
+  "Plan duplicated"). The change on screen is the confirmation. Words are for a failure, a
+  blocked action, or a result that happens off screen (copied, sent, saved to the server).
 - **Storage goes through `safeStorage`** (`@pdz/core/utils/storage`), never raw
   `localStorage`; it survives private mode and blocked storage.
 
@@ -285,8 +301,10 @@ empty-state messages and toasts stay sentence case. The brand is "Pokémon Draft
   fields and select triggers fill with `field` (the card color) behind an `outline`
   border, so they read as filled on the page and as bordered wells on a card. A
   field inside a box that is already the control's frame (a planner row) goes
-  plain: no fill or border at rest, `state-hover` on hover, `field` on focus
-  (`appearance="plain"` on `pdz-pokemon-search`).
+  plain: no fill or border at rest and no hover of its own (the whole row takes
+  `state-hover`), `field` on focus (`appearance="plain"` on `pdz-pokemon-search`).
+  There the row also owns the remove button (`[clearable]="false"`) and passes a
+  muted line under the name through `detail`.
   The old `surface*` / `surface-container*` / `background` / `outline-variant`
   roles and the `--pdz-level-*` shadows are deleted; the linter rejects them.
 - **Surfaces carry a faint tint of the theme's primary** by one formula in

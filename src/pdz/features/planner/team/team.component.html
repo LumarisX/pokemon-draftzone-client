@@ -1,76 +1,109 @@
 @if (draftFormGroup) {
   <div class="planner-team">
-    <div class="planner-team__controls">
-      <div class="planner-team__control">
-        <span class="planner-team__control-label">Size</span>
-        <div class="planner-team__range">
-          <input
-            pdz-input
-            size="sm"
-            class="planner-team__num"
-            type="number"
-            min="0"
-            max="18"
-            aria-label="Minimum team size"
-            [formControl]="draftFormGroup.controls.min"
-          />
-          <span class="planner-team__range-sep">–</span>
-          <input
-            pdz-input
-            size="sm"
-            class="planner-team__num"
-            type="number"
-            min="0"
-            max="18"
-            aria-label="Maximum team size"
-            [formControl]="draftFormGroup.controls.max"
-          />
-        </div>
-      </div>
-
-      <div class="planner-team__control">
-        <span class="planner-team__control-label" id="planner-team-system">
-          Values
+    @if (context(); as tournament) {
+      <div class="planner-team__controls planner-team__controls--fixed">
+        <span class="planner-team__count">
+          {{ team.length }} of {{ tournament.max }} Pokémon
         </span>
-        <pdz-segmented
-          size="sm"
-          variant="neutral"
-          aria-labelledby="planner-team-system"
-          [formControl]="draftFormGroup.controls.system"
-        >
-          <pdz-segmented-option value="points" label="Points" />
-          <pdz-segmented-option value="tiers" label="Tiers" />
-        </pdz-segmented>
-      </div>
-
-      @if (isPoints) {
-        <div class="planner-team__control">
-          <label class="planner-team__control-label" for="planner-team-total">
-            Total
-          </label>
-          <input
-            pdz-input
+        <div class="planner-team__actions">
+          @if (tournament.roster.length) {
+            <button
+              pdz-button
+              variant="outlined"
+              color="neutral"
+              size="sm"
+              icon="restart_alt"
+              [disabled]="matchesRoster"
+              (click)="resetToRoster()"
+            >
+              Reset to Roster
+            </button>
+          }
+          <button
+            pdz-button
+            variant="outlined"
+            color="neutral"
             size="sm"
-            class="planner-team__num planner-team__num--wide"
-            id="planner-team-total"
-            type="number"
-            [formControl]="draftFormGroup.controls.totalPoints"
-          />
+            [disabled]="!clearableCount"
+            (click)="clearTeam()"
+          >
+            Clear
+          </button>
         </div>
-      }
+      </div>
+    } @else {
+      <div class="planner-team__controls">
+        <div class="planner-team__control">
+          <span class="planner-team__control-label">Size</span>
+          <div class="planner-team__range">
+            <input
+              pdz-input
+              size="sm"
+              class="planner-team__num"
+              type="number"
+              min="0"
+              max="18"
+              aria-label="Minimum team size"
+              [formControl]="draftFormGroup.controls.min"
+            />
+            <span class="planner-team__range-sep">–</span>
+            <input
+              pdz-input
+              size="sm"
+              class="planner-team__num"
+              type="number"
+              min="0"
+              max="18"
+              aria-label="Maximum team size"
+              [formControl]="draftFormGroup.controls.max"
+            />
+          </div>
+        </div>
 
-      <button
-        pdz-button
-        class="planner-team__clear"
-        variant="ghost"
-        color="danger"
-        size="sm"
-        [disabled]="!clearableCount"
-        (click)="clearTeam()"
-      >
-        Clear
-      </button>
-    </div>
+        <div class="planner-team__control">
+          <span class="planner-team__control-label" id="planner-team-system">
+            Values
+          </span>
+          <pdz-segmented
+            size="sm"
+            variant="neutral"
+            aria-labelledby="planner-team-system"
+            [formControl]="draftFormGroup.controls.system"
+          >
+            <pdz-segmented-option value="points" label="Points" />
+            <pdz-segmented-option value="tiers" label="Tiers" />
+          </pdz-segmented>
+        </div>
+
+        @if (isPoints) {
+          <div class="planner-team__control">
+            <label class="planner-team__control-label" for="planner-team-total">
+              Total
+            </label>
+            <input
+              pdz-input
+              size="sm"
+              class="planner-team__num planner-team__num--wide"
+              id="planner-team-total"
+              type="number"
+              [formControl]="draftFormGroup.controls.totalPoints"
+            />
+          </div>
+        }
+
+        <button
+          pdz-button
+          class="planner-team__clear"
+          variant="outlined"
+          color="neutral"
+          size="sm"
+          [disabled]="!clearableCount"
+          (click)="clearTeam()"
+        >
+          Clear
+        </button>
+      </div>
+    }
 
     <div
       class="planner-team__list"
@@ -120,38 +153,55 @@
             placeholder="Add Pokémon..."
             [locked]="teamCtrl.controls.locked.value"
             [ruleset]="draftFormGroup.controls.ruleset.value"
+            [options$]="context()?.options$"
             [takenIds]="takenIdsFor($index)"
             [formControl]="teamCtrl.controls.pokemon"
-            (selectionCleared)="onClear($index)"
+            [clearable]="false"
+            [detail]="detailFor(teamCtrl)"
           ></pdz-pokemon-search>
 
           <div class="planner-team__meta">
-            <div class="planner-team__value">
-              @if (isPoints) {
-                <input
-                  class="planner-team__value-input"
-                  type="number"
-                  inputmode="numeric"
-                  placeholder="0"
-                  [readonly]="teamCtrl.controls.locked.value"
-                  [attr.aria-label]="'Points for slot ' + ($index + 1)"
-                  [formControl]="teamCtrl.controls.value"
-                />
-              } @else {
-                <input
-                  class="planner-team__value-input"
-                  type="text"
-                  spellcheck="false"
-                  placeholder="—"
-                  [readonly]="teamCtrl.controls.locked.value"
-                  [attr.aria-label]="'Tier for slot ' + ($index + 1)"
-                  [formControl]="teamCtrl.controls.tier"
-                />
-              }
-              <span class="planner-team__value-unit" aria-hidden="true">
-                {{ isPoints ? "points" : "tier" }}
-              </span>
-            </div>
+            @if (context()) {
+              <div class="planner-team__value planner-team__value--fixed">
+                <span class="planner-team__value-text">
+                  @if (isPoints) {
+                    {{ teamCtrl.controls.value.value ?? "—" }}
+                  } @else {
+                    {{ teamCtrl.controls.tier.value || "—" }}
+                  }
+                </span>
+                <span class="planner-team__value-unit">
+                  {{ isPoints ? "points" : "tier" }}
+                </span>
+              </div>
+            } @else {
+              <div class="planner-team__value">
+                @if (isPoints) {
+                  <input
+                    class="planner-team__value-input"
+                    type="number"
+                    inputmode="numeric"
+                    placeholder="0"
+                    [readonly]="teamCtrl.controls.locked.value"
+                    [attr.aria-label]="'Points for slot ' + ($index + 1)"
+                    [formControl]="teamCtrl.controls.value"
+                  />
+                } @else {
+                  <input
+                    class="planner-team__value-input"
+                    type="text"
+                    spellcheck="false"
+                    placeholder="—"
+                    [readonly]="teamCtrl.controls.locked.value"
+                    [attr.aria-label]="'Tier for slot ' + ($index + 1)"
+                    [formControl]="teamCtrl.controls.tier"
+                  />
+                }
+                <span class="planner-team__value-unit" aria-hidden="true">
+                  {{ isPoints ? "points" : "tier" }}
+                </span>
+              </div>
+            }
 
             <button
               pdz-button
@@ -172,30 +222,94 @@
                 [fill]="teamCtrl.controls.locked.value"
               ></pdz-icon>
             </button>
+
+            @if (
+              teamCtrl.controls.pokemon.value && !teamCtrl.controls.locked.value
+            ) {
+              <button
+                pdz-button
+                iconOnly
+                size="sm"
+                class="planner-team__remove"
+                variant="ghost"
+                color="neutral"
+                [attr.aria-label]="
+                  'Remove ' + teamCtrl.controls.pokemon.value.name
+                "
+                (click)="clearRow($index)"
+              >
+                <pdz-icon name="close" [size]="18"></pdz-icon>
+              </button>
+            } @else {
+              <span class="planner-team__remove" aria-hidden="true"></span>
+            }
           </div>
         </div>
       }
     </div>
 
-    @if (isPoints) {
+    @if (isPoints || context()) {
       <dl class="planner-team__totals">
-        <div class="planner-team__total">
-          <dt>Points Remaining</dt>
-          <dd
-            class="planner-team__remaining"
-            [class.planner-team__remaining--left]="remainingPoints > 0"
-            [class.planner-team__remaining--over]="remainingPoints < 0"
-          >
-            {{ remainingPoints }}
-          </dd>
-        </div>
-        <div class="planner-team__total">
-          <dt>Average</dt>
-          <dd>
-            {{ remainingPoints / remainingPokemon | number: "1.0-2" }} ×
-            {{ remainingPokemon }} Pokémon
-          </dd>
-        </div>
+        @if (isPoints) {
+          <div class="planner-team__total">
+            <dt>Points Remaining</dt>
+            <dd
+              class="planner-team__remaining"
+              [class.planner-team__remaining--left]="remainingPoints > 0"
+              [class.planner-team__remaining--over]="remainingPoints < 0"
+            >
+              {{ remainingPoints }}
+            </dd>
+          </div>
+          <div class="planner-team__total">
+            <dt>Average</dt>
+            <dd>
+              {{ remainingPoints / remainingPokemon | number: "1.0-2" }} ×
+              {{ remainingPokemon }} Pokémon
+            </dd>
+          </div>
+        }
+        @for (requirement of unmetRequirements; track requirement.tierName) {
+          <div class="planner-team__total">
+            <dt>{{ requirement.tierName }}</dt>
+            <dd class="planner-team__remaining planner-team__remaining--short">
+              {{ requirement.have }} of {{ requirement.required }}
+            </dd>
+          </div>
+        }
+        @if (context()?.roster?.length && changes; as diff) {
+          @if (diff.added.length) {
+            <div class="planner-team__total planner-team__total--sprites">
+              <dt>Added</dt>
+              <dd class="planner-team__changes">
+                @for (pokemon of diff.added; track pokemon.id) {
+                  <pdz-sprite size="sm" [pokemon]="pokemon"></pdz-sprite>
+                }
+              </dd>
+            </div>
+          }
+          @if (diff.dropped.length) {
+            <div class="planner-team__total planner-team__total--sprites">
+              <dt>Dropped</dt>
+              <dd class="planner-team__changes">
+                @for (pokemon of diff.dropped; track pokemon.id) {
+                  <button
+                    pdz-button
+                    iconOnly
+                    size="sm"
+                    variant="ghost"
+                    color="neutral"
+                    [attr.aria-label]="'Put ' + pokemon.name + ' back'"
+                    [attr.title]="'Put ' + pokemon.name + ' back'"
+                    (click)="restore(pokemon)"
+                  >
+                    <pdz-sprite size="sm" [pokemon]="pokemon"></pdz-sprite>
+                  </button>
+                }
+              </dd>
+            </div>
+          }
+        }
       </dl>
     }
   </div>

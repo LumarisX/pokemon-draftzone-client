@@ -1,5 +1,19 @@
 <pdz-page type="workspace" flush>
-@if (plannerForm) {
+@if (loadState() === "error") {
+  <pdz-empty-state
+    kind="error"
+    heading="The Planner Didn't Load"
+    message="This tournament's tier list and rosters did not come back."
+    retry="event"
+    (retried)="loadContext()"
+  ></pdz-empty-state>
+} @else if (loadState() === "no-tier-list") {
+  <pdz-empty-state
+    kind="empty"
+    heading="No Tier List Yet"
+    message="The planner builds from the tournament's tier list, and the organizers have not connected one yet."
+  ></pdz-empty-state>
+} @else if (plannerForm) {
   <div class="planner" (keydown.enter)="$event.preventDefault()">
     <div class="planner__drafts">
       <div
@@ -134,9 +148,11 @@
           <div class="planner__panel-content">
             <pdz-planner-settings
               [draftFormGroup]="draftFormGroup"
+              [context]="context()"
             ></pdz-planner-settings>
             <pdz-planner-team
               [draftFormGroup]="draftFormGroup"
+              [context]="context()"
             ></pdz-planner-team>
           </div>
         </section>
@@ -188,6 +204,11 @@
               icon="insights"
             />
             <pdz-segmented-option value="find" label="Find" icon="search" />
+            <pdz-segmented-option
+              value="compare"
+              label="Compare"
+              icon="compare_arrows"
+            />
           </pdz-segmented>
         </div>
 
@@ -214,25 +235,47 @@
             </div>
           }
 
-          @if (!hasAnalysis()) {
+          @if (analysisFailed()) {
+            <pdz-empty-state
+              class="planner__empty"
+              kind="error"
+              heading="Analysis Didn't Load"
+              message="The breakdown for this team did not come back."
+              retry="event"
+              (retried)="updateDetails()"
+            ></pdz-empty-state>
+          } @else if (!hasAnalysis()) {
             <pdz-empty-state
               class="planner__empty"
               kind="empty"
-              heading="No analysis yet"
+              heading="No Analysis Yet"
               message="Add Pokémon to your team to see summary, typing, move and coverage breakdowns here."
             ></pdz-empty-state>
           }
         </div>
+
+        @if (mainView() === "compare") {
+          <div class="planner__compare">
+            <pdz-plan-compare
+              [plans]="planSummaries()"
+              [selected]="selectedDraft()"
+              [canAdd]="!isAtDraftLimit"
+              [showChanges]="!!context()?.roster?.length"
+              (opened)="openPlan($event)"
+              (duplicated)="copyToNew($event)"
+              (removed)="removePlan($event)"
+            ></pdz-plan-compare>
+          </div>
+        }
 
         <div class="planner__finder" [hidden]="mainView() !== 'find'">
           <p
             class="planner__finder-status"
             role="status"
             aria-live="polite"
-            [class.planner__finder-status--shown]="!!addFeedback()"
-            [class.planner__finder-status--blocked]="addFeedback()?.blocked"
+            [class.planner__finder-status--shown]="!!addBlocked()"
           >
-            {{ addFeedback()?.text }}
+            {{ addBlocked() }}
           </p>
 
           <pdz-pokemon-search-core
@@ -240,6 +283,8 @@
             selectable
             [rulesetId]="draftFormGroup.controls.ruleset.value || 'Gen9 NatDex'"
             [takenIds]="takenIds()"
+            [pool]="context()?.tiers ?? null"
+            [owners]="context()?.owners ?? null"
             (pokemonSelected)="addToTeam($event)"
           ></pdz-pokemon-search-core>
         </div>
@@ -280,9 +325,11 @@
           <div class="planner__panel-content">
             <pdz-planner-settings
               [draftFormGroup]="draftFormGroup"
+              [context]="context()"
             ></pdz-planner-settings>
             <pdz-planner-team
               [draftFormGroup]="draftFormGroup"
+              [context]="context()"
             ></pdz-planner-team>
           </div>
         </aside>

@@ -144,6 +144,18 @@
     }
 
     <div class="pokemon-results__header-controls">
+      @if (owners()?.size) {
+        <pdz-segmented
+          size="sm"
+          aria-label="Show drafted Pokémon"
+          [value]="availability"
+          (valueChange)="setAvailability($any($event))"
+        >
+          <pdz-segmented-option value="all" label="All" />
+          <pdz-segmented-option value="available" label="Undrafted" />
+        </pdz-segmented>
+      }
+      @if (!embedded()) {
       <button
         pdz-button
         iconOnly
@@ -176,6 +188,7 @@
       >
         <pdz-icon [name]="copyLinkSuccess ? 'check' : 'link_2'"></pdz-icon>
       </button>
+      }
       <div class="pokemon-results__sort">
         <pdz-select
           size="sm"
@@ -183,7 +196,7 @@
           [(ngModel)]="sortField"
           (ngModelChange)="onSortFieldChange()"
         >
-          @for (opt of sortFieldOptions; track opt.value) {
+          @for (opt of sortOptions(); track opt.value) {
             <pdz-option [value]="opt.value" [label]="opt.label" />
           }
         </pdz-select>
@@ -191,7 +204,7 @@
           pdz-button
           iconOnly
           size="sm"
-          variant="ghost"
+          variant="outlined"
           color="neutral"
           class="pokemon-results__sort-dir"
           [class.is-desc]="sortDir === 'desc'"
@@ -233,9 +246,15 @@
                 flipped
                 size="lg"
                 [pokemon]="pokemon"
+                [state]="ownerOf(pokemon) ? 'taken' : null"
+                [takenLogo]="ownerOf(pokemon)?.teamLogo"
+                [takenBy]="ownerOf(pokemon)?.teamName ?? ''"
                 class="pokemon-results__sprite"
               ></pdz-sprite>
               <span class="pokemon-results__card-name">{{ pokemon.name }}</span>
+              @if (poolLabel(pokemon); as cost) {
+                <span class="pokemon-results__card-cost">{{ cost }}</span>
+              }
               @if (sortedStatLabel(); as label) {
                 <span class="pokemon-results__card-stat">
                   {{ sortValue(pokemon) }} {{ label }}
@@ -248,11 +267,14 @@
                 iconOnly
                 size="xs"
                 class="pokemon-results__select"
-                [attr.aria-label]="'Add ' + pokemon.name + ' to your team'"
-                title="Add to team"
+                [attr.aria-label]="addLabel(pokemon)"
+                [attr.title]="ownerOf(pokemon) ? 'Add as a trade' : 'Add to team'"
                 (click)="selectPokemon(pokemon)"
               >
-                <pdz-icon name="add" [size]="16"></pdz-icon>
+                <pdz-icon
+                  [name]="ownerOf(pokemon) ? 'swap_horiz' : 'add'"
+                  [size]="16"
+                ></pdz-icon>
               </button>
             }
           </div>
@@ -268,11 +290,14 @@
                 iconOnly
                 size="xs"
                 class="pokemon-results__select pokemon-results__select--list"
-                [attr.aria-label]="'Add ' + pokemon.name + ' to your team'"
-                title="Add to team"
+                [attr.aria-label]="addLabel(pokemon)"
+                [attr.title]="ownerOf(pokemon) ? 'Add as a trade' : 'Add to team'"
                 (click)="selectPokemon(pokemon)"
               >
-                <pdz-icon name="add" [size]="16"></pdz-icon>
+                <pdz-icon
+                  [name]="ownerOf(pokemon) ? 'swap_horiz' : 'add'"
+                  [size]="16"
+                ></pdz-icon>
               </button>
             }
             <button
@@ -289,9 +314,17 @@
                 <pdz-sprite
                   flipped
                   [pokemon]="pokemon"
+                  [state]="ownerOf(pokemon) ? 'taken' : null"
+                  [takenLogo]="ownerOf(pokemon)?.teamLogo"
+                  [takenBy]="ownerOf(pokemon)?.teamName ?? ''"
                   size="lg"
                 ></pdz-sprite>
-                <p class="pokemon-results__list-name">{{ pokemon.name }}</p>
+                <p class="pokemon-results__list-name">
+                  {{ pokemon.name }}
+                  @if (poolLabel(pokemon); as cost) {
+                    <span class="pokemon-results__card-cost">{{ cost }}</span>
+                  }
+                </p>
                 <div class="pokemon-results__list-types">
                   @for (type of pokemon.types; track $index) {
                     <pdz-pokemon-type

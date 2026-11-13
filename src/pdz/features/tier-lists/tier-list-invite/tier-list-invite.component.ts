@@ -151,7 +151,6 @@ export class TierListInviteComponent implements OnInit {
     this.accepting.set(true);
     this.tierLists.acceptInvite(this.token, this.name().trim()).subscribe({
       next: ({ slug }) => {
-        this.toasts.success(`You're on ${preview.tierList.name}.`);
         this.router.navigate(
           ['/', TIER_LIST_PATH, slug, ...(preview.role === 'editor' ? ['edit'] : [])],
         );

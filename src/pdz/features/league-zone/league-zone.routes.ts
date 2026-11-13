@@ -7,6 +7,7 @@ import {
   LEAGUE_HALL_OF_FAME_PATH,
   LEAGUE_ZONE_MANAGE_PATH,
   ORGANIZER_INVITE_PATH,
+  PLANNER_PATH,
   TOURNAMENT_LOG_PATH,
 } from '@pdz/core/route-paths';
 import { HallOfFameComponent } from './hall-of-fame/hall-of-fame.component';
@@ -164,6 +165,14 @@ export const routes: Routes = [
       {
         path: 'trades',
         component: LeagueTradesComponent,
+      },
+      {
+        path: PLANNER_PATH,
+        loadComponent: () =>
+          import('../planner/planner.component').then(
+            (m) => m.PlannerComponent,
+          ),
+        data: { planner: 'tournament' },
       },
       {
         path: 'draft',

@@ -25,7 +25,6 @@
     padding: pdz.space(sm) pdz.space(sm) 0;
     max-width: 100%;
     overflow-y: clip;
-    background-color: pdz.color(raised);
     border-bottom: 1px solid pdz.color(border-subtle);
   }
 
@@ -366,13 +365,22 @@
     }
   }
 
+  &__compare {
+    width: 100%;
+    padding: pdz.space(lg) pdz.space(md);
+
+    @include pdz.respond-below(medium) {
+      padding: pdz.space(sm);
+    }
+  }
+
   &__finder-status {
     margin: 0;
     padding: pdz.space(3xs) pdz.space(sm);
     border-radius: pdz.shape(corner-full);
     align-self: flex-start;
-    color: pdz.color(on-positive-container);
-    background-color: pdz.color(positive-container);
+    color: pdz.color(on-warning-container);
+    background-color: pdz.color(warning-container);
     opacity: 0;
     @include pdz.text(label);
     @include pdz.caps;
@@ -381,11 +389,6 @@
 
     &--shown {
       opacity: 1;
-    }
-
-    &--blocked {
-      color: pdz.color(on-warning-container);
-      background-color: pdz.color(warning-container);
     }
   }
 

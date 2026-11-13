@@ -305,13 +305,9 @@ export class LeagueManageDraftComponent implements OnInit {
         this.startCountdown();
       });
 
-    this.on<DraftAddedEvent>('league.draft.added').subscribe((data) => {
-      this.replaceDraft(data.team);
-      this.notificationService.show(
-        `${data.team.name} drafted ${data.pick.pokemon.name}!`,
-        'success',
-      );
-    });
+    this.on<DraftAddedEvent>('league.draft.added').subscribe((data) =>
+      this.replaceDraft(data.team),
+    );
 
     this.on<DraftTeamEvent>('league.draft.updated').subscribe((data) =>
       this.replaceDraft(data.team),
@@ -327,10 +323,6 @@ export class LeagueManageDraftComponent implements OnInit {
       if (data.noTimer !== undefined) this.noTimer.set(data.noTimer);
       if (data.currentPick) this.currentPick.set(data.currentPick);
       this.startCountdown();
-      this.notificationService.show(
-        `Draft status: ${STATUS_LABELS[data.status] ?? data.status}`,
-        'info',
-      );
     });
 
     this.destroyRef.onDestroy(() => this.countdownReset$.next());
@@ -398,7 +390,6 @@ export class LeagueManageDraftComponent implements OnInit {
       this.leagueManageService.setRoundPick(turn.team.id, turn.round, {
         pokemonId: pokemon.id,
       }),
-      `Round ${turn.round + 1}: ${turn.team.name} set to ${pokemon.name}.`,
       `Could not set ${pokemon.name} for ${turn.team.name}.`,
     );
   }
@@ -409,7 +400,6 @@ export class LeagueManageDraftComponent implements OnInit {
     this.runTurnAction(
       turn,
       this.leagueManageService.clearPick(turn.team.id, pokemon.id),
-      `Cleared ${pokemon.name} from ${turn.team.name}.`,
       `Could not clear ${pokemon.name} from ${turn.team.name}.`,
     );
   }
@@ -419,7 +409,6 @@ export class LeagueManageDraftComponent implements OnInit {
     this.runTurnAction(
       turn,
       this.leagueManageService.setCurrentPick(turn.round, turn.position),
-      `Draft moved to round ${turn.round + 1}, pick ${turn.position + 1} (${turn.team.name}).`,
       `Could not move the draft to ${turn.team.name}'s turn.`,
     );
   }
@@ -471,10 +460,7 @@ export class LeagueManageDraftComponent implements OnInit {
         finalize(() => this.orderSaving.set(false)),
       )
       .subscribe({
-        next: (data) => {
-          this.applyPoolDetails(data);
-          this.notificationService.show('Draft order saved.', 'success');
-        },
+        next: (data) => this.applyPoolDetails(data),
         error: (error) => this.showError('Could not save draft order.', error),
       });
   }
@@ -520,7 +506,6 @@ export class LeagueManageDraftComponent implements OnInit {
   private runTurnAction(
     turn: DraftTurn,
     request: Observable<PoolDetails>,
-    success: string,
     failure: string,
   ): void {
     if (this.pendingKey()) return;
@@ -535,7 +520,6 @@ export class LeagueManageDraftComponent implements OnInit {
         next: (data) => {
           this.applyPoolDetails(data);
           this.editingKey.set(null);
-          this.notificationService.show(success, 'success');
         },
         error: (error) => this.showError(failure, error),
       });

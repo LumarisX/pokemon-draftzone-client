@@ -111,7 +111,6 @@ export class TierListCreateComponent {
       .fork(source.slug, { name: this.copyName().trim() || undefined })
       .subscribe({
         next: (created) => {
-          this.toasts.success(`${created.name} created.`);
           this.router.navigate(['/', TIER_LIST_PATH, created.slug, 'edit']);
         },
         error: (err) => {
@@ -139,7 +138,6 @@ export class TierListCreateComponent {
       })
       .subscribe({
         next: (created) => {
-          this.toasts.success(`${created.name} created.`);
           this.router.navigate(['/', TIER_LIST_PATH, created.slug, 'edit']);
         },
         error: (err) => {

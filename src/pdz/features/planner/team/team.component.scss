@@ -29,6 +29,22 @@
     gap: pdz.space(xs);
   }
 
+  &__controls--fixed {
+    align-items: center;
+  }
+
+  &__count {
+    color: pdz.color(on-surface-muted);
+    @include pdz.text(meta);
+    @include pdz.numeric;
+  }
+
+  &__actions {
+    display: flex;
+    gap: pdz.space(xs);
+    margin-left: auto;
+  }
+
   &__clear {
     margin-left: auto;
   }
@@ -107,12 +123,7 @@
       border-color pdz.duration(fast) pdz.easing(standard),
       background-color pdz.duration(fast) pdz.easing(standard);
 
-    &:hover {
-      border-color: pdz.color(border-control);
-    }
-
     &--reserve {
-      background: transparent;
       border-style: dashed;
     }
 
@@ -122,6 +133,11 @@
 
     &--locked {
       border-style: solid;
+    }
+
+    &:hover {
+      border-color: pdz.color(border-control);
+      background: pdz.color(state-hover);
     }
 
     &.cdk-drag-placeholder {
@@ -204,7 +220,7 @@
   &__meta {
     display: flex;
     align-items: center;
-    gap: pdz.space(xs);
+    gap: pdz.space(3xs);
     margin-left: auto;
   }
 
@@ -221,16 +237,22 @@
       border-color pdz.duration(base) pdz.easing(standard),
       background-color pdz.duration(fast) pdz.easing(standard);
 
-    &:hover {
-      background: pdz.color(state-hover);
-    }
-
     &:focus-within {
       outline: 2px solid pdz.color(primary-accent);
       outline-offset: 1px;
       border-color: pdz.color(primary-accent);
       background: pdz.color(field);
     }
+  }
+
+  &__value-text {
+    overflow: hidden;
+    color: pdz.color(on-surface);
+    line-height: 1.15;
+    text-align: center;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    @include pdz.numeric;
   }
 
   &__value-input {
@@ -269,7 +291,8 @@
     letter-spacing: 0.04em;
   }
 
-  &__lock {
+  &__lock,
+  &__remove {
     flex-shrink: 0;
     width: 2.25rem;
     height: var(--planner-row-control);
@@ -316,6 +339,21 @@
     &--over {
       color: pdz.color(danger);
     }
+
+    &--short {
+      color: pdz.color(warning);
+    }
+  }
+
+  &__total--sprites {
+    align-items: center;
+  }
+
+  &__changes {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: pdz.space(3xs);
   }
 
   &__drag-preview {

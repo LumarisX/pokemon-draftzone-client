@@ -229,10 +229,7 @@ export class ApplicantsPanelComponent {
         pools.map((pool) => pool.slug),
       )
       .subscribe({
-        next: () => {
-          this.selected.set(new Set());
-          this.toast.success(`${ids.length} teams added to pools.`);
-        },
+        next: () => this.selected.set(new Set()),
         error: (err) =>
           this.toast.error(apiErrorMessage(err, 'Could not place those teams.')),
       });
@@ -268,10 +265,7 @@ export class ApplicantsPanelComponent {
       .removeParticipant(coachId)
       .pipe(finalize(() => this.busyId.set(null)))
       .subscribe({
-        next: () => {
-          this.store.dropSignUp(entry.applicationId);
-          this.toast.success(`${entry.teamName} removed.`);
-        },
+        next: () => this.store.dropSignUp(entry.applicationId),
         error: (err) => {
           this.toast.error(
             apiErrorMessage(err, 'Could not remove that participant.'),
@@ -320,10 +314,7 @@ export class ApplicantsPanelComponent {
       .updateCoachDetails(coachId, changes)
       .pipe(finalize(() => this.busyId.set(null)))
       .subscribe({
-        next: () => {
-          this.store.patchSignUp(entry.applicationId, changes);
-          this.toast.success('Details updated.');
-        },
+        next: () => this.store.patchSignUp(entry.applicationId, changes),
         error: (err) => {
           this.toast.error(
             apiErrorMessage(err, 'Could not save those details.'),
@@ -355,7 +346,6 @@ export class ApplicantsPanelComponent {
       .pipe(finalize(() => this.busyId.set(null)))
       .subscribe({
         next: () => {
-          this.toast.success(`${entry.teamName} handed over.`);
           this.store.refreshRoster();
         },
         error: (err) => {

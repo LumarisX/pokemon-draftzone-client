@@ -241,11 +241,6 @@ export class ScheduleManagePageComponent implements GuardsUnsavedChanges {
       next: (result) => {
         this.settingRound.set(false);
         this.currentRoundIndex.set(result.currentRoundIndex);
-        this.toast.success(
-          result.currentRoundIndex < 0
-            ? 'No week is live now.'
-            : `${this.draft().rounds[result.currentRoundIndex]?.name ?? 'That week'} is live.`,
-        );
       },
       error: (err) => {
         this.settingRound.set(false);

@@ -113,7 +113,6 @@ export class LeagueEditComponent implements OnInit {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: () => {
-          this.toast.success('League saved.');
           this.router.navigate(this.leagueLink);
         },
         error: (err) => {

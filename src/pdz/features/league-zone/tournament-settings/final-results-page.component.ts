@@ -189,7 +189,6 @@ export class FinalResultsPageComponent {
     if (!confirmed) return;
     this.store.setCompleted(false).subscribe({
       next: () => {
-        this.toast.success('Tournament reopened.');
         this.load();
       },
       error: () =>

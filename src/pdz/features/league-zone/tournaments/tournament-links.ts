@@ -1,4 +1,4 @@
-import { TOURNAMENT_LOG_PATH } from '@pdz/core/route-paths';
+import { PLANNER_PATH, TOURNAMENT_LOG_PATH } from '@pdz/core/route-paths';
 import { League } from '../league.interface';
 
 export type TournamentLink = {
@@ -88,6 +88,13 @@ export function tournamentLinkGroups(
           route: [...base, 'trades'],
           icon: 'swap_horiz',
           description: 'Proposed and completed trades',
+        },
+        {
+          id: 'planner',
+          label: 'Planner',
+          route: [...base, PLANNER_PATH],
+          icon: 'insights',
+          description: 'Plan picks and trades against this tier list',
         },
       ],
     },

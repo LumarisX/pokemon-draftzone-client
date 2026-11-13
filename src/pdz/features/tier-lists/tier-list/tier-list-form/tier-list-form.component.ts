@@ -717,7 +717,6 @@ export class TierListFormComponent implements OnInit, OnDestroy {
     this.flashPokemon(moves.map((m) => m.pokemon.id));
     this.clearSelection();
     this.hasUnsavedChanges.set(true);
-    this.toasts.success(`Moved ${moves.length} Pokémon`, { duration: 2000 });
   }
 
   private async openPokemonDialog(
@@ -783,7 +782,6 @@ export class TierListFormComponent implements OnInit, OnDestroy {
       this.untiered() ? { ...(this.untiered() as EditableTier) } : undefined,
     );
     this.hasUnsavedChanges.set(true);
-    this.toasts.success('Pokémon updated', { duration: 2000 });
   }
 
   moveTier(fromIndex: number, toIndex: number): void {
@@ -810,7 +808,6 @@ export class TierListFormComponent implements OnInit, OnDestroy {
 
     this.tiers.set([...tiers]);
     this.hasUnsavedChanges.set(true);
-    this.toasts.success(`Tier "${result.name}" added`, { duration: 2000 });
   }
 
   async editTier(tier: EditableTier): Promise<void> {
@@ -820,7 +817,6 @@ export class TierListFormComponent implements OnInit, OnDestroy {
     tier.name = result.name;
     tier.cost = result.cost;
     this.hasUnsavedChanges.set(true);
-    this.toasts.success('Tier updated', { duration: 2000 });
   }
 
   private openTierDialog(
@@ -852,7 +848,6 @@ export class TierListFormComponent implements OnInit, OnDestroy {
 
     this.tiers.set([...tiers]);
     this.hasUnsavedChanges.set(true);
-    this.toasts.success(`Tier "${tier.name}" deleted`, { duration: 2000 });
   }
 
   readonly sortOptions: { value: SortOption; label: string }[] = [

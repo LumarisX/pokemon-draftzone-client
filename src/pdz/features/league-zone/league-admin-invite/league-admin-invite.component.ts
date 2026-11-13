@@ -95,7 +95,6 @@ export class LeagueAdminInviteComponent implements OnInit {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: () => {
-          this.toast.success("You're now a league admin.");
           this.router.navigate(this.leagueLink);
         },
         error: (err) => {

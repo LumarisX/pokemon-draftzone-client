@@ -121,7 +121,6 @@ export class TierListMineComponent implements OnInit {
     this.tierListService.remove(list.slug).subscribe({
       next: () => {
         this.busy.set(null);
-        this.toasts.success(`Deleted ${list.name}.`);
         this.mine.update((lists) => lists?.filter((entry) => entry.id !== list.id) ?? null);
       },
       error: (err) => {

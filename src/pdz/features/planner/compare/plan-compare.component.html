@@ -1,0 +1,93 @@
+@for (plan of plans(); track plan.index) {
+  <pdz-card class="plan" [selected]="plan.index === selected()">
+    <div class="plan__body">
+      <div class="plan__head">
+        <h3 class="plan__name">{{ plan.name }}</h3>
+        <span class="plan__size">
+          {{ plan.pokemon.length }} of {{ plan.size }}
+        </span>
+      </div>
+
+      @if (plan.pokemon.length) {
+        <pdz-roster-sprites
+          [pokemon]="plan.pokemon"
+          [name]="plan.name"
+        ></pdz-roster-sprites>
+      } @else {
+        <p class="plan__empty">No Pokémon yet.</p>
+      }
+
+      <dl class="plan__facts">
+        @if (plan.remainingPoints !== null) {
+          <div class="plan__fact">
+            <dt>Points Remaining</dt>
+            <dd
+              class="plan__points"
+              [class.plan__points--left]="plan.remainingPoints > 0"
+              [class.plan__points--over]="plan.remainingPoints < 0"
+            >
+              {{ plan.remainingPoints }}
+            </dd>
+          </div>
+        }
+        @if (showChanges()) {
+          <div class="plan__fact">
+            <dt>Added</dt>
+            <dd class="plan__sprites">
+              @for (pokemon of plan.added; track pokemon.id) {
+                <pdz-sprite size="sm" [pokemon]="pokemon"></pdz-sprite>
+              } @empty {
+                <span class="plan__none">None</span>
+              }
+            </dd>
+          </div>
+          <div class="plan__fact">
+            <dt>Dropped</dt>
+            <dd class="plan__sprites">
+              @for (pokemon of plan.dropped; track pokemon.id) {
+                <pdz-sprite size="sm" [pokemon]="pokemon"></pdz-sprite>
+              } @empty {
+                <span class="plan__none">None</span>
+              }
+            </dd>
+          </div>
+        }
+      </dl>
+
+      <div class="plan__actions">
+        <button
+          pdz-button
+          size="sm"
+          [variant]="plan.index === selected() ? 'outlined' : 'filled'"
+          [color]="plan.index === selected() ? 'neutral' : 'primary'"
+          (click)="opened.emit(plan.index)"
+        >
+          Open Plan
+        </button>
+        <button
+          pdz-button
+          size="sm"
+          variant="ghost"
+          color="neutral"
+          icon="content_copy"
+          [disabled]="!canAdd()"
+          (click)="duplicated.emit(plan.index)"
+        >
+          Duplicate
+        </button>
+        @if (plans().length > 1) {
+          <button
+            pdz-button
+            size="sm"
+            variant="ghost"
+            color="danger"
+            icon="delete_forever"
+            (click)="removed.emit(plan.index)"
+          >
+            Delete
+          </button>
+        }
+      </div>
+    </div>
+  </pdz-card>
+}

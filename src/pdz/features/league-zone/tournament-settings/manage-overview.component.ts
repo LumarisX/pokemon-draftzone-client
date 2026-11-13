@@ -250,7 +250,6 @@ export class ManageOverviewComponent {
     if (!result) return;
 
     this.store.openSignUps(result.deadline, result.access).subscribe({
-      next: () => this.toast.success('Sign-ups are open.'),
       error: () => this.toast.error(this.store.saveError() ?? 'Could not open sign-ups.'),
     });
   }

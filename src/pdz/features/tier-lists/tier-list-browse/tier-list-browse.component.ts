@@ -267,7 +267,6 @@ export class TierListBrowseComponent {
     this.tierListService.fork(list.slug).subscribe({
       next: (created) => {
         this.forking.set(null);
-        this.toasts.success(`Created "${created.name}".`);
         this.router.navigate(['/', TIER_LIST_PATH, created.slug, 'edit']);
       },
       error: (err) => {

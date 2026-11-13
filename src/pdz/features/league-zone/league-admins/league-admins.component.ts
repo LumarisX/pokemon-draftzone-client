@@ -139,7 +139,7 @@ export class LeagueAdminsComponent implements OnInit {
       .subscribe({
         next: (result) => {
           this.editingSub.set(null);
-          this.applyResult(result, 'Name saved.');
+          this.applyResult(result);
         },
         error: (err) => this.fail(err, 'Could not save that name.'),
       });
@@ -166,13 +166,10 @@ export class LeagueAdminsComponent implements OnInit {
       .subscribe({
         next: (result) => {
           if ('left' in result) {
-            this.toast.success(
-              `You left ${this.leagueName() ?? 'the league'}.`,
-            );
             this.router.navigate(this.leagueLink);
             return;
           }
-          this.applyResult(result, 'Admin removed.');
+          this.applyResult(result);
         },
         error: (err) => this.fail(err, 'Could not remove that admin.'),
       });
@@ -193,7 +190,7 @@ export class LeagueAdminsComponent implements OnInit {
             id: result.created.id,
             url: this.inviteUrl(result.created.token),
           });
-          this.applyResult(result, 'Invite link created.');
+          this.applyResult(result);
         },
         error: (err) => {
           this.creatingInvite.set(false);
@@ -212,7 +209,7 @@ export class LeagueAdminsComponent implements OnInit {
       .subscribe({
         next: (result) => {
           if (this.createdLink()?.id === invite.id) this.createdLink.set(null);
-          this.applyResult(result, 'Invite revoked.');
+          this.applyResult(result);
         },
         error: (err) => this.fail(err, 'Could not revoke that invite.'),
       });
@@ -231,10 +228,9 @@ export class LeagueAdminsComponent implements OnInit {
     return `${window.location.origin}/${LEAGUE_ZONE_PATH}/${this.leagueSlug}/${LEAGUE_ADMIN_INVITE_PATH}?token=${token}`;
   }
 
-  private applyResult(result: League.LeagueAdmins, message: string): void {
+  private applyResult(result: League.LeagueAdmins): void {
     this.setState(result);
     this.busyId.set(null);
-    this.toast.success(message);
   }
 
   private setState(result: League.LeagueAdmins): void {

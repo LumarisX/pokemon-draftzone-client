@@ -62,6 +62,22 @@ import { ChipComponent } from '@pdz/shared/data/chip/chip.component';
 import { DEFAULT_RULESET } from '@pdz/core/rulesets';
 import { apiErrorMessage } from '@pdz/core/services/api.service';
 
+export type SearchPoolEntry = { tier: string; cost: number | null };
+
+export type SearchOwner = { teamName: string; teamLogo?: string };
+
+type SortFieldOption = {
+  value: string;
+  label: string;
+  defaultDir: 'asc' | 'desc';
+};
+
+const COST_SORT: SortFieldOption = {
+  value: 'cost',
+  label: 'Cost',
+  defaultDir: 'desc',
+};
+
 @Component({
   selector: 'pdz-pokemon-search-core',
   imports: [
@@ -106,10 +122,27 @@ export class PokemonSearchCoreComponent implements OnInit, OnDestroy {
   readonly embedded = input(false, { transform: booleanAttribute });
   readonly selectable = input(false, { transform: booleanAttribute });
   readonly takenIds = input<readonly string[]>([]);
+  readonly pool = input<ReadonlyMap<string, SearchPoolEntry> | null>(null);
+  readonly owners = input<ReadonlyMap<string, SearchOwner> | null>(null);
 
   @Output() pokemonSelected = new EventEmitter<{ id: string; name: string }>();
 
   private readonly takenIdSet = computed(() => new Set(this.takenIds()));
+
+  readonly hasCosts = computed(() => {
+    const pool = this.pool();
+    if (!pool) return false;
+    for (const entry of pool.values()) if (entry.cost !== null) return true;
+    return false;
+  });
+
+  readonly sortOptions = computed(() =>
+    this.hasCosts()
+      ? [COST_SORT, ...this.sortFieldOptions]
+      : this.sortFieldOptions,
+  );
+
+  availability: 'all' | 'available' = 'all';
 
   copyLinkSuccess = false;
   isBookmarked = false;
@@ -128,11 +161,7 @@ export class PokemonSearchCoreComponent implements OnInit, OnDestroy {
   editingFilterIndex: number | null = null;
   draftFilter: DraftFilter | null = null;
 
-  readonly sortFieldOptions: {
-    value: string;
-    label: string;
-    defaultDir: 'asc' | 'desc';
-  }[] = [
+  readonly sortFieldOptions: SortFieldOption[] = [
     { value: 'num', label: 'Dex #', defaultDir: 'asc' },
     { value: 'name', label: 'Name', defaultDir: 'asc' },
     { value: 'bst', label: 'BST', defaultDir: 'desc' },
@@ -177,6 +206,12 @@ export class PokemonSearchCoreComponent implements OnInit, OnDestroy {
       const rulesetId = this.rulesetId();
       if (!rulesetId || rulesetId === this.selectedRuleset) return;
       this.selectedRuleset = rulesetId;
+      if (this.activeFilterCriteria.length) this.search();
+    });
+
+    effect(() => {
+      this.pool();
+      this.owners();
       if (this.activeFilterCriteria.length) this.search();
     });
   }
@@ -443,8 +478,31 @@ export class PokemonSearchCoreComponent implements OnInit, OnDestroy {
     this.pokemonSelected.emit({ id: pokemon.id, name: pokemon.name });
   }
 
+  ownerOf(pokemon: PokemonFullData): SearchOwner | null {
+    return this.owners()?.get(pokemon.id) ?? null;
+  }
+
+  poolLabel(pokemon: PokemonFullData): string | null {
+    const entry = this.pool()?.get(pokemon.id);
+    if (!entry) return null;
+    return entry.cost === null ? entry.tier || null : `${entry.cost} pts`;
+  }
+
+  addLabel(pokemon: PokemonFullData): string {
+    const owner = this.ownerOf(pokemon);
+    return owner
+      ? `Trade for ${pokemon.name} from ${owner.teamName}`
+      : `Add ${pokemon.name} to your team`;
+  }
+
+  setAvailability(value: 'all' | 'available' | null): void {
+    if (!value) return;
+    this.availability = value;
+    this.applySort();
+  }
+
   onSortFieldChange(): void {
-    const opt = this.sortFieldOptions.find((o) => o.value === this.sortField);
+    const opt = this.sortOptions().find((o) => o.value === this.sortField);
     if (opt) this.sortDir = opt.defaultDir;
     this.applySort();
   }
@@ -453,6 +511,7 @@ export class PokemonSearchCoreComponent implements OnInit, OnDestroy {
     switch (this.sortField) {
       case 'num':
       case 'name':
+      case 'cost':
         return null;
       case 'bst':
         return 'BST';
@@ -479,7 +538,12 @@ export class PokemonSearchCoreComponent implements OnInit, OnDestroy {
 
   private applySort(): void {
     const mult = this.sortDir === 'asc' ? 1 : -1;
-    this.results = [...this.allResults].sort((a, b) => {
+    const owners = this.owners();
+    const shown =
+      owners && this.availability === 'available'
+        ? this.allResults.filter((pokemon) => !owners.has(pokemon.id))
+        : [...this.allResults];
+    this.results = shown.sort((a, b) => {
       const aVal = this.getSortValue(a);
       const bVal = this.getSortValue(b);
       if (typeof aVal === 'string' && typeof bVal === 'string') {
@@ -491,6 +555,8 @@ export class PokemonSearchCoreComponent implements OnInit, OnDestroy {
 
   private getSortValue(pokemon: PokemonFullData): string | number {
     switch (this.sortField) {
+      case 'cost':
+        return this.pool()?.get(pokemon.id)?.cost ?? 0;
       case 'name':
         return pokemon.name;
       case 'bst':
@@ -697,8 +763,11 @@ export class PokemonSearchCoreComponent implements OnInit, OnDestroy {
     request: SearchPokemonRequest,
   ): PokemonFullData[] {
     if (!request.searches.length) return pokemonList;
-    return pokemonList.filter((pokemon) =>
-      this.matchesSearches(pokemon, request.searches, request.mode),
+    const pool = this.pool();
+    return pokemonList.filter(
+      (pokemon) =>
+        (!pool || pool.has(pokemon.id)) &&
+        this.matchesSearches(pokemon, request.searches, request.mode),
     );
   }
 

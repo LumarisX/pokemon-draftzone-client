@@ -119,7 +119,6 @@ export class CustomSlotComponent {
           !!link && (link.guildId !== before?.guildId || !before?.verified);
         if (changed) {
           this.linkCode.set(null);
-          this.toast.success(`Linked to ${link.guildName ?? link.guildId}.`);
         } else {
           this.toast.info(
             'Not linked yet. Run the command in your Discord server first.',
@@ -147,7 +146,6 @@ export class CustomSlotComponent {
       next: () => {
         this.linkBusy.set(false);
         this.linkCode.set(null);
-        this.toast.success('Discord server unlinked.');
       },
       error: (err) => {
         this.linkBusy.set(false);

@@ -156,7 +156,14 @@ export class LeagueDraftComponent implements OnInit {
   private readonly SCROLL_RETRY_DELAY_MS = 50;
   private readonly SCROLL_MAX_ATTEMPTS = 10;
 
-  readonly plannerPath = PLANNER_PATH;
+  readonly plannerLink = [
+    '/',
+    LEAGUE_ZONE_PATH,
+    this.leagueService.leagueSlug(),
+    'tournaments',
+    this.leagueService.tournamentSlug(),
+    PLANNER_PATH,
+  ];
   poolsLink?: unknown[];
 
   private readonly draftRoundsContainer =
@@ -519,12 +526,6 @@ export class LeagueDraftComponent implements OnInit {
       this.currentPick = data.currentPick;
       this.canDraftCounts = data.canDraftCounts ?? {};
       this.startCountdown();
-      const teamName =
-        this.teamsMap.get(data.nextTeam)?.name ?? 'Unknown team';
-      this.notificationService.show(
-        `Now drafting: ${teamName}${this.pickTimeSuffix()}`,
-        'info',
-      );
     });
 
     this.on<DraftStatusEvent>('league.draft.status').subscribe((data) => {
@@ -547,10 +548,6 @@ export class LeagueDraftComponent implements OnInit {
           this.startCountdown();
           break;
       }
-      this.notificationService.show(
-        `Draft status: ${STATUS_LABELS[data.status] ?? data.status}`,
-        'info',
-      );
     });
 
     this.on<{ poolSlug: string }>('league.draft.completed').subscribe(

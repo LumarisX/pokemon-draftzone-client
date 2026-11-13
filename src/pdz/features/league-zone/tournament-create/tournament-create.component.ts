@@ -219,7 +219,6 @@ export class TournamentCreateComponent implements OnInit {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: ({ tournamentSlug }) => {
-          this.toast.success('Tournament created.');
           this.router.navigate([
             '/',
             LEAGUE_ZONE_PATH,

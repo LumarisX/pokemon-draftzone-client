@@ -17,9 +17,14 @@
         flipped
         [pokemon]="value!"
       ></pdz-sprite>
-      <span class="pokemon-search__selection-name">{{ value!.name }}</span>
+      <span class="pokemon-search__selection-text">
+        <span class="pokemon-search__selection-name">{{ value!.name }}</span>
+        @if (detail()) {
+          <span class="pokemon-search__selection-detail">{{ detail() }}</span>
+        }
+      </span>
     </button>
-    @if (!locked()) {
+    @if (clearable() && !locked()) {
       <button
         pdz-button
         iconOnly

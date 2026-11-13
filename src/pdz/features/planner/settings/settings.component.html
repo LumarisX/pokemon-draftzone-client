@@ -1,4 +1,27 @@
-@if (draftFormGroup(); as draftFormGroup) {
+@if (context(); as tournament) {
+  <div class="planner-settings planner-settings--fixed">
+    <div class="planner-settings__summary">
+      <span class="planner-settings__name">
+        {{ tournament.teamName ?? tournament.name }}
+      </span>
+      <span class="planner-settings__rules">
+        @for (rule of rules(); track $index) {
+          <span class="planner-settings__rule">{{ rule }}</span>
+        }
+      </span>
+    </div>
+    <a
+      pdz-button
+      size="sm"
+      variant="outlined"
+      color="neutral"
+      icon="format_list_numbered"
+      [routerLink]="tournament.tierListLink"
+    >
+      Tier List
+    </a>
+  </div>
+} @else if (draftFormGroup(); as draftFormGroup) {
   <div class="planner-settings">
     <div class="planner-settings__row">
       <pdz-format-select

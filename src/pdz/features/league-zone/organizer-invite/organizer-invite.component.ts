@@ -115,7 +115,6 @@ export class OrganizerInviteComponent implements OnInit {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: () => {
-          this.toast.success("You're now an organizer.");
           this.router.navigate(this.manageLink);
         },
         error: (err) => {

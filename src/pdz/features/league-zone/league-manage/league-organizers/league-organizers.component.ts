@@ -85,7 +85,7 @@ export class LeagueOrganizersComponent implements OnInit {
       .addOrganizer({ coachId: candidate.coachId })
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
-        next: (result) => this.applyResult(result, 'Organizer added.'),
+        next: (result) => this.applyResult(result),
         error: () => this.fail('Could not add that organizer.'),
       });
   }
@@ -96,7 +96,7 @@ export class LeagueOrganizersComponent implements OnInit {
       .removeOrganizer(organizer.sub)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
-        next: (result) => this.applyResult(result, 'Organizer removed.'),
+        next: (result) => this.applyResult(result),
         error: () => this.fail('Could not remove that organizer.'),
       });
   }
@@ -124,7 +124,7 @@ export class LeagueOrganizersComponent implements OnInit {
       .subscribe({
         next: (result) => {
           this.editingSub.set(null);
-          this.applyResult(result, 'Name saved.');
+          this.applyResult(result);
         },
         error: () => this.fail('Could not save that name.'),
       });
@@ -145,7 +145,7 @@ export class LeagueOrganizersComponent implements OnInit {
             id: result.created.id,
             url: this.inviteUrl(result.created.token),
           });
-          this.applyResult(result, 'Invite link created.');
+          this.applyResult(result);
         },
         error: (err) => {
           this.creatingInvite.set(false);
@@ -164,7 +164,7 @@ export class LeagueOrganizersComponent implements OnInit {
       .subscribe({
         next: (result) => {
           if (this.createdLink()?.id === invite.id) this.createdLink.set(null);
-          this.applyResult(result, 'Invite revoked.');
+          this.applyResult(result);
         },
         error: () => this.fail('Could not revoke that invite.'),
       });
@@ -190,13 +190,9 @@ export class LeagueOrganizersComponent implements OnInit {
     return `${window.location.origin}/${LEAGUE_ZONE_PATH}/${leagueSlug}/tournaments/${tournamentSlug}/${ORGANIZER_INVITE_PATH}?token=${token}`;
   }
 
-  private applyResult(
-    result: League.TournamentOrganizers,
-    message: string,
-  ): void {
+  private applyResult(result: League.TournamentOrganizers): void {
     this.setState(result);
     this.busyId.set(null);
-    this.toast.success(message);
   }
 
   private setState(result: League.TournamentOrganizers): void {

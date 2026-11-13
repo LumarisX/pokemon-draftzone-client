@@ -238,7 +238,6 @@ export class TierListComponent implements OnInit, OnDestroy {
     this.tierListService.fork(slug).subscribe({
       next: (created) => {
         this.forking.set(false);
-        this.toasts.success(`Created ${created.name}.`);
         this.router.navigate(['/', TIER_LIST_PATH, created.slug, 'edit']);
       },
       error: (err) => {
@@ -293,10 +292,7 @@ export class TierListComponent implements OnInit, OnDestroy {
     const meta = this.meta();
     if (!meta) return;
     this.tierListService.setFeatured(meta.slug, !meta.featured).subscribe({
-      next: ({ featured }) => {
-        this.meta.set({ ...meta, featured });
-        this.toasts.success(featured ? 'Featured.' : 'No longer featured.');
-      },
+      next: ({ featured }) => this.meta.set({ ...meta, featured }),
       error: (err) => this.toasts.error(apiErrorMessage(err, 'Could not change that.')),
     });
   }

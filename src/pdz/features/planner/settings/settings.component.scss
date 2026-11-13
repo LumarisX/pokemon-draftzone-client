@@ -11,6 +11,47 @@
   column-gap: pdz.space(md);
   width: 100%;
 
+  &--fixed {
+    align-items: flex-start;
+    justify-content: space-between;
+    padding: 0 pdz.space(sm);
+  }
+
+  &__summary {
+    display: flex;
+    flex-direction: column;
+    gap: pdz.space(3xs);
+    min-width: 0;
+  }
+
+  &__rules {
+    display: flex;
+    flex-wrap: wrap;
+    column-gap: pdz.space(xs);
+  }
+
+  &__rule {
+    white-space: nowrap;
+
+    &:not(:last-child)::after {
+      content: "·";
+      margin-left: pdz.space(xs);
+    }
+  }
+
+  &__name {
+    overflow: hidden;
+    color: pdz.color(on-surface);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    @include pdz.text(section-title);
+  }
+
+  &__rules {
+    color: pdz.color(on-surface-muted);
+    @include pdz.text(meta);
+  }
+
   &__row {
     display: flex;
     align-items: flex-end;
