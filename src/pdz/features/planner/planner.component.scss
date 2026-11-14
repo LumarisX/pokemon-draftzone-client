@@ -115,6 +115,12 @@
     overflow: hidden;
     white-space: nowrap;
     text-overflow: ellipsis;
+    pointer-events: none;
+
+    .planner__draft--active & {
+      cursor: text;
+      pointer-events: auto;
+    }
 
     &:focus {
       outline: none;

@@ -1,28 +1,15 @@
 <pdz-page type="index">
-  <pdz-page-header
-    title="Log"
-    subtitle="Every change organizers made to how this tournament is played, newest first."
-  >
-    @if (state() === 'ok') {
-      <p pdz-page-header-detail class="log__visibility">
-        {{
-          visibility() === 'public'
-            ? 'Anyone can read this log.'
-            : 'Only coaches and organizers can read this log.'
-        }}
-      </p>
-    }
-  </pdz-page-header>
+  <pdz-page-header title="Log"> </pdz-page-header>
 
   @switch (state()) {
-    @case ('hidden') {
+    @case ("hidden") {
       <pdz-empty-state
         kind="no-access"
         heading="This log is for the tournament's players"
-        message="Coaches and organizers can read it. Sign in with the account you coach with."
+        message="Sign in with a coach and organizer account to view."
       />
     }
-    @case ('error') {
+    @case ("error") {
       <pdz-empty-state
         kind="error"
         heading="The log didn't load"
@@ -51,8 +38,12 @@
                 <li class="log__entry">
                   <div class="log__row">
                     <div class="log__when">
-                      <span class="log__date">{{ entry.at | date: 'MMM d' }}</span>
-                      <span class="log__time">{{ entry.at | date: 'h:mm a' }}</span>
+                      <span class="log__date">{{
+                        entry.at | date: "MMM d"
+                      }}</span>
+                      <span class="log__time">{{
+                        entry.at | date: "h:mm a"
+                      }}</span>
                     </div>
                     <div class="log__body">
                       <p class="log__summary">{{ entry.summary }}</p>
@@ -60,10 +51,12 @@
                         <pdz-chip size="xs" [tone]="typeTone[entry.type]">
                           {{ typeLabel[entry.type] }}
                         </pdz-chip>
-                        by {{ entry.actorName ?? 'an organizer' }}
+                        by {{ entry.actorName ?? "an organizer" }}
                         @if (tierListLink(entry); as link) {
                           ·
-                          <a [routerLink]="link">{{ entry.target?.name ?? 'the tier list' }}</a>
+                          <a [routerLink]="link">{{
+                            entry.target?.name ?? "the tier list"
+                          }}</a>
                         }
                       </p>
                       @if (entry.reason) {
@@ -76,7 +69,11 @@
                         size="sm"
                         variant="ghost"
                         color="neutral"
-                        [icon]="expanded() === entry.seq ? 'expand_less' : 'expand_more'"
+                        [icon]="
+                          expanded() === entry.seq
+                            ? 'expand_less'
+                            : 'expand_more'
+                        "
                         [attr.aria-expanded]="expanded() === entry.seq"
                         (click)="toggle(entry)"
                       >
@@ -89,13 +86,22 @@
                     <div class="log__details">
                       @if (entry.details?.affectedPicks?.length) {
                         <section class="log__group">
-                          <h3 class="log__label">Drafted Pokémon Whose Cost Changed</h3>
+                          <h3 class="log__label">
+                            Drafted Pokémon Whose Cost Changed
+                          </h3>
                           <ul class="log__lines">
-                            @for (pick of entry.details!.affectedPicks; track pick.team + pick.pokemonId) {
+                            @for (
+                              pick of entry.details!.affectedPicks;
+                              track pick.team + pick.pokemonId
+                            ) {
                               <li>
                                 {{ pick.name }} ({{ pick.team }}):
-                                {{ pick.from ?? 'not on the list' }} →
-                                {{ pick.to === null ? 'not on the new list' : pick.to + ' pts' }}
+                                {{ pick.from ?? "not on the list" }} →
+                                {{
+                                  pick.to === null
+                                    ? "not on the new list"
+                                    : pick.to + " pts"
+                                }}
                               </li>
                             }
                           </ul>
@@ -105,8 +111,8 @@
                         <section class="log__group">
                           <h3 class="log__label">Tier Requirements Dropped</h3>
                           <p class="log__meta">
-                            {{ entry.details!.requirementsCleared!.join(', ') }} had no matching tier
-                            on the new list.
+                            {{ entry.details!.requirementsCleared!.join(", ") }}
+                            had no matching tier on the new list.
                           </p>
                         </section>
                       }
@@ -124,7 +130,10 @@
                               </tr>
                             </thead>
                             <tbody>
-                              @for (change of settingChanges(entry); track change.field) {
+                              @for (
+                                change of settingChanges(entry);
+                                track change.field
+                              ) {
                                 <tr>
                                   <th scope="row">{{ change.label }}</th>
                                   <td>{{ describe(change.before) }}</td>

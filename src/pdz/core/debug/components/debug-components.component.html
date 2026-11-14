@@ -785,7 +785,8 @@
 
   <h3 class="section__sub">
     Sizes — text, icon, and both. The label holds a fixed width per size so a
-    row lines up whatever the type name is
+    row lines up whatever the type name is, and the text is sized so the
+    longest name fits it
   </h3>
   @for (c of ["text", "icon", "both"]; track c) {
     <div class="row">
@@ -825,12 +826,18 @@
   </div>
 
   <h3 class="section__sub">
-    Sized by the consumer — a fixed box wins over the intrinsic width, which is
-    how the typechart header keeps its 2.5rem grid
+    Sized by the consumer — the typechart header's 2.5rem grid. The
+    <code>xs</code> tile's caption is small enough that the longest name fits;
+    a badge never cuts its name
   </h3>
   <div class="row types-grid">
     @for (t of sampleTypes; track t) {
-      <pdz-pokemon-type [type]="t" size="xs" content="both" />
+      <pdz-pokemon-type
+        [type]="t"
+        size="xs"
+        content="both"
+        direction="vertical"
+      />
     }
   </div>
 

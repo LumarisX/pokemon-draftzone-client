@@ -4,7 +4,8 @@
 $sizes: (
   xs: (
     height: 0.875rem,
-    font: xs,
+    font: 0.6875rem,
+    font-y: 0.5rem,
     pad-x: 2xs,
     pad-y: 3xs,
     gap: 2xs,
@@ -13,7 +14,8 @@ $sizes: (
   ),
   sm: (
     height: 1rem,
-    font: xs,
+    font: 0.6875rem,
+    font-y: 0.5625rem,
     pad-x: xs,
     pad-y: 2xs,
     gap: 2xs,
@@ -22,7 +24,8 @@ $sizes: (
   ),
   md: (
     height: 1.25rem,
-    font: xs,
+    font: 0.6875rem,
+    font-y: 0.625rem,
     pad-x: xs,
     pad-y: 2xs,
     gap: xs,
@@ -31,7 +34,8 @@ $sizes: (
   ),
   lg: (
     height: 1.5rem,
-    font: xs,
+    font: 0.75rem,
+    font-y: 0.6875rem,
     pad-x: sm,
     pad-y: xs,
     gap: xs,
@@ -40,7 +44,8 @@ $sizes: (
   ),
   xl: (
     height: 2rem,
-    font: sm,
+    font: 0.875rem,
+    font-y: 0.75rem,
     pad-x: sm,
     pad-y: xs,
     gap: sm,
@@ -58,7 +63,7 @@ $sizes: (
   box-sizing: border-box;
   align-items: center;
   justify-content: center;
-  max-width: 100%;
+  min-width: max-content;
   border: 1px solid transparent;
   border-radius: pdz.shape(corner-xs);
   font-family: var(--pdz-font-body);
@@ -76,12 +81,15 @@ $sizes: (
     min-height: map.get($s, height);
     gap: pdz.space(map.get($s, gap));
     padding: 0 pdz.space(map.get($s, pad-x));
-    font-size: pdz.font-size(map.get($s, font));
+    font-size: map.get($s, font);
   }
 
   :host([data-size="#{$name}"][data-direction="vertical"]) {
+    --pdz-pokemon-type-label-width: auto;
+
     gap: pdz.space(map.get($s, gap-y));
     padding: pdz.space(map.get($s, pad-y)) pdz.space(map.get($s, pad-x));
+    font-size: map.get($s, font-y);
   }
 }
 
@@ -116,11 +124,8 @@ $sizes: (
 }
 
 .pdz-pokemon-type__label {
-  width: var(--pdz-pokemon-type-label-width);
-  max-width: 100%;
-  min-width: 0;
-  overflow: hidden;
+  flex: none;
+  min-width: var(--pdz-pokemon-type-label-width);
   text-align: center;
-  text-overflow: ellipsis;
   white-space: nowrap;
 }

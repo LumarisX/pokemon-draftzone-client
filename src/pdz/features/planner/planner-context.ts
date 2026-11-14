@@ -26,16 +26,6 @@ export type PlannerContext = {
   tierListLink: string[];
 };
 
-export type PlanSummary = {
-  index: number;
-  name: string;
-  pokemon: PlannerPokemon[];
-  size: number;
-  remainingPoints: number | null;
-  added: PlannerPokemon[];
-  dropped: PlannerPokemon[];
-};
-
 export function rosterChanges(
   team: PlannerPokemon[],
   roster: PlannerPokemon[],

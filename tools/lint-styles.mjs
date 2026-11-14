@@ -15,7 +15,10 @@ const BESPOKE_DISPLAY = [
   "src/pdz/shared/forms/team-form/team-form.component.scss",
 ];
 
-const COORDINATED_BADGE = [];
+const COORDINATED_BADGE = [
+  "src/pdz/shared/data/pokemon-type/pokemon-type.component.scss",
+  "src/pdz/shared/widgets/typechart/_typechart-core.shared.scss",
+];
 
 const UNTOKENIZED_ORPHANS = [
   "src/pdz/features/league-zone/pools/power-rankings/power-rankings.component.scss",

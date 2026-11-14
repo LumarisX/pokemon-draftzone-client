@@ -42,14 +42,7 @@ import {
   of,
   switchMap,
 } from 'rxjs';
-import { DialogService } from '@pdz/shared/dialogs/dialog/dialog.service';
-import { PlanCompareComponent } from './compare/plan-compare.component';
-import {
-  PlanSummary,
-  PlannerContext,
-  PlannerPokemon,
-  rosterChanges,
-} from './planner-context';
+import { PlannerContext } from './planner-context';
 import { TournamentPlannerService } from './tournament-planner.service';
 import { DraftPokemon } from '../drafts/draft.model';
 import {
@@ -120,7 +113,6 @@ const DEFAULT_PANEL_MAX_WIDTH_REM = 32;
     SkeletonLayoutComponent,
     MoveComponent,
     PageComponent,
-    PlanCompareComponent,
     PlannerMoveCoverageComponent,
     PlannerTeamCoverageComponent,
     PlannerSettingsComponent,
@@ -136,7 +128,6 @@ export class PlannerComponent implements OnInit, OnDestroy {
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly tournamentPlanner = inject(TournamentPlannerService);
-  private readonly dialogs = inject(DialogService);
   private readonly plannerSync = inject(PlannerSyncService);
   private readonly toast = inject(ToastService);
 
@@ -146,7 +137,6 @@ export class PlannerComponent implements OnInit, OnDestroy {
   context = signal<PlannerContext | null>(null);
   loadState = signal<LoadState>(this.isTournament ? 'loading' : 'ready');
   analysisFailed = signal(false);
-  planSummaries = signal<PlanSummary[]>([]);
 
   private readonly detailsRequest$ = new Subject<DetailsRequest | null>();
   private readonly subscriptions = new Subscription();
@@ -322,10 +312,9 @@ export class PlannerComponent implements OnInit, OnDestroy {
         emitEvent: false,
       });
 
-    this.draftArray.valueChanges.subscribe(() => {
-      this.hasUnsavedEdits.set(true);
-      if (this.mainView() === 'compare') this.refreshSummaries();
-    });
+    this.draftArray.valueChanges.subscribe(() =>
+      this.hasUnsavedEdits.set(true),
+    );
     this.draftArray.valueChanges
       .pipe(debounceTime(AUTOSAVE_DEBOUNCE_MS))
       .subscribe(() => this.setStoredPlannerData());
@@ -379,53 +368,7 @@ export class PlannerComponent implements OnInit, OnDestroy {
 
   setMainView(view: PlannerView | null): void {
     if (!view) return;
-    if (view === 'compare') this.refreshSummaries();
     this.mainView.set(view);
-  }
-
-  openPlan(index: number): void {
-    this.selectDraft(index);
-    this.mainView.set('analysis');
-  }
-
-  async removePlan(index: number): Promise<void> {
-    const name = this.draftArray.at(index).controls.draftName.value;
-    const confirmed = await this.dialogs.confirm(`Delete ${name}?`, {
-      message: 'This plan and its Pokémon will be removed.',
-      confirmLabel: 'Delete Plan',
-      confirmColor: 'danger',
-    });
-    if (confirmed) this.deletePlan(index);
-  }
-
-  private refreshSummaries(): void {
-    const roster = this.context()?.roster ?? [];
-    this.planSummaries.set(
-      this.draftArray.controls.map((group, index) => {
-        const filled = group.controls.team.controls.filter(
-          (control) => control.controls.pokemon.value?.id,
-        );
-        const pokemon: PlannerPokemon[] = filled.map((control) => ({
-          id: control.controls.pokemon.value!.id,
-          name: control.controls.pokemon.value!.name,
-        }));
-        const used = filled.reduce(
-          (sum, control) => sum + (control.controls.value.value ?? 0),
-          0,
-        );
-        return {
-          index,
-          name: group.controls.draftName.value,
-          pokemon,
-          size: group.controls.max.value,
-          remainingPoints:
-            group.controls.system.value === 'points'
-              ? group.controls.totalPoints.value - used
-              : null,
-          ...rosterChanges(pokemon, roster),
-        };
-      }),
-    );
   }
 
   togglePanel(): void {
@@ -464,12 +407,33 @@ export class PlannerComponent implements OnInit, OnDestroy {
       .controls.pokemon.setValue({ id: pokemon.id, name: pokemon.name });
   }
 
-  onTabKeydown(event: KeyboardEvent, index: number): void {
+  onTabClick(index: number, nameInput: HTMLInputElement): void {
+    if (index === this.selectedDraft()) {
+      if (document.activeElement !== nameInput) nameInput.focus();
+      return;
+    }
+    this.selectDraft(index);
+  }
+
+  leaveName(tab: HTMLElement): void {
+    tab.focus();
+  }
+
+  onTabKeydown(
+    event: KeyboardEvent,
+    index: number,
+    nameInput: HTMLInputElement,
+  ): void {
     if (event.target !== event.currentTarget) return;
     const lastIndex = this.draftSize - 1;
     let nextIndex: number;
 
     switch (event.key) {
+      case 'F2':
+        event.preventDefault();
+        nameInput.focus();
+        nameInput.select();
+        return;
       case 'ArrowRight':
         nextIndex = index === lastIndex ? 0 : index + 1;
         break;

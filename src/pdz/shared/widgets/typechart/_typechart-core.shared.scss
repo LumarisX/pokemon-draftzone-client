@@ -171,11 +171,15 @@ tbody {
       cursor: help;
       user-select: none;
       border-radius: pdz.shape(corner-xs);
+      box-sizing: border-box;
       height: 1.5rem;
       width: 2.5rem;
-      @include pdz.text(label-caps);
-      line-height: 0.7rem;
-      overflow: hidden;
+      padding-inline: pdz.space(2xs);
+      font-family: pdz.font(body);
+      font-size: 0.625rem;
+      font-weight: pdz.font-weight(semibold);
+      line-height: 1;
+      text-align: center;
     }
   }
 }

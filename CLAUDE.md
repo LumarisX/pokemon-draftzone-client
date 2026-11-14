@@ -188,8 +188,9 @@ list, tier and cost fill in on their own, and each plan starts from the viewer's
 Another team's Pokémon stays addable as a trade (its sprite `taken` with that team's logo).
 A plan remembers the roster it last saw (`baseline`), so a new pick is added to every plan
 while a Pokémon the coach dropped stays dropped. Plans are stored per tournament
-(`plannerData:<league>/<tournament>`) through `safeStorage`. Tabs switch plans; the
-**Compare** view (both modes) shows every plan side by side. Anything added to one mode
+(`plannerData:<league>/<tournament>`) through `safeStorage`. Tabs switch plans (a click
+selects, a click on the selected tab or F2 renames). The **Compare** view is a Coming Soon
+empty state; the old side-by-side view was removed 2026-11-13. Anything added to one mode
 should work in the other unless it needs the tournament.
 
 ### Hard rules
