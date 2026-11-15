@@ -41,7 +41,6 @@ export type MatchupViewer = {
 };
 
 export type MatchupReport = {
-  submittedBy: string;
   submittedByName: string;
   submittedAt: string;
   teamId?: string;

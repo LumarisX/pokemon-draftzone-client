@@ -1,6 +1,8 @@
 import { DatePipe } from '@angular/common';
 import { Component, DestroyRef, computed, inject, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { ApiError } from '@pdz/core/services/api-error';
+import { apiErrorMessage } from '@pdz/core/services/api.service';
 import { MatchupDetail } from '@pdz/features/league-zone/league-matchup/league-matchup.model';
 import { MatchupReportComponent } from '@pdz/features/league-zone/league-matchup/matchup-report/matchup-report.component';
 import { LeagueManageService } from '@pdz/features/league-zone/league-manage/league-manage.service';
@@ -238,7 +240,11 @@ export class LeagueManageResultsComponent {
     this.rowError.set(null);
 
     this.leagueService
-      .reviewMatchupReport(row.matchup.slug, decision)
+      .reviewMatchupReport(
+        row.matchup.slug,
+        decision,
+        row.matchup.report?.submittedAt,
+      )
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: () => {
@@ -250,8 +256,9 @@ export class LeagueManageResultsComponent {
           this.reviewingSlug.set(null);
           this.rowError.set({
             slug: row.matchup.slug,
-            message: error?.message || 'Could not review that report.',
+            message: apiErrorMessage(error, 'Could not review that report.'),
           });
+          if (error instanceof ApiError && error.status === 409) this.load();
         },
       });
   }

@@ -9,6 +9,8 @@ import {
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink } from '@angular/router';
 import { LEAGUE_ZONE_PATH } from '@pdz/core/route-paths';
+import { ApiError } from '@pdz/core/services/api-error';
+import { apiErrorMessage } from '@pdz/core/services/api.service';
 import { VersusSide, orderForViewer } from '@pdz/core/utils/versus';
 import { LeagueChatComponent } from '@pdz/features/league-zone/league-chat/league-chat.component';
 import { League } from '@pdz/features/league-zone/league.interface';
@@ -346,7 +348,11 @@ export class LeagueMatchupComponent {
     this.reviewing.set(true);
     this.reviewError.set(null);
     this.leagueService
-      .reviewMatchupReport(this.matchupSlug, decision)
+      .reviewMatchupReport(
+        this.matchupSlug,
+        decision,
+        this.matchup()?.report?.submittedAt,
+      )
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: () => {
@@ -356,8 +362,9 @@ export class LeagueMatchupComponent {
         error: (error) => {
           this.reviewing.set(false);
           this.reviewError.set(
-            error?.message || 'Failed to review the report.',
+            apiErrorMessage(error, 'Could not review the report.'),
           );
+          if (error instanceof ApiError && error.status === 409) this.load();
         },
       });
   }

@@ -33,6 +33,7 @@ import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 import { CardComponent } from '@pdz/shared/data/card/card.component';
 import { ChipComponent, ChipTone } from '@pdz/shared/data/chip/chip.component';
 import { PokemonSearchComponent } from '@pdz/shared/dropdowns/pokemon-search/pokemon-search.component';
+import { DialogService } from '@pdz/shared/dialogs/dialog/dialog.service';
 import { EmptyStateComponent } from '@pdz/shared/feedback/empty-state/empty-state.component';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { PokemonComponent } from '@pdz/shared/data/pokemon/pokemon.component';
@@ -64,11 +65,13 @@ interface DraftCounterEvent {
   poolSlug: string;
   currentPick: CurrentPick;
   nextTeam: string;
+  canDraftCounts?: Record<string, number>;
 }
 
 interface DraftTeamEvent {
   poolSlug: string;
   team: { id: string; name: string; draft: League.LeaguePokemon[] };
+  canDraftCounts?: Record<string, number>;
 }
 
 interface DraftAddedEvent extends DraftTeamEvent {
@@ -120,6 +123,15 @@ const STATUS_TONES: Record<DraftStatus, ChipTone> = {
   COMPLETED: 'neutral',
 };
 
+type DraftStateAction = 'play' | 'pause' | 'reopen' | 'finish';
+
+const STATE_FAILURES: Record<DraftStateAction, string> = {
+  play: 'Could not start the draft.',
+  pause: 'Could not pause the draft.',
+  reopen: 'Could not reopen the draft.',
+  finish: 'Could not finish the draft.',
+};
+
 const COUNTDOWN_TICK_MS = 1000;
 
 const EMPTY_SETTINGS: DraftSettings = {
@@ -165,6 +177,7 @@ export class LeagueManageDraftComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private destroyRef = inject(DestroyRef);
+  private dialogs = inject(DialogService);
 
   private countdownReset$ = new Subject<void>();
 
@@ -176,6 +189,7 @@ export class LeagueManageDraftComponent implements OnInit {
   readonly roundCount = signal(0);
   readonly teamOrder = signal<string[]>([]);
   readonly currentPick = signal<CurrentPick | undefined>(undefined);
+  readonly canDraftCounts = signal<Record<string, number>>({});
   readonly pickTimeDisplay = signal<string | null>(null);
 
   readonly useRandomSeeding = signal(true);
@@ -269,6 +283,30 @@ export class LeagueManageDraftComponent implements OnInit {
     );
   });
 
+  readonly waitingOnOwedPicks = computed(() => {
+    const pick = this.currentPick();
+    return (
+      this.status() === 'IN_PROGRESS' &&
+      this.settings().sequentialTurns &&
+      !!pick &&
+      this.roundCount() > 0 &&
+      pick.round >= this.roundCount()
+    );
+  });
+
+  readonly owedPicks = computed(() =>
+    Object.entries(this.canDraftCounts()).flatMap(([teamId, count]) => {
+      const team = this.teamsById().get(teamId);
+      return team && count > 0 ? [{ team, count }] : [];
+    }),
+  );
+
+  readonly owedSummary = computed(() =>
+    this.owedPicks()
+      .map(({ team, count }) => `${team.name} (${count})`)
+      .join(', '),
+  );
+
   ngOnInit(): void {
     this.tierListService
       .getTierList()
@@ -305,16 +343,19 @@ export class LeagueManageDraftComponent implements OnInit {
         this.startCountdown();
       });
 
-    this.on<DraftAddedEvent>('league.draft.added').subscribe((data) =>
-      this.replaceDraft(data.team),
-    );
+    this.on<DraftAddedEvent>('league.draft.added').subscribe((data) => {
+      this.replaceDraft(data.team);
+      if (data.canDraftCounts) this.canDraftCounts.set(data.canDraftCounts);
+    });
 
-    this.on<DraftTeamEvent>('league.draft.updated').subscribe((data) =>
-      this.replaceDraft(data.team),
-    );
+    this.on<DraftTeamEvent>('league.draft.updated').subscribe((data) => {
+      this.replaceDraft(data.team);
+      if (data.canDraftCounts) this.canDraftCounts.set(data.canDraftCounts);
+    });
 
     this.on<DraftCounterEvent>('league.draft.counter').subscribe((data) => {
       this.currentPick.set(data.currentPick);
+      if (data.canDraftCounts) this.canDraftCounts.set(data.canDraftCounts);
       this.startCountdown();
     });
 
@@ -413,8 +454,34 @@ export class LeagueManageDraftComponent implements OnInit {
     );
   }
 
-  setState(state: 'play' | 'pause'): void {
-    this.leagueManageService.setDraftState(state).subscribe();
+  setState(state: DraftStateAction): void {
+    this.leagueManageService
+      .setDraftState(state)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        error: (error) => this.showError(STATE_FAILURES[state], error),
+      });
+  }
+
+  async finishDraft(): Promise<void> {
+    const short = this.owedSummary();
+    const confirmed = await this.dialogs.confirm('Finish Draft', {
+      message: short
+        ? `These teams still owe picks and will be left short: ${short}. The draft is marked complete.`
+        : 'The draft is marked complete.',
+      confirmLabel: 'Finish Draft',
+      confirmColor: 'danger',
+    });
+    if (confirmed) this.setState('finish');
+  }
+
+  async reopenDraft(): Promise<void> {
+    const confirmed = await this.dialogs.confirm('Reopen Draft', {
+      message:
+        'The draft comes back paused with no clock running. Coaches can pick again once you press play.',
+      confirmLabel: 'Reopen',
+    });
+    if (confirmed) this.setState('reopen');
   }
 
   toggleNoTimer(): void {
@@ -561,6 +628,7 @@ export class LeagueManageDraftComponent implements OnInit {
     this.roundCount.set(data.rounds);
     this.teamOrder.set(data.teamOrder);
     this.currentPick.set(data.currentPick);
+    this.canDraftCounts.set(data.canDraftCounts ?? {});
     this.useRandomSeeding.set(data.useRandomSeeding);
     this.settings.set({
       name: data.poolName,

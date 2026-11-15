@@ -22,6 +22,14 @@
         · {{ left }} left
       }
     </span>
+  } @else if (waitingOnOwedPicks()) {
+    <span pdz-page-header-detail class="manage-draft__clock">
+      @if (owedSummary(); as owed) {
+        Every turn has been taken · waiting on owed picks from {{ owed }}
+      } @else {
+        Every turn has been taken
+      }
+    </span>
   } @else if (status() === "PAUSED") {
     <span pdz-page-header-detail class="manage-draft__clock"
       >Clock is stopped — press play to resume</span
@@ -29,6 +37,11 @@
   }
 
   <div pdz-page-header-actions>
+    @if (waitingOnOwedPicks()) {
+      <button pdz-button icon="flag" (click)="finishDraft()">
+        Finish Draft
+      </button>
+    }
     @if (status() === "IN_PROGRESS") {
       <button
         pdz-button
@@ -38,6 +51,16 @@
         pdzTooltip="Pause draft"
         (click)="setState('pause')"
       ></button>
+    } @else if (status() === "COMPLETED") {
+      <button
+        pdz-button
+        variant="outlined"
+        color="neutral"
+        icon="restart_alt"
+        (click)="reopenDraft()"
+      >
+        Reopen Draft
+      </button>
     } @else {
       <button
         pdz-button

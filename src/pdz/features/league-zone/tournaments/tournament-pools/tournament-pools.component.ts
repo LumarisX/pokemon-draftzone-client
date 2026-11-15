@@ -234,8 +234,15 @@ export class TournamentPoolsComponent {
   }
 
   private turnLine(pool: League.PoolOverview): string | null {
-    if (pool.status !== 'IN_PROGRESS' || pool.yourPickIn === undefined)
-      return null;
+    if (pool.status !== 'IN_PROGRESS') return null;
+    if (pool.owedPicks?.length) {
+      if (pool.owedPicks.some(({ team }) => team.id === pool.yourTeam?.id))
+        return 'Every turn has been taken; the draft is waiting on your owed picks';
+      return `Every turn has been taken; waiting on owed picks from ${pool.owedPicks
+        .map(({ team, count }) => `${team.name} (${count})`)
+        .join(', ')}`;
+    }
+    if (pool.yourPickIn === undefined) return null;
     if (pool.onTheClock && pool.onTheClock.id === pool.yourTeam?.id)
       return null;
     if (pool.yourPickIn === 0) return 'You can pick now';

@@ -361,6 +361,7 @@ export namespace League {
     progress?: { done: number; total: number };
     currentRound?: number;
     onTheClock?: PoolTeamRef;
+    owedPicks?: { team: PoolTeamRef; count: number }[];
     skipTime?: string;
     noTimer: boolean;
     draftStart?: string;

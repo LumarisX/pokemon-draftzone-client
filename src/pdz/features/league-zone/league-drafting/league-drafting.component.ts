@@ -907,6 +907,23 @@ export class LeagueDraftComponent implements OnInit {
     return this.isInProgress && !!this.currentPickingTeam()?.isCoach;
   }
 
+  get waitingOnOwedPicks(): boolean {
+    const rounds = this.draftDetails.roundCount;
+    return (
+      this.isInProgress &&
+      this.draftDetails.sequentialTurns &&
+      rounds > 0 &&
+      !!this.currentPick &&
+      this.currentPick.round >= rounds
+    );
+  }
+
+  get myOwedPicks(): number {
+    return this.teams
+      .filter((team) => team.isCoach)
+      .reduce((sum, team) => sum + (this.canDraftCounts[team.id] ?? 0), 0);
+  }
+
   canDraft(): boolean {
     return this.isInProgress && this.draftableCount() > 0;
   }

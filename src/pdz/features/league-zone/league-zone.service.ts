@@ -724,10 +724,11 @@ export class LeagueZoneService {
   reviewMatchupReport(
     matchupSlug: string,
     decision: 'approve' | 'reject',
+    submittedAt?: string,
   ): Observable<{ message: string; status: string }> {
     return this.apiService.post(
       `${this.matchupPath(matchupSlug)}/report/${decision}`,
-      {},
+      submittedAt ? { submittedAt } : {},
       { invalidateCache: [this.matchupPath(matchupSlug)] },
     );
   }

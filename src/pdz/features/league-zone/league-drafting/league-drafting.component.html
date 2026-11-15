@@ -31,6 +31,22 @@
           skipTimeDisplay ? " · " + skipTimeDisplay : ""
         }}</pdz-chip
       >
+    } @else if (waitingOnOwedPicks) {
+      @if (myOwedPicks) {
+        <pdz-chip
+          pdz-page-header-meta
+          size="sm"
+          tone="primary"
+          variant="solid"
+          icon="hourglass_top"
+          >Waiting on You · {{ myOwedPicks }}
+          {{ myOwedPicks === 1 ? "Pick" : "Picks" }} Owed</pdz-chip
+        >
+      } @else {
+        <pdz-chip pdz-page-header-meta size="sm" icon="hourglass_top"
+          >Waiting on Owed Picks</pdz-chip
+        >
+      }
     }
     <a
       pdz-page-header-actions
