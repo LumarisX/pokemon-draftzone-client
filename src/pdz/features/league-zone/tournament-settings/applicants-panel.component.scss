@@ -127,9 +127,28 @@
   min-width: 0;
 }
 
+.app__line {
+  display: flex;
+  align-items: baseline;
+  gap: pdz.space(xs);
+  min-width: 0;
+}
+
 .app__name {
   color: pdz.color(on-surface);
   @include pdz.text(body-sm-strong);
+
+  &--link {
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+
+    &:focus-visible {
+      @include pdz.focus-ring;
+    }
+  }
 }
 
 .app__meta {

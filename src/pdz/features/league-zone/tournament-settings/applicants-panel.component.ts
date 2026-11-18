@@ -9,6 +9,7 @@ import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 import { SelectOptionComponent } from '@pdz/shared/dropdowns/select/select-option.component';
 import { SelectComponent } from '@pdz/shared/dropdowns/select/select.component';
 import { BadgeComponent } from '@pdz/shared/data/badge/badge.component';
+import { profileLink } from '@pdz/core/route-paths';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { CheckComponent } from '@pdz/shared/inputs/choice/check.component';
 import { ChoiceDirective } from '@pdz/shared/inputs/choice/choice.directive';
@@ -76,6 +77,7 @@ type ApplicantGroup = {
   styleUrl: './applicants-panel.component.scss',
 })
 export class ApplicantsPanelComponent {
+  protected readonly profileLink = profileLink;
   protected readonly store = inject(TournamentSettingsStore);
   private readonly league = inject(LeagueZoneService);
   private readonly manage = inject(LeagueManageService);

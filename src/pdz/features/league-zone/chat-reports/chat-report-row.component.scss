@@ -1,0 +1,103 @@
+@use "pdz-theming" as pdz;
+
+:host {
+  display: block;
+  padding: pdz.space(md) 0;
+  @include pdz.row-divider;
+}
+
+.report {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(xs);
+  min-width: 0;
+}
+
+.report__head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: pdz.space(xs) pdz.space(md);
+}
+
+.report__channel {
+  @include pdz.text(label-caps);
+  color: pdz.color(on-surface-variant);
+}
+
+.report__where {
+  @include pdz.text(meta);
+  color: pdz.color(on-surface-variant);
+}
+
+.report__time {
+  @include pdz.text(meta);
+  color: pdz.color(on-surface-muted);
+}
+
+.report__people {
+  display: flex;
+  flex-wrap: wrap;
+  gap: pdz.space(2xs) pdz.space(md);
+  margin: 0;
+}
+
+.report__person {
+  display: inline-flex;
+  align-items: baseline;
+  gap: pdz.space(xs);
+  min-width: 0;
+}
+
+.report__label {
+  @include pdz.text(meta);
+  color: pdz.color(on-surface-muted);
+}
+
+.report__name {
+  @include pdz.text(body-sm-strong);
+  color: pdz.color(on-surface);
+
+  &--link {
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+
+    &:focus-visible {
+      @include pdz.focus-ring;
+    }
+  }
+}
+
+.report__reason {
+  @include pdz.text(body-sm);
+  margin: 0;
+  color: pdz.color(on-surface);
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+.report__quote {
+  @include pdz.text(body-sm);
+  margin: 0;
+  padding: pdz.space(xs) pdz.space(sm);
+  border-radius: pdz.shape(corner-md);
+  background: pdz.color(state-hover);
+  color: pdz.color(on-surface-variant);
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+.report__gone {
+  @include pdz.text(meta);
+  display: block;
+  color: pdz.color(on-surface-muted);
+}
+
+.report__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: pdz.space(sm);
+}

@@ -7,7 +7,15 @@
     backLabel="Teams"
   >
     <span pdz-page-header-detail class="team-header__coach">
-      <span class="team-header__coach-name">{{ team.coach }}</span>
+      @if (team.coachProfileId; as profileId) {
+        <a
+          class="team-header__coach-name team-header__coach-name--link"
+          [routerLink]="profileLink(profileId)"
+          >{{ team.coach }}</a
+        >
+      } @else {
+        <span class="team-header__coach-name">{{ team.coach }}</span>
+      }
       @if (team.isCoach) {
         <button
           pdz-button

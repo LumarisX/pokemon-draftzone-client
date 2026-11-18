@@ -70,7 +70,7 @@ enforceable form of the settled rules.
 `src/pdz/shared/` holds the primitives. **Prefer an existing primitive over
 hand-rolled markup.** Current inventory: buttons, data (badge, card, chip, meter, record,
 podium, score, season-mvp, team-roster, skeleton, sort, pokemon-type, pokemon, team, matchup), dialogs, dropdowns (select, pokemon-search,
-format, ruleset), feedback (empty-state, toast), images (icon, sprite, team-logo,
+format, ruleset), feedback (empty-state, save-bar, toast), images (icon, sprite, team-logo,
 roster-sprites, roster-pattern, loading), inputs (field, choice, choice-cards, segmented, slide-toggle, slider), layout (page,
 page-header, page-sections, tabs, tab-nav, widget, disclosure, masonry), help, menu, pipes, time,
 tooltip, widgets.
@@ -114,7 +114,7 @@ the organizer pages off the rail: Organizers (back to Settings), Edit Rules (bac
 Rules) and Final Results (back to Overview).
 
 **Organizer pages.** The rail's Manage group is the only map: Overview, Sign-Ups, Draft
-Control, Schedule, Results, Trades, Settings. Every setting lives on the one Settings page
+Control, Schedule, Results, Trades, Reports, Settings. Every setting lives on the one Settings page
 (`manage/settings`, jump-linked sections, one save bar); other pages link to their
 section with a `fragment` (`signup`, `pools`, `season`, …) instead of carrying settings
 of their own. Overview's Next Up list comes from `nextSteps()` in `settings-schema.ts`:

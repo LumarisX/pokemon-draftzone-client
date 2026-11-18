@@ -100,6 +100,19 @@
   white-space: nowrap;
 }
 
+.person__link {
+  color: inherit;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+
+  &:focus-visible {
+    @include pdz.focus-ring;
+  }
+}
+
 .person__note {
   @include pdz.text(meta);
   color: pdz.color(on-surface-variant);

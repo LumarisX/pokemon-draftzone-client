@@ -101,9 +101,25 @@
 
 .person__name {
   @include pdz.text(body-sm-strong);
+  display: flex;
+  align-items: baseline;
+  gap: pdz.space(xs);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.person__link {
+  color: inherit;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+
+  &:focus-visible {
+    @include pdz.focus-ring;
+  }
 }
 
 .person__note {

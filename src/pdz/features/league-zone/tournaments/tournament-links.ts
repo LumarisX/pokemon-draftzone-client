@@ -188,6 +188,13 @@ export function manageLinkGroup(
       description: 'Approve and reverse trades',
     },
     {
+      id: 'manage-reports',
+      label: 'Reports',
+      route: [...manage, 'reports'],
+      icon: 'flag',
+      description: 'Review chat messages people have reported',
+    },
+    {
       id: 'manage-settings',
       label: 'Settings',
       route: [...manage, 'settings'],

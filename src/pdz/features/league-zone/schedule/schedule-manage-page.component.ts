@@ -11,7 +11,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { GuardsUnsavedChanges } from '@pdz/core/guards/unsaved-changes/unsaved-changes.guard';
 import { apiErrorMessage } from '@pdz/core/services/api.service';
 import { LeagueManageService } from '@pdz/features/league-zone/league-manage/league-manage.service';
-import { SaveBarComponent } from '@pdz/features/league-zone/tournament-settings/save-bar.component';
+import { SaveBarComponent } from '@pdz/shared/feedback/save-bar/save-bar.component';
 import { LeagueZoneService } from '@pdz/features/league-zone/league-zone.service';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 import { SkeletonLayoutComponent } from '@pdz/shared/data/skeleton/skeleton-layout.component';

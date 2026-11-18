@@ -17,6 +17,8 @@ import { TournamentBracket } from '@pdz/features/league-zone/schedule/tournament
 import {
   ChatChannel,
   ChatMessage,
+  ChatReport,
+  ChatReportResolution,
   ChatRoom,
 } from '@pdz/features/league-zone/league-chat/league-chat.model';
 import {
@@ -759,6 +761,32 @@ export class LeagueZoneService {
     return this.apiService.delete<{ message: string }>(
       `${this.chatPath()}/messages/${messageId}`,
       { invalidateCache: [this.chatPath()] },
+    );
+  }
+
+  reportChatMessage(
+    messageId: string,
+    reason: string,
+  ): Observable<{ id: string; status: 'open'; createdAt: string }> {
+    return this.apiService.post(
+      `${this.chatPath()}/messages/${messageId}/report`,
+      { reason },
+    );
+  }
+
+  getChatReports(): Observable<{ reports: ChatReport[] }> {
+    return this.apiService.get<{ reports: ChatReport[] }>(
+      `${this.chatPath()}/reports`,
+    );
+  }
+
+  resolveChatReport(
+    reportId: string,
+    action: ChatReportResolution,
+  ): Observable<{ resolved: true; action: ChatReportResolution }> {
+    return this.apiService.post(
+      `${this.chatPath()}/reports/${reportId}/resolve`,
+      { action },
     );
   }
 

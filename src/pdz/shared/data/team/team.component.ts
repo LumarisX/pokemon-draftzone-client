@@ -52,7 +52,9 @@ const LOGO_SIZES: Record<TeamSize, TeamLogoSize> = {
         }
       </span>
       @if (coach() && size() !== 'inline') {
-        <span class="pdz-team__coach">{{ coach() }}</span>
+        <span class="pdz-team__coach">
+          <span class="pdz-team__coach-name">{{ coach() }}</span>
+        </span>
       }
       <ng-content select="[pdz-team-meta]" />
     </span>

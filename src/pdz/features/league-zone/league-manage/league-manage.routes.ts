@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { unsavedChangesGuard } from '@pdz/core/guards/unsaved-changes/unsaved-changes.guard';
+import { ChatReportsPageComponent } from '@pdz/features/league-zone/chat-reports/chat-reports-page.component';
 import { LeagueManageDraftComponent } from '@pdz/features/league-zone/league-manage/league-manage-draft/league-manage-draft.component';
 import { LeagueManageResultsComponent } from '@pdz/features/league-zone/league-manage/league-manage-results/league-manage-results.component';
 import { LeagueOrganizersComponent } from '@pdz/features/league-zone/league-manage/league-organizers/league-organizers.component';
@@ -36,6 +37,10 @@ export const routes: Routes = [
   {
     path: 'drafts/:poolSlug/trades',
     redirectTo: 'pools/:poolSlug/trades',
+  },
+  {
+    path: 'reports',
+    component: ChatReportsPageComponent,
   },
   {
     path: 'schedule',

@@ -76,6 +76,19 @@
 
 .chat__author {
   @include pdz.text(label-strong);
+
+  &--link {
+    color: inherit;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+
+    &:focus-visible {
+      @include pdz.focus-ring;
+    }
+  }
 }
 
 .chat__badge {

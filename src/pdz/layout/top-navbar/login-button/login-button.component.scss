@@ -7,7 +7,8 @@
 }
 
 .user__name {
-  max-width: 4rem;
+  max-width: 12rem;
   overflow: hidden;
-  text-overflow: clip;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }

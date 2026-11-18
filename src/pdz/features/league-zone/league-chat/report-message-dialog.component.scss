@@ -1,0 +1,18 @@
+@use "pdz-theming" as pdz;
+
+.report {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.space(md);
+}
+
+.report__quote {
+  @include pdz.text(body-sm);
+  margin: 0;
+  padding: pdz.space(xs) pdz.space(sm);
+  border-radius: pdz.shape(corner-md);
+  background: pdz.color(state-hover);
+  color: pdz.color(on-surface-variant);
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}

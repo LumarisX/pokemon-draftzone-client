@@ -305,3 +305,67 @@ describe('TeamIdentityPickerComponent', () => {
     expect(names('Custom Teams')).toEqual(['New Team']);
   });
 });
+
+@Component({
+  imports: [TeamIdentityPickerComponent],
+  template: `<pdz-team-identity-picker
+    logoOnly
+    (valueChange)="picked = $event"
+  />`,
+})
+class LogoOnlyHostComponent {
+  picked: TeamIdentityChoice | null = null;
+}
+
+describe('TeamIdentityPickerComponent logo only', () => {
+  function renderLogoOnly(saved: SavedIdentity[]) {
+    const packs = jest.fn(() => of(PACKS));
+    TestBed.configureTestingModule({
+      imports: [LogoOnlyHostComponent],
+      providers: [
+        provideHttpClient(),
+        provideHttpClientTesting(),
+        {
+          provide: TeamIdentityService,
+          useValue: { packs, mine: () => of(saved) },
+        },
+      ],
+    });
+    const fixture = TestBed.createComponent(LogoOnlyHostComponent);
+    fixture.detectChanges();
+    return { fixture, element: fixture.nativeElement as HTMLElement, packs };
+  }
+
+  it('lists only saved teams that have a logo, without packs or New Team', () => {
+    const { element, packs } = renderLogoOnly([
+      { id: 's1', name: 'Old Owls', logo: 'team-logos/owls.png' },
+      { id: 's2', name: 'No Logo Yet', logo: null },
+    ]);
+    const tiles = Array.from(element.querySelectorAll('button.tile'));
+    expect(tiles.map((tile) => tile.textContent?.trim())).toEqual(['Old Owls']);
+    expect(element.querySelector('pdz-disclosure')).toBeNull();
+    expect(packs).not.toHaveBeenCalled();
+  });
+
+  it('picks a saved team by its id', () => {
+    const { fixture, element } = renderLogoOnly([
+      { id: 's1', name: 'Old Owls', logo: 'team-logos/owls.png' },
+    ]);
+    element.querySelector<HTMLButtonElement>('button.tile')!.click();
+    fixture.detectChanges();
+    expect(fixture.componentInstance.picked).toEqual(
+      expect.objectContaining({ source: 'saved', id: 's1' }),
+    );
+  });
+
+  it('shows an empty state with no logos', () => {
+    const { element } = renderLogoOnly([
+      { id: 's2', name: 'No Logo Yet', logo: null },
+    ]);
+    expect(element.querySelector('button.tile')).toBeNull();
+    expect(element.querySelector('pdz-empty-state')?.textContent).toContain(
+      'Logos come from the teams you have made',
+    );
+  });
+});
+

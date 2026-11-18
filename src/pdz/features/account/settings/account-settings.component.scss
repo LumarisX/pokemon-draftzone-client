@@ -1,0 +1,56 @@
+@use "pdz-theming" as pdz;
+
+:host {
+  display: block;
+}
+
+.account {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.layout(section-gap);
+  padding-bottom: pdz.space(lg);
+
+  &__section {
+    display: flex;
+    flex-direction: column;
+    gap: pdz.space(sm);
+    scroll-margin-top: 5rem;
+  }
+
+  &__title {
+    margin: 0;
+    color: pdz.color(on-surface);
+    @include pdz.text(section-title);
+  }
+
+  &__fields {
+    display: flex;
+    flex-direction: column;
+    gap: pdz.layout(stack);
+  }
+
+  &__private {
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__note,
+  &__intro,
+  &__method {
+    @include pdz.text(body-sm);
+    margin: 0;
+    color: pdz.color(on-surface-muted);
+  }
+
+  &__method {
+    color: pdz.color(on-surface);
+  }
+
+  &__row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: pdz.space(sm);
+  }
+}

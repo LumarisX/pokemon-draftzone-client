@@ -1,0 +1,63 @@
+<pdz-page type="form">
+  <pdz-page-header
+    title="Reset Display Name"
+    eyebrow="Admin"
+    subtitle="For a display name that breaks the rules."
+  >
+    <pdz-admin-nav />
+  </pdz-page-header>
+
+  <pdz-card padding="lg">
+    <form class="reset" (ngSubmit)="submit()">
+      <label
+        pdz-field
+        label="Profile"
+        hint="The profile link or id of the account to reset."
+        required
+        [error]="profileError()"
+      >
+        <input
+          pdz-input
+          type="text"
+          name="profile"
+          autocomplete="off"
+          [invalid]="!!profileError()"
+          [ngModel]="profile()"
+          (ngModelChange)="onProfile($event)"
+        />
+      </label>
+
+      <label
+        pdz-field
+        label="Note"
+        hint="Why the name is being reset. Only admins see this."
+        required
+      >
+        <textarea
+          pdz-input
+          rows="3"
+          name="note"
+          [attr.maxlength]="noteMax"
+          [ngModel]="note()"
+          (ngModelChange)="note.set($event)"
+        ></textarea>
+      </label>
+
+      @if (formError(); as message) {
+        <p class="reset__error" role="alert">{{ message }}</p>
+      }
+
+      <div class="reset__actions">
+        <button
+          pdz-button
+          type="submit"
+          color="danger"
+          [loading]="resetting()"
+          [disabled]="!ready()"
+        >
+          Reset Name
+        </button>
+      </div>
+    </form>
+  </pdz-card>
+</pdz-page>

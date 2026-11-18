@@ -19,7 +19,15 @@
           [class.chat__message--organizer]="message.role === 'organizer'"
         >
           <div class="chat__meta">
-            <span class="chat__author">{{ message.author }}</span>
+            @if (message.authorProfileId; as profileId) {
+              <a
+                class="chat__author chat__author--link"
+                [routerLink]="profileLink(profileId)"
+                >{{ message.author }}</a
+              >
+            } @else {
+              <span class="chat__author">{{ message.author }}</span>
+            }
             @if (showsRole(message)) {
               <span
                 class="chat__badge"
@@ -30,6 +38,30 @@
               </span>
             }
             <span class="chat__time">{{ timeOf(message) }}</span>
+            @if (canReport(message)) {
+              <pdz-menu [attr.aria-label]="'Actions for message from ' + message.author">
+                <button
+                  pdz-button
+                  type="button"
+                  iconOnly
+                  size="xs"
+                  variant="ghost"
+                  color="neutral"
+                  pdz-menu-trigger
+                  [attr.aria-label]="'Actions for message from ' + message.author"
+                >
+                  <pdz-icon name="more_vert" [size]="16" aria-hidden="true" />
+                </button>
+                <button
+                  pdz-menu-item
+                  type="button"
+                  icon="flag"
+                  (click)="report(message)"
+                >
+                  Report
+                </button>
+              </pdz-menu>
+            }
             @if (message.canDelete) {
               <button
                 pdz-button

@@ -88,7 +88,17 @@
                 }
 
                 <div class="app__who">
-                  <span class="app__name">{{ entry.coach }}</span>
+                  <span class="app__line">
+                    @if (entry.profileId; as profileId) {
+                      <a
+                        class="app__name app__name--link"
+                        [routerLink]="profileLink(profileId)"
+                        >{{ entry.coach }}</a
+                      >
+                    } @else {
+                      <span class="app__name">{{ entry.coach }}</span>
+                    }
+                  </span>
                   <span class="app__meta">
                     {{ entry.showdownName }} · {{ entry.timezone }}
                   </span>

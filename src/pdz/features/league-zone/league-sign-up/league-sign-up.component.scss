@@ -53,6 +53,22 @@
   gap: pdz.space(md);
 }
 
+.fixed-value {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: pdz.space(xs);
+  min-height: pdz.control-height(md);
+}
+
+.fixed-value__text {
+  @include pdz.text(body);
+  min-width: 0;
+  overflow-wrap: anywhere;
+  color: pdz.color(on-surface);
+}
+
 .details {
   display: grid;
   grid-template-columns: minmax(0, 1fr);

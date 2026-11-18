@@ -90,6 +90,7 @@ export class TeamIdentityPickerComponent implements OnInit {
   readonly disabled = input(false, { transform: booleanAttribute });
   readonly showSaved = input(true, { transform: booleanAttribute });
   readonly nameLimit = input(TEAM_NAME_LIMIT);
+  readonly logoOnly = input(false, { transform: booleanAttribute });
 
   private readonly identities = inject(TeamIdentityService);
   private readonly uploads = inject(UploadService);
@@ -119,7 +120,13 @@ export class TeamIdentityPickerComponent implements OnInit {
   private readonly saved = signal<SavedIdentity[] | null>(null);
 
   protected readonly loading = computed(
-    () => this.saved() === null || (this.packs() === null && !this.packsFailed()),
+    () =>
+      this.saved() === null ||
+      (!this.logoOnly() && this.packs() === null && !this.packsFailed()),
+  );
+
+  protected readonly logoChoices = computed(() =>
+    (this.saved() ?? []).filter((identity) => !!identity.logo),
   );
 
   private readonly stock = computed(() =>
@@ -194,7 +201,7 @@ export class TeamIdentityPickerComponent implements OnInit {
         { key: this.nextDraftKey++, name: start.name, logo: start.logo },
       ]);
     }
-    this.loadPacks();
+    if (!this.logoOnly()) this.loadPacks();
     if (!this.showSaved()) {
       this.saved.set([]);
       return;

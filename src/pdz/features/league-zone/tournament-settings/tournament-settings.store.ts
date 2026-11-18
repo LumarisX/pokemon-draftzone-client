@@ -1357,6 +1357,7 @@ function buildRoster(
     departed: entry.departed ?? false,
     teamName: entry.teamName,
     coach: entry.name,
+    profileId: entry.profileId,
     showdownName: entry.gameName,
     discordName: entry.discordName,
     timezone: entry.timezone,

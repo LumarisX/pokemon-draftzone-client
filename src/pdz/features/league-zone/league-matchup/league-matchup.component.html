@@ -1,19 +1,19 @@
 <pdz-page type="detail">
 <ng-template #contactTpl let-side>
-  @if (handleFor(side); as handle) {
+  @if (discordFor(side); as discord) {
     <button
       pdz-button
       size="xs"
-      [variant]="copiedHandle() === handle ? 'tonal' : 'ghost'"
-      [color]="copiedHandle() === handle ? 'success' : 'neutral'"
-      [attr.aria-label]="'Copy ' + handle"
-      (click)="copyHandle(side)"
+      [variant]="copiedDiscord() === discord ? 'tonal' : 'ghost'"
+      [color]="copiedDiscord() === discord ? 'success' : 'neutral'"
+      [attr.aria-label]="'Copy Discord name ' + discord"
+      (click)="copyDiscord(side)"
     >
       <pdz-icon name="discord" [size]="14" />
-      <span class="scoreboard__handle">{{ handle }}</span>
+      <span class="scoreboard__discord">{{ discord }}</span>
       <pdz-icon
         class="scoreboard__copy"
-        [name]="copiedHandle() === handle ? 'check' : 'content_copy'"
+        [name]="copiedDiscord() === discord ? 'check' : 'content_copy'"
         [size]="14"
       />
     </button>

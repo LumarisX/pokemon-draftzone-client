@@ -78,8 +78,15 @@
 
 .pdz-team__coach {
   @include pdz.text(meta);
-  overflow: hidden;
+  display: flex;
+  align-items: baseline;
+  gap: pdz.space(xs);
+  min-width: 0;
   color: pdz.color(on-surface-variant);
+}
+
+.pdz-team__coach-name {
+  overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }

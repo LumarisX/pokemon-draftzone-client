@@ -99,7 +99,7 @@ export class LeagueMatchupComponent {
   readonly reportOpen = signal(false);
   readonly reviewing = signal(false);
   readonly reviewError = signal<string | null>(null);
-  readonly copiedHandle = signal<string | null>(null);
+  readonly copiedDiscord = signal<string | null>(null);
   readonly schedulingError = signal<string | null>(null);
 
   readonly versus = computed(() => {
@@ -222,25 +222,22 @@ export class LeagueMatchupComponent {
     }
   }
 
-  handleFor(side: MatchupSideDetail): string | null {
-    if (!side.discordName) return null;
-    return side.discordName.startsWith('@')
-      ? side.discordName
-      : `@${side.discordName}`;
+  discordFor(side: MatchupSideDetail): string | null {
+    return side.discordName?.trim().replace(/^@/, '') || null;
   }
 
-  copyHandle(side: MatchupSideDetail): void {
-    const handle = this.handleFor(side);
-    if (!handle) return;
+  copyDiscord(side: MatchupSideDetail): void {
+    const name = this.discordFor(side);
+    if (!name) return;
     navigator.clipboard
-      .writeText(handle)
+      .writeText(name)
       .then(() => {
-        this.copiedHandle.set(handle);
+        this.copiedDiscord.set(name);
         setTimeout(() => {
-          if (this.copiedHandle() === handle) this.copiedHandle.set(null);
+          if (this.copiedDiscord() === name) this.copiedDiscord.set(null);
         }, 2000);
       })
-      .catch(() => this.copiedHandle.set(null));
+      .catch(() => this.copiedDiscord.set(null));
   }
 
   scheduledLabel(matchup: MatchupDetail): string | null {

@@ -26,7 +26,7 @@ import { TabNavLinkComponent } from '@pdz/shared/layout/tab-nav/tab-nav-link.com
 import { TabNavComponent } from '@pdz/shared/layout/tab-nav/tab-nav.component';
 import { DisclosureComponent } from '@pdz/shared/layout/disclosure/disclosure.component';
 import { QuickSetupComponent } from './quick-setup.component';
-import { SaveBarComponent } from './save-bar.component';
+import { SaveBarComponent } from '@pdz/shared/feedback/save-bar/save-bar.component';
 import { SettingsLockComponent } from './settings-lock.component';
 import { SettingsNodeComponent } from './settings-node.component';
 import {

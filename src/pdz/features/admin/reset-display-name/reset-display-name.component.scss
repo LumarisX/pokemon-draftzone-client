@@ -1,0 +1,22 @@
+@use "pdz-theming" as pdz;
+
+:host {
+  display: block;
+}
+
+.reset {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.layout(stack);
+}
+
+.reset__error {
+  @include pdz.text(body-sm);
+  margin: 0;
+  color: pdz.color(danger);
+}
+
+.reset__actions {
+  display: flex;
+  justify-content: flex-end;
+}

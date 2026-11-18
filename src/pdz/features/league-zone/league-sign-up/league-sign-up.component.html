@@ -106,18 +106,40 @@
             }
           </label>
 
-          <label pdz-field label="Discord Username" required>
-            <input
-              pdz-input
-              type="text"
-              placeholder="deoxys"
-              formControlName="discordName"
-              [attr.maxlength]="limits.discordName"
-            />
-            @if (showError("discordName")) {
-              <span pdz-error>Required</span>
-            }
-          </label>
+          @if (accountDiscordName(); as discord) {
+            <div pdz-field label="Discord Name">
+              <div class="fixed-value">
+                <span class="fixed-value__text">{{ discord }}</span>
+                <a
+                  pdz-button
+                  size="sm"
+                  variant="ghost"
+                  color="neutral"
+                  [routerLink]="settingsLink"
+                  fragment="league-defaults"
+                  >Change in Settings</a
+                >
+              </div>
+            </div>
+          } @else {
+            <label
+              pdz-field
+              label="Discord Username"
+              hint="Saved to your account, so you will not need to type it again for future sign-ups."
+              required
+            >
+              <input
+                pdz-input
+                type="text"
+                placeholder="deoxys"
+                formControlName="discordName"
+                [attr.maxlength]="limits.discordName"
+              />
+              @if (showError("discordName")) {
+                <span pdz-error>Required</span>
+              }
+            </label>
+          }
 
           <div pdz-field label="Time Zone" required>
             <pdz-select

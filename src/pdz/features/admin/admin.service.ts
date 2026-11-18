@@ -1,6 +1,10 @@
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ApiService } from '@pdz/core/services/api.service';
+import {
+  ChatReport,
+  ChatReportResolution,
+} from '@pdz/features/league-zone/league-chat/league-chat.model';
 
 export type BucketUnit = 'day' | 'week' | 'month';
 
@@ -80,6 +84,29 @@ export class AdminService {
     return this.apiService.get<KeyedCount<AgeSegment>[]>(
       'admin/users/account-age',
     );
+  }
+
+  getChatReports(): Observable<{ reports: ChatReport[] }> {
+    return this.apiService.get<{ reports: ChatReport[] }>('admin/chat-reports');
+  }
+
+  resolveChatReport(
+    reportId: string,
+    action: ChatReportResolution,
+  ): Observable<{ resolved: true; action: ChatReportResolution }> {
+    return this.apiService.post(`admin/chat-reports/${reportId}/resolve`, {
+      action,
+    });
+  }
+
+  resetDisplayName(
+    profileId: string,
+    note: string,
+  ): Observable<{ reset: true }> {
+    return this.apiService.post('admin/users/reset-display-name', {
+      profileId,
+      note,
+    });
   }
 
   getSettingsDistributions(): Observable<SettingsDistributions> {

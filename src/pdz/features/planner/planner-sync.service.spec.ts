@@ -149,6 +149,63 @@ describe('PlannerSyncService', () => {
     expect(api.put).not.toHaveBeenCalled();
   });
 
+  describe('plans synced by another account', () => {
+    const theirs = JSON.stringify([plan('Theirs')]);
+
+    beforeEach(() => {
+      localStorage.setItem(KEY, theirs);
+      localStorage.setItem(
+        META,
+        JSON.stringify({ sub: 'auth0|someone-else', revision: 3, json: theirs }),
+      );
+    });
+
+    it("replaces them with this account's plans and never sends them", () => {
+      api.get.mockReturnValue(of({ plans: [plan('Mine')], revision: 9 }));
+
+      reconcile(create());
+
+      expect(JSON.parse(localStorage.getItem(KEY)!)).toEqual([plan('Mine')]);
+      expect(JSON.parse(localStorage.getItem(META)!)).toEqual({
+        sub: 'auth0|me',
+        revision: 9,
+        json: JSON.stringify([plan('Mine')]),
+      });
+      expect(api.put).not.toHaveBeenCalled();
+    });
+
+    it('drops them without uploading when this account has no plans', () => {
+      reconcile(create());
+
+      expect(localStorage.getItem(KEY)).toBeNull();
+      expect(localStorage.getItem(META)).toBeNull();
+      expect(api.put).not.toHaveBeenCalled();
+    });
+
+    it('drops them even when they were edited after the last sync', () => {
+      localStorage.setItem(KEY, JSON.stringify([plan('Theirs'), plan('Extra')]));
+      api.get.mockReturnValue(of({ plans: [plan('Mine')], revision: 9 }));
+
+      reconcile(create());
+
+      expect(JSON.parse(localStorage.getItem(KEY)!)).toEqual([plan('Mine')]);
+      expect(api.put).not.toHaveBeenCalled();
+    });
+  });
+
+  it('still merges signed-out plans that have no marker', () => {
+    localStorage.setItem(KEY, JSON.stringify([plan('Rain')]));
+    api.get.mockReturnValue(of({ plans: [plan('Sun')], revision: 4 }));
+
+    reconcile(create());
+
+    expect(JSON.parse(localStorage.getItem(KEY)!)).toEqual([
+      plan('Sun'),
+      plan('Rain'),
+    ]);
+    expect(api.put).toHaveBeenCalledTimes(1);
+  });
+
   it('opens the planner on local plans when the server does not answer', () => {
     const local = JSON.stringify([plan('Rain')]);
     localStorage.setItem(KEY, local);

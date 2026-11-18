@@ -1,0 +1,69 @@
+<pdz-page type="hub">
+  @switch (state()) {
+    @case ("ready") {
+      @if (data(); as person) {
+        <pdz-page-header [title]="title()">
+          <span pdz-page-header-detail class="person">
+            @if (person.joined) {
+              <span class="person__joined"
+                >Joined {{ person.joined | date: "MMMM y" }}</span
+              >
+            }
+          </span>
+          @if (person.isYou && person.private) {
+            <span pdz-page-header-meta class="person__private"
+              >Only you can see this. Your profile is private.</span
+            >
+          }
+          @if (person.isYou) {
+            <a
+              pdz-page-header-actions
+              pdz-button
+              color="neutral"
+              variant="outlined"
+              icon="edit"
+              fragment="profile"
+              [routerLink]="settingsLink"
+              >Edit Profile</a
+            >
+          }
+        </pdz-page-header>
+
+        @if (person.profile; as profile) {
+          <pdz-profile-body [profile]="profile" [isYou]="person.isYou" />
+        } @else {
+          <pdz-empty-state
+            bordered
+            kind="no-access"
+            heading="This profile is private"
+            message="Only the person who owns it can see more than their name."
+          />
+        }
+      }
+    }
+    @case ("missing") {
+      <pdz-page-header title="Profile" />
+      <pdz-empty-state
+        bordered
+        kind="empty"
+        heading="No one has that profile"
+        message="Check the link, or the profile may no longer exist."
+      />
+    }
+    @case ("error") {
+      <pdz-page-header title="Profile" />
+      <pdz-empty-state
+        bordered
+        kind="error"
+        heading="Could not load this profile"
+        message="The profile did not come back from the server."
+        retry="event"
+        (retried)="load()"
+      />
+    }
+    @default {
+      <pdz-page-header title="Profile" />
+      <pdz-skeleton-layout layout="list" count="6" />
+    }
+  }
+</pdz-page>

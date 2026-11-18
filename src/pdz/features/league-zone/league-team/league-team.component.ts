@@ -9,7 +9,7 @@ import {
 } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { LEAGUE_ZONE_PATH } from '@pdz/core/route-paths';
+import { LEAGUE_ZONE_PATH, profileLink } from '@pdz/core/route-paths';
 import { apiErrorMessage } from '@pdz/core/services/api.service';
 import {
   CoachEditDialogComponent,
@@ -83,6 +83,7 @@ const CLOCK_TICK_MS = 30_000;
   styleUrl: './league-team.component.scss',
 })
 export class LeagueTeamComponent implements OnInit {
+  protected readonly profileLink = profileLink;
   private readonly leagueService = inject(LeagueZoneService);
   private readonly route = inject(ActivatedRoute);
   private readonly dialogs = inject(DialogService);

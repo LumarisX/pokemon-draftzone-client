@@ -22,7 +22,7 @@
     <input
       type="hidden"
       name="author"
-      [value]="(loggedInUser | async)?.username ?? 'Pokemon DraftZone'"
+      [value]="(me$ | async)?.displayName ?? 'Pokemon DraftZone'"
     />
     <input type="hidden" name="notes" [value]="notes" />
     <button pdz-button type="submit">To PokePaste</button>

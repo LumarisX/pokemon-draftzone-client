@@ -1,0 +1,73 @@
+<div class="appearance" [formGroup]="settingsForm">
+  <div pdz-field label="Light / Dark">
+    <pdz-segmented formControlName="ldMode" aria-label="Light or dark mode">
+      <pdz-segmented-option value="device" label="Device" />
+      <pdz-segmented-option value="light" label="Light" />
+      <pdz-segmented-option value="dark" label="Dark" />
+    </pdz-segmented>
+  </div>
+
+  <div pdz-field label="Theme">
+    <div class="appearance__themes" role="radiogroup" aria-label="Theme">
+      @for (option of themes; track option.id) {
+        <button
+          pdz-card
+          type="button"
+          padding="sm"
+          role="radio"
+          [selected]="theme() === option.id"
+          [attr.aria-checked]="theme() === option.id"
+          (click)="selectTheme(option.id)"
+        >
+          <span class="appearance__theme">
+            <span class="appearance__swatches" aria-hidden="true">
+              <span
+                class="appearance__swatch"
+                [style.background]="swatch(option.team1)"
+              ></span>
+              <span
+                class="appearance__swatch"
+                [style.background]="swatch(option.team2)"
+              ></span>
+            </span>
+            <span class="appearance__theme-label">{{ option.name }}</span>
+            @if (option.id === "shiny") {
+              <pdz-icon name="lock_open" [size]="16" />
+            }
+          </span>
+        </button>
+      }
+    </div>
+  </div>
+
+  <div class="appearance__sprites">
+    <div class="appearance__sprite-form">
+      <label pdz-field label="Sprite Set">
+        <pdz-select formControlName="spriteSet" aria-label="Sprite Set">
+          @for (set of spriteSets; track set.id) {
+            <pdz-option [value]="set.id" [label]="set.name" />
+          }
+        </pdz-select>
+      </label>
+
+      <a
+        pdz-button
+        variant="link"
+        color="neutral"
+        size="sm"
+        target="_blank"
+        rel="noopener noreferrer"
+        [href]="creditLink()"
+        >Credits</a
+      >
+    </div>
+
+    <div class="appearance__preview">
+      <pdz-sprite size="lg" [pokemon]="example" />
+    </div>
+  </div>
+
+  @if (saveError(); as message) {
+    <p class="appearance__error" role="alert">{{ message }}</p>
+  }
+</div>

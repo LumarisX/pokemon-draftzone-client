@@ -56,7 +56,15 @@
             } @else {
               <span class="person__body">
                 <span class="person__name">
-                  {{ label(organizer) }}
+                  @if (organizer.profileId; as profileId) {
+                    <a
+                      class="person__link"
+                      [routerLink]="profileLink(profileId)"
+                      >{{ label(organizer) }}</a
+                    >
+                  } @else {
+                    {{ label(organizer) }}
+                  }
                 </span>
                 @if (organizer.isOwner) {
                   <span class="person__note">Owner</span>

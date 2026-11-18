@@ -72,6 +72,28 @@ describe('LeagueAdminsComponent', () => {
     expect(fixture.nativeElement.textContent).toContain('Brock');
   });
 
+  it('links an admin to their profile when it has an id', () => {
+    const { fixture } = setup(
+      of(
+        admins({
+          admins: [
+            {
+              sub: 'auth0|brock',
+              name: 'Brock',
+              profileId: 'a1b2c3d4e5f6a1b2c3d4e5f6',
+              isYou: false,
+            },
+            { sub: 'auth0|misty', name: 'Misty', isYou: false },
+          ],
+        }),
+      ),
+    );
+    const links = Array.from(
+      fixture.nativeElement.querySelectorAll('a.person__link'),
+    ).map((element) => (element as HTMLElement).textContent?.trim());
+    expect(links).toEqual(['Brock']);
+  });
+
   it('hides the invite form from an admin', () => {
     const { fixture } = setup(
       of(admins({ canEdit: false, ownerIsYou: false })),

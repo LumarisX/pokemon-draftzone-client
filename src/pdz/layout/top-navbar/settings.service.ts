@@ -1,5 +1,6 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { ApiService } from '@pdz/core/services/api.service';
+import { SETTINGS_STORAGE_KEY } from '@pdz/core/utils/account-storage';
 import { safeStorage } from '@pdz/core/utils/storage';
 
 export type Settings = {
@@ -12,7 +13,7 @@ export type Settings = {
   themeOverride?: string | null;
 };
 
-const STORAGE_KEY = 'user-settings';
+const STORAGE_KEY = SETTINGS_STORAGE_KEY;
 const DEFAULT_THEME = 'classic';
 const THEME_OVERRIDE = '6526';
 
@@ -66,6 +67,12 @@ export class SettingsService {
     this.state.set(merged);
     safeStorage.setJson(STORAGE_KEY, merged);
     this.applyThemeAndMode(merged);
+  }
+
+  reset() {
+    this.state.set({});
+    safeStorage.remove(STORAGE_KEY);
+    this.applyThemeAndMode({});
   }
 
   saveToServer() {

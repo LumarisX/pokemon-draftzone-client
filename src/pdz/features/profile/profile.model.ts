@@ -52,6 +52,14 @@ export type Profile = {
   achievements: ProfileAchievement[];
 };
 
+export type PublicProfile = {
+  displayName: string;
+  joined: string | null;
+  private: boolean;
+  isYou: boolean;
+  profile: Profile | null;
+};
+
 export function seasonLink(season: ProfileSeason): unknown[] {
   if (season.hosted)
     return [

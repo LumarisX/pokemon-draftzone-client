@@ -16,6 +16,7 @@ export namespace League {
     slug: string;
     name: string;
     coach: string;
+    coachProfileId?: string;
     logo?: string;
   };
 
@@ -32,6 +33,7 @@ export namespace League {
     canManageTeam?: boolean;
     nameLocked?: boolean;
     coach: string;
+    coachProfileId?: string;
     coachId?: string;
     gameName?: string;
     discordName?: string;
@@ -189,6 +191,7 @@ export namespace League {
   export type TournamentOrganizer = {
     sub: string;
     name: string | null;
+    profileId?: string;
     isOwner: boolean;
     isYou: boolean;
   };
@@ -234,6 +237,7 @@ export namespace League {
     teamId?: string;
     teamSlug?: string;
     name: string;
+    profileId?: string;
     gameName: string;
     discordName: string;
     timezone: string;
@@ -550,6 +554,7 @@ export namespace League {
   export type LeagueAdmin = {
     sub: string;
     name: string;
+    profileId?: string;
     isYou: boolean;
   };
 
@@ -632,6 +637,7 @@ export namespace League {
 
   export type CoachProfile = {
     name: string;
+    coachProfileId?: string;
     gameName: string;
     discordName: string;
     timezone: string;

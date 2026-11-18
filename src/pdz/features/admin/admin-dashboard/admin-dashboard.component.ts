@@ -19,6 +19,7 @@ import {
   UserStatsSummary,
   UserTimeSeries,
 } from '../admin.service';
+import { AdminNavComponent } from '../admin-nav.component';
 import { BarChartComponent, BarDatum } from '../charts/bar-chart.component';
 import { PieChartComponent, PieDatum } from '../charts/pie-chart.component';
 import { TimeSeriesChartComponent } from '../charts/time-series-chart.component';
@@ -127,6 +128,7 @@ function total(points: BucketCount[]): number {
 @Component({
   selector: 'pdz-admin-dashboard',
   imports: [
+    AdminNavComponent,
     DecimalPipe,
     EmptyStateComponent,
     SkeletonLayoutComponent,

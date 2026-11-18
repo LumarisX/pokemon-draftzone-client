@@ -369,6 +369,27 @@
 </section>
 
 <section class="section">
+  <h2 class="section__title">Save Bar</h2>
+  <p class="section__hint">
+    Sticks to the bottom of its page and shows only while something is unsaved.
+  </p>
+  <div class="stack">
+    <h3 class="section__sub">Clean (Hidden)</h3>
+    <pdz-save-bar [count]="0" />
+    <h3 class="section__sub">One Change</h3>
+    <pdz-save-bar [count]="1" />
+    <h3 class="section__sub">Several Changes</h3>
+    <pdz-save-bar [count]="3" label="Save Changes" />
+    <h3 class="section__sub">Blocked</h3>
+    <pdz-save-bar [count]="2" [blocked]="true" />
+    <h3 class="section__sub">Pending</h3>
+    <pdz-save-bar [count]="2" [pending]="true" />
+    <h3 class="section__sub">Error</h3>
+    <pdz-save-bar [count]="2" error="Could not save your settings." />
+  </div>
+</section>
+
+<section class="section">
   <h2 class="section__title">Meter</h2>
   <div class="stack">
     <pdz-meter [value]="37" [max]="96" label="Draft progress" />
@@ -2190,7 +2211,7 @@
       <pdz-team size="card" align="end" name="Viridian Vipers" coach="misty" [logo]="teamLogoSample" />
     </div>
     <div class="team-lockups__narrow">
-      <pdz-team name="A Team Name That Keeps Going Well Past Its Box" coach="a-coach-with-a-long-handle" />
+      <pdz-team name="A Team Name That Keeps Going Well Past Its Box" coach="a-coach-with-a-very-long-name" />
     </div>
   </div>
 

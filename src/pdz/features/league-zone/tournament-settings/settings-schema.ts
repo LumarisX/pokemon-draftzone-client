@@ -323,6 +323,7 @@ export interface SignUpValue {
   departed: boolean;
   teamName: string;
   coach: string;
+  profileId?: string;
   showdownName: string;
   discordName: string;
   timezone: string;

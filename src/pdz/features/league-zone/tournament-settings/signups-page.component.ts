@@ -15,7 +15,7 @@ import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.
 import { PageComponent } from '@pdz/shared/layout/page/page.component';
 import { formatMilestoneTime } from '../tournament-milestones';
 import { ApplicantsPanelComponent } from './applicants-panel.component';
-import { SaveBarComponent } from './save-bar.component';
+import { SaveBarComponent } from '@pdz/shared/feedback/save-bar/save-bar.component';
 import { TournamentSettingsStore } from './tournament-settings.store';
 
 @Component({

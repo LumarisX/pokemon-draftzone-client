@@ -15,9 +15,10 @@ import {
   Validators,
 } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { LEAGUE_ZONE_PATH } from '@pdz/core/route-paths';
+import { LEAGUE_ZONE_PATH, SETTINGS_PATH } from '@pdz/core/route-paths';
 import { apiErrorMessage } from '@pdz/core/services/api.service';
 import { AuthService } from '@pdz/core/services/auth0.service';
+import { Me, RoleService } from '@pdz/core/services/role.service';
 import { LeagueZoneService } from '@pdz/features/league-zone/league-zone.service';
 import { League } from '@pdz/features/league-zone/league.interface';
 import {
@@ -42,7 +43,7 @@ import { FieldComponent } from '@pdz/shared/inputs/field/field.component';
 import { InputDirective } from '@pdz/shared/inputs/field/input.directive';
 import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
 import { PageComponent } from '@pdz/shared/layout/page/page.component';
-import { catchError, firstValueFrom, of, take } from 'rxjs';
+import { catchError, firstValueFrom, forkJoin, of, take } from 'rxjs';
 
 type AnswerValue = string | string[];
 
@@ -74,9 +75,11 @@ export class LeagueSignUpComponent implements OnInit {
   private readonly leagueService = inject(LeagueZoneService);
   private readonly router = inject(Router);
   private readonly authService = inject(AuthService);
+  private readonly roleService = inject(RoleService);
   private readonly destroyRef = inject(DestroyRef);
 
   protected readonly limits = SIGN_UP_LIMITS;
+  protected readonly settingsLink = ['/', SETTINGS_PATH];
   protected readonly timezones = Intl.supportedValuesOf('timeZone');
   private readonly invite =
     new URLSearchParams(window.location.search).get('invite') ?? undefined;
@@ -98,6 +101,7 @@ export class LeagueSignUpComponent implements OnInit {
   readonly wantsToSignUpAsSub = signal(false);
   readonly isSubmitting = signal(false);
   readonly submitError = signal<string | null>(null);
+  readonly accountDiscordName = signal<string | null>(null);
   readonly identity = signal<TeamIdentityChoice | null>(null);
   readonly identityReady = computed(() => isChoiceComplete(this.identity()));
 
@@ -145,13 +149,12 @@ export class LeagueSignUpComponent implements OnInit {
         this.buildAnswerControls();
       });
 
-    this.authService.user$
-      .pipe(take(1), takeUntilDestroyed(this.destroyRef))
-      .subscribe((user) => {
-        if (user?.sub?.startsWith('oauth2|discord') && user.username) {
-          this.signupForm.controls.discordName.setValue(user.username);
-        }
-      });
+    forkJoin([
+      this.roleService.me$.pipe(take(1)),
+      this.authService.user$.pipe(take(1)),
+    ])
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(([me, user]) => this.prefill(me, user));
 
     this.answerGroup.valueChanges
       .pipe(takeUntilDestroyed(this.destroyRef))
@@ -235,6 +238,7 @@ export class LeagueSignUpComponent implements OnInit {
         ),
       );
 
+      this.roleService.reload().pipe(take(1)).subscribe();
       this.navigateToTeam();
     } catch (error) {
       this.submitError.set(
@@ -242,6 +246,31 @@ export class LeagueSignUpComponent implements OnInit {
       );
     } finally {
       this.isSubmitting.set(false);
+    }
+  }
+
+  private prefill(
+    me: Me | null,
+    user: { sub?: string; username?: string } | null,
+  ): void {
+    const controls = this.signupForm.controls;
+    if (me?.displayName && !controls.name.value) {
+      controls.name.setValue(me.displayName);
+    }
+    if (me?.profile.gameName && !controls.gameName.value) {
+      controls.gameName.setValue(me.profile.gameName);
+    }
+    const accountDiscord = me?.profile.discordName ?? null;
+    this.accountDiscordName.set(accountDiscord);
+    if (accountDiscord) {
+      controls.discordName.setValue(accountDiscord);
+    } else if (!controls.discordName.value) {
+      const discord =
+        user?.sub?.startsWith('oauth2|discord') ? user.username : null;
+      if (discord) controls.discordName.setValue(discord);
+    }
+    if (me?.profile.timezone && !controls.timezone.dirty) {
+      controls.timezone.setValue(me.profile.timezone);
     }
   }
 

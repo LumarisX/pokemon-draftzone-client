@@ -32,6 +32,21 @@ export const safeStorage = {
     }
   },
 
+  keys(): string[] {
+    try {
+      const area = store();
+      if (!area) return [];
+      const found: string[] = [];
+      for (let index = 0; index < area.length; index++) {
+        const key = area.key(index);
+        if (key !== null) found.push(key);
+      }
+      return found;
+    } catch {
+      return [];
+    }
+  },
+
   getJson<T>(key: string): T | null {
     const raw = safeStorage.get(key);
     if (raw === null) return null;

@@ -13,6 +13,7 @@ import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import {
   LEAGUE_ADMIN_INVITE_PATH,
   LEAGUE_ZONE_PATH,
+  profileLink,
 } from '@pdz/core/route-paths';
 import { ApiError } from '@pdz/core/services/api-error';
 import { apiErrorMessage } from '@pdz/core/services/api.service';
@@ -60,6 +61,7 @@ type LoadState = 'loading' | 'ready' | 'forbidden' | 'error';
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LeagueAdminsComponent implements OnInit {
+  protected readonly profileLink = profileLink;
   private readonly route = inject(ActivatedRoute);
   private readonly router = inject(Router);
   private readonly leagueService = inject(LeagueZoneService);

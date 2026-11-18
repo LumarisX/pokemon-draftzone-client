@@ -94,7 +94,17 @@
                     </form>
                   } @else {
                     <span class="person__body">
-                      <span class="person__name">{{ admin.name }}</span>
+                      <span class="person__name">
+                        @if (admin.profileId; as profileId) {
+                          <a
+                            class="person__link"
+                            [routerLink]="profileLink(profileId)"
+                            >{{ admin.name }}</a
+                          >
+                        } @else {
+                          {{ admin.name }}
+                        }
+                      </span>
                       <span class="person__note">Admin</span>
                     </span>
                     @if (canRename(admin)) {

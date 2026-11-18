@@ -1,0 +1,18 @@
+@use "pdz-theming" as pdz;
+
+:host {
+  display: block;
+}
+
+.person {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: pdz.space(xs) pdz.space(md);
+}
+
+.person__joined,
+.person__private {
+  @include pdz.text(meta);
+  color: pdz.color(on-surface-muted);
+}

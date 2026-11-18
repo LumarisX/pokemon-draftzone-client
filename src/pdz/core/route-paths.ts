@@ -19,3 +19,8 @@ export const TIER_LIST_PATH = 'tier-lists';
 export const LEAGUE_ADS_PATH = 'league-list';
 export const ADMIN_PATH = 'admin';
 export const ABOUT_PATH = 'about';
+export const SETTINGS_PATH = 'settings';
+
+export function profileLink(profileId: string): string[] {
+  return ['/', PROFILE_PATH, profileId];
+}

@@ -120,6 +120,7 @@ import {
 import { RecordComponent } from '@pdz/shared/data/record/record.component';
 import { ResultBoxComponent } from '@pdz/shared/data/result-box/result-box.component';
 import { MeterComponent } from '@pdz/shared/data/meter/meter.component';
+import { SaveBarComponent } from '@pdz/shared/feedback/save-bar/save-bar.component';
 import {
   TeamLogoComponent,
   TeamLogoSize,
@@ -200,6 +201,7 @@ const MODE_ATTR = 'pdz-theme-mode';
     RecordComponent,
     ResultBoxComponent,
     MeterComponent,
+    SaveBarComponent,
   ],
   templateUrl: './debug-components.component.html',
   styleUrl: './debug-components.component.scss',

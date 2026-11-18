@@ -10,24 +10,45 @@ import {
   signal,
   viewChild,
 } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
+import { profileLink } from '@pdz/core/route-paths';
+import { AuthService } from '@pdz/core/services/auth0.service';
 import { LeagueZoneService } from '@pdz/features/league-zone/league-zone.service';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
+import { DialogService } from '@pdz/shared/dialogs/dialog/dialog.service';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { InputDirective } from '@pdz/shared/inputs/field/input.directive';
+import { MenuItemComponent } from '@pdz/shared/menu/menu-item.component';
+import { MenuTriggerDirective } from '@pdz/shared/menu/menu-trigger.directive';
+import { MenuComponent } from '@pdz/shared/menu/menu.component';
 import { ChatChannel, ChatMessage } from './league-chat.model';
+import {
+  ReportMessageDialogComponent,
+  ReportMessageDialogData,
+} from './report-message-dialog.component';
 
 const POLL_INTERVAL_MS = 10000;
 
 @Component({
   selector: 'pdz-league-chat',
-  imports: [FormsModule, IconComponent, ButtonComponent, InputDirective],
+  imports: [
+    FormsModule,
+    IconComponent,
+    ButtonComponent,
+    InputDirective,
+    MenuComponent,
+    MenuItemComponent,
+    MenuTriggerDirective,
+    RouterLink,
+  ],
   templateUrl: './league-chat.component.html',
   styleUrl: './league-chat.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LeagueChatComponent implements OnInit, OnChanges {
+  protected readonly profileLink = profileLink;
   readonly channel = input.required<ChatChannel>();
   readonly target = input<string>();
   readonly heading = input('Chat');
@@ -37,6 +58,11 @@ export class LeagueChatComponent implements OnInit, OnChanges {
   private readonly log = viewChild<ElementRef<HTMLDivElement>>('log');
 
   private leagueService = inject(LeagueZoneService);
+  private dialogs = inject(DialogService);
+  private auth = inject(AuthService);
+  private readonly signedIn = toSignal(this.auth.isAuthenticated$, {
+    initialValue: false,
+  });
   private destroyRef = inject(DestroyRef);
   private atBottom = true;
   private roomKey = '';
@@ -130,6 +156,22 @@ export class LeagueChatComponent implements OnInit, OnChanges {
       event.preventDefault();
       this.send();
     }
+  }
+
+  canReport(message: ChatMessage): boolean {
+    return this.signedIn() && !message.isViewer;
+  }
+
+  report(message: ChatMessage): void {
+    this.dialogs.open<
+      ReportMessageDialogComponent,
+      boolean,
+      ReportMessageDialogData
+    >(ReportMessageDialogComponent, {
+      heading: 'Report Message',
+      size: 'sm',
+      data: { messageId: message.id, text: message.text },
+    });
   }
 
   remove(message: ChatMessage): void {

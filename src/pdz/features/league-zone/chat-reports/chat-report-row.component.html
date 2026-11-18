@@ -1,0 +1,76 @@
+<div class="report">
+  <div class="report__head">
+    <span class="report__channel">{{ channel() }}</span>
+    @if (tournamentLink(); as link) {
+      <a class="report__where" [routerLink]="link">
+        {{ report().league?.name }} · {{ report().tournament?.name }}
+      </a>
+    }
+    <span class="report__time">
+      {{ report().createdAt | date: "MMM d, h:mm a" }}
+    </span>
+  </div>
+
+  <p class="report__people">
+    <span class="report__person">
+      <span class="report__label">Reported by</span>
+      @if (report().reporter.profileId; as profileId) {
+        <a
+          class="report__name report__name--link"
+          [routerLink]="profileLink(profileId)"
+          >{{ report().reporter.name }}</a
+        >
+      } @else {
+        <span class="report__name">{{ report().reporter.name }}</span>
+      }
+    </span>
+    <span class="report__person">
+      <span class="report__label">Written by</span>
+      @if (report().author.profileId; as profileId) {
+        <a
+          class="report__name report__name--link"
+          [routerLink]="profileLink(profileId)"
+          >{{ report().author.name }}</a
+        >
+      } @else {
+        <span class="report__name">{{ report().author.name }}</span>
+      }
+    </span>
+  </p>
+
+  <p class="report__reason">{{ report().reason }}</p>
+
+  @if (report().messageExists) {
+    <blockquote class="report__quote">{{ report().text }}</blockquote>
+  } @else {
+    <blockquote class="report__quote">
+      {{ report().text }}
+      <span class="report__gone">This message was already deleted.</span>
+    </blockquote>
+  }
+
+  <div class="report__actions">
+    <button
+      pdz-button
+      type="button"
+      size="sm"
+      variant="outlined"
+      color="neutral"
+      [disabled]="busy()"
+      (click)="dismissed.emit()"
+    >
+      Dismiss
+    </button>
+    <button
+      pdz-button
+      type="button"
+      size="sm"
+      variant="outlined"
+      color="danger"
+      [disabled]="busy()"
+      (click)="removed.emit()"
+    >
+      Remove Message
+    </button>
+  </div>
+</div>

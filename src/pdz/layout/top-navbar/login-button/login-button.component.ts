@@ -1,17 +1,14 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  inject,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
+import { RouterLink } from '@angular/router';
+import { SETTINGS_PATH } from '@pdz/core/route-paths';
 import { AuthService } from '@pdz/core/services/auth0.service';
+import { RoleService } from '@pdz/core/services/role.service';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
-import { DialogService } from '@pdz/shared/dialogs/dialog/dialog.service';
-import { TeamLogoComponent } from '@pdz/shared/images/team-logo/team-logo.component';
+import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { MenuItemComponent } from '@pdz/shared/menu/menu-item.component';
 import { MenuTriggerDirective } from '@pdz/shared/menu/menu-trigger.directive';
 import { MenuComponent } from '@pdz/shared/menu/menu.component';
-import { of } from 'rxjs';
 import { filter, switchMap, take } from 'rxjs/operators';
 import { SettingsService } from '../settings.service';
 
@@ -19,10 +16,11 @@ import { SettingsService } from '../settings.service';
   selector: 'pdz-login-button',
   imports: [
     ButtonComponent,
+    IconComponent,
     MenuComponent,
     MenuItemComponent,
     MenuTriggerDirective,
-    TeamLogoComponent,
+    RouterLink,
   ],
   templateUrl: './login-button.component.html',
   styleUrl: './login-button.component.scss',
@@ -31,43 +29,30 @@ import { SettingsService } from '../settings.service';
 export class LoginButtonComponent {
   private readonly auth = inject(AuthService);
   private readonly settingsService = inject(SettingsService);
-  private readonly dialogs = inject(DialogService);
 
+  protected readonly settingsLink = ['/', SETTINGS_PATH];
   readonly authenticated = toSignal(this.auth.isAuthenticated$, {
     initialValue: false,
   });
-  readonly user = toSignal(this.auth.user$, { initialValue: null });
+  readonly me = toSignal(inject(RoleService).me$, { initialValue: null });
 
   constructor() {
     this.auth.isAuthenticated$
       .pipe(
         filter(Boolean),
         switchMap(() => this.settingsService.getSettings().pipe(take(1))),
-        switchMap((serverSettings) =>
-          serverSettings
-            ? of({ settings: serverSettings })
-            : this.auth.user$.pipe(take(1)),
-        ),
         takeUntilDestroyed(),
       )
-      .subscribe((data) => this.settingsService.setSettings(data?.settings));
-  }
-
-  async openSettings(): Promise<void> {
-    const { SettingsDialogComponent } = await import(
-      '../settings-dialog/settings-dialog.component'
-    );
-    this.dialogs.open(SettingsDialogComponent, {
-      heading: 'Settings',
-      size: 'md',
-    });
+      .subscribe((serverSettings) =>
+        this.settingsService.setSettings(serverSettings),
+      );
   }
 
   login(): void {
     this.auth.login();
   }
 
-  logout(): void {
-    this.auth.logout();
+  logout(): Promise<void> {
+    return this.auth.logout();
   }
 }

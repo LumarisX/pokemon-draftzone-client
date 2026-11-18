@@ -1,3 +1,35 @@
+@if (logoOnly()) {
+  <div class="identity">
+    @if (loading()) {
+      <pdz-skeleton-layout layout="cards" [count]="4" />
+    } @else if (logoChoices().length) {
+      <div class="identity__grid" role="group" aria-label="Your Team Logos">
+        @for (identity of logoChoices(); track identity.id) {
+          <button
+            type="button"
+            class="tile"
+            [attr.aria-pressed]="isPicked(identity)"
+            [disabled]="disabled()"
+            (click)="pickSaved(identity)"
+          >
+            <pdz-team-logo
+              size="xl"
+              decorative
+              [src]="logoSrc(identity.logo)"
+              [name]="identity.name"
+            />
+            <span class="tile__name">{{ identity.name }}</span>
+          </button>
+        }
+      </div>
+    } @else {
+      <pdz-empty-state
+        size="sm"
+        message="Logos come from the teams you have made. Make a team with a logo and it will show up here."
+      />
+    }
+  </div>
+} @else {
 <div class="identity">
   <div class="identity__summary" aria-live="polite">
     @if (summary(); as chosen) {
@@ -285,3 +317,4 @@
     </div>
   }
 </div>
+}

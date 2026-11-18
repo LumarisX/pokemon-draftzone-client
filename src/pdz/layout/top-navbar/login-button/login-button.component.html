@@ -1,23 +1,15 @@
-@if (authenticated() && user(); as user) {
+@if (authenticated()) {
   <pdz-menu aria-label="Open user menu">
     <button pdz-button color="neutral" variant="outlined" pdz-menu-trigger>
       <span class="user">
-        <pdz-team-logo
-          size="xs"
-          shape="circle"
-          decorative
-          [src]="user.picture"
-          [name]="user.username || user.name || ''"
-        />
-        @if (user.username) {
-          <span class="user__name">{{ user.username }}</span>
+        <pdz-icon name="account_circle" [size]="20" aria-hidden="true" />
+        @if (me()?.displayName; as displayName) {
+          <span class="user__name">{{ displayName }}</span>
         }
       </span>
     </button>
 
-    <button pdz-menu-item icon="settings" (click)="openSettings()">
-      Settings
-    </button>
+    <a pdz-menu-item icon="settings" [routerLink]="settingsLink">Settings</a>
 
     <button pdz-menu-item icon="logout" (click)="logout()">Log Out</button>
   </pdz-menu>

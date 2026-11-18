@@ -9,7 +9,7 @@ export function provideAuthStub(): Provider {
       isAuthenticated$: of(false),
       user$: of(null),
       login: () => undefined,
-      logout: () => undefined,
+      logout: () => Promise.resolve(),
     },
   };
 }

@@ -9,9 +9,11 @@ import {
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
+import { RouterLink } from '@angular/router';
 import {
   LEAGUE_ZONE_PATH,
   ORGANIZER_INVITE_PATH,
+  profileLink,
 } from '@pdz/core/route-paths';
 import { apiErrorMessage } from '@pdz/core/services/api.service';
 import { LeagueZoneService } from '@pdz/features/league-zone/league-zone.service';
@@ -48,11 +50,13 @@ import { TooltipDirective } from '@pdz/shared/tooltip/tooltip.directive';
     InputDirective,
     PageComponent,
     PageHeaderComponent,
+    RouterLink,
     TooltipDirective,
   ],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class LeagueOrganizersComponent implements OnInit {
+  protected readonly profileLink = profileLink;
   private readonly leagueService = inject(LeagueZoneService);
   private readonly toast = inject(ToastService);
   private readonly destroyRef = inject(DestroyRef);

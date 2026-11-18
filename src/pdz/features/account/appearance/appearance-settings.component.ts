@@ -1,17 +1,17 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  DestroyRef,
   inject,
   signal,
 } from '@angular/core';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
+import { apiErrorMessage } from '@pdz/core/services/api.service';
 import { safeStorage } from '@pdz/core/utils/storage';
 import { DraftPokemon } from '@pdz/features/drafts/draft.model';
+import { Settings, SettingsService } from '@pdz/layout/top-navbar/settings.service';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
 import { CardComponent } from '@pdz/shared/data/card/card.component';
-import { DialogRef } from '@pdz/shared/dialogs/dialog/dialog.service';
 import { SelectOptionComponent } from '@pdz/shared/dropdowns/select/select-option.component';
 import { SelectComponent } from '@pdz/shared/dropdowns/select/select.component';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
@@ -19,9 +19,11 @@ import { SpriteComponent } from '@pdz/shared/images/sprite/sprite.component';
 import { FieldComponent } from '@pdz/shared/inputs/field/field.component';
 import { SegmentedOptionComponent } from '@pdz/shared/inputs/segmented/segmented-option.component';
 import { SegmentedComponent } from '@pdz/shared/inputs/segmented/segmented.component';
-import { Settings, SettingsService } from '@pdz/layout/top-navbar/settings.service';
+import { EMPTY, catchError, debounceTime, switchMap, tap } from 'rxjs';
 
 type ThemeOption = { id: string; name: string; team1: string; team2: string };
+
+const SAVE_DELAY_MS = 600;
 
 const SPRITE_SETS = [
   {
@@ -63,7 +65,7 @@ const SPRITE_SETS = [
 ];
 
 @Component({
-  selector: 'pdz-settings-dialog',
+  selector: 'pdz-appearance-settings',
   imports: [
     ReactiveFormsModule,
     ButtonComponent,
@@ -76,13 +78,12 @@ const SPRITE_SETS = [
     SelectOptionComponent,
     SpriteComponent,
   ],
-  templateUrl: './settings-dialog.component.html',
-  styleUrl: './settings-dialog.component.scss',
+  templateUrl: './appearance-settings.component.html',
+  styleUrl: './appearance-settings.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class SettingsDialogComponent {
+export class AppearanceSettingsComponent {
   private readonly settingsService = inject(SettingsService);
-  protected readonly ref = inject(DialogRef) as DialogRef<void>;
 
   protected readonly example: DraftPokemon = {
     id: 'deoxysattack',
@@ -106,14 +107,12 @@ export class SettingsDialogComponent {
       : []),
   ];
 
-  private original: Settings = structuredClone(
-    this.settingsService.settingsData ?? {},
-  );
+  private readonly initial: Settings = this.settingsService.settingsData ?? {};
 
   protected readonly settingsForm = inject(FormBuilder).nonNullable.group({
-    theme: this.original.theme || 'classic',
-    ldMode: this.original.ldMode || 'device',
-    spriteSet: this.original.spriteSet || 'home',
+    theme: this.initial.theme || 'classic',
+    ldMode: this.initial.ldMode || 'device',
+    spriteSet: this.initial.spriteSet || 'home',
   });
 
   protected readonly theme = toSignal(
@@ -125,24 +124,36 @@ export class SettingsDialogComponent {
     { initialValue: this.settingsForm.controls.spriteSet.value },
   );
 
-  protected readonly saving = signal(false);
   protected readonly saveError = signal<string | null>(null);
 
   constructor() {
     this.settingsForm.valueChanges
-      .pipe(takeUntilDestroyed())
-      .subscribe((value) => this.settingsService.setSettings(value));
-
-    inject(DestroyRef).onDestroy(() => {
-      this.settingsService.setSettings(this.original);
-    });
+      .pipe(
+        tap((value) => {
+          this.saveError.set(null);
+          this.settingsService.setSettings(value);
+        }),
+        debounceTime(SAVE_DELAY_MS),
+        switchMap(() =>
+          this.settingsService.saveToServer().pipe(
+            catchError((err) => {
+              this.saveError.set(
+                apiErrorMessage(err, 'Could not save your appearance.'),
+              );
+              return EMPTY;
+            }),
+          ),
+        ),
+        takeUntilDestroyed(),
+      )
+      .subscribe();
   }
 
   protected swatch(hue: string): string {
     return `var(--pdz-color-${hue}-450)`;
   }
 
-  protected selectTheme(themeId: string) {
+  protected selectTheme(themeId: string): void {
     this.settingsForm.controls.theme.setValue(themeId);
   }
 
@@ -151,29 +162,6 @@ export class SettingsDialogComponent {
       this.spriteSets.find((set) => set.id === this.spriteSet())?.creditLink ??
       ''
     );
-  }
-
-  protected save() {
-    this.saveError.set(null);
-    this.saving.set(true);
-    const next = this.settingsForm.getRawValue() as Settings;
-    this.original = structuredClone(next);
-    this.settingsService.setSettings(next);
-
-    this.settingsService.saveToServer().subscribe({
-      next: (response) => {
-        this.saving.set(false);
-        if (response) {
-          this.settingsService.setSettings(response as Settings);
-          this.original = structuredClone(response as Settings);
-        }
-        this.ref.close();
-      },
-      error: () => {
-        this.saving.set(false);
-        this.saveError.set('Failed to save settings. Please try again.');
-      },
-    });
   }
 
   private isShinyUnlocked(): boolean {

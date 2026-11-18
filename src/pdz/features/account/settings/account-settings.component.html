@@ -1,0 +1,187 @@
+<pdz-page type="form">
+  @switch (loadState()) {
+    @case ("error") {
+      <pdz-page-header title="Settings" />
+      <pdz-empty-state
+        bordered
+        kind="error"
+        heading="Couldn't load your settings"
+        message="We couldn't reach the server to load your account."
+        retry="event"
+        (retried)="retry()"
+      />
+    }
+    @case ("ready") {
+      <pdz-page-sections heading="Settings" [sections]="sections">
+        <pdz-page-header title="Settings">
+          @if (profileLink(); as link) {
+            <a pdz-button pdz-page-header-actions icon="person" [routerLink]="link">
+              View Public Profile
+            </a>
+          }
+        </pdz-page-header>
+
+        <div class="account">
+          <section
+            class="account__section"
+            id="profile"
+            aria-labelledby="profile-title"
+          >
+            <h2 class="account__title" id="profile-title">Profile</h2>
+            <pdz-card padding="lg">
+              <div class="account__fields">
+                <label
+                  pdz-field
+                  label="Display Name"
+                  hint="This is the name people see."
+                  [error]="nameError()"
+                >
+                  <input
+                    pdz-input
+                    type="text"
+                    name="displayName"
+                    autocomplete="off"
+                    [maxlength]="nameMax"
+                    [invalid]="!!nameError()"
+                    [ngModel]="displayName()"
+                    (ngModelChange)="onField('displayName', $event)"
+                  />
+                </label>
+
+                <div class="account__private">
+                  <pdz-slide-toggle
+                    label="Private Profile"
+                    [checked]="privateProfile()"
+                    (checkedChange)="onPrivate($event)"
+                  />
+                  <p class="account__note">
+                    When this is on, other people see only your name.
+                  </p>
+                </div>
+              </div>
+            </pdz-card>
+          </section>
+
+          <section
+            class="account__section"
+            id="league-defaults"
+            aria-labelledby="league-defaults-title"
+          >
+            <h2 class="account__title" id="league-defaults-title">
+              League Defaults
+            </h2>
+            <pdz-card padding="lg">
+              <div class="account__fields">
+                <p class="account__intro">
+                  These fill in the sign-up form when you join a league.
+                </p>
+
+                <label
+                  pdz-field
+                  label="Discord Name"
+                  [error]="fieldErrors().discordName"
+                >
+                  <input
+                    pdz-input
+                    type="text"
+                    name="discordName"
+                    autocomplete="off"
+                    [maxlength]="discordMax"
+                    [invalid]="!!fieldErrors().discordName"
+                    [ngModel]="discordName()"
+                    (ngModelChange)="onField('discordName', $event)"
+                  />
+                </label>
+
+                <label
+                  pdz-field
+                  label="Showdown Name"
+                  [error]="fieldErrors().gameName"
+                >
+                  <input
+                    pdz-input
+                    type="text"
+                    name="gameName"
+                    autocomplete="off"
+                    [maxlength]="gameMax"
+                    [invalid]="!!fieldErrors().gameName"
+                    [ngModel]="gameName()"
+                    (ngModelChange)="onField('gameName', $event)"
+                  />
+                </label>
+
+                <div
+                  pdz-field
+                  label="Time Zone"
+                  [error]="fieldErrors().timezone"
+                >
+                  <pdz-select
+                    searchable
+                    aria-label="Time Zone"
+                    placeholder="Select a time zone"
+                    [invalid]="!!fieldErrors().timezone"
+                    [value]="timezone()"
+                    (valueChange)="onField('timezone', $event)"
+                  >
+                    <pdz-option value="" label="Not Set" />
+                    @for (tz of timezones; track tz) {
+                      <pdz-option [value]="tz" [label]="tz" />
+                    }
+                  </pdz-select>
+                </div>
+              </div>
+            </pdz-card>
+          </section>
+
+          <section
+            class="account__section"
+            id="appearance"
+            aria-labelledby="appearance-title"
+          >
+            <h2 class="account__title" id="appearance-title">Appearance</h2>
+            <pdz-card padding="lg">
+              <pdz-appearance-settings />
+            </pdz-card>
+          </section>
+
+          <section
+            class="account__section"
+            id="account"
+            aria-labelledby="account-title"
+          >
+            <h2 class="account__title" id="account-title">Account</h2>
+            <pdz-card padding="lg">
+              <div class="account__row">
+                <p class="account__method">{{ signInMethod() }}</p>
+                <button
+                  pdz-button
+                  type="button"
+                  color="neutral"
+                  variant="outlined"
+                  icon="logout"
+                  (click)="logout()"
+                >
+                  Log Out
+                </button>
+              </div>
+            </pdz-card>
+          </section>
+
+          <pdz-save-bar
+            label="Save Changes"
+            [count]="dirtyCount()"
+            [blocked]="blocked()"
+            [pending]="saving()"
+            [error]="saveError()"
+            (save)="save()"
+            (revert)="revert()"
+          />
+        </div>
+      </pdz-page-sections>
+    }
+    @default {
+      <pdz-page-header title="Settings" />
+      <pdz-skeleton-layout layout="form" />
+    }
+  }
+</pdz-page>

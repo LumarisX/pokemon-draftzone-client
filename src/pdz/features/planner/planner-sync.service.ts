@@ -3,6 +3,7 @@ import { ActivatedRouteSnapshot, ResolveFn } from '@angular/router';
 import { toApiError } from '@pdz/core/services/api-error';
 import { ApiService } from '@pdz/core/services/api.service';
 import { AuthService } from '@pdz/core/services/auth0.service';
+import { syncMarkerKey } from '@pdz/core/utils/account-storage';
 import { safeStorage } from '@pdz/core/utils/storage';
 import { ToastService } from '@pdz/shared/feedback/toast/toast.service';
 import {
@@ -45,9 +46,7 @@ const RECONCILE_TIMEOUT_MS = 4000;
 const PLANS_PATH = 'planner/plans';
 const QUIET = { suppressErrorReporting: true };
 
-function metaKey(key: string): string {
-  return `${key}:sync`;
-}
+const metaKey = syncMarkerKey;
 
 function parsePlans(json: string | null): SyncedPlan[] | null {
   if (!json) return null;
@@ -161,7 +160,15 @@ export class PlannerSyncService {
       safeStorage.setJson(metaKey(key), { sub: this.sub, revision, json });
   }
 
+  private discardForeignPlans(key: string): void {
+    const stored = safeStorage.getJson<SyncMeta>(metaKey(key));
+    if (!stored || stored.sub === this.sub) return;
+    safeStorage.remove(key);
+    safeStorage.remove(metaKey(key));
+  }
+
   private apply(key: string, server: ServerPlans): void {
+    this.discardForeignPlans(key);
     const localJson = safeStorage.get(key);
     const local = parsePlans(localJson);
     const meta = this.meta(key);
