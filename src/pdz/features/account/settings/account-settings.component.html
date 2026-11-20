@@ -218,7 +218,8 @@
                 @if (deletionBlockers().length) {
                   <div class="account__blockers" role="alert">
                     <p class="account__note">
-                      You can't delete your account until these are settled.
+                      You can't delete your account while these seasons are
+                      still running.
                     </p>
                     <ul class="account__blocker-list">
                       @for (item of deletionBlockers(); track $index) {

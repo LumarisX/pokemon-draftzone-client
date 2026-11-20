@@ -17,10 +17,7 @@ import {
   TERMS_PATH,
   profileLink,
 } from '@pdz/core/route-paths';
-import {
-  leagueLink,
-  tournamentLink,
-} from '@pdz/features/dashboard/dashboard.model';
+import { tournamentLink } from '@pdz/features/dashboard/dashboard.model';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { DiscordConnectionService } from '../discord-connection.service';
 import { SlideToggleComponent } from '@pdz/shared/inputs/slide-toggle/slide-toggle.component';
@@ -69,11 +66,11 @@ type TextPatch = Partial<Record<ProfileField, string | null>>;
 type ProfilePatch = TextPatch & { privateProfile?: boolean };
 
 interface DeletionBlocker {
-  kind: 'league-owner' | 'organizer' | 'coach';
+  kind: 'organizer' | 'coach';
   leagueSlug: string;
   leagueName: string;
-  tournamentSlug?: string;
-  tournamentName?: string;
+  tournamentSlug: string;
+  tournamentName: string;
 }
 
 interface DeletionStatus {
@@ -88,9 +85,8 @@ interface BlockerView {
 }
 
 const BLOCKER_ACTION: Record<DeletionBlocker['kind'], string> = {
-  'league-owner': 'Hand the league to someone else or ask an admin.',
-  organizer: 'Step down as organizer.',
-  coach: 'Ask the organizer to replace you.',
+  organizer: 'Complete it through Final Results, or step down as organizer.',
+  coach: 'Complete your entry from your team page, or ask the organizer to replace you.',
 };
 
 const DELETE_MESSAGE =
@@ -99,17 +95,9 @@ const DELETE_MESSAGE =
   'Seasons in other leagues keep your team and coach name, with no link to your account.';
 
 function blockerView(blocker: DeletionBlocker): BlockerView {
-  const tournament =
-    blocker.kind !== 'league-owner' && blocker.tournamentSlug
-      ? blocker.tournamentSlug
-      : null;
   return {
-    label: tournament
-      ? `${blocker.tournamentName ?? tournament}, ${blocker.leagueName}`
-      : blocker.leagueName,
-    link: tournament
-      ? tournamentLink(blocker.leagueSlug, tournament)
-      : leagueLink(blocker.leagueSlug),
+    label: `${blocker.tournamentName}, ${blocker.leagueName}`,
+    link: tournamentLink(blocker.leagueSlug, blocker.tournamentSlug),
     action: BLOCKER_ACTION[blocker.kind],
   };
 }

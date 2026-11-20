@@ -11,12 +11,13 @@
 
   &__themes {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
-    gap: pdz.space(sm);
+    display: flex;
+    flex-wrap: wrap;
+    gap: pdz.space(sm) pdz.space(xl);
   }
 
   &__theme {
-    display: flex;
+    display: inline-flex;
     align-items: center;
     gap: pdz.space(sm);
   }
@@ -35,12 +36,6 @@
     & + & {
       margin-left: calc(#{pdz.space(sm)} * -1);
     }
-  }
-
-  &__theme-label {
-    @include pdz.text(body-sm-strong);
-    flex: 1 1 auto;
-    text-align: left;
   }
 
   &__sprites {

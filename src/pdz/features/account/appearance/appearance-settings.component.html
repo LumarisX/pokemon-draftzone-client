@@ -10,16 +10,15 @@
   <div pdz-field label="Theme">
     <div class="appearance__themes" role="radiogroup" aria-label="Theme">
       @for (option of themes; track option.id) {
-        <button
-          pdz-card
-          type="button"
-          padding="sm"
-          role="radio"
-          [selected]="theme() === option.id"
-          [attr.aria-checked]="theme() === option.id"
-          (click)="selectTheme(option.id)"
-        >
-          <span class="appearance__theme">
+        <label pdz-check>
+          <input
+            pdz-radio
+            type="radio"
+            name="theme"
+            formControlName="theme"
+            [value]="option.id"
+          />
+          <span pdz-check-label class="appearance__theme">
             <span class="appearance__swatches" aria-hidden="true">
               <span
                 class="appearance__swatch"
@@ -30,12 +29,12 @@
                 [style.background]="swatch(option.team2)"
               ></span>
             </span>
-            <span class="appearance__theme-label">{{ option.name }}</span>
+            {{ option.name }}
             @if (option.id === "shiny") {
-              <pdz-icon name="lock_open" [size]="16" />
+              <pdz-icon name="lock_open" [size]="16" aria-hidden="true" />
             }
           </span>
-        </button>
+        </label>
       }
     </div>
   </div>

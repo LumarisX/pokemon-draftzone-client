@@ -11,7 +11,8 @@ import { safeStorage } from '@pdz/core/utils/storage';
 import { DraftPokemon } from '@pdz/features/drafts/draft.model';
 import { Settings, SettingsService } from '@pdz/layout/top-navbar/settings.service';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
-import { CardComponent } from '@pdz/shared/data/card/card.component';
+import { CheckComponent } from '@pdz/shared/inputs/choice/check.component';
+import { ChoiceDirective } from '@pdz/shared/inputs/choice/choice.directive';
 import { SelectOptionComponent } from '@pdz/shared/dropdowns/select/select-option.component';
 import { SelectComponent } from '@pdz/shared/dropdowns/select/select.component';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
@@ -69,7 +70,8 @@ const SPRITE_SETS = [
   imports: [
     ReactiveFormsModule,
     ButtonComponent,
-    CardComponent,
+    CheckComponent,
+    ChoiceDirective,
     FieldComponent,
     IconComponent,
     SegmentedComponent,
@@ -115,10 +117,6 @@ export class AppearanceSettingsComponent {
     spriteSet: this.initial.spriteSet || 'home',
   });
 
-  protected readonly theme = toSignal(
-    this.settingsForm.controls.theme.valueChanges,
-    { initialValue: this.settingsForm.controls.theme.value },
-  );
   protected readonly spriteSet = toSignal(
     this.settingsForm.controls.spriteSet.valueChanges,
     { initialValue: this.settingsForm.controls.spriteSet.value },
@@ -151,10 +149,6 @@ export class AppearanceSettingsComponent {
 
   protected swatch(hue: string): string {
     return `var(--pdz-color-${hue}-450)`;
-  }
-
-  protected selectTheme(themeId: string): void {
-    this.settingsForm.controls.theme.setValue(themeId);
   }
 
   protected creditLink(): string {

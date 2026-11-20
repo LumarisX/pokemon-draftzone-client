@@ -414,7 +414,6 @@ describe('AccountSettingsComponent', () => {
         of({
           scheduledFor: null,
           blockers: [
-            { kind: 'league-owner', leagueSlug: 'pdbl', leagueName: 'PDBL' },
             {
               kind: 'organizer',
               leagueSlug: 'pdbl',
@@ -442,12 +441,10 @@ describe('AccountSettingsComponent', () => {
         el().querySelectorAll<HTMLAnchorElement>('.account__blocker a'),
       ).map((link) => link.getAttribute('href'));
       expect(links).toEqual([
-        '/leagues/pdbl',
         '/leagues/pdbl/tournaments/s4',
         '/leagues/x/tournaments/t1',
       ]);
-      expect(el().textContent).toContain('ask an admin');
-      expect(el().textContent).toContain('Step down as organizer');
+      expect(el().textContent).toContain('Final Results');
       expect(el().textContent).toContain('replace you');
     });
 
@@ -464,9 +461,11 @@ describe('AccountSettingsComponent', () => {
                     details: {
                       blockers: [
                         {
-                          kind: 'league-owner',
+                          kind: 'organizer',
                           leagueSlug: 'pdbl',
                           leagueName: 'PDBL',
+                          tournamentSlug: 's4',
+                          tournamentName: 'Season 4',
                         },
                       ],
                     },
