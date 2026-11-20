@@ -286,7 +286,6 @@ export class ApplicantsPanelComponent {
       data: {
         name: entry.coach,
         gameName: entry.showdownName,
-        discordName: entry.discordName,
         timezone: entry.timezone,
       },
     }).closed;
@@ -295,7 +294,6 @@ export class ApplicantsPanelComponent {
     this.persist(entry, {
       name: result.name,
       gameName: result.gameName,
-      discordName: result.discordName,
       timezone: result.timezone,
     });
   }
@@ -305,7 +303,6 @@ export class ApplicantsPanelComponent {
     changes: {
       name?: string;
       gameName?: string;
-      discordName?: string;
       timezone?: string;
     },
   ): void {
@@ -317,11 +314,10 @@ export class ApplicantsPanelComponent {
       .pipe(finalize(() => this.busyId.set(null)))
       .subscribe({
         next: () => this.store.patchSignUp(entry.applicationId, changes),
-        error: (err) => {
+        error: (err) =>
           this.toast.error(
             apiErrorMessage(err, 'Could not save those details.'),
-          );
-        },
+          ),
       });
   }
 

@@ -23,7 +23,6 @@ export function getLeagueLogoUrl(logoId: string | undefined): string | undefined
 export const SIGN_UP_LIMITS = {
   name: 64,
   gameName: 32,
-  discordName: 64,
   teamName: 64,
   answer: 2000,
 } as const;

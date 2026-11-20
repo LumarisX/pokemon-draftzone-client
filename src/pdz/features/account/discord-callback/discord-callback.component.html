@@ -1,0 +1,135 @@
+<pdz-page type="form">
+  <pdz-page-header title="Connect Discord" compact />
+  @if (failure(); as problem) {
+    <pdz-empty-state
+      bordered
+      [kind]="problem.kind"
+      [heading]="problem.heading"
+      [message]="problem.message"
+    >
+      <a
+        pdz-empty-state-actions
+        pdz-button
+        color="neutral"
+        variant="outlined"
+        [routerLink]="settingsLink"
+      >
+        Back to Settings
+      </a>
+    </pdz-empty-state>
+  } @else if (offerExpired()) {
+    <pdz-empty-state
+      bordered
+      kind="error"
+      heading="That Offer Expired"
+      message="The offer to merge your accounts expired. Connect Discord again to get a new one."
+    >
+      <button
+        pdz-empty-state-actions
+        pdz-button
+        type="button"
+        [loading]="connecting()"
+        (click)="connectAgain()"
+      >
+        Connect Discord
+      </button>
+    </pdz-empty-state>
+  } @else if (offer()) {
+    <div class="merge">
+      <p class="merge__intro">
+        This Discord account already belongs to your other DraftZone account.
+        You can merge the two.
+      </p>
+
+      <div class="merge__accounts">
+        @for (account of accounts(); track account.summary.profileId) {
+          <pdz-card padding="lg">
+            <div class="merge__account">
+              <h2 class="merge__name">{{ account.summary.displayName }}</h2>
+              @if (account.signedInNow) {
+                <p class="merge__meta">Signed in now</p>
+              }
+              <p class="merge__meta">{{ account.signIn }}</p>
+              @if (account.summary.joined) {
+                <p class="merge__meta">
+                  Joined {{ account.summary.joined | date: "MMMM y" }}
+                </p>
+              }
+              @if (account.holdings.length) {
+                <ul class="merge__holdings">
+                  @for (holding of account.holdings; track holding) {
+                    <li>{{ holding }}</li>
+                  }
+                </ul>
+              } @else {
+                <p class="merge__meta">Nothing yet</p>
+              }
+            </div>
+          </pdz-card>
+        }
+      </div>
+
+      @if (blockers().length) {
+        <pdz-card color="warning" padding="lg">
+          <div class="merge__blocked">
+            <h2 class="merge__name">These Accounts Can't Merge Yet</h2>
+            <ul class="merge__holdings">
+              @for (blocker of blockers(); track blocker) {
+                <li>{{ blocker }}</li>
+              }
+            </ul>
+            <p class="merge__meta">
+              These need a person to decide. An admin can help.
+            </p>
+          </div>
+        </pdz-card>
+      } @else {
+        <div class="merge__choice">
+          <h2 class="merge__heading" id="merge-keep-label">
+            Keep Name and Settings From
+          </h2>
+          <pdz-choice-cards
+            aria-labelledby="merge-keep-label"
+            [value]="keep()"
+            (valueChange)="setKeep($event)"
+          >
+            @for (account of accounts(); track account.summary.profileId) {
+              <pdz-choice-card
+                [value]="account.signedInNow ? 'current' : 'other'"
+                [label]="account.summary.displayName"
+                [description]="account.signIn"
+              />
+            }
+          </pdz-choice-cards>
+          <p class="merge__meta">
+            Everything else from both accounts is combined, and both ways of
+            signing in will open the merged account.
+          </p>
+        </div>
+      }
+
+      <div class="merge__actions">
+        @if (canMerge()) {
+          <button
+            pdz-button
+            type="button"
+            [loading]="merging()"
+            (click)="merge()"
+          >
+            Merge Accounts
+          </button>
+        }
+        <a
+          pdz-button
+          color="neutral"
+          variant="outlined"
+          [routerLink]="settingsLink"
+        >
+          Not Now
+        </a>
+      </div>
+    </div>
+  } @else {
+    <pdz-skeleton-layout layout="form" />
+  }
+</pdz-page>

@@ -29,6 +29,7 @@
   }
 }
 
+.team-header__discord,
 .team-header__time {
   @include pdz.text(meta);
   @include pdz.numeric;

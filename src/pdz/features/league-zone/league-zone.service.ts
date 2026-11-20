@@ -674,7 +674,6 @@ export class LeagueZoneService {
     changes: {
       name?: string;
       gameName?: string;
-      discordName?: string;
       timezone?: string;
     },
   ) {

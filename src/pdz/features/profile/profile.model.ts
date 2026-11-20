@@ -53,6 +53,7 @@ export type Profile = {
 };
 
 export type PublicProfile = {
+  profileId?: string;
   displayName: string;
   joined: string | null;
   private: boolean;

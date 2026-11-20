@@ -53,7 +53,7 @@ person is on DraftZone lives in the `users` collection.
 | Field | Rules | Shown |
 | --- | --- | --- |
 | `displayName` | Any letters, 2 to 24 characters, not unique, change any time | Everywhere a person is named |
-| Verified Discord name (Phase 6) | Unique, proven by Discord, one Discord per account | To organizers beside applicants and coaches; a verified mark elsewhere |
+| Verified Discord name (Phase 6) | Unique, proven by Discord, one Discord per account | A coach's: organizers and coaches in the same tournament. An applicant's: organizers. Never strangers |
 | Coach name (exists) | Per tournament, prefilled from `displayName` | Inside that tournament, like a Discord server nickname |
 | Profile id | The user row's `_id`, opaque | Only in profile links: `/profile/:id` |
 
@@ -178,6 +178,11 @@ before leagues bring more data.
   collections, create a first-time account, then reverse. It passed. Not yet done: a
   signed-in browser session against a local server with the switch on. The switch must
   only ever change with a restart, because cached ids from the other mode would linger.
+- **Keep the paths file from the first `--apply`.** A second run finds nothing and
+  writes an empty paths file, which reverses nothing. The run must use
+  `-r tsconfig-paths/register` only for the rehearsal script, not the migration.
+  Re-rehearsed 2026-11-17 on current code: passed, and the paths now include
+  `adminaudits.actor`, `chatreports.reporter` and `chatreports.messageAuthor`.
 - **With the switch off** the code can deploy ahead with no change in behaviour. The window is
   then: stop the server, labelled backup, run the script, turn the switch on, start.
   Undoing it is the reverse script and the switch off, with no redeploy.
@@ -340,41 +345,172 @@ interrupted once.
 
 ### Phase 6. Connect Discord
 
-For the Google and email accounts (about three in four), so their Discord name is proven
-and not typed.
+With handles gone (2026-11-17), the verified Discord name is the one thing that proves
+who someone is. Release 6a built 2026-11-17, uncommitted; Connect and Disconnect work in
+a browser (owner, 2026-11-19). It needs `DISCORD_CLIENT_ID`, `DISCORD_CLIENT_SECRET` and `DISCORD_OAUTH_REDIRECT_URI` in the
+server's `.env`. Before release: start the server once so the unique `discord.id` index
+exists, then run `scripts/backfill-discord-ids.ts`. Also built beyond the list below:
+`PATCH users/profile` ignores a typed Discord name while connected, and a coach's own
+Edit Coach Info saves with the unchanged Discord name.
 
-- **Connect Discord** button on the settings page, beside the Discord name. It sends the
-  person to Discord to approve, asking only for their identity (no servers, no messages),
-  and returns to settings.
-- The server stores the Discord account id and current Discord username on the profile.
-  The Discord token is used once to read those two values and is thrown away, never
-  stored.
-  The Discord name field then shows that username, marked verified, and is no longer
-  typed. Disconnect returns it to a typed field.
-- Accounts that sign in with Discord are already verified; their id is in the sign-in
-  itself, so they are marked connected without doing anything.
-- Organizers see the verified mark on applicants and coaches. A typed name shows with no
-  mark.
-- One Discord account connects to one DraftZone account.
-- This is our own connection to Discord, not Auth0's account linking, so sign-in itself
-  does not change.
+**What it fixes beyond trust.** The bot finds a coach on Discord by matching the typed
+name against the server's member list (`DiscordService.findMember`), for draft-clock
+pings, match reminders and the coach role. A typo or a renamed Discord account means no
+ping and no role, silently. A connected Discord gives the bot the account id, and
+`mention()` already turns an id into a `<@id>` ping without any lookup.
 
-**When that Discord already belongs to another DraftZone account** (someone who signs in
-with Discord, then one day signs in with Google and tries to connect the same Discord).
-At that moment they have proven both: they are signed in with Google and they just
-approved as the Discord account. What happens depends on the account they are in:
+**Connections only (owner, 2026-11-17, after the first merge test).** There is no typed
+Discord name anywhere any more: not in settings, not on the sign-up form, not in the
+organizer's or coach's edit dialog. A Discord name exists only through a connection.
+A coach who has not connected has no Discord name; the bot never pings them and never
+grants them the coach role, and writes their coach name as plain text instead of a
+mention. Discord names already stored on past coach rows and applications stay as plain
+text. This replaces the typed field, the name-matching fallback, `DISCORD_NAME_CONNECTED`
+and the Phase 3 rule "a coach with no Discord name saved types it once on the form".
 
-- **It is empty** (no teams, drafts, leagues, tier lists or plans; the usual case, made
-  by picking the wrong button once): offer **Use My Existing Account**. Google becomes a
-  second way into the Discord account. The server keeps a small table of "this sign-in
-  belongs to that account" and swaps it in when the token is checked, so no data moves.
-  The empty account's handle is released.
-- **It has data of its own:** refuse, say which sign-in holds the Discord, and offer to
-  contact an admin. Merging two used accounts means re-keying every collection that
-  stores an account id, so it stays a manual admin job until there is demand.
+#### What the person sees
 
-**Admin: Transfer Account** (for a hacked or lost sign-in). The same table, with one
-addition: a sign-in can be blocked.
+- **Settings, League Defaults.** The Discord row shows the typed name and a **Connect
+  Discord** button. After connecting, it shows the Discord username (not typed) and a
+  **Disconnect** action.
+- **Discord sign-ins** are connected already: their Discord id is in the sign-in itself.
+  They see their Discord username and no Disconnect, since Discord is how they sign in.
+- **League sign-up** shows a connected Discord as fixed. A tournament with **Require
+  Discord** on (a Sign-Up setting) shows Connect Discord in place of the field, and
+  returns to the form afterwards. **Off by default** (owner, 2026-11-19, after Merge
+  Accounts worked; this settles the 2026-11-17 wish for on by default).
+- **No verified mark** (owner, 2026-11-17). Connected or typed, a Discord name looks the
+  same; with Require Discord on by default, nearly every coach's name is connected.
+- **Who sees a coach's Discord name** (owner, 2026-11-17): the tournament's organizers
+  and the other coaches seated in the same tournament, so coaches know who to message.
+  Applicants' Discord names stay organizer-only. Strangers and public profiles never see
+  it. Today only the two sides of a matchup and organizers see it (matchup page); the
+  team page coach line gains it for those viewers.
+- No toast after connecting: the name appearing is the confirmation. Words only for a
+  failure or a conflict.
+
+#### How it works
+
+1. Connect Discord calls `POST users/discord/connect`. The server makes a one-time
+   `state` (random, bound to the account, ten minutes, single use, in the app cache) and
+   returns Discord's approval address, asking only for `identify` (no email, servers or
+   messages).
+2. Discord sends the person back to a client page, `/settings/discord`, with `code` and
+   `state`. That page posts both to `POST users/discord/callback` with the person's own
+   token, so the approval is tied to the signed-in account twice (state and token).
+3. The server trades the code for a Discord token, reads `/users/@me` (id and username)
+   and throws the token away. Nothing from Discord is stored but the id, the username and
+   the time.
+4. It saves `discord: { id, username, connectedAt }` on the user row (unique sparse index
+   on `discord.id`) and sets `profile.discordName` to the username. The existing
+   `DiscordNameSyncService` carries the name, and now the id, to running sign-ups and
+   coach rows; completed seasons stay as they were.
+5. Cancelling at Discord returns to settings with nothing changed and no message.
+
+**Keeping the name current.** Discord usernames change. The bot can read any user by id,
+so the stored username refreshes when the person opens settings or signs up for a league,
+and the bot pings by id, so a rename never breaks a ping.
+
+As built: at most once a day, when the person's own account loads (`reconcile`). A coach
+who renames and stops visiting keeps the old name on running seasons. Later, if that
+shows: a bot listener for username changes (the bot already has the `GuildMembers`
+intent) that updates the account and its running coach rows, keeping the daily check for
+people outside the bot's servers. Not a live lookup on every page (owner, 2026-11-19).
+
+**Disconnect** clears `discord`, leaves the last username as a typed name, and removes
+the id from running coach rows.
+
+**Coach-row Discord edits** (open item from Phase 3): organizers keep the edit only for
+coaches without a connected Discord. A connected coach's Discord name cannot be typed
+over.
+
+**Existing Discord sign-ins** (about a quarter of accounts) get `discord.id` from their
+sign-in by a one-off script before release, so the one-Discord-per-account rule holds from
+day one. Their username comes from the bot.
+
+#### When that Discord already belongs to another account
+
+The usual case: someone signed up with Discord, later signs in with Google by mistake, and
+tries to connect the same Discord. They have just proven both.
+
+- **Release 6a (works with account ids as they are today):** refuse, and say which way of
+  signing in holds that Discord, so they sign in that way instead. An admin can still
+  Transfer.
+- **Release 6b, Merge Accounts** (owner, 2026-11-17, replacing "only when one account
+  is empty"): many people have used both a Google and a Discord account, so both hold
+  data. Needs the Phase 1b account ids switched on, because two sign-ins can only share
+  an account through the sign-ins table.
+
+#### Merge Accounts (6b)
+
+Built 2026-11-17, uncommitted. The owner merged their Discord account into their Google
+account in a browser on 2026-11-19 and it worked, against `draftzone_dev` with
+`ACCOUNT_ID_MODE=internal`, which also covers Phase 1b's signed-in browser session and the
+dev-copy run of `AccountMergeRepository`. As built: `keep` names the
+account that survives (its id, display name and settings); old profile links follow
+merges. A planner that would hold more than 9 plans after the merge is a blocker
+(the planner keeps 9 and would drop the rest). The raw Mongo queries
+(`AccountMergeRepository`) have no spec. Undo is
+`POST admin/accounts/merge/undo`; it ran on `draftzone_dev` 2026-11-19 against the owner's
+merge and put back the removed account, its sign-in, the rewritten documents and the
+combined applications, with nothing left unreversed. The Undo Merge button is deferred
+(owner, 2026-11-19): a wrong merge is a rare support case, so the endpoint is enough. An
+admin cannot undo a merge into their own account through it (`CANNOT_ACT_ON_SELF`).
+
+**When it is offered.** Only at the moment of proof: the person is signed in to one
+account and has just approved, at Discord, as the Discord that the other account holds.
+The callback answers with a short-lived merge offer (in the app cache, ten minutes,
+bound to both accounts) instead of a dead end. No other way in for now; an admin merge
+by two profile ids can come later.
+
+**What the person sees** (on the Connect Discord page):
+
+- Both accounts side by side: display name, joined date, and what each holds (teams
+  coached, leagues and tournaments run, external drafts, tier lists, planner plans).
+- A choice of which account's **display name and settings** to keep. Everything else
+  from both accounts is combined.
+- A **Merge Accounts** button with a confirm that says it cannot be undone by them, only
+  by an admin, and that both ways of signing in will open the merged account.
+
+**What the server does** (one `POST users/merge` with the offer and the choice):
+
+1. **Check for collisions first** and refuse, naming them, before writing anything:
+   both accounts coach or applied to the same tournament, or both hold a staff seat in
+   the same tournament. Those need a person to decide.
+2. **Combine what can be combined:**
+   - planner plans for the same key (the free planner, or the same tournament): one
+     document whose plans are both sets, the source's renamed only on a clashing name
+   - external drafts with the same slug: the source's draft gets a suffix
+   - tier-list import aliases with the same text: keep the kept account's
+   - roles: the union; profile fields (Showdown name, timezone, Discord name) blank on
+     the kept account filled from the other; the connected Discord moves to the kept
+     account
+3. **Move every account id** from the merged-away account to the kept one, with the same
+   walker the Phase 1b migration uses (every collection, every string field), so
+   nothing a schema forgot is missed. Every changed document and path is recorded.
+4. **Point the merged-away account's sign-in** (and any sign-in already pointing at it) at
+   the kept account in the sign-ins table, clear both from the caches, and remove the
+   merged-away user row, keeping a snapshot in the audit record.
+5. **Old profile links** to the merged-away account redirect to the kept one.
+
+**Undo is admin-only** (Undo Merge on the admin account page): put back the recorded
+documents and paths, restore the user row from the snapshot, and un-point the sign-in.
+Anything created after the merge stays with the kept account. Every merge and undo is in
+`adminaudits` with both accounts, the person's choice and the time.
+
+**Not covered:** a merge while either account is on the clock in a live draft is
+refused, to avoid writing under a running pick.
+
+#### Needs from the owner
+
+- In the Discord application the bot already uses (OAuth2 page): the **client secret**
+  for the server's `.env` (`DISCORD_CLIENT_ID`, `DISCORD_CLIENT_SECRET`), and two
+  **redirect addresses**: the local dev one (`http://localhost:4200/settings/discord`)
+  and the live one (`/settings/discord` on the site's own address).
+
+**Admin: Transfer Account** (for a hacked or lost sign-in). Built 2026-11-15, uncommitted
+at the time; needs Phase 1b's account ids switched on to run. The sign-ins table, with
+one addition: a sign-in can be blocked.
 
 - **Lock** comes first and is its own button: the stolen sign-in is blocked at once, so
   whoever holds it is refused on their next request, even with a token already issued.
@@ -389,9 +525,6 @@ addition: a sign-in can be blocked.
   human judgment; the tool only makes the change safe to reverse if that judgment was
   wrong.
 - It does not merge two accounts that both hold data. That is still a re-keying script.
-
-Needs from the owner: a redirect address added to the Discord application the bot
-already uses.
 
 ### Later
 
@@ -430,8 +563,8 @@ Owner's calls of 2026-11-14 are marked.
   the answer. With one account per person the site knows: seasons finished, seasons
   left. Show organizers that beside the application.
 - **Require a connected Discord to sign up** (owner: yes), as a tournament setting in the
-  Sign-Up section, off by default. A coach without one sees Connect Discord on the
-  sign-up form. Ships with Phase 6.
+  Sign-Up section, off by default (confirmed 2026-11-19). A coach without one sees
+  Connect Discord on the sign-up form. Ships with Phase 6.
 - **A league block list** keyed by account, so a removed coach cannot re-apply under a
   new coach name. Not decided.
 - **Public profiles** (owner: important). Phase 7 below.
@@ -469,7 +602,7 @@ row's `_id`), and payloads that carried `handle` carry `profileId` for the link.
 | --- | --- |
 | Coach name stays editable per tournament, or locks to the display name | Stays editable; the verified Discord name is what identifies the person |
 | Whether a public profile shows the verified Discord name | No by default; a per-person switch later |
-| Where the verified Discord name shows | To organizers on applicants and coaches; elsewhere only a verified mark, so strangers do not get Discord names |
+| Where the Discord name shows | Decided 2026-11-17: organizers and coaches in the same tournament; no verified mark (Phase 6) |
 | Minimum age stated in the terms | 13, matching Discord's and Google's own minimum |
 | Tournament and league forms keep asking for the organizer's name | Keep the field, prefilled |
 

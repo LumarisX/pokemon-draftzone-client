@@ -36,7 +36,7 @@ export namespace League {
     coachProfileId?: string;
     coachId?: string;
     gameName?: string;
-    discordName?: string;
+    coachDiscordName?: string;
     pointTotal: number;
     picksHidden?: boolean;
     pickCount?: number;
@@ -403,6 +403,7 @@ export namespace League {
     draftCount?: { min: number; max: number };
     pointTotal?: number;
     signUpAccess?: SignUpAccessMode;
+    requireDiscord?: boolean;
     signUpQuestions?: SignUpQuestion[];
   };
 

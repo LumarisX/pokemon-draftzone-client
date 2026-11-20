@@ -14,7 +14,6 @@ import { SelectComponent } from '@pdz/shared/dropdowns/select/select.component';
 export interface CoachEditDialogData {
   name: string;
   gameName: string;
-  discordName: string;
   timezone: string;
 }
 
@@ -47,7 +46,6 @@ export class CoachEditDialogComponent {
   protected readonly form = this.fb.nonNullable.group({
     name: [this.data.name ?? '', Validators.required],
     gameName: [this.data.gameName ?? '', Validators.required],
-    discordName: [this.data.discordName ?? '', Validators.required],
     timezone: [this.data.timezone ?? '', Validators.required],
   });
 

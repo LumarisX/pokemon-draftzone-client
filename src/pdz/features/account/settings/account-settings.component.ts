@@ -11,7 +11,9 @@ import {
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { profileLink } from '@pdz/core/route-paths';
+import { SETTINGS_PATH, profileLink } from '@pdz/core/route-paths';
+import { IconComponent } from '@pdz/shared/images/icon/icon.component';
+import { DiscordConnectionService } from '../discord-connection.service';
 import { SlideToggleComponent } from '@pdz/shared/inputs/slide-toggle/slide-toggle.component';
 import { GuardsUnsavedChanges } from '@pdz/core/guards/unsaved-changes/unsaved-changes.guard';
 import { ApiError } from '@pdz/core/services/api-error';
@@ -45,7 +47,6 @@ import {
 } from 'rxjs';
 import { AppearanceSettingsComponent } from '../appearance/appearance-settings.component';
 import {
-  DISCORD_NAME_MAX,
   DISPLAY_NAME_ERROR,
   DISPLAY_NAME_MAX,
   GAME_NAME_MAX,
@@ -54,7 +55,7 @@ import {
 import { signInMethodLabel } from '../sign-in-method';
 
 type LoadState = 'loading' | 'ready' | 'error';
-type ProfileField = 'displayName' | 'discordName' | 'gameName' | 'timezone';
+type ProfileField = 'displayName' | 'gameName' | 'timezone';
 type TextPatch = Partial<Record<ProfileField, string | null>>;
 type ProfilePatch = TextPatch & { privateProfile?: boolean };
 
@@ -77,6 +78,7 @@ const SECTIONS: PageSection[] = [
     CardComponent,
     EmptyStateComponent,
     FieldComponent,
+    IconComponent,
     InputDirective,
     PageComponent,
     PageHeaderComponent,
@@ -94,19 +96,18 @@ export class AccountSettingsComponent implements OnInit, GuardsUnsavedChanges {
   private readonly auth = inject(AuthService);
   private readonly roleService = inject(RoleService);
   private readonly dialog = inject(DialogService);
+  private readonly discordConnection = inject(DiscordConnectionService);
   private readonly destroyRef = inject(DestroyRef);
   private readonly fragment = toSignal(inject(ActivatedRoute).fragment);
 
   protected readonly sections = SECTIONS;
   protected readonly nameMax = DISPLAY_NAME_MAX;
-  protected readonly discordMax = DISCORD_NAME_MAX;
   protected readonly gameMax = GAME_NAME_MAX;
   protected readonly timezones = Intl.supportedValuesOf('timeZone');
 
   protected readonly loadState = signal<LoadState>('loading');
   protected readonly saved = signal<Me | null>(null);
   protected readonly displayName = signal('');
-  protected readonly discordName = signal('');
   protected readonly gameName = signal('');
   protected readonly timezone = signal('');
   protected readonly submitted = signal(false);
@@ -118,6 +119,10 @@ export class AccountSettingsComponent implements OnInit, GuardsUnsavedChanges {
     return id ? profileLink(id) : null;
   });
   protected readonly fieldErrors = signal<TextPatch>({});
+  protected readonly discord = computed(() => this.saved()?.discord ?? null);
+  protected readonly connecting = signal(false);
+  protected readonly disconnecting = signal(false);
+  protected readonly discordError = signal<string | null>(null);
 
   protected readonly signInMethod = toSignal(
     this.auth.user$.pipe(map((user) => signInMethodLabel(user?.sub))),
@@ -130,10 +135,6 @@ export class AccountSettingsComponent implements OnInit, GuardsUnsavedChanges {
     const patch: ProfilePatch = {};
     const name = this.displayName().trim();
     if (name !== me.displayName) patch.displayName = name;
-    const discord = this.discordName().trim();
-    if (discord !== (me.profile.discordName ?? '')) {
-      patch.discordName = discord || null;
-    }
     const game = this.gameName().trim();
     if (game !== (me.profile.gameName ?? '')) patch.gameName = game || null;
     const zone = this.timezone();
@@ -181,6 +182,61 @@ export class AccountSettingsComponent implements OnInit, GuardsUnsavedChanges {
       .subscribe((me) => this.begin(me));
   }
 
+  protected async connect(): Promise<void> {
+    if (this.connecting()) return;
+    if (this.dirtyCount()) {
+      const leave = await this.dialog.confirm('Leave without saving?', {
+        message: 'Your changes to these settings will be lost.',
+        confirmLabel: 'Discard Changes',
+        confirmColor: 'danger',
+      });
+      if (!leave) return;
+      this.revert();
+    }
+    this.connecting.set(true);
+    this.discordError.set(null);
+    this.discordConnection
+      .begin(`/${SETTINGS_PATH}`)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: ({ url }) => this.discordConnection.go(url),
+        error: (err) => {
+          this.connecting.set(false);
+          this.discordError.set(
+            apiErrorMessage(err, 'Could not start connecting Discord.'),
+          );
+        },
+      });
+  }
+
+  protected async disconnect(): Promise<void> {
+    if (this.disconnecting()) return;
+    const confirmed = await this.dialog.confirm('Disconnect Discord?', {
+      message:
+        'The bot will stop pinging you in leagues.',
+      confirmLabel: 'Disconnect',
+      confirmColor: 'danger',
+    });
+    if (!confirmed) return;
+    this.disconnecting.set(true);
+    this.discordError.set(null);
+    this.discordConnection
+      .disconnect()
+      .pipe(
+        finalize(() => this.disconnecting.set(false)),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe({
+        next: (me) => {
+          this.saved.set(me);
+        },
+        error: (err) =>
+          this.discordError.set(
+            apiErrorMessage(err, 'Could not disconnect Discord.'),
+          ),
+      });
+  }
+
   protected retry(): void {
     this.loadState.set('loading');
     this.roleService
@@ -196,9 +252,6 @@ export class AccountSettingsComponent implements OnInit, GuardsUnsavedChanges {
     switch (field) {
       case 'displayName':
         this.displayName.set(text);
-        break;
-      case 'discordName':
-        this.discordName.set(text);
         break;
       case 'gameName':
         this.gameName.set(text);
@@ -274,7 +327,6 @@ export class AccountSettingsComponent implements OnInit, GuardsUnsavedChanges {
 
   private fill(me: Me): void {
     this.displayName.set(me.displayName);
-    this.discordName.set(me.profile.discordName ?? '');
     this.gameName.set(me.profile.gameName ?? '');
     this.timezone.set(me.profile.timezone ?? '');
     this.privateProfile.set(me.privateProfile);

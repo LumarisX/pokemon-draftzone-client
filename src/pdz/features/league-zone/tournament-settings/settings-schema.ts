@@ -180,6 +180,7 @@ export interface SettingsValue {
 
   signUpDeadline: string;
   signUpAccess: 'open' | 'invite' | 'closed';
+  requireDiscord: boolean;
   signUpQuestions: SignUpQuestionValue[];
   maxTeamsEnabled: boolean;
   maxTeams: number;
@@ -635,6 +636,15 @@ export const SETTINGS_NODES: readonly SettingsNode[] = [
         slot: 'invite-link',
         keys: ['signUpAccess'],
       },
+    ],
+  },
+  {
+    id: 'signup.discord',
+    section: 'signup',
+    title: 'Discord',
+    help: 'When this is on, coaches must connect their Discord account to sign up instead of typing a name. It lets the bot ping them and give them the coach role reliably, even if they rename their account.',
+    controls: [
+      { kind: 'toggle', key: 'requireDiscord', label: 'Require Discord' },
     ],
   },
   {

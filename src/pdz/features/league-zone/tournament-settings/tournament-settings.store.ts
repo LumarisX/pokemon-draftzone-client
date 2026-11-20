@@ -57,6 +57,7 @@ export const EMPTY_SETTINGS: SettingsValue = {
   discord: '',
   signUpDeadline: '',
   signUpAccess: 'open',
+  requireDiscord: false,
   signUpQuestions: [],
   maxTeamsEnabled: false,
   maxTeams: 12,
@@ -385,6 +386,7 @@ export class TournamentSettingsStore {
       discord: settings.discord ?? '',
       signUpDeadline: toLocalInput(settings.signUpDeadline),
       signUpAccess: settings.signUpAccess ?? 'open',
+      requireDiscord: settings.requireDiscord ?? false,
       signUpQuestions: (settings.signUpQuestions ?? []).map((question) => ({
         id: question.id,
         label: question.label,
@@ -805,6 +807,9 @@ export class TournamentSettingsStore {
         ? { maxTeams: v.maxTeamsEnabled ? v.maxTeams : null }
         : {}),
       ...(touched('signUpAccess') ? { signUpAccess: v.signUpAccess } : {}),
+      ...(touched('requireDiscord')
+        ? { requireDiscord: v.requireDiscord }
+        : {}),
       ...(touched('signUpQuestions')
         ? {
             signUpQuestions: v.signUpQuestions.map((question) => ({
@@ -1239,7 +1244,6 @@ export class TournamentSettingsStore {
     changes: {
       name?: string;
       gameName?: string;
-      discordName?: string;
       timezone?: string;
       teamName?: string;
       logo?: string;
@@ -1253,9 +1257,6 @@ export class TournamentSettingsStore {
             ...(changes.gameName === undefined
               ? {}
               : { showdownName: changes.gameName }),
-            ...(changes.discordName === undefined
-              ? {}
-              : { discordName: changes.discordName }),
             ...(changes.timezone === undefined
               ? {}
               : { timezone: changes.timezone }),

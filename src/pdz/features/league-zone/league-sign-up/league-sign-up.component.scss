@@ -69,6 +69,11 @@
   color: pdz.color(on-surface);
 }
 
+.fixed-value__text--muted {
+  @include pdz.text(body-sm);
+  color: pdz.color(on-surface-muted);
+}
+
 .details {
   display: grid;
   grid-template-columns: minmax(0, 1fr);

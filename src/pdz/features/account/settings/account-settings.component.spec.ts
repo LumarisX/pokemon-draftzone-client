@@ -7,6 +7,7 @@ import { AuthService } from '@pdz/core/services/auth0.service';
 import { Me, RoleService } from '@pdz/core/services/role.service';
 import { DialogService } from '@pdz/shared/dialogs/dialog/dialog.service';
 import { Observable, of, throwError } from 'rxjs';
+import { DiscordConnectionService } from '../discord-connection.service';
 import { signInMethodLabel } from '../sign-in-method';
 import { AccountSettingsComponent } from './account-settings.component';
 
@@ -15,13 +16,13 @@ const base: Me = {
   profileId: '65a1b2c3d4e5f60718293a4b',
   displayName: 'Ash Ketchum',
   profile: {
-    discordName: 'ash#1',
     gameName: 'AshK',
     timezone: 'America/New_York',
   },
   privateProfile: false,
   roles: [],
   settings: {},
+  discord: null,
   joined: '',
   lastLogin: '',
 };
@@ -41,6 +42,7 @@ describe('AccountSettingsComponent', () => {
     reload: jest.Mock;
   };
   let dialog: { confirm: jest.Mock };
+  let discord: { begin: jest.Mock; disconnect: jest.Mock; go: jest.Mock };
   let me: Me | null;
   let sub: string;
 
@@ -80,6 +82,7 @@ describe('AccountSettingsComponent', () => {
         { provide: ApiService, useValue: api },
         { provide: RoleService, useValue: roleService },
         { provide: DialogService, useValue: dialog },
+        { provide: DiscordConnectionService, useValue: discord },
         {
           provide: AuthService,
           useValue: {
@@ -116,6 +119,11 @@ describe('AccountSettingsComponent', () => {
     dialog = {
       confirm: jest.fn(() => Promise.resolve(true)),
     };
+    discord = {
+      begin: jest.fn(() => of({ url: 'https://discord.com/oauth2/authorize' })),
+      disconnect: jest.fn(() => of({ ...base, discord: null })),
+      go: jest.fn(),
+    };
   });
 
   it('loads its values from Me', async () => {
@@ -123,7 +131,7 @@ describe('AccountSettingsComponent', () => {
     await fixture.whenStable();
     fixture.detectChanges();
     expect(input('displayName').value).toBe('Ash Ketchum');
-    expect(input('discordName').value).toBe('ash#1');
+    expect(input('discordName')).toBeNull();
     expect(input('gameName').value).toBe('AshK');
     expect(el().querySelector('pdz-save-bar .bar')).toBeNull();
   });
@@ -170,10 +178,10 @@ describe('AccountSettingsComponent', () => {
 
   it('clears an emptied league default with null', async () => {
     create();
-    type('discordName', '');
+    type('gameName', '');
     await save();
     expect(api.patch).toHaveBeenCalledWith('users/profile', {
-      discordName: null,
+      gameName: null,
     });
   });
 
@@ -206,7 +214,6 @@ describe('AccountSettingsComponent', () => {
       throwError(() => apiError(500, 'ignored')),
     );
     create();
-    type('discordName', 'new#2');
     type('gameName', 'Other');
     await save();
     expect(el().querySelector('.bar__error')?.textContent).toContain(
@@ -248,6 +255,115 @@ describe('AccountSettingsComponent', () => {
 
     dialog.confirm.mockReturnValue(Promise.resolve(true));
     expect(await component.canDeactivate()).toBe(true);
+  });
+
+  describe('Discord row', () => {
+    const connectedMe = (viaSignIn: boolean): Me => ({
+      ...base,
+      discord: {
+        id: '1',
+        username: 'ash_k',
+        connectedAt: '',
+        viaSignIn,
+      },
+    });
+
+    async function settle(): Promise<void> {
+      await fixture.whenStable();
+      fixture.detectChanges();
+    }
+
+    it('shows a connect line and Connect Discord, with no text input, when not connected', async () => {
+      create();
+      await settle();
+      expect(input('discordName')).toBeNull();
+      expect(el().textContent).toContain('league bots can ping you');
+      expect(button('Connect Discord')).toBeDefined();
+      expect(button('Disconnect')).toBeUndefined();
+    });
+
+    it('connects with a return to settings and navigates away', async () => {
+      create();
+      await settle();
+      button('Connect Discord').click();
+      await settle();
+      expect(discord.begin).toHaveBeenCalledWith('/settings');
+      expect(discord.go).toHaveBeenCalledWith(
+        'https://discord.com/oauth2/authorize',
+      );
+      expect(dialog.confirm).not.toHaveBeenCalled();
+    });
+
+    it('confirms before leaving with unsaved edits', async () => {
+      create();
+      await settle();
+      type('gameName', 'Changed');
+      dialog.confirm.mockReturnValue(Promise.resolve(false));
+      button('Connect Discord').click();
+      await settle();
+      expect(dialog.confirm).toHaveBeenCalledTimes(1);
+      expect(discord.begin).not.toHaveBeenCalled();
+    });
+
+    it('shows a connect failure inline', async () => {
+      discord.begin.mockReturnValue(
+        throwError(() => apiError(400, 'Connecting Discord is not set up')),
+      );
+      create();
+      await settle();
+      button('Connect Discord').click();
+      await settle();
+      expect(el().querySelector('.account__error')?.textContent).toContain(
+        'Connecting Discord is not set up',
+      );
+      expect(discord.go).not.toHaveBeenCalled();
+    });
+
+    it('shows the username read-only with Disconnect once connected', async () => {
+      me = connectedMe(false);
+      create();
+      await settle();
+      expect(input('discordName')).toBeNull();
+      expect(el().querySelector('.account__discord-username')?.textContent).toBe(
+        'ash_k',
+      );
+      expect(button('Disconnect')).toBeDefined();
+      expect(button('Connect Discord')).toBeUndefined();
+    });
+
+    it('offers no Disconnect for a Discord sign-in', async () => {
+      me = connectedMe(true);
+      create();
+      await settle();
+      expect(el().querySelector('.account__discord-username')?.textContent).toBe(
+        'ash_k',
+      );
+      expect(button('Disconnect')).toBeUndefined();
+    });
+
+    it('asks first, then disconnects', async () => {
+      me = connectedMe(false);
+      create();
+      await settle();
+      button('Disconnect').click();
+      await settle();
+      expect(dialog.confirm).toHaveBeenCalledTimes(1);
+      expect(dialog.confirm.mock.calls[0][1].message).toContain(
+        'stop pinging you',
+      );
+      expect(discord.disconnect).toHaveBeenCalledTimes(1);
+      expect(button('Connect Discord')).toBeDefined();
+    });
+
+    it('does not disconnect when the confirm is declined', async () => {
+      me = connectedMe(false);
+      dialog.confirm.mockReturnValue(Promise.resolve(false));
+      create();
+      await settle();
+      button('Disconnect').click();
+      await settle();
+      expect(discord.disconnect).not.toHaveBeenCalled();
+    });
   });
 
   it.each([

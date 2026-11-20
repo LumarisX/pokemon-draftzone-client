@@ -12,10 +12,11 @@ const me: Me = {
   sub: 'auth0|1',
   profileId: null,
   displayName: 'Ash Ketchum',
-  profile: { discordName: null, gameName: null, timezone: null },
+  profile: { gameName: null, timezone: null },
   privateProfile: false,
   roles: [],
   settings: {},
+  discord: null,
   joined: '',
   lastLogin: '',
 };

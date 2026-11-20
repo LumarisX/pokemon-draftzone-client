@@ -278,7 +278,6 @@ export class LeagueTeamComponent implements OnInit {
       data: {
         name: team.coach,
         gameName: team.gameName ?? '',
-        discordName: team.discordName ?? '',
         timezone: team.timezone ?? '',
       },
     }).closed;
@@ -416,11 +415,10 @@ export class LeagueTeamComponent implements OnInit {
           this.patchTeam({
             coach: result.name,
             gameName: result.gameName,
-            discordName: result.discordName,
             timezone: result.timezone,
           }),
         error: (error) =>
-          this.saveError.set(error?.message || 'Could not save coach info.'),
+          this.saveError.set(apiErrorMessage(error, 'Could not save coach info.')),
       });
   }
 

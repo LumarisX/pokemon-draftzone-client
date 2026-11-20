@@ -4,4 +4,13 @@
   display: flex;
   flex-direction: column;
   gap: pdz.space(md);
+
+  &__fixed {
+    @include pdz.text(body);
+    display: flex;
+    align-items: center;
+    min-height: pdz.control-height(md);
+    overflow-wrap: anywhere;
+    color: pdz.color(on-surface);
+  }
 }

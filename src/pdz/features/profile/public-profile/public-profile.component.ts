@@ -8,8 +8,8 @@ import {
   signal,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { ActivatedRoute, RouterLink } from '@angular/router';
-import { SETTINGS_PATH } from '@pdz/core/route-paths';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+import { SETTINGS_PATH, profileLink } from '@pdz/core/route-paths';
 import { ApiError } from '@pdz/core/services/api-error';
 import { ApiService } from '@pdz/core/services/api.service';
 import { ButtonComponent } from '@pdz/shared/buttons/button/button.component';
@@ -42,6 +42,7 @@ type LoadState = 'loading' | 'ready' | 'missing' | 'error';
 export class PublicProfileComponent {
   private readonly api = inject(ApiService);
   private readonly route = inject(ActivatedRoute);
+  private readonly router = inject(Router);
   private readonly destroyRef = inject(DestroyRef);
 
   protected readonly settingsLink = ['/', SETTINGS_PATH];
@@ -77,6 +78,12 @@ export class PublicProfileComponent {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe({
         next: (data) => {
+          if (data.profileId && data.profileId !== this.requested) {
+            void this.router.navigate(profileLink(data.profileId), {
+              replaceUrl: true,
+            });
+            return;
+          }
           this.data.set(data);
           this.state.set('ready');
         },

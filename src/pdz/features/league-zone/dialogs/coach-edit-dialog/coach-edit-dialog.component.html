@@ -14,19 +14,6 @@
       }
     </label>
 
-    <label pdz-field label="Discord Username" required>
-      <input
-        pdz-input
-        placeholder="Deoxys#0386"
-        formControlName="discordName"
-      />
-      @if (
-        form.controls.discordName.touched && form.controls.discordName.invalid
-      ) {
-        <span pdz-error>Required</span>
-      }
-    </label>
-
     <label pdz-field label="Time Zone" required>
       <pdz-select
         searchable

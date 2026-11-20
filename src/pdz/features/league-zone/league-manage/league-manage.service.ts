@@ -129,7 +129,6 @@ export class LeagueManageService {
     payload: {
       name?: string;
       gameName?: string;
-      discordName?: string;
       timezone?: string;
     },
   ) {
@@ -263,6 +262,7 @@ export class LeagueManageService {
       pointTotal?: number;
       maxTeams?: number;
       signUpAccess?: 'open' | 'invite' | 'closed';
+      requireDiscord?: boolean;
       signUpToken?: string;
       signUpQuestions?: {
         id: string;
@@ -315,6 +315,7 @@ export class LeagueManageService {
     pointTotal?: number | null;
     maxTeams?: number | null;
     signUpAccess?: 'open' | 'invite' | 'closed';
+    requireDiscord?: boolean;
     signUpQuestions?: {
       id: string;
       label: string;

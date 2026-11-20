@@ -16,6 +16,12 @@
       } @else {
         <span class="team-header__coach-name">{{ team.coach }}</span>
       }
+      @if (team.coachDiscordName; as discordName) {
+        <span class="team-header__discord">
+          <pdz-icon name="discord" [size]="14" aria-hidden="true" />
+          {{ discordName }}
+        </span>
+      }
       @if (team.isCoach) {
         <button
           pdz-button

@@ -2,6 +2,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import {
   ActivatedRoute,
+  Router,
   convertToParamMap,
   provideRouter,
 } from '@angular/router';
@@ -41,6 +42,8 @@ describe('PublicProfileComponent', () => {
     return fixture.nativeElement;
   }
 
+  let navigate: jest.SpyInstance;
+
   function create(response: Observable<unknown>, profileId = PROFILE_ID): void {
     get = jest.fn(() => response);
     params = new BehaviorSubject(convertToParamMap({ profileId }));
@@ -53,9 +56,26 @@ describe('PublicProfileComponent', () => {
         { provide: ActivatedRoute, useValue: { paramMap: params } },
       ],
     });
+    navigate = jest
+      .spyOn(TestBed.inject(Router), 'navigate')
+      .mockResolvedValue(true);
     fixture = TestBed.createComponent(PublicProfileComponent);
     fixture.detectChanges();
   }
+
+  it('replaces the url when the profile belongs to a different id', () => {
+    create(of({ ...PERSON, profileId: 'bbbbbbbbbbbbbbbbbbbbbbbb' }));
+    expect(navigate).toHaveBeenCalledWith(
+      ['/', 'profile', 'bbbbbbbbbbbbbbbbbbbbbbbb'],
+      { replaceUrl: true },
+    );
+    expect(el().querySelector('pdz-profile-body')).toBeNull();
+  });
+
+  it('does not redirect when the profile id matches', () => {
+    create(of({ ...PERSON, profileId: PROFILE_ID }));
+    expect(navigate).not.toHaveBeenCalled();
+  });
 
   it('renders a loaded profile with its header', () => {
     create(of(PERSON));

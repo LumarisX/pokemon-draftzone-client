@@ -15,9 +15,13 @@ import {
   Validators,
 } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { LEAGUE_ZONE_PATH, SETTINGS_PATH } from '@pdz/core/route-paths';
+import { LEAGUE_ZONE_PATH } from '@pdz/core/route-paths';
+import { toApiError } from '@pdz/core/services/api-error';
 import { apiErrorMessage } from '@pdz/core/services/api.service';
-import { AuthService } from '@pdz/core/services/auth0.service';
+import {
+  DISCORD_ERROR,
+  DiscordConnectionService,
+} from '@pdz/features/account/discord-connection.service';
 import { Me, RoleService } from '@pdz/core/services/role.service';
 import { LeagueZoneService } from '@pdz/features/league-zone/league-zone.service';
 import { League } from '@pdz/features/league-zone/league.interface';
@@ -43,7 +47,7 @@ import { FieldComponent } from '@pdz/shared/inputs/field/field.component';
 import { InputDirective } from '@pdz/shared/inputs/field/input.directive';
 import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
 import { PageComponent } from '@pdz/shared/layout/page/page.component';
-import { catchError, firstValueFrom, forkJoin, of, take } from 'rxjs';
+import { catchError, firstValueFrom, of, take } from 'rxjs';
 
 type AnswerValue = string | string[];
 
@@ -74,12 +78,11 @@ export class LeagueSignUpComponent implements OnInit {
   private readonly fb = inject(FormBuilder);
   private readonly leagueService = inject(LeagueZoneService);
   private readonly router = inject(Router);
-  private readonly authService = inject(AuthService);
   private readonly roleService = inject(RoleService);
+  private readonly discordConnection = inject(DiscordConnectionService);
   private readonly destroyRef = inject(DestroyRef);
 
   protected readonly limits = SIGN_UP_LIMITS;
-  protected readonly settingsLink = ['/', SETTINGS_PATH];
   protected readonly timezones = Intl.supportedValuesOf('timeZone');
   private readonly invite =
     new URLSearchParams(window.location.search).get('invite') ?? undefined;
@@ -87,7 +90,6 @@ export class LeagueSignUpComponent implements OnInit {
   readonly signupForm = this.fb.nonNullable.group({
     name: ['', Validators.required],
     gameName: ['', Validators.required],
-    discordName: ['', Validators.required],
     timezone: [
       Intl.DateTimeFormat().resolvedOptions().timeZone,
       Validators.required,
@@ -101,7 +103,16 @@ export class LeagueSignUpComponent implements OnInit {
   readonly wantsToSignUpAsSub = signal(false);
   readonly isSubmitting = signal(false);
   readonly submitError = signal<string | null>(null);
-  readonly accountDiscordName = signal<string | null>(null);
+  readonly connectedDiscord = signal<string | null>(null);
+  readonly discordRefused = signal(false);
+  readonly connectingDiscord = signal(false);
+  readonly discordConnectError = signal<string | null>(null);
+  readonly discordRequired = computed(
+    () => this.leagueInfo()?.requireDiscord === true || this.discordRefused(),
+  );
+  readonly needsDiscord = computed(
+    () => this.discordRequired() && !this.connectedDiscord(),
+  );
   readonly identity = signal<TeamIdentityChoice | null>(null);
   readonly identityReady = computed(() => isChoiceComplete(this.identity()));
 
@@ -149,19 +160,16 @@ export class LeagueSignUpComponent implements OnInit {
         this.buildAnswerControls();
       });
 
-    forkJoin([
-      this.roleService.me$.pipe(take(1)),
-      this.authService.user$.pipe(take(1)),
-    ])
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(([me, user]) => this.prefill(me, user));
+    this.roleService.me$
+      .pipe(take(1), takeUntilDestroyed(this.destroyRef))
+      .subscribe((me) => this.prefill(me));
 
     this.answerGroup.valueChanges
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(() => this.syncAnswerValidators());
   }
 
-  protected showError(control: 'name' | 'gameName' | 'discordName') {
+  protected showError(control: 'name' | 'gameName') {
     const field = this.signupForm.controls[control];
     return field.touched && field.hasError('required');
   }
@@ -198,12 +206,35 @@ export class LeagueSignUpComponent implements OnInit {
     control.markAsTouched();
   }
 
+  protected connectDiscord(): void {
+    if (this.connectingDiscord()) return;
+    this.connectingDiscord.set(true);
+    this.discordConnectError.set(null);
+    this.discordConnection
+      .begin(this.router.url)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe({
+        next: ({ url }) => this.discordConnection.go(url),
+        error: (error) => {
+          this.connectingDiscord.set(false);
+          this.discordConnectError.set(
+            apiErrorMessage(error, 'Could not start connecting Discord.'),
+          );
+        },
+      });
+  }
+
   async onSubmit(): Promise<void> {
     if (this.isSubmitting()) return;
 
     const tournamentSlug = this.leagueService.tournamentSlug();
     const identity = this.identity();
-    if (this.signupForm.invalid || !tournamentSlug || !isChoiceComplete(identity)) {
+    if (
+      this.signupForm.invalid ||
+      this.needsDiscord() ||
+      !tournamentSlug ||
+      !isChoiceComplete(identity)
+    ) {
       this.signupForm.markAllAsTouched();
       return;
     }
@@ -241,18 +272,19 @@ export class LeagueSignUpComponent implements OnInit {
       this.roleService.reload().pipe(take(1)).subscribe();
       this.navigateToTeam();
     } catch (error) {
-      this.submitError.set(
-        apiErrorMessage(error, 'Sign up failed. Please try again.'),
-      );
+      if (toApiError(error)?.code === DISCORD_ERROR.required) {
+        this.discordRefused.set(true);
+      } else {
+        this.submitError.set(
+          apiErrorMessage(error, 'Sign up failed. Please try again.'),
+        );
+      }
     } finally {
       this.isSubmitting.set(false);
     }
   }
 
-  private prefill(
-    me: Me | null,
-    user: { sub?: string; username?: string } | null,
-  ): void {
+  private prefill(me: Me | null): void {
     const controls = this.signupForm.controls;
     if (me?.displayName && !controls.name.value) {
       controls.name.setValue(me.displayName);
@@ -260,15 +292,7 @@ export class LeagueSignUpComponent implements OnInit {
     if (me?.profile.gameName && !controls.gameName.value) {
       controls.gameName.setValue(me.profile.gameName);
     }
-    const accountDiscord = me?.profile.discordName ?? null;
-    this.accountDiscordName.set(accountDiscord);
-    if (accountDiscord) {
-      controls.discordName.setValue(accountDiscord);
-    } else if (!controls.discordName.value) {
-      const discord =
-        user?.sub?.startsWith('oauth2|discord') ? user.username : null;
-      if (discord) controls.discordName.setValue(discord);
-    }
+    this.connectedDiscord.set(me?.discord?.username ?? null);
     if (me?.profile.timezone && !controls.timezone.dirty) {
       controls.timezone.setValue(me.profile.timezone);
     }

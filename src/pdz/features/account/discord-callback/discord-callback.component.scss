@@ -1,0 +1,58 @@
+@use "pdz-theming" as pdz;
+
+:host {
+  display: block;
+}
+
+.merge {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.layout(section-gap);
+
+  &__intro {
+    @include pdz.text(body);
+    margin: 0;
+  }
+
+  &__accounts {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: pdz.layout(stack);
+
+    @include pdz.respond-above(medium) {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  &__account,
+  &__blocked,
+  &__choice {
+    display: flex;
+    flex-direction: column;
+    gap: pdz.space(sm);
+  }
+
+  &__name,
+  &__heading {
+    @include pdz.text(card-title);
+    margin: 0;
+  }
+
+  &__meta {
+    @include pdz.text(body-sm);
+    color: pdz.color(on-surface-muted);
+    margin: 0;
+  }
+
+  &__holdings {
+    @include pdz.text(body-sm);
+    margin: 0;
+    padding-left: pdz.space(lg);
+  }
+
+  &__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: pdz.layout(inline);
+  }
+}

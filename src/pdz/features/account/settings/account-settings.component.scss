@@ -46,6 +46,38 @@
     color: pdz.color(on-surface);
   }
 
+  &__connected {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: pdz.space(sm);
+    min-height: pdz.control-height(md);
+  }
+
+  &__connected-name {
+    display: inline-flex;
+    align-items: center;
+    gap: pdz.space(xs);
+    min-width: 0;
+    color: pdz.color(on-surface);
+    @include pdz.text(body);
+  }
+
+  &__discord-username {
+    overflow-wrap: anywhere;
+  }
+
+  &__connect {
+    display: flex;
+  }
+
+  &__error {
+    @include pdz.text(body-sm);
+    margin: 0;
+    color: pdz.color(danger);
+  }
+
   &__row {
     display: flex;
     flex-wrap: wrap;

@@ -12,6 +12,7 @@ import { provideAuth0, authHttpInterceptorFn } from '@auth0/auth0-angular';
 import { MARKED_OPTIONS, provideMarkdown } from 'ngx-markdown';
 
 import { routes } from '@pdz/pdz.routes';
+import { DISCORD_CALLBACK_PATH, SETTINGS_PATH } from '@pdz/core/route-paths';
 import { environment } from '@pdz/environments/environment';
 import { authRecoveryInterceptor } from '@pdz/core/interceptors/auth-recovery.interceptor';
 import { AuthRecoveryService } from '@pdz/core/services/auth-recovery.service';
@@ -36,6 +37,8 @@ export const pdzConfig: ApplicationConfig = {
       clientId: environment.auth.clientId,
       useRefreshTokens: true,
       cacheLocation: 'localstorage',
+      skipRedirectCallback:
+        window.location.pathname === `/${SETTINGS_PATH}/${DISCORD_CALLBACK_PATH}`,
       authorizationParams: {
         redirect_uri: window.location.origin,
         audience: environment.auth.audience,

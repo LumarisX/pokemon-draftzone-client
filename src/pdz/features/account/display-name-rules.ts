@@ -1,6 +1,5 @@
 export const DISPLAY_NAME_MIN = 2;
 export const DISPLAY_NAME_MAX = 24;
-export const DISCORD_NAME_MAX = 37;
 export const GAME_NAME_MAX = 32;
 
 const DISPLAY_NAME_PATTERN = /^[\p{L}\p{N}](?:[\p{L}\p{N} _\-.']*[\p{L}\p{N}])?$/u;

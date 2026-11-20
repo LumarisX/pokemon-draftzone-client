@@ -17,9 +17,15 @@ import { Settings } from '@pdz/layout/top-navbar/settings.service';
 export type UserRole = 'owner' | 'admin' | 'dev' | 'tournament-creator';
 
 export interface MeProfile {
-  discordName: string | null;
   gameName: string | null;
   timezone: string | null;
+}
+
+export interface MeDiscord {
+  id: string;
+  username: string;
+  connectedAt: string;
+  viaSignIn: boolean;
 }
 
 export interface Me {
@@ -30,6 +36,7 @@ export interface Me {
   privateProfile: boolean;
   roles: UserRole[];
   settings: Settings;
+  discord: MeDiscord | null;
   joined: string;
   lastLogin: string;
 }

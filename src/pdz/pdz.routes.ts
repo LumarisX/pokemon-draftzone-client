@@ -5,6 +5,7 @@ import {
   ADMIN_PATH,
   DASHBOARD_PATH,
   DEBUG_PATH,
+  DISCORD_CALLBACK_PATH,
   DRAFT_OVERVIEW_PATH,
   EXTERNAL_LINK_PATH,
   LEAGUE_ADS_PATH,
@@ -77,6 +78,14 @@ export const routes: Routes = [
         loadComponent: () =>
           import('@pdz/features/account/settings/account-settings.component').then(
             (c) => c.AccountSettingsComponent,
+          ),
+      },
+      {
+        path: `${SETTINGS_PATH}/${DISCORD_CALLBACK_PATH}`,
+        canActivate: [AuthGuard],
+        loadComponent: () =>
+          import('@pdz/features/account/discord-callback/discord-callback.component').then(
+            (c) => c.DiscordCallbackComponent,
           ),
       },
       {

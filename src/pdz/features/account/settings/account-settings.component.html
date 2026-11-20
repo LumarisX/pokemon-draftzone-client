@@ -15,7 +15,12 @@
       <pdz-page-sections heading="Settings" [sections]="sections">
         <pdz-page-header title="Settings">
           @if (profileLink(); as link) {
-            <a pdz-button pdz-page-header-actions icon="person" [routerLink]="link">
+            <a
+              pdz-button
+              pdz-page-header-actions
+              icon="person"
+              [routerLink]="link"
+            >
               View Public Profile
             </a>
           }
@@ -30,12 +35,7 @@
             <h2 class="account__title" id="profile-title">Profile</h2>
             <pdz-card padding="lg">
               <div class="account__fields">
-                <label
-                  pdz-field
-                  label="Display Name"
-                  hint="This is the name people see."
-                  [error]="nameError()"
-                >
+                <label pdz-field label="Display Name" [error]="nameError()">
                   <input
                     pdz-input
                     type="text"
@@ -54,9 +54,6 @@
                     [checked]="privateProfile()"
                     (checkedChange)="onPrivate($event)"
                   />
-                  <p class="account__note">
-                    When this is on, other people see only your name.
-                  </p>
                 </div>
               </div>
             </pdz-card>
@@ -72,26 +69,58 @@
             </h2>
             <pdz-card padding="lg">
               <div class="account__fields">
-                <p class="account__intro">
-                  These fill in the sign-up form when you join a league.
-                </p>
-
-                <label
-                  pdz-field
-                  label="Discord Name"
-                  [error]="fieldErrors().discordName"
-                >
-                  <input
-                    pdz-input
-                    type="text"
-                    name="discordName"
-                    autocomplete="off"
-                    [maxlength]="discordMax"
-                    [invalid]="!!fieldErrors().discordName"
-                    [ngModel]="discordName()"
-                    (ngModelChange)="onField('discordName', $event)"
-                  />
-                </label>
+                @if (discord(); as connected) {
+                  <div pdz-field label="Discord">
+                    <div class="account__connected">
+                      <span class="account__connected-name">
+                        <pdz-icon
+                          name="discord"
+                          [size]="18"
+                          aria-hidden="true"
+                        />
+                        <span class="account__discord-username">{{
+                          connected.username
+                        }}</span>
+                      </span>
+                      @if (!connected.viaSignIn) {
+                        <button
+                          pdz-button
+                          type="button"
+                          color="neutral"
+                          variant="outlined"
+                          size="sm"
+                          [loading]="disconnecting()"
+                          (click)="disconnect()"
+                        >
+                          Disconnect
+                        </button>
+                      }
+                    </div>
+                  </div>
+                } @else {
+                  <div pdz-field label="Discord">
+                    <p class="account__note">
+                      Connect your Discord so league bots can ping you and give
+                      you your coach role.
+                    </p>
+                  </div>
+                  <div class="account__connect">
+                    <button
+                      pdz-button
+                      type="button"
+                      color="neutral"
+                      variant="outlined"
+                      icon="discord"
+                      [loading]="connecting()"
+                      (click)="connect()"
+                    >
+                      Connect Discord
+                    </button>
+                  </div>
+                }
+                @if (discordError(); as message) {
+                  <p class="account__error" role="alert">{{ message }}</p>
+                }
 
                 <label
                   pdz-field

@@ -66,4 +66,20 @@ describe('LeagueTeamComponent coach line', () => {
     expect(line.textContent).toContain('Misty');
     expect(line.querySelector('a.team-header__coach-name')).toBeNull();
   });
+
+  it('shows the coach Discord name with the Discord icon when it is sent', () => {
+    const fixture = render(team({ coachDiscordName: 'misty_w' }));
+    const discord = fixture.nativeElement.querySelector(
+      '.team-header__coach .team-header__discord',
+    );
+    expect(discord.textContent).toContain('misty_w');
+    expect(discord.querySelector('pdz-icon')).not.toBeNull();
+  });
+
+  it('shows no Discord line when the name is not sent', () => {
+    const fixture = render(team());
+    expect(
+      fixture.nativeElement.querySelector('.team-header__discord'),
+    ).toBeNull();
+  });
 });

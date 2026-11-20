@@ -20,6 +20,7 @@ export const LEAGUE_ADS_PATH = 'league-list';
 export const ADMIN_PATH = 'admin';
 export const ABOUT_PATH = 'about';
 export const SETTINGS_PATH = 'settings';
+export const DISCORD_CALLBACK_PATH = 'discord';
 
 export function profileLink(profileId: string): string[] {
   return ['/', PROFILE_PATH, profileId];

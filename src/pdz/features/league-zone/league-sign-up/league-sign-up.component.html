@@ -106,39 +106,40 @@
             }
           </label>
 
-          @if (accountDiscordName(); as discord) {
-            <div pdz-field label="Discord Name">
+          @if (connectedDiscord(); as discord) {
+            <div pdz-field label="Discord">
               <div class="fixed-value">
                 <span class="fixed-value__text">{{ discord }}</span>
-                <a
-                  pdz-button
-                  size="sm"
-                  variant="ghost"
-                  color="neutral"
-                  [routerLink]="settingsLink"
-                  fragment="league-defaults"
-                  >Change in Settings</a
-                >
               </div>
             </div>
           } @else {
-            <label
-              pdz-field
-              label="Discord Username"
-              hint="Saved to your account, so you will not need to type it again for future sign-ups."
-              required
-            >
-              <input
-                pdz-input
-                type="text"
-                placeholder="deoxys"
-                formControlName="discordName"
-                [attr.maxlength]="limits.discordName"
-              />
-              @if (showError("discordName")) {
-                <span pdz-error>Required</span>
+            <div pdz-field label="Discord" [required]="discordRequired()">
+              <div class="fixed-value">
+                <span class="fixed-value__text fixed-value__text--muted">
+                  @if (discordRequired()) {
+                    This tournament requires a connected Discord account.
+                  } @else {
+                    Optional. Connect Discord so league bots can ping you and
+                    give you your coach role.
+                  }
+                </span>
+                <button
+                  pdz-button
+                  type="button"
+                  color="neutral"
+                  variant="outlined"
+                  size="sm"
+                  icon="discord"
+                  [loading]="connectingDiscord()"
+                  (click)="connectDiscord()"
+                >
+                  Connect Discord
+                </button>
+              </div>
+              @if (discordConnectError(); as message) {
+                <span pdz-error>{{ message }}</span>
               }
-            </label>
+            </div>
           }
 
           <div pdz-field label="Time Zone" required>
@@ -309,7 +310,7 @@
         pdz-button
         type="submit"
         [loading]="isSubmitting()"
-        [disabled]="signupForm.invalid || !identityReady()"
+        [disabled]="signupForm.invalid || needsDiscord() || !identityReady()"
       >
         {{ wantsToSignUpAsSub() ? "Sign Up as a Sub" : "Sign Up" }}
       </button>
