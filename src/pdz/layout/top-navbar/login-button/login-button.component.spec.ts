@@ -19,6 +19,7 @@ const me: Me = {
   discord: null,
   joined: '',
   lastLogin: '',
+  deletionScheduledFor: null,
 };
 
 describe('LoginButtonComponent', () => {
@@ -88,9 +89,10 @@ describe('LoginButtonComponent', () => {
     const fixture = TestBed.createComponent(LoginButtonComponent);
     fixture.detectChanges();
 
-    const link = fixture.nativeElement.querySelector(
-      'a[pdz-menu-item]',
-    ) as HTMLAnchorElement;
-    expect(link.getAttribute('href')).toBe('/settings');
+    const links = Array.from(
+      fixture.nativeElement.querySelectorAll('a[pdz-menu-item]'),
+    ) as HTMLAnchorElement[];
+    const link = links.find((a) => a.textContent?.includes('Settings'));
+    expect(link?.getAttribute('href')).toBe('/settings');
   });
 });

@@ -1,0 +1,65 @@
+@use "pdz-theming" as pdz;
+
+:host {
+  display: block;
+}
+
+.legal {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.layout(section-gap);
+  max-width: pdz.content-width(narrow);
+  padding-bottom: pdz.space(xl);
+
+  &__intro {
+    margin: 0;
+    color: pdz.color(on-surface);
+    @include pdz.text(body);
+  }
+
+  &__section {
+    display: flex;
+    flex-direction: column;
+    gap: pdz.space(sm);
+    scroll-margin-top: 5rem;
+  }
+
+  &__title {
+    margin: 0;
+    color: pdz.color(on-surface);
+    @include pdz.text(section-title);
+  }
+
+  &__text,
+  &__list {
+    margin: 0;
+    color: pdz.color(on-surface);
+    @include pdz.text(body);
+  }
+
+  &__list {
+    display: flex;
+    flex-direction: column;
+    gap: pdz.space(xs);
+    padding-left: pdz.space(lg);
+    list-style: disc outside;
+
+    li {
+      display: list-item;
+    }
+
+    li::marker {
+      color: pdz.color(on-surface-muted);
+    }
+  }
+
+  &__link {
+    color: pdz.color(primary-accent);
+    text-decoration: underline;
+    text-underline-offset: 0.15em;
+
+    &:focus-visible {
+      @include pdz.focus-ring;
+    }
+  }
+}

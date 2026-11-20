@@ -1,0 +1,29 @@
+@use "pdz-theming" as pdz;
+
+:host {
+  display: block;
+}
+
+.deletion {
+  display: flex;
+  flex-direction: column;
+  gap: pdz.layout(stack);
+
+  &__text {
+    @include pdz.text(body);
+    margin: 0;
+    color: pdz.color(on-surface);
+  }
+
+  &__error {
+    @include pdz.text(body-sm);
+    margin: 0;
+    color: pdz.color(danger);
+  }
+
+  &__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: pdz.space(sm);
+  }
+}

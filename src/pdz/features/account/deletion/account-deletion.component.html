@@ -1,0 +1,36 @@
+<pdz-page type="form">
+  <pdz-page-header title="Account Scheduled for Deletion" />
+
+  <pdz-card padding="lg">
+    <div class="deletion">
+      @if (scheduledFor(); as date) {
+        <p class="deletion__text">
+          Your account will be deleted on {{ date | date: "longDate" }}.
+        </p>
+      }
+      @if (error(); as message) {
+        <p class="deletion__error" role="alert">{{ message }}</p>
+      }
+      <div class="deletion__actions">
+        <button
+          pdz-button
+          type="button"
+          [loading]="keeping()"
+          (click)="keep()"
+        >
+          Keep My Account
+        </button>
+        <button
+          pdz-button
+          type="button"
+          color="neutral"
+          variant="outlined"
+          icon="logout"
+          (click)="logout()"
+        >
+          Log Out
+        </button>
+      </div>
+    </div>
+  </pdz-card>
+</pdz-page>

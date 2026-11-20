@@ -14,6 +14,12 @@
   padding-inline: pdz.space(xs);
 }
 
+.sign-up__legal {
+  @include pdz.text(body-sm);
+  margin: 0;
+  color: pdz.color(on-surface-muted);
+}
+
 .sign-up__error {
   @include pdz.text(body-sm);
   margin: 0;

@@ -15,7 +15,11 @@ import {
   Validators,
 } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
-import { LEAGUE_ZONE_PATH } from '@pdz/core/route-paths';
+import {
+  LEAGUE_ZONE_PATH,
+  PRIVACY_PATH,
+  TERMS_PATH,
+} from '@pdz/core/route-paths';
 import { toApiError } from '@pdz/core/services/api-error';
 import { apiErrorMessage } from '@pdz/core/services/api.service';
 import {
@@ -122,6 +126,9 @@ export class LeagueSignUpComponent implements OnInit {
   });
 
   readonly logoUrl = computed(() => getLeagueLogoUrl(this.leagueInfo()?.logo));
+
+  readonly privacyLink = ['/', PRIVACY_PATH];
+  readonly termsLink = ['/', TERMS_PATH];
 
   readonly rulesLink = computed(() => [
     '/',

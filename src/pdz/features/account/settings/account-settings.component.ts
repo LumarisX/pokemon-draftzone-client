@@ -11,12 +11,21 @@ import {
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, RouterLink } from '@angular/router';
-import { SETTINGS_PATH, profileLink } from '@pdz/core/route-paths';
+import {
+  PRIVACY_PATH,
+  SETTINGS_PATH,
+  TERMS_PATH,
+  profileLink,
+} from '@pdz/core/route-paths';
+import {
+  leagueLink,
+  tournamentLink,
+} from '@pdz/features/dashboard/dashboard.model';
 import { IconComponent } from '@pdz/shared/images/icon/icon.component';
 import { DiscordConnectionService } from '../discord-connection.service';
 import { SlideToggleComponent } from '@pdz/shared/inputs/slide-toggle/slide-toggle.component';
 import { GuardsUnsavedChanges } from '@pdz/core/guards/unsaved-changes/unsaved-changes.guard';
-import { ApiError } from '@pdz/core/services/api-error';
+import { ApiError, toApiError } from '@pdz/core/services/api-error';
 import { ApiService, apiErrorMessage } from '@pdz/core/services/api.service';
 import { AuthService } from '@pdz/core/services/auth0.service';
 import { Me, RoleService } from '@pdz/core/services/role.service';
@@ -58,6 +67,52 @@ type LoadState = 'loading' | 'ready' | 'error';
 type ProfileField = 'displayName' | 'gameName' | 'timezone';
 type TextPatch = Partial<Record<ProfileField, string | null>>;
 type ProfilePatch = TextPatch & { privateProfile?: boolean };
+
+interface DeletionBlocker {
+  kind: 'league-owner' | 'organizer' | 'coach';
+  leagueSlug: string;
+  leagueName: string;
+  tournamentSlug?: string;
+  tournamentName?: string;
+}
+
+interface DeletionStatus {
+  scheduledFor: string | null;
+  blockers: DeletionBlocker[];
+}
+
+interface BlockerView {
+  label: string;
+  link: string[];
+  action: string;
+}
+
+const BLOCKER_ACTION: Record<DeletionBlocker['kind'], string> = {
+  'league-owner': 'Hand the league to someone else or ask an admin.',
+  organizer: 'Step down as organizer.',
+  coach: 'Ask the organizer to replace you.',
+};
+
+const DELETE_MESSAGE =
+  'Your account will be deleted in 30 days. Sign in again before then and you can cancel. ' +
+  'Your account, drafts, planner plans, logos and tier lists no tournament uses are removed. ' +
+  'Seasons in other leagues keep your team and coach name, with no link to your account.';
+
+function blockerView(blocker: DeletionBlocker): BlockerView {
+  const tournament =
+    blocker.kind !== 'league-owner' && blocker.tournamentSlug
+      ? blocker.tournamentSlug
+      : null;
+  return {
+    label: tournament
+      ? `${blocker.tournamentName ?? tournament}, ${blocker.leagueName}`
+      : blocker.leagueName,
+    link: tournament
+      ? tournamentLink(blocker.leagueSlug, tournament)
+      : leagueLink(blocker.leagueSlug),
+    action: BLOCKER_ACTION[blocker.kind],
+  };
+}
 
 const SECTIONS: PageSection[] = [
   { id: 'profile', label: 'Profile' },
@@ -123,6 +178,11 @@ export class AccountSettingsComponent implements OnInit, GuardsUnsavedChanges {
   protected readonly connecting = signal(false);
   protected readonly disconnecting = signal(false);
   protected readonly discordError = signal<string | null>(null);
+  protected readonly checkingDeletion = signal(false);
+  protected readonly deletionError = signal<string | null>(null);
+  protected readonly deletionBlockers = signal<BlockerView[]>([]);
+  protected readonly privacyLink = ['/', PRIVACY_PATH];
+  protected readonly termsLink = ['/', TERMS_PATH];
 
   protected readonly signInMethod = toSignal(
     this.auth.user$.pipe(map((user) => signInMethodLabel(user?.sub))),
@@ -274,6 +334,63 @@ export class AccountSettingsComponent implements OnInit, GuardsUnsavedChanges {
 
   protected logout(): Promise<void> {
     return this.auth.logout();
+  }
+
+  protected deleteAccount(): void {
+    if (this.checkingDeletion()) return;
+    this.checkingDeletion.set(true);
+    this.deletionError.set(null);
+    this.deletionBlockers.set([]);
+    this.api
+      .get<DeletionStatus>('users/me/deletion')
+      .pipe(
+        finalize(() => this.checkingDeletion.set(false)),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe({
+        next: (status) => {
+          if (status.blockers.length) {
+            this.deletionBlockers.set(status.blockers.map(blockerView));
+            return;
+          }
+          void this.confirmDeletion();
+        },
+        error: (err) =>
+          this.deletionError.set(
+            apiErrorMessage(err, 'Could not check your account.'),
+          ),
+      });
+  }
+
+  private async confirmDeletion(): Promise<void> {
+    const confirmed = await this.dialog.confirm('Delete Your Account?', {
+      message: DELETE_MESSAGE,
+      confirmLabel: 'Delete Account',
+      confirmColor: 'danger',
+    });
+    if (!confirmed) return;
+    this.checkingDeletion.set(true);
+    this.api
+      .post<{ scheduledFor: string }>('users/me/deletion', {})
+      .pipe(
+        finalize(() => this.checkingDeletion.set(false)),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe({
+        next: () => void this.auth.logout(),
+        error: (err) => {
+          const blockers = toApiError(err)?.details?.['blockers'];
+          if (Array.isArray(blockers) && blockers.length) {
+            this.deletionBlockers.set(
+              (blockers as DeletionBlocker[]).map(blockerView),
+            );
+            return;
+          }
+          this.deletionError.set(
+            apiErrorMessage(err, 'Could not delete your account.'),
+          );
+        },
+      });
   }
 
   protected save(): void {

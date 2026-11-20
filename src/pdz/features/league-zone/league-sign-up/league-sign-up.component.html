@@ -301,6 +301,17 @@
       </span>
     </label>
 
+    <p class="sign-up__legal">
+      By signing up you agree to the
+      <a class="link" target="_blank" [routerLink]="termsLink"
+        >Terms of Service</a
+      >
+      and
+      <a class="link" target="_blank" [routerLink]="privacyLink"
+        >Privacy Policy</a
+      >.
+    </p>
+
     @if (submitError(); as error) {
       <p class="sign-up__error" role="alert">{{ error }}</p>
     }

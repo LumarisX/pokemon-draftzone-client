@@ -6,6 +6,15 @@
   gap: pdz.layout(section-gap);
 }
 
+.about__legal {
+  @include pdz.text(body-sm);
+  display: flex;
+  justify-content: center;
+  gap: pdz.space(sm);
+  margin: 0;
+  color: pdz.color(on-surface-muted);
+}
+
 .feature {
   display: grid;
   grid-template-columns: minmax(0, 1fr);

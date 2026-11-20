@@ -5,18 +5,22 @@ import {
   ADMIN_PATH,
   DASHBOARD_PATH,
   DEBUG_PATH,
+  DELETION_PATH,
   DISCORD_CALLBACK_PATH,
   DRAFT_OVERVIEW_PATH,
   EXTERNAL_LINK_PATH,
   LEAGUE_ADS_PATH,
   LEAGUE_ZONE_PATH,
   PLANNER_PATH,
+  PRIVACY_PATH,
   PROFILE_PATH,
   SETTINGS_PATH,
   STATISTICS_PATH,
+  TERMS_PATH,
   TIER_LIST_PATH,
   TOOLS_PATH,
 } from '@pdz/core/route-paths';
+import { deletionGuard } from '@pdz/core/guards/deletion/deletion.guard';
 import { adminGuard } from '@pdz/core/guards/admin/admin.guard';
 import { unsavedChangesGuard } from '@pdz/core/guards/unsaved-changes/unsaved-changes.guard';
 import { SHARED_MATCHUP_PAGE } from '@pdz/features/drafts/matchup-overview/matchup-page.config';
@@ -40,6 +44,7 @@ export const routes: Routes = [
   },
   {
     path: '',
+    canActivateChild: [deletionGuard],
     children: [
       { path: '', component: HomeComponent },
       {
@@ -86,6 +91,14 @@ export const routes: Routes = [
         loadComponent: () =>
           import('@pdz/features/account/discord-callback/discord-callback.component').then(
             (c) => c.DiscordCallbackComponent,
+          ),
+      },
+      {
+        path: `${SETTINGS_PATH}/${DELETION_PATH}`,
+        canActivate: [AuthGuard],
+        loadComponent: () =>
+          import('@pdz/features/account/deletion/account-deletion.component').then(
+            (c) => c.AccountDeletionComponent,
           ),
       },
       {
@@ -159,6 +172,22 @@ export const routes: Routes = [
         loadComponent: () =>
           import('@pdz/features/pages/about/about.component').then(
             (c) => c.AboutComponent,
+          ),
+      },
+      {
+        path: PRIVACY_PATH,
+        data: { document: 'privacy' },
+        loadComponent: () =>
+          import('@pdz/features/pages/legal/legal-page.component').then(
+            (c) => c.LegalPageComponent,
+          ),
+      },
+      {
+        path: TERMS_PATH,
+        data: { document: 'terms' },
+        loadComponent: () =>
+          import('@pdz/features/pages/legal/legal-page.component').then(
+            (c) => c.LegalPageComponent,
           ),
       },
     ],

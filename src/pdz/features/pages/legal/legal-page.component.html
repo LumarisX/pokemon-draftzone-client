@@ -1,0 +1,45 @@
+<pdz-page type="detail">
+  <pdz-page-sections [heading]="document.title" [sections]="sections">
+    <pdz-page-header [title]="document.title">
+      <p pdz-page-header-detail>Last updated {{ document.updated }}</p>
+    </pdz-page-header>
+
+    <div class="legal">
+      <p class="legal__intro">{{ document.intro }}</p>
+
+      @for (section of document.sections; track section.id) {
+        <section
+          class="legal__section"
+          [id]="section.id"
+          [attr.aria-labelledby]="section.id + '-title'"
+        >
+          <h2 class="legal__title" [id]="section.id + '-title'">
+            {{ section.label }}
+          </h2>
+          @for (block of section.blocks; track $index) {
+            @switch (block.kind) {
+              @case ("p") {
+                <p class="legal__text">{{ block.text }}</p>
+              }
+              @case ("list") {
+                <ul class="legal__list">
+                  @for (item of block.items; track $index) {
+                    <li>{{ item }}</li>
+                  }
+                </ul>
+              }
+              @case ("contact") {
+                <p class="legal__text">
+                  {{ block.text }}
+                  <a class="legal__link" [href]="'mailto:' + contactEmail">{{
+                    contactEmail
+                  }}</a>
+                </p>
+              }
+            }
+          }
+        </section>
+      }
+    </div>
+  </pdz-page-sections>
+</pdz-page>

@@ -39,6 +39,7 @@ export interface Me {
   discord: MeDiscord | null;
   joined: string;
   lastLogin: string;
+  deletionScheduledFor: string | null;
 }
 
 @Injectable({ providedIn: 'root' })

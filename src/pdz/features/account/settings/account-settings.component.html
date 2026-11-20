@@ -193,6 +193,49 @@
                   Log Out
                 </button>
               </div>
+              <div class="account__delete">
+                <div class="account__row">
+                  <p class="account__legal">
+                    <a class="account__link" [routerLink]="privacyLink"
+                      >Privacy Policy</a
+                    >
+                    and
+                    <a class="account__link" [routerLink]="termsLink"
+                      >Terms of Service</a
+                    >
+                  </p>
+                  <button
+                    pdz-button
+                    type="button"
+                    color="neutral"
+                    variant="outlined"
+                    [loading]="checkingDeletion()"
+                    (click)="deleteAccount()"
+                  >
+                    Delete Account
+                  </button>
+                </div>
+                @if (deletionBlockers().length) {
+                  <div class="account__blockers" role="alert">
+                    <p class="account__note">
+                      You can't delete your account until these are settled.
+                    </p>
+                    <ul class="account__blocker-list">
+                      @for (item of deletionBlockers(); track $index) {
+                        <li class="account__blocker">
+                          <a class="account__link" [routerLink]="item.link">{{
+                            item.label
+                          }}</a>
+                          <span class="account__note">{{ item.action }}</span>
+                        </li>
+                      }
+                    </ul>
+                  </div>
+                }
+                @if (deletionError(); as message) {
+                  <p class="account__error" role="alert">{{ message }}</p>
+                }
+              </div>
             </pdz-card>
           </section>
 

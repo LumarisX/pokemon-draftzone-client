@@ -25,6 +25,7 @@ const base: Me = {
   discord: null,
   joined: '',
   lastLogin: '',
+  deletionScheduledFor: null,
 };
 
 function apiError(status: number, message: string): ApiError {
@@ -35,7 +36,8 @@ function apiError(status: number, message: string): ApiError {
 
 describe('AccountSettingsComponent', () => {
   let fixture: ComponentFixture<AccountSettingsComponent>;
-  let api: { patch: jest.Mock };
+  let api: { patch: jest.Mock; get: jest.Mock; post: jest.Mock };
+  let logout: jest.Mock;
   let roleService: {
     me$: Observable<Me | null>;
     setMe: jest.Mock;
@@ -88,7 +90,7 @@ describe('AccountSettingsComponent', () => {
           useValue: {
             isAuthenticated$: of(true),
             user$: of({ sub, username: 'x' }),
-            logout: jest.fn(),
+            logout,
           },
         },
       ],
@@ -100,7 +102,10 @@ describe('AccountSettingsComponent', () => {
   beforeEach(() => {
     me = base;
     sub = 'google-oauth2|123';
+    logout = jest.fn(() => Promise.resolve());
     api = {
+      get: jest.fn(() => of({ scheduledFor: null, blockers: [] })),
+      post: jest.fn(() => of({ scheduledFor: '2026-12-20T00:00:00.000Z' })),
       patch: jest.fn((_path: string, body: object) =>
         of({
           ...base,
@@ -363,6 +368,144 @@ describe('AccountSettingsComponent', () => {
       button('Disconnect').click();
       await settle();
       expect(discord.disconnect).not.toHaveBeenCalled();
+    });
+  });
+
+  describe('Delete Account', () => {
+    async function settle(): Promise<void> {
+      await fixture.whenStable();
+      fixture.detectChanges();
+    }
+
+    it('links the privacy policy and terms', async () => {
+      create();
+      await settle();
+      expect(el().querySelector('a[href="/privacy"]')).not.toBeNull();
+      expect(el().querySelector('a[href="/terms"]')).not.toBeNull();
+    });
+
+    it('confirms, schedules the deletion and logs out', async () => {
+      create();
+      await settle();
+      button('Delete Account').click();
+      await settle();
+      expect(api.get).toHaveBeenCalledWith('users/me/deletion');
+      expect(dialog.confirm).toHaveBeenCalledTimes(1);
+      expect(dialog.confirm.mock.calls[0][1].confirmLabel).toBe(
+        'Delete Account',
+      );
+      expect(dialog.confirm.mock.calls[0][1].message).toContain('30 days');
+      expect(api.post).toHaveBeenCalledWith('users/me/deletion', {});
+      expect(logout).toHaveBeenCalledTimes(1);
+    });
+
+    it('does nothing when the confirm is declined', async () => {
+      dialog.confirm.mockReturnValue(Promise.resolve(false));
+      create();
+      await settle();
+      button('Delete Account').click();
+      await settle();
+      expect(api.post).not.toHaveBeenCalled();
+      expect(logout).not.toHaveBeenCalled();
+    });
+
+    it('lists blockers with links and never confirms', async () => {
+      api.get.mockReturnValue(
+        of({
+          scheduledFor: null,
+          blockers: [
+            { kind: 'league-owner', leagueSlug: 'pdbl', leagueName: 'PDBL' },
+            {
+              kind: 'organizer',
+              leagueSlug: 'pdbl',
+              leagueName: 'PDBL',
+              tournamentSlug: 's4',
+              tournamentName: 'Season 4',
+            },
+            {
+              kind: 'coach',
+              leagueSlug: 'x',
+              leagueName: 'Other',
+              tournamentSlug: 't1',
+              tournamentName: 'Cup',
+            },
+          ],
+        }),
+      );
+      create();
+      await settle();
+      button('Delete Account').click();
+      await settle();
+      expect(dialog.confirm).not.toHaveBeenCalled();
+      expect(api.post).not.toHaveBeenCalled();
+      const links = Array.from(
+        el().querySelectorAll<HTMLAnchorElement>('.account__blocker a'),
+      ).map((link) => link.getAttribute('href'));
+      expect(links).toEqual([
+        '/leagues/pdbl',
+        '/leagues/pdbl/tournaments/s4',
+        '/leagues/x/tournaments/t1',
+      ]);
+      expect(el().textContent).toContain('ask an admin');
+      expect(el().textContent).toContain('Step down as organizer');
+      expect(el().textContent).toContain('replace you');
+    });
+
+    it('lists the blockers a 409 returns', async () => {
+      api.post.mockReturnValue(
+        throwError(
+          () =>
+            new ApiError(
+              new HttpErrorResponse({
+                status: 409,
+                error: {
+                  error: {
+                    message: 'Blocked',
+                    details: {
+                      blockers: [
+                        {
+                          kind: 'league-owner',
+                          leagueSlug: 'pdbl',
+                          leagueName: 'PDBL',
+                        },
+                      ],
+                    },
+                  },
+                },
+              }),
+            ),
+        ),
+      );
+      create();
+      await settle();
+      button('Delete Account').click();
+      await settle();
+      expect(el().querySelectorAll('.account__blocker')).toHaveLength(1);
+      expect(logout).not.toHaveBeenCalled();
+    });
+
+    it('shows a failure and stays signed in', async () => {
+      api.post.mockReturnValue(throwError(() => apiError(500, 'ignored')));
+      create();
+      await settle();
+      button('Delete Account').click();
+      await settle();
+      expect(el().querySelector('.account__error')?.textContent).toContain(
+        'Could not delete your account.',
+      );
+      expect(logout).not.toHaveBeenCalled();
+    });
+
+    it('shows a failure when the check fails', async () => {
+      api.get.mockReturnValue(throwError(() => apiError(500, 'ignored')));
+      create();
+      await settle();
+      button('Delete Account').click();
+      await settle();
+      expect(el().querySelector('.account__error')?.textContent).toContain(
+        'Could not check your account.',
+      );
+      expect(dialog.confirm).not.toHaveBeenCalled();
     });
   });
 

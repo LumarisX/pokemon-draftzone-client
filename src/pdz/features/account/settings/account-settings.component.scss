@@ -78,6 +78,51 @@
     color: pdz.color(danger);
   }
 
+  &__delete {
+    display: flex;
+    flex-direction: column;
+    gap: pdz.layout(stack);
+    margin-top: pdz.layout(stack);
+    padding-top: pdz.layout(stack);
+    border-top: 1px solid pdz.color(border-subtle);
+  }
+
+  &__legal {
+    @include pdz.text(body-sm);
+    margin: 0;
+    color: pdz.color(on-surface-muted);
+  }
+
+  &__link {
+    color: pdz.color(primary-accent);
+    text-decoration: underline;
+    text-underline-offset: 0.15em;
+
+    &:focus-visible {
+      @include pdz.focus-ring;
+    }
+  }
+
+  &__blockers {
+    display: flex;
+    flex-direction: column;
+    gap: pdz.space(xs);
+  }
+
+  &__blocker-list {
+    display: flex;
+    flex-direction: column;
+    gap: pdz.space(xs);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  &__blocker {
+    display: flex;
+    flex-direction: column;
+  }
+
   &__row {
     display: flex;
     flex-wrap: wrap;

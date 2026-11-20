@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { PLANNER_PATH } from '@pdz/core/route-paths';
+import { PLANNER_PATH, PRIVACY_PATH, TERMS_PATH } from '@pdz/core/route-paths';
 import { CardComponent } from '@pdz/shared/data/card/card.component';
 import { PageHeaderComponent } from '@pdz/shared/layout/page-header/page-header.component';
 import { PageComponent } from '@pdz/shared/layout/page/page.component';
@@ -25,6 +25,8 @@ interface Feature {
 })
 export class AboutComponent {
   readonly plannerLink = ['/', PLANNER_PATH];
+  readonly privacyLink = ['/', PRIVACY_PATH];
+  readonly termsLink = ['/', TERMS_PATH];
 
   readonly features: Feature[] = [
     {

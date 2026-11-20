@@ -21,6 +21,9 @@ export const ADMIN_PATH = 'admin';
 export const ABOUT_PATH = 'about';
 export const SETTINGS_PATH = 'settings';
 export const DISCORD_CALLBACK_PATH = 'discord';
+export const PRIVACY_PATH = 'privacy';
+export const TERMS_PATH = 'terms';
+export const DELETION_PATH = 'deletion';
 
 export function profileLink(profileId: string): string[] {
   return ['/', PROFILE_PATH, profileId];

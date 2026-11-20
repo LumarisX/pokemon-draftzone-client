@@ -25,6 +25,7 @@ const baseMe: Me = {
   discord: null,
   joined: '',
   lastLogin: '',
+  deletionScheduledFor: null,
 };
 
 describe('LeagueSignUpComponent prefill', () => {

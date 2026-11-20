@@ -47,6 +47,9 @@ src/pdz/charts/
 src/pdz/pages/test/
 src/pdz/test/*
 src/environments/
+docs/
 
 # Start with dash
 -*
+
+docs/client-refresh-plan.md
